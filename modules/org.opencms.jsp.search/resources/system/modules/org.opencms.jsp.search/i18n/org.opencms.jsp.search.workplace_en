@@ -1,0 +1,3 @@
+fileicon.jsp-search = Search Configuration
+title.jsp-search = Create a new search configuration
+desc.jsp-search = Configuration of a search or content list for the easy integration of a server-side Solr search.

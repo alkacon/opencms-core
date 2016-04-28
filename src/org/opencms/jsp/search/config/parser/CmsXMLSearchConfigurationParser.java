@@ -32,6 +32,7 @@ import org.opencms.jsp.search.config.CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery.CmsFacetQueryItem;
+import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
@@ -42,6 +43,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
@@ -52,6 +54,7 @@ import org.opencms.xml.content.CmsXmlContentValueSequence;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -179,6 +182,20 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String XML_ELEMENT_DIDYOUMEAN_COLLATE = "Collate";
     /** XML element name. */
     private static final String XML_ELEMENT_DIDYOUMEAN_COUNT = "Count";
+    /** XML element name. */
+    private static final String XML_ELEMENT_RANGE_FACETS = "RangeFacet";
+    /** XML element name. */
+    private static final String XML_ELEMENT_RANGE_FACET_RANGE = "Range";
+    /** XML element name. */
+    private static final String XML_ELEMENT_RANGE_FACET_START = "Start";
+    /** XML element name. */
+    private static final String XML_ELEMENT_RANGE_FACET_END = "End";
+    /** XML element name. */
+    private static final String XML_ELEMENT_RANGE_FACET_GAP = "Gap";
+    /** XML element name. */
+    private static final String XML_ELEMENT_RANGE_FACET_OTHER = "Other";
+    /** XML element name. */
+    private static final String XML_ELEMENT_RANGE_FACET_HARDEND = "HardEnd";
 
     /** Default value. */
     private static final String DEFAULT_QUERY_PARAM = "q";
@@ -258,9 +275,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
 
         final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetField>();
         final CmsXmlContentValueSequence fieldFacets = m_xml.getValueSequence(XML_ELEMENT_FIELD_FACETS, m_locale);
-        if (fieldFacets == null) {
-            return null;
-        } else {
+        if (fieldFacets != null) {
             for (int i = 0; i < fieldFacets.getElementCount(); i++) {
 
                 final I_CmsSearchConfigurationFacetField config = parseFieldFacet(
@@ -269,8 +284,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                     facetConfigs.put(config.getName(), config);
                 }
             }
-            return facetConfigs;
         }
+        return facetConfigs;
     }
 
     /**
@@ -346,6 +361,26 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 e);
             return null;
         }
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseRangeFacets()
+     */
+    public Map<String, I_CmsSearchConfigurationFacetRange> parseRangeFacets() {
+
+        final Map<String, I_CmsSearchConfigurationFacetRange> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetRange>();
+        final CmsXmlContentValueSequence rangeFacets = m_xml.getValueSequence(XML_ELEMENT_RANGE_FACETS, m_locale);
+        if (rangeFacets != null) {
+            for (int i = 0; i < rangeFacets.getElementCount(); i++) {
+
+                final I_CmsSearchConfigurationFacetRange config = parseRangeFacet(
+                    rangeFacets.getValue(i).getPath() + "/");
+                if (config != null) {
+                    facetConfigs.put(config.getName(), config);
+                }
+            }
+        }
+        return facetConfigs;
     }
 
     /**
@@ -502,6 +537,67 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             }
             return stringValues;
         }
+    }
+
+    /** Reads the configuration of a range facet.
+     * @param pathPrefix The XML Path that leads to the range facet configuration, or <code>null</code> if the XML was not correctly structured.
+     * @return The read configuration, or <code>null</code> if the XML was not correctly structured.
+     */
+    protected I_CmsSearchConfigurationFacetRange parseRangeFacet(String pathPrefix) {
+
+        try {
+            final String range = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_RANGE_FACET_RANGE);
+            final String name = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_NAME);
+            final String label = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_LABEL);
+            final Integer minCount = parseOptionalIntValue(pathPrefix + XML_ELEMENT_FACET_MINCOUNT);
+            final String start = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_RANGE_FACET_START);
+            final String end = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_RANGE_FACET_END);
+            final String gap = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_RANGE_FACET_GAP);
+            final String sother = parseOptionalStringValue(pathPrefix + XML_ELEMENT_RANGE_FACET_OTHER);
+            List<I_CmsSearchConfigurationFacetRange.Other> other = null;
+            if (sother != null) {
+                final List<String> sothers = Arrays.asList(sother.split(","));
+                other = new ArrayList<I_CmsSearchConfigurationFacetRange.Other>(sothers.size());
+                for (String so : sothers) {
+                    try {
+                        I_CmsSearchConfigurationFacetRange.Other o = I_CmsSearchConfigurationFacetRange.Other.valueOf(
+                            so);
+                        other.add(o);
+                    } catch (final Exception e) {
+                        LOG.error(Messages.get().getBundle().key(Messages.ERR_INVALID_OTHER_OPTION_1, so), e);
+                    }
+                }
+            }
+            final Boolean hardEnd = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_RANGE_FACET_HARDEND);
+            final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
+            final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
+            return new CmsSearchConfigurationFacetRange(
+                range,
+                start,
+                end,
+                gap,
+                other,
+                hardEnd,
+                name,
+                minCount,
+                label,
+                isAndFacet,
+                preselection);
+        } catch (final Exception e) {
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_RANGE_FACET_MANDATORY_KEY_MISSING_1,
+                    XML_ELEMENT_RANGE_FACET_RANGE
+                        + ", "
+                        + XML_ELEMENT_RANGE_FACET_START
+                        + ", "
+                        + XML_ELEMENT_RANGE_FACET_END
+                        + ", "
+                        + XML_ELEMENT_RANGE_FACET_GAP),
+                e);
+            return null;
+        }
+
     }
 
     /** Returns a map with additional request parameters, mapping the parameter names to Solr query parts.

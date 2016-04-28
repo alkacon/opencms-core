@@ -41,6 +41,12 @@ implements I_CmsSearchConfigurationFacetField {
     /** The index field to use for the facet. */
     protected String m_field;
 
+    /** The maximal number of entries shown in a facet. */
+    protected Integer m_limit;
+
+    /** The sorting of facet entries. */
+    protected SortOrder m_sort;
+
     /** A modifier for filter queries. */
     protected String m_fiterQueryModifier;
 
@@ -68,12 +74,14 @@ implements I_CmsSearchConfigurationFacetField {
         final Boolean isAndFacet,
         final List<String> preselection) {
 
-        super(minCount, limit, label, null != name ? name : field, order, isAndFacet, preselection);
+        super(minCount, label, null != name ? name : field, isAndFacet, preselection);
 
         if (prefix != null) {
             m_prefix = prefix;
         }
 
+        m_limit = limit;
+        m_sort = order;
         m_field = field;
         m_fiterQueryModifier = filterQueryModifier;
     }
@@ -88,12 +96,30 @@ implements I_CmsSearchConfigurationFacetField {
     }
 
     /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField#getLimit()
+     */
+    @Override
+    public Integer getLimit() {
+
+        return m_limit;
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField#getPrefix()
      */
     @Override
     public String getPrefix() {
 
         return m_prefix;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField#getSortOrder()
+     */
+    @Override
+    public SortOrder getSortOrder() {
+
+        return m_sort;
     }
 
     /**

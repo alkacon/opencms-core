@@ -87,7 +87,7 @@ implements I_CmsSearchConfigurationFacetQuery {
         final Boolean isAndFacet,
         final List<String> preselection) {
 
-        super(null, null, label, I_CmsSearchConfigurationFacetQuery.NAME, null, isAndFacet, preselection);
+        super(null, label, I_CmsSearchConfigurationFacetQuery.NAME, isAndFacet, preselection);
         m_queries = queries != null ? queries : new ArrayList<I_CmsFacetQueryItem>();
     }
 

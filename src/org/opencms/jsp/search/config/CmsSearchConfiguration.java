@@ -45,6 +45,9 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     /** The configurations for field facets. */
     private final Map<String, I_CmsSearchConfigurationFacetField> m_fieldFacets;
 
+    /** The configurations for range facets. */
+    private final Map<String, I_CmsSearchConfigurationFacetRange> m_rangeFacets;
+
     /** The configuration for query facet. */
     private final I_CmsSearchConfigurationFacetQuery m_queryFacet;
 
@@ -66,6 +69,7 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
         m_pagination = parser.parsePagination();
         m_sorting = parser.parseSorting();
         m_fieldFacets = parser.parseFieldFacets();
+        m_rangeFacets = parser.parseRangeFacets();
         m_queryFacet = parser.parseQueryFacet();
         m_highlighting = parser.parseHighlighter();
         m_didYouMean = parser.parseDidYouMean();
@@ -123,6 +127,14 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     public I_CmsSearchConfigurationFacetQuery getQueryFacetConfig() {
 
         return m_queryFacet;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfiguration#getRangeFacetConfigs()
+     */
+    public Map<String, I_CmsSearchConfigurationFacetRange> getRangeFacetConfigs() {
+
+        return m_rangeFacets;
     }
 
     /**

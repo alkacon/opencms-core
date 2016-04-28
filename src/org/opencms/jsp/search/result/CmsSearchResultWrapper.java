@@ -30,6 +30,8 @@ package org.opencms.jsp.search.result;
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerDidYouMean;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
+import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetQuery;
+import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchResource;
@@ -45,7 +47,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.client.solrj.response.SpellCheckResponse.Suggestion;
 
 /** Wrapper for the whole search result. Also allowing to access the search form controller. */
@@ -67,8 +69,15 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
     final I_CmsSearchControllerMain m_controller;
     /** Map from field facet names to the facets as given by the search result. */
     private Map<String, FacetField> m_fieldFacetMap;
+    /** Map from range facet names to the facets as given by the search result. */
+    @SuppressWarnings("rawtypes")
+    private Map<String, RangeFacet> m_rangeFacetMap;
     /** Map from facet names to the facet entries checked, but not part of the result. */
-    private Map<String, List<String>> m_missingFacetEntryMap;
+    private Map<String, List<String>> m_missingFieldFacetEntryMap;
+    /** Map from facet names to the facet entries checked, but not part of the result. */
+    private Map<String, List<String>> m_missingRangeFacetEntryMap;
+    /** Query facet items that are checked, but not part of the result. */
+    private List<String> m_missingQueryFacetEntries;
     /** Map with the facet items of the query facet and their counts. */
     private Map<String, Integer> m_facetQuery;
     /** CmsObject. */
@@ -85,6 +94,7 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
      * @param cms The Cms object used to access XML contents, if wanted.
      * @param exception Search exception, or <code>null</code> if no exception occurs.
      */
+    @SuppressWarnings("rawtypes")
     public CmsSearchResultWrapper(
         final I_CmsSearchControllerMain controller,
         final CmsSolrResultList resultList,
@@ -111,11 +121,21 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
                     m_facetQuery.put(removeLocalParamPrefix(q), originalMap.get(q));
                 }
             }
+            List<RangeFacet> rangeFacets = resultList.getFacetRanges();
+            if (null != rangeFacets) {
+                m_rangeFacetMap = new HashMap<String, RangeFacet>(rangeFacets.size());
+                for (RangeFacet facet : rangeFacets) {
+                    m_rangeFacetMap.put(facet.getName(), facet);
+                }
+            }
         } else {
             m_start = null;
             m_end = 0;
             m_numFound = 0;
             m_maxScore = null;
+        }
+        if (null == m_rangeFacetMap) {
+            m_rangeFacetMap = new HashMap<String, RangeFacet>();
         }
     }
 
@@ -253,8 +273,8 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
     @Override
     public Map<String, List<String>> getMissingSelectedFieldFacetEntries() {
 
-        if (m_missingFacetEntryMap == null) {
-            m_missingFacetEntryMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+        if (m_missingFieldFacetEntryMap == null) {
+            m_missingFieldFacetEntryMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
                 @Override
                 public Object transform(final Object fieldName) {
@@ -269,21 +289,99 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
                     if (null != facetController) {
 
                         List<String> checkedEntries = facetController.getState().getCheckedEntries();
-                        List<String> returnedValues = new ArrayList<String>(facetResult.getValues().size());
-                        for (Count value : facetResult.getValues()) {
-                            returnedValues.add(value.getName());
-                        }
-                        for (String checked : checkedEntries) {
-                            if (!returnedValues.contains(checked)) {
-                                result.add(checked);
+                        if (null != facetResult) {
+                            List<String> returnedValues = new ArrayList<String>(facetResult.getValues().size());
+                            for (FacetField.Count value : facetResult.getValues()) {
+                                returnedValues.add(value.getName());
                             }
+                            for (String checked : checkedEntries) {
+                                if (!returnedValues.contains(checked)) {
+                                    result.add(checked);
+                                }
+                            }
+                        } else {
+                            result = checkedEntries;
                         }
                     }
                     return result;
                 }
             });
         }
-        return m_missingFacetEntryMap;
+        return m_missingFieldFacetEntryMap;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getMissingSelectedQueryFacetEntries()
+     */
+    public List<String> getMissingSelectedQueryFacetEntries() {
+
+        if (null == m_missingQueryFacetEntries) {
+
+            Collection<String> returnedValues = getFacetQuery().keySet();
+
+            I_CmsSearchControllerFacetQuery facetController = m_controller.getQueryFacet();
+
+            m_missingQueryFacetEntries = new ArrayList<String>();
+
+            if (null != facetController) {
+
+                List<String> checkedEntries = facetController.getState().getCheckedEntries();
+                if (null != returnedValues) {
+                    for (String checked : checkedEntries) {
+                        if (!returnedValues.contains(checked)) {
+                            m_missingQueryFacetEntries.add(checked);
+                        }
+                    }
+                } else {
+                    m_missingQueryFacetEntries = checkedEntries;
+                }
+            }
+        }
+        return m_missingQueryFacetEntries;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getMissingSelectedRangeFacetEntries()
+     */
+    public Map<String, List<String>> getMissingSelectedRangeFacetEntries() {
+
+        if (m_missingRangeFacetEntryMap == null) {
+            m_missingRangeFacetEntryMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object fieldName) {
+
+                    @SuppressWarnings("rawtypes")
+                    RangeFacet facetResult = m_rangeFacetMap.get(fieldName);
+                    I_CmsSearchControllerFacetRange facetController = m_controller.getRangeFacets().getRangeFacetController().get(
+                        fieldName.toString());
+                    List<String> result = new ArrayList<String>();
+
+                    if (null != facetController) {
+
+                        List<String> checkedEntries = facetController.getState().getCheckedEntries();
+                        if (null != facetResult) {
+                            List<String> returnedValues = new ArrayList<String>(facetResult.getCounts().size());
+                            for (Object value : facetResult.getCounts()) {
+                                //TODO: Should yield RangeFacet.Count - but somehow does not!?!?
+                                // Hence, the cast should not be necessary at all.
+                                returnedValues.add(((RangeFacet.Count)value).getValue());
+                            }
+                            for (String checked : checkedEntries) {
+                                if (!returnedValues.contains(checked)) {
+                                    result.add(checked);
+                                }
+                            }
+                        } else {
+                            result = checkedEntries;
+                        }
+                    }
+                    return result;
+                }
+            });
+        }
+        return m_missingRangeFacetEntryMap;
+
     }
 
     /**
@@ -326,6 +424,24 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
         final int page = m_controller.getPagination().getState().getCurrentPage()
             + ((m_controller.getPagination().getConfig().getPageNavLength()) / 2);
         return page > getNumPages() ? getNumPages() : page;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getRangeFacet()
+     */
+    @SuppressWarnings("rawtypes")
+    public Map<String, RangeFacet> getRangeFacet() {
+
+        return m_rangeFacetMap;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getRangeFacets()
+     */
+    @SuppressWarnings("rawtypes")
+    public Collection<RangeFacet> getRangeFacets() {
+
+        return m_rangeFacetMap.values();
     }
 
     /**

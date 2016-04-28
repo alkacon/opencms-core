@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.client.solrj.response.SpellCheckResponse.Suggestion;
 
 /** Interface of the JSP EL friendly wrapper for all Solr search results and the search form controller. */
@@ -100,6 +101,16 @@ public interface I_CmsSearchResultWrapper {
      */
     Map<String, List<String>> getMissingSelectedFieldFacetEntries();
 
+    /** Returns the selected facet entries that are not part of the returned facet entries are provided (value).
+     * @return The selected facet entries that are not part of the returned facet entries are provided (value).
+     */
+    List<String> getMissingSelectedQueryFacetEntries();
+
+    /** Returns for the specified facet (key) the selected facet entries that are not part of the returned facet entries are provided (value).
+     * @return For the specified facet (key) the selected facet entries that are not part of the returned facet entries are provided (value).
+     */
+    Map<String, List<String>> getMissingSelectedRangeFacetEntries();
+
     /** Returns the number of resources that where found.
      * @return The number of resources that where found.
      */
@@ -119,6 +130,18 @@ public interface I_CmsSearchResultWrapper {
      * @return The number of the last page that should be shown in a "Google"-like page navigation.
      */
     int getPageNavLast();
+
+    /** Returns the map for range facet names to the search result part for that range facet.
+     * @return The map for range facet names to the search result part for that range facet.
+     */
+    @SuppressWarnings("rawtypes")
+    Map<String, RangeFacet> getRangeFacet();
+
+    /** Returns the collection of the search result parts for the range facets.
+     * @return The collection of the search result parts for the range facets.
+     */
+    @SuppressWarnings("rawtypes")
+    Collection<RangeFacet> getRangeFacets();
 
     /** Returns the collection of the search results that are returned by Solr.
      * @return The collection of the search results that are returned by Solr.

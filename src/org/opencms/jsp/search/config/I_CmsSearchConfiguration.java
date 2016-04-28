@@ -64,6 +64,11 @@ public interface I_CmsSearchConfiguration {
      */
     I_CmsSearchConfigurationFacetQuery getQueryFacetConfig();
 
+    /** Returns the configuration for range facets.
+     * @return The configuration for range facets.
+     */
+    Map<String, I_CmsSearchConfigurationFacetRange> getRangeFacetConfigs();
+
     /** Returns the configuration for sorting.
      * @return The configuration for sorting.
      */

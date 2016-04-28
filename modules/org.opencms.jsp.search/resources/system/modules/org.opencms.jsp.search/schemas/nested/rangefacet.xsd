@@ -1,0 +1,50 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="RangeFacetConfigs" type="OpenCmsRangeFacetConfigs"/>
+
+	<xsd:complexType name="OpenCmsRangeFacetConfigs">
+		<xsd:sequence>
+			<xsd:element name="RangeFacetConfig" type="OpenCmsRangeFacetConfig" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsRangeFacetConfig">
+		<xsd:sequence>
+			<xsd:element name="Range" type="OpenCmsString" />
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Label" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Start" type="OpenCmsString" />
+			<xsd:element name="End" type="OpenCmsString" />
+			<xsd:element name="Gap" type="OpenCmsString" />
+			<xsd:element name="Other" type="OpenCmsString" />
+			<xsd:element name="HardEnd" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="MinCount" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="IsAndFacet" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="PreSelection" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
+			<searchsettings>
+				<searchsetting element="Range" searchcontent="false" />
+				<searchsetting element="Label" searchcontent="false" />
+				<searchsetting element="Start" searchcontent="false" />
+				<searchsetting element="End" searchcontent="false" />
+				<searchsetting element="Gap" searchcontent="false" />
+				<searchsetting element="Label" searchcontent="false" />
+				<searchsetting element="HardEnd" searchcontent="false" />
+				<searchsetting element="IsAndFacet" searchcontent="false" />
+				<searchsetting element="PreSelection" searchcontent="false" />
+			</searchsettings>
+			<layouts>
+				<layout element="Other" widget="MultiSelectWidget" configuration="before:%(key.option.RangeFacetConfig.Other.before)|between:%(key.option.RangeFacetConfig.Other.between)|after:%(key.option.RangeFacetConfig.Other.after)" />
+			</layouts>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

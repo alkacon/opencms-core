@@ -50,7 +50,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1 = "ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_RANGE_FACET_MANDATORY_KEY_MISSING_1 = "ERR_RANGE_FACET_MANDATORY_KEY_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_QUERY_FACET_MANDATORY_KEY_MISSING_1 = "ERR_QUERY_FACET_MANDATORY_KEY_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_OTHER_OPTION_1 = "ERR_INVALID_OTHER_OPTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_OPTIONAL_BOOLEAN_MISSING_1 = "LOG_OPTIONAL_BOOLEAN_MISSING_1";

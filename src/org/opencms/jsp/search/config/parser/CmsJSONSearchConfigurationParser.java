@@ -35,6 +35,7 @@ import org.opencms.jsp.search.config.CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery.CmsFacetQueryItem;
+import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
@@ -45,6 +46,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
@@ -103,6 +105,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** JSON keys for facet configuration. */
     /** The JSON key for the sub-node with all field facet configurations. */
     private static final String JSON_KEY_FIELD_FACETS = "fieldfacets";
+    /** The JSON key for the sub-node with all field facet configurations. */
+    private static final String JSON_KEY_RANGE_FACETS = "rangefacets";
     /** The JSON key for the sub-node with the query facet configuration. */
     private static final String JSON_KEY_QUERY_FACET = "queryfacet";
     /** JSON keys for a single facet. */
@@ -126,6 +130,18 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     private static final String JSON_KEY_FACET_ISANDFACET = "isAndFacet";
     /** A JSON key. */
     private static final String JSON_KEY_FACET_PRESELECTION = "preselection";
+    /** A JSON key. */
+    private static final String JSON_KEY_RANGE_FACET_RANGE = "range";
+    /** A JSON key. */
+    private static final String JSON_KEY_RANGE_FACET_START = "start";
+    /** A JSON key. */
+    private static final String JSON_KEY_RANGE_FACET_END = "end";
+    /** A JSON key. */
+    private static final String JSON_KEY_RANGE_FACET_GAP = "gap";
+    /** A JSON key. */
+    private static final String JSON_KEY_RANGE_FACET_OTHER = "other";
+    /** A JSON key. */
+    private static final String JSON_KEY_RANGE_FACET_HARDEND = "hardend";
     /** A JSON key. */
     private static final String JSON_KEY_QUERY_FACET_QUERY = "queryitems";
     /** A JSON key. */
@@ -353,6 +369,28 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     }
 
     /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseRangeFacets()
+     */
+    public Map<String, I_CmsSearchConfigurationFacetRange> parseRangeFacets() {
+
+        final Map<String, I_CmsSearchConfigurationFacetRange> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetRange>();
+        try {
+            final JSONArray rangeFacets = m_configObject.getJSONArray(JSON_KEY_RANGE_FACETS);
+            for (int i = 0; i < rangeFacets.length(); i++) {
+
+                final I_CmsSearchConfigurationFacetRange config = parseRangeFacet(rangeFacets.getJSONObject(i));
+                if (config != null) {
+                    facetConfigs.put(config.getName(), config);
+                }
+            }
+        } catch (final JSONException e) {
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_FACET_CONFIG_0), e);
+        }
+        return facetConfigs;
+
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseSorting()
      */
     @Override
@@ -500,6 +538,66 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             return null;
         }
         return list;
+    }
+
+    /** Parses the query facet configurations.
+     * @param rangeFacetObject The JSON sub-node with the query facet configurations.
+     * @return The query facet configurations.
+     */
+    protected I_CmsSearchConfigurationFacetRange parseRangeFacet(final JSONObject rangeFacetObject) {
+
+        try {
+            final String range = rangeFacetObject.getString(JSON_KEY_RANGE_FACET_RANGE);
+            final String name = parseOptionalStringValue(rangeFacetObject, JSON_KEY_FACET_NAME);
+            final String label = parseOptionalStringValue(rangeFacetObject, JSON_KEY_FACET_LABEL);
+            final Integer minCount = parseOptionalIntValue(rangeFacetObject, JSON_KEY_FACET_MINCOUNT);
+            final String start = rangeFacetObject.getString(JSON_KEY_RANGE_FACET_START);
+            final String end = rangeFacetObject.getString(JSON_KEY_RANGE_FACET_END);
+            final String gap = rangeFacetObject.getString(JSON_KEY_RANGE_FACET_GAP);
+            final List<String> sother = parseOptionalStringValues(rangeFacetObject, JSON_KEY_RANGE_FACET_OTHER);
+            final Boolean hardEnd = parseOptionalBooleanValue(rangeFacetObject, JSON_KEY_RANGE_FACET_HARDEND);
+            List<I_CmsSearchConfigurationFacetRange.Other> other = null;
+            if (sother != null) {
+                other = new ArrayList<I_CmsSearchConfigurationFacetRange.Other>(sother.size());
+                for (String so : sother) {
+                    try {
+                        I_CmsSearchConfigurationFacetRange.Other o = I_CmsSearchConfigurationFacetRange.Other.valueOf(
+                            so);
+                        other.add(o);
+                    } catch (final Exception e) {
+                        LOG.error(Messages.get().getBundle().key(Messages.ERR_INVALID_OTHER_OPTION_1, so), e);
+                    }
+                }
+            }
+            final Boolean isAndFacet = parseOptionalBooleanValue(rangeFacetObject, JSON_KEY_FACET_ISANDFACET);
+            final List<String> preselection = parseOptionalStringValues(rangeFacetObject, JSON_KEY_FACET_PRESELECTION);
+            return new CmsSearchConfigurationFacetRange(
+                range,
+                start,
+                end,
+                gap,
+                other,
+                hardEnd,
+                name,
+                minCount,
+                label,
+                isAndFacet,
+                preselection);
+        } catch (final JSONException e) {
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_RANGE_FACET_MANDATORY_KEY_MISSING_1,
+                    JSON_KEY_RANGE_FACET_RANGE
+                        + ", "
+                        + JSON_KEY_RANGE_FACET_START
+                        + ", "
+                        + JSON_KEY_RANGE_FACET_END
+                        + ", "
+                        + JSON_KEY_RANGE_FACET_GAP),
+                e);
+            return null;
+        }
+
     }
 
     /** Returns a map with additional request parameters, mapping the parameter names to Solr query parts.

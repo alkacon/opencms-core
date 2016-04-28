@@ -58,11 +58,6 @@ public interface I_CmsSearchConfigurationFacet {
      */
     String getLabel();
 
-    /** Returns the maximal number of entries that should be shown in the facet.
-     * @return The maximal number of entries that should be shown in the facet. (Solr: facet.limit)
-     */
-    Integer getLimit();
-
     /** Returns the minimal number of hits necessary to show a facet entry.
      * @return The minimal number of hits necessary to show a facet entry. (Solr: facet.mincount)
      */
@@ -83,8 +78,4 @@ public interface I_CmsSearchConfigurationFacet {
      */
     List<String> getPreSelection();
 
-    /** Returns the sort order that should be used for the facet entries (either "count" or "index").
-     * @return The sort order that should be used for the facet entries (either "count" or "index"). (Solr: facet.sort)
-     */
-    SortOrder getSortOrder();
 }

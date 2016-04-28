@@ -1,0 +1,160 @@
+label.JspSearchConfig.Title = Title
+label.JspSearchConfig.Title.help = Title mapped to the title property, helping to identify your search form configuration.
+label.JspSearchConfig.Core = Solr Core
+label.JspSearchConfig.Core.help = The Solr core to use for the search. Typically there is no need to set it explicitly, since the default core is chosen otherwise.
+label.JspSearchConfig.Index = Solr Index
+label.JspSearchConfig.Index.help = The Solr index to use for the search. If not configured, "Solr Online" is used in the online project and "Solr Offline" in all other projects.
+label.JspSearchConfig.SearchForEmptyQuery = Search for empty query
+label.JspSearchConfig.SearchForEmptyQuery.help = If enabled, a search for "*" will be performed if the search query is empty. Otherwise, no search will be performed for the empty query.
+label.JspSearchConfig.IgnoreQuery = Ignore Query
+label.JspSearchConfig.IgnoreQuery.help = If this option is checked, the query string send via the request parameter is ignored. The query should be specified in the "Additional Solr Query Parameters". The option is in paricular helpful when rendering lists (not search forms).
+label.JspSearchConfig.QueryModifier = Query Modifier
+label.JspSearchConfig.QueryModifier.help = Usually, the entered search query is passed to Solr as "q=my query". Via the modifier, "my query" can be replaced. The modifier can contain the macro %(query), which is replaced by the original query string. For example, the modifier "content_en:%(query) OR Title_prop:%(query)" will yield "q=content_en:my query OR Title_prop:my query" for the original query string "my query".
+label.JspSearchConfig.QueryParam = Request Parameter: Query
+label.JspSearchConfig.QueryParam.help = The request parameter sent to transmit the current query string. Default: q.
+label.JspSearchConfig.LastQueryParam = Request Parameter: Last Query
+label.JspSearchConfig.LastQueryParam.help = The request parameter sent to transmit the last query string. Default: lq.
+label.JspSearchConfig.EscapeQueryCharacters = Escape query characters
+label.JspSearchConfig.EscapeQueryCharacters.help = If this option is set to true (or not set at all), the special Solr query characters (e.g., ":", "(", "[") will be escaped in the query string provided via the query request parameter.
+label.JspSearchConfig.ReloadedParam = Request Parameter: Reloaded
+label.JspSearchConfig.ReloadedParam.help = The request parameter sent to indicate that the page with the search form is reloaded. Default: reloaded.
+label.JspSearchConfig.ExtraSolrParams = Additional Solr Query Parameters
+label.JspSearchConfig.ExtraSolrParams.help = A string of Solr query parameters, handed unmodified to Solr. E.g., to restrict the type to containerpages and the search to /sites/default/, use <code>fq=type:containerpage&fq=parent-folders:"/sites/default/"</code>.
+label.JspSearchConfig.AdditionalRequestParams = Additional Request Parameter
+label.JspSearchConfig.AdditionalRequestParams.help = Additional request parameters can be used to extend the Solr query according to the request parameter's value.
+label.JspSearchConfig.PageParam = Request Parameter: Current Page
+label.JspSearchConfig.PageParam.help = The request parameter sent to transmit the current page. Default: page.
+label.JspSearchConfig.PageSize = Page Size
+label.JspSearchConfig.PageSize.help = The maximal number of results shown on a page.
+label.JspSearchConfig.PageNavLength = Length of the Page Navigation
+label.JspSearchConfig.PageNavLength.help = Length of a "Google"-like page navigation. Should be an odd number. E.g., if you chose 5 and are at page 4, you get support for showing links to pages 2, 3, 4, 5, 6 in the pagination.
+label.JspSearchConfig.SortParam = Request Parameter: Sort Option
+label.JspSearchConfig.SortParam.help = The request parameter sent to transmit the currently chosen sort option. Default: sort.
+label.JspSearchConfig.SortOption = Sort Options
+label.JspSearchConfig.SortOption.help = Specify the different sort options.
+label.JspSearchConfig.FieldFacet = Field Facet
+label.JspSearchConfig.FieldFacet.help = Specify a field facet.
+label.JspSearchConfig.RangeFacet = Field Facet
+label.JspSearchConfig.RangeFacet.help = Specify a range facet.
+label.JspSearchConfig.QueryFacet = Query Facet
+label.JspSearchConfig.QueryFacet.help = Specify a query facet.
+label.JspSearchConfig.Highlighting = Highlighting Options
+label.JspSearchConfig.Highlighting.help = Enable highlighting and specify the highlighting options.
+
+label.AdditionalParamConfig.Param = Request Parameter Name
+label.AdditionalParamConfig.Param.help = Name of the additional request parameter that should influence the search.
+label.AdditionalParamConfig.SolrQuery = Solr Query Part
+label.AdditionalParamConfig.SolrQuery.help = The Solr query part that should be generated using the value of the additional request parameter. For example, the query part could be "fq=lastmodified:[%(value) TO *]". The macro "%(value)" will be replaced by the value of the request parameter.
+
+label.FieldFacetConfig.Field = Facet Field
+label.FieldFacetConfig.Field.help = The name of the Solr field where the facet entries are read from.
+label.FieldFacetConfig.Name = Facet Name
+label.FieldFacetConfig.Name.help = The name used to identify the facet. It defaults to the facet field.
+label.FieldFacetConfig.Label = Facet Label
+label.FieldFacetConfig.Label.help = A label you can show above the facet in your form. Default: the facet name.
+label.FieldFacetConfig.MinCount = Minimal Count
+label.FieldFacetConfig.MinCount.help = The minimal number of hits (from all search results) a facet entry must have to be listed.
+label.FieldFacetConfig.Limit = Maximal Number of Facet Entries
+label.FieldFacetConfig.Limit.help = The maximal number of facet entries that are returned. Default: unbounded.
+label.FieldFacetConfig.Prefix = Prefix
+label.FieldFacetConfig.Prefix.help = A prefix, all collected facet entries must start with.
+label.FieldFacetConfig.Order = Order
+label.FieldFacetConfig.Order.help = The order the, facet entries should be listed in. It's either "count" (default) or "index", which means alphabetical sorting.
+label.FieldFacetConfig.FilterQueryModifier = Filter Query Modifier
+label.FieldFacetConfig.FilterQueryModifier.help = Typically, when a facet entry is checked, the filterquery "fq=facetfield:checkedEntry" is appended to the Solr query. The modifier substitutes the checkedEntry. The modifier can contain the macro %(value) that is replaced by the checked entry. Example: The modifier "[* TO %(value)]" will yield the filter query "fq=facetField:[* TO checkedEntry]".
+label.FieldFacetConfig.IsAndFacet = Filter for all checked entries
+label.FieldFacetConfig.IsAndFacet.help = By default, if more than one facet entry is checked, it is search for results meeting at least one of the conditions imposed by the checked entries. Checking this option, each result must match all imposed conditions.
+label.FieldFacetConfig.PreSelection = Preselected Facet Entry
+label.FieldFacetConfig.PreSelection.help = A facet entry, that is already selected, when the search form is loaded for the first time.
+
+label.RangeFacetConfig.Range = Facet Field
+label.RangeFacetConfig.Range.help = The name of the Solr field where the numeric or date values are read from.
+label.RangeFacetConfig.Name = Facet Name
+label.RangeFacetConfig.Name.help = The name used to identify the facet. It defaults to the facet field.
+label.RangeFacetConfig.Label = Facet Label
+label.RangeFacetConfig.Label.help = A label you can show above the facet in your form. Default: the facet name.
+label.RangeFacetConfig.MinCount = Minimal Count
+label.RangeFacetConfig.MinCount.help = The minimal number of hits (from all search results) a facet entry must have to be listed.
+label.RangeFacetConfig.Start = Start
+label.RangeFacetConfig.Start.help = The left bound of the complete range of the facet. In Solr, the value of facet.range.start.
+label.RangeFacetConfig.End = End
+label.RangeFacetConfig.End.help = The right bound of the complete range of the facet. In Solr, the value of facet.range.end.
+label.RangeFacetConfig.Gap = Gap
+label.RangeFacetConfig.Gap.help = The size of range for one facet entry. In Solr, the value of facet.range.gap.
+label.RangeFacetConfig.Other = Additional information
+label.RangeFacetConfig.Other.help = Select, what additional information on the facet should be calculated. In Solr, the value of facet.range.other.
+label.RangeFacetConfig.HardEnd = Hard end
+label.RangeFacetConfig.HardEnd.help = Select, if the range of the right-most facet item should end at the end of the complete range (check the option), or be potentially larger, i.e., always have the complete gap size. In Solr, the value of facet.range.hardend.
+label.RangeFacetConfig.IsAndFacet = Filter for all checked entries
+label.RangeFacetConfig.IsAndFacet.help = By default, if more than one facet entry is checked, it is search for results meeting at least one of the conditions imposed by the checked entries. Checking this option, each result must match all imposed conditions.
+label.RangeFacetConfig.PreSelection = Preselected Facet Entry
+label.RangeFacetConfig.PreSelection.help = A facet entry, that is already selected, when the search form is loaded for the first time.
+option.RangeFacetConfig.Other.before = all before the facet range
+option.RangeFacetConfig.Other.between = all in the facet range
+option.RangeFacetConfig.Other.after = all after the facet range
+
+label.QueryFacetConfig.QueryItem = Facetted Query
+label.QueryFacetConfig.QueryItem.help = A filter query, that serves as facet entry.
+label.QueryFacetConfig.Label = Facet Label
+label.QueryFacetConfig.Label.help = A label you can show above the facet in your form. Default: the facet name.
+label.QueryFacetConfig.IsAndFacet = Filter for all checked entries
+label.QueryFacetConfig.IsAndFacet.help = By default, if more than one facet entry is checked, it is search for results meeting at least one of the conditions imposed by the checked entries. Checking this option, each result must match all imposed conditions.
+label.QueryFacetConfig.PreSelection = Preselected Facet Entry
+label.QueryFacetConfig.PreSelection.help = A facet entry, that is already selected, when the search form is loaded for the first time.
+label.FacetQueryItem.Query = Query
+label.FacetQueryItem.Query.help = The actual value of the filter query that makes up the facet entry, e.g. "lastmodified:[NOW-1MONTHS TO NOW]" for selecting everything modified during the last month.
+label.FacetQueryItem.Label = Label
+label.FacetQueryItem.Label.help = The label that can be used to display the facet entry.
+
+label.HighlightingConfig.Field = Highlighted Field(s)
+label.HighlightingConfig.Field.help = The Solr field(s) that should be used for highlighting.
+label.HighlightingConfig.Snippets = Number of Highlighted Snippets. Default: 1.
+label.HighlightingConfig.Snippets.help = The maximal number of highlighted snippets that is returned from Solr.
+label.HighlightingConfig.FragSize = Snippet Size
+label.HighlightingConfig.FragSize.help = The maximal size (in letters) of a highlighted snippet. Default: 100.
+label.HighlightingConfig.AlternateField = Alternative Field
+label.HighlightingConfig.AlternateField.help = The Solr field that is returned instead of a highlighting snippet if no such snippet was found.
+label.HighlightingConfig.MaxAlternateFieldLength = Maximal Alternative Field Size
+label.HighlightingConfig.MaxAlternateFieldLength.help = The maximal size (in letters) of the content from the alternative field. Default: the whole field.
+label.HighlightingConfig.SimplePre = Highlighting Prefix
+label.HighlightingConfig.SimplePre.help = The String added in a highlighted snippet directly in front of the term to highlight. Default: <code>&lt;em&gt</code>.
+label.HighlightingConfig.SimplePost = Highlighting Postfix
+label.HighlightingConfig.SimplePost.help = The String added in a highlighted snippet directly behind the term to highlight. Default: <code>&lt;/em&gt</code>.
+label.HighlightingConfig.Formatter = Formatter
+label.HighlightingConfig.Formatter.help = The formatter used by Solr for highlighting. Default: as configured in Solr.
+label.HighlightingConfig.Fragmenter = Fragmenter
+label.HighlightingConfig.Fragmenter.help = The fragmenter used by Solr for highlighting. Default: as configured in Solr.
+label.HighlightingConfig.UseFastVectorHighlighting = Use Fast Vector Highlighting
+label.HighlightingConfig.UseFastVectorHighlighting.help = Enable fast vector highlighting. This makes highlighting faster, but requires the highlighted fields to have <code>termOffsets</code>, <code>termPositions</code> and <code>termVectors</code> to be set to <code>true</code>.
+
+label.SortOptionConfig.SolrValue = Solr Value
+label.SortOptionConfig.SolrValue.help = The value given to Solr's "sort" parameter, e.g. "Title_prop asc" or "score desc".
+label.SortOptionConfig.ParamValue = Parameter Value
+label.SortOptionConfig.ParamValue.help = The value of the request parameter to identify the sort option. Default: The Solr value.
+label.SortOptionConfig.Label = Label
+label.SortOptionConfig.Label.help = A label to show for the sort option, e.g. "Sort by: Title ascending". Default: The configured parameter value.
+
+# Tabs
+label.JspSearchConfig.Common = Common
+label.JspSearchConfig.QueryOptions = Query Options
+label.JspSearchConfig.Pagination = Pagination
+label.JspSearchConfig.SortOptions = Sorting
+label.JspSearchConfig.FieldFacets = Field Facets
+label.JspSearchConfig.RangeFacets = Range Facets
+label.JspSearchConfig.QueryFacets = Query Facet
+label.JspSearchConfig.Highlighting = Highlighting
+
+default.JspSearchConfig.Title = Default Search Configuration
+label.JspSearchConfig.DidYouMeanTab = Did you mean
+label.JspSearchConfig.DidYouMean = Enable the "Did you mean ...?" feature
+label.JspSearchConfig.DidYouMean.help = Did you mean provides alternative search queries in the case that your search fails.
+
+label.DidYouMeanConfig.QueryParam = Request Parameter: "Did you mean ...?"- Query
+label.DidYouMeanConfig.QueryParam.help = The request parameter used to transmit the query for the "Did you mean ...?"-feature. If the parameter is not specified, the main query string is used instead of a special alternative query.
+label.DidYouMeanConfig.Collate = Create combined suggestion (collate)
+label.DidYouMeanConfig.Collate.help = If this option is selected (default), an "optimal" suggestion is selected from all suggestions.
+label.DidYouMeanConfig.Count = Maximal number of suggestions
+label.DidYouMeanConfig.Count.help = Select the maximal number of suggestions. Default is 5.
+
+validation.error.suggestion.count = The number of maximal suggestions must be given as non-negative number.
+error.highlighting.field = Please specify the field you want to use for highlighting, e.g., "text" or "content_en".

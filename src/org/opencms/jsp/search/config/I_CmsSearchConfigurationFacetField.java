@@ -35,10 +35,20 @@ public interface I_CmsSearchConfigurationFacetField extends I_CmsSearchConfigura
      */
     String getField();
 
+    /** Returns the maximal number of entries that should be shown in the facet.
+     * @return The maximal number of entries that should be shown in the facet. (Solr: facet.limit)
+     */
+    Integer getLimit();
+
     /** Returns the prefix all entries of a facet must match.
      * @return The prefix all entries of a facet must match. (Solr: facet.prefix)
      */
     String getPrefix();
+
+    /** Returns the sort order that should be used for the facet entries (either "count" or "index").
+     * @return The sort order that should be used for the facet entries (either "count" or "index"). (Solr: facet.sort)
+     */
+    SortOrder getSortOrder();
 
     /** Returns the (modified) filter query that should be send as filter query when a facet entry is checked.
      * @param facetValue The modifier that should be applied the each filter query appended when checking a facet entry.
@@ -47,5 +57,4 @@ public interface I_CmsSearchConfigurationFacetField extends I_CmsSearchConfigura
      * @return The filter query's value.
      */
     String modifyFilterQuery(String facetValue);
-
 }

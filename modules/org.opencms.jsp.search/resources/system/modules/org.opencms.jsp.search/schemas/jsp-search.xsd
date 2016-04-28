@@ -4,6 +4,7 @@
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/additionalparam.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/sortoption.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/fieldfacet.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/rangefacet.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/queryfacet.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/highlighting.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/didyoumean.xsd"/>
@@ -36,6 +37,7 @@
 			<xsd:element name="SortParam" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="SortOption" type="OpenCmsSortOptionConfig" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="FieldFacet" type="OpenCmsFieldFacetConfig" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="RangeFacet" type="OpenCmsRangeFacetConfig" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="QueryFacet" type="OpenCmsQueryFacetConfig" minOccurs="0" />
 			<xsd:element name="Highlighting" type="OpenCmsHighlightingConfig" minOccurs="0" />
 			<xsd:element name="DidYouMean" type="OpenCmsDidYouMeanConfig" minOccurs="0" />
@@ -72,6 +74,7 @@
 				<searchsetting element="SortParam" searchcontent="false" />
 				<searchsetting element="SortOption" searchcontent="false" />
 				<searchsetting element="FieldFacet" searchcontent="false" />
+				<searchsetting element="RangeFacet" searchcontent="false" />
 				<searchsetting element="QueryFacet" searchcontent="false" />
 				<searchsetting element="Highlighting" searchcontent="false" />
 				<searchsetting element="DidYouMean" searchcontent="false" />
@@ -82,6 +85,7 @@
 				<tab element="PageParam" name="Pagination"/>
 				<tab element="SortParam" name="SortOptions"/>
 				<tab element="FieldFacet" name="FieldFacets"/>
+				<tab element="RangeFacet" name="RangeFacets"/>
 				<tab element="QueryFacet" name="QueryFacets"/>
 				<tab element="Highlighting" name="Highlighting"/>
 				<tab element="DidYouMean" name="DidYouMeanTab"/>

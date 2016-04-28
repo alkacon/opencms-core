@@ -48,13 +48,13 @@ public interface I_CmsSearchControllerMain extends I_CmsSearchController {
     I_CmsSearchControllerFacetsField getFieldFacets();
 
     /** Returns the controller for highlighting.
-     * @return The controller for highlighting.
-     */
+         * @return The controller for highlighting.
+         */
     I_CmsSearchControllerHighlighting getHighlighting();
 
     /** Returns the controller for pagination.
-     * @return The controller for highlighting.
-     */
+    * @return The controller for highlighting.
+    */
     I_CmsSearchControllerPagination getPagination();
 
     /** Returns the controller for the query facet.
@@ -62,6 +62,12 @@ public interface I_CmsSearchControllerMain extends I_CmsSearchController {
     * @return The controller for the query facet.
     */
     I_CmsSearchControllerFacetQuery getQueryFacet();
+
+    /** Returns the controller for range facets.
+    *
+    * @return The controller for range facets.
+    */
+    I_CmsSearchControllerFacetsRange getRangeFacets();
 
     /** Returns the controller for sorting.
      * @return The controller for sorting.

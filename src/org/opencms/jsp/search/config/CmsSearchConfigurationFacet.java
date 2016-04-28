@@ -37,14 +37,10 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
 
     /** The minimal number of hits required to add an entry to a facet. */
     protected Integer m_minCount;
-    /** The maximal number of entries shown in a facet. */
-    protected Integer m_limit;
     /** A name used to identify the facet when showing it in the search form. */
     protected String m_name;
     /** A label that can be displayed in the form, e.g., at top of the facet. */
     protected String m_label;
-    /** The sorting of facet entries. */
-    protected SortOrder m_sort;
     /** The sorting of facet entries. */
     protected List<String> m_preselection;
     /** A flag, indicating if facet filter queries should be concatenated by AND. */
@@ -52,26 +48,20 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
 
     /** The constructor setting all configuration options.
      * @param minCount The minimal number of hits required to add an entry to a facet.
-     * @param limit The maximal number of entries shown in a facet.
      * @param label A label that can be displayed in the form, e.g., at top of the facet.
      * @param name An optional name for the facet
-     * @param order The sorting of facet entries. (Either "count" or "index")
      * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
      * @param preselection A list with entries that should be preselected in the facet, when the search page is called the first time.
      */
     public CmsSearchConfigurationFacet(
         final Integer minCount,
-        final Integer limit,
         final String label,
         final String name,
-        final SortOrder order,
         final Boolean isAndFacet,
         final List<String> preselection) {
 
         m_minCount = minCount;
-        m_limit = limit;
         m_label = label == null ? name : label;
-        m_sort = order;
         if (isAndFacet != null) {
             m_isAndFacet = isAndFacet.booleanValue();
         }
@@ -102,15 +92,6 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
     public String getLabel() {
 
         return m_label;
-    }
-
-    /**
-     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet#getLimit()
-     */
-    @Override
-    public Integer getLimit() {
-
-        return m_limit;
     }
 
     /**
@@ -146,15 +127,6 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
     public List<String> getPreSelection() {
 
         return m_preselection;
-    }
-
-    /**
-     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet#getSortOrder()
-     */
-    @Override
-    public SortOrder getSortOrder() {
-
-        return m_sort;
     }
 
 }

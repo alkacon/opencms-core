@@ -48,6 +48,8 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     I_CmsSearchControllerPagination m_pagination;
     /** The controller for the field facets. */
     I_CmsSearchControllerFacetsField m_fieldFacets;
+    /** The controller for the field facets. */
+    I_CmsSearchControllerFacetsRange m_rangeFacets;
     /** The controller for the query facet. */
     I_CmsSearchControllerFacetQuery m_queryFacet;
     /** The controller for the highlighting. */
@@ -75,6 +77,10 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
 
         m_fieldFacets = new CmsSearchControllerFacetsField(config.getFieldFacetConfigs());
         m_controllers.add(m_fieldFacets);
+
+        m_rangeFacets = new CmsSearchControllerFacetsRange(config.getRangeFacetConfigs());
+        m_controllers.add(m_rangeFacets);
+
         if (config.getHighlighterConfig() != null) {
             m_highlighting = new CmsSearchControllerHighlighting(config.getHighlighterConfig());
             m_controllers.add(m_highlighting);
@@ -171,6 +177,14 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     public I_CmsSearchControllerFacetQuery getQueryFacet() {
 
         return m_queryFacet;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerMain#getRangeFacets()
+     */
+    public I_CmsSearchControllerFacetsRange getRangeFacets() {
+
+        return m_rangeFacets;
     }
 
     /**
