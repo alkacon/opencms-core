@@ -88,7 +88,6 @@ public class CmsQuickLaunchProvider {
         CmsUserSettings userSettings = new CmsUserSettings(m_cms);
         boolean usesNewWorkplace = userSettings.usesNewWorkplace();
         for (I_CmsWorkplaceAppConfiguration config : OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(
-
             m_cms)) {
             try {
                 boolean reload = false;
@@ -160,8 +159,7 @@ public class CmsQuickLaunchProvider {
                     reload);
                 result.add(data);
             } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage());
-                throw new RuntimeException(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return result;
