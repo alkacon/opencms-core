@@ -285,8 +285,9 @@ public class CmsFormatterBeanParser {
         int rank;
         try {
             rank = Integer.parseInt(rankStr);
-        } catch (@SuppressWarnings("unused") NumberFormatException e) {
+        } catch (NumberFormatException e) {
             rank = CmsFormatterBean.DEFAULT_CONFIGURATION_RANK;
+            LOG.debug("Error parsing formatter rank.", e);
         }
         m_rank = rank;
 
@@ -493,8 +494,9 @@ public class CmsFormatterBeanParser {
             }
             try {
                 m_maxWidth = Integer.parseInt(maxWidthStr);
-            } catch (@SuppressWarnings("unused") Exception e) {
+            } catch (Exception e) {
                 m_maxWidth = Integer.MAX_VALUE;
+                LOG.debug(maxWidthStr, e);
             }
         } else {
             throw new ParseException("Neither container types nor container widths defined!");

@@ -27,13 +27,18 @@
 
 package org.opencms.ade.configuration.formatters;
 
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class represents the changes which can be made to formatters in a sitemap configuration file.<p>
@@ -42,6 +47,9 @@ public class CmsFormatterChangeSet {
 
     /** The prefix used for types in the Add/RemoveFormatter fields in the configuration. */
     public static final String PREFIX_TYPE = "type_";
+
+    /** The path pattern to match formatters accessible from the current site. */
+    private Pattern m_pathPattern;
 
     /** A map which indicates whether schema formatters for a type (which is the key) should be added (value=true) or removed (value=False). */
     private Map<String, Boolean> m_typeUpdateSet = new HashMap<String, Boolean>();
@@ -62,11 +70,12 @@ public class CmsFormatterChangeSet {
      *
      * @param toRemove the formatter keys to remove
      * @param toAdd the formatter keys to add
+     * @param siteRoot the site root of the current config
      */
-    public CmsFormatterChangeSet(Collection<String> toRemove, Collection<String> toAdd) {
+    public CmsFormatterChangeSet(Collection<String> toRemove, Collection<String> toAdd, String siteRoot) {
 
         this();
-        initialize(toRemove, toAdd);
+        initialize(toRemove, toAdd, siteRoot);
     }
 
     /**
@@ -102,6 +111,17 @@ public class CmsFormatterChangeSet {
                 formatters.remove(key);
             }
         }
+        if (m_pathPattern != null) {
+            // remove all formatters where the location path does not match the path pattern, this prevents cross site formatter use
+            Iterator<Entry<CmsUUID, I_CmsFormatterBean>> formattersIt = formatters.entrySet().iterator();
+            while (formattersIt.hasNext()) {
+                Entry<CmsUUID, I_CmsFormatterBean> entry = formattersIt.next();
+                if ((entry.getValue().getLocation() != null)
+                    && !m_pathPattern.matcher(entry.getValue().getLocation()).matches()) {
+                    formattersIt.remove();
+                }
+            }
+        }
     }
 
     /**
@@ -129,8 +149,9 @@ public class CmsFormatterChangeSet {
      *
      * @param toRemove the keys for the formatters to remove
      * @param toAdd the keys for the formatters to add
+     * @param siteRoot the site root of the current config
      */
-    private void initialize(Collection<String> toRemove, Collection<String> toAdd) {
+    private void initialize(Collection<String> toRemove, Collection<String> toAdd, String siteRoot) {
 
         for (String removeKey : toRemove) {
             if (CmsUUID.isValidUUID(removeKey)) {
@@ -145,6 +166,14 @@ public class CmsFormatterChangeSet {
             } else if (addKey.startsWith(PREFIX_TYPE)) {
                 m_typeUpdateSet.put(removePrefix(addKey), Boolean.TRUE);
             }
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)) {
+            if (!siteRoot.endsWith("/")) {
+                siteRoot += "/";
+            }
+            String regex = "^(/system/|" + OpenCms.getSiteManager().getSharedFolder() + "|" + siteRoot + ").*";
+
+            m_pathPattern = Pattern.compile(regex);
         }
     }
 
