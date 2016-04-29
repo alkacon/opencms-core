@@ -163,7 +163,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         config2.setParent(config);
         CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
             Collections.<String> emptyList(),
-            Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")));
+            Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")),
+            null);
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -341,7 +342,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsTestConfigData config = createConfig("/", f1);
         CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
             Arrays.asList("type_" + TYPE_A),
-            Collections.EMPTY_LIST);
+            Collections.EMPTY_LIST,
+            null);
         config.setFormatterChangeSet(changeSet);
         CmsTestConfigData config2 = createConfig("/", f1);
         config2.setParent(config);
@@ -352,7 +354,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
         CmsFormatterChangeSet changeSet2 = new CmsFormatterChangeSet(
             Collections.EMPTY_LIST,
-            Arrays.asList("type_" + TYPE_A));
+            Arrays.asList("type_" + TYPE_A),
+            null);
         config2.setFormatterChangeSet(changeSet2);
 
         CmsFormatterConfiguration formatterConfig = config.getFormatters(cms, m_exampleResourceA);
@@ -396,7 +399,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         config2.setParent(config);
         CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
             Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")),
-            Collections.<String> emptyList());
+            Collections.<String> emptyList(),
+            null);
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -479,7 +483,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         int maxWidth = 9999;
         boolean preview = true;
         boolean searchContent = true;
-        String location = "-- empty -- ";
+        String location = "/system/";
 
         List<String> cssHeadIncludes = Lists.newArrayList();
         String inlineCss = "";

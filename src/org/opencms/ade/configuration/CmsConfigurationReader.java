@@ -396,7 +396,7 @@ public class CmsConfigurationReader {
             parseFunctionReference(node);
         }
 
-        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(root);
+        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(basePath, root);
         boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
         boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
         boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
@@ -737,15 +737,20 @@ public class CmsConfigurationReader {
     /**
      * Parses the formatter change set.<p>
      *
+     * @param basePath the configuration base path
      * @param node the parent node
      * @return the formatter change set
      */
-    protected CmsFormatterChangeSet parseFormatterChangeSet(I_CmsXmlContentLocation node) {
+    protected CmsFormatterChangeSet parseFormatterChangeSet(String basePath, I_CmsXmlContentLocation node) {
 
         Set<String> addFormatters = parseAddFormatters(node);
         addFormatters.addAll(readLocalMacroFormatters(node));
         Set<String> removeFormatters = parseRemoveFormatters(node);
-        CmsFormatterChangeSet result = new CmsFormatterChangeSet(removeFormatters, addFormatters);
+        String siteRoot = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)) {
+            siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
+        }
+        CmsFormatterChangeSet result = new CmsFormatterChangeSet(removeFormatters, addFormatters, siteRoot);
         return result;
     }
 
