@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -45,7 +46,7 @@ import java.util.List;
  *
  * @since 8.0.0
  */
-public class CmsNewChoiceMenuEntry extends CmsNewMenuEntry {
+public class CmsNewChoiceMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
@@ -55,6 +56,8 @@ public class CmsNewChoiceMenuEntry extends CmsNewMenuEntry {
     public CmsNewChoiceMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_NEW_0));
+        setActive(true);
     }
 
     /**
@@ -80,6 +83,25 @@ public class CmsNewChoiceMenuEntry extends CmsNewMenuEntry {
 
         CmsModelSelectDialog dialog = new CmsModelSelectDialog(handler, models, title, message);
         dialog.center();
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
+     */
+    @Override
+    public void onShow() {
+
+        CmsSitemapController controller = getHoverbar().getController();
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
+            && (entry != null)
+            && entry.isEditable()
+            && (controller.getData().getDefaultNewElementInfo() != null)
+            && CmsSitemapView.getInstance().isNavigationMode()
+            && entry.isInNavigation()
+            && entry.isFolderType()
+            && !entry.hasForeignFolderLock();
+        setVisible(show);
     }
 
     /**

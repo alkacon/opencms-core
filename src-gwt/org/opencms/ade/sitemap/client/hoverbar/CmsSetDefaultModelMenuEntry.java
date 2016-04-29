@@ -73,8 +73,9 @@ public class CmsSetDefaultModelMenuEntry extends A_CmsSitemapMenuEntry {
             @Override
             protected void onResponse(CmsModelInfo result) {
 
-                CmsSitemapView.getInstance().displayModelPages(result);
                 stop(false);
+                CmsSitemapView.getInstance().displayModelPages(result);
+                getHoverbar().getController().loadNewElementInfo(null);
             }
 
         };

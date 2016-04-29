@@ -2258,7 +2258,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
         for (CmsModelPageConfig modelConfig : configData.getModelPages()) {
             try {
-                result.add(createNewResourceInfo(cms, modelConfig.getResource(), locale));
+                CmsNewResourceInfo info = createNewResourceInfo(cms, modelConfig.getResource(), locale);
+                info.setDefault(modelConfig.isDefault());
+                result.add(info);
             } catch (CmsException e) {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
@@ -2267,7 +2269,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             public int compare(CmsNewResourceInfo a, CmsNewResourceInfo b) {
 
-                return ComparisonChain.start().compare(
+                return ComparisonChain.start().compareTrueFirst(a.isDefault(), b.isDefault()).compare(
                     a.getNavPos(),
                     b.getNavPos(),
                     Ordering.natural().nullsLast()).result();

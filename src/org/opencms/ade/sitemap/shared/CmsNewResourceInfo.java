@@ -38,11 +38,11 @@ import java.io.Serializable;
  */
 public class CmsNewResourceInfo implements Serializable {
 
-    /** ID for serialization. */
-    private static final long serialVersionUID = -4731814848380350682L;
-
     /** The navigation level create parameter. */
     public static final String NAVIGATION_LEVEL_PARAMETER = "new_navigation_level";
+
+    /** ID for serialization. */
+    private static final long serialVersionUID = -4731814848380350682L;
 
     /** The structure id of the copy resource. */
     private CmsUUID m_copyResourceId;
@@ -61,6 +61,9 @@ public class CmsNewResourceInfo implements Serializable {
 
     /** The id. */
     private int m_id;
+
+    /** If the default flag is set. */
+    private boolean m_isDefault;
 
     /** The flag which determines whether this bean is for a function page or for a normal detail page. */
     private boolean m_isFunction;
@@ -218,6 +221,16 @@ public class CmsNewResourceInfo implements Serializable {
     }
 
     /**
+     * Returns the default flag.<p>
+     *
+     * @return the default flag
+     */
+    public boolean isDefault() {
+
+        return m_isDefault;
+    }
+
+    /**
      * Returns true if the model resource is editable.<p>
      *
      * @return true if the model resource is editable
@@ -255,6 +268,16 @@ public class CmsNewResourceInfo implements Serializable {
     public void setDate(String date) {
 
         m_date = date;
+    }
+
+    /**
+     * Sets the default flag.<p>
+     *
+     * @param isDefault the default flag to set
+     */
+    public void setDefault(boolean isDefault) {
+
+        m_isDefault = isDefault;
     }
 
     /**

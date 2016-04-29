@@ -1367,6 +1367,38 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Loads the new element info.<p>
+     *
+     * @param callback the callback to call when done
+     */
+    public void loadNewElementInfo(final AsyncCallback<Void> callback) {
+
+        CmsRpcAction<List<CmsNewResourceInfo>> newResourceInfoAction = new CmsRpcAction<List<CmsNewResourceInfo>>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+
+                getService().getNewElementInfo(m_data.getRoot().getSitePath(), this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsNewResourceInfo> result) {
+
+                stop(false);
+
+                m_data.setNewElementInfos(result);
+                if (callback != null) {
+                    callback.onSuccess(null);
+                }
+            }
+
+        };
+        newResourceInfoAction.execute();
+    }
+
+    /**
      * Loads all entries on the given path.<p>
      *
      * @param sitePath the site path
@@ -2067,38 +2099,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
         for (CmsClientSitemapEntry child : entry.getSubEntries()) {
             recomputeProperties(child);
         }
-    }
-
-    /**
-     * Loads the new element info.<p>
-     *
-     * @param callback the callback to call when done
-     */
-    void loadNewElementInfo(final AsyncCallback<Void> callback) {
-
-        CmsRpcAction<List<CmsNewResourceInfo>> newResourceInfoAction = new CmsRpcAction<List<CmsNewResourceInfo>>() {
-
-            @Override
-            public void execute() {
-
-                start(200, true);
-
-                getService().getNewElementInfo(m_data.getRoot().getSitePath(), this);
-            }
-
-            @Override
-            protected void onResponse(List<CmsNewResourceInfo> result) {
-
-                stop(false);
-
-                m_data.setNewElementInfos(result);
-                if (callback != null) {
-                    callback.onSuccess(null);
-                }
-            }
-
-        };
-        newResourceInfoAction.execute();
     }
 
     /**

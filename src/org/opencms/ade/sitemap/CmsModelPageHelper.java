@@ -448,6 +448,10 @@ public class CmsModelPageHelper {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(descProperty.getValue())) {
                 infoBean.setSubTitle(descProperty.getValue());
             }
+            infoBean.addAdditionalInfo(
+                Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
+                    Messages.GUI_VFS_PATH_0),
+                result.getSitePath() != null ? result.getSitePath() : result.getRootPath());
             result.setListInfoBean(infoBean);
             return result;
         } catch (Exception e) {

@@ -74,6 +74,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITEMAP_NO_EDIT_0 = "GUI_SITEMAP_NO_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_VFS_PATH_0 = "GUI_VFS_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_NO_EDIT_ONLINE_0 = "GUI_SITEMAP_NO_EDIT_ONLINE_0";
 
     /** Name of the used resource bundle. */
