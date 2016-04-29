@@ -92,14 +92,14 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         /** Check in. */
         checkIn,
 
+        /** Checkout action. */
+        checkOut,
+
         /** Reset to HEAD. */
         resetHead,
 
         /** Reset to remote head. */
-        resetRemoteHead,
-
-        /** Checkout action. */
-        checkOut;
+        resetRemoteHead;
     }
 
     /**
@@ -113,23 +113,20 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         checkOut;
     }
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsGitToolOptionsPanel.class);
-
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
-    /** Additional info key for the user name. */
-    public static final String ADDINFO_USER = "git_cms_user";
-
     /** Additional info key for the email address. */
     public static final String ADDINFO_EMAIL = "git_cms_email";
 
     /** Additional info key for the commit message. */
     public static final String ADDINFO_MESSAGE = "git_cms_message";
 
-    /** The initial dialog tab. */
-    private DialogTab m_dialogTab = DialogTab.checkIn;
+    /** Additional info key for the user name. */
+    public static final String ADDINFO_USER = "git_cms_user";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsGitToolOptionsPanel.class);
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** True when advanced options are currently visible. */
     protected boolean m_advancedVisible;
@@ -143,26 +140,20 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
     /** Cancel button. */
     private Button m_cancel;
 
-    /** Checkbox for the 'fetch and reset' option. */
-    private CheckBox m_fetchAndReset;
-
-    /** Email field for module import. */
-    private TextField m_fakeEmailField;
-
-    /** User field for module import. */
-    private TextField m_fakeUserField;
-
     /** The check-in bean. */
     private CmsGitCheckin m_checkinBean;
 
-    /** Button for check-in. */
-    private Button m_okButton;
+    /** The tab with the import settings. */
+    private Component m_checkoutTab;
 
     /** Field for 'Commit message' setting. */
     private TextArea m_commitMessage;
 
-    /** The tab with the import settings. */
-    private Component m_checkoutTab;
+    /** Panel for the configuration selection. */
+    private Panel m_configurationSelectionPanel;
+
+    /** Configuration selector. */
+    private ComboBox m_configurationSelector;
 
     /** Field for 'Copy and unzip' setting. */
     private CheckBox m_copyAndUnzip;
@@ -173,35 +164,44 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
     /** Button for deselecting all modules. */
     private Button m_deselectAll;
 
+    /** The initial dialog tab. */
+    private DialogTab m_dialogTab = DialogTab.checkIn;
+
     /** The field for the email address. */
     private TextField m_emailField;
 
     /** Field for 'Exclude lib' setting. */
     private CheckBox m_excludeLib;
 
+    /** Email field for module import. */
+    private TextField m_fakeEmailField;
+
+    /** User field for module import. */
+    private TextField m_fakeUserField;
+
+    /** Checkbox for the 'fetch and reset' option. */
+    private CheckBox m_fetchAndReset;
+
     /** Field for 'Ignroe unclean' setting. */
     private CheckBox m_ignoreUnclean;
-
-    /** Selected mode. */
-    private ActionType m_mode = ActionType.checkIn;
-
-    /** Configuration selector. */
-    private ComboBox m_configurationSelector;
-
-    /** Container for the module selector. */
-    private VerticalLayout m_moduleSelectionContainer;
-
-    /** Container for the module selector drop-down and the "Deselect all" button. */
-    private HorizontalLayout m_moduleSelectorContainer;
-
-    /** Panel for the configuration selection. */
-    private Panel m_configurationSelectionPanel;
 
     /** Container for all the components. */
     private VerticalLayout m_mainContainer;
 
+    /** Selected mode. */
+    private ActionType m_mode = ActionType.checkIn;
+
+    /** Container for the module selector. */
+    private VerticalLayout m_moduleSelectionContainer;
+
     /** Module selector. */
     private ComboBox m_moduleSelector;
+
+    /** Container for the module selector drop-down and the "Deselect all" button. */
+    private HorizontalLayout m_moduleSelectorContainer;
+
+    /** Button for check-in. */
+    private Button m_okButton;
 
     /** Field for 'Pull after commit' setting. */
     private CheckBox m_pullAfterCommit;
@@ -217,6 +217,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
     /** Button used to toggle advanced options. */
     private Button m_toggleOptions;
+
+    /** Current user. */
+    private CmsUser m_user;
 
     /** The field for the git user name. */
     private TextField m_userField;
@@ -239,22 +242,8 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         configureConfigurationSelector();
         updateForNewConfiguration(m_checkinBean.getCurrentConfiguration());
 
-        CmsUser user = A_CmsUI.getCmsObject().getRequestContext().getCurrentUser();
-        String savedEmail = (String)(user.getAdditionalInfo().get(ADDINFO_EMAIL));
-        String savedName = (String)(user.getAdditionalInfo().get(ADDINFO_USER));
-        String savedMessage = (String)(user.getAdditionalInfo().get(ADDINFO_MESSAGE));
-
-        if (savedEmail != null) {
-            m_emailField.setValue(savedEmail);
-        }
-
-        if (savedName != null) {
-            m_userField.setValue(savedName);
-        }
-
-        if (savedMessage != null) {
-            m_commitMessage.setValue(savedMessage);
-        }
+        m_user = A_CmsUI.getCmsObject().getRequestContext().getCurrentUser();
+        restoreFieldsFromUserInfo();
 
         setAdvancedVisible(false);
         m_toggleOptions.addClickListener(new ClickListener() {
@@ -687,9 +676,11 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
                 private static final long serialVersionUID = 1L;
 
+                @SuppressWarnings("synthetic-access")
                 public void valueChange(ValueChangeEvent event) {
 
                     updateForNewConfiguration((CmsGitConfiguration)event.getProperty().getValue());
+                    restoreFieldsFromUserInfo();
 
                 }
             });
@@ -751,6 +742,28 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         m_moduleSelectionContainer.removeAllComponents();
         m_moduleSelectionContainer.addComponent(m_moduleSelectorContainer);
 
+    }
+
+    /**
+     * Restores user/email/message input fields from saved values.<p>
+     */
+    private void restoreFieldsFromUserInfo() {
+
+        String savedEmail = (String)(m_user.getAdditionalInfo().get(ADDINFO_EMAIL));
+        String savedName = (String)(m_user.getAdditionalInfo().get(ADDINFO_USER));
+        String savedMessage = (String)(m_user.getAdditionalInfo().get(ADDINFO_MESSAGE));
+
+        if (savedEmail != null) {
+            m_emailField.setValue(savedEmail);
+        }
+
+        if (savedName != null) {
+            m_userField.setValue(savedName);
+        }
+
+        if (savedMessage != null) {
+            m_commitMessage.setValue(savedMessage);
+        }
     }
 
     /**
