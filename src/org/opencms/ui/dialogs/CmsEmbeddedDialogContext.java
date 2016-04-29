@@ -125,7 +125,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
                 @SuppressWarnings("unchecked")
                 Map<String, String> openedPaths = (Map<String, String>)UI.getCurrent().getSession().getAttribute(
                     CmsFileExplorer.OPENED_PATHS);
-                if (openedPaths.containsKey(siteRoot)) {
+                if ((openedPaths != null) && openedPaths.containsKey(siteRoot)) {
                     sitePath = openedPaths.get(siteRoot);
                 }
             } else if ((m_resources != null) && !m_resources.isEmpty()) {
