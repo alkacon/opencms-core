@@ -247,6 +247,15 @@ public interface I_CmsSitemapServiceAsync {
     void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
 
     /**
+     * Sets the default model page for the given sub-sitemap, returns the updated model info.<p>
+     *
+     * @param rootId structure id of the sub-sitemap root folder
+     * @param modelId the id of the model page to set as default
+     * @param callback the callback for the result
+     */
+    void setDefaultModel(CmsUUID rootId, CmsUUID modelId, AsyncCallback<CmsModelInfo> callback);
+
+    /**
      * Sets the editor mode in the current user session.<p>
      *
      * @param editorMode the editor mode to set

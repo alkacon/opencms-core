@@ -922,6 +922,28 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#setDefaultModel(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public CmsModelInfo setDefaultModel(CmsUUID rootId, CmsUUID modelId) throws CmsRpcException {
+
+        CmsModelInfo result = null;
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource rootResource = cms.readResource(rootId);
+            CmsModelPageHelper modelPageHelper = new CmsModelPageHelper(getCmsObject(), rootResource);
+            CmsResource configFile = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                rootResource.getRootPath()).getResource();
+            ensureLock(configFile);
+            result = modelPageHelper.setDefaultModelPage(configFile, modelId);
+            tryUnlock(configFile);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#setEditorMode(org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode)
      */
     public void setEditorMode(EditorMode editorMode) {

@@ -42,6 +42,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -50,11 +51,13 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -454,6 +457,62 @@ public class CmsModelPageHelper {
     }
 
     /**
+     * Sets the default model page within the given configuration file.<p>
+     *
+     * @param configFile the configuration file
+     * @param modelId the default model id
+     *
+     * @return the updated model configuration
+     *
+     * @throws CmsException in case something goes wrong
+     */
+    CmsModelInfo setDefaultModelPage(CmsResource configFile, CmsUUID modelId) throws CmsException {
+
+        CmsFile file = m_cms.readFile(configFile);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
+        Locale locale = getLocale(content);
+        int defaultValueIndex = -1;
+        String defaultModelTarget = null;
+        for (I_CmsXmlContentValue value : content.getValues(CmsConfigurationReader.N_MODEL_PAGE, locale)) {
+            I_CmsXmlContentValue linkValue = content.getValue(
+                CmsStringUtil.joinPaths(value.getPath(), CmsConfigurationReader.N_PAGE),
+                locale);
+            I_CmsXmlContentValue isDefaultValue = content.getValue(
+                CmsStringUtil.joinPaths(value.getPath(), CmsConfigurationReader.N_IS_DEFAULT),
+                locale);
+            CmsLink link = ((CmsXmlVfsFileValue)linkValue).getLink(m_cms);
+            if ((link != null) && link.getStructureId().equals(modelId)) {
+                // store index and site path
+                defaultValueIndex = value.getIndex();
+                defaultModelTarget = link.getTarget();
+            } else {
+                isDefaultValue.setStringValue(m_cms, Boolean.FALSE.toString());
+            }
+        }
+        if (defaultValueIndex != -1) {
+            // remove the value from the old position and insert it a the top
+            content.removeValue(CmsConfigurationReader.N_MODEL_PAGE, locale, defaultValueIndex);
+            content.addValue(m_cms, CmsConfigurationReader.N_MODEL_PAGE, locale, 0);
+            content.getValue(
+                CmsConfigurationReader.N_MODEL_PAGE + "[1]/" + CmsConfigurationReader.N_PAGE,
+                locale).setStringValue(m_cms, defaultModelTarget);
+            content.getValue(
+                CmsConfigurationReader.N_MODEL_PAGE + "[1]/" + CmsConfigurationReader.N_DISABLED,
+                locale).setStringValue(m_cms, Boolean.FALSE.toString());
+            content.getValue(
+                CmsConfigurationReader.N_MODEL_PAGE + "[1]/" + CmsConfigurationReader.N_IS_DEFAULT,
+                locale).setStringValue(m_cms, Boolean.TRUE.toString());
+        }
+        content.setAutoCorrectionEnabled(true);
+        content.correctXmlStructure(m_cms);
+        file.setContents(content.marshal());
+        m_cms.writeFile(file);
+        OpenCms.getADEManager().waitForCacheUpdate(false);
+        m_adeConfig = OpenCms.getADEManager().lookupConfiguration(m_cms, m_rootResource.getRootPath());
+        return getModelInfo();
+    }
+
+    /**
      * Builds the model page list.<p>
      *
      * @param modelPageConfigs the model page configuration
@@ -482,15 +541,31 @@ public class CmsModelPageHelper {
     }
 
     /**
-     * Gets the type id for a type name.<p>
+     * Helper method for getting the locale from which to read the configuration data.<p>
+     *
+     * @param content the configuration content
+     *
+     * @return the locale from which to read the configuration data
+     */
+    private Locale getLocale(CmsXmlContent content) {
+
+        List<Locale> locales = content.getLocales();
+        if (locales.contains(Locale.ENGLISH) || locales.isEmpty()) {
+            return Locale.ENGLISH;
+        }
+        return locales.get(0);
+    }
+
+    /**
+     * Gets the type for a type name.<p>
      *
      * @param name the type name
-     * @return the type id
+     * @return the type
      * @throws CmsLoaderException if something goes wrong
      */
-    private int getType(String name) throws CmsLoaderException {
+    private I_CmsResourceType getType(String name) throws CmsLoaderException {
 
-        return OpenCms.getResourceManager().getResourceType(name).getTypeId();
+        return OpenCms.getResourceManager().getResourceType(name);
     }
 
     /**

@@ -284,6 +284,18 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsSitemapChange saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 
     /**
+     * Sets the default model page for the given sub-sitemap, returns the updated model info.<p>
+     *
+     * @param rootId structure id of the sub-sitemap root folder
+     * @param modelId the id of the model page to set as default
+     *
+     * @return the updated model info
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsModelInfo setDefaultModel(CmsUUID rootId, CmsUUID modelId) throws CmsRpcException;
+
+    /**
      * Sets the editor mode in the current user session.<p>
      *
      * @param editorMode the editor mode to set

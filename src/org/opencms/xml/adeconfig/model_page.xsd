@@ -11,9 +11,9 @@
     
     <xsd:complexType name="OpenCmsADEModelPage">
         <xsd:sequence>    
-	      	<xsd:element name="Page" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
-	      	<xsd:element name="Disabled" type="OpenCmsBoolean" minOccurs="1" maxOccurs="1" />
-           	<xsd:element name="IsDefault" type="OpenCmsBoolean" minOccurs="1" maxOccurs="1" />
+	      	<xsd:element name="Page" type="OpenCmsVfsFile" />
+	      	<xsd:element name="Disabled" type="OpenCmsBoolean" />
+           	<xsd:element name="IsDefault" type="OpenCmsBoolean" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

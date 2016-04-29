@@ -352,6 +352,9 @@ public final class Messages {
     public static final String GUI_HOVERBAR_MAKE_DEFAULT_0 = "GUI_HOVERBAR_MAKE_DEFAULT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_SET_AS_DEFAULT_0 = "GUI_HOVERBAR_SET_AS_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_MERGE_SUB_0 = "GUI_HOVERBAR_MERGE_SUB_0";
 
     /** Message constant for key in the resource bundle. */

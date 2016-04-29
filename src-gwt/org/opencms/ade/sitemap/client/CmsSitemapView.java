@@ -564,7 +564,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             m_modelGroupRoot.addChild(treeItem);
         }
         m_modelGroupRoot.setOpen(true);
-
+        m_modelPageTree.truncate(TM_SITEMAP, 920);
     }
 
     /**
@@ -676,8 +676,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                 iconClass = CmsIconUtil.getResourceIconClasses(
                     m_controller.getDetailPageInfo(entry.getId()).getIconType(),
                     false);
-            } else
-                if (!entry.isSubSitemapType() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())) {
+            } else if (!entry.isSubSitemapType()
+                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())) {
                 iconClass = CmsIconUtil.getResourceIconClasses(entry.getDefaultFileType(), false);
             }
         }

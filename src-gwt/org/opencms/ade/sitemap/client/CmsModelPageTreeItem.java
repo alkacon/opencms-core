@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -50,6 +51,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Tree item for the model page editor mode.<p>
@@ -261,8 +263,14 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
             }
         }
         CmsListInfoBean infoBean = modelPage.getListInfoBean();
+
         infoBean.setTitle(title);
         CmsListItemWidget result = new CmsModelPageListItemWidget(infoBean);
+        if (modelPage.isDefault()) {
+            Widget label = result.getShortExtraInfoLabel();
+            label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());
+            result.setExtraInfo("(*)");
+        }
         result.setIcon(
             CmsIconUtil.getResourceIconClasses(
                 m_isModelGroup ? CmsGwtConstants.TYPE_MODELGROUP_PAGE : CmsGwtConstants.TYPE_MODELPAGE,
@@ -277,7 +285,6 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
                 }
             });
         }
-
         return result;
     }
 }
