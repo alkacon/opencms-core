@@ -194,8 +194,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         int errorCode;
         try {
             errorCode = Integer.valueOf(name).intValue();
-        } catch (@SuppressWarnings("unused") NumberFormatException nf) {
+        } catch (NumberFormatException nf) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            LOG.debug("Error parsing handler name.", nf);
             return;
         }
         switch (errorCode) {
@@ -372,10 +373,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             CmsSite errorSite = OpenCms.getSiteManager().getSiteForRootPath(rootPath);
             cms.getRequestContext().setSiteRoot(errorSite.getSiteRoot());
             String relPath = cms.getRequestContext().removeSiteRoot(rootPath);
-            cms.getRequestContext().setUri(relPath);
-
-            OpenCms.getResourceManager().loadResource(cms, cms.readResource(relPath), req, res);
-            return true;
+            if (cms.existsResource(relPath)) {
+                cms.getRequestContext().setUri(relPath);
+                OpenCms.getResourceManager().loadResource(cms, cms.readResource(relPath), req, res);
+                return true;
+            } else {
+                return false;
+            }
         } catch (Throwable e) {
             // something went wrong log the exception and return false
             LOG.error(e.getMessage(), e);

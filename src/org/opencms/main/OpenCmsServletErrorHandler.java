@@ -98,7 +98,7 @@ public class OpenCmsServletErrorHandler extends OpenCmsServlet {
      * @see javax.servlet.Servlet#init(javax.servlet.ServletConfig)
      */
     @Override
-    public void init(ServletConfig config) {
+    public synchronized void init(ServletConfig config) {
 
         // override super class to avoid default initialization
     }

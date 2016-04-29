@@ -1124,8 +1124,9 @@ public final class OpenCmsCore {
         String systemEncoding = null;
         try {
             systemEncoding = System.getProperty("file.encoding");
-        } catch (@SuppressWarnings("unused") SecurityException se) {
+        } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
+            LOG.debug("Security manager preventing access to file.encoding system property.", se);
         }
         Security.addProvider(new CryptixCrypto());
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -2164,8 +2165,8 @@ public final class OpenCmsCore {
             if (canWrite) {
                 try {
                     m_authorizationHandler.requestAuthorization(req, res, getLoginFormURL(req, res));
-                } catch (@SuppressWarnings("unused") IOException ioe) {
-                    // there is nothing we can do about this
+                } catch (IOException ioe) {
+                    LOG.debug("Error calling authorization handler.", ioe);
                 }
                 return;
             }

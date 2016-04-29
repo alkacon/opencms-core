@@ -64,7 +64,7 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
     /**
      * Encapsulate each request with an inner class in order to make OpenCmsSolrHander thread-safe.
      */
-    private class Context {
+    class Context {
 
         /** The CMS object. */
         public CmsObject m_cms;
@@ -205,12 +205,13 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
      * @param req the servlet request
      * @param res the servlet response
      *
+     * @return the generated context
+     *
      * @throws CmsException if something goes wrong
      * @throws Exception if something goes wrong
      * @throws CmsSearchException if something goes wrong
      * @throws IOException if something goes wrong
      */
-    @SuppressWarnings("unchecked")
     protected Context initializeRequest(HttpServletRequest req, HttpServletResponse res)
     throws CmsException, Exception, CmsSearchException, IOException {
 
