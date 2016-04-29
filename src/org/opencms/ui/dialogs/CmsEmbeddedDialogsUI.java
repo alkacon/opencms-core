@@ -30,6 +30,7 @@ package org.opencms.ui.dialogs;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
@@ -48,6 +49,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 
@@ -56,6 +59,9 @@ import com.vaadin.server.VaadinRequest;
  */
 @Theme("opencms")
 public class CmsEmbeddedDialogsUI extends A_CmsUI {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEmbeddedDialogsUI.class);
 
     /** The dialogs path fragment. */
     public static final String DIALOGS_PATH = "dialogs/";
@@ -113,7 +119,14 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
                     resourceList = Collections.<CmsResource> emptyList();
                 }
                 String typeParam = request.getParameter("contextType");
-                ContextType type = ContextType.valueOf(typeParam);
+
+                ContextType type;
+                try {
+                    type = ContextType.valueOf(typeParam);
+                } catch (Exception e) {
+                    type = ContextType.appToolbar;
+                    LOG.error("Could not parse context type parameter " + typeParam);
+                }
                 I_CmsDialogContext context = new CmsEmbeddedDialogContext(type, resourceList);
                 I_CmsWorkplaceAction action = getAction(request);
                 if (action.isActive(context)) {

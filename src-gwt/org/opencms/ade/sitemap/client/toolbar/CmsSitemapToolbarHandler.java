@@ -178,7 +178,7 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
      */
     public void onSiteOrProjectChange(String sitePath, String serverLink) {
 
-        CmsSitemapView.getInstance().getController().openSiteMap(sitePath);
+        CmsSitemapView.getInstance().getController().openSiteMap(sitePath, true);
     }
 
     /**

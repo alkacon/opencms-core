@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
@@ -58,8 +59,14 @@ import com.vaadin.ui.Window.CloseListener;
  */
 public class CmsEmbeddedDialogContext extends AbstractExtension implements I_CmsDialogContext {
 
+    /** Pattern to check if a given server link starts with with a protocol string. */
+    private static Pattern PROTOCOL_PATTERN = Pattern.compile("^http?://.*");
+
     /** The serial version id. */
     private static final long serialVersionUID = -7446784547935775629L;
+
+    /** The context type. */
+    private ContextType m_contextType;
 
     /** Keeps the dialog frame on window close. */
     private boolean m_keepFrameOnClose;
@@ -69,9 +76,6 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
 
     /** The window used to display the dialog. */
     private Window m_window;
-
-    /** The context type. */
-    private ContextType m_contextType;
 
     /**
      * Constructor.<p>
@@ -131,9 +135,12 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
             } else if ((m_resources != null) && !m_resources.isEmpty()) {
                 sitePath = A_CmsUI.getCmsObject().getSitePath(m_resources.get(0));
             }
-            getClientRPC().finishForProjectOrSiteChange(
-                sitePath,
-                OpenCms.getLinkManager().getServerLink(getCms(), sitePath));
+            String serverLink = OpenCms.getLinkManager().getServerLink(getCms(), sitePath);
+            if (!PROTOCOL_PATTERN.matcher(serverLink).matches()) {
+                serverLink = "http://" + serverLink;
+            }
+
+            getClientRPC().finishForProjectOrSiteChange(sitePath, serverLink);
         } else {
             finish(null);
         }

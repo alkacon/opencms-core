@@ -1555,16 +1555,26 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void openSiteMap(String sitePath) {
 
-        Window.Location.replace(
-            CmsCoreProvider.get().link(CmsCoreProvider.get().getUri())
-                + "?"
-                + CmsCoreData.PARAM_PATH
-                + "="
-                + sitePath
-                + "&"
-                + CmsCoreData.PARAM_RETURNCODE
-                + "="
-                + getData().getReturnCode());
+        openSiteMap(sitePath, false);
+    }
+
+    /**
+     * Opens the site-map specified.<p>
+     *
+     * @param sitePath the site path to the site-map folder
+     * @param siteChange in case the site was changed
+     */
+    public void openSiteMap(String sitePath, boolean siteChange) {
+
+        String uri = CmsCoreProvider.get().link(CmsCoreProvider.get().getUri())
+            + "?"
+            + CmsCoreData.PARAM_PATH
+            + "="
+            + sitePath;
+        if (!siteChange) {
+            uri += "&" + CmsCoreData.PARAM_RETURNCODE + "=" + getData().getReturnCode();
+        }
+        Window.Location.replace(uri);
     }
 
     /**
