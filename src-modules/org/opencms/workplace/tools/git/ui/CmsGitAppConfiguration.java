@@ -31,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
@@ -97,7 +96,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getHelpText(Locale locale) {
 
-        return CmsVaadinUtils.getMessageText(Messages.GUI_GIT_APP_HELP_TEXT_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_GIT_APP_HELP_TEXT_0);
     }
 
     /**
@@ -122,7 +121,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return CmsVaadinUtils.getMessageText(Messages.GUI_GIT_APP_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_GIT_APP_NAME_0);
     }
 
     /**
