@@ -63,7 +63,6 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPermissionHandler;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -80,6 +79,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.mail.internet.InternetAddress;
 
@@ -87,6 +87,8 @@ import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.SynchronizedBuffer;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
+
+import com.google.common.cache.CacheBuilder;
 
 /**
  * Monitors OpenCms memory consumption.<p>
@@ -100,32 +102,59 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Cache types. */
     public enum CacheType {
         /** Access Control Lists cache. */
-        ACL, /** Content Definition cache. */
-        CONTENT_DEFINITION, /** Group cache. */
-        GROUP, /** Has Role cache. */
-        HAS_ROLE, /** Locale cache. */
-        LOCALE, /** Lock cache. */
-        LOCK, /** Memory Object cache. */
-        MEMORY_OBJECT, /** Organizational Unit cache. */
-        ORG_UNIT, /** Permission cache. */
-        PERMISSION, /** Offline Project cache. */
-        PROJECT, /** Project resources cache. */
-        PROJECT_RESOURCES, /** Property cache. */
-        PROPERTY, /** Property List cache. */
-        PROPERTY_LIST, /** Publish history cache. */
-        PUBLISH_HISTORY, /** Publish queue cache. */
-        PUBLISH_QUEUE, /** Published resources cache. */
-        PUBLISHED_RESOURCES, /** Resource cache. */
-        RESOURCE, /** Resource List cache. */
-        RESOURCE_LIST, /** Role List cache. */
-        ROLE_LIST, /** User cache. */
-        USER, /** User list cache. */
-        USER_LIST, /** User Groups cache. */
-        USERGROUPS, /** VFS Object cache. */
-        VFS_OBJECT, /** XML Entity Permanent cache. */
-        XML_ENTITY_PERM, /** XML Entity Temporary cache. */
+        ACL,
+        /** Content Definition cache. */
+        CONTENT_DEFINITION,
+        /** Group cache. */
+        GROUP,
+        /** Has Role cache. */
+        HAS_ROLE,
+        /** Locale cache. */
+        LOCALE,
+        /** Lock cache. */
+        LOCK,
+        /** Memory Object cache. */
+        MEMORY_OBJECT,
+        /** Organizational Unit cache. */
+        ORG_UNIT,
+        /** Permission cache. */
+        PERMISSION,
+        /** Offline Project cache. */
+        PROJECT,
+        /** Project resources cache. */
+        PROJECT_RESOURCES,
+        /** Property cache. */
+        PROPERTY,
+        /** Property List cache. */
+        PROPERTY_LIST,
+        /** Publish history cache. */
+        PUBLISH_HISTORY,
+        /** Publish queue cache. */
+        PUBLISH_QUEUE,
+        /** Published resources cache. */
+        PUBLISHED_RESOURCES,
+        /** Resource cache. */
+        RESOURCE,
+        /** Resource List cache. */
+        RESOURCE_LIST,
+        /** Role List cache. */
+        ROLE_LIST,
+        /** User cache. */
+        USER,
+        /** User list cache. */
+        USER_LIST,
+        /** User Groups cache. */
+        USERGROUPS,
+        /** VFS Object cache. */
+        VFS_OBJECT,
+        /** XML Entity Permanent cache. */
+        XML_ENTITY_PERM,
+        /** XML Entity Temporary cache. */
         XML_ENTITY_TEMP;
     }
+
+    /** The concurrency level for the guava caches. */
+    private static final int CONCURRENCY_LEVEL = 8;
 
     /** Set interval for clearing the caches to 10 minutes. */
     private static final int INTERVAL_CLEAR = 1000 * 60 * 10;
@@ -271,6 +300,23 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public CmsMemoryMonitor() {
 
         m_monitoredObjects = new HashMap<String, Object>();
+    }
+
+    /**
+     * Creates a thread safe LRU cache map based on the guava cache builder.<p>
+     * Use this instead of synchronized maps for better performance.<p>
+     *
+     * @param capacity the cache capacity
+     *
+     * @return the cache map
+     */
+    @SuppressWarnings("unchecked")
+    public static <T, V> Map<T, V> createLRUCacheMap(int capacity) {
+
+        CacheBuilder<?, ?> builder = CacheBuilder.newBuilder().concurrencyLevel(CONCURRENCY_LEVEL).maximumSize(
+            capacity);
+        builder.build();
+        return (Map<T, V>)(builder.build().asMap());
     }
 
     /**
@@ -1097,7 +1143,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             return;
         }
         // initialize new lock cache
-        Map<String, CmsLock> newLockCache = Collections.synchronizedMap(newLocks);
+        Map<String, CmsLock> newLockCache = new ConcurrentHashMap<String, CmsLock>(newLocks);
         // register it
         register(CmsLockManager.class.getName(), newLockCache);
         // save the old cache
@@ -1530,9 +1576,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public CmsPublishJobInfoBean getCachedPublishJob(String key) {
 
         synchronized (m_publishQueue) {
-            for (@SuppressWarnings("unchecked")
-            Iterator<CmsPublishJobInfoBean> i = m_publishQueue.iterator(); i.hasNext();) {
-                CmsPublishJobInfoBean publishJob = i.next();
+            for (Object obj : m_publishQueue) {
+                CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)obj;
                 if (publishJob.getPublishHistoryId().toString().equals(key)) {
                     return publishJob;
                 }
@@ -1550,9 +1595,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsPublishJobInfoBean getCachedPublishJobInHistory(String key) {
 
-        for (@SuppressWarnings("unchecked")
-        Iterator<CmsPublishJobInfoBean> i = m_publishHistory.iterator(); i.hasNext();) {
-            CmsPublishJobInfoBean publishJob = i.next();
+        for (Object obj : m_publishHistory) {
+            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)obj;
             if (publishJob.getPublishHistoryId().toString().equals(key)) {
                 return publishJob;
             }
@@ -1794,75 +1838,56 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         // create and register all system caches
 
         // temporary xml entities cache
-        Map<String, byte[]> xmlTemporaryCache = CmsCollectionsGenericWrapper.createLRUMap(128);
-        m_cacheXmlTemporaryEntity = Collections.synchronizedMap(xmlTemporaryCache);
+        m_cacheXmlTemporaryEntity = createLRUCacheMap(128);
         register(CmsXmlEntityResolver.class.getName() + ".xmlEntityTemporaryCache", m_cacheXmlTemporaryEntity);
 
         // permanent xml entities cache
-        Map<String, byte[]> xmlPermanentCache = new HashMap<String, byte[]>(32);
-        m_cacheXmlPermanentEntity = Collections.synchronizedMap(xmlPermanentCache);
+        m_cacheXmlPermanentEntity = new ConcurrentHashMap<String, byte[]>(32);
         register(CmsXmlEntityResolver.class.getName() + ".xmlEntityPermanentCache", m_cacheXmlPermanentEntity);
 
         // xml content definitions cache
-        Map<String, CmsXmlContentDefinition> contentDefinitionsCache = CmsCollectionsGenericWrapper.createLRUMap(64);
-        m_cacheContentDefinitions = Collections.synchronizedMap(contentDefinitionsCache);
+        m_cacheContentDefinitions = createLRUCacheMap(64);
         register(CmsXmlEntityResolver.class.getName() + ".contentDefinitionsCache", m_cacheContentDefinitions);
 
         // lock cache
-        Map<String, CmsLock> lockCache = new HashMap<String, CmsLock>();
-        m_cacheLock = Collections.synchronizedMap(lockCache);
-        register(CmsLockManager.class.getName(), lockCache);
+        m_cacheLock = new ConcurrentHashMap<String, CmsLock>();
+        register(CmsLockManager.class.getName(), m_cacheLock);
 
         // locale cache
-        Map<String, Locale> map = new HashMap<String, Locale>();
-        m_cacheLocale = Collections.synchronizedMap(map);
-        register(CmsLocaleManager.class.getName(), map);
+        m_cacheLocale = new ConcurrentHashMap<String, Locale>();
+        register(CmsLocaleManager.class.getName(), m_cacheLocale);
 
         // permissions cache
-        Map<String, I_CmsPermissionHandler.CmsPermissionCheckResult> lruPermissions = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getPermissionCacheSize());
-        m_cachePermission = Collections.synchronizedMap(lruPermissions);
-        register(CmsSecurityManager.class.getName(), lruPermissions);
+        m_cachePermission = createLRUCacheMap(cacheSettings.getPermissionCacheSize());
+        register(CmsSecurityManager.class.getName(), m_cachePermission);
 
         // user cache
-        Map<String, CmsUser> lruUsers = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUserCacheSize());
-        m_cacheUser = Collections.synchronizedMap(lruUsers);
-        register(CmsDriverManager.class.getName() + ".userCache", lruUsers);
+        m_cacheUser = createLRUCacheMap(cacheSettings.getUserCacheSize());
+        register(CmsDriverManager.class.getName() + ".userCache", m_cacheUser);
 
         // user list cache
-        Map<String, List<CmsUser>> lruUserList = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getUserCacheSize());
-        m_cacheUserList = Collections.synchronizedMap(lruUserList);
-        register(CmsDriverManager.class.getName() + ".userListCache", lruUserList);
+        m_cacheUserList = createLRUCacheMap(cacheSettings.getUserCacheSize());
+        register(CmsDriverManager.class.getName() + ".userListCache", m_cacheUserList);
 
         // group cache
-        Map<String, CmsGroup> lruGroup = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getGroupCacheSize());
-        m_cacheGroup = Collections.synchronizedMap(lruGroup);
-        register(CmsDriverManager.class.getName() + ".groupCache", lruGroup);
+        m_cacheGroup = createLRUCacheMap(cacheSettings.getGroupCacheSize());
+        register(CmsDriverManager.class.getName() + ".groupCache", m_cacheGroup);
 
         // organizational unit cache
-        Map<String, CmsOrganizationalUnit> lruOrgUnit = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getOrgUnitCacheSize());
-        m_cacheOrgUnit = Collections.synchronizedMap(lruOrgUnit);
-        register(CmsDriverManager.class.getName() + ".orgUnitCache", lruOrgUnit);
+        m_cacheOrgUnit = createLRUCacheMap(cacheSettings.getOrgUnitCacheSize());
+        register(CmsDriverManager.class.getName() + ".orgUnitCache", m_cacheOrgUnit);
 
         // user groups list cache
-        Map<String, List<CmsGroup>> lruUserGroups = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getUserGroupsCacheSize());
-        m_cacheUserGroups = Collections.synchronizedMap(lruUserGroups);
-        register(CmsDriverManager.class.getName() + ".userGroupsCache", lruUserGroups);
+        m_cacheUserGroups = createLRUCacheMap(cacheSettings.getUserGroupsCacheSize());
+        register(CmsDriverManager.class.getName() + ".userGroupsCache", m_cacheUserGroups);
 
         // project cache
-        Map<String, CmsProject> lruProjects = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getProjectCacheSize());
-        m_cacheProject = Collections.synchronizedMap(lruProjects);
-        register(CmsDriverManager.class.getName() + ".projectCache", lruProjects);
+        m_cacheProject = createLRUCacheMap(cacheSettings.getProjectCacheSize());
+        register(CmsDriverManager.class.getName() + ".projectCache", m_cacheProject);
 
         // project resources cache cache
-        Map<String, List<CmsResource>> lruProjectResources = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getProjectResourcesCacheSize());
-        m_cacheProjectResources = Collections.synchronizedMap(lruProjectResources);
-        register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruProjectResources);
+        m_cacheProjectResources = createLRUCacheMap(cacheSettings.getProjectResourcesCacheSize());
+        register(CmsDriverManager.class.getName() + ".projectResourcesCache", m_cacheProjectResources);
 
         // publish history
         int size = configuration.getPublishManager().getPublishHistorySize();
@@ -1876,60 +1901,44 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsPublishQueue.class.getName() + ".publishQueue", buffer);
 
         // resource cache
-        Map<String, CmsResource> lruResources = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getResourceCacheSize());
-        m_cacheResource = Collections.synchronizedMap(lruResources);
-        register(CmsDriverManager.class.getName() + ".resourceCache", lruResources);
+        m_cacheResource = createLRUCacheMap(cacheSettings.getResourceCacheSize());
+        register(CmsDriverManager.class.getName() + ".resourceCache", m_cacheResource);
 
         // roles cache
-        Map<String, Boolean> lruHasRoles = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getRolesCacheSize());
-        m_cacheHasRoles = Collections.synchronizedMap(lruHasRoles);
-        register(CmsDriverManager.class.getName() + ".rolesCache", lruHasRoles);
+        m_cacheHasRoles = createLRUCacheMap(cacheSettings.getRolesCacheSize());
+        register(CmsDriverManager.class.getName() + ".rolesCache", m_cacheHasRoles);
 
         // role lists cache
-        Map<String, List<CmsRole>> lruRoleLists = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getRolesCacheSize());
-        m_cacheRoleLists = Collections.synchronizedMap(lruRoleLists);
-        register(CmsDriverManager.class.getName() + ".roleListsCache", lruRoleLists);
+        m_cacheRoleLists = createLRUCacheMap(cacheSettings.getRolesCacheSize());
+        register(CmsDriverManager.class.getName() + ".roleListsCache", m_cacheRoleLists);
 
         // resource list cache
-        Map<String, List<CmsResource>> lruResourceList = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getResourcelistCacheSize());
-        m_cacheResourceList = Collections.synchronizedMap(lruResourceList);
-        register(CmsDriverManager.class.getName() + ".resourceListCache", lruResourceList);
+        m_cacheResourceList = createLRUCacheMap(cacheSettings.getResourcelistCacheSize());
+        register(CmsDriverManager.class.getName() + ".resourceListCache", m_cacheResourceList);
 
         // property cache
-        Map<String, CmsProperty> lruProperty = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getPropertyCacheSize());
-        m_cacheProperty = Collections.synchronizedMap(lruProperty);
-        register(CmsDriverManager.class.getName() + ".propertyCache", lruProperty);
+        m_cacheProperty = createLRUCacheMap(cacheSettings.getPropertyCacheSize());
+        register(CmsDriverManager.class.getName() + ".propertyCache", m_cacheProperty);
 
         // property list cache
-        Map<String, List<CmsProperty>> lruPropertyList = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getPropertyListsCacheSize());
-        m_cachePropertyList = Collections.synchronizedMap(lruPropertyList);
-        register(CmsDriverManager.class.getName() + ".propertyListCache", lruPropertyList);
+        m_cachePropertyList = createLRUCacheMap(cacheSettings.getPropertyListsCacheSize());
+        register(CmsDriverManager.class.getName() + ".propertyListCache", m_cachePropertyList);
 
         // published resources list cache
-        Map<String, List<CmsPublishedResource>> lruPublishedResources = CmsCollectionsGenericWrapper.createLRUMap(5);
-        m_cachePublishedResources = Collections.synchronizedMap(lruPublishedResources);
-        register(CmsDriverManager.class.getName() + ".publishedResourcesCache", lruPublishedResources);
+        m_cachePublishedResources = createLRUCacheMap(5);
+        register(CmsDriverManager.class.getName() + ".publishedResourcesCache", m_cachePublishedResources);
 
         // acl cache
-        Map<String, CmsAccessControlList> lruAcl = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getAclCacheSize());
-        m_cacheAccessControlList = Collections.synchronizedMap(lruAcl);
-        register(CmsDriverManager.class.getName() + ".accessControlListCache", lruAcl);
+        m_cacheAccessControlList = createLRUCacheMap(cacheSettings.getAclCacheSize());
+        register(CmsDriverManager.class.getName() + ".accessControlListCache", m_cacheAccessControlList);
 
         // vfs object cache
-        Map<String, Object> vfsObjectCache = new HashMap<String, Object>();
-        m_cacheVfsObject = Collections.synchronizedMap(vfsObjectCache);
-        register(CmsVfsMemoryObjectCache.class.getName(), vfsObjectCache);
+        m_cacheVfsObject = new ConcurrentHashMap<String, Object>();
+        register(CmsVfsMemoryObjectCache.class.getName(), m_cacheVfsObject);
 
         // memory object cache
-        Map<String, Object> memObjectCache = new HashMap<String, Object>();
-        m_cacheMemObject = Collections.synchronizedMap(memObjectCache);
-        register(CmsMemoryObjectCache.class.getName(), memObjectCache);
+        m_cacheMemObject = new ConcurrentHashMap<String, Object>();
+        register(CmsMemoryObjectCache.class.getName(), m_cacheMemObject);
 
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
