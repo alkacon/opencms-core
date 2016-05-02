@@ -399,11 +399,15 @@ public class CmsModelGroupHelper {
                         element.getIndividualSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue()) {
                         groupType = CmsContainerElement.USE_AS_COPY_MODEL;
                     }
-                    List<CmsProperty> props = new ArrayList<CmsProperty>();
-                    props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, title));
-                    props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, description));
-                    props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, groupType, groupType));
-                    m_cms.writePropertyObjects(modelGroup, props);
+                    if (hasChangedProperty(modelGroup, title, description, groupType)) {
+                        List<CmsProperty> props = new ArrayList<CmsProperty>();
+                        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, title));
+                        props.add(
+                            new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, description));
+                        props.add(
+                            new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, groupType, groupType));
+                        m_cms.writePropertyObjects(modelGroup, props);
+                    }
                     List<CmsContainerBean> modelContainers = new ArrayList<CmsContainerBean>();
                     CmsContainerElementBean baseElement = element.clone();
                     CmsContainerBean baseContainer = new CmsContainerBean(
@@ -421,7 +425,7 @@ public class CmsModelGroupHelper {
                     CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(
                         m_cms,
                         m_cms.readFile(modelGroup));
-                    xmlCnt.save(m_cms, modelPage);
+                    xmlCnt.save(m_cms, modelPage, true);
                     tryUnlock(modelGroup);
                 } catch (CmsException e) {
                     LOG.error("Error saving model group resource.", e);
@@ -732,6 +736,35 @@ public class CmsModelGroupHelper {
             settings.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.wasModelGroup.name());
         }
         return CmsContainerElementBean.cloneWithSettings(baseElement, settings);
+    }
+
+    /**
+     * Checks one of the given property values has changed.<p>
+     *
+     * @param modelGroup the model group resource to check
+     * @param title the title
+     * @param description the description
+     * @param groupType the group type
+     *
+     * @return <code>true</code> in case of a property value change
+     *
+     * @throws CmsException in case reading the old property values fails
+     */
+    private boolean hasChangedProperty(CmsResource modelGroup, String title, String description, String groupType)
+    throws CmsException {
+
+        boolean propsChanged = false;
+        if (!title.equals(
+            m_cms.readPropertyObject(modelGroup, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue())) {
+            propsChanged = true;
+        } else if (!description.equals(
+            m_cms.readPropertyObject(modelGroup, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue())) {
+            propsChanged = true;
+        } else if (!groupType.equals(
+            m_cms.readPropertyObject(modelGroup, CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, false).getValue())) {
+            propsChanged = true;
+        }
+        return propsChanged;
     }
 
     /**

@@ -57,6 +57,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -270,11 +271,28 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      */
     public void save(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
 
-        CmsFile file = getFile();
+        save(cms, cntPage, false);
+    }
 
+    /**
+     * Saves given container page in the current locale, and not only in memory but also to VFS.<p>
+     *
+     * @param cms the current cms context
+     * @param cntPage the container page to save
+     * @param ifChangedOnly <code>true</code> to only write the file if the content has changed
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void save(CmsObject cms, CmsContainerPageBean cntPage, boolean ifChangedOnly) throws CmsException {
+
+        CmsFile file = getFile();
+        byte[] data = createContainerPageXml(cms, cntPage);
+        if (ifChangedOnly && Arrays.equals(file.getContents(), data)) {
+            return;
+        }
         // lock the file
         cms.lockResourceTemporary(cms.getSitePath(file));
-        byte[] data = createContainerPageXml(cms, cntPage);
+
         file.setContents(data);
         cms.writeFile(file);
     }
