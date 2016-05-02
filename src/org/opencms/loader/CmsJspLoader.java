@@ -49,11 +49,11 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -69,6 +69,7 @@ import java.io.Writer;
 import java.net.SocketException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -87,11 +88,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.Maps;
 
 /**
  * The JSP loader which enables the execution of JSP in OpenCms.<p>
@@ -174,8 +173,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private static long m_clientCacheMaxAge;
 
     /** Read write locks for jsp files. */
-    @SuppressWarnings("unchecked")
-    private static Map<String, ReentrantReadWriteLock> m_fileLocks = new LRUMap(10000);
+    private static Map<String, ReentrantReadWriteLock> m_fileLocks;
 
     /** The directory to store the generated JSP pages in (absolute path). */
     private static String m_jspRepository;
@@ -190,8 +188,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private CmsParameterConfiguration m_configuration;
 
     /** Flag to indicate if error pages are marked as "committed". */
-    // TODO: This is a hack, investigate this issue with different runtime environments
-    private boolean m_errorPagesAreNotCommitted; // default false should work for Tomcat > 4.1
+    private boolean m_errorPagesAreNotCommitted;
 
     /** The offline JSPs. */
     private Map<String, Boolean> m_offlineJsps;
@@ -200,7 +197,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private Map<String, Boolean> m_onlineJsps;
 
     /** A map from taglib names to their URIs. */
-    private Map<String, String> m_taglibs = Maps.newHashMap();
+    private Map<String, String> m_taglibs = new HashMap<String, String>();
 
     /** Lock used to prevent JSP repository from being accessed while it is purged. The read lock is needed for accessing the JSP repository, the write lock is needed for purging it. */
     private ReentrantReadWriteLock m_purgeLock = new ReentrantReadWriteLock(true);
@@ -217,7 +214,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         OpenCms.addCmsEventListener(
             this,
             new int[] {EVENT_CLEAR_CACHES, EVENT_CLEAR_OFFLINE_CACHES, EVENT_CLEAR_ONLINE_CACHES});
-
+        m_fileLocks = CmsMemoryMonitor.createLRUCacheMap(10000);
         initCaches(1000);
     }
 
@@ -1164,10 +1161,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     protected void initCaches(int cacheSize) {
 
-        Map<String, Boolean> map = CmsCollectionsGenericWrapper.createLRUMap(cacheSize);
-        m_offlineJsps = Collections.synchronizedMap(map);
-        map = CmsCollectionsGenericWrapper.createLRUMap(cacheSize);
-        m_onlineJsps = Collections.synchronizedMap(map);
+        m_offlineJsps = CmsMemoryMonitor.createLRUCacheMap(cacheSize);
+        m_onlineJsps = CmsMemoryMonitor.createLRUCacheMap(cacheSize);
     }
 
     /**
@@ -1738,12 +1733,16 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     private ReentrantReadWriteLock getFileLock(String jspVfsName) {
 
-        synchronized (m_fileLocks) {
-            if (!m_fileLocks.containsKey(jspVfsName)) {
-                m_fileLocks.put(jspVfsName, new ReentrantReadWriteLock(true));
+        ReentrantReadWriteLock lock = m_fileLocks.get(jspVfsName);
+        if (lock == null) {
+            synchronized (m_fileLocks) {
+                if (!m_fileLocks.containsKey(jspVfsName)) {
+                    m_fileLocks.put(jspVfsName, new ReentrantReadWriteLock(true));
+                }
+                lock = m_fileLocks.get(jspVfsName);
             }
-            return m_fileLocks.get(jspVfsName);
         }
+        return lock;
     }
 
     /**

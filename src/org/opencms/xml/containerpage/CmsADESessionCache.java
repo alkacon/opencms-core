@@ -37,9 +37,9 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -151,11 +151,10 @@ public final class CmsADESessionCache {
     protected CmsADESessionCache(CmsObject cms, HttpServletRequest request) {
 
         // container element cache
-        Map<String, CmsContainerElementBean> lruMapCntElem = new HashMap<String, CmsContainerElementBean>();
-        m_containerElements = Collections.synchronizedMap(lruMapCntElem);
+        m_containerElements = new ConcurrentHashMap<String, CmsContainerElementBean>();
 
         // XML content cache, used during XML content edit
-        m_xmlContents = Collections.synchronizedMap(new HashMap<CmsUUID, CmsXmlContent>());
+        m_xmlContents = new ConcurrentHashMap<CmsUUID, CmsXmlContent>();
 
         String elementView = null;
         // within the test cases the request will be null
@@ -252,8 +251,7 @@ public final class CmsADESessionCache {
     }
 
     /**
-    <<<<<<< HEAD
-     * returns the sitemap editor mode.<p>
+     * Returns the sitemap editor mode.<p>
      *
      * @return the sitemap editor mode
      */
@@ -263,8 +261,6 @@ public final class CmsADESessionCache {
     }
 
     /**
-    =======
-    >>>>>>> refs/remotes/origin/branch_9_5_x
      * Gets the cached template bean for a given container page uri.<p>
      *
      * @param uri the container page uri

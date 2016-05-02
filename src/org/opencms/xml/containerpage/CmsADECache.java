@@ -32,11 +32,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsLog;
 import org.opencms.monitor.CmsMemoryMonitor;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -399,24 +397,18 @@ public final class CmsADECache extends CmsVfsCache {
     private void initialize(CmsMemoryMonitor memMonitor, CmsADECacheSettings cacheSettings) {
 
         // container page caches
-        Map<String, CmsXmlContainerPage> lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getContainerPageOfflineSize());
-        m_containerPagesOffline = Collections.synchronizedMap(lruMapCntPage);
-        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOffline", lruMapCntPage);
+        m_containerPagesOffline = CmsMemoryMonitor.createLRUCacheMap(cacheSettings.getContainerPageOfflineSize());
+        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOffline", m_containerPagesOffline);
 
-        lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOnlineSize());
-        m_containerPagesOnline = Collections.synchronizedMap(lruMapCntPage);
-        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
+        m_containerPagesOnline = CmsMemoryMonitor.createLRUCacheMap(cacheSettings.getContainerPageOnlineSize());
+        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", m_containerPagesOnline);
 
         // container page caches
-        Map<String, CmsXmlGroupContainer> lruMapGroupContainer = CmsCollectionsGenericWrapper.createLRUMap(
-            cacheSettings.getGroupContainerOfflineSize());
-        m_groupContainersOffline = Collections.synchronizedMap(lruMapGroupContainer);
-        memMonitor.register(CmsADECache.class.getName() + ".groupContainersOffline", lruMapGroupContainer);
+        m_groupContainersOffline = CmsMemoryMonitor.createLRUCacheMap(cacheSettings.getGroupContainerOfflineSize());
+        memMonitor.register(CmsADECache.class.getName() + ".groupContainersOffline", m_groupContainersOffline);
 
-        lruMapGroupContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getGroupContainerOnlineSize());
-        m_groupContainersOnline = Collections.synchronizedMap(lruMapGroupContainer);
-        memMonitor.register(CmsADECache.class.getName() + ".groupContainersOnline", lruMapGroupContainer);
+        m_groupContainersOnline = CmsMemoryMonitor.createLRUCacheMap(cacheSettings.getGroupContainerOnlineSize());
+        memMonitor.register(CmsADECache.class.getName() + ".groupContainersOnline", m_groupContainersOnline);
     }
 
     /**
