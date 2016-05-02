@@ -211,6 +211,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /** The path to the JSP used to upload aliases. */
     public static final String ALIAS_IMPORT_PATH = "/system/workplace/commons/import-aliases.jsp";
 
+    /** The show model edit confirm dialog attribute name. */
+    public static final String ATTR_SHOW_MODEL_EDIT_CONFIRM = "showModelEditConfirm";
+
     /** The galleries folder name. */
     public static final String GALLERIES_FOLDER_NAME = ".galleries";
 
@@ -820,6 +823,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 basePath = cms.getRequestContext().getSiteRoot();
             }
+            Boolean showModelEditConfirm = (Boolean)getRequest().getSession().getAttribute(
+                ATTR_SHOW_MODEL_EDIT_CONFIRM);
+            if (showModelEditConfirm == null) {
+                showModelEditConfirm = Boolean.TRUE;
+            }
+
             result = new CmsSitemapData(
                 (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
@@ -854,7 +863,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 OpenCms.getRoleManager().hasRole(cms, CmsRole.CATEGORY_EDITOR),
                 subsitemapFolderTypeInfos,
                 editorMode,
-                defaultGalleryFolder);
+                defaultGalleryFolder,
+                showModelEditConfirm.booleanValue());
 
             CmsUUID rootId = cms.readResource("/", CmsResourceFilter.ALL).getStructureId();
             result.setSiteRootId(rootId);

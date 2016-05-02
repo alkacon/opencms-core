@@ -49,9 +49,12 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap editor modes. */
     public enum EditorMode {
         /** The categories mode. */
-        categories, /** The galleries mode. */
-        galleries, /** The model page mode. */
-        modelpages, /** The navigation mode. */
+        categories,
+        /** The galleries mode. */
+        galleries,
+        /** The model page mode. */
+        modelpages,
+        /** The navigation mode. */
         navigation,
 
         /** The VFS mode. */
@@ -157,6 +160,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
 
+    /** The show model edit confirm dialog flag. */
+    private boolean m_showModelEditConfirm;
+
     /**
      * Constructor.<p>
      */
@@ -199,6 +205,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param subsitemapTypeInfos the type information beans for the available subsitemap folder types
      * @param editorMode the editor mode
      * @param defaultGalleryFolder default gallery parent folder
+     * @param showModelEditConfirm the show model edit confirm dialog flag
      */
     public CmsSitemapData(
         Map<String, CmsClientTemplateBean> templates,
@@ -231,7 +238,8 @@ public class CmsSitemapData implements IsSerializable {
         boolean categoryManager,
         List<CmsListInfoBean> subsitemapTypeInfos,
         EditorMode editorMode,
-        String defaultGalleryFolder) {
+        String defaultGalleryFolder,
+        boolean showModelEditConfirm) {
 
         m_templates = templates;
         m_properties = properties;
@@ -264,7 +272,7 @@ public class CmsSitemapData implements IsSerializable {
         m_sitemapFolderTypeInfos = subsitemapTypeInfos;
         m_editorMode = editorMode;
         m_defaultGalleryFolder = defaultGalleryFolder;
-
+        m_showModelEditConfirm = showModelEditConfirm;
     }
 
     /**
@@ -603,6 +611,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean isSecure() {
 
         return m_isSecure;
+    }
+
+    /**
+     * Returns the show model edit confirm dialog flag.<p>
+     *
+     * @return the show model edit confirm dialog flag
+     */
+    public boolean isShowModelEditConfirm() {
+
+        return m_showModelEditConfirm;
     }
 
     /**

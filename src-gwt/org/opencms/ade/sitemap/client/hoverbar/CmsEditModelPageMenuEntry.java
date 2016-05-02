@@ -76,43 +76,56 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public static void editModelPage(final String resourcePath, boolean isModelGroup) {
 
-        I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
+        if (CmsSitemapView.getInstance().getController().getData().isShowModelEditConfirm()) {
+            I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
 
-            public void onClose() {
+                public void onClose() {
 
-                // noop
-            }
-
-            public void onOk() {
-
-                String targetPath = resourcePath;
-                String siteRoot = CmsCoreProvider.get().getSiteRoot();
-                if (targetPath.startsWith(siteRoot)) {
-                    targetPath = targetPath.substring(siteRoot.length());
-                    // prepend slash if necessary
-                    if (!targetPath.startsWith("/")) {
-                        targetPath = "/" + targetPath;
-                    }
+                    // noop
                 }
-                CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                controller.leaveEditor(targetPath);
-            }
-        };
-        String dialogTitle;
-        String dialogContent;
-        if (isModelGroup) {
-            dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODEL_GROUPS_CONFIRM_TITLE_0);
-            dialogContent = Messages.get().key(Messages.GUI_EDIT_MODEL_GROUP_CONFIRM_CONTENT_0);
-        } else {
-            dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0);
-            dialogContent = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0);
-        }
-        String buttonText = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_OK_0);
 
-        CmsConfirmDialog dialog = new CmsConfirmDialog(dialogTitle, dialogContent);
-        dialog.getOkButton().setText(buttonText);
-        dialog.setHandler(handler);
-        dialog.center();
+                public void onOk() {
+
+                    openEditor(resourcePath);
+                }
+            };
+            String dialogTitle;
+            String dialogContent;
+            if (isModelGroup) {
+                dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODEL_GROUPS_CONFIRM_TITLE_0);
+                dialogContent = Messages.get().key(Messages.GUI_EDIT_MODEL_GROUP_CONFIRM_CONTENT_0);
+            } else {
+                dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0);
+                dialogContent = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0);
+            }
+            String buttonText = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_OK_0);
+
+            CmsConfirmDialog dialog = new CmsConfirmDialog(dialogTitle, dialogContent);
+            dialog.getOkButton().setText(buttonText);
+            dialog.setHandler(handler);
+            dialog.center();
+        } else {
+            openEditor(resourcePath);
+        }
+    }
+
+    /**
+     * Opens the container page editor for the given model resource.<p>
+     *
+     * @param targetPath the model resource path
+     */
+    static void openEditor(String targetPath) {
+
+        String siteRoot = CmsCoreProvider.get().getSiteRoot();
+        if (targetPath.startsWith(siteRoot)) {
+            targetPath = targetPath.substring(siteRoot.length());
+            // prepend slash if necessary
+            if (!targetPath.startsWith("/")) {
+                targetPath = "/" + targetPath;
+            }
+        }
+        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+        controller.leaveEditor(targetPath);
     }
 
     /**

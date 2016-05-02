@@ -55,6 +55,7 @@ import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.ade.galleries.CmsGalleryService;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.sitemap.CmsVfsSitemapService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -955,6 +956,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsTemplateContextInfo info = OpenCms.getTemplateContextManager().getContextInfoBean(cms, request);
             CmsResource containerPage = getContainerpage(cms);
             boolean isModelPage = isModelPage(cms, containerPage);
+
+            if (isModelPage) {
+                // the model edit confirm dialog should only be shown once per session, disable it after first model editing
+                getRequest().getSession().setAttribute(
+                    CmsVfsSitemapService.ATTR_SHOW_MODEL_EDIT_CONFIRM,
+                    Boolean.FALSE);
+            }
 
             TemplateBean templateBean = (TemplateBean)getRequest().getAttribute(
                 CmsTemplateContextManager.ATTR_TEMPLATE_BEAN);
