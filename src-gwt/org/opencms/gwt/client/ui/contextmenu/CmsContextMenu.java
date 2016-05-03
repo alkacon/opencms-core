@@ -293,9 +293,13 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
      */
     protected void setSubMenuPosition(final A_CmsContextMenuItem item) {
 
+        // in case the menu is positioned fixed, the scroll position is irrelevant
+        int scrollLeft = m_isFixed ? 0 : Window.getScrollLeft();
+        int scrollTop = m_isFixed ? 0 : Window.getScrollTop();
+
         // calculate the left space
         // add 10 because of the shadow and for avoiding that the browser's right window border touches the sub menu
-        int leftSpace = item.getAbsoluteLeft() - (Window.getScrollLeft() + 10);
+        int leftSpace = item.getAbsoluteLeft() - (scrollLeft + 10);
         // calculate the right space
         // add 10 because of the shadow and for avoiding that the browser's left window border touches the sub menu
         int rightSpace = Window.getClientWidth() - (item.getAbsoluteLeft() + item.getOffsetWidth() + 10);
@@ -309,10 +313,10 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
         // calculate the top space
         // add 10 because of the shadow and for avoiding that the browser's top window border touches the sub menu
-        int topSpace = (item.getAbsoluteTop() - Window.getScrollTop()) + 10;
+        int topSpace = (item.getAbsoluteTop() - scrollTop) + 10;
         // calculate the bottom space
         // add 10 because of the shadow and for avoiding that the browser's bottom window border touches the sub menu
-        int bottomSpace = (Window.getClientHeight() + Window.getScrollTop()) - (item.getAbsoluteTop() + 10);
+        int bottomSpace = (Window.getClientHeight() + scrollTop) - (item.getAbsoluteTop() + 10);
         // if the height of the sub menu is smaller than the bottom space, show the sub menu on the bottom
         boolean showBottom = item.getSubMenu().getOffsetHeight() < bottomSpace;
         if (!showBottom) {
@@ -330,16 +334,16 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
             left = (item.getAbsoluteLeft() + item.getOffsetWidth()) - 4;
             // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the
             // item's absolute top and subtract the scroll top of Window / by subtracting 4 the shadow is balanced
-            top = item.getAbsoluteTop() - Window.getScrollTop() - 4;
+            top = item.getAbsoluteTop() - 4;
         } else if (!showRight && showBottom) {
             // bottom-left
             // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width
             // of the sub menu, so take the item's absolute left, subtract the sub menu's width and the scroll left
             // by subtracting 4 the overlay it created
-            left = item.getAbsoluteLeft() - item.getSubMenu().getOffsetWidth() - Window.getScrollLeft() - 4;
+            left = item.getAbsoluteLeft() - item.getSubMenu().getOffsetWidth() - 4;
             // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the
             // item's absolute top and subtract the scroll top of Window / by subtracting 4 the shadow is balanced
-            top = item.getAbsoluteTop() - Window.getScrollTop() - 4;
+            top = item.getAbsoluteTop() - 4;
         } else if (showRight && !showBottom) {
             // top-right
             // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the
@@ -348,19 +352,17 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
             // if to show the sub menu on the top, the bottom-left corner of the item plus the height of the sub menu
             // is the top coordinate, so take the item's absolute top subtract the scroll top and the height of the sub
             // menu and add the height of the item / by subtracting 4 the shadow is balanced
-            top = ((item.getAbsoluteTop() - Window.getScrollTop() - item.getSubMenu().getOffsetHeight())
-                + item.getOffsetHeight()) - 4;
+            top = ((item.getAbsoluteTop() - item.getSubMenu().getOffsetHeight()) + item.getOffsetHeight()) - 4;
         } else {
             // top-left
             // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width
             // of the sub menu, so take the item's absolute left, subtract the sub menu's width and the scroll left
             // by subtracting 4 the overlay it created
-            left = item.getAbsoluteLeft() - Window.getScrollLeft() - item.getSubMenu().getOffsetWidth() - 4;
+            left = item.getAbsoluteLeft() - item.getSubMenu().getOffsetWidth() - 4;
             // if to show the sub menu on the top, the bottom-left corner of the item plus the height of the sub menu
             // is the top coordinate, so take the item's absolute top subtract the scroll top and the height of the sub
             // menu and add the height of the item / by subtracting 4 the shadow is balanced
-            top = ((item.getAbsoluteTop() - Window.getScrollTop() - item.getSubMenu().getOffsetHeight())
-                + item.getOffsetHeight()) - 4;
+            top = ((item.getAbsoluteTop() - item.getSubMenu().getOffsetHeight()) + item.getOffsetHeight()) - 4;
         }
 
         // finally set the position of the popup
