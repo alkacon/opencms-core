@@ -5,7 +5,8 @@
 	background: value("constants.css.backgroundColorDialog");
 }
 .inputRow{
-	height: 25px;
+	margin: 2px 0;
+	height: 30px;
 	overflow: hidden;
 }
 .inputLabel{
