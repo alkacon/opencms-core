@@ -44,6 +44,7 @@ import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
@@ -265,6 +266,16 @@ public class CmsElementUtil {
         return !Sets.intersection(CmsContainer.splitType(containerType), groupContainer.getTypes()).isEmpty();
     }
 
+    /**
+     * Returns the formatter bean for the given element and container.<p>
+     *
+     * @param element the element to render
+     * @param container the container
+     * @param configs the available formatter configurations
+     * @param allowNested if nested containers are allowed
+     *
+     * @return the formatter bean
+     */
     public static I_CmsFormatterBean getFormatterForContainer(
         CmsContainerElementBean element,
         CmsContainer container,
@@ -599,7 +610,19 @@ public class CmsElementUtil {
         result.setCreateNew(elementBean.isCreateNew());
         CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
         Map<CmsUUID, CmsElementView> viewMap = OpenCms.getADEManager().getElementViews(m_cms);
-        if (typeConfig != null) {
+        boolean isModelGroup = elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID);
+        if (isModelGroup) {
+            CmsResourceTypeConfig modelGroupConfig = getConfigData().getResourceType(
+                CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
+            if (modelGroupConfig != null) {
+                CmsUUID elementView = modelGroupConfig.getElementView();
+                CmsElementView viewObject = viewMap.get(elementView);
+                if ((viewObject != null) && (viewObject.getParentViewId() != null)) {
+                    elementView = viewObject.getParentViewId();
+                }
+                result.setElementView(elementView);
+            }
+        } else if (typeConfig != null) {
             CmsUUID elementView = typeConfig.getElementView();
             CmsElementView viewObject = viewMap.get(elementView);
             if ((viewObject != null) && (viewObject.getParentViewId() != null)) {
@@ -618,7 +641,7 @@ public class CmsElementUtil {
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
-        result.setModelGroup(elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID));
+        result.setModelGroup(isModelGroup);
         result.setWasModelGroup(
             elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
                 && (ModelGroupState.evaluate(
