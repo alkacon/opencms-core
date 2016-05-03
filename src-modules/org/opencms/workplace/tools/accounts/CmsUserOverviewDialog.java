@@ -100,22 +100,22 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     public void actionCommit() {
 
         // no saving is done
-        setCommitErrors(new ArrayList());
+        setCommitErrors(new ArrayList<Throwable>());
     }
 
     /**
      * Calls the switch user method of the SessionManager.<p>
      *
+     * @return the direct edit patch
+     *
      * @throws CmsException if something goes wrong
      */
-    public void actionSwitchUser() throws CmsException {
+    public String actionSwitchUser() throws CmsException {
 
         try {
             CmsSessionManager sessionManager = OpenCms.getSessionManager();
-            sessionManager.switchUser(
-                getCms(),
-                getJsp().getRequest(),
-                getCms().readUser(new CmsUUID(getJsp().getRequest().getParameter("userid"))));
+            CmsUser user = getCms().readUser(new CmsUUID(getJsp().getRequest().getParameter("userid")));
+            return sessionManager.switchUser(getCms(), getJsp().getRequest(), user);
         } catch (CmsException e) {
             String toolPath = getCurrentToolPath().substring(0, getCurrentToolPath().lastIndexOf("/"));
             getToolManager().setCurrentToolPath(this, toolPath);

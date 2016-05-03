@@ -36,6 +36,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -411,9 +412,11 @@ public class CmsSessionManager {
      * @param req the current request
      * @param user the user to switch to
      *
+     * @return the direct edit target if available
+     *
      * @throws CmsException if something goes wrong
      */
-    public void switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
+    public String switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
 
         // only user with root administrator role are allowed to switch the user
         OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN.forOrgUnit(user.getOuFqn()));
@@ -423,7 +426,7 @@ public class CmsSessionManager {
             throw new CmsException(Messages.get().container(Messages.ERR_NO_SESSIONINFO_SESSION_0));
         }
 
-        if (!OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.WORKPLACE_USER)) {
+        if (!OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ELEMENT_AUTHOR)) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_NO_WORKPLACE_PERMISSIONS_0));
         }
 
@@ -462,6 +465,10 @@ public class CmsSessionManager {
         cms.getRequestContext().setSiteRoot(userSiteRoot);
         cms.getRequestContext().setCurrentProject(userProject);
         cms.getRequestContext().setOuFqn(user.getOuFqn());
+        String directEditTarget = CmsLoginHelper.getDirectEditPath(cms, new CmsUserSettings(user), false);
+        return directEditTarget != null
+        ? OpenCms.getLinkManager().substituteLink(cms, directEditTarget, userSiteRoot)
+        : null;
     }
 
     /**

@@ -340,7 +340,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 visible &= OpenCms.getRoleManager().hasRole(
                     cms,
                     cms.readUser(userId).getName(),
-                    CmsRole.WORKPLACE_USER);
+                    CmsRole.ELEMENT_AUTHOR);
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
