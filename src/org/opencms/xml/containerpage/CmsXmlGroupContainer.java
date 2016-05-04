@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -84,11 +85,16 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
     public enum XmlNode {
 
         /** Container description node name. */
-        Description, /** Container elements node name. */
-        Element, /** Main node name. */
-        GroupContainers, /** Container title node name. */
-        Title, /** Container type node name. */
-        Type, /** File list URI node name. */
+        Description,
+        /** Container elements node name. */
+        Element,
+        /** Main node name. */
+        GroupContainers,
+        /** Container title node name. */
+        Title,
+        /** Container type node name. */
+        Type,
+        /** File list URI node name. */
         Uri;
     }
 
@@ -335,7 +341,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
                     addBookmarkForElement(type, locale, groupContainer, cntPath, cntDef);
                     String typeName = type.getTextTrim();
                     if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeName)) {
-                        types.add(typeName);
+                        types.addAll(CmsContainer.splitType(typeName));
                     }
                 }
 
