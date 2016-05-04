@@ -268,18 +268,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String dialog();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String editor();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String inputBox();
 
         /** Access method.<p>

@@ -542,7 +542,7 @@ public abstract class A_CmsGroupEditor extends Composite {
             int lefthandSpace = m_groupContainerPosition.getLeft() - Window.getScrollLeft();
             int righthandSpace = (Window.getClientWidth() + Window.getScrollLeft())
                 - (m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth());
-            int requiredWidth = 530;
+            int requiredWidth = CmsPopup.DEFAULT_WIDTH + 30;
             int left = m_groupContainerPosition.getLeft();
             if (requiredWidth > (righthandSpace + m_groupContainerPosition.getWidth())) {
                 left = (Window.getClientWidth() + Window.getScrollLeft()) - requiredWidth;
