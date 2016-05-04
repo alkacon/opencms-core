@@ -164,12 +164,14 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
     public void reinitializeButtons() {
 
         for (Widget widget : getGroupContainerWidget()) {
-            CmsContainerPageElementPanel elemWidget = (CmsContainerPageElementPanel)widget;
-            if (getController().requiresOptionBar(elemWidget, elemWidget.getParentTarget())) {
-                getController().getContainerpageUtil().addOptionBar(elemWidget);
-            } else {
-                // otherwise remove any present option bar
-                elemWidget.setElementOptionBar(null);
+            if (widget instanceof CmsContainerPageElementPanel) {
+                CmsContainerPageElementPanel elemWidget = (CmsContainerPageElementPanel)widget;
+                if (getController().requiresOptionBar(elemWidget, elemWidget.getParentTarget())) {
+                    getController().getContainerpageUtil().addOptionBar(elemWidget);
+                } else {
+                    // otherwise remove any present option bar
+                    elemWidget.setElementOptionBar(null);
+                }
             }
         }
     }
