@@ -46,6 +46,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -404,6 +405,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                 public void onFailure(Throwable caught) {
 
+                    CmsErrorDialog.handleException(caught);
                     finalListContainerElement.removeFromParent();
                 }
 

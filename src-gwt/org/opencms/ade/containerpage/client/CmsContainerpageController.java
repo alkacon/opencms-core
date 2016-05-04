@@ -2082,7 +2082,7 @@ public final class CmsContainerpageController {
             && hasActiveSelection()
             && matchRootView(elemView)
             && isContainerEditable(dragParent)
-            && matchesCurrentEditLevel((CmsContainerPageContainer)dragParent)
+            && matchesCurrentEditLevel(dragParent)
             && (getData().isModelGroup() || !element.hasModelGroupParent())
             && (!(dragParent instanceof CmsGroupContainerElementPanel) || isGroupcontainerEditing());
     }
@@ -2325,7 +2325,7 @@ public final class CmsContainerpageController {
                 }
             }
         } else {
-            for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+            for (CmsContainerPageContainer container : m_targetContainers.values()) {
                 // first remove inline editors
                 for (Widget element : container) {
                     if ((element instanceof CmsContainerPageElementPanel)) {
@@ -2566,7 +2566,7 @@ public final class CmsContainerpageController {
             && (!element.hasModelGroupParent() || getData().isModelGroup())
             && (matchRootView(element.getElementView()) || isGroupcontainerEditing())
             && isContainerEditable(dragParent)
-            && matchesCurrentEditLevel((CmsContainerPageContainer)dragParent);
+            && matchesCurrentEditLevel(dragParent);
     }
 
     /**
@@ -3704,10 +3704,11 @@ public final class CmsContainerpageController {
      *
      * @return <code>true</code> if the given container matches the current edit level
      */
-    private boolean matchesCurrentEditLevel(
-        org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container) {
+    private boolean matchesCurrentEditLevel(I_CmsDropContainer container) {
 
-        boolean result = (m_currentEditLevel == -1) || (m_currentEditLevel == container.getContainerLevel());
+        boolean result = !(container instanceof CmsContainerPageContainer)
+            || (m_currentEditLevel == -1)
+            || (m_currentEditLevel == ((CmsContainerPageContainer)container).getContainerLevel());
         return result;
     }
 

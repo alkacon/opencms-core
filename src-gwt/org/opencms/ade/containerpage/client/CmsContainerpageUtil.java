@@ -301,11 +301,10 @@ public class CmsContainerpageUtil {
                     result.put(container.getName(), dragContainer);
                 } catch (Exception e) {
                     CmsErrorDialog.handleException(
-                        new Exception(
-                            "Error parsing container "
-                                + container.getName()
-                                + ". Please check if your HTML is well formed.",
-                            e));
+                        "Error parsing container "
+                            + container.getName()
+                            + ". Please check if your HTML is well formed.",
+                        e);
                 }
             } catch (Exception e) {
                 CmsErrorDialog.handleException(

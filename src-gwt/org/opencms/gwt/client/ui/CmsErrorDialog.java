@@ -159,6 +159,38 @@ public class CmsErrorDialog extends CmsPopup {
     /**
      * Handles the exception by logging the exception to the server log and displaying an error dialog on the client.<p>
      *
+     * @param message the error message
+     * @param t the throwable
+     */
+    public static void handleException(String message, Throwable t) {
+
+        StackTraceElement[] trace;
+        String className;
+        if (t instanceof CmsRpcException) {
+            CmsRpcException ex = (CmsRpcException)t;
+            trace = ex.getOriginalStackTrace();
+            className = ex.getOriginalClassName();
+        } else {
+            message = CmsClientStringUtil.getMessage(t);
+            trace = t.getStackTrace();
+            className = t.getClass().getName();
+        }
+        // send the ticket to the server
+        String ticket = CmsLog.log(message + LINE_BREAK + CmsClientStringUtil.getStackTraceAsString(trace, LINE_BREAK));
+
+        String errorMessage = message == null
+        ? className + ": " + Messages.get().key(Messages.GUI_NO_DESCIPTION_0)
+        : message;
+        errorMessage += LINE_BREAK + Messages.get().key(Messages.GUI_REASON_0) + ":" + t;
+
+        String details = Messages.get().key(Messages.GUI_TICKET_MESSAGE_3, ticket, className, message)
+            + CmsClientStringUtil.getStackTraceAsString(trace, LINE_BREAK);
+        new CmsErrorDialog(errorMessage, details).center();
+    }
+
+    /**
+     * Handles the exception by logging the exception to the server log and displaying an error dialog on the client.<p>
+     *
      * @param t the throwable
      */
     public static void handleException(Throwable t) {
