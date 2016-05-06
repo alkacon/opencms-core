@@ -44,7 +44,6 @@ import org.opencms.util.CmsUUID;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.vaadin.server.AbstractExtension;
@@ -126,12 +125,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
         if ((project != null) || (siteRoot != null)) {
             String sitePath = "/";
             if (siteRoot != null) {
-                @SuppressWarnings("unchecked")
-                Map<String, String> openedPaths = (Map<String, String>)UI.getCurrent().getSession().getAttribute(
-                    CmsFileExplorer.OPENED_PATHS);
-                if ((openedPaths != null) && openedPaths.containsKey(siteRoot)) {
-                    sitePath = openedPaths.get(siteRoot);
-                }
+                sitePath = CmsFileExplorer.getOpenedPath(A_CmsUI.get().getHttpSession(), siteRoot);
             } else if ((m_resources != null) && !m_resources.isEmpty()) {
                 sitePath = A_CmsUI.getCmsObject().getSitePath(m_resources.get(0));
             }

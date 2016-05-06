@@ -35,6 +35,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
@@ -152,7 +153,10 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             return;
         }
         updateDirectEditFlagInSession(req);
-
+        CmsFileExplorer.putOpenedPath(
+            ((HttpServletRequest)req).getSession(),
+            cms.getRequestContext().getSiteRoot(),
+            cms.getRequestContext().getUri());
         if (isDirectEditDisabled(req)) {
             try {
                 String buttonLeft = null;

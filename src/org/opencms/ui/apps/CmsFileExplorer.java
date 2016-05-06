@@ -89,6 +89,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -708,7 +709,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /**
      * Constructor.<p>
      */
-    @SuppressWarnings("unchecked")
     public CmsFileExplorer() {
         m_shortcutActions = new HashMap<Action, Runnable>();
         m_shortcutActions.put(ACTION_DELETE, new Runnable() {
@@ -910,20 +910,68 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             }
         });
 
-        m_openedPaths = (Map<String, String>)UI.getCurrent().getSession().getAttribute(OPENED_PATHS);
-        if (m_openedPaths == null) {
-            m_openedPaths = new HashMap<String, String>();
-
+        m_openedPaths = getOpenedPaths(A_CmsUI.get().getHttpSession());
+        String startSite = CmsAppWorkplaceUi.get().getWorkplaceSettings().getUserSettings().getStartSite();
+        // remove trailing slashes
+        while (startSite.endsWith("/")) {
+            startSite = startSite.substring(0, startSite.length() - 1);
+        }
+        if (!m_openedPaths.containsKey(startSite)) {
             // add the configured start folder for the start site
-            String startSite = CmsAppWorkplaceUi.get().getWorkplaceSettings().getUserSettings().getStartSite();
-            // remove trailing slashes
-            while (startSite.endsWith("/")) {
-                startSite = startSite.substring(0, startSite.length() - 1);
-            }
-
             String startFolder = CmsAppWorkplaceUi.get().getWorkplaceSettings().getUserSettings().getStartFolder();
             m_openedPaths.put(startSite, startFolder);
         }
+    }
+
+    /**
+     * Returns the opened path for the given site root from the opened paths store.<p>
+     *
+     * @param session the current user session
+     * @param siteRoot the site root
+     *
+     * @return the opened path
+     */
+    public static String getOpenedPath(HttpSession session, String siteRoot) {
+
+        // remove trailing slashes
+        while (siteRoot.endsWith("/")) {
+            siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
+        }
+        return getOpenedPaths(session).get(siteRoot);
+    }
+
+    /**
+     * Returns the opened paths map.<p>
+     *
+     * @param session the current session
+     *
+     * @return the opened paths map
+     */
+    public static Map<String, String> getOpenedPaths(HttpSession session) {
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> openedPaths = (Map<String, String>)session.getAttribute(OPENED_PATHS);
+        if (openedPaths == null) {
+            openedPaths = new HashMap<String, String>();
+            session.setAttribute(OPENED_PATHS, openedPaths);
+        }
+        return openedPaths;
+    }
+
+    /**
+     * Puts the given site root/path combination in the opened paths store.<p>
+     *
+     * @param session the current user session
+     * @param siteRoot the site root
+     * @param path the path
+     */
+    public static void putOpenedPath(HttpSession session, String siteRoot, String path) {
+
+        // remove trailing slashes
+        while (siteRoot.endsWith("/")) {
+            siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
+        }
+        getOpenedPaths(session).put(siteRoot, path);
     }
 
     /**
@@ -945,7 +993,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             A_CmsUI.getCmsObject(),
             CmsFileExplorerSettings.class,
             m_fileTable.getTableSettings());
-        UI.getCurrent().getSession().setAttribute(OPENED_PATHS, m_openedPaths);
         return true;
     }
 
@@ -1139,7 +1186,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             A_CmsUI.getCmsObject(),
             CmsFileExplorerSettings.class,
             m_fileTable.getTableSettings());
-        UI.getCurrent().getSession().setAttribute(OPENED_PATHS, m_openedPaths);
     }
 
     /**
@@ -1563,9 +1609,12 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     void openPath(String path) {
 
         if (path == null) {
-            path = m_openedPaths.get(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
+            String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
+            path = m_openedPaths.get(siteRoot);
             if (path == null) {
                 path = "";
+            } else if (OpenCms.getSiteManager().startsWithShared(path)) {
+                path = path.substring(siteRoot.length());
             }
         }
         String[] pathItems = path.split("/");
