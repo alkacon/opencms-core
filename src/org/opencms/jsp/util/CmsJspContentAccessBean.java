@@ -154,10 +154,15 @@ public class CmsJspContentAccessBean {
          */
         public Object transform(Object input) {
 
-            Locale locale = getLocale();
-            String attrValue = getRawContent().getFile().getStructureId() + "|" + input + "|" + locale;
-            String escapedAttrValue = CmsEncoder.escapeXml(attrValue);
-            String result = "data-imagednd=\"" + escapedAttrValue + "\"";
+            String result;
+            if (CmsJspContentAccessValueWrapper.isDirectEditEnabled(getCmsObject())) {
+                Locale locale = getLocale();
+                String attrValue = getRawContent().getFile().getStructureId() + "|" + input + "|" + locale;
+                String escapedAttrValue = CmsEncoder.escapeXml(attrValue);
+                result = "data-imagednd=\"" + escapedAttrValue + "\"";
+            } else {
+                result = "";
+            }
             return result;
         }
     }
