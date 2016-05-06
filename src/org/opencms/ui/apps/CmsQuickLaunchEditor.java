@@ -211,10 +211,10 @@ public class CmsQuickLaunchEditor extends VerticalLayout implements I_CmsWorkpla
     public CmsQuickLaunchEditor() {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_userApps.setDropHandler(new ReorderLayoutDropHandler(m_userApps.getWrappedLayout(), false));
-        m_userApps.getWrappedLayout().setSpacing(true);
+        m_userApps.getWrappedLayout().setMargin(true);
         m_userApps.getWrappedLayout().addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
         m_availableApps.setDropHandler(new ReorderLayoutDropHandler(m_availableApps.getWrappedLayout(), false));
-        m_availableApps.getWrappedLayout().setSpacing(true);
+        m_availableApps.getWrappedLayout().setMargin(true);
         m_availableApps.getWrappedLayout().addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
         m_save.addClickListener(new ClickListener() {
 
