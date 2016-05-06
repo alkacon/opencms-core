@@ -43,6 +43,8 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Button;
@@ -72,9 +74,6 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
     /** The dialog context. */
     private I_CmsDialogContext m_context;
 
-    /** The OK button. */
-    private Button m_okButton;
-
     /** The project select. */
     private ComboBox m_projectComboBox;
 
@@ -89,17 +88,6 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
     public CmsProjectSelectDialog(I_CmsDialogContext context) {
         m_context = context;
         setContent(initForm());
-        m_okButton = createButtonOK();
-        m_okButton.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                submit();
-            }
-        });
-        addButton(m_okButton);
         m_cancelButton = createButtonCancel();
         m_cancelButton.addClickListener(new ClickListener() {
 
@@ -176,7 +164,16 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
         m_siteComboBox = prepareComboBox(sites, org.opencms.workplace.Messages.GUI_LABEL_SITE_0);
         m_siteComboBox.select(m_context.getCms().getRequestContext().getSiteRoot());
         form.addComponent(m_siteComboBox);
+        ValueChangeListener changeListener = new ValueChangeListener() {
 
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                submit();
+            }
+        };
+        m_siteComboBox.addValueChangeListener(changeListener);
         IndexedContainer projects = CmsVaadinUtils.getProjectsContainer(m_context.getCms(), CAPTION_PROPERTY);
         m_projectComboBox = prepareComboBox(projects, org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0);
         CmsUUID currentProjectId = m_context.getCms().getRequestContext().getCurrentProject().getUuid();
@@ -196,6 +193,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
         }
 
         form.addComponent(m_projectComboBox);
+        m_projectComboBox.addValueChangeListener(changeListener);
         return form;
     }
 

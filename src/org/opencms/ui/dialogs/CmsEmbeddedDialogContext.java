@@ -39,6 +39,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -123,11 +124,14 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     public void finish(CmsProject project, String siteRoot) {
 
         if ((project != null) || (siteRoot != null)) {
-            String sitePath = "/";
+            String sitePath = null;
             if (siteRoot != null) {
                 sitePath = CmsFileExplorer.getOpenedPath(A_CmsUI.get().getHttpSession(), siteRoot);
             } else if ((m_resources != null) && !m_resources.isEmpty()) {
                 sitePath = A_CmsUI.getCmsObject().getSitePath(m_resources.get(0));
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(sitePath)) {
+                sitePath = "/";
             }
             String serverLink = OpenCms.getLinkManager().getServerLink(getCms(), sitePath);
             if (!PROTOCOL_PATTERN.matcher(serverLink).matches()) {
