@@ -57,7 +57,6 @@ public class CmsAppHierarchyPanel extends VerticalLayout {
 
         m_appPanel = new HorizontalLayout();
         m_appPanel.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-        m_appPanel.setSpacing(true);
         addComponent(m_appPanel);
         setMargin(true);
         setSpacing(true);
