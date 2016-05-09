@@ -1414,7 +1414,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         try {
             CmsResource folder = cms.readResource(folderId, FOLDERS);
             m_currentFolder = folderId;
-            A_CmsUI.get().storeCurrentFolder(folder);
             setPathInfo(cms.getSitePath(folder));
             List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, childResources);

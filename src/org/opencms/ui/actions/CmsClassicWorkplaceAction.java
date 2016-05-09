@@ -32,7 +32,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -49,10 +51,12 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
     public void executeAction(final I_CmsDialogContext context) {
 
         CmsObject cms = context.getCms();
-        CmsResource storedFolder = A_CmsUI.get().getStoredFolder();
-        String initPath;
-        if (storedFolder != null) {
-            initPath = storedFolder.getRootPath();
+        String initPath = CmsFileExplorer.getOpenedPath(
+            A_CmsUI.get().getHttpSession(),
+            cms.getRequestContext().getSiteRoot());
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(initPath)) {
+            initPath = cms.getRequestContext().addSiteRoot(initPath);
         } else {
             initPath = CmsFileUtil.addTrailingSeparator(cms.getRequestContext().getSiteRoot());
         }

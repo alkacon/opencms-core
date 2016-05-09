@@ -29,7 +29,6 @@ package org.opencms.ui;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsResource;
 import org.opencms.main.CmsUIServlet;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -146,16 +145,6 @@ public abstract class A_CmsUI extends UI {
     }
 
     /**
-     * Gets the stored folder.<p>
-     *
-     * @return the stored folder
-     */
-    public CmsResource getStoredFolder() {
-
-        return (CmsResource)(getSession().getAttribute("WP_FOLDER"));
-    }
-
-    /**
      * Returns the workplace settings.<p>
      *
      * @return the workplace settings
@@ -258,16 +247,6 @@ public abstract class A_CmsUI extends UI {
     public void setError(String error) {
 
         setContentToDialog("Error", new Label(error));
-    }
-
-    /**
-     * Stores the current folder.<p>
-     *
-     * @param folder the current folder
-     */
-    public void storeCurrentFolder(CmsResource folder) {
-
-        getSession().setAttribute("WP_FOLDER", folder);
     }
 
     /**
