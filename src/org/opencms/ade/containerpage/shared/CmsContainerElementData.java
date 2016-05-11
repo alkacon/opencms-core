@@ -164,18 +164,19 @@ public class CmsContainerElementData extends CmsContainerElement {
      */
     public CmsFormatterConfig getFormatterConfig(String containerName) {
 
-        String formatterId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
         CmsFormatterConfig formatterConfig = null;
-        if ((formatterId != null)
-            && getFormatters().containsKey(containerName)
-            && getFormatters().get(containerName).containsKey(formatterId)) {
-            // if the settings contain the formatter id, use the matching config
-            formatterConfig = getFormatters().get(containerName).get(formatterId);
-        } else if (getFormatters().containsKey(containerName) && !getFormatters().get(containerName).isEmpty()) {
-            // otherwise use the first entry for the given container
-            formatterConfig = getFormatters().get(containerName).values().iterator().next();
+        if (m_formatters != null) {
+            String formatterId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
+            if ((formatterId != null)
+                && getFormatters().containsKey(containerName)
+                && getFormatters().get(containerName).containsKey(formatterId)) {
+                // if the settings contain the formatter id, use the matching config
+                formatterConfig = getFormatters().get(containerName).get(formatterId);
+            } else if (getFormatters().containsKey(containerName) && !getFormatters().get(containerName).isEmpty()) {
+                // otherwise use the first entry for the given container
+                formatterConfig = getFormatters().get(containerName).values().iterator().next();
+            }
         }
-
         return formatterConfig;
     }
 
@@ -329,8 +330,13 @@ public class CmsContainerElementData extends CmsContainerElement {
     @Override
     public boolean hasSettings(String containerId) {
 
-        CmsFormatterConfig config = getFormatterConfig(containerId);
-        return (config != null) && (!config.getSettingConfig().isEmpty() || hasAlternativeFormatters(containerId));
+        // in case formatter info is not available, do the simple check
+        if ((m_formatters == null) || m_formatters.isEmpty()) {
+            return super.hasSettings(containerId);
+        } else {
+            CmsFormatterConfig config = getFormatterConfig(containerId);
+            return (config != null) && (!config.getSettingConfig().isEmpty() || hasAlternativeFormatters(containerId));
+        }
     }
 
     /**

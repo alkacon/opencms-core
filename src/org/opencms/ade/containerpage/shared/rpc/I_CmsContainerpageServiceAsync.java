@@ -179,6 +179,26 @@ public interface I_CmsContainerpageServiceAsync {
         AsyncCallback<Map<String, CmsContainerElementData>> callback);
 
     /**
+     * Returns container element settings config data.<p>
+     *
+     * @param  context the rpc context
+     * @param clientId the requested element id
+     * @param containerId the parent container id
+     * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
+     * @param locale the content locale
+     * @param callback the call-back executed on response
+     */
+    void getElementSettingsConfig(
+        CmsContainerPageRpcContext context,
+        String clientId,
+        String containerId,
+        Collection<CmsContainer> containers,
+        boolean allowNested,
+        String locale,
+        AsyncCallback<CmsContainerElementData> callback);
+
+    /**
      * Gets the element data for an id and a map of settings.<p>
      *
      * @param context the RPC context

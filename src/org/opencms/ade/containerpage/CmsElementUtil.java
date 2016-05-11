@@ -168,7 +168,7 @@ public class CmsElementUtil {
         HttpServletResponse res,
         boolean isDragMode,
         Locale locale)
-        throws CmsException {
+    throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
         m_req = req;
@@ -206,7 +206,7 @@ public class CmsElementUtil {
         HttpServletRequest req,
         HttpServletResponse res,
         Locale locale)
-        throws CmsException {
+    throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
         m_req = req;
@@ -247,7 +247,7 @@ public class CmsElementUtil {
         HttpServletRequest req,
         HttpServletResponse res,
         Locale locale)
-        throws CmsException {
+    throws CmsException {
 
         this(cms, currentPageUri, detailContentId, req, res, locale);
         m_parameterMap = parseRequestParameters(requestParameters);
@@ -349,7 +349,8 @@ public class CmsElementUtil {
         CmsResource page,
         CmsContainerElementBean element,
         Collection<CmsContainer> containers,
-        boolean allowNested) throws CmsException {
+        boolean allowNested)
+    throws CmsException {
 
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
@@ -357,26 +358,8 @@ public class CmsElementUtil {
         if (element.getResource().isFolder()) {
             return null;
         }
-        CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
-        CmsContainerElementData elementData = new CmsContainerElementData();
-        setElementInfo(element, elementData);
-
-        elementData.setLastModifiedDate(element.getResource().getDateLastModified());
-        elementData.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
-        elementData.setNavText(resUtil.getNavText());
-        Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
-            m_cms,
-            page,
-            element.getResource());
-        elementData.setSettings(
-            CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
-                m_cms,
-                element.getIndividualSettings(),
-                settingConfig));
+        CmsContainerElementData elementData = getBaseElementData(page, element);
         CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
-        Map<String, Map<String, CmsFormatterConfig>> formatters = new HashMap<String, Map<String, CmsFormatterConfig>>();
-
-        //   elementData.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
         Map<String, String> contents = new HashMap<String, String>();
         if (element.isGroupContainer(m_cms)) {
             Map<String, CmsContainer> containersByName = new HashMap<String, CmsContainer>();
@@ -461,7 +444,6 @@ public class CmsElementUtil {
         } else {
 
             for (CmsContainer cnt : containers) {
-                Map<String, CmsFormatterConfig> containerFormatters = new LinkedHashMap<String, CmsFormatterConfig>();
                 boolean missesFormatterSetting = !elementData.getSettings().containsKey(
                     CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
                 boolean allowNestedCnt = allowNested && checkContainerTreeLevel(cnt, containers);
@@ -476,45 +458,104 @@ public class CmsElementUtil {
                         && ((element.getFormatterId() == null)
                             || element.getFormatterId().equals(formatter.getJspStructureId()))) {
                         elementData.getSettings().put(CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()), id);
-                        missesFormatterSetting = false;
                     }
-                    String label = formatter.getNiceName();
-                    if (formatterEntry.getKey().startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
-                        label = Messages.get().getBundle().key(Messages.GUI_SCHEMA_FORMATTER_LABEL_0)
-                            + " ["
-                            + CmsResource.getName(formatter.getJspRootPath())
-                            + "]";
-                    }
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
-                        label = id;
-                    }
-                    CmsFormatterConfig config = new CmsFormatterConfig(id);
-                    Set<String> cssResources = new LinkedHashSet<String>();
-                    for (String cssSitePath : formatter.getCssHeadIncludes()) {
-                        cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
-                    }
-                    config.setCssResources(cssResources);
-                    config.setInlineCss(formatter.getInlineCss());
-                    config.setLabel(label);
-                    Map<String, CmsXmlContentProperty> settingsConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
-                        formatter.getSettings());
-                    settingsConfig = CmsXmlContentPropertyHelper.resolveMacrosForPropertyInfo(
-                        m_cms,
-                        page,
-                        element.getResource(),
-                        settingsConfig);
-                    config.setSettingConfig(settingsConfig);
-                    config.setJspRootPath(formatter.getJspRootPath());
-                    containerFormatters.put(id, config);
                 }
-                formatters.put(cnt.getName(), containerFormatters);
             }
             // get the formatter configuration
             Map<String, String> contentsByName = getContentsByContainerName(element, containers, allowNested);
             contents = contentsByName;
         }
         elementData.setContents(contents);
-        elementData.setFormatters(formatters);
+        m_cms.getRequestContext().setLocale(requestLocale);
+        return elementData;
+    }
+
+    /**
+     * Returns the formatter and settings config data for an element.<p>
+     *
+     * @param page the current container page
+     * @param element the resource
+     * @param containerId the parent container id
+     * @param containers the containers on the current container page
+     * @param allowNested if nested containers are allowed
+     *
+     * @return the data for an element
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsContainerElementData getElementSettingsConfig(
+        CmsResource page,
+        CmsContainerElementBean element,
+        String containerId,
+        Collection<CmsContainer> containers,
+        boolean allowNested)
+    throws CmsException {
+
+        Locale requestLocale = m_cms.getRequestContext().getLocale();
+        m_cms.getRequestContext().setLocale(m_locale);
+        element.initResource(m_cms);
+        if (element.getResource().isFolder()) {
+            return null;
+        }
+        CmsContainerElementData elementData = getBaseElementData(page, element);
+        if (!element.isGroupContainer(m_cms) && !element.isInheritedContainer(m_cms)) {
+            CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
+            Map<String, Map<String, CmsFormatterConfig>> formatters = new HashMap<String, Map<String, CmsFormatterConfig>>();
+            for (CmsContainer cnt : containers) {
+                if (cnt.getName().equals(containerId)) {
+                    Map<String, CmsFormatterConfig> containerFormatters = new LinkedHashMap<String, CmsFormatterConfig>();
+                    boolean missesFormatterSetting = !elementData.getSettings().containsKey(
+                        CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
+                    boolean allowNestedCnt = allowNested && checkContainerTreeLevel(cnt, containers);
+                    Map<String, I_CmsFormatterBean> formatterSelection = formatterConfiguraton.getFormatterSelection(
+                        cnt.getType(),
+                        cnt.getWidth(),
+                        allowNestedCnt);
+                    for (Entry<String, I_CmsFormatterBean> formatterEntry : formatterSelection.entrySet()) {
+                        I_CmsFormatterBean formatter = formatterEntry.getValue();
+                        String id = formatterEntry.getKey();
+                        if (missesFormatterSetting
+                            && ((element.getFormatterId() == null)
+                                || element.getFormatterId().equals(formatter.getJspStructureId()))) {
+                            elementData.getSettings().put(
+                                CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()),
+                                id);
+                        }
+                        String label = formatter.getNiceName();
+                        if (formatterEntry.getKey().startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
+                            label = Messages.get().getBundle().key(Messages.GUI_SCHEMA_FORMATTER_LABEL_0)
+                                + " ["
+                                + CmsResource.getName(formatter.getJspRootPath())
+                                + "]";
+                        }
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
+                            label = id;
+                        }
+                        CmsFormatterConfig config = new CmsFormatterConfig(id);
+                        Set<String> cssResources = new LinkedHashSet<String>();
+                        for (String cssSitePath : formatter.getCssHeadIncludes()) {
+                            cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
+                        }
+                        config.setCssResources(cssResources);
+                        config.setInlineCss(formatter.getInlineCss());
+                        config.setLabel(label);
+                        Map<String, CmsXmlContentProperty> settingsConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
+                            formatter.getSettings());
+                        settingsConfig = CmsXmlContentPropertyHelper.resolveMacrosForPropertyInfo(
+                            m_cms,
+                            page,
+                            element.getResource(),
+                            settingsConfig);
+                        config.setSettingConfig(settingsConfig);
+                        config.setJspRootPath(formatter.getJspRootPath());
+                        containerFormatters.put(id, config);
+                    }
+                    formatters.put(cnt.getName(), containerFormatters);
+                }
+            }
+            elementData.setFormatters(formatters);
+        }
+
         m_cms.getRequestContext().setLocale(requestLocale);
         return elementData;
     }
@@ -689,6 +730,38 @@ public class CmsElementUtil {
             LOG.warn("Max container nesting exceeded for " + container.getName() + ": " + level);
         }
         return result;
+    }
+
+    /**
+     * Returns the base element data for the given element bean, without content or formatter info.<p>
+     *
+     * @param page the current container page
+     * @param element the resource
+     *
+     * @return base element data
+     *
+     * @throws CmsException in case reading the data fails
+     */
+    private CmsContainerElementData getBaseElementData(CmsResource page, CmsContainerElementBean element)
+    throws CmsException {
+
+        CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
+        CmsContainerElementData elementData = new CmsContainerElementData();
+        setElementInfo(element, elementData);
+
+        elementData.setLastModifiedDate(element.getResource().getDateLastModified());
+        elementData.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
+        elementData.setNavText(resUtil.getNavText());
+        Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
+            m_cms,
+            page,
+            element.getResource());
+        elementData.setSettings(
+            CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
+                m_cms,
+                element.getIndividualSettings(),
+                settingConfig));
+        return elementData;
     }
 
     /**
