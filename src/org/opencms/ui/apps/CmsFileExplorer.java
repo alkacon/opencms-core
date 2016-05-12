@@ -1628,12 +1628,14 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                 continue;
             }
             CmsUUID level = null;
-            for (Object id : children) {
-                if (m_treeContainer.getItem(id).getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).getValue().equals(pathItems[i])) {
-                    level = (CmsUUID)id;
-                    m_fileTree.expandItem(level);
-                    break;
+            if (children != null) {
+                for (Object id : children) {
+                    if (m_treeContainer.getItem(id).getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).getValue().equals(pathItems[i])) {
+                        level = (CmsUUID)id;
+                        m_fileTree.expandItem(level);
+                        break;
+                    }
                 }
             }
             if ((level == null) || level.equals(folderId)) {
