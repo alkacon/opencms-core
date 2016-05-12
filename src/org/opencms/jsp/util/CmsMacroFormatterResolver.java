@@ -148,95 +148,94 @@ public class CmsMacroFormatterResolver {
             return;
         }
 
-        int pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
-        int po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD);
+        int newDelimPos = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
+        int oldDelomPos = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD);
 
-        if ((po == -1) && (pn == -1)) {
+        if ((oldDelomPos == -1) && (newDelimPos == -1)) {
             // no macro delimiter found in input
-            m_response.getOutputStream().print(input);
+            m_context.getOut().print(input);
             return;
         }
 
         int len = input.length();
-        int np, pp1, pp2, e;
+        int nextDelimPos, delimPos1, delimPos2, endPos;
         String macro;
-        char ds, de;
-        int p;
+        char startChar, endChar;
+        int delimPos;
 
-        if ((po == -1) || ((pn > -1) && (pn < po))) {
-            p = pn;
-            ds = I_CmsMacroResolver.MACRO_START;
-            de = I_CmsMacroResolver.MACRO_END;
+        if ((oldDelomPos == -1) || ((newDelimPos > -1) && (newDelimPos < oldDelomPos))) {
+            delimPos = newDelimPos;
+            startChar = I_CmsMacroResolver.MACRO_START;
+            endChar = I_CmsMacroResolver.MACRO_END;
         } else {
-            p = po;
-            ds = I_CmsMacroResolver.MACRO_START_OLD;
-            de = I_CmsMacroResolver.MACRO_END_OLD;
+            delimPos = oldDelomPos;
+            startChar = I_CmsMacroResolver.MACRO_START_OLD;
+            endChar = I_CmsMacroResolver.MACRO_END_OLD;
         }
 
         // append chars before the first delimiter found
-        m_context.getOut().print(input.substring(0, p));
+        m_context.getOut().print(input.substring(0, delimPos));
         do {
-            pp1 = p + 1;
-            pp2 = pp1 + 1;
-            if (pp2 >= len) {
+            delimPos1 = delimPos + 1;
+            delimPos2 = delimPos1 + 1;
+            if (delimPos2 >= len) {
                 // remaining chars can't be a macro (minimum size is 3)
-                m_context.getOut().print(input.substring(p, len));
+                m_context.getOut().print(input.substring(delimPos, len));
                 break;
             }
             // get the next macro delimiter
-            if ((pn > -1) && (pn < pp1)) {
-                pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, pp1);
+            if ((newDelimPos > -1) && (newDelimPos < delimPos1)) {
+                newDelimPos = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, delimPos1);
             }
-            if ((po > -1) && (po < pp1)) {
-                po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD, pp1);
+            if ((oldDelomPos > -1) && (oldDelomPos < delimPos1)) {
+                oldDelomPos = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD, delimPos1);
             }
-            if ((po == -1) && (pn == -1)) {
+            if ((oldDelomPos == -1) && (newDelimPos == -1)) {
                 // none found, make sure remaining chars in this segment are appended
-                np = len;
+                nextDelimPos = len;
             } else {
                 // check if the next delimiter is old or new style
-                if ((po == -1) || ((pn > -1) && (pn < po))) {
-                    np = pn;
+                if ((oldDelomPos == -1) || ((newDelimPos > -1) && (newDelimPos < oldDelomPos))) {
+                    nextDelimPos = newDelimPos;
                 } else {
-                    np = po;
+                    nextDelimPos = oldDelomPos;
                 }
             }
             // check if the next char is a "macro start"
-            char st = input.charAt(pp1);
-            if (st == ds) {
+            char start = input.charAt(delimPos1);
+            if (start == startChar) {
                 // we have a starting macro sequence "${" or "%(", now check if this segment contains a "}" or ")"
-                e = input.indexOf(de, p);
-                if ((e > 0) && (e < np)) {
+                endPos = input.indexOf(endChar, delimPos);
+                if ((endPos > 0) && (endPos < nextDelimPos)) {
                     // this segment contains a closing macro delimiter "}" or "]", so we may have found a macro
-                    macro = input.substring(pp2, e);
+                    macro = input.substring(delimPos2, endPos);
                     // resolve macro
                     try {
                         printMacroValue(macro);
                     } catch (Exception ex) {
                         LOG.error("Writing value for macro '" + macro + "' failed.", ex);
                     }
-                    e++;
+                    endPos++;
                 } else {
                     // no complete macro "${...}" or "%(...)" in this segment
-                    e = p;
+                    endPos = delimPos;
                 }
             } else {
                 // no macro start char after the "$" or "%"
-                e = p;
+                endPos = delimPos;
             }
             // set macro style for next delimiter found
-            if (np == pn) {
-                ds = I_CmsMacroResolver.MACRO_START;
-                de = I_CmsMacroResolver.MACRO_END;
+            if (nextDelimPos == newDelimPos) {
+                startChar = I_CmsMacroResolver.MACRO_START;
+                endChar = I_CmsMacroResolver.MACRO_END;
             } else {
-                ds = I_CmsMacroResolver.MACRO_START_OLD;
-                de = I_CmsMacroResolver.MACRO_END_OLD;
+                startChar = I_CmsMacroResolver.MACRO_START_OLD;
+                endChar = I_CmsMacroResolver.MACRO_END_OLD;
             }
             // append the remaining chars after the macro to the start of the next macro
-            m_context.getOut().print(input.substring(e, np));
-            // this is a nerdy joke ;-)
-            p = np;
-        } while (p < len);
+            m_context.getOut().print(input.substring(endPos, nextDelimPos));
+            delimPos = nextDelimPos;
+        } while (delimPos < len);
     }
 
     /**
