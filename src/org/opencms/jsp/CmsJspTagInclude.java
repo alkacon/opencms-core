@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
+import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.loader.I_CmsResourceStringDumpLoader;
@@ -157,7 +158,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         Map<String, String[]> paramMap,
         Map<String, Object> attrMap,
         ServletRequest req,
-        ServletResponse res) throws JspException {
+        ServletResponse res)
+    throws JspException {
 
         // no locale and no cachable parameter are used by default
         includeTagAction(context, target, element, null, editable, true, paramMap, attrMap, req, res);
@@ -191,7 +193,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         Map<String, String[]> paramMap,
         Map<String, Object> attrMap,
         ServletRequest req,
-        ServletResponse res) throws JspException {
+        ServletResponse res)
+    throws JspException {
 
         // the Flex controller provides access to the internal OpenCms structures
         CmsFlexController controller = CmsFlexController.getController(req);
@@ -276,7 +279,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         String element,
         Locale locale,
         ServletRequest req,
-        ServletResponse res) throws JspException {
+        ServletResponse res)
+    throws JspException {
 
         try {
             // include is not cachable
@@ -307,11 +311,18 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     locale,
                     (HttpServletRequest)req,
                     (HttpServletResponse)res);
-                // use the encoding from the property or the system default if not available
-                String encoding = cms.readPropertyObject(
-                    file,
-                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                    true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
+
+                String encoding;
+                if (loader instanceof CmsJspLoader) {
+                    // in case of JSPs use the response encoding
+                    encoding = res.getCharacterEncoding();
+                } else {
+                    // use the encoding from the property or the system default if not available
+                    encoding = cms.readPropertyObject(
+                        file,
+                        CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                        true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
+                }
                 // If the included target issued a redirect null will be returned from loader
                 if (result == null) {
                     result = new byte[0];
@@ -357,7 +368,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         Map<String, String[]> parameterMap,
         Map<String, Object> attributeMap,
         ServletRequest req,
-        ServletResponse res) throws JspException {
+        ServletResponse res)
+    throws JspException {
 
         try {
 
