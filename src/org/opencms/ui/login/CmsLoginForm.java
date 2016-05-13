@@ -56,6 +56,12 @@ import elemental.events.KeyboardEvent.KeyCode;
 @DesignRoot
 public class CmsLoginForm extends VerticalLayout {
 
+    /** The private PC type constant. */
+    public static final String PC_TYPE_PRIVATE = "private";
+
+    /** The public PC type constant. */
+    public static final String PC_TYPE_PUBLIC = "public";
+
     /** Version id. */
     private static final long serialVersionUID = 1L;
 
@@ -88,7 +94,6 @@ public class CmsLoginForm extends VerticalLayout {
 
     /** The security field, which allows the user to choose between a private or public PC. */
     private OptionGroup m_securityField;
-
     /** Widget for entering the user name.  */
     private TextField m_userField;
 
@@ -107,17 +112,17 @@ public class CmsLoginForm extends VerticalLayout {
         macros.put("showSecure", "" + controller.isShowSecure());
         String pctype = controller.getPcType();
         CmsVaadinUtils.readAndLocalizeDesign(this, messages, macros);
-        m_securityField.addItem("public");
-        m_securityField.addItem("private");
+        m_securityField.addItem(PC_TYPE_PUBLIC);
+        m_securityField.addItem(PC_TYPE_PRIVATE);
         m_securityField.setValue(pctype);
         m_copyright.setContentMode(ContentMode.HTML);
         m_copyright.setValue(CmsLoginHelper.getCopyrightHtml(locale));
 
         m_securityField.setItemCaption(
-            "private",
+            PC_TYPE_PRIVATE,
             messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PRIVATE_0));
         m_securityField.setItemCaption(
-            "public",
+            PC_TYPE_PUBLIC,
             messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PUBLIC_0));
         setWidth("600px");
         m_loginButton.setClickShortcut(KeyCode.ENTER);

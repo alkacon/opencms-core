@@ -43,7 +43,6 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
-import org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsFileUtil;
@@ -83,7 +82,7 @@ import com.vaadin.ui.Window.CloseListener;
  * The UI class for the Vaadin-based login dialog.<p>
  */
 @Theme("opencms")
-public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
+public class CmsLoginUI extends A_CmsUI {
 
     /**
      * Parameters which are initialized during the initial page load of the login dialog.<p>
@@ -363,7 +362,9 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#getOrgUnit()
+     * Gets the selected org unit.<p>
+     *
+     * @return the selected org unit
      */
     public String getOrgUnit() {
 
@@ -376,7 +377,9 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#getPassword()
+     * Gets the password.<p>
+     *
+     * @return the password
      */
     public String getPassword() {
 
@@ -384,19 +387,23 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#getPcType()
+     * Gets the selected PC type.<p>
+     *
+     * @return the PC type
      */
     public String getPcType() {
 
         String result = m_loginForm.getPcType();
         if (result == null) {
-            result = "public";
+            result = CmsLoginForm.PC_TYPE_PUBLIC;
         }
         return result;
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#getUser()
+     * Gets the user name.<p>
+     *
+     * @return the user name
      */
     public String getUser() {
 
@@ -404,17 +411,22 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#openLoginTarget(org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo)
+     * Opens the login target for a logged in user.<p>
+     *
+     * @param loginTarget the login target
+     * @param isPublicPC the public PC flag
      */
-    public void openLoginTarget(CmsLoginTargetInfo targetInfo) {
+    public void openLoginTarget(String loginTarget, boolean isPublicPC) {
 
         // login was successful, remove login init data from session
         VaadinService.getCurrentRequest().getWrappedSession().removeAttribute(INIT_DATA_SESSION_ATTR);
-        m_targetOpener.openTarget(targetInfo.getTarget());
+        m_targetOpener.openTarget(loginTarget, isPublicPC);
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#setSelectableOrgUnits(java.util.List)
+     * Sets the org units which should be selectable by the user.<p>
+     *
+     * @param ous the selectable org units
      */
     public void setSelectableOrgUnits(List<CmsOrganizationalUnit> ous) {
 
@@ -422,15 +434,18 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#showAlreadyLoggedIn()
+     * Show notification that the user is already loogged in.<p>
      */
     public void showAlreadyLoggedIn() {
 
-        throw new UnsupportedOperationException("Not implemented yet, this shouldn't even be called.");
+        // TODO: do something useful
+        Notification.show("You are already logged in");
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#showForgotPasswordView(java.lang.String)
+     * Shows the 'forgot password view'.<p>
+     *
+     * @param authToken the authorization token given as a request parameter
      */
     public void showForgotPasswordView(String authToken) {
 
@@ -464,7 +479,9 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#showLoginError(java.lang.String)
+     * Shows the given login error message.<p>
+     *
+     * @param messageHtml the message HTML
      */
     public void showLoginError(String messageHtml) {
 
@@ -472,7 +489,9 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#showLoginView(java.lang.String)
+     * Initializes the login view.<p>
+     *
+     * @param preselectedOu a potential preselected OU
      */
     public void showLoginView(String preselectedOu) {
 
@@ -494,7 +513,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#showPasswordResetDialog()
+     * Shows the password reset dialog.<p>
      */
     public void showPasswordResetDialog() {
 

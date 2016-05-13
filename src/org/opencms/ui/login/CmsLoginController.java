@@ -211,7 +211,7 @@ public class CmsLoginController {
     private LoginParameters m_params;
 
     /** The UI instance. */
-    I_CmsLoginUI m_ui;
+    CmsLoginUI m_ui;
 
     /***
      * Creates a new instance.<p>
@@ -486,8 +486,8 @@ public class CmsLoginController {
                 CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
                 settings);
 
-            String loginTarget = getLoginTarget(currentCms, settings, m_params.getRequestedResource());
-            final CmsLoginTargetInfo targetInfo = new CmsLoginTargetInfo(loginTarget, user, password);
+            final String loginTarget = getLoginTarget(currentCms, settings, m_params.getRequestedResource());
+            final boolean isPublicPC = CmsLoginForm.PC_TYPE_PUBLIC.equals(pcType);
             if (OpenCms.getLoginManager().requiresUserDataCheck(currentCms, userObj)) {
                 I_CmsDialogContext context = new A_CmsDialogContext(ContextType.appToolbar, null, null) {
 
@@ -500,7 +500,7 @@ public class CmsLoginController {
                     @Override
                     public void finish(Collection<CmsUUID> result) {
 
-                        m_ui.openLoginTarget(targetInfo);
+                        m_ui.openLoginTarget(loginTarget, isPublicPC);
                     }
 
                     public void focus(CmsUUID structureId) {
@@ -536,7 +536,7 @@ public class CmsLoginController {
                 context.start(dialog.getTitle(UI.getCurrent().getLocale()), dialog);
             } else {
 
-                m_ui.openLoginTarget(targetInfo);
+                m_ui.openLoginTarget(loginTarget, isPublicPC);
             }
         } catch (Exception e) {
 
@@ -614,7 +614,7 @@ public class CmsLoginController {
      *
      * @param ui the login ui
      */
-    public void setUi(I_CmsLoginUI ui) {
+    public void setUi(CmsLoginUI ui) {
 
         m_ui = ui;
     }

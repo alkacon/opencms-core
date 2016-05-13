@@ -53,10 +53,11 @@ public class CmsLoginTargetOpener extends AbstractExtension {
      * Opens the login target.<p>
      *
      * @param target the login target URL
+     * @param isPublicPC the public PC flag
      */
-    public void openTarget(String target) {
+    public void openTarget(String target, boolean isPublicPC) {
 
-        getRpcProxy(I_CmsLoginTargetRpc.class).openTarget(target);
+        getRpcProxy(I_CmsLoginTargetRpc.class).openTarget(target, isPublicPC);
     }
 
 }

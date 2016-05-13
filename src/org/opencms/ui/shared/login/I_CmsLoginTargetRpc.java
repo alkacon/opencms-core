@@ -38,7 +38,8 @@ public interface I_CmsLoginTargetRpc extends ClientRpc {
      * Opens a login target.<p>
      *
      * @param target the login target
+     * @param isPublicPC the public PC flag
      */
-    void openTarget(String target);
+    void openTarget(String target, boolean isPublicPC);
 
 }
