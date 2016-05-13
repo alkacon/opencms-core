@@ -10,7 +10,9 @@
 			background-position: 50% 50%;
 			vertical-align: middle;
 			padding: 0px;
-			width: 60px;
+			height: 32px;
+			width: 32px;
+    		margin: 15px;
 			float: none;
 		}
 		table.main div.message{
