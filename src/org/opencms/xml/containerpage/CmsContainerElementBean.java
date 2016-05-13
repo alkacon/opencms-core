@@ -270,7 +270,8 @@ public class CmsContainerElementBean implements Cloneable {
         String targetFolder,
         Map<String, String> individualSettings,
         boolean isCopyModels,
-        Locale locale) throws CmsException {
+        Locale locale)
+    throws CmsException {
 
         if (!(resourceType instanceof CmsResourceTypeXmlContent)) {
             throw new IllegalArgumentException();
@@ -371,6 +372,9 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public String editorHash() {
 
+        if (m_editorHash == null) {
+            m_editorHash = m_elementId.toString() + getSettingsHash();
+        }
         return m_editorHash;
     }
 
