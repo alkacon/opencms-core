@@ -29,8 +29,10 @@ package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.LinkedList;
@@ -109,10 +111,16 @@ public class CmsRadioSelectWidget extends Composite implements I_CmsEditWidget {
         }
         m_scrollPanel.add(m_panel);
         m_scrollPanel.setResizable(false);
-        int height = (m_rowsToShow * 17);
-        if (m_radioButtons.size() < m_rowsToShow) {
-            height = (m_radioButtons.size() * 17);
+        int lineHeight = CmsClientStringUtil.parseInt(I_CmsLayoutBundle.INSTANCE.constants().css().lineHeightBig());
+        if (lineHeight <= 0) {
+            lineHeight = 17;
         }
+        int height = (m_rowsToShow * lineHeight);
+        if (m_radioButtons.size() < m_rowsToShow) {
+            height = (m_radioButtons.size() * lineHeight);
+        }
+        // account for padding
+        height += 8;
         m_scrollPanel.setDefaultHeight(height);
         m_scrollPanel.setHeight(height + "px");
         initWidget(m_scrollPanel);
