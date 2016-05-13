@@ -503,7 +503,8 @@ public class CmsWorkplaceAppManager {
                 new CmsScheduledJobsAppConfig(),
                 new CmsAppHierarchyConfiguration(),
                 new CmsEditorConfiguration(),
-                new CmsQuickLaunchEditorConfiguration()));
+                new CmsQuickLaunchEditorConfiguration(),
+                new CmsTraditionalWorkplaceConfiguration()));
         return result;
     }
 

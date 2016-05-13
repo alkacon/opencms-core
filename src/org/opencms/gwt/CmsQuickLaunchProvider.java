@@ -40,8 +40,11 @@ import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.CmsLegacyAppConfiguration;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
+import org.opencms.ui.apps.CmsTraditionalWorkplaceConfiguration;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
+import org.opencms.workplace.CmsWorkplace;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,13 +90,24 @@ public class CmsQuickLaunchProvider {
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         CmsUserSettings userSettings = new CmsUserSettings(m_cms);
         boolean usesNewWorkplace = userSettings.usesNewWorkplace();
-        for (I_CmsWorkplaceAppConfiguration config : OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(
-            m_cms)) {
+        List<I_CmsWorkplaceAppConfiguration> appConfigs = new ArrayList<I_CmsWorkplaceAppConfiguration>(
+            OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(m_cms));
+        if (!usesNewWorkplace) {
+            // the workplace app is only available within ADE in case of the traditional workplace user setting
+            I_CmsWorkplaceAppConfiguration config = OpenCms.getWorkplaceAppManager().getAppConfiguration(
+                CmsTraditionalWorkplaceConfiguration.APP_ID);
+            if ((config != null) && config.getVisibility(m_cms).isActive()) {
+                appConfigs.add(config);
+            }
+        }
+
+        for (I_CmsWorkplaceAppConfiguration config : appConfigs) {
             try {
                 boolean reload = false;
                 String link = null;
                 String errorTitle = null;
                 String errorMessage = null;
+                boolean useLegacyButtonStyle = config instanceof CmsLegacyAppConfiguration;
                 if (CmsFileExplorerConfiguration.APP_ID.equals(config.getId())) {
                     if (!usesNewWorkplace) {
                         continue;
@@ -136,6 +150,12 @@ public class CmsQuickLaunchProvider {
                         : "" + params.getPageId();
                         link = sitemapLink + "?path=" + params.getPath() + "&returncode=" + returnCode;
                     }
+                } else if (CmsTraditionalWorkplaceConfiguration.APP_ID.equals(config.getId())) {
+                    String resourceRootFolder = params.getPageId() != null
+                    ? CmsResource.getFolderPath(m_cms.readResource(params.getPageId()).getRootPath())
+                    : m_cms.getRequestContext().getSiteRoot();
+                    link = CmsWorkplace.getWorkplaceExplorerLink(m_cms, resourceRootFolder);
+                    useLegacyButtonStyle = true;
                 } else {
                     if (!usesNewWorkplace) {
                         continue;
@@ -155,12 +175,13 @@ public class CmsQuickLaunchProvider {
                     imageLink,
                     errorTitle,
                     errorMessage,
-                    config instanceof CmsLegacyAppConfiguration,
+                    useLegacyButtonStyle,
                     reload);
                 result.add(data);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+
         }
         return result;
     }

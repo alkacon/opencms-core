@@ -275,7 +275,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public static String getVaadinWorkplaceLink(CmsObject cms, String resourceRootFolder) {
 
-        String result;
         CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
         String siteRoot = site != null
         ? site.getSiteRoot()
@@ -289,8 +288,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             + siteRoot
             + "!!"
             + cms.getRequestContext().removeSiteRoot(resourceRootFolder);
-        result = link;
-        return result;
+        return link;
     }
 
     /**
@@ -1292,7 +1290,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         String formValidatorClass,
         Map<String, CmsValidationQuery> validationQueries,
         Map<String, String> values,
-        String config) throws CmsRpcException {
+        String config)
+    throws CmsRpcException {
 
         try {
             I_CmsFormValidator formValidator = instantiate(I_CmsFormValidator.class, formValidatorClass);
@@ -1391,7 +1390,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsResource resource,
         int notificationInterval,
         boolean notificationEnabled,
-        boolean modifySiblings) throws CmsException {
+        boolean modifySiblings)
+    throws CmsException {
 
         List<CmsResource> resources = new ArrayList<CmsResource>();
         if (modifySiblings) {
