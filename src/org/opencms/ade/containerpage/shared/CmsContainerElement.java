@@ -563,6 +563,11 @@ public class CmsContainerElement implements IsSerializable {
         m_title = title;
     }
 
+    /**
+     * Sets the was model group flag.<p>
+     *
+     * @param wasModelGroup the was model group flag to set
+     */
     public void setWasModelGroup(boolean wasModelGroup) {
 
         m_wasModelGroup = wasModelGroup;

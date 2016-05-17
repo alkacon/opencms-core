@@ -1516,6 +1516,53 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Requests the element settings config data for a container element specified by the client id. The data will be provided to the given call-back function.<p>
+     *
+     * @param clientId the element id
+     * @param containerId the parent container id
+     * @param callback the call-back to execute with the requested data
+     */
+    public void getElementSettingsConfig(
+        final String clientId,
+        final String containerId,
+        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(100, true);
+                getContainerpageService().getElementSettingsConfig(
+                    getData().getRpcContext(),
+                    clientId,
+                    containerId,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
+                    getLocale(),
+                    this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsContainerElementData result) {
+
+                if (result != null) {
+                    callback.execute(result);
+                }
+                stop(false);
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Returns the current element view.<p>
      *
      * @return the current element view
@@ -1787,51 +1834,51 @@ public final class CmsContainerpageController {
                     showDeleteCheckbox,
                     new AsyncCallback<Boolean>() {
 
-                    public void onFailure(Throwable caught) {
+                        public void onFailure(Throwable caught) {
 
-                        element.removeHighlighting();
-                    }
-
-                    public void onSuccess(Boolean shouldDeleteResource) {
-
-                        Runnable[] nextActions = new Runnable[] {};
-
-                        if (shouldDeleteResource.booleanValue()) {
-                            final CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
-
-                                @Override
-                                public void execute() {
-
-                                    start(200, true);
-
-                                    CmsUUID id = new CmsUUID(getServerId(element.getId()));
-                                    CmsCoreProvider.getVfsService().deleteResource(id, this);
-                                }
-
-                                @Override
-                                public void onResponse(Void result) {
-
-                                    stop(true);
-                                }
-                            };
-                            nextActions = new Runnable[] {null};
-                            nextActions[0] = new Runnable() {
-
-                                public void run() {
-
-                                    deleteAction.execute();
-                                }
-                            };
+                            element.removeHighlighting();
                         }
-                        I_CmsDropContainer container = element.getParentTarget();
-                        element.removeFromParent();
-                        if (container instanceof CmsContainerPageContainer) {
-                            ((CmsContainerPageContainer)container).checkEmptyContainers();
+
+                        public void onSuccess(Boolean shouldDeleteResource) {
+
+                            Runnable[] nextActions = new Runnable[] {};
+
+                            if (shouldDeleteResource.booleanValue()) {
+                                final CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
+
+                                    @Override
+                                    public void execute() {
+
+                                        start(200, true);
+
+                                        CmsUUID id = new CmsUUID(getServerId(element.getId()));
+                                        CmsCoreProvider.getVfsService().deleteResource(id, this);
+                                    }
+
+                                    @Override
+                                    public void onResponse(Void result) {
+
+                                        stop(true);
+                                    }
+                                };
+                                nextActions = new Runnable[] {null};
+                                nextActions[0] = new Runnable() {
+
+                                    public void run() {
+
+                                        deleteAction.execute();
+                                    }
+                                };
+                            }
+                            I_CmsDropContainer container = element.getParentTarget();
+                            element.removeFromParent();
+                            if (container instanceof CmsContainerPageContainer) {
+                                ((CmsContainerPageContainer)container).checkEmptyContainers();
+                            }
+                            cleanUpContainers();
+                            setPageChanged(nextActions);
                         }
-                        cleanUpContainers();
-                        setPageChanged(nextActions);
-                    }
-                });
+                    });
                 removeDialog.center();
             }
 
@@ -2504,7 +2551,8 @@ public final class CmsContainerpageController {
      */
     public CmsContainerPageElementPanel replaceContainerElement(
         CmsContainerPageElementPanel containerElement,
-        CmsContainerElementData elementData) throws Exception {
+        CmsContainerElementData elementData)
+    throws Exception {
 
         I_CmsDropContainer parentContainer = containerElement.getParentTarget();
         String containerId = parentContainer.getContainerId();

@@ -371,17 +371,20 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
         final String id = elementWidget.getId();
 
-        m_controller.getElement(id, new I_CmsSimpleCallback<CmsContainerElementData>() {
+        m_controller.getElementSettingsConfig(
+            id,
+            elementWidget.getParentTarget().getContainerId(),
+            new I_CmsSimpleCallback<CmsContainerElementData>() {
 
-            public void execute(final CmsContainerElementData elementBean) {
+                public void execute(final CmsContainerElementData elementBean) {
 
-                CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(
-                    m_controller,
-                    elementWidget,
-                    elementBean);
-                dialog.center();
-            }
-        });
+                    CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(
+                        m_controller,
+                        elementWidget,
+                        elementBean);
+                    dialog.center();
+                }
+            });
     }
 
     /**
