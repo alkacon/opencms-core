@@ -91,8 +91,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.util.concurrent.Striped;
 
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
@@ -131,6 +134,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
     /** Property for the organizational unit default project id. */
     private static final String ORGUNIT_PROPERTY_PROJECTID = CmsPropertyDefinition.PROPERTY_KEYWORDS;
+
+    /** Striped lock used to synchronize writing of additional infos for users. */
+    private static Striped<Lock> USER_INFO_LOCKS = Striped.lock(16);
 
     /** A digest to encrypt the passwords. */
     protected MessageDigest m_digest;
@@ -2988,41 +2994,50 @@ public class CmsUserDriver implements I_CmsUserDriver {
     protected void internalWriteUserInfos(CmsDbContext dbc, CmsUUID userId, Map<String, Object> additionalInfo)
     throws CmsDataAccessException {
 
-        // get the map of existing additional infos to compare it new additional infos
-        Map<String, Object> existingInfos = readUserInfos(dbc, userId);
+        Lock lock = USER_INFO_LOCKS.get(userId);
+        try {
+            lock.lock();
 
-        // loop over all entries of the existing additional infos
-        Iterator<Entry<String, Object>> itEntries = existingInfos.entrySet().iterator();
-        while (itEntries.hasNext()) {
-            Entry<String, Object> entry = itEntries.next();
-            if ((entry.getKey() != null) && (entry.getValue() != null)) {
-                // entry does not exist in new additional infos -> delete it
-                if (!additionalInfo.containsKey(entry.getKey())) {
-                    dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_DELETE);
-                    writeUserInfo(dbc, userId, entry.getKey(), entry.getValue());
-                } else {
-                    Object newValue = additionalInfo.get(entry.getKey());
-                    // entry does exist but has different value -> update it
-                    if ((newValue != null) && !newValue.equals(entry.getValue())) {
-                        dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_UPDATE);
-                        writeUserInfo(dbc, userId, entry.getKey(), newValue);
+            // get the map of existing additional infos to compare it new additional infos
+            Map<String, Object> existingInfos = readUserInfos(dbc, userId);
+
+            // loop over all entries of the existing additional infos
+            Iterator<Entry<String, Object>> itEntries = existingInfos.entrySet().iterator();
+            while (itEntries.hasNext()) {
+                Entry<String, Object> entry = itEntries.next();
+                if ((entry.getKey() != null) && (entry.getValue() != null)) {
+                    // entry does not exist in new additional infos -> delete it
+                    if (!additionalInfo.containsKey(entry.getKey())) {
+                        dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_DELETE);
+                        writeUserInfo(dbc, userId, entry.getKey(), entry.getValue());
+                    } else {
+                        Object newValue = additionalInfo.get(entry.getKey());
+                        // entry does exist but has different value -> update it
+                        if ((newValue != null) && !newValue.equals(entry.getValue())) {
+                            dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_UPDATE);
+                            writeUserInfo(dbc, userId, entry.getKey(), newValue);
+                        }
                     }
                 }
             }
-        }
 
-        // loop over all entries of the new additional infos
-        Iterator<Entry<String, Object>> itNewEntries = additionalInfo.entrySet().iterator();
-        while (itNewEntries.hasNext()) {
-            Entry<String, Object> entry = itNewEntries.next();
-            if ((entry.getKey() != null) && (entry.getValue() != null)) {
-                // entry doews not exist in the existing additional infos -> create a new one
-                if (!existingInfos.containsKey(entry.getKey())) {
-                    dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_INSERT);
-                    writeUserInfo(dbc, userId, entry.getKey(), entry.getValue());
+            // loop over all entries of the new additional infos
+            Iterator<Entry<String, Object>> itNewEntries = additionalInfo.entrySet().iterator();
+            while (itNewEntries.hasNext()) {
+                Entry<String, Object> entry = itNewEntries.next();
+                if ((entry.getKey() != null) && (entry.getValue() != null)) {
+                    // entry doews not exist in the existing additional infos -> create a new one
+                    if (!existingInfos.containsKey(entry.getKey())) {
+                        dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_INSERT);
+                        writeUserInfo(dbc, userId, entry.getKey(), entry.getValue());
+                    }
                 }
             }
+
+        } finally {
+            lock.unlock();
         }
+
     }
 
 }
