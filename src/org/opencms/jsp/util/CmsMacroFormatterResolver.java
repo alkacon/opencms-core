@@ -62,12 +62,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.logging.Log;
 
 /**
  * Resolver for macro formatters.<p>
  */
 public class CmsMacroFormatterResolver {
+
+    /** The parent macro key. */
+    public static final String KEY_CMS = "cms.";
+
+    /** The element macro key. */
+    public static final String KEY_ELEMENT = "element.";
+
+    /** The parent macro key. */
+    public static final String KEY_PARENT = "parent.";
+
+    /** The settings macro key. */
+    public static final String KEY_SETTINGS = "settings.";
 
     /** Node name. */
     public static final String N_FORMATTER = "Formatter";
@@ -81,9 +95,6 @@ public class CmsMacroFormatterResolver {
     /** Node name. */
     public static final String N_MACRO_NAME = "MacroName";
 
-    /** The settings macro key. */
-    public static final String SETTINGS_KEY = "settings.";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMacroFormatterResolver.class);
 
@@ -92,6 +103,9 @@ public class CmsMacroFormatterResolver {
 
     /** The page context. */
     private PageContext m_context;
+
+    /** The JSP context bean. */
+    private CmsJspStandardContextBean m_contextBean;
 
     /** The element to render. */
     private CmsContainerElementBean m_element;
@@ -125,8 +139,8 @@ public class CmsMacroFormatterResolver {
             return;
         }
         m_cms = controller.getCmsObject();
-        CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(m_reqest);
-        m_element = contextBean.getElement();
+        m_contextBean = CmsJspStandardContextBean.getInstance(m_reqest);
+        m_element = m_contextBean.getElement();
     }
 
     /**
@@ -271,6 +285,26 @@ public class CmsMacroFormatterResolver {
     }
 
     /**
+     * Returns the property value read from the given JavaBean.
+     *
+     * @param bean the JavaBean to read the property from
+     * @param property the property to read
+     *
+     * @return the property value read from the given JavaBean
+     */
+    protected Object getMacroBeanValue(Object bean, String property) {
+
+        Object result = null;
+        try {
+            PropertyUtilsBean propBean = BeanUtilsBean.getInstance().getPropertyUtils();
+            result = propBean.getProperty(bean, property);
+        } catch (Exception e) {
+            LOG.error("Unable to access property '" + property + "' of '" + bean + "'.", e);
+        }
+        return result;
+    }
+
+    /**
      * Returns the macro input string.<p>
      *
      * @return the macro input string
@@ -289,8 +323,25 @@ public class CmsMacroFormatterResolver {
      */
     protected void printMacroValue(String macro) throws IOException {
 
-        if (macro.startsWith(SETTINGS_KEY)) {
-            String settingValue = m_element.getSettings().get(macro.substring(SETTINGS_KEY.length()));
+        if (macro.startsWith(KEY_CMS)) {
+            Object result = getMacroBeanValue(m_contextBean, macro.substring(KEY_CMS.length()));
+            if (result != null) {
+                m_context.getOut().print(result);
+            }
+        } else if (macro.startsWith(KEY_ELEMENT)) {
+            Object result = getMacroBeanValue(m_contextBean.getElement(), macro.substring(KEY_ELEMENT.length()));
+            if (result != null) {
+                m_context.getOut().print(result);
+            }
+        } else if (macro.startsWith(KEY_PARENT)) {
+            Object result = getMacroBeanValue(
+                m_contextBean.getParentElement(m_element),
+                macro.substring(KEY_PARENT.length()));
+            if (result != null) {
+                m_context.getOut().print(result);
+            }
+        } else if (macro.startsWith(KEY_SETTINGS)) {
+            String settingValue = m_element.getSettings().get(macro.substring(KEY_SETTINGS.length()));
             if (settingValue != null) {
                 m_context.getOut().print(settingValue);
             }
