@@ -1567,6 +1567,53 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Requests the element settings config data for a container element specified by the client id. The data will be provided to the given call-back function.<p>
+     *
+     * @param clientId the element id
+     * @param containerId the parent container id
+     * @param callback the call-back to execute with the requested data
+     */
+    public void getElementSettingsConfig(
+        final String clientId,
+        final String containerId,
+        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(100, true);
+                getContainerpageService().getElementSettingsConfig(
+                    getData().getRpcContext(),
+                    clientId,
+                    containerId,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
+                    getLocale(),
+                    this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsContainerElementData result) {
+
+                if (result != null) {
+                    callback.execute(result);
+                }
+                stop(false);
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Returns the current element view.<p>
      *
      * @return the current element view
