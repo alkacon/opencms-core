@@ -352,8 +352,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 // ensure category repository exists
                 if (!cms.existsResource(localRepositoryPath)) {
                     tryUnlock(
-                        cms.createResource(localRepositoryPath, OpenCms.getResourceManager().getResourceType(
-                            CmsResourceTypeFolder.getStaticTypeName()).getTypeId()));
+                        cms.createResource(
+                            localRepositoryPath,
+                            OpenCms.getResourceManager().getResourceType(
+                                CmsResourceTypeFolder.getStaticTypeName()).getTypeId()));
                 }
                 createdCategory = catService.createCategory(cms, null, name, title, "", localRepositoryPath);
             } else {
@@ -417,7 +419,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String title,
         String description,
         CmsUUID copyId,
-        boolean isModelGroup) throws CmsRpcException {
+        boolean isModelGroup)
+    throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -715,7 +718,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String siteRoot = cms.getRequestContext().getSiteRoot();
             String exportRfsPrefix = OpenCms.getStaticExportManager().getDefaultRfsPrefix();
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
-            boolean isSecure = site.hasSecureServer();
+            boolean isSecure = (site != null) && site.hasSecureServer();
             String parentSitemap = null;
 
             if (configData.getBasePath() != null) {
@@ -1137,7 +1140,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsXmlContainerPage page,
         String containerName,
         CmsUUID elementId,
-        CmsUUID formatterId) throws CmsException {
+        CmsUUID formatterId)
+    throws CmsException {
 
         CmsContainerPageBean bean = page.getContainerPage(cms);
         List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
@@ -1615,10 +1619,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0);
                 List<CmsProperty> folderProperties = generateInheritProperties(change, entryFolder);
                 if (isNavigationLevel) {
-                    folderProperties.add(new CmsProperty(
-                        CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                        CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER,
-                        null));
+                    folderProperties.add(
+                        new CmsProperty(
+                            CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                            CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER,
+                            null));
                 }
                 entryFolder = cms.createResource(entryFolderPath, folderTypeId, null, folderProperties);
                 if (createSitemapFolderType != null) {
@@ -2105,7 +2110,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private List<CmsGalleryFolderEntry> getGalleriesForType(
         String entryPointUri,
         CmsGalleryType galleryType,
-        List<String> subSitePaths) throws CmsException {
+        List<String> subSitePaths)
+    throws CmsException {
 
         List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
         List<CmsResource> galleryFolders = getCmsObject().readResources(
@@ -2772,7 +2778,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         List<CmsDetailPageInfo> detailPages,
         CmsResource resource,
         CmsUUID newId,
-        CmsClientSitemapEntry updateEntry) throws CmsException {
+        CmsClientSitemapEntry updateEntry)
+    throws CmsException {
 
         CmsObject cms = getCmsObject();
         if (updateEntry != null) {
@@ -3029,7 +3036,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms,
         CmsResource ownRes,
         CmsResource defaultFileRes,
-        List<CmsPropertyModification> propertyModifications) throws CmsException {
+        List<CmsPropertyModification> propertyModifications)
+    throws CmsException {
 
         Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(ownRes, false));
         // determine if the title property should be changed in case of a 'NavText' change
