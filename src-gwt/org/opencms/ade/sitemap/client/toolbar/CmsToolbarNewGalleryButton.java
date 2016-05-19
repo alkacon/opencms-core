@@ -35,9 +35,9 @@ import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 
 import java.util.Collection;
 
@@ -62,7 +62,7 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
 
         super(
             Messages.get().key(Messages.GUI_TOOLBAR_NEW_GALLERY_TITLE_0),
-            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarAdd(),
+            I_CmsButton.ButtonData.WAND.getIconClass(),
             toolbar,
             controller);
         m_galleriesList = new CmsList<I_CmsListItem>();

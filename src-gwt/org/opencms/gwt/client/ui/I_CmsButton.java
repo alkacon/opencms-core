@@ -29,8 +29,6 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsExtendedToolbarButtonCss;
 
 /**
  * Interface to hold button related enumerations. To be used with {@link org.opencms.gwt.client.ui.CmsPushButton}
@@ -81,10 +79,10 @@ public interface I_CmsButton {
     public enum ButtonData {
 
         /** Toolbar button. */
-        ADD("opencms-icon-wand", Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
+        WAND("opencms-icon-wand", Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
 
         /** Toolbar button. */
-        ADD_TO_FAVORITES("opencms-icon-clipboard", Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
+        ADD_TO_FAVORITES("opencms-icon-favorite", Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
 
         /** Toolbar button. */
         BACK("opencms-icon-exit", Messages.get().key(Messages.GUI_TOOLBAR_BACK_0)),
@@ -99,7 +97,7 @@ public interface I_CmsButton {
         COPY_LOCALE("opencms-icon-copy-locale", Messages.get().key(Messages.GUI_TOOLBAR_COPY_LOCALE_0)),
 
         /** Toolbar button. */
-        DELETE(BUTTON_CSS.toolbarDelete(), Messages.get().key(Messages.GUI_TOOLBAR_DELETE_0)),
+        DELETE("opencms-icon-delete", Messages.get().key(Messages.GUI_TOOLBAR_DELETE_0)),
 
         /** Toolbar button. */
         EDIT("opencms-icon-pen", Messages.get().key(Messages.GUI_TOOLBAR_EDIT_0)),
@@ -114,25 +112,22 @@ public interface I_CmsButton {
         INFO("opencms-icon-info", Messages.get().key(Messages.GUI_TOOLBAR_INFO_0)),
 
         /** Inherited element button. */
-        INHERITED(BUTTON_CSS.toolbarInherited(), Messages.get().key(Messages.GUI_TOOLBAR_INHERITED_0)),
+        INHERITED("opencms-icon-sitemap", Messages.get().key(Messages.GUI_TOOLBAR_INHERITED_0)),
 
         /** Toolbar button. */
-        MOVE(BUTTON_CSS.toolbarMove(), Messages.get().key(Messages.GUI_TOOLBAR_MOVE_IN_0)),
+        MOVE("opencms-icon-move", Messages.get().key(Messages.GUI_TOOLBAR_MOVE_IN_0)),
 
         /** Toolbar button. */
-        NEW(BUTTON_CSS.toolbarNew(), Messages.get().key(Messages.GUI_TOOLBAR_NEW_0)),
+        NEW("opencms-icon-add", Messages.get().key(Messages.GUI_TOOLBAR_NEW_0)),
 
         /** Toolbar button. */
-        PROPERTIES(BUTTON_CSS.toolbarProperties(), Messages.get().key(Messages.GUI_TOOLBAR_PROPERTIES_0)),
+        SETTINGS("opencms-icon-settings", Messages.get().key(Messages.GUI_TOOLBAR_PROPERTIES_0)),
 
         /** Toolbar button. */
         PUBLISH("opencms-icon-publish", Messages.get().key(Messages.GUI_TOOLBAR_PUBLISH_0)),
 
         /** Toolbar button. */
-        REFRESH(BUTTON_CSS.toolbarRefresh(), Messages.get().key(Messages.GUI_TOOLBAR_REFRESH_0)),
-
-        /** Toolbar button. */
-        REMOVE(BUTTON_CSS.toolbarRemove(), Messages.get().key(Messages.GUI_TOOLBAR_REMOVE_0)),
+        REMOVE("opencms-icon-cut", Messages.get().key(Messages.GUI_TOOLBAR_REMOVE_0)),
 
         /** Toolbar button. */
         RESET("opencms-icon-exit", Messages.get().key(Messages.GUI_TOOLBAR_RESET_0)),
@@ -144,10 +139,7 @@ public interface I_CmsButton {
         SELECTION("opencms-icon-edit-point", Messages.get().key(Messages.GUI_TOOLBAR_SELECTION_0)),
 
         /** Shows formerly hidden elements. */
-        SHOW(BUTTON_CSS.toolbarNew(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
-
-        /** Toolbar button. */
-        SHOWSMALL(BUTTON_CSS.toolbarShowSmall(), Messages.get().key(Messages.GUI_TOOLBAR_SHOWSMALL_0)),
+        ADD("opencms-icon-add", Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
 
         /** Toolbar button. */
         SITEMAP("opencms-icon-sitemap", Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
@@ -184,6 +176,16 @@ public interface I_CmsButton {
         }
 
         /**
+         * Returns the icon class for small icons of 20x20.<p>
+         *
+         * @return the small icon class
+         */
+        public String getSmallIconClass() {
+
+            return m_iconClass + "-20";
+        }
+
+        /**
          * Returns the title.<p>
          *
          * @return the title
@@ -198,24 +200,19 @@ public interface I_CmsButton {
     public enum ButtonStyle {
 
         /** Font icon button. */
-        FONT_ICON(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll(), "opencms-icon"),
+        FONT_ICON(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll(), "opencms-icon"),
 
         /** Menu button. */
-        IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
+        IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
         /** Menu button. */
-        MENU(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMenuButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
+        MENU(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMenuButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
         /** Default button. */
-        TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()),
+        TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(), I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()),
 
         /** Transparent button. */
-        TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
         /** The list of additional style class names for this button style. */
         private String[] m_additionalClasses;
@@ -290,7 +287,4 @@ public interface I_CmsButton {
             return m_cssClassName;
         }
     }
-
-    /** The CSS bundle for the toolbar buttons. */
-    I_CmsExtendedToolbarButtonCss BUTTON_CSS = I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss();
 }

@@ -56,10 +56,10 @@ public class CmsAddOptionButton extends CmsPushButton implements I_CmsGroupEdito
     public CmsAddOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.SHOW.getIconClass());
+        setImageClass(I_CmsButton.ButtonData.ADD.getIconClass());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        setTitle(I_CmsButton.ButtonData.SHOW.getTitle());
-        addStyleName(I_CmsButton.ButtonData.SHOW.getIconClass());
+        setTitle(I_CmsButton.ButtonData.ADD.getTitle());
+        addStyleName(I_CmsButton.ButtonData.ADD.getIconClass());
         m_elementWidget = elementWidget;
         m_editor = editor;
     }

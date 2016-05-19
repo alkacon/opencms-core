@@ -54,13 +54,6 @@ div.cmsButtonBig div.html-face {
 	line-height: value("constants.css.lineHeightBig");
 }
 
-div.cmsButtonBig.cmsFontIconButton {
-	font-size: 32px;
-	height: 40px;
-	padding: 4px;
-	position: relative;
-}
-
 /** General styling for all buttons (don't let the background expand the button height and position it in the middle). */
 div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton, div.cmsFontIconButton {
 	height:auto !important;
@@ -78,9 +71,23 @@ div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton, div.cmsFontIcon
 
 
 /** Specific button styles (text-, transparent-, menu- and image-Button). */
-div.cmsMenuButton, div.cmsImageButton, div.cmsFontIconButton {
+div.cmsMenuButton, div.cmsImageButton {
     border: none;
     padding:2px 4px; 
+}
+div.cmsFontIconButton {
+	border: none;	
+	font-size: 20px;
+	height: 20px;
+	padding: 0px;
+	position: relative;
+}
+
+div.cmsButtonBig.cmsFontIconButton {
+	font-size: 32px;
+	height: 40px;
+	padding: 4px;
+	position: relative;
 }
 div.cmsTransparentButton {
     vertical-align:top;
@@ -105,6 +112,14 @@ div.cmsTransparentButton {
 
 div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsState.cmsState-up-hovering {
 	color:  #2197DB;
+	border-color: transparent;
+	background: transparent;
+}
+div.optionButton.cmsFontIconButton{
+	color: value("constants.css.textColorDisabledButton");
+}
+div.optionButton.cmsFontIconButton.cmsState.cmsState-down-hovering, div.optionButton.cmsFontIconButton.cmsState.cmsState-up-hovering {
+	color:  value("constants.css.textColor");
 	border-color: transparent;
 	background: transparent;
 }

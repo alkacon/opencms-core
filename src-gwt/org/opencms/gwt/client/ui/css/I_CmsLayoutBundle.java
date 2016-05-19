@@ -192,6 +192,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String optionButton();
+
+        /**
+         *  Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String red();
 
         /**

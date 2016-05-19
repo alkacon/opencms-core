@@ -51,6 +51,13 @@ public interface I_CmsDirectEditCss extends I_CmsToolbarButtonCss {
      *
      * @return a CSS class name
      */
+    String editableElement();
+
+    /**
+     * CSS class accessor.<p>
+     *
+     * @return a CSS class name
+     */
     String expiredListElementOverlay();
 
     /**
@@ -73,5 +80,4 @@ public interface I_CmsDirectEditCss extends I_CmsToolbarButtonCss {
      * @return a CSS class name
      */
     String showButtons();
-
 }

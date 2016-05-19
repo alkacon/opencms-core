@@ -30,8 +30,6 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 
-import com.google.gwt.dom.client.Document;
-
 /**
  * Abstract button class implementing common methods
  * of {@link org.opencms.gwt.client.ui.I_CmsToolbarButton}
@@ -47,8 +45,8 @@ implements I_CmsToolbarButton {
     /** The handler instance. */
     protected HANDLER m_handler;
 
-    /** The CSS class responsible for displaying the proper icon. */
-    private String m_iconClass;
+    /** The button data. */
+    private I_CmsButton.ButtonData m_buttonData;
 
     /** True if this button is active. */
     private boolean m_isActive;
@@ -61,11 +59,23 @@ implements I_CmsToolbarButton {
      */
     protected A_CmsToolbarButton(I_CmsButton.ButtonData buttonData, HANDLER handler) {
 
-        super(buttonData);
+        super();
+        m_buttonData = buttonData;
+        setImageClass(buttonData.getIconClass());
+        setTitle(buttonData.getTitle());
         setButtonStyle(ButtonStyle.FONT_ICON, null);
         setSize(Size.big);
         m_handler = handler;
-        m_iconClass = buttonData.getIconClass();
+    }
+
+    /**
+     * Returns the button data.<p>
+     *
+     * @return the button data
+     */
+    public I_CmsButton.ButtonData getButtonData() {
+
+        return m_buttonData;
     }
 
     /**
@@ -73,7 +83,7 @@ implements I_CmsToolbarButton {
      */
     public String getIconClass() {
 
-        return m_iconClass;
+        return m_buttonData.getIconClass();
     }
 
     /**
@@ -118,20 +128,6 @@ implements I_CmsToolbarButton {
         } else {
             onToolbarDeactivate();
             m_handler.setActiveButton(null);
-        }
-    }
-
-    /**
-     * Toggle function. Shows of the element option buttons only the ones associated with this button.<p>
-     *
-     * @param show <code>true</code> if to show the buttons
-     */
-    public void showSingleElementOption(boolean show) {
-
-        if (show) {
-            Document.get().getBody().addClassName(m_iconClass);
-        } else {
-            Document.get().getBody().removeClassName(m_iconClass);
         }
     }
 

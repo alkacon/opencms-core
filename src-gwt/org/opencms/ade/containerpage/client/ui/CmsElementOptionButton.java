@@ -31,6 +31,7 @@ import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 /**
  * An optional container element button.<p>
@@ -54,10 +55,10 @@ public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHa
     public CmsElementOptionButton(A_CmsToolbarOptionButton toolbarButton, CmsContainerPageElementPanel element) {
 
         super();
-        setImageClass(toolbarButton.getIconClass());
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setImageClass(toolbarButton.getButtonData().getSmallIconClass());
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         setTitle(toolbarButton.getTitle());
-        addStyleName(toolbarButton.getIconClass());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         m_toolbarButton = toolbarButton;
         m_dragElement = element;
     }
@@ -73,6 +74,14 @@ public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHa
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
+     */
+    public I_CmsDraggable getDraggable() {
+
+        return m_dragElement;
+    }
+
+    /**
      * Returns the associated tool-bar button.<p>
      *
      * @return the associated tool-bar button
@@ -80,14 +89,6 @@ public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHa
     public A_CmsToolbarOptionButton getToolbarButton() {
 
         return m_toolbarButton;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
-     */
-    public I_CmsDraggable getDraggable() {
-
-        return m_dragElement;
     }
 
 }

@@ -136,9 +136,9 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String ignoreSmallElements();
 
         /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
+        *
+        * @return the CSS class name
+        */
         String lockedElement();
 
         /** Access method.<p>
