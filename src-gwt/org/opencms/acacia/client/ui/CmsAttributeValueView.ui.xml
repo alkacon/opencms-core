@@ -4,20 +4,21 @@
 	xmlns:aui="urn:import:org.opencms.gwt.client.ui"
 	xmlns:ed="urn:import:org.opencms.acacia.client.ui">
 	<ui:with field="style" type="org.opencms.acacia.client.css.I_CmsLayoutBundle" />
+	<ui:with field="mainstyle" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{style.form.attributeValue}">
 		<g:FlowPanel ui:field="m_widgetHolder" styleName="{style.form.widgetHolder}" />
 		<g:FlowPanel ui:field="m_buttonBar" addStyleNames="{style.form.buttonBar}">
-			<aui:CmsPushButton ui:field="m_moveButton" addStyleNames="{style.form.button}" />
+			<aui:CmsPushButton ui:field="m_moveButton" addStyleNames="{style.form.button} {mainstyle.buttonCss.optionButton}" />
 			<ed:CmsAttributeChoiceWidget ui:field="m_addButton" addStyleNames="{style.form.button}"/>
 			<ed:CmsAttributeChoiceWidget ui:field="m_attributeChoice" addStyleNames="{style.form.button}"/>
 			<aui:CmsPushButton ui:field="m_upButton" addStyleNames="{style.form.button}" />
 			<aui:CmsPushButton ui:field="m_downButton" addStyleNames="{style.form.button}" />
-			<aui:CmsPushButton ui:field="m_removeButton" addStyleNames="{style.form.button}" />
+			<aui:CmsPushButton ui:field="m_removeButton" addStyleNames="{style.form.button} {mainstyle.buttonCss.optionButton}" />
 		</g:FlowPanel>
 		<div ui:field="m_helpBubble" class="{style.form.helpBubble}">
 			<div ui:field="m_helpBubbleText"></div>
 			<div class="{style.form.helpMessage}"><span class="{style.form.helpMessageIcon}"></span><span ui:field="m_messageText"></span></div>
-			<aui:CmsPushButton ui:field="m_helpBubbleClose" addStyleNames="{style.form.helpBubbleClose}" />
+			<aui:CmsPushButton ui:field="m_helpBubbleClose" addStyleNames="{style.form.helpBubbleClose} {mainstyle.buttonCss.optionButton}" />
 			<div class="{style.form.helpBubbleArrow}"></div>
 		</div>
 	</g:HTMLPanel>

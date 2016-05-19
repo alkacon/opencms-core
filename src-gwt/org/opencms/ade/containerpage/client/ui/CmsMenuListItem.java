@@ -33,8 +33,9 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -76,8 +77,9 @@ public class CmsMenuListItem extends CmsListItem {
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
 
         m_removeButton = new CmsPushButton();
-        m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
-        m_removeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_removeButton.setImageClass(I_CmsButton.ButtonData.REMOVE.getSmallIconClass());
+        m_removeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_removeButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         m_removeButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_REMOVE_TEXT_0));
         m_removeButton.addClickHandler(new ClickHandler() {
 
@@ -91,8 +93,9 @@ public class CmsMenuListItem extends CmsListItem {
             }
         });
         m_editButton = new CmsPushButton();
-        m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
-        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_editButton.setImageClass(I_CmsButton.ButtonData.EDIT.getSmallIconClass());
+        m_editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_editButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         m_editButton.setTitle(
             org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
         m_editButton.setEnabled(false);
@@ -117,7 +120,7 @@ public class CmsMenuListItem extends CmsListItem {
 
         m_editButton.disable(reason);
         if (locked) {
-            m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().lockIcon());
+            m_editButton.setImageClass("opencms-icon-lock-20");
         }
     }
 

@@ -27,8 +27,6 @@
 
 package org.opencms.acacia.client.css;
 
-import org.opencms.gwt.client.ui.css.I_CmsIconBundle;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.CssResource.Shared;
@@ -484,13 +482,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      */
     @Source("form.css")
     I_Style form();
-
-    /**
-     * Accessor for the icon resource bundle.<p>
-     *
-     * @return the icon resource bundle
-     */
-    I_CmsIconBundle icons();
 
     /**
      * Access method.<p>

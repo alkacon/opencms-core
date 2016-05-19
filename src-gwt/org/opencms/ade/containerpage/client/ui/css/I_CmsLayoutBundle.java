@@ -30,7 +30,6 @@ package org.opencms.ade.containerpage.client.ui.css;
 import org.opencms.gwt.client.ui.css.I_CmsBackgroundImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsDirectEditCss;
-import org.opencms.gwt.client.ui.css.I_CmsIconBundle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.core.client.GWT;
@@ -323,13 +322,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("groupcontainer.css")
     I_CmsGroupContainer groupcontainerCss();
-
-    /**
-     * The accessor for the images.<p>
-     *
-     * @return the image bundle
-     */
-    I_CmsIconBundle images();
 
     /**
      * The accessor for the other images.<p>

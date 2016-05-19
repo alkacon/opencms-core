@@ -31,9 +31,10 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.shared.CmsLinkBean;
@@ -108,8 +109,9 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         String label = Messages.get().key(Messages.GUI_LINK_CHECKBOX_EXTERNAL_0);
         m_externalCheckbox.setText(label);
         m_inputRow.setCellWidth(m_textbox.getTextBox(), "330px");
-        m_editButton.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().linkEdit());
-        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_editButton.setImageClass(I_CmsButton.ButtonData.EDIT.getSmallIconClass());
+        m_editButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
 
         m_editButton.addClickHandler(new ClickHandler() {
 

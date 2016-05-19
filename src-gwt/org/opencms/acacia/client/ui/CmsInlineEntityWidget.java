@@ -41,6 +41,7 @@ import org.opencms.acacia.shared.CmsType;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -388,10 +389,8 @@ public final class CmsInlineEntityWidget extends Composite {
         if (hasEditButton && (hasAddButton || hasRemoveButton || hasSortButtons)) {
             // set multi button mode
             addStyleName(I_CmsLayoutBundle.INSTANCE.form().multiButtonBar());
-            m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().bullsEyeIcon());
         } else {
             removeStyleName(I_CmsLayoutBundle.INSTANCE.form().multiButtonBar());
-            m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
         }
     }
 
@@ -668,11 +667,11 @@ public final class CmsInlineEntityWidget extends Composite {
             }
         }, ClickEvent.getType());
 
-        m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
-        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_editButton.setImageClass(I_CmsButton.ButtonData.EDIT.getSmallIconClass());
+        m_editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
 
-        m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
-        m_removeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_removeButton.setImageClass(I_CmsButton.ButtonData.REMOVE.getSmallIconClass());
+        m_removeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
 
         m_upButton.setImageClass(I_CmsImageBundle.INSTANCE.style().arrowUpIcon());
         m_upButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);

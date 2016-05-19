@@ -150,10 +150,6 @@ div.textArea textarea{
 	gwt-image: "inputImages.checkboxUncheckedDisabled";
 }
 
-@sprite .linkEdit {
-	gwt-image: "baseImages.icons.editIconActive";
-}
-
 @sprite .inherited {
 	gwt-image: "baseImages.icons.inheritedIcon";
 }
@@ -390,10 +386,11 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 	top: 4px;
 }
 
-.selectComboIcon {
-	position: absolute;
+div.selectComboIcon {
+	position: absolute !important;
 	right: 20px; 
 	top: 4px;
+	color: value("constants.css.textColor") !important;
 }
 
 .selectBoxRoot {

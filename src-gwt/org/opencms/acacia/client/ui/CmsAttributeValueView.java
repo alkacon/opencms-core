@@ -44,6 +44,7 @@ import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -127,8 +128,8 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
          */
         MoveHandle(CmsAttributeValueView draggable) {
 
-            setImageClass(I_CmsImageBundle.INSTANCE.style().bullsEyeIcon());
-            setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            setImageClass(I_CmsButton.ButtonData.MOVE.getSmallIconClass());
+            setButtonStyle(ButtonStyle.FONT_ICON, null);
             if (CmsEditorBase.hasDictionary()) {
                 setTitle(CmsEditorBase.getMessageForKey(CmsEditorBase.GUI_VIEW_MOVE_1, getLabel()));
             }
@@ -1066,8 +1067,8 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
             }
         }, ClickEvent.getType());
 
-        m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
-        m_removeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_removeButton.setImageClass(I_CmsButton.ButtonData.REMOVE.getSmallIconClass());
+        m_removeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
 
         m_upButton.setImageClass(I_CmsImageBundle.INSTANCE.style().arrowUpIcon());
         m_upButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
@@ -1075,8 +1076,8 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         m_downButton.setImageClass(I_CmsImageBundle.INSTANCE.style().arrowDownIcon());
         m_downButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
 
-        m_helpBubbleClose.setImageClass(I_CmsImageBundle.INSTANCE.style().closeIcon());
-        m_helpBubbleClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_helpBubbleClose.setImageClass(I_CmsButton.ButtonData.DELETE.getSmallIconClass());
+        m_helpBubbleClose.setButtonStyle(ButtonStyle.FONT_ICON, null);
 
         if (CmsEditorBase.hasDictionary()) {
             m_addButton.setTitle(CmsEditorBase.getMessageForKey(CmsEditorBase.GUI_VIEW_ADD_1, m_label));

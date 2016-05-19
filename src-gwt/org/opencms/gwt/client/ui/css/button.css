@@ -124,6 +124,10 @@ div.optionButton.cmsFontIconButton.cmsState.cmsState-down-hovering, div.optionBu
 	background: transparent;
 }
 
+div.optionButton.cmsFontIconButton div.html-face{
+	line-height: 18px;	
+}
+
 /**
  * State depended styles.
  */

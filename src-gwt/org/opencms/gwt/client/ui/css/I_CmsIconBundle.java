@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui.css;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
@@ -37,9 +36,6 @@ import com.google.gwt.resources.client.ImageResource;
  * @since 8.0.0
  */
 public interface I_CmsIconBundle extends ClientBundle {
-
-    /** Instance of this image bundle. */
-    I_CmsIconBundle INSTANCE = GWT.create(I_CmsIconBundle.class);
 
     /**
      * Access method.<p>
