@@ -295,11 +295,15 @@ public class CmsMacroFormatterResolver {
     protected Object getMacroBeanValue(Object bean, String property) {
 
         Object result = null;
-        try {
-            PropertyUtilsBean propBean = BeanUtilsBean.getInstance().getPropertyUtils();
-            result = propBean.getProperty(bean, property);
-        } catch (Exception e) {
-            LOG.error("Unable to access property '" + property + "' of '" + bean + "'.", e);
+        if ((bean != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(property)) {
+            try {
+                PropertyUtilsBean propBean = BeanUtilsBean.getInstance().getPropertyUtils();
+                result = propBean.getProperty(bean, property);
+            } catch (Exception e) {
+                LOG.error("Unable to access property '" + property + "' of '" + bean + "'.", e);
+            }
+        } else {
+            LOG.info("Invalid parameters: property='" + property + "' bean='" + bean + "'.");
         }
         return result;
     }
