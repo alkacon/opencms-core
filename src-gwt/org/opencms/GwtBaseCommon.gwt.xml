@@ -89,9 +89,9 @@
 
 	<set-configuration-property name="CssResource.style" value="pretty" /> 
 	<set-configuration-property name="CssResource.obfuscationPrefix" value="empty" /> 
-<!--  -->
+<!-- 
 	<set-property name="compiler.emulatedStack" value="true" />
 
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
-	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" /> -->
 </module>
