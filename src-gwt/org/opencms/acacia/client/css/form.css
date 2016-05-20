@@ -342,10 +342,6 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 	background: transparent;
 }
 
-.mce-window .mce-window-body{
-	background: #ffffff;
-} 
-
 .attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce > .mce-container-body > .mce-panel:first-child, 
 .attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
 	display: block;	
