@@ -1109,28 +1109,40 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
 
 artifacts {
     archives jar
-    archives javadocJar
+    
     archives sourcesJar
     if (project.hasProperty('publish_repository')){
         // do not include the war if only running the install task, it takes ages to build
         archives war
     }
     archives setupJar
-    archives javadocJarSetup
+    
     archives sourcesJarSetup
     archives gwtJar
-    archives javadocJarGwt
+    
     archives sourcesJarGwt
     archives testJar
-    archives javadocJarTest
+    
     archives sourcesJarTest
     tasks.each{ task ->
         if (task.name.startsWith("jar_org.opencms.")){
         	def moduleName=task.baseName
             archives task
-            archives tasks["javadocJar_$moduleName"]
             archives tasks["sourcesJar_$moduleName"]
         }
+    }
+    // in case the property 'skip_javadoc' is set to 'true', javadoc generation is skipped - this is supposed to speed up build time for CI
+    if (!(project.hasProperty('skip_javadoc') && skip_javadoc.toBoolean())){
+    	archives javadocJar
+    	archives javadocJarSetup
+    	archives javadocJarGwt
+    	archives javadocJarTest
+    	tasks.each{ task ->
+        if (task.name.startsWith("jar_org.opencms.")){
+        	def moduleName=task.baseName
+            archives tasks["javadocJar_$moduleName"]
+        }
+    }
     }
 }
 
