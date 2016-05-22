@@ -50,16 +50,9 @@
 		 }
 		 
 		 
-@if user.agent ie6 { 
-		 .topNewButton {
-			margin-left: 50px; 
-			width: 100px
-	      }
-} @else {
-		 .topNewButton {
+		.topNewButton {
 			margin-left: 10px; 
-		 }
-}
+		}
 	      
 	      .tableContainer {
 				width: 910px;
@@ -107,7 +100,7 @@
 	</ui:style>
 	<g:VerticalPanel addStyleNames="{inputstyle.inputCss.highTextBoxes}">
 		<cms:CmsFieldSet addStyleNames="{style.topButtonBox}" legend="{msg.messageNewFieldsetLegend}">
-			<g:HorizontalPanel addStyleNames="{style.topButtonInnerBox}">
+			<g:HorizontalPanel addStyleNames="{style.topButtonInnerBox}" verticalAlignment="middle">
 				<g:Label addStyleNames="{style.topButtonBoxLabel}">
 					<ui:text from="{msg.messageNewAliasLabel}"/>
 				</g:Label>
@@ -136,7 +129,7 @@
 		</cms:CmsFieldSet>
 		
 		<cms:CmsFieldSet addStyleNames="{style.topButtonBox}" legend="{msg.messageLegendNewRewrite}">
-			<g:HorizontalPanel addStyleNames="{style.topButtonInnerBox}">
+			<g:HorizontalPanel addStyleNames="{style.topButtonInnerBox}" verticalAlignment="middle">
 				<g:Label addStyleNames="{style.topButtonBoxLabel}" text="{msg.messageLabelRegex}" />
 				<input:CmsTextBox addStyleNames="{style.topTextBox1}" ui:field="m_newRewriteRegex"></input:CmsTextBox>
 				<g:Label addStyleNames="{style.topButtonBoxLabel}"  text="{msg.messageLabelReplacement}" />

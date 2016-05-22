@@ -88,9 +88,9 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
      */
     protected boolean checkVisible() {
 
-        return !CmsSitemapView.getInstance().isModelPageMode()
-            && (!CmsSitemapView.getInstance().isGalleryMode()
-                || getHoverbar().getController().getData().isGalleryManager());
+        return getHoverbar().getController().isEditable()
+            && !CmsSitemapView.getInstance().isModelPageMode()
+            && (!CmsSitemapView.getInstance().isGalleryMode() || getHoverbar().getController().getData().isGalleryManager());
     }
 
 }

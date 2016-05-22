@@ -63,7 +63,7 @@ public class CmsDeleteCategoryMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsUUID id = getHoverbar().getId();
-        boolean visible = (id != null) && !id.isNullUUID();
+        boolean visible = getHoverbar().getController().isEditable() && (id != null) && !id.isNullUUID();
         setVisible(visible);
     }
 

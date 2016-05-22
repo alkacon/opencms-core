@@ -53,8 +53,6 @@ implements I_CmsToolbarButton {
     public A_CmsToolbarMenu(I_CmsButton.ButtonData buttonData, HANDLER handler) {
 
         super(null, buttonData.getIconClass());
-        m_button.addStyleName(I_CmsButton.Size.big.getCssClassName());
-        m_button.addStyleName(I_CmsButton.ButtonStyle.FONT_ICON.getCssClassName());
         setToolbarMode(true);
         setOpenRight(true);
         m_handler = handler;

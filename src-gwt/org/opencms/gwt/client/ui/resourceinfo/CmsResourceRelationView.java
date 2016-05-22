@@ -39,13 +39,13 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHandler;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -210,19 +210,18 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                     new CmsResourceInfoView.ContextMenuHandler());
                 item.getListItemWidget().addButton(button);
                 final CmsResourceStatusRelationBean currentRelationBean = relationBean;
-                final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(
-                    relationBean.getInfoBean().getResourceType());
+                final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(relationBean.getInfoBean().getResourceType());
                 final boolean isXmlContent = relationBean.isXmlContent();
                 final boolean isEditable = (isXmlContent || isContainerpage)
                     && relationBean.getPermissionInfo().hasWritePermission();
                 if (isEditable) {
 
                     m_editButton = new CmsPushButton();
-                    m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
-                    m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                    m_editButton.setTitle(
-                        org.opencms.gwt.client.Messages.get().key(
-                            org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+                    m_editButton.setImageClass(I_CmsButton.ButtonData.EDIT.getSmallIconClass());
+                    m_editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+                    m_editButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
+                    m_editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+                        org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(relationBean.getPermissionInfo().getNoEditReason())) {
                         m_editButton.disable(relationBean.getPermissionInfo().getNoEditReason());
                     } else {
@@ -247,13 +246,13 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                                     new DialogOptions(),
                                     new I_CmsContentEditorHandler() {
 
-                                    public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+                                        public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
 
-                                        if (m_popup != null) {
-                                            m_popup.hide();
+                                            if (m_popup != null) {
+                                                m_popup.hide();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
                                 ((CmsPushButton)event.getSource()).clearHoverState();
                             }
                         }

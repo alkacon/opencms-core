@@ -159,8 +159,7 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public static CmsXmlContentProperty createBasicStringProperty(String name, String niceName) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(
-            name, //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(name, //name
             "string", // type
             "string", // widget
             "", // widgetconfig
@@ -203,6 +202,6 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        setVisible(true);
+        setVisible(getHoverbar().getController().isEditable());
     }
 }

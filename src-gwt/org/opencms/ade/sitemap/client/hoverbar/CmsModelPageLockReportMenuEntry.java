@@ -50,7 +50,7 @@ public class CmsModelPageLockReportMenuEntry extends CmsLockReportMenuEntry {
     @Override
     protected boolean checkVisible() {
 
-        return CmsSitemapView.getInstance().isModelPageMode();
+        return getHoverbar().getController().isEditable() && CmsSitemapView.getInstance().isModelPageMode();
 
     }
 

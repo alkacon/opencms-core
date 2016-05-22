@@ -105,6 +105,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         initWidget(uiBinder.createAndBindUi(this));
         m_button.setSize(I_CmsButton.Size.big);
         m_button.setButtonStyle(ButtonStyle.MENU, null);
+        m_button.addStyleName(I_CmsButton.ButtonStyle.FONT_ICON.getCssClassName());
         m_isOpen = false;
 
         m_popup = new CmsToolbarPopup(m_button, false, getElement());

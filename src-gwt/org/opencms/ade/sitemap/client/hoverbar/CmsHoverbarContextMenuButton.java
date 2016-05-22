@@ -28,10 +28,9 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsMenuButton;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
@@ -69,16 +68,15 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
      * @param hoverbar the hoverbar
      * @param menuItemProvider the context menu item provider
      */
-    public CmsHoverbarContextMenuButton(
-        final CmsSitemapHoverbar hoverbar,
-        I_CmsContextMenuItemProvider menuItemProvider) {
+    public CmsHoverbarContextMenuButton(final CmsSitemapHoverbar hoverbar, I_CmsContextMenuItemProvider menuItemProvider) {
 
-        super(null, I_CmsImageBundle.INSTANCE.buttonCss().hoverbarContext());
+        super(null, I_CmsButton.ButtonData.CONTEXT.getSmallIconClass());
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
         m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
-        m_button.setSize(Size.small);
+        m_button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
+        m_button.setSize(I_CmsButton.Size.medium);
         // set the widget
         setMenuWidget(m_menuPanel);
         //    getPopupContent().removeAutoHidePartner(getElement());
@@ -137,16 +135,13 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         result.add(new CmsAddToNavMenuEntry(hoverbar));
         result.add(new CmsBumpDetailPageMenuEntry(hoverbar));
         result.add(new CmsRefreshMenuEntry(hoverbar));
-        result.add(
-            new CmsAdvancedSubmenu(
-                hoverbar,
-                Arrays.asList(
-                    new CmsAvailabilityMenuEntry(hoverbar),
-                    new CmsLockReportMenuEntry(hoverbar),
-                    new CmsSeoMenuEntry(hoverbar),
-                    new CmsSubSitemapMenuEntry(hoverbar),
-                    new CmsMergeMenuEntry(hoverbar),
-                    new CmsRemoveMenuEntry(hoverbar))));
+        result.add(new CmsAdvancedSubmenu(hoverbar, Arrays.asList(
+            new CmsAvailabilityMenuEntry(hoverbar),
+            new CmsLockReportMenuEntry(hoverbar),
+            new CmsSeoMenuEntry(hoverbar),
+            new CmsSubSitemapMenuEntry(hoverbar),
+            new CmsMergeMenuEntry(hoverbar),
+            new CmsRemoveMenuEntry(hoverbar))));
         result.add(new CmsModelPageLockReportMenuEntry(hoverbar));
         result.add(new CmsDeleteMenuEntry(hoverbar));
 

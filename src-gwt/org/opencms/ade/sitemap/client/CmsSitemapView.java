@@ -69,6 +69,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -120,8 +121,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @since 8.0.0
  */
-public final class CmsSitemapView extends A_CmsEntryPoint
-implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
+public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
     /**
      * The sitemap tree open handler.<p>
@@ -150,9 +150,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                 target.setOpen(false);
                 getController().getChildren(target.getEntryId(), true, null);
             } else if (!m_initializing
-                && ((target.getChildren().getWidgetCount() > 0)
-                    && (((CmsSitemapTreeItem)target.getChild(
-                        0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED))) {
+                && ((target.getChildren().getWidgetCount() > 0) && (((CmsSitemapTreeItem)target.getChild(0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED))) {
                 // load grand children in advance
                 getController().getChildren(target.getEntryId(), false, null);
             }
@@ -350,23 +348,23 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                             !(id.isNullUUID()),
                             new I_CmsContextMenuItemProvider() {
 
-                            public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
+                                public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
 
-                                List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
+                                    List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
 
-                                result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
-                                result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
-                                return result;
-                            }
-                        });
+                                    result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
+                                    result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
+                                    return result;
+                                }
+                            });
                         if (input == localRoot) {
                             hoverbar.setAlwaysVisible();
                         }
                         CmsPushButton newButton = new CmsPushButton();
-                        newButton.setImageClass(
-                            org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
                         newButton.setTitle(Messages.get().key(Messages.GUI_SITEMAP_CONTEXT_MENU_CREATE_CATEGORY_0));
-                        newButton.setButtonStyle(ButtonStyle.IMAGE, null);
+                        newButton.setImageClass(I_CmsButton.ButtonData.ADD.getSmallIconClass());
+                        newButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+                        newButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
                         hoverbar.add(newButton);
                         newButton.addClickHandler(new ClickHandler() {
 
@@ -382,16 +380,16 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                                     hoverbarId,
                                     new AsyncCallback<CmsCategoryTitleAndName>() {
 
-                                    public void onFailure(Throwable caught) {
+                                        public void onFailure(Throwable caught) {
 
-                                        // do nothing
-                                    }
+                                            // do nothing
+                                        }
 
-                                    public void onSuccess(CmsCategoryTitleAndName result) {
+                                        public void onSuccess(CmsCategoryTitleAndName result) {
 
-                                        controller.createCategory(hoverbarId, result.getTitle(), result.getName());
-                                    }
-                                });
+                                            controller.createCategory(hoverbarId, result.getTitle(), result.getName());
+                                        }
+                                    });
                             }
                         });
                     }
@@ -714,9 +712,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             List<CmsClientSitemapEntry> listToAddTo = treeItem.isLoaded() ? openDescendants : closedDescendants;
             listToAddTo.add(entry);
         }
-        return new CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>>(
-            openDescendants,
-            closedDescendants);
+        return new CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>>(openDescendants, closedDescendants);
 
     }
 
@@ -792,9 +788,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         openItemsOnPath(sitePath);
         CmsSitemapTreeItem item = getTreeItem(sitePath);
         if (item != null) {
-            item.highlightTemporarily(
-                1500,
-                isLastPage(item.getSitemapEntry()) ? Background.YELLOW : Background.DEFAULT);
+            item.highlightTemporarily(1500, isLastPage(item.getSitemapEntry()) ? Background.YELLOW : Background.DEFAULT);
         }
     }
 
@@ -1073,8 +1067,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         page.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.generalCss().cornerAll());
         rootPanel.add(page);
         // initial content
-        final Label loadingLabel = new Label(
-            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
+        final Label loadingLabel = new Label(org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_LOADING_0));
         page.add(loadingLabel);
 
         // initialize the tree
@@ -1584,9 +1578,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      */
     private boolean isLastPage(CmsClientSitemapEntry entry) {
 
-        return ((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode())))
-            || ((entry.getDefaultFileId() != null)
-                && entry.getDefaultFileId().toString().equals(m_controller.getData().getReturnCode())));
+        return ((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode()))) || ((entry.getDefaultFileId() != null) && entry.getDefaultFileId().toString().equals(
+            m_controller.getData().getReturnCode())));
     }
 
     /**

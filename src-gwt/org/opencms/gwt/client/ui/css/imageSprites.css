@@ -1,25 +1,6 @@
 @external o-addIcon, o-checkIcon, html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
-@sprite .cmsState-down .addIcon, .cmsState-up-hovering .addIcon, .cmsState-down-hovering .addIcon, .o-addIcon:hover {
-    gwt-image: "icons.addIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .addIcon, .cmsState-up-disabled .addIcon, .cmsState-down-disabled .addIcon, .o-addIcon {
-    gwt-image: "icons.addIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-down .menuIcon, .cmsState-up-hovering .menuIcon, .cmsState-down-hovering .menuIcon{
-    gwt-image: "icons.menuIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .menuIcon, .cmsState-up-disabled .menuIcon, .cmsState-down-disabled .menuIcon{
-    gwt-image: "icons.menuIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
+
 @sprite .cmsState-down .deleteIcon, .cmsState-up-hovering .deleteIcon, .cmsState-down-hovering .deleteIcon{
     gwt-image: "icons.deleteIconActive";
     display: inline-block;
@@ -30,37 +11,7 @@
     display: inline-block;
     vertical-align: middle;
 }
-@sprite .cmsState-down .editIcon, .cmsState-up-hovering .editIcon, .cmsState-down-hovering .editIcon{
-    gwt-image: "icons.editIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .editIcon, .cmsState-up-disabled .editIcon, .cmsState-down-disabled .editIcon{
-    gwt-image: "icons.editIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
 
-@sprite .cmsState-down .removeIcon, .cmsState-up-hovering .removeIcon, .cmsState-down-hovering .removeIcon{
-    gwt-image: "icons.removeIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .removeIcon, .cmsState-up-disabled .removeIcon, .cmsState-down-disabled .removeIcon{
-    gwt-image: "icons.removeIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-down .moveIcon, .cmsState-up-hovering .moveIcon, .cmsState-down-hovering .moveIcon{
-    gwt-image: "icons.moveIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .moveIcon, .cmsState-up-disabled .moveIcon, .cmsState-down-disabled .moveIcon{
-    gwt-image: "icons.moveIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
 @sprite .cmsState-down .arrowDownIcon, .cmsState-up-hovering .arrowDownIcon, .cmsState-down-hovering .arrowDownIcon{
     gwt-image: "icons.arrowDownIconActive";
     display: inline-block;
@@ -89,20 +40,6 @@
 @sprite .cmsState-up .popupIcon, .cmsState-up-disabled .popupIcon, .cmsState-down-disabled .popupIcon{
     gwt-image: "icons.popupIconDeactivated";
     display: block;
-    vertical-align: middle;
-}
-
-
-@sprite .cmsState-down .propertyIcon, .cmsState-up-hovering .propertyIcon, .cmsState-down-hovering .propertyIcon{
-    gwt-image: "icons.propertyIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-
-
-@sprite .cmsState-up .propertyIcon, .cmsState-up-disabled .propertyIcon, .cmsState-down-disabled .propertyIcon{
-    gwt-image: "icons.propertyIconDeactivated";
-    display: inline-block;
     vertical-align: middle;
 }
 
@@ -165,74 +102,11 @@
 	cursor: pointer;
 }
 
-
-
-
-
 @sprite .cmsState-up .checkIcon, .cmsState-down-disabled .checkIcon, .cmsState-up-disabled .checkIcon, .o-checkIcon {
 	gwt-image: "icons.checkIconDeactivated";
 	display: inline-block;
 	vertical-align: middle;
 }
-
-
-
-
-
-
-
-
-@sprite .cmsState-down .uploadIcon, .cmsState-up-hovering .uploadIcon, .cmsState-down-hovering .uploadIcon{
-    gwt-image: "icons.uploadIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .uploadIcon, .cmsState-up-disabled .uploadIcon, .cmsState-down-disabled .uploadIcon{
-    gwt-image: "icons.uploadIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
-
-@sprite .cmsState-down .uploadSmallIcon, .cmsState-up-hovering .uploadSmallIcon, .cmsState-down-hovering .uploadSmallIcon{
-    gwt-image: "icons.uploadSmallIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .uploadSmallIcon, .cmsState-up-disabled .uploadSmallIcon, .cmsState-down-disabled .uploadSmallIcon{
-    gwt-image: "icons.uploadSmallIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
-
-@sprite .cmsState-down .bullsEyeIcon, .cmsState-up-hovering .bullsEyeIcon, .cmsState-down-hovering .bullsEyeIcon{
-    gwt-image: "icons.selectionIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .bullsEyeIcon, .cmsState-up-disabled .bullsEyeIcon, .cmsState-down-disabled .bullsEyeIcon{
-    gwt-image: "icons.selectionIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
-
-@sprite .cmsState-down .lockIcon, .cmsState-up-hovering .lockIcon, .cmsState-down-hovering .lockIcon{
-    gwt-image: "icons.lockIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .lockIcon, .cmsState-up-disabled .lockIcon, .cmsState-down-disabled .lockIcon{
-    gwt-image: "icons.lockIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
-
-
-@sprite div.opencmsSymbol, span.opencmsSymbol{
-	gwt-image: "opencmsSymbolImage";
-	display: inline-block;
-	cursor: pointer;
-}
-
 
 @sprite div.lockedIcon, span.lockedIcon{
 	gwt-image: "ratioLockedImage";
@@ -275,12 +149,6 @@
 
 @sprite .cmsState-up-hovering div.triangleRight,.cmsState-up-hovering span.triangleRight, .openerHover .cmsState-up span.triangleRight, .openerHover .cmsState-up div.triangleRight{
 	gwt-image: "triangleRightImage";
-	display: inline-block;
-	cursor: pointer;
-}
-
-@sprite div.closeIcon, span.closeIcon{
-	gwt-image: "closeImage";
 	display: inline-block;
 	cursor: pointer;
 }

@@ -62,9 +62,12 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public static boolean checkVisible(CmsUUID id) {
 
-        CmsNewResourceInfo info = CmsSitemapView.getInstance().getController().getData().getNewResourceInfoById(id);
-        boolean show = CmsSitemapView.getInstance().isModelPageMode()
-            && (((info != null) && info.isEditable()) || CmsSitemapView.getInstance().isModelGroupEntry(id));
+        boolean show = false;
+        if (CmsSitemapView.getInstance().getController().isEditable()) {
+            CmsNewResourceInfo info = CmsSitemapView.getInstance().getController().getData().getNewResourceInfoById(id);
+            show = CmsSitemapView.getInstance().isModelPageMode()
+                && (((info != null) && info.isEditable()) || CmsSitemapView.getInstance().isModelGroupEntry(id));
+        }
         return show;
     }
 
@@ -135,10 +138,8 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         CmsUUID id = entry.getId();
-        editModelPage(
-            entry.getSitePath(),
-            !CmsSitemapView.getInstance().isModelPageEntry(id)
-                && !CmsSitemapView.getInstance().isParentModelPageEntry(id));
+        editModelPage(entry.getSitePath(), !CmsSitemapView.getInstance().isModelPageEntry(id)
+            && !CmsSitemapView.getInstance().isParentModelPageEntry(id));
     }
 
     /**

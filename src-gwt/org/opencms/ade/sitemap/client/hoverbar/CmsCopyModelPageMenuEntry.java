@@ -138,9 +138,10 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
-        boolean show = CmsSitemapView.getInstance().isModelPageMode()
-            && (CmsSitemapView.getInstance().isModelPageEntry(id)
-                || CmsSitemapView.getInstance().isParentModelPageEntry(id));
+        boolean show = getHoverbar().getController().isEditable()
+            && CmsSitemapView.getInstance().isModelPageMode()
+            && (CmsSitemapView.getInstance().isModelPageEntry(id) || CmsSitemapView.getInstance().isParentModelPageEntry(
+                id));
         setVisible(show);
     }
 }

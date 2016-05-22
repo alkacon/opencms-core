@@ -33,7 +33,6 @@ import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -76,8 +75,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
          */
         MoveHandle(CmsListItem draggable) {
 
-            setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
-            setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            setImageClass(I_CmsButton.ButtonData.MOVE.getSmallIconClass());
+            setButtonStyle(ButtonStyle.FONT_ICON, null);
+            addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
             setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_TO_0));
             addStyleName(MOVE_HANDLE_MARKER_CLASS);
             m_draggable = draggable;
@@ -330,8 +330,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
             int newMoveHandleLeft = moveHandleLeft(m_helper);
             int newElemLeft = m_helper.getAbsoluteLeft();
-            m_offsetDelta = Optional.fromNullable(
-                new int[] {((newMoveHandleLeft - oldMoveHandleLeft) + oldElemLeft) - newElemLeft, 0});
+            m_offsetDelta = Optional.fromNullable(new int[] {
+                ((newMoveHandleLeft - oldMoveHandleLeft) + oldElemLeft) - newElemLeft,
+                0});
             m_provisionalParent.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
         }
         // ensure mouse out
@@ -540,8 +541,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         m_smallView = smallView;
         if (m_smallView) {
-            m_decoratedPanel.addDecorationBoxStyle(
-                I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBoxSmall());
+            m_decoratedPanel.addDecorationBoxStyle(I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBoxSmall());
         }
     }
 

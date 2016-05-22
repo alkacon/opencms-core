@@ -107,7 +107,7 @@ public class CmsDeleteModelPageMenuEntry extends A_CmsSitemapMenuEntry {
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         // gallery folders may only be deleted by gallery managers
-        boolean show = CmsSitemapView.getInstance().isModelPageMode();
+        boolean show = getHoverbar().getController().isEditable() && CmsSitemapView.getInstance().isModelPageMode();
         setVisible(show);
         if (show && !entry.isEditable()) {
             setActive(false);

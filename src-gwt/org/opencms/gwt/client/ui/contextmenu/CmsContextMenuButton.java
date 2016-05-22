@@ -30,8 +30,8 @@ package org.opencms.gwt.client.ui.contextmenu;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsLoadingAnimation;
 import org.opencms.gwt.client.ui.CmsMenuButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsClientCollectionUtil;
@@ -83,7 +83,9 @@ public class CmsContextMenuButton extends CmsMenuButton {
      */
     public CmsContextMenuButton(final CmsUUID structureId, final CmsContextMenuHandler handler) {
 
-        super(null, I_CmsImageBundle.INSTANCE.style().menuIcon());
+        super(null, I_CmsButton.ButtonData.CONTEXT.getSmallIconClass());
+        m_button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
+        m_button.setSize(I_CmsButton.Size.medium);
         setTitle(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0));
         m_noEntriesLabel = new CmsLabel(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_EMPTY_0));
         m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());

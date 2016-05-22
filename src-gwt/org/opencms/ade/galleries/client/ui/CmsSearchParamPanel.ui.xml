@@ -6,6 +6,6 @@
 	<ui:with field="gallery" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel addStyleNames="{gallery.galleryDialogCss.showParams} {resources.generalCss.cornerAll}">
 		<g:HTML ui:field="m_text" styleName="{gallery.galleryDialogCss.paramsText}"></g:HTML>
-		<cms:CmsPushButton ui:field="m_button" imageClass="{resources.gwtImages.style.closeIcon}"></cms:CmsPushButton>
+		<cms:CmsPushButton ui:field="m_button"></cms:CmsPushButton>
 	</g:FlowPanel>
 </ui:UiBinder>

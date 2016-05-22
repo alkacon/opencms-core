@@ -22,7 +22,7 @@ li div.itemContainer.cmsHovering{
 	border: 1px solid value("constants.css.borderColor");
 }
 
-.itemContainer div {
+.titleRow div, .itemAdditional div {
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");
 	line-height: 17px;

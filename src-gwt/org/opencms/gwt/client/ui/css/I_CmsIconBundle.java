@@ -42,22 +42,6 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/icons/addIconActive.png")
-    ImageResource addIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/addIconDeactivated.png")
-    ImageResource addIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/icons/arrowDownIconActive.png")
     ImageResource arrowDownIconActive();
 
@@ -138,57 +122,9 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/icons/editIconActive.png")
-    ImageResource editIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/editIconDeactivated.png")
-    ImageResource editIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/favoriteIconActive.png")
-    ImageResource favoriteIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/favoriteIconDeactivated.png")
-    ImageResource favoriteIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/gotoPageIcon.png")
-    ImageResource gotoPageIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/icons/gotoParentIcon.png")
     ImageResource gotoParentIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/gotoSubSitemapIcon.png")
-    ImageResource gotoSubSitemapIcon();
-
+    
     /**
      * Access method.<p>
      *
@@ -196,22 +132,6 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/hideShowInNavigationIcon.png")
     ImageResource hideShowInNavigationIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/infoIconActive.png")
-    ImageResource infoIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/infoIconDeactivated.png")
-    ImageResource infoIconDeactivated();
 
     /**
      * Access method.<p>
@@ -226,22 +146,6 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/icons/lockIconActive.png")
-    ImageResource lockIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/lockIconDeactivated.png")
-    ImageResource lockIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/icons/logoutIconActive.png")
     ImageResource logoutIconActive();
 
@@ -250,40 +154,8 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/icons/menuIconActive.png")
-    ImageResource menuIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/menuIconDeactivated.png")
-    ImageResource menuIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/icons/mergeSitemapIcon.png")
     ImageResource mergeSitemapIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/moveIconActive.png")
-    ImageResource moveIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/moveIconDeactivated.png")
-    ImageResource moveIconDeactivated();
 
     /**
      * Access method.<p>
@@ -318,44 +190,12 @@ public interface I_CmsIconBundle extends ClientBundle {
     ImageResource previewIconDeactivated();
 
     /**
-    * Access method.<p>
-    *
-    * @return the image resource
-    */
-    @Source("images/icons/propertyIconActive.png")
-    ImageResource propertyIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/propertyIconDeactivated.png")
-    ImageResource propertyIconDeactivated();
-
-    /**
      * Access method.<p>
      *
      * @return the image resource
      */
     @Source("images/icons/refreshIcon.png")
     ImageResource refreshIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/removeIconActive.png")
-    ImageResource removeIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/removeIconDeactivated.png")
-    ImageResource removeIconDeactivated();
 
     /**
      * Access method.<p>
@@ -396,22 +236,6 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/searchIconDeactivated.png")
     ImageResource searchIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/selectionIconActive.png")
-    ImageResource selectionIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/selectionIconDeactivated.png")
-    ImageResource selectionIconDeactivated();
 
     /**
      * Access method.<p>
@@ -460,38 +284,6 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/subSitemapIconDeactivated.png")
     ImageResource subSitemapIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/uploadIconActive.png")
-    ImageResource uploadIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/uploadIconDeactivated.png")
-    ImageResource uploadIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/uploadSmallIconActive.png")
-    ImageResource uploadSmallIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/uploadSmallIconDeactivated.png")
-    ImageResource uploadSmallIconDeactivated();
 
     /**
      * Access method.<p>

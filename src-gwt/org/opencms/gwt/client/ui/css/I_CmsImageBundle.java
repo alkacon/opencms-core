@@ -54,13 +54,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String addIcon();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String arrowDownIcon();
 
         /**
@@ -70,24 +63,11 @@ public interface I_CmsImageBundle extends ClientBundle {
          */
         String arrowUpIcon();
 
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String bullsEyeIcon();
-
         /** Access method.<p>
         *
         * @return the CSS class name
         */
         String checkIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String closeIcon();
 
         /** Access method.<p>
          *
@@ -118,12 +98,6 @@ public interface I_CmsImageBundle extends ClientBundle {
         * @return the CSS class name
         */
         String downloadGalleryIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String editIcon();
 
         /** Access method.<p>
         *
@@ -159,30 +133,6 @@ public interface I_CmsImageBundle extends ClientBundle {
         *
         * @return the CSS class name
         */
-        String lockIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String menuIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String moveIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String opencmsSymbol();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
         String popupIcon();
 
         /** Access method.<p>
@@ -195,20 +145,7 @@ public interface I_CmsImageBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String propertyIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String removeCroppingIcon();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String removeIcon();
 
         /** Access method.<p>
          *
@@ -257,18 +194,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String unlockedIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String uploadIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String uploadSmallIcon();
     }
 
     /** The bundle instance. */

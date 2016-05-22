@@ -90,7 +90,8 @@ public class CmsSetDefaultModelMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
-        boolean show = CmsSitemapView.getInstance().isModelPageMode()
+        boolean show = getHoverbar().getController().isEditable()
+            && CmsSitemapView.getInstance().isModelPageMode()
             && (CmsSitemapView.getInstance().getModelPageEntry(id) != null)
             && !CmsSitemapView.getInstance().getModelPageEntry(id).isDefault();
         setVisible(show);

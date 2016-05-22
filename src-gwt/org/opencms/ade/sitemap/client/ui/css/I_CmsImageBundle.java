@@ -57,35 +57,7 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String hoverbar();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String hoverbarContext();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String hoverbarGoto();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String hoverbarGotoSub();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String hoverbarMove();
-
+        
         /**
          * Access method.<p>
          *
@@ -121,17 +93,17 @@ public interface I_CmsImageBundle extends ClientBundle {
     /**
      * Access method.<p>
      *
-     * @return the image bundle instance for icons
-     */
-    I_CmsIconBundle icons();
-
-    /**
-     * Access method.<p>
-     *
      * @return the button CSS
      */
     @Source("button.css")
     I_CmsButtonCss buttonCss();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image bundle instance for icons
+     */
+    I_CmsIconBundle icons();
 
     /**
      * Access method.<p>

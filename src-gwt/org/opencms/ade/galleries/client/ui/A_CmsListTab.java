@@ -38,6 +38,7 @@ import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
@@ -479,10 +480,11 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         if (typeInfo != null) {
             final String niceName = typeInfo.getTitle();
             final String description = typeInfo.getDescription();
-            createNewButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().addIcon());
+            createNewButton = new CmsPushButton(I_CmsButton.ButtonData.ADD.getSmallIconClass());
             createNewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
                 org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
-            createNewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            createNewButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+            createNewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
             createNewButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -586,13 +588,11 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         buttonHandler.setTargetFolder(target);
         buttonHandler.setIsTargetRootPath(isRootPath);
         CmsUploadButton uploadButton = new CmsUploadButton(buttonHandler);
-
-        //uploadButton.setTargetFolder(target);
         uploadButton.setText(null);
         uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, target));
-        uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
-        //uploadButton.setDialogCloseHandler(getTabHandler());
+        uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        uploadButton.setImageClass("opencms-icon-upload-20");
+        uploadButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         return uploadButton;
     }
 

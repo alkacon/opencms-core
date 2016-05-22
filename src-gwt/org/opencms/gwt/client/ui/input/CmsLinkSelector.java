@@ -33,7 +33,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
@@ -384,8 +384,10 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         popup.getFrame().setSize("700px", "490px");
         popup.center();
 
-        CmsPushButton button = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().closeIcon());
-
+        CmsPushButton button = new CmsPushButton(I_CmsButton.ButtonData.DELETE.getSmallIconClass());
+        button.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
+        button.setSize(Size.small);
         Style style = button.getElement().getStyle();
         style.setRight(4, Unit.PX);
         style.setTop(0, Unit.PX);

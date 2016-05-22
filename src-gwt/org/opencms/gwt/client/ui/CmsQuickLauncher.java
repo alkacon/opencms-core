@@ -106,11 +106,13 @@ public class CmsQuickLauncher extends CmsMenuButton {
          * @param data the quick launch data bean
          */
         public QuickLaunchButton(final CmsQuickLaunchData data) {
+
             super();
             I_CmsToolbarCss toolbarCss = I_CmsLayoutBundle.INSTANCE.toolbarCss();
 
-            initWidget(
-                div(toolbarCss.quickButton(), div(
+            initWidget(div(
+                toolbarCss.quickButton(),
+                div(
                     toolbarCss.quickButtonWrap(),
                     div(null, div(toolbarCss.quickButtonImageContainer(), new Image(data.getIconUrl()))),
                     div(null, new InlineLabel(data.getTitle())))));
@@ -168,7 +170,6 @@ public class CmsQuickLauncher extends CmsMenuButton {
 
         super();
         setVisible(false); // only turn visible once the handler is set
-        m_button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton());
         getPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contextMenu());
         getPopup().setWidth(0);
         m_button.getUpFace().setHTML(BUTTON_HTML);
