@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<XmlVfsBundles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd">
+  <Bundle language="en">
+    <Message>
+      <Key><![CDATA[title.dataview_example]]></Key>
+      <Value><![CDATA[New DataView example]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[desc.dataview_example]]></Key>
+      <Value><![CDATA[A content type demonstrating the data view widget]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[fileicon.dataview_example]]></Key>
+      <Value><![CDATA[DataView widget example]]></Value>
+    </Message>
+  </Bundle>
+</XmlVfsBundles>
