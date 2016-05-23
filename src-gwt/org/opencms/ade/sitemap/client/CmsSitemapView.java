@@ -121,7 +121,8 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @since 8.0.0
  */
-public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
+public final class CmsSitemapView extends A_CmsEntryPoint
+implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
     /**
      * The sitemap tree open handler.<p>
@@ -150,7 +151,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 target.setOpen(false);
                 getController().getChildren(target.getEntryId(), true, null);
             } else if (!m_initializing
-                && ((target.getChildren().getWidgetCount() > 0) && (((CmsSitemapTreeItem)target.getChild(0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED))) {
+                && ((target.getChildren().getWidgetCount() > 0)
+                    && (((CmsSitemapTreeItem)target.getChild(
+                        0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED))) {
                 // load grand children in advance
                 getController().getChildren(target.getEntryId(), false, null);
             }
@@ -339,7 +342,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
                     }
 
-                    if (id != null) {
+                    if ((id != null) && m_controller.isEditable()) {
                         final CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
                             m_controller,
                             input,
@@ -431,7 +434,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         boolean hasGalleries = false;
         for (CmsGalleryType type : types) {
             CmsGalleryTreeItem typeItem = new CmsGalleryTreeItem(type);
-            if (m_controller.getData().isGalleryManager()) {
+            if (m_controller.isEditable() && m_controller.getData().isGalleryManager()) {
                 CmsHoverbarCreateGalleryButton createButton = new CmsHoverbarCreateGalleryButton(
                     type.getTypeId(),
                     galleriesFolderId);
@@ -490,12 +493,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     continue;
                 }
                 CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(parentModel, false, true);
-                CmsSitemapHoverbar.installOn(
-                    m_controller,
-                    treeItem,
-                    parentModel.getStructureId(),
-                    parentModel.getSitePath(),
-                    parentModel.getSitePath() != null);
+                if (m_controller.isEditable()) {
+                    CmsSitemapHoverbar.installOn(
+                        m_controller,
+                        treeItem,
+                        parentModel.getStructureId(),
+                        parentModel.getSitePath(),
+                        parentModel.getSitePath() != null);
+                }
                 m_parentModelPageTreeItems.put(parentModel.getStructureId(), treeItem);
                 m_parentModelPageRoot.addChild(treeItem);
                 m_modelPageData.put(parentModel.getStructureId(), parentModel);
@@ -512,13 +517,15 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             false,
             Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_TITLE_0),
             Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_SUBTITLE_0));
-        CmsHoverbarCreateModelPageButton createButton = new CmsHoverbarCreateModelPageButton(false);
-        CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
-            m_controller,
-            m_modelPageRoot,
-            Collections.<Widget> singleton(createButton));
-        hoverbar.setAlwaysVisible();
-        createButton.setHoverbar(hoverbar);
+        if (m_controller.isEditable()) {
+            CmsHoverbarCreateModelPageButton createButton = new CmsHoverbarCreateModelPageButton(false);
+            CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
+                m_controller,
+                m_modelPageRoot,
+                Collections.<Widget> singleton(createButton));
+            hoverbar.setAlwaysVisible();
+            createButton.setHoverbar(hoverbar);
+        }
         m_modelPageTree.add(m_modelPageRoot);
         for (CmsModelPageEntry entry : modelPageData.getModelPages()) {
             if (m_parentModelPageTreeItems.containsKey(entry.getStructureId())) {
@@ -527,12 +534,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             } else {
                 m_modelPageData.put(entry.getStructureId(), entry);
                 CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, false, false);
-                CmsSitemapHoverbar.installOn(
-                    m_controller,
-                    treeItem,
-                    entry.getStructureId(),
-                    entry.getSitePath(),
-                    entry.getSitePath() != null);
+                if (m_controller.isEditable()) {
+                    CmsSitemapHoverbar.installOn(
+                        m_controller,
+                        treeItem,
+                        entry.getStructureId(),
+                        entry.getSitePath(),
+                        entry.getSitePath() != null);
+                }
                 m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
                 m_modelPageRoot.addChild(treeItem);
             }
@@ -542,22 +551,26 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             true,
             Messages.get().key(Messages.GUI_MODEL_GROUP_PAGE_TREE_ROOT_TITLE_0),
             Messages.get().key(Messages.GUI_MODEL_GROUP_PAGE_TREE_ROOT_SUBTITLE_0));
-        CmsHoverbarCreateModelPageButton createModelGroupButton = new CmsHoverbarCreateModelPageButton(true);
-        CmsSitemapHoverbar modelGroupHoverbar = CmsSitemapHoverbar.installOn(
-            m_controller,
-            m_modelGroupRoot,
-            Collections.<Widget> singleton(createModelGroupButton));
-        modelGroupHoverbar.setAlwaysVisible();
-        createModelGroupButton.setHoverbar(modelGroupHoverbar);
+        if (m_controller.isEditable()) {
+            CmsHoverbarCreateModelPageButton createModelGroupButton = new CmsHoverbarCreateModelPageButton(true);
+            CmsSitemapHoverbar modelGroupHoverbar = CmsSitemapHoverbar.installOn(
+                m_controller,
+                m_modelGroupRoot,
+                Collections.<Widget> singleton(createModelGroupButton));
+            modelGroupHoverbar.setAlwaysVisible();
+            createModelGroupButton.setHoverbar(modelGroupHoverbar);
+        }
         m_modelPageTree.add(m_modelGroupRoot);
         for (CmsModelPageEntry entry : modelPageData.getModelGroups()) {
             CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, true, false);
-            CmsSitemapHoverbar.installOn(
-                m_controller,
-                treeItem,
-                entry.getStructureId(),
-                entry.getSitePath(),
-                entry.getSitePath() != null);
+            if (m_controller.isEditable()) {
+                CmsSitemapHoverbar.installOn(
+                    m_controller,
+                    treeItem,
+                    entry.getStructureId(),
+                    entry.getSitePath(),
+                    entry.getSitePath() != null);
+            }
             m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
             m_modelGroupRoot.addChild(treeItem);
         }
@@ -712,7 +725,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             List<CmsClientSitemapEntry> listToAddTo = treeItem.isLoaded() ? openDescendants : closedDescendants;
             listToAddTo.add(entry);
         }
-        return new CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>>(openDescendants, closedDescendants);
+        return new CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>>(
+            openDescendants,
+            closedDescendants);
 
     }
 
@@ -788,7 +803,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         openItemsOnPath(sitePath);
         CmsSitemapTreeItem item = getTreeItem(sitePath);
         if (item != null) {
-            item.highlightTemporarily(1500, isLastPage(item.getSitemapEntry()) ? Background.YELLOW : Background.DEFAULT);
+            item.highlightTemporarily(
+                1500,
+                isLastPage(item.getSitemapEntry()) ? Background.YELLOW : Background.DEFAULT);
         }
     }
 
@@ -1067,8 +1084,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         page.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.generalCss().cornerAll());
         rootPanel.add(page);
         // initial content
-        final Label loadingLabel = new Label(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_LOADING_0));
+        final Label loadingLabel = new Label(
+            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
         page.add(loadingLabel);
 
         // initialize the tree
@@ -1521,6 +1538,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     private CmsGalleryTreeItem createGalleryFolderItem(CmsGalleryFolderEntry galleryFolder) {
 
         CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
+
         CmsSitemapHoverbar.installOn(
             m_controller,
             folderItem,
@@ -1578,8 +1596,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      */
     private boolean isLastPage(CmsClientSitemapEntry entry) {
 
-        return ((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode()))) || ((entry.getDefaultFileId() != null) && entry.getDefaultFileId().toString().equals(
-            m_controller.getData().getReturnCode())));
+        return ((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode())))
+            || ((entry.getDefaultFileId() != null)
+                && entry.getDefaultFileId().toString().equals(m_controller.getData().getReturnCode())));
     }
 
     /**
