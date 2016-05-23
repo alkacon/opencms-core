@@ -139,6 +139,16 @@ public final class CmsMessageBundleEditorTypes {
 
     }
 
+    /** The propertyIds of the table columns. */
+    public enum TableProperty {
+        /** Table column with the message key. */
+        KEY, /** Table column with the message description. */
+        DESCRIPTION, /** Table column with the message's default value. */
+        DEFAULT, /** Table column with the current (language specific) translation of the message. */
+        TRANSLATION, /** Table column with the options (add, delete). */
+        OPTIONS
+    }
+
     /** The different edit modes. */
     enum EditMode {
         /** Editing the messages and the descriptor. */
@@ -446,16 +456,6 @@ public final class CmsMessageBundleEditorTypes {
                 }
             }
         }
-    }
-
-    /** The propertyIds of the table columns. */
-    enum TableProperty {
-        /** Table column with the message key. */
-        KEY, /** Table column with the message description. */
-        DESCRIPTION, /** Table column with the message's default value. */
-        DEFAULT, /** Table column with the current (language specific) translation of the message. */
-        TRANSLATION, /** Table column with the options (add, delete). */
-        OPTIONS
     }
 
     /** TableFieldFactory for making only some columns editable and to support enhanced navigation. */
