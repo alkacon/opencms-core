@@ -341,7 +341,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
                     }
 
-                    if (id != null) {
+                    if ((id != null) && m_controller.isEditable()) {
                         final CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
                             m_controller,
                             input,
@@ -433,7 +433,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         boolean hasGalleries = false;
         for (CmsGalleryType type : types) {
             CmsGalleryTreeItem typeItem = new CmsGalleryTreeItem(type);
-            if (m_controller.getData().isGalleryManager()) {
+            if (m_controller.isEditable() && m_controller.getData().isGalleryManager()) {
                 CmsHoverbarCreateGalleryButton createButton = new CmsHoverbarCreateGalleryButton(
                     type.getTypeId(),
                     galleriesFolderId);
@@ -492,12 +492,14 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     continue;
                 }
                 CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(parentModel, false, true);
-                CmsSitemapHoverbar.installOn(
-                    m_controller,
-                    treeItem,
-                    parentModel.getStructureId(),
-                    parentModel.getSitePath(),
-                    parentModel.getSitePath() != null);
+                if (m_controller.isEditable()) {
+                    CmsSitemapHoverbar.installOn(
+                        m_controller,
+                        treeItem,
+                        parentModel.getStructureId(),
+                        parentModel.getSitePath(),
+                        parentModel.getSitePath() != null);
+                }
                 m_parentModelPageTreeItems.put(parentModel.getStructureId(), treeItem);
                 m_parentModelPageRoot.addChild(treeItem);
                 m_modelPageData.put(parentModel.getStructureId(), parentModel);
@@ -514,13 +516,15 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             false,
             Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_TITLE_0),
             Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_SUBTITLE_0));
-        CmsHoverbarCreateModelPageButton createButton = new CmsHoverbarCreateModelPageButton(false);
-        CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
-            m_controller,
-            m_modelPageRoot,
-            Collections.<Widget> singleton(createButton));
-        hoverbar.setAlwaysVisible();
-        createButton.setHoverbar(hoverbar);
+        if (m_controller.isEditable()) {
+            CmsHoverbarCreateModelPageButton createButton = new CmsHoverbarCreateModelPageButton(false);
+            CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
+                m_controller,
+                m_modelPageRoot,
+                Collections.<Widget> singleton(createButton));
+            hoverbar.setAlwaysVisible();
+            createButton.setHoverbar(hoverbar);
+        }
         m_modelPageTree.add(m_modelPageRoot);
         for (CmsModelPageEntry entry : modelPageData.getModelPages()) {
             if (m_parentModelPageTreeItems.containsKey(entry.getStructureId())) {
@@ -529,12 +533,14 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             } else {
                 m_modelPageData.put(entry.getStructureId(), entry);
                 CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, false, false);
-                CmsSitemapHoverbar.installOn(
-                    m_controller,
-                    treeItem,
-                    entry.getStructureId(),
-                    entry.getSitePath(),
-                    entry.getSitePath() != null);
+                if (m_controller.isEditable()) {
+                    CmsSitemapHoverbar.installOn(
+                        m_controller,
+                        treeItem,
+                        entry.getStructureId(),
+                        entry.getSitePath(),
+                        entry.getSitePath() != null);
+                }
                 m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
                 m_modelPageRoot.addChild(treeItem);
             }
@@ -544,22 +550,26 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             true,
             Messages.get().key(Messages.GUI_MODEL_GROUP_PAGE_TREE_ROOT_TITLE_0),
             Messages.get().key(Messages.GUI_MODEL_GROUP_PAGE_TREE_ROOT_SUBTITLE_0));
-        CmsHoverbarCreateModelPageButton createModelGroupButton = new CmsHoverbarCreateModelPageButton(true);
-        CmsSitemapHoverbar modelGroupHoverbar = CmsSitemapHoverbar.installOn(
-            m_controller,
-            m_modelGroupRoot,
-            Collections.<Widget> singleton(createModelGroupButton));
-        modelGroupHoverbar.setAlwaysVisible();
-        createModelGroupButton.setHoverbar(modelGroupHoverbar);
+        if (m_controller.isEditable()) {
+            CmsHoverbarCreateModelPageButton createModelGroupButton = new CmsHoverbarCreateModelPageButton(true);
+            CmsSitemapHoverbar modelGroupHoverbar = CmsSitemapHoverbar.installOn(
+                m_controller,
+                m_modelGroupRoot,
+                Collections.<Widget> singleton(createModelGroupButton));
+            modelGroupHoverbar.setAlwaysVisible();
+            createModelGroupButton.setHoverbar(modelGroupHoverbar);
+        }
         m_modelPageTree.add(m_modelGroupRoot);
         for (CmsModelPageEntry entry : modelPageData.getModelGroups()) {
             CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, true, false);
-            CmsSitemapHoverbar.installOn(
-                m_controller,
-                treeItem,
-                entry.getStructureId(),
-                entry.getSitePath(),
-                entry.getSitePath() != null);
+            if (m_controller.isEditable()) {
+                CmsSitemapHoverbar.installOn(
+                    m_controller,
+                    treeItem,
+                    entry.getStructureId(),
+                    entry.getSitePath(),
+                    entry.getSitePath() != null);
+            }
             m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
             m_modelGroupRoot.addChild(treeItem);
         }
@@ -1527,6 +1537,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     private CmsGalleryTreeItem createGalleryFolderItem(CmsGalleryFolderEntry galleryFolder) {
 
         CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
+
         CmsSitemapHoverbar.installOn(
             m_controller,
             folderItem,
