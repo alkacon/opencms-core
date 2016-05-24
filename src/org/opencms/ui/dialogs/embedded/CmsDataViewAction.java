@@ -29,6 +29,7 @@ package org.opencms.ui.dialogs.embedded;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -62,7 +63,7 @@ public class CmsDataViewAction implements I_CmsWorkplaceAction {
      */
     public String getTitle() {
 
-        return "Please select";
+        return CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_DATAVIEW_HEADER_0);
     }
 
     /**
