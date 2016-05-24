@@ -12,10 +12,10 @@
 
 	<xsd:complexType name="OpenCmsDataviewItem">
 		<xsd:sequence>
-			<xsd:element name="Id" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="Title" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="Data" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Id" type="OpenCmsString" />
+			<xsd:element name="Title" type="OpenCmsString"  />
+			<xsd:element name="Description" type="OpenCmsString" />
+			<xsd:element name="Data" type="OpenCmsString" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
