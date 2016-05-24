@@ -85,7 +85,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
      */
     public CmsToolbarClipboardMenu(CmsContainerpageHandler handler) {
 
-        super(I_CmsButton.ButtonData.CLIPBOARD, handler);
+        super(I_CmsButton.ButtonData.CLIPBOARD_BUTTON, handler);
 
         m_content = new FlowPanel();
         m_tabs = new CmsTabbedPanel<A_CmsClipboardTab>();
@@ -185,7 +185,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
      */
     public void onToolbarActivate() {
 
-        Document.get().getBody().addClassName(I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
+        Document.get().getBody().addClassName(I_CmsButton.ButtonData.CLIPBOARD_BUTTON.getIconClass());
         getHandler().loadFavorites();
         getHandler().loadRecent();
         CmsRpcAction<Integer> tabAction = new CmsRpcAction<Integer>() {
@@ -217,7 +217,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         if (m_isEditingFavorites) {
             m_favorites.saveFavorites();
         }
-        Document.get().getBody().removeClassName(I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
+        Document.get().getBody().removeClassName(I_CmsButton.ButtonData.CLIPBOARD_BUTTON.getIconClass());
     }
 
     /**

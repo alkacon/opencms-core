@@ -33,7 +33,6 @@ import org.opencms.ade.sitemap.client.ui.CmsCreateModelPageDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -57,12 +56,12 @@ public class CmsHoverbarCreateModelPageButton extends CmsPushButton {
     public CmsHoverbarCreateModelPageButton(boolean isModelGroup) {
 
         m_isModelGroup = isModelGroup;
-        setImageClass(I_CmsButton.ButtonData.ADD.getSmallIconClass());
+        setImageClass(I_CmsButton.ADD_SMALL);
         setButtonStyle(ButtonStyle.FONT_ICON, null);
-        addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
-        setTitle(isModelGroup
-        ? Messages.get().key(Messages.GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0)
-        : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0));
+        setTitle(
+            isModelGroup
+            ? Messages.get().key(Messages.GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0)
+            : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0));
         addClickHandler(new ClickHandler() {
 
             /**

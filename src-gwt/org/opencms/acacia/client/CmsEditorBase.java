@@ -44,7 +44,6 @@ import org.opencms.acacia.shared.CmsType;
 import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.acacia.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import java.util.ArrayList;
@@ -144,7 +143,6 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      */
     public CmsEditorBase(I_CmsContentServiceAsync service, I_CmsWidgetService widgetService) {
 
-        I_CmsImageBundle.INSTANCE.style().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.generalCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.highlightCss().ensureInjected();
@@ -369,7 +367,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * @param tabInfos the tab informations
      * @param context the context element
      * @param scrollParent the scroll element to be used for automatic scrolling during drag and drop
-    
+
      */
     public void renderEntityForm(String entityId, List<CmsTabInfo> tabInfos, Panel context, Element scrollParent) {
 

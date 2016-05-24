@@ -31,7 +31,6 @@ import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 /**
  * An optional container element button.<p>
@@ -58,7 +57,6 @@ public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHa
         setImageClass(toolbarButton.getButtonData().getSmallIconClass());
         setButtonStyle(ButtonStyle.FONT_ICON, null);
         setTitle(toolbarButton.getTitle());
-        addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         m_toolbarButton = toolbarButton;
         m_dragElement = element;
     }

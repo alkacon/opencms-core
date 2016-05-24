@@ -43,7 +43,6 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
 import java.util.List;
@@ -667,17 +666,17 @@ public final class CmsInlineEntityWidget extends Composite {
             }
         }, ClickEvent.getType());
 
-        m_editButton.setImageClass(I_CmsButton.ButtonData.EDIT.getSmallIconClass());
+        m_editButton.setImageClass(I_CmsButton.PEN_SMALL);
         m_editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
 
-        m_removeButton.setImageClass(I_CmsButton.ButtonData.REMOVE.getSmallIconClass());
+        m_removeButton.setImageClass(I_CmsButton.CUT_SMALL);
         m_removeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
 
-        m_upButton.setImageClass(I_CmsImageBundle.INSTANCE.style().arrowUpIcon());
-        m_upButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_upButton.setImageClass(I_CmsButton.EDIT_UP_SMALL);
+        m_upButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
 
-        m_downButton.setImageClass(I_CmsImageBundle.INSTANCE.style().arrowDownIcon());
-        m_downButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_downButton.setImageClass(I_CmsButton.EDIT_DOWN_SMALL);
+        m_downButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
 
         if (CmsEditorBase.hasDictionary()) {
             String label = m_widgetService.getAttributeLabel(m_attributeHandler.getAttributeName());

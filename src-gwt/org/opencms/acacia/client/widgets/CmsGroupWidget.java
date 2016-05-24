@@ -28,7 +28,6 @@
 package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsGroupSelection;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
@@ -81,7 +80,7 @@ public class CmsGroupWidget extends Composite implements I_CmsEditWidget {
     public CmsGroupWidget(String config) {
 
         parseConfiguration(config);
-        m_groupSelection = new CmsGroupSelection(I_CmsImageBundle.INSTANCE.style().popupIcon());
+        m_groupSelection = new CmsGroupSelection(null);
         m_groupSelection.setParameter(m_flags, m_ouFqn, m_userName);
         m_groupSelection.getTextAreaContainer().addStyleName(
             I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());

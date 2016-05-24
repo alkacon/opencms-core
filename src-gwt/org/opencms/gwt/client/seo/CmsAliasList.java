@@ -32,11 +32,8 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle.I_CmsImageStyle;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -461,7 +458,7 @@ public class CmsAliasList extends Composite {
      */
     protected PushButton createAddButton() {
 
-        PushButton button = createIconButton(I_CmsButton.ButtonData.DELETE.getSmallIconClass());
+        PushButton button = createIconButton(I_CmsButton.ADD_SMALL);
         button.setTitle(aliasMessages.addAlias());
         return button;
     }
@@ -473,8 +470,7 @@ public class CmsAliasList extends Composite {
      */
     protected PushButton createDeleteButton() {
 
-        I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
-        PushButton button = createIconButton(imagestyle.deleteIcon());
+        PushButton button = createIconButton(I_CmsButton.DELETE_SMALL);
         button.setTitle(aliasMessages.removeAlias());
         return button;
     }
@@ -491,7 +487,6 @@ public class CmsAliasList extends Composite {
         CmsPushButton button = new CmsPushButton();
         button.setImageClass(icon);
         button.setButtonStyle(ButtonStyle.FONT_ICON, null);
-        button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         return button;
     }
 

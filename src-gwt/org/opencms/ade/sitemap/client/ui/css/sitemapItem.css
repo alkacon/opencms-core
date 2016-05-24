@@ -63,10 +63,6 @@ div.itemTitle{
 	cursor: pointer;
 }
 
-@sprite div.cms_type_icon.navigationLevelIcon{
-	gwt-image: "baseImages.bigIcons.fileTypeNavLevel";
-} 
-
 .vfsMode li.notInNavigationEntry{
 	display: block;
 }

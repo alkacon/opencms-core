@@ -31,7 +31,7 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
@@ -183,9 +183,12 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /** Background color values. */
     public enum Background {
         /** Color blue. */
-        BLUE, /** Default color. */
-        DEFAULT, /** Color red. */
-        RED, /** Color yellow. */
+        BLUE,
+        /** Default color. */
+        DEFAULT,
+        /** Color red. */
+        RED,
+        /** Color yellow. */
         YELLOW
     }
 
@@ -1050,10 +1053,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     protected void ensureOpenCloseAdditionalInfo() {
 
         if (m_openClose == null) {
-            m_openClose = new CmsPushButton(
-                I_CmsImageBundle.INSTANCE.style().triangleRight(),
-                I_CmsImageBundle.INSTANCE.style().triangleDown());
-            m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            m_openClose = new CmsPushButton(I_CmsButton.TRIANGLE_RIGHT, I_CmsButton.TRIANGLE_DOWN);
+            m_openClose.setButtonStyle(ButtonStyle.FONT_ICON, null);
+            m_openClose.setSize(Size.small);
             m_titleBox.insert(m_openClose, 0);
             m_openClose.addClickHandler(new ClickHandler() {
 

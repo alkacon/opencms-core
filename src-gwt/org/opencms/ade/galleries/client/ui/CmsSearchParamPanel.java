@@ -31,7 +31,6 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -85,8 +84,7 @@ public class CmsSearchParamPanel extends Composite {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_button.setButtonStyle(ButtonStyle.FONT_ICON, null);
-        m_button.setImageClass(I_CmsButton.ButtonData.DELETE.getSmallIconClass());
-        m_button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
+        m_button.setImageClass(I_CmsButton.DELETE_SMALL);
         m_button.setSize(Size.small);
         m_title = title;
         m_tab = tab;

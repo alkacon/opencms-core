@@ -47,23 +47,3 @@ div.hoverbar{
 .dragStarted .hoverbar > .cmsState{
 	display: inline-block;
 }	
-
-@sprite .cmsState-up-hovering .hoverbarParent, .cmsState-down-hovering .hoverbarParent, .cmsState-down .hoverbarParent, .context .hoverbarParent,.cmsState-up .hoverbarParent, .cmsState-up-disabled .hoverbarParent, .cmsState-down-disabled .hoverbarParent{
-    gwt-image: "icons.gotoParentIcon";
-}
-
-@sprite .cmsState-up-disabled .showPage, .cmsState-down-disabled .showPage, .cmsState-up .showPage{
-	gwt-image: "icons.showPageIcon";
-}
-
-@sprite .cmsState-up-hovering .showPage, .cmsState-down-hovering .showPage, .cmsState-down .showPage{
-    gwt-image: "icons.showPageIcon";
-}
-
-@sprite .cmsState-up-disabled .undelete, .cmsState-down-disabled .undelete, .cmsState-up .undelete{
-	gwt-image: "icons.replaceIcon";
-}
-
-@sprite .cmsState-up-hovering .undelete, .cmsState-down-hovering .undelete, .cmsState-down .undelete{
-    gwt-image: "icons.replaceIcon";
-}

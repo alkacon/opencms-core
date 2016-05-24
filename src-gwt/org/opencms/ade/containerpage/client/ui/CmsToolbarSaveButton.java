@@ -45,7 +45,7 @@ public class CmsToolbarSaveButton extends A_CmsToolbarButton<CmsContainerpageHan
      */
     public CmsToolbarSaveButton(CmsContainerpageHandler handler) {
 
-        super(I_CmsButton.ButtonData.SAVE, handler);
+        super(I_CmsButton.ButtonData.SAVE_BUTTON, handler);
     }
 
     /**

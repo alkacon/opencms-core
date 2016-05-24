@@ -1,4 +1,4 @@
-@external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, mce-opencmsDialog, mce-window, mce-window-head, closeButton;
+@external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, mce-opencmsDialog, mce-window, mce-window-head;
 
 /* TinyMCE plugin popup dialog styles, all used classes are external. */
 div.mce-opencmsDialog.mce-window{
@@ -7,21 +7,6 @@ div.mce-opencmsDialog.mce-window{
 
 .mce-opencmsDialog.mce-window .mce-window-head{
 	display: none;
-}
-
-@sprite .mce-opencmsDialog.mce-window > .closeButton{
-	gwt-image: "gwtImages.dialogCloseImage";
-    background-color: transparent;
-    cursor: pointer;
-    height: 23px;
-    overflow: hidden;
-    position: absolute;
-    right: -11px;
-    top: -12px;
-    width: 23px;
-    border: 0;
-    margin: 0;
-    padding: 0;
 }
 
 div.radioButtonPanel {

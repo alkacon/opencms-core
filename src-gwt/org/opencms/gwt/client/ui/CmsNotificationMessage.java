@@ -29,7 +29,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.util.CmsStringUtil;
 
@@ -75,8 +75,9 @@ public class CmsNotificationMessage extends Composite {
      */
     public CmsNotificationMessage(CmsNotification.Mode mode, CmsNotification.Type type, String message) {
 
-        m_closeButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().dialogCloseIcon());
-        m_closeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_closeButton = new CmsPushButton(I_CmsButton.DELETE_SMALL);
+        m_closeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_closeButton.setSize(Size.small);
         initWidget(uiBinder.createAndBindUi(this));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
             m_messageContent.setInnerHTML(message);

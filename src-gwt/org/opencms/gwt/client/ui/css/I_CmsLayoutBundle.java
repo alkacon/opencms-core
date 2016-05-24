@@ -192,13 +192,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String optionButton();
-
-        /**
-         *  Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String red();
 
         /**
@@ -236,151 +229,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String editorGallery();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String galleryBody();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String hasButton();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String infoLabel();
 
         /** Access method.<p>
          *
          * @return the CSS class name
          */
-        String listIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String listOnlyTab();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String noParamsMessage();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String paramsText();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String parentPanel();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String quickFilterBox();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String resultTabUpload();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabBorderLayer();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabDesMargin();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabInputLeft();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabInputRight();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabInputWide();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabLabelLeft();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabLabelRight();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabRow();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchTabRowRightAlign();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String selectboxWidth();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String showParams();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String showPreview();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String tabOptions();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String tabParamsPanel();
     }
 
     /** THe color selector CSS classes.  */
@@ -1157,13 +1012,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String brokenLink();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String deletedEntryLabel();
     }
 
@@ -1230,13 +1078,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return a CSS class
          **/
         String export();
-
-        /**
-         * CSS class accessor.<p>
-         *
-         * @return a CSS class
-         **/
-        String hidden();
 
         /**
          * CSS class accessor.<p>
@@ -1372,13 +1213,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String lockSharedOpen();
 
         /**
-         * CSS class accessor.<p>
-         *
-         * @return a CSS class
-         **/
-        String normal();
-
-        /**
          * Access method.<p>
          *
          * @return the CSS class name
@@ -1391,13 +1225,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String permaVisible();
-
-        /**
-         * CSS class accessor.<p>
-         *
-         * @return a CSS class
-         **/
-        String redirect();
 
         /**
          * CSS class accessor.<p>
@@ -2491,13 +2318,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * @return the image bundle for the backgrounds
      */
     I_CmsBackgroundImageBundle backgrounds();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the bundle for the big icons
-     */
-    I_CmsBigIconBundle bigIcons();
 
     /**
      * Access method.<p>

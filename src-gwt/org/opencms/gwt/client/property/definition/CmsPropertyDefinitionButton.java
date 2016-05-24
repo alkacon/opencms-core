@@ -30,7 +30,9 @@ package org.opencms.gwt.client.property.definition;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 
@@ -56,9 +58,11 @@ public class CmsPropertyDefinitionButton extends CmsPushButton {
      */
     public CmsPropertyDefinitionButton() {
 
-        super(I_CmsLayoutBundle.INSTANCE.propertiesCss().propertyDefinitionButton());
+        super(I_CmsButton.SETTINGS);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().propertyDefinitionButton());
         setTitle(CmsPropertyDefinitionMessages.messageDialogCaption());
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
+        setSize(Size.big);
         getElement().getStyle().setMarginTop(4, Unit.PX);
         addClickHandler(new ClickHandler() {
 

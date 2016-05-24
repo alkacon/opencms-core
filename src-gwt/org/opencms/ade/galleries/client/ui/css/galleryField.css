@@ -40,8 +40,8 @@ div.galleryField input[type="text"]:focus{
 }
 div.opener{
 	position: absolute;
-	right: 3px;
-	top: 7px;
+	right: 6px;
+	top: 6px;
 }
 div.uploadButton{
 	display:none;
@@ -51,8 +51,8 @@ div.hasUpload > div.uploadButton{
 	height: auto;
 	width: auto;
 	position: absolute;
-	top: 3px;
-	right: 24px;
+	top: 6px;
+	right: 26px;
 }
 
 div.fieldBox > div.uploadButton > input{

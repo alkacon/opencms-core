@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -158,12 +159,14 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
     /**
      * Shows the info icon and sets the information text as its title.<p>
      *
-     * @param info
+     * @param info the info
      */
     public void setInfo(String info) {
 
         if (info != null) {
             m_icon.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inherited());
+            m_icon.addStyleName(I_CmsButton.ICON_FONT);
+            m_icon.addStyleName(I_CmsButton.CIRCLE_INFO);
             m_icon.setTitle(info);
         }
 

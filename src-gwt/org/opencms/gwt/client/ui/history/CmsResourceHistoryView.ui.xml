@@ -4,9 +4,15 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="messages" type="org.opencms.gwt.client.ui.history.CmsHistoryMessages" />
 	<ui:style>
+		@external opencms-icon;
 		.scrollPanel {
 			min-height: 300px;
 			max-height: 700px;
+		}
+		
+		.scrollPanel .opencms-icon{
+			font-size: 20px;
+			cursor:pointer;
 		}
 		
 		.scrollPanelContainer {

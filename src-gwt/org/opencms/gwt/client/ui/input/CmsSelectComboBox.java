@@ -33,7 +33,6 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
@@ -82,8 +81,7 @@ public class CmsSelectComboBox extends Composite implements I_CmsFormWidget, I_C
         m_panel.add(m_selectBox);
         CmsPushButton comboButton = new CmsPushButton();
         comboButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-        comboButton.setImageClass(I_CmsButton.ButtonData.EDIT.getSmallIconClass());
-        comboButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
+        comboButton.setImageClass(I_CmsButton.PEN_SMALL);
         comboButton.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectComboIcon());
         m_selectBox.addWidget(comboButton);
         comboButton.addClickHandler(new ClickHandler() {

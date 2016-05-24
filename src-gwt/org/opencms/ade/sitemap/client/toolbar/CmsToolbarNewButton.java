@@ -79,7 +79,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
         super(
             Messages.get().key(Messages.GUI_TOOLBAR_NEW_BUTTON_TITLE_0),
-            I_CmsButton.ButtonData.WAND.getIconClass(),
+            I_CmsButton.ButtonData.WAND_BUTTON.getIconClass(),
             toolbar,
             controller);
     }

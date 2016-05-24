@@ -29,9 +29,10 @@ package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -214,10 +215,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         m_opener.addStyleName(CSS.selectBoxSelected());
         addHoverHandlers(m_opener);
         addMainPanelHoverHandlers(m_panel);
-        m_openClose = new CmsPushButton(
-            I_CmsImageBundle.INSTANCE.style().triangleDown(),
-            I_CmsImageBundle.INSTANCE.style().triangleDown());
-        m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_openClose = new CmsPushButton(I_CmsButton.TRIANGLE_RIGHT, I_CmsButton.TRIANGLE_DOWN);
+        m_openClose.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_openClose.setSize(Size.small);
         m_openClose.addStyleName(CSS.selectIcon());
         m_panel.add(m_openClose);
         m_openClose.addClickHandler(new ClickHandler() {

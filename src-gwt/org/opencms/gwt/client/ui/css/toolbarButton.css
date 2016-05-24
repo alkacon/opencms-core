@@ -11,15 +11,19 @@
 
 .cmsState, .cmsHovering, .editButtonsVisible{}
 
-@sprite .cmsState.elementInfoChanged:after { 
-	gwt-image:"changedIcon";
+.cmsState.elementInfoChanged:after { 
+	font-family: opencms-font;
+	content:"\e62b";
+	color: value("constants.css.textColorImportant");
+	font-size: 12px;
+	line-height: 10px;
 	position: absolute;
-	height: 16px;
-	width: 16px;
-	top:0px;
-	right: 0px;
-	content: ".";
-	color: transparent;
+	height: 12px;
+	width: 12px;
+	top:2px;
+	right: 2px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .toolbarInfo {} 

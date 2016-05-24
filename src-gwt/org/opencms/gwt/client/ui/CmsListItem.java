@@ -75,9 +75,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
          */
         MoveHandle(CmsListItem draggable) {
 
-            setImageClass(I_CmsButton.ButtonData.MOVE.getSmallIconClass());
+            setImageClass(I_CmsButton.MOVE_SMALL);
             setButtonStyle(ButtonStyle.FONT_ICON, null);
-            addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
             setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_TO_0));
             addStyleName(MOVE_HANDLE_MARKER_CLASS);
             m_draggable = draggable;
@@ -330,9 +329,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
             int newMoveHandleLeft = moveHandleLeft(m_helper);
             int newElemLeft = m_helper.getAbsoluteLeft();
-            m_offsetDelta = Optional.fromNullable(new int[] {
-                ((newMoveHandleLeft - oldMoveHandleLeft) + oldElemLeft) - newElemLeft,
-                0});
+            m_offsetDelta = Optional.fromNullable(
+                new int[] {((newMoveHandleLeft - oldMoveHandleLeft) + oldElemLeft) - newElemLeft, 0});
             m_provisionalParent.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
         }
         // ensure mouse out
@@ -541,7 +539,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         m_smallView = smallView;
         if (m_smallView) {
-            m_decoratedPanel.addDecorationBoxStyle(I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBoxSmall());
+            m_decoratedPanel.addDecorationBoxStyle(
+                I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBoxSmall());
         }
     }
 

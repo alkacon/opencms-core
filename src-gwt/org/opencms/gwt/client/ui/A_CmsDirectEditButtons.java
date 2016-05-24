@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableDataJSO;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -190,19 +191,17 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
             if (m_editableData.hasDelete() && CmsStringUtil.isEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
                 m_delete = new CmsPushButton();
-                m_delete.setImageClass(I_CmsButton.ButtonData.DELETE.getSmallIconClass());
-                m_delete.setTitle(I_CmsButton.ButtonData.DELETE.getTitle());
+                m_delete.setImageClass(I_CmsButton.TRASH_SMALL);
+                m_delete.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_DELETE_0));
                 m_delete.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
-                m_delete.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
                 buttonMap.put(Integer.valueOf(100), m_delete);
                 m_delete.addClickHandler(handler);
             }
             if (m_editableData.hasNew()) {
                 m_new = new CmsPushButton();
-                m_new.setImageClass(I_CmsButton.ButtonData.NEW.getSmallIconClass());
-                m_new.setTitle(I_CmsButton.ButtonData.NEW.getTitle());
+                m_new.setImageClass(I_CmsButton.ADD_SMALL);
+                m_new.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_NEW_0));
                 m_new.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
-                m_new.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
                 buttonMap.put(Integer.valueOf(200), m_new);
                 m_new.addClickHandler(handler);
             }
@@ -211,7 +210,6 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                 m_edit = new CmsPushButton();
                 m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 m_edit.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
-                m_edit.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
                 buttonMap.put(Integer.valueOf(300), m_edit);
                 if (m_editableData.hasEdit()) {
                     m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
@@ -272,10 +270,9 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
     public CmsPushButton createInfoButton() {
 
         CmsPushButton infoButton = new CmsPushButton();
-        infoButton.setImageClass(I_CmsButton.ButtonData.INFO.getSmallIconClass());
-        infoButton.setTitle(I_CmsButton.ButtonData.INFO.getTitle());
+        infoButton.setImageClass(I_CmsButton.ButtonData.INFO_BUTTON.getSmallIconClass());
+        infoButton.setTitle(I_CmsButton.ButtonData.INFO_BUTTON.getTitle());
         infoButton.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
-        infoButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         add(infoButton);
         infoButton.addClickHandler(new ClickHandler() {
 

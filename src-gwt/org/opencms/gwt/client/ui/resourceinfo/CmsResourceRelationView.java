@@ -210,18 +210,19 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                     new CmsResourceInfoView.ContextMenuHandler());
                 item.getListItemWidget().addButton(button);
                 final CmsResourceStatusRelationBean currentRelationBean = relationBean;
-                final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(relationBean.getInfoBean().getResourceType());
+                final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(
+                    relationBean.getInfoBean().getResourceType());
                 final boolean isXmlContent = relationBean.isXmlContent();
                 final boolean isEditable = (isXmlContent || isContainerpage)
                     && relationBean.getPermissionInfo().hasWritePermission();
                 if (isEditable) {
 
                     m_editButton = new CmsPushButton();
-                    m_editButton.setImageClass(I_CmsButton.ButtonData.EDIT.getSmallIconClass());
+                    m_editButton.setImageClass(I_CmsButton.PEN_SMALL);
                     m_editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-                    m_editButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
-                    m_editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
-                        org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+                    m_editButton.setTitle(
+                        org.opencms.gwt.client.Messages.get().key(
+                            org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(relationBean.getPermissionInfo().getNoEditReason())) {
                         m_editButton.disable(relationBean.getPermissionInfo().getNoEditReason());
                     } else {

@@ -365,9 +365,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                         }
                         CmsPushButton newButton = new CmsPushButton();
                         newButton.setTitle(Messages.get().key(Messages.GUI_SITEMAP_CONTEXT_MENU_CREATE_CATEGORY_0));
-                        newButton.setImageClass(I_CmsButton.ButtonData.ADD.getSmallIconClass());
+                        newButton.setImageClass(I_CmsButton.ADD_SMALL);
                         newButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-                        newButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
                         hoverbar.add(newButton);
                         newButton.addClickHandler(new ClickHandler() {
 
@@ -1062,9 +1061,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_controller.getData().getParentSitemap())) {
             CmsPushButton goToParentButton = new CmsPushButton();
-            goToParentButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarParent());
+            goToParentButton.setImageClass(I_CmsButton.EDIT_UP_SMALL);
             goToParentButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_PARENT_0));
-            goToParentButton.setButtonStyle(ButtonStyle.IMAGE, null);
+            goToParentButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
             goToParentButton.addClickHandler(new ClickHandler() {
 
                 /**

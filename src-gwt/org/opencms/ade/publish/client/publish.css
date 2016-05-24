@@ -23,8 +23,17 @@
 	
 }
 
-@sprite .checkmark {
-	gwt-image: "bigIcons.checkmark"
+.checkmark {
+	width:32px;
+	height: 32px;
+}
+.checkmark:before{
+	content: "\e916";
+	font-family: opencms-font;
+	font-size: 32px;
+	color: #2197DB;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .itemToKeep {

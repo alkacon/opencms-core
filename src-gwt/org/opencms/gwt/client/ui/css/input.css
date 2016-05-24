@@ -1,6 +1,4 @@
-@external gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
-
-@external html-face;
+@external html-face, gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 .alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom *, .alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom { 
 	vertical-align: baseline;  
@@ -150,8 +148,9 @@ div.textArea textarea{
 	gwt-image: "inputImages.checkboxUncheckedDisabled";
 }
 
-@sprite .inherited {
-	gwt-image: "baseImages.icons.inheritedIcon";
+.inherited {
+	color: #2197DB;
+	font-size: 14px;
 }
 
 @sprite .cmsState-down-disabled .checkBoxImage {
@@ -381,9 +380,9 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 }
 
 .selectIcon { 
-	position: absolute;
-	right: 0;
-	top: 4px;
+	position: absolute !important;
+	right: 2px;
+	top: 8px;
 }
 
 div.selectComboIcon {

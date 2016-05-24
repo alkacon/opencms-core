@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import java.util.Collection;
 
@@ -63,7 +62,7 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
 
         super(
             Messages.get().key(Messages.GUI_TOOLBAR_NEW_GALLERY_TITLE_0),
-            I_CmsButton.ButtonData.WAND.getIconClass(),
+            I_CmsButton.ButtonData.WAND_BUTTON.getIconClass(),
             toolbar,
             controller);
         m_galleriesList = new CmsList<I_CmsListItem>();
@@ -104,9 +103,8 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
 
         CmsListItem item = new CmsListItem(CmsGalleryTreeItem.createListWidget(galleryType));
         CmsPushButton button = new CmsPushButton();
-        button.setImageClass(I_CmsButton.ButtonData.ADD.getSmallIconClass());
+        button.setImageClass(I_CmsButton.ADD_SMALL);
         button.setButtonStyle(ButtonStyle.FONT_ICON, null);
-        button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         button.setTitle(Messages.get().key(Messages.GUI_GALLERIES_CREATE_0));
         button.addClickHandler(new ClickHandler() {
 

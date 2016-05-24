@@ -111,7 +111,7 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
      */
     public CmsToolbarChooseEditorModeButton(boolean canEditModelPages) {
 
-        super(null, I_CmsButton.ButtonData.SITEMAP.getIconClass());
+        super(null, I_CmsButton.ButtonData.SITEMAP_BUTTON.getIconClass());
         m_canEditModelPages = canEditModelPages;
         setTitle(Messages.get().key(Messages.GUI_SELECT_VIEW_0));
         m_menuPanel = new FlexTable();

@@ -31,7 +31,6 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
@@ -150,7 +149,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * Constructor.<p>
      *
      * @param iconImage the image of the icon shown in the
-
+    
      */
     public CmsGroupSelection(String iconImage) {
 
@@ -198,7 +197,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsGroupSelection(I_CmsImageBundle.INSTANCE.style().popupIcon());
+                return new CmsGroupSelection(null);
             }
         });
     }
@@ -409,16 +408,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * @param title the title of the popup
      * */
     native void openNative(String url, String title) /*-{
-                                                     $wnd
-                                                     .open(
-                                                     url,
-                                                     title,
-                                                     'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
-                                                     var self = this;
-                                                     $wnd.setGroupFormValue = function(value) {
-                                                     self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setValueFromNative(Ljava/lang/String;)(value);
-                                                     };
-                                                     }-*/;
+		$wnd
+				.open(
+						url,
+						title,
+						'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
+		var self = this;
+		$wnd.setGroupFormValue = function(value) {
+			self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setValueFromNative(Ljava/lang/String;)(value);
+		};
+    }-*/;
 
     /**
      * Sets the widget value and fires the change event if necessary.<p>

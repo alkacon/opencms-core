@@ -42,35 +42,47 @@ li div.itemContainer.cmsHovering{
 
 @external navMode;
 
-@sprite .itemIcon .export, .navMode .itemIcon .export {
-	gwt-image: "gwtImages.bigIcons.stateExportBigIcon"; 
-}
-@sprite .itemIcon .hidden, .navMode .itemIcon .hidden {
-	gwt-image: "gwtImages.bigIcons.stateHiddenBigIcon"; 
-}
-@sprite .itemIcon .normal, .navMode .itemIcon .normal {
-	gwt-image: "gwtImages.bigIcons.stateNormalBigIcon";
-}
-@sprite .itemIcon .secure, .navMode .itemIcon .secure {
-	gwt-image: "gwtImages.bigIcons.stateSecureBigIcon";
-}
-@sprite .itemIcon .redirect, .navMode .itemIcon .redirect { 
-	gwt-image: "gwtImages.bigIcons.stateRedirectBigIcon";
-}
-
 .itemContent div.stateIcon{
 	left: 0px;
     position: absolute;
-    top: 16px;
+    top: 20px;
     z-index: value("constants.css.zIndexInline");
 }
 
-@sprite .itemContent div.stateIcon.export{
-	gwt-image: "gwtImages.icons.stateExportIcon";
+
+.itemContent div.stateIcon.export:after { 
+	font-family: opencms-font;
+	content:"\e90f";
+	font-size: 12px;
+	height: 12px;
+	width: 12px;
+	line-height: 10px;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
-@sprite .itemContent div.stateIcon.secure{
-	gwt-image: "gwtImages.icons.stateSecureIcon";
+.itemContent div.stateIcon.secure:after { 
+	font-family: opencms-font;
+	content:"\e904";
+	font-size: 12px;
+	height: 12px;
+	width: 12px;
+	line-height: 10px;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.itemContent div.stateIcon.copyModel:after { 
+	font-family: opencms-font;
+	content:"\e90b";
+	font-size: 12px;
+	height: 12px;
+	width: 12px;
+	line-height: 10px;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .itemContent div.lockIcon{
@@ -82,8 +94,8 @@ li div.itemContainer.cmsHovering{
 
 .itemContent div.topRightIcon {
 	position: absolute;
-	left: 16px;
-	top: 0ßx;
+	left: 20px;
+	top: -2px;
 	z-index: value("constants.css.zIndexInline");
 }
 
@@ -96,18 +108,26 @@ li div.itemContainer.cmsHovering{
 	gwt-image: "gwtImages.lockUserImage";
 }
 
-@sprite .copyModel {
-	gwt-image: "gwtImages.addImage"; 
-}
-
 @sprite .lockSharedOpen{
 	gwt-image: "gwtImages.lockSharedImage";
 }
+.changed:after { 
+	font-family: opencms-font;
+	content:"\e62b";
+	color: value("constants.css.textColorImportant");
+	font-size: 12px;
+	height: 12px;
+	width: 12px;
+	line-height: 10px;
 
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+/*
 @sprite .changed { 
 	gwt-image: "gwtImages.changedIcon";
 }
-
+*/
 
 
 div.itemContent {

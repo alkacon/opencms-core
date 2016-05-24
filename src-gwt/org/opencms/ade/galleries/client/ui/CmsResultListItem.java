@@ -34,8 +34,8 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -99,12 +99,12 @@ public class CmsResultListItem extends CmsListItem {
         // add  preview button
         if (hasPreview) {
             m_previewButton = createButton(
-                I_CmsImageBundle.INSTANCE.style().previewIcon(),
+                I_CmsButton.PREVIEW_SMALL,
                 Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
             resultItemWidget.addButton(m_previewButton);
         }
         m_selectButton = createButton(
-            I_CmsImageBundle.INSTANCE.style().checkIcon(),
+            I_CmsButton.CHECK_SMALL,
             Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
@@ -121,9 +121,7 @@ public class CmsResultListItem extends CmsListItem {
      */
     public static CmsPushButton createDeleteButton() {
 
-        return createButton(
-            I_CmsImageBundle.INSTANCE.style().deleteIcon(),
-            Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
+        return createButton(I_CmsButton.TRASH_SMALL, Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
     }
 
     /**
@@ -138,7 +136,7 @@ public class CmsResultListItem extends CmsListItem {
 
         CmsPushButton result = new CmsPushButton();
         result.setImageClass(imageClass);
-        result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        result.setButtonStyle(ButtonStyle.FONT_ICON, null);
         result.setTitle(title);
         return result;
     }

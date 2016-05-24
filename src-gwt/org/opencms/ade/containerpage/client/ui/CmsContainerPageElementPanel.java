@@ -295,7 +295,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         Element helper = helperWidget.getElement();
         Element button = DOM.createDiv();
         button.addClassName("opencms-icon");
-        button.addClassName(I_CmsButton.ButtonData.MOVE.getSmallIconClass());
+        button.addClassName(I_CmsButton.MOVE_SMALL);
         button.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragHandle());
         helper.appendChild(button);
         helper.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());

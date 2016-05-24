@@ -31,7 +31,6 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsOpenerHoverCss;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
 import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -200,99 +199,12 @@ public interface I_CmsImageBundle extends ClientBundle {
     I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
 
     /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/addImage.png")
-    ImageResource addImage();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/arrowBottomImage.png")
-    ImageResource arrowBottomImage();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/arrowRightImage.png")
-    ImageResource arrowRightImage();
-
-    /**
-     * Accessor for the big icon resource bundle.<p>
-     *
-     * @return the big icon resource bundle
-     */
-    I_CmsBigIconBundle bigIcons();
-
-    /**
      * Image resource accessor.<p>
      *
      * @return an image resource
      */
     @Source("images/broken_image.png")
     ImageResource brokenImage();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/icons/changedIcon.png")
-    ImageResource changedIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/closeImage.png")
-    ImageResource closeImage();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/cropImage.png")
-    ImageResource cropImage();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/cropRemoveImage.png")
-    ImageResource cropRemoveImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/dialogCloseImage.png")
-    ImageResource dialogCloseImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/filetypeNavlevelSmall.png")
-    ImageResource directorySmallImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/downloadGallery.png")
-    ImageResource downloadGalleryIcon();
 
     /**
      * Returns the edit cursor icon resource.<p>
@@ -323,49 +235,9 @@ public interface I_CmsImageBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/icons/htmlGallery.png")
-    ImageResource htmlGalleryIcon();
-
-    /**
-     * Accessor for the icon resource bundle.<p>
-     *
-     * @return the icon resource bundle
-     */
-    I_CmsIconBundle icons();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/imageSearchIcon.png")
-    ImageResource imageSearchIcon();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/informationBigImage.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource informationBigImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/invalidElement.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource invalidElement();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/linkGallery.png")
-    ImageResource linkGalleryIcon();
 
     /**
      * Access method.<p>
@@ -428,14 +300,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/opencmsSymbolImage.png")
-    ImageResource opencmsSymbolImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/placeholderImage.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource placeholderImage();
@@ -447,71 +311,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/plusImage.png")
     ImageResource plusImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/ratioLockedImage.png")
-    ImageResource ratioLockedImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/ratioUnlockedImage.png")
-    ImageResource ratioUnlockedImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/resetSizeImage.png")
-    ImageResource resetSizeImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the button CSS
-     */
-    @NotStrict
-    @Source("imageSprites.css")
-    I_CmsImageStyle style();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/tableGallery.png")
-    ImageResource tableGalleryIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/triangleDownImage.png")
-    ImageResource triangleDownImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/triangleRightImage.png")
-    ImageResource triangleRightImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/triangleRightImageDisabled.png")
-    ImageResource triangleRightImageDisabled();
 
     /**
      * Image resource accessor.<p>

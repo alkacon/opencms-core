@@ -391,9 +391,8 @@ public class CmsPublishGroupPanel extends Composite {
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean, DEFAULT_SLOT_MAPPING);
         if ((m_editorHandler != null) && resourceBean.getPermissionInfo().hasWritePermission()) {
             CmsPushButton editButton = new CmsPushButton();
-            editButton.setImageClass(I_CmsButton.ButtonData.EDIT.getSmallIconClass());
+            editButton.setImageClass(I_CmsButton.PEN_SMALL);
             editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-            editButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
             editButton.setTitle(
                 org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
             editButton.addClickHandler(new ClickHandler() {

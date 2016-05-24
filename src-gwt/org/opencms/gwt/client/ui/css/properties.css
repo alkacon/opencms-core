@@ -7,14 +7,14 @@
 	padding-top: 4px;
 }
 
-@external .cmsState-up-hovering; 
+@external  cmsState cmsState-up-hovering; 
 
-@sprite .propertyDefinitionButton {
-	gwt-image: "bigIcons.invPropertyBigIconDeactivated";
+.cmsState.propertyDefinitionButton {
+	color: gray;
 }
 
-@sprite .cmsState-up-hovering .propertyDefinitionButton {
-	gwt-image: "bigIcons.invPropertyBigIconActive";
+.cmsState.cmsState-up-hovering .propertyDefinitionButton {
+	color: blue;
 }
 
 .propertyParentLoading { 

@@ -2121,8 +2121,8 @@ public final class CmsContentEditor extends CmsEditorBase {
         }
         if (m_copyLocaleButton == null) {
             m_copyLocaleButton = createButton(
-                I_CmsButton.ButtonData.COPY_LOCALE.getTitle(),
-                I_CmsButton.ButtonData.COPY_LOCALE.getIconClass());
+                I_CmsButton.ButtonData.COPY_LOCALE_BUTTON.getTitle(),
+                I_CmsButton.ButtonData.COPY_LOCALE_BUTTON.getIconClass());
             m_copyLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -2142,8 +2142,8 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_toolbar = new CmsToolbar();
         m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_0));
         m_publishButton = createButton(
-            I_CmsButton.ButtonData.PUBLISH.getTitle(),
-            I_CmsButton.ButtonData.PUBLISH.getIconClass());
+            I_CmsButton.ButtonData.PUBLISH_BUTTON.getTitle(),
+            I_CmsButton.ButtonData.PUBLISH_BUTTON.getIconClass());
         m_toolbar.addLeft(m_publishButton);
         m_publishButton.addClickHandler(new ClickHandler() {
 
@@ -2197,7 +2197,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_toolbar.addLeft(m_saveExitButton);
         m_saveButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0),
-            I_CmsButton.ButtonData.SAVE.getIconClass());
+            I_CmsButton.ButtonData.SAVE_BUTTON.getIconClass());
         m_saveButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -2280,7 +2280,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         m_cancelButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_RESET_0),
-            I_CmsButton.ButtonData.RESET.getIconClass());
+            I_CmsButton.ButtonData.RESET_BUTTON.getIconClass());
         m_cancelButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {

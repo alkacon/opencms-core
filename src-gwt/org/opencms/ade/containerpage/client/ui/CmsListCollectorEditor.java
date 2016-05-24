@@ -33,7 +33,6 @@ import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.util.CmsUUID;
@@ -82,7 +81,6 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
         favButton.setImageClass(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getSmallIconClass());
         favButton.setTitle(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getTitle());
         favButton.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
-        favButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
         add(favButton);
         favButton.addClickHandler(new ClickHandler() {
 

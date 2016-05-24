@@ -1,9 +1,12 @@
+@external cmsState, html-face;
+
 div.fieldsetVisible {
 	border: solid 1px value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 	min-height: 8px;
 	position: relative;
 	overflow: visible;
+	margin: 10px 0px 5px;
 }
 div.fieldsetInvisible {
 	/** Use the same color as the background to make this border invisible. */
@@ -13,13 +16,19 @@ div.fieldsetInvisible {
 	min-height: 8px;
 	position: relative;
 	overflow: visible;
+	margin: 10px 0px;
 }
-.image {
+div.cmsState.image {
 	left: 5px;
 	position: absolute;
 	padding: 0;
 	cursor: pointer;
-	margin: -8px 0px 0px 2px;
+	margin: -9px 0px 0px 2px;
+	min-width: 0;
+	height: 16px;
+}
+div.cmsState.image > div.html-face{
+	vertical-align: top;
 }
 .legend {
 	left: 20px;
@@ -27,7 +36,7 @@ div.fieldsetInvisible {
 	position: absolute;
 	font-weight: bold;
 	padding: 0 3px 0 3px;
-	margin: -8px 0px 0px 5px;
+	margin: -11px 0px 0px 5px;
 	color: value("constants.css.textColor");
 }
 div.fieldsetVisible .content {

@@ -84,7 +84,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
      */
     public CmsToolbarAllGalleriesMenu(CmsContainerpageHandler handler, CmsDNDHandler dragHandler) {
 
-        super(I_CmsButton.ButtonData.GALLERY, handler);
+        super(I_CmsButton.ButtonData.GALLERY_BUTTON, handler);
         m_contentPanel = new FlowPanel();
         setMenuWidget(m_contentPanel);
     }
@@ -120,7 +120,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
      */
     public void onToolbarDeactivate() {
 
-        Document.get().getBody().removeClassName(I_CmsButton.ButtonData.WAND.getIconClass());
+        Document.get().getBody().removeClassName(I_CmsButton.ButtonData.WAND_BUTTON.getIconClass());
     }
 
     /**
@@ -139,7 +139,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
      */
     protected void openDialog(I_CmsGalleryConfiguration configuration) {
 
-        Document.get().getBody().addClassName(I_CmsButton.ButtonData.WAND.getIconClass());
+        Document.get().getBody().addClassName(I_CmsButton.ButtonData.WAND_BUTTON.getIconClass());
         if (m_dialog == null) {
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());

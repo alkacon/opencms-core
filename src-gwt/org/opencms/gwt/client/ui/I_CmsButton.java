@@ -79,73 +79,67 @@ public interface I_CmsButton {
     public enum ButtonData {
 
         /** Toolbar button. */
-        WAND("opencms-icon-wand", Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
+        WAND_BUTTON(WAND, Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
 
         /** Toolbar button. */
         ADD_TO_FAVORITES("opencms-icon-favorite", Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
 
         /** Toolbar button. */
-        BACK("opencms-icon-exit", Messages.get().key(Messages.GUI_TOOLBAR_BACK_0)),
+        BACK(EXIT, Messages.get().key(Messages.GUI_TOOLBAR_BACK_0)),
 
         /** Toolbar button. */
-        CLIPBOARD("opencms-icon-clipboard", Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_0)),
+        CLIPBOARD_BUTTON(CLIPBOARD, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_0)),
 
         /** Toolbar button. */
-        CONTEXT("opencms-icon-context-menu", Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0)),
+        CONTEXT(CONTEXT_MENU, Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0)),
 
         /** Toolbar button. */
-        COPY_LOCALE("opencms-icon-copy-locale", Messages.get().key(Messages.GUI_TOOLBAR_COPY_LOCALE_0)),
+        COPY_LOCALE_BUTTON(COPY_LOCALE, Messages.get().key(Messages.GUI_TOOLBAR_COPY_LOCALE_0)),
 
         /** Toolbar button. */
-        DELETE("opencms-icon-delete", Messages.get().key(Messages.GUI_TOOLBAR_DELETE_0)),
+        EDIT(PEN, Messages.get().key(Messages.GUI_TOOLBAR_EDIT_0)),
 
         /** Toolbar button. */
-        EDIT("opencms-icon-pen", Messages.get().key(Messages.GUI_TOOLBAR_EDIT_0)),
+        ELEMENT_INFO(INFO, Messages.get().key(Messages.GUI_TOOLBAR_ELEMENT_INFO_0)),
 
         /** Toolbar button. */
-        ELEMENT_INFO("opencms-icon-info", Messages.get().key(Messages.GUI_TOOLBAR_ELEMENT_INFO_0)),
+        GALLERY_BUTTON(GALLERY, Messages.get().key(Messages.GUI_TOOLBAR_GALLERY_0)),
 
         /** Toolbar button. */
-        GALLERY("opencms-icon-gallery", Messages.get().key(Messages.GUI_TOOLBAR_GALLERY_0)),
-
-        /** Toolbar button. */
-        INFO("opencms-icon-info", Messages.get().key(Messages.GUI_TOOLBAR_INFO_0)),
+        INFO_BUTTON(INFO, Messages.get().key(Messages.GUI_TOOLBAR_INFO_0)),
 
         /** Inherited element button. */
-        INHERITED("opencms-icon-sitemap", Messages.get().key(Messages.GUI_TOOLBAR_INHERITED_0)),
+        INHERITED(SITEMAP, Messages.get().key(Messages.GUI_TOOLBAR_INHERITED_0)),
 
         /** Toolbar button. */
         MOVE("opencms-icon-move", Messages.get().key(Messages.GUI_TOOLBAR_MOVE_IN_0)),
 
         /** Toolbar button. */
-        NEW("opencms-icon-add", Messages.get().key(Messages.GUI_TOOLBAR_NEW_0)),
+        SETTINGS_BUTTON(SETTINGS, Messages.get().key(Messages.GUI_TOOLBAR_PROPERTIES_0)),
 
         /** Toolbar button. */
-        SETTINGS("opencms-icon-settings", Messages.get().key(Messages.GUI_TOOLBAR_PROPERTIES_0)),
-
-        /** Toolbar button. */
-        PUBLISH("opencms-icon-publish", Messages.get().key(Messages.GUI_TOOLBAR_PUBLISH_0)),
+        PUBLISH_BUTTON(PUBLISH, Messages.get().key(Messages.GUI_TOOLBAR_PUBLISH_0)),
 
         /** Toolbar button. */
         REMOVE("opencms-icon-cut", Messages.get().key(Messages.GUI_TOOLBAR_REMOVE_0)),
 
         /** Toolbar button. */
-        RESET("opencms-icon-exit", Messages.get().key(Messages.GUI_TOOLBAR_RESET_0)),
+        RESET_BUTTON(EXIT, Messages.get().key(Messages.GUI_TOOLBAR_RESET_0)),
 
         /** Toolbar button. */
-        SAVE("opencms-icon-save", Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0)),
+        SAVE_BUTTON(SAVE, Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0)),
 
         /** Toolbar button. */
-        SELECTION("opencms-icon-edit-point", Messages.get().key(Messages.GUI_TOOLBAR_SELECTION_0)),
+        SELECTION(EDIT_POINT, Messages.get().key(Messages.GUI_TOOLBAR_SELECTION_0)),
 
         /** Shows formerly hidden elements. */
         ADD("opencms-icon-add", Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
 
         /** Toolbar button. */
-        SITEMAP("opencms-icon-sitemap", Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
+        SITEMAP_BUTTON(SITEMAP, Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
 
         /** Toolbar button. */
-        TOGGLE_HELP("opencms-icon-help", Messages.get().key(Messages.GUI_TOOLBAR_TOGGLE_HELP_0));
+        TOGGLE_HELP(HELP, Messages.get().key(Messages.GUI_TOOLBAR_TOGGLE_HELP_0));
 
         /** The icon class name. */
         private String m_iconClass;
@@ -200,7 +194,7 @@ public interface I_CmsButton {
     public enum ButtonStyle {
 
         /** Font icon button. */
-        FONT_ICON(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll(), "opencms-icon"),
+        FONT_ICON(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll(), ICON_FONT),
 
         /** Menu button. */
         IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
@@ -287,4 +281,211 @@ public interface I_CmsButton {
             return m_cssClassName;
         }
     }
+
+    /** Icon font CSS class. */
+    public static final String ICON_FONT = "opencms-icon";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String FILTER = "opencms-icon-filter";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String SEARCH = "opencms-icon-search";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String UNDO = "opencms-icon-undo";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String REDO = "opencms-icon-redo";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String HELP = "opencms-icon-help";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String REMOVE_LOCALE = "opencms-icon-remove-locale";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String COPY_LOCALE = "opencms-icon-copy-locale";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String SAVE_EXIT = "opencms-icon-save-exit";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String SAVE = "opencms-icon-save";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String EXIT = "opencms-icon-exit";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String PEN = "opencms-icon-pen";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String UPLOAD = "opencms-icon-upload";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String DOWNLOAD = "opencms-icon-download";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String PUBLISH = "opencms-icon-publish";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CLIPBOARD = "opencms-icon-clipboard";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String WAND = "opencms-icon-wand";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String GALLERY = "opencms-icon-gallery";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String INFO = "opencms-icon-info";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CONTEXT_MENU = "opencms-icon-context-menu";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String APPS = "opencms-icon-apps";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String SITEMAP = "opencms-icon-sitemap";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String EDIT_POINT = "opencms-icon-edit-point";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String SHOW = "opencms-icon-show";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String HIDE = "opencms-icon-hide";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String SETTINGS = "opencms-icon-settings";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_CHECK = "opencms-icon-circle-check";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_CHECK_INV = "opencms-icon-circle-inv-check";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_PAUSE = "opencms-icon-circle-pause";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_PAUSE_INV = "opencms-icon-circle-inv-pause";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_CANCEL = "opencms-icon-circle-cancel";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_CANCEL_INV = "opencms-icon-circle-inv-cancel";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_PLAY = "opencms-icon-circle-play";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_PLAY_INV = "opencms-icon-circle-inv-play";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_PLUS = "opencms-icon-circle-plus";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_PLUS_INV = "opencms-icon-circle-inv-plus";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_MINUS = "opencms-icon-circle-minus";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_MINUS_INV = "opencms-icon-circle-inv-minus";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE = "opencms-icon-circle";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_INV = "opencms-icon-circle-inv";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String WARNING = "opencms-icon-warning";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String ERROR = "opencms-icon-error";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CIRCLE_INFO = "opencms-icon-circle-info";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CROP = "opencms-icon-crop";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String CROP_REMOVE = "opencms-icon-crop-remove";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String RESET = "opencms-icon-reset";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String LOCK_CLOSED = "opencms-icon-lock-closed";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String LOCK_OPEN = "opencms-icon-lock-open";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String TRIANGLE_RIGHT = "opencms-icon-triangle-right";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String TRIANGLE_DOWN = "opencms-icon-triangle-down";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String EDIT_POINT_SMALL = "opencms-icon-edit-point-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String PEN_SMALL = "opencms-icon-pen-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String MOVE_SMALL = "opencms-icon-move-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String INFO_SMALL = "opencms-icon-info-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String SETTINGS_SMALL = "opencms-icon-settings-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String FAVORITE_SMALL = "opencms-icon-favorite-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String CUT_SMALL = "opencms-icon-cut-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String SEARCH_SMALL = "opencms-icon-search-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String UPLOAD_SMALL = "opencms-icon-upload-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String CONTEXT_MENU_SMALL = "opencms-icon-context-menu-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String SITEMAP_SMALL = "opencms-icon-sitemap-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String ADD_SMALL = "opencms-icon-add-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String DELETE_SMALL = "opencms-icon-delete-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String LOCK_SMALL = "opencms-icon-lock-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String PREVIEW_SMALL = "opencms-icon-preview-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String EDIT_DOWN_SMALL = "opencms-icon-edit-down-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String EDIT_UP_SMALL = "opencms-icon-edit-up-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String TRASH_SMALL = "opencms-icon-trash-20";
+
+    /** Small font icon using a 20x20 grid. */
+    public static final String CHECK_SMALL = "opencms-icon-check-20";
 }

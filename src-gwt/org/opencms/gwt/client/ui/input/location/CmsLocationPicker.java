@@ -30,8 +30,9 @@ package org.opencms.gwt.client.ui.input.location;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSimpleTextBox;
 
@@ -95,8 +96,9 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
         I_CmsLayoutBundle.INSTANCE.locationPickerCss().ensureInjected();
         m_openerButton = new CmsPushButton();
-        m_openerButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_openerButton.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+        m_openerButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_openerButton.setImageClass(I_CmsButton.GALLERY);
+        m_openerButton.setSize(Size.small);
         m_openerButton.setTitle(Messages.get().key(Messages.GUI_LOCATION_DIALOG_TITLE_0));
         initWidget(uiBinder.createAndBindUi(this));
         // disable input, the picker popup is used for editing the value

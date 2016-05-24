@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
@@ -525,10 +524,8 @@ public class CmsAliasView extends Composite {
      */
     private void setNewButtonStyle(CmsPushButton newButton) {
 
-        newButton.setImageClass(I_CmsButton.ButtonData.ADD.getSmallIconClass());
+        newButton.setImageClass(I_CmsButton.ADD_SMALL);
         newButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-        newButton.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
-        //    newButton.getElement().getStyle().setMarginTop(1, Unit.PX);
     }
 
 }

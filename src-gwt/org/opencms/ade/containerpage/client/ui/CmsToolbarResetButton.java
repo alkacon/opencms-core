@@ -45,7 +45,7 @@ public class CmsToolbarResetButton extends A_CmsToolbarButton<CmsContainerpageHa
      */
     public CmsToolbarResetButton(CmsContainerpageHandler handler) {
 
-        super(I_CmsButton.ButtonData.RESET, handler);
+        super(I_CmsButton.ButtonData.RESET_BUTTON, handler);
     }
 
     /**

@@ -83,8 +83,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
      */
     public CmsContextMenuButton(final CmsUUID structureId, final CmsContextMenuHandler handler) {
 
-        super(null, I_CmsButton.ButtonData.CONTEXT.getSmallIconClass());
-        m_button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
+        super(null, I_CmsButton.CONTEXT_MENU_SMALL);
         m_button.setSize(I_CmsButton.Size.medium);
         setTitle(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0));
         m_noEntriesLabel = new CmsLabel(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_EMPTY_0));

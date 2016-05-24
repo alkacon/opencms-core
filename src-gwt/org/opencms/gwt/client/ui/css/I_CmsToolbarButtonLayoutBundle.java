@@ -65,6 +65,13 @@ public interface I_CmsToolbarButtonLayoutBundle extends I_CmsImageBundle {
     I_CmsToolbarButtonLayoutBundle INSTANCE = GWT.create(I_CmsToolbarButtonLayoutBundle.class);
 
     /**
+     * The CSS constants bundle.<p>
+     *
+     * @return a bundle of CSS constants
+     */
+    I_CmsConstantsBundle constants();
+
+    /**
      * Access method.<p>
      *
      * @return the button CSS

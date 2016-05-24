@@ -453,13 +453,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     I_AttributeChoice attributeChoice();
 
     /**
-     * Returns the base image bundle.<p>
-     *
-     * @return the base image bundle
-     */
-    org.opencms.gwt.client.ui.css.I_CmsImageBundle baseImages();
-
-    /**
      * Access method.<p>
      *
      * @return the image resource

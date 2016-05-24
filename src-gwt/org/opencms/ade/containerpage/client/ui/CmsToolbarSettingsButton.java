@@ -48,7 +48,7 @@ public class CmsToolbarSettingsButton extends A_CmsToolbarOptionButton {
      */
     public CmsToolbarSettingsButton(CmsContainerpageHandler handler) {
 
-        super(I_CmsButton.ButtonData.SETTINGS, handler);
+        super(I_CmsButton.ButtonData.SETTINGS_BUTTON, handler);
     }
 
     /**

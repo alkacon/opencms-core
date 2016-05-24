@@ -1,4 +1,4 @@
-@external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, resizeButton-up-hovering;
+@external opencms-icon, html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, resizeButton-up-hovering;
 
 .cmsState, .cmsState-up, .gray, .cmsHovering {}
 .cmsState.cmsState-down-disabled, .cmsState.cmsState-up-disabled { cursor:auto; }
@@ -39,19 +39,31 @@ div.cmsFontIconButton.cmsState *, div.cmsFontIconButton.cmsState div.html-face, 
 	font-size: inherit;
 	color: inherit;
 } 
+div.cmsTextButton div.html-face span.opencms-icon, div.cmsTextButton div.html-face span.opencms-icon:before{
+	color: inherit;
+}
 
 /** Button size styles. */
 div.cmsButtonMedium div.html-face {
 	font-size: value("constants.css.fontSize");
 	line-height: value("constants.css.lineHeight");
 }
+div.cmsButtonMedium div.html-face span.opencms-icon:before{
+	font-size: 16px;
+}
 div.cmsButtonSmall div.html-face {
 	font-size: value("constants.css.fontSizeSmall");
 	line-height: value("constants.css.lineHeightSmall");
 }
+div.cmsButtonSmall div.html-face span.opencms-icon:before{
+	font-size: 14px;
+}
 div.cmsButtonBig div.html-face {
 	font-size: value("constants.css.fontSizeBig");
 	line-height: value("constants.css.lineHeightBig");
+}
+div.cmsButtonBig div.html-face span.opencms-icon:before{
+	font-size: 20px;
 }
 
 /** General styling for all buttons (don't let the background expand the button height and position it in the middle). */
@@ -80,15 +92,9 @@ div.cmsFontIconButton {
 	font-size: 20px;
 	height: 20px;
 	padding: 0px;
-	position: relative;
 }
 
-div.cmsButtonBig.cmsFontIconButton {
-	font-size: 32px;
-	height: 40px;
-	padding: 4px;
-	position: relative;
-}
+
 div.cmsTransparentButton {
     vertical-align:top;
 }
@@ -109,24 +115,40 @@ div.cmsTransparentButton {
 	background-color:value("constants.css.backgroundColorStateHover");
 	border-color:value("constants.css.borderColor");
 }
+div.cmsButtonBig.cmsFontIconButton {
+	font-size: 32px;
+	height: 40px;
+	padding: 4px;
+	position: relative;
+	color:  value("constants.css.textColor");
+}
 
-div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsState.cmsState-up-hovering {
+div.cmsFontIconButton.cmsButtonBig.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsButtonBig.cmsState.cmsState-up-hovering {
 	color:  #2197DB;
 	border-color: transparent;
 	background: transparent;
 }
-div.optionButton.cmsFontIconButton{
+div.cmsFontIconButton{
 	color: value("constants.css.textColorDisabledButton");
 }
-div.optionButton.cmsFontIconButton.cmsState.cmsState-down-hovering, div.optionButton.cmsFontIconButton.cmsState.cmsState-up-hovering {
+div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsState.cmsState-up-hovering {
 	color:  value("constants.css.textColor");
 	border-color: transparent;
 	background: transparent;
 }
 
-div.optionButton.cmsFontIconButton div.html-face{
-	line-height: 18px;	
+div.cmsFontIconButton div.html-face{
+	line-height: 16px;	
 }
+
+div.cmsFontIconButton.cmsButtonSmall{
+	font-size: 16px;
+}
+
+div.cmsFontIconButton.cmsButtonSmall div.html-face{
+	line-height: 12px;	
+}
+
 
 /**
  * State depended styles.

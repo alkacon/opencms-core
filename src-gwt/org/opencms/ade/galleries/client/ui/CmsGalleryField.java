@@ -45,8 +45,9 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.input.CmsSimpleTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
@@ -233,10 +234,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         buttonHandler.setIsTargetRootPath(false);
         m_uploadButton = new CmsUploadButton(buttonHandler);
         m_uploadButton.setText(null);
-        m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
+        m_uploadButton.setTitle(
+            Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
         m_uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-        m_uploadButton.setImageClass("opencms-icon-upload-20");
-        m_uploadButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.buttonCss().optionButton());
+        m_uploadButton.setImageClass(I_CmsButton.UPLOAD);
+        m_uploadButton.setSize(Size.small);
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_main = uibinder.createAndBindUi(this);
         m_main.getElement().getStyle().setBackgroundColor("white");
@@ -247,8 +249,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
         m_configuration = configuration;
         I_CmsLayoutBundle.INSTANCE.galleryFieldCss().ensureInjected();
-        m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+        m_opener.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_opener.setImageClass(I_CmsButton.GALLERY);
+        m_opener.setSize(Size.small);
     }
 
     /**
@@ -265,7 +268,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             @Override
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
+                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(
+                    widgetParams.get("configuration"));
                 CmsGalleryField galleryField = new CmsGalleryField(conf, false);
                 return galleryField;
             }
@@ -392,8 +396,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         if (m_allowUploads && (dropZone != null) && (m_uploadDropZone == null)) {
             m_uploadDropZone = dropZone;
             initUploadZone(m_uploadDropZone);
-            m_uploadDropZone.setTitle(org.opencms.ade.upload.client.Messages.get().key(
-                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0));
+            m_uploadDropZone.setTitle(
+                org.opencms.ade.upload.client.Messages.get().key(
+                    org.opencms.ade.upload.client.Messages.GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0));
             m_uploadDropZone.addClassName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().uploadDropZone());
         }
     }
@@ -603,7 +608,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * @param structureId the resource structure id
      * @param croppingParameter the selected cropping
      */
-    protected void setValueFromGallery(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+    protected void setValueFromGallery(
+        String resourcePath,
+        CmsUUID structureId,
+        CmsCroppingParamBean croppingParameter) {
 
         m_croppingParam = croppingParameter;
         String path = resourcePath;
@@ -629,8 +637,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
             // disable the upload button as no target folder is available
-            m_uploadButton.disable(org.opencms.ade.upload.client.Messages.get().key(
-                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
+            m_uploadButton.disable(
+                org.opencms.ade.upload.client.Messages.get().key(
+                    org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
         } else {
             // make sure the upload button is available
             m_uploadButton.enable();
@@ -808,7 +817,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
 
             @Override
-            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+            public void setWidgetValue(
+                String resourcePath,
+                CmsUUID structureId,
+                CmsCroppingParamBean croppingParameter) {
 
                 setValueFromGallery(resourcePath, structureId, croppingParameter);
             }

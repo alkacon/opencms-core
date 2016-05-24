@@ -44,7 +44,7 @@ public class CmsToolbarInfoButton extends A_CmsToolbarOptionButton {
      */
     public CmsToolbarInfoButton(CmsContainerpageHandler handler) {
 
-        super(I_CmsButton.ButtonData.INFO, handler);
+        super(I_CmsButton.ButtonData.INFO_BUTTON, handler);
     }
 
     /**

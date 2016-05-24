@@ -26,9 +26,7 @@
 			display: none; 
 		}
 		
-		.topButtonBox {
-			margin-bottom: 5px;
-			margin-top: 10px;
+		.topButtonBox, .outerTableBox {
 			width: innerWidth;
 		}
 		
@@ -72,11 +70,6 @@
 				float: right; 
 				margin-right: 5px;
 			} 
-			
-			.outerTableBox {
-				width: innerWidth;
-				margin-top: 5px; 
-			}
 			
 			.clearbox {
 				clear: both;
