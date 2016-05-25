@@ -44,6 +44,8 @@
 /** The important text color. Use it only for displaying important text. */
 @def textColorImportant #B31B34;
 
+@def textColorHighlight #2197DB;
+
 @def colorWarning #ffa826;
 
 @def colorError #B31B34;

@@ -27,7 +27,6 @@
 
 package org.opencms.ade.containerpage.client.ui.css;
 
-import org.opencms.gwt.client.ui.css.I_CmsBackgroundImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsDirectEditCss;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -284,13 +283,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
-
-    /**
-     * The accessor for the background images.<p>
-     *
-     * @return the background image bundle
-     */
-    I_CmsBackgroundImageBundle backgrounds();
 
     /**
      * The accessor for the CSS constants bundle.<p>

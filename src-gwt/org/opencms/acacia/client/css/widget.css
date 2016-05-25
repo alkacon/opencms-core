@@ -249,16 +249,12 @@ div.colorPicker{
 
 
 /** Checkbox styles*/
-
-.defaultView > div > .checkBoxStyle.inActive .label, .compactView > div > .checkBoxStyle.inActive .label, .firstColumn > div > .checkBoxStyle.inActive .label, .secondColumn > div > .checkBoxStyle.inActive .label{
-	color: #000000;
-}
-.defaultView > div > .checkBoxStyle:hover.inActive .label, .compactView > div > .checkBoxStyle:hover.inActive .label, .firstColumn > div > .checkBoxStyle:hover.inActive .label, .secondColumn > div > .checkBoxStyle:hover.inActive .label{
-	color: #000000;
+.checkBoxStyle div.html-face > span {
+	border-color: value("constants.css.borderColorEditor");
 }
 
-.defaultView > div > .checkBoxStyle:hover .label, .compactView > div > .checkBoxStyle:hover .label, .firstColumn > div > .checkBoxStyle:hover .label, .secondColumn > div > .checkBoxStyle:hover .label  {
-	color: #445577;
+.checkBoxStyle .cmsState-up-disabled div.html-face > span, .checkBoxStyle .cmsState-down-disabled div.html-face > span {
+	border-color: value("constants.css.borderColor");
 }
 
 .defaultView > div > .checkBoxStyle div.label, .compactView > div > .checkBoxStyle div.label, .firstColumn > div > .checkBoxStyle div.label, .secondColumn > div > .checkBoxStyle div.label{

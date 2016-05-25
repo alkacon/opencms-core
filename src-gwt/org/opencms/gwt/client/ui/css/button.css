@@ -26,8 +26,7 @@ div.html-face span.spacerLeft {
 	margin-left:4px;
 }
 
-
-div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton, div.cmsFontIconButton {
+div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsFontIconButton {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-webkit-user-select: none;
@@ -67,7 +66,7 @@ div.cmsButtonBig div.html-face span.opencms-icon:before{
 }
 
 /** General styling for all buttons (don't let the background expand the button height and position it in the middle). */
-div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton, div.cmsFontIconButton {
+div.cmsTransparentButton, div.cmsMenuButton, div.cmsFontIconButton {
 	height:auto !important;
 	background-position:50% 50% !important;
 	background-color:transparent;
@@ -83,7 +82,7 @@ div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton, div.cmsFontIcon
 
 
 /** Specific button styles (text-, transparent-, menu- and image-Button). */
-div.cmsMenuButton, div.cmsImageButton {
+div.cmsMenuButton{
     border: none;
     padding:2px 4px; 
 }
@@ -98,23 +97,8 @@ div.cmsFontIconButton {
 div.cmsTransparentButton {
     vertical-align:top;
 }
-/** Image-Button:Only show a border and background for the hover- and the down-state. */
-@sprite div.cmsImageButton.cmsState-down-hovering, div.cmsImageButton.cmsState-up-hovering {
-	gwt-image:"backgrounds.stateBackground"; 
-	background-color:value("constants.css.backgroundColorStateHover");
-	border-color:value("constants.css.borderColor");
-}
-@sprite div.cmsImageButton.cmsState-down {
-	gwt-image:"backgrounds.stateBackground"; 
-	background-color:value("constants.css.backgroundColorStateActive");
-	border-color:value("constants.css.borderColor");
-}
-/** Menu-Button:Only show a border and background for the hover-state. */
-@sprite div.cmsMenuButton.cmsState-down-hovering, div.cmsMenuButton.cmsState-up-hovering {
-	gwt-image:"backgrounds.stateBackground"; 
-	background-color:value("constants.css.backgroundColorStateHover");
-	border-color:value("constants.css.borderColor");
-}
+
+
 div.cmsButtonBig.cmsFontIconButton {
 	font-size: 32px;
 	height: 40px;
@@ -124,7 +108,7 @@ div.cmsButtonBig.cmsFontIconButton {
 }
 
 div.cmsFontIconButton.cmsButtonBig.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsButtonBig.cmsState.cmsState-up-hovering {
-	color:  #2197DB;
+	color:  value("constants.css.textColorHighlight");
 	border-color: transparent;
 	background: transparent;
 }
@@ -148,11 +132,6 @@ div.cmsFontIconButton.cmsButtonSmall{
 div.cmsFontIconButton.cmsButtonSmall div.html-face{
 	line-height: 12px;	
 }
-
-
-/**
- * State depended styles.
- */
 
 /** Set a general text color for all disabled buttons. */
 div.cmsState-up-disabled div.html-face, div.cmsState-down-disabled div.html-face, div.cmsState-up-disabled div.html-face span, div.cmsState-down-disabled div.html-face span {

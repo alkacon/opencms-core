@@ -1,4 +1,4 @@
-@external html-face, gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external html-face, gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 .alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom *, .alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom { 
 	vertical-align: baseline;  
@@ -144,8 +144,66 @@ div.textArea textarea{
 	outline: none;
 }
 
-@sprite .cmsState-up-disabled .checkBoxImage {
-	gwt-image: "inputImages.checkboxUncheckedDisabled";
+.checkBoxImageChecked {
+	line-height: value("constants.css.inputHeight");
+	font-size: 16px;
+	color: inherit;
+	width: 16px;
+}
+.checkBoxImageUnchecked{}
+.cmsState .checkBoxImage, 
+.triState .triStateOn, .triState .triStateOff, .triState .triStateMedium,
+.cmsState .radioButtonImage {
+    border: 1px solid value("constants.css.borderColor");
+    border-radius: 4px;
+    padding: 1px;
+    height: 15px;
+    width: 15px;
+    font-size: 11px;
+    line-height: 13px;
+    background-color: value("constants.css.backgroundColorInfo");
+    color: inherit;
+}
+.cmsState span.radioButtonImage {
+	border-radius: 7px;
+	padding: 3px;
+	font-size: 7px;
+    line-height: 9px;
+}
+.cmsState.cmsState-up-disabled .checkBoxImage, .cmsState-down-disabled .checkBoxImage,
+.cmsState.cmsState-up-disabled .radioButtonImage, .cmsState-down-disabled .radioButtonImage, .triState .triStateMedium  {
+	background-color: value("constants.css.backgroundColorDisabled")";
+}
+
+.cmsState.cmsState-up-hovering .checkBoxImage, .cmsState-down-hovering .checkBoxImage,
+.cmsState.cmsState-up-hovering .radioButtonImage, .cmsState-down-hovering .radioButtonImage {
+	background-color: #e6f4fb; /* lighten 45% of textColorHighlight */
+	color: value("constants.css.textColorHighlight");
+}
+
+.cmsState.cmsState-down-disabled .checkBoxImage:before, .cmsState.cmsState-down-disabled .radioButtonImage:before {
+	color: value("constants.css.textColorDisabled")";
+}
+
+.cmsState-down .checkBoxImage:before, .cmsState-down-hovering .checkBoxImage:before, .cmsState-down-disabled .checkBoxImage:before,.checkBoxImageChecked:before, .triState .triStateOn:before, .triState .triStateMedium:before {
+	content: "\e916";
+}
+.cmsState-down .radioButtonImage:before, .cmsState-down-hovering .radioButtonImage:before, .cmsState-down-disabled .radioButtonImage:before{
+	content: "\e62b";
+}
+.cmsState-down .checkBoxImage:before, .cmsState-down-hovering .checkBoxImage:before, .cmsState-down-disabled .checkBoxImage:before, 
+.checkBoxImageChecked:before, .triState .triStateOn:before, .triState .triStateMedium:before,
+.cmsState-down .radioButtonImage:before, .cmsState-down-hovering .radioButtonImage:before, .cmsState-down-disabled .radioButtonImage:before {
+	font-family: opencms-font;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .inherited {
@@ -153,77 +211,8 @@ div.textArea textarea{
 	font-size: 14px;
 }
 
-@sprite .cmsState-down-disabled .checkBoxImage {
-	gwt-image: "inputImages.checkboxCheckedDisabled";
-}
-@sprite .cmsState-up .checkBoxImage, .checkBoxImageUnchecked {
-	gwt-image: "inputImages.checkboxUnchecked";
-}
-@sprite .cmsState-down .checkBoxImage, .checkBoxImageChecked {
-	gwt-image: "inputImages.checkboxChecked";
-}
-@sprite .cmsState-up-hovering .checkBoxImage {
-	gwt-image: "inputImages.checkboxUncheckedHover";
-}
-@sprite .cmsState-down-hovering .checkBoxImage {
-	gwt-image: "inputImages.checkboxCheckedHover";
-}
-
-
-@sprite .triState .triStateOn {
-	gwt-image: "inputImages.checkboxChecked";
-	
-}
-
-@sprite .triState.cmsState-down-hovering .triStateOn,.triState.cmsState-up-hovering .triStateOn {
-	gwt-image: "inputImages.checkboxCheckedHover";
-}
-
-
-@sprite .triState .triStateOff {
-	gwt-image: "inputImages.checkboxUnchecked";
-	
-}
-
-@sprite .triState.cmsState-up-hovering .triStateOff, .triState.cmsState-down-hovering .triStateOff {
-	gwt-image: "inputImages.checkboxUncheckedHover";
-}
-
-
-@sprite .triState .triStateMedium {
-	gwt-image: "inputImages.checkboxCheckedSome";
-}
-
-@sprite .triState.cmsState-up-hovering .triStateMedium, .triState.cmsState-down-hovering .triStateMedium {
-	gwt-image: "inputImages.checkboxCheckedSomeHover";
-}
-
 .radioButton .gwt-ToggleButton {
 	outline: none;
-}
-
-@sprite .cmsState-up-disabled .radioButtonImage {
-	gwt-image: "inputImages.radioUncheckedDisabled";
-}
-
-@sprite .cmsState-down-disabled .radioButtonImage {
-	gwt-image: "inputImages.radioCheckedDisabled";
-}
-
-@sprite .cmsState-up .radioButtonImage {
-	gwt-image: "inputImages.radioUnchecked";
-}
-
-@sprite .cmsState-down .radioButtonImage {
-	gwt-image: "inputImages.radioChecked";
-}
-
-@sprite .cmsState-up-hovering .radioButtonImage {
-	gwt-image: "inputImages.radioUncheckedHover";
-}
-
-@sprite .cmsState-down-hovering .radioButtonImage {
-	gwt-image: "inputImages.radioCheckedHover";
 }
 	
 /* Style for edited text box */
@@ -292,15 +281,22 @@ div.error, .error {
 	color: value("constants.css.textColorDisabled");
 }
 
-@sprite .openerNoHover.selectBoxSelected {
+.openerNoHover.selectBoxSelected, .openerHover.selectBoxSelected {
 	width: auto; 
 	height:auto;
 	min-height: 0px;
+	position: relative;
 	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%;
+	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientListItem") literal(")");
+	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientListItem") literal(")");
+	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientListItem") literal(")");
+	background-image: literal("-o-linear-gradient(")value("constants.css.gradientListItem") literal(")");
+	background-image: literal("linear-gradient(")value("constants.css.gradientListItem") literal(")");
 	outline: none;
-	background-color: value("constants.css.backgroundColorStateStandard");
+}
+
+.selectBoxSelected .selectBoxOpener {
+	position:relative;
 }
 
 .comboBox .openerNoHover.selectBoxSelected, .comboBox .openerHover.selectBoxSelected { 
@@ -309,15 +305,17 @@ div.error, .error {
 }
 
 
-@sprite .openerHover.selectBoxSelected {
-	width: auto;
-	height: auto;
-	min-height: 0px;
-	cursor: pointer;
-	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%;
-	outline: none;
+.openerHover.selectBoxSelected:before {
+	content: "";
+	position: absolute;
+	top:0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	backgound: transparent;
+	opacity: 0.4;
+	z-index: 0;
+	border-radius: value("constants.css.borderRadius");
 	background-color: value("constants.css.backgroundColorStateHover");
 }
 

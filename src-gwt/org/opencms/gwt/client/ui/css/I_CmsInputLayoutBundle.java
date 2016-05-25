@@ -48,13 +48,6 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
      *
      * @return an image bundle
      */
-    I_CmsBackgroundImageBundle backgrounds();
-
-    /**
-     * Image bundle accessor.<p>
-     *
-     * @return an image bundle
-     */
     I_CmsImageBundle baseImages();
 
     /**
@@ -72,11 +65,4 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
     @Source("input.css")
     @Import(value = {I_CmsFieldsetCss.class, I_CmsPropertiesCss.class})
     I_CmsInputCss inputCss();
-
-    /**
-     * Returns the image bundle for the input package.<p>
-     *
-     * @return an image bundle
-     */
-    I_CmsInputImageBundle inputImages();
 }

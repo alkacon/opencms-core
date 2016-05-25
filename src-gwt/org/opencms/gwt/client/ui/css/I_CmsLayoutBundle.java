@@ -143,13 +143,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String cmsImageButton();
-
-        /**
-         *  Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String cmsMenuButton();
 
         /**
@@ -2315,20 +2308,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      *
-     * @return the image bundle for the backgrounds
-     */
-    I_CmsBackgroundImageBundle backgrounds();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image bundle for the borders
-     */
-    I_CmsBorderImageBundle borders();
-
-    /**
-     * Access method.<p>
-     *
      * @return the button CSS
      */
     @Source("button.css")
@@ -2467,13 +2446,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("highlight.css")
     I_CmsHighlightCss highlightCss();
-
-    /**
-     * Returns the image bundle for the input package.<p>
-     *
-     * @return an image bundle
-     */
-    I_CmsInputImageBundle inputImages();
 
     /**
      * Access method.<p>

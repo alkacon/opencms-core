@@ -27,11 +27,8 @@
 
 package org.opencms.gwt.client.ui.css;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsOpenerHoverCss;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource.Shared;
 import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
@@ -43,157 +40,6 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * @since 8.0.0
  */
 public interface I_CmsImageBundle extends ClientBundle {
-
-    /** Bundles the image sprite CSS classes. */
-    @Shared
-    interface I_CmsImageStyle extends I_CmsOpenerHoverCss {
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String arrowDownIcon();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String arrowUpIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String checkIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String croppingIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String deleteIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String dialogCloseIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String directoryIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String downloadGalleryIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String htmlGalleryIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String imageSearchIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String infoBigIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String linkGalleryIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String lockedIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String popupIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String previewIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String removeCroppingIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String resetIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String searchIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String tableGalleryIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String tablePreviewIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String tableReplaceIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String triangleDown();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String triangleRight();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String unlockedIcon();
-    }
 
     /** The bundle instance. */
     I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
@@ -270,22 +116,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/lockUserImage.png")
     ImageResource lockUserImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/menuArrowBottomImage.png")
-    ImageResource menuArrowBottomImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/menuArrowTopImage.png")
-    ImageResource menuArrowTopImage();
 
     /**
      * Access method.<p>

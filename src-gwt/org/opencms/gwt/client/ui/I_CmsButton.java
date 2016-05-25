@@ -197,9 +197,6 @@ public interface I_CmsButton {
         FONT_ICON(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll(), ICON_FONT),
 
         /** Menu button. */
-        IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
-
-        /** Menu button. */
         MENU(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMenuButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
         /** Default button. */

@@ -68,7 +68,6 @@ div.cmsMenuBar .cmsMenuItem.selected * {
 .cmsMenuItem .iconBox { 
 	float: left;
 	width: 24px; 
-	padding-top: 4px;
 }
 
 .cmsMenuBar .cmsMenuItem .html-face > span{

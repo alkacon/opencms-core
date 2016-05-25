@@ -149,7 +149,7 @@ div.itemContent:before{
 	right: 0;
 	bottom: 0;
 	backgound: transparent;
-	opacity: 0.5;
+	opacity: 0.4;
 	z-index: 0;
 	border-radius: value("constants.css.borderRadius");
 }
