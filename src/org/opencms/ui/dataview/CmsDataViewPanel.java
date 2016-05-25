@@ -242,7 +242,6 @@ public class CmsDataViewPanel extends VerticalLayout {
             Collection<?> results = (Collection<?>)val;
             for (Object obj : results) {
                 result.add(m_dataView.getItemById((String)obj));
-                System.out.println(obj);
             }
         } else {
             result.add(m_dataView.getItemById((String)val));
