@@ -430,21 +430,7 @@ div.helpBubble{
 	top: auto;
 	bottom: 100%;
 }
-@sprite .displayAbove > .helpBubble > .helpBubbleArrow{
-	gwt-image: "bottomLeftCorner";
-	height: 10px;
-	width: 10px;
-	position: absolute;
-	top: auto;
-	bottom: -5px;
-	left: 10px;
-}
 
-@sprite .hasError.displayAbove > .helpBubble > .helpBubbleArrow{
-	gwt-image: "bottomLeftCornerError";
-	height: 10px;
-	width: 10px;
-}
 
 .helpBubble div{
 	color: value("constants.css.textColor");
@@ -473,20 +459,23 @@ div.helpBubble{
 .hasError .helpBubble .helpBubbleClose{
 	display: none;
 }
-
-@sprite .helpBubbleArrow{
-	gwt-image: "topLeftCorner";
+.helpBubble > .helpBubbleArrow {
 	height: 10px;
 	width: 10px;
 	position: absolute;
+	left: 10px;
 	top: -5px;
+	transform: rotate(45deg);
+	background: #FFFFCC;
+}
+.displayAbove > .helpBubble > .helpBubbleArrow{
+	top: auto;
+	bottom: -5px;
 	left: 10px;
 }
 
-@sprite .hasError .helpBubbleArrow{
-	gwt-image: "topLeftCornerError";
-	height: 10px;
-	width: 10px;
+.hasError > .helpBubble > .helpBubbleArrow{
+	background-color: #ffcccc;
 }
 
 .entity .attributeValue > div, .dragHelper.attributeValue > div{

@@ -30,7 +30,6 @@ package org.opencms.acacia.client.css;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.CssResource.Shared;
-import com.google.gwt.resources.client.ImageResource;
 
 /**
  * Bundle for CSS resources.<p>
@@ -453,43 +452,10 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     I_AttributeChoice attributeChoice();
 
     /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("bottom-left-corner.png")
-    ImageResource bottomLeftCorner();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("bottom-left-corner-error.png")
-    ImageResource bottomLeftCornerError();
-
-    /**
      * Returns the style CSS.<p>
      *
      * @return the style CSS
      */
     @Source("form.css")
     I_Style form();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("top-left-corner.png")
-    ImageResource topLeftCorner();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("top-left-corner-error.png")
-    ImageResource topLeftCornerError();
-
 }
