@@ -39,7 +39,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 @Export
 @ExportClosure
-@ExportPackage("opencms")
+@ExportPackage("opencmsugc")
 public interface I_CmsErrorCallback extends Exportable {
 
     /**
