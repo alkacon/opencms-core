@@ -54,7 +54,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * to acquire new form editing sessions.<p>
  */
 @Export
-@ExportPackage("opencms")
+@ExportPackage("opencmsugc")
 public class CmsXmlContentUgcApi implements Exportable {
 
     /** The request counter. */

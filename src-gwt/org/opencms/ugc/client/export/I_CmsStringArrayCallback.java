@@ -37,7 +37,7 @@ import org.timepedia.exporter.client.Exportable;
  */
 @Export
 @ExportClosure
-@ExportPackage("opencms")
+@ExportPackage("opencmsugc")
 public interface I_CmsStringArrayCallback extends Exportable {
 
     /**
