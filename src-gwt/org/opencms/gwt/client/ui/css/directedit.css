@@ -57,9 +57,8 @@ div.optionBar div, div.optionBar span {
 }
 
 div.expiredListElementOverlay{
-	background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 240, 242, 1) 10px, rgba(240, 240, 242, 1) 20px);
+	background-image: value("constants.css.gradientInvalid");
 	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	padding: 0px;
 	margin: 0px;
 	position: absolute;

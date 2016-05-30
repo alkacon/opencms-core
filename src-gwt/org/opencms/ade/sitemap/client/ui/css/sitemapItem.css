@@ -4,8 +4,8 @@
 	visibility: hidden;
 }
 
-@sprite .positionIndicator{
-	gwt-image: "baseImages.placeholderImage";
+.positionIndicator{
+	background-image: value("constants.css.gradientPlaceholder");
 	height: 4px;
 	right: 6px;
 	left: 6px;

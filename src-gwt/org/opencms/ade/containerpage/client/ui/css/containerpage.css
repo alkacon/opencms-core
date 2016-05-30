@@ -67,8 +67,8 @@ div.expired{
 	display: none;
 }
 
-@sprite .expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay{
-	gwt-image: 'otherImages.invalidElement';
+.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay{
+	background-image: value("constants.css.gradientInvalid");
 	position: absolute;
 	height: auto;
 	width: auto;
@@ -78,10 +78,10 @@ div.expired{
 	bottom: 2px;
 }
 
-@sprite div.expiredListElementOverlay{
-	gwt-image: 'otherImages.invalidElement';
+div.expiredListElementOverlay{
+	background-image: value("constants.css.gradientInvalid");
 	box-sizing: border-box;
-	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	padding: 0px;
 	margin: 0px;
 	position: absolute;
@@ -132,9 +132,9 @@ div.optionBar .cmsState, div.optionBar .html-face, div.optionBar span{
 .cms_ade_groupcontainer .dragElement .optionBar{
 	display: none;
 }
-@sprite .emptyGroupContainer{
+.emptyGroupContainer{
 	min-height: 27px;
-	gwt-image: 'otherImages.placeholderImage';
+	background-image: value("constants.css.gradientPlaceholder");
 	border: 1px solid value("constants.css.borderColor");
 }
 
@@ -149,8 +149,8 @@ div.groupcontainerPlaceholder{
 	visibility: hidden !important;
 }
 
-@sprite .groupcontainerOverlay{
-	gwt-image: 'otherImages.placeholderImage';
+.groupcontainerOverlay{
+	background-image: value("constants.css.gradientPlaceholder");
 	position: fixed;
 	top: 0;
 	left: 0;

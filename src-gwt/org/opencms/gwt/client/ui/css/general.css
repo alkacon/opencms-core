@@ -143,7 +143,7 @@ div.header div.headerButtons > div{
 }
 
 div.disablingOverlay{
-	background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 240, 242, 1) 10px, rgba(240, 240, 242, 1) 20px);
+	background-image: value("constants.css.gradientInvalid");
 	display: block;
 	position:absolute;
 	z-index: value("constants.css.zIndexInline");

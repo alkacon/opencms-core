@@ -1,4 +1,4 @@
-@external cms_type_icon;
+@external cms_type_icon, imagedrag;
 
 @def smallImageWidth 96;
 @def smallImageHeight 72;
@@ -9,9 +9,8 @@
 .itemAdditional, .inlineEditable, .open, .itemActive, .itemRed, .itemBlue, .itemYellow, .disabledItem, .itemTitle, .cms_type_icon, .expired,
 .itemAdditionalTitle, .itemAdditionalValue, .dragging,
 .cmsState, .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering,
-.cmsState-down-disabled, .export, .secure, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockClosed, .titleInput, .copyModel, .itemInfoRow {}
-
-
+.cmsState-down-disabled, .export, .secure, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockClosed, .titleInput, .copyModel, .itemInfoRow,
+.unselectable, .changed, .topRightIcon, .titleDeleted, .itemSubtitle {} 
 
 .tilingItem .imageTile, .tilingList .tilingItem .titleRow, .tilingList .tilingItem .itemIcon, .tilingList .tilingItem .itemAdditional{
 	display: none;
@@ -42,23 +41,14 @@
 	height: value("galleryResultItemCss.bigImageHeight","px");
 }
 
-@external .imagedrag;
-
-
- 
-
-
-
 .expiredImageOverlay {
 	display: none; 
 }
 li.expired .expiredImageOverlay { 
-	background-image:  repeating-linear-gradient(45deg, #000000, #000000 10px, #FCFFFF 10px, #FFFFFF 20px);
-	background-position: 50% 50%;
+	background-image: value("constants.css.gradientInvalid");
 	width: 100%;
 	height: 100%; 
 	top: 0;
-	opacity: 0.2; 
 	position: absolute;  
 } 
 
@@ -97,16 +87,6 @@ li.expired .expiredImageOverlay {
 	visibility: visible;
 }
 
-.unselectable {} 
-
-.changed{}
-
 .tilingList .topRightIcon {
 	left: 0px !important; 
 }
-
-.topRightIcon {} 
-
-.titleDeleted {}
-
-.itemSubtitle {} 

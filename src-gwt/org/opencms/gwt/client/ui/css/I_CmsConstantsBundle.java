@@ -371,10 +371,10 @@ public interface I_CmsConstantsBundle extends ClientBundle {
         String gradientFormDialog();
 
         /**
-         * Access method.<p>
-         *
-         * @return the CSS constant value
-         */
+        * Access method.<p>
+        *
+        * @return the CSS constant value
+        */
         String gradientFormDialogColor();
 
         /**
@@ -396,7 +396,21 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
+        String gradientInvalid();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
         String gradientListItem();
+
+        /**
+            * Access method.<p>
+            *
+            * @return the CSS constant value
+            */
+        String gradientPlaceholder();
 
         /**
          * Access method.<p>

@@ -71,8 +71,8 @@ div.dragHandle{
 	opacity: 0;
 }
 
-@sprite .placeholderOverlay{
-	gwt-image: 'otherImages.placeholderImage';
+.placeholderOverlay{
+	background-image: value("constants.css.gradientPlaceholder");
 	display: none;
 	position:absolute;
 	z-index: value("constants.css.zIndexInline");
