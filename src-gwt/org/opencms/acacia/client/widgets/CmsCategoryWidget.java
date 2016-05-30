@@ -34,7 +34,6 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsCategoryField;
 import org.opencms.gwt.client.ui.input.category.CmsCategoryTree;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.util.CmsStringUtil;
 
@@ -414,7 +413,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     private void displayValue() {
 
         if (m_resultList == null) {
-            CmsDebugLog.consoleLog("Category tree not available yet");
             if (!m_loadingCategoryTree) {
                 m_loadingCategoryTree = true;
                 // generate a list of all configured categories.
@@ -428,7 +426,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
                     @Override
                     public void execute() {
 
-                        CmsDebugLog.consoleLog("Loading category tree");
                         CmsCoreProvider.getService().getCategories(category, true, categories, this);
 
                     }
@@ -455,7 +452,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
             for (String sel : m_selected) {
                 selected += sel + "  ";
             }
-            CmsDebugLog.consoleLog("Displaying value: " + selected);
             m_categoryField.buildCategoryTree(m_resultList, m_selected);
             setheight();
         }
