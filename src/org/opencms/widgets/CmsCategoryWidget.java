@@ -44,6 +44,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.CmsXmlCategoryValue;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -163,7 +164,8 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         String result = getConfiguration();
         // append 'selection type' to configuration in case of the schemaType
-        if (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)) {
+        if (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)
+            || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)) {
             m_selectiontype = "multi";
         } else {
             m_selectiontype = "single";
@@ -391,6 +393,43 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         // nothing to do
         return null;
+    }
+
+    /**
+     * Returns the starting category depending on the configuration options.<p>
+     *
+     * @param cms the cms context
+     * @param referencePath the right resource path
+     *
+     * @return the starting category
+     */
+    public String getStartingCategory(CmsObject cms, String referencePath) {
+
+        String ret = "";
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_category) && CmsStringUtil.isEmptyOrWhitespaceOnly(m_property)) {
+            ret = "/";
+        } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_property)) {
+            ret = m_category;
+        } else {
+            // use the given property from the right file
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(referencePath)) {
+                try {
+                    ret = cms.readPropertyObject(referencePath, m_property, true).getValue("/");
+                } catch (CmsException ex) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(ex.getLocalizedMessage(), ex);
+                    }
+                }
+            }
+        }
+        if (!ret.endsWith("/")) {
+            ret += "/";
+        }
+        if (ret.startsWith("/")) {
+            ret = ret.substring(1);
+        }
+        return ret;
     }
 
     /**
@@ -639,42 +678,5 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             }
         }
         return file;
-    }
-
-    /**
-     * Returns the starting category depending on the configuration options.<p>
-     *
-     * @param cms the cms context
-     * @param referencePath the right resource path
-     *
-     * @return the starting category
-     */
-    protected String getStartingCategory(CmsObject cms, String referencePath) {
-
-        String ret = "";
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_category) && CmsStringUtil.isEmptyOrWhitespaceOnly(m_property)) {
-            ret = "/";
-        } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_property)) {
-            ret = m_category;
-        } else {
-            // use the given property from the right file
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(referencePath)) {
-                try {
-                    ret = cms.readPropertyObject(referencePath, m_property, true).getValue("/");
-                } catch (CmsException ex) {
-                    // should never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(ex.getLocalizedMessage(), ex);
-                    }
-                }
-            }
-        }
-        if (!ret.endsWith("/")) {
-            ret += "/";
-        }
-        if (ret.startsWith("/")) {
-            ret = ret.substring(1);
-        }
-        return ret;
     }
 }

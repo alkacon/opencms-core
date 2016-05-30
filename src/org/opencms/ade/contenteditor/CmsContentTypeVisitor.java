@@ -48,6 +48,7 @@ import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -209,12 +210,9 @@ public class CmsContentTypeVisitor {
     /** Widget display type evaluation rules. */
     protected enum EvaluationRule {
         /** Label length rule. */
-        labelLength,
-        /** No rule applied. */
-        none,
-        /** Optional field rule. */
-        optional,
-        /** Root level rule. */
+        labelLength, /** No rule applied. */
+        none, /** Optional field rule. */
+        optional, /** Root level rule. */
         rootLevel
     }
 
@@ -241,6 +239,9 @@ public class CmsContentTypeVisitor {
 
     /** The locale synchronized attribute names. */
     private List<String> m_localeSynchronizations;
+
+    /** The dynamically loaded attribute names. */
+    private List<String> m_dynamicallyLoaded;
 
     /** The messages. */
     private CmsMultiMessages m_messages;
@@ -314,11 +315,21 @@ public class CmsContentTypeVisitor {
     /**
      * Returns if the visited content has invisible fields.<p>
      *
-     * @return <code>true</code>  if the visited content has invisible fields
+     * @return <code>true</code> if the visited content has invisible fields
      */
     public boolean hasInvisibleFields() {
 
         return m_hasInvisible;
+    }
+
+    /**
+     * Returns <code>true</code> if the value of the attribute is dynamically loaded.
+     * @param attributeName the attribute to check
+     * @return <code>true</code> if the value of the attribute is dynamically loaded.
+     */
+    public boolean isDynamicallyLoaded(String attributeName) {
+
+        return m_dynamicallyLoaded.contains(attributeName);
     }
 
     /**
@@ -375,7 +386,7 @@ public class CmsContentTypeVisitor {
             if (messages != null) {
                 m_messages.addMessages(messages);
             }
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("unused") Exception e) {
             //ignore
         }
         // generate a new multi messages object and add the messages from the workplace
@@ -384,6 +395,7 @@ public class CmsContentTypeVisitor {
         m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
         m_registeredTypes = new HashMap<String, CmsType>();
         m_localeSynchronizations = new ArrayList<String>();
+        m_dynamicallyLoaded = new ArrayList<String>();
         m_tabInfos = collectTabInfos(xmlContentDefinition);
         readTypes(xmlContentDefinition, "");
     }
@@ -638,8 +650,12 @@ public class CmsContentTypeVisitor {
             // set the has invisible flag
             m_hasInvisible = true;
         }
-        boolean localeSynchronized = m_contentHandler.hasSynchronizedElements()
-            && m_contentHandler.getSynchronizations().contains(path.substring(1));
+        boolean localeSynchronized = (m_contentHandler.hasSynchronizedElements()
+            && m_contentHandler.getSynchronizations().contains(path.substring(1)))
+            || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME);
+
+        boolean dynamicallyLoaded = schemaType instanceof CmsXmlDynamicCategoryValue;
+
         CmsAttributeConfiguration result = new CmsAttributeConfiguration(
             label,
             getHelp(schemaType),
@@ -648,7 +664,8 @@ public class CmsContentTypeVisitor {
             readDefaultValue(schemaType, path),
             configuredType.name(),
             visible,
-            localeSynchronized);
+            localeSynchronized,
+            dynamicallyLoaded);
         return new DisplayTypeEvaluator(result, configuredType, defaultType, rule);
     }
 
@@ -730,6 +747,9 @@ public class CmsContentTypeVisitor {
             m_attributeConfigurations.put(ev.getAttributeName(), evaluated);
             if (evaluated.isLocaleSynchronized()) {
                 m_localeSynchronizations.add(ev.getAttributeName());
+            }
+            if (evaluated.isDynamicallyLoaded()) {
+                m_dynamicallyLoaded.add(ev.getAttributeName());
             }
             predecessor = DisplayType.valueOf(evaluated.getDisplayType());
         }

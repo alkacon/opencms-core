@@ -129,7 +129,7 @@ public class TestCmsContentService extends OpenCmsTestCase {
 
         if (xmlcontent.hasLocale(locale)) {
             Element element = xmlcontent.getLocaleNode(locale);
-            result = service.readEntity(xmlcontent, element, locale, "myEntity", "", baseTypeName, visitor, true);
+            result = service.readEntity(xmlcontent, element, locale, "myEntity", "", baseTypeName, visitor, true, null);
         }
         assertNotNull("Result should not be null", result);
         // TODO: check out the result some more to ensure success

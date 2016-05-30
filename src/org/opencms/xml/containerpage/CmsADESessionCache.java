@@ -142,6 +142,9 @@ public final class CmsADESessionCache {
     /** The cached XML content documents by structure id. */
     private Map<CmsUUID, CmsXmlContent> m_xmlContents;
 
+    /** The current values of dynamically loaded attributes in the Acacia editor. */
+    private Map<String, String> m_dynamicValues;
+
     /**
      * Initializes the session cache.<p>
      *
@@ -199,6 +202,14 @@ public final class CmsADESessionCache {
     }
 
     /**
+     * Clear the cache values that are dynamically loaded in the Acacia content editor.
+     */
+    public void clearDynamicValues() {
+
+        m_dynamicValues = null;
+    }
+
+    /**
      * Removes the information about the last edited container page.<p>
      */
     public void clearLastPage() {
@@ -228,6 +239,17 @@ public final class CmsADESessionCache {
     public CmsXmlContent getCacheXmlContent(CmsUUID structureId) {
 
         return m_xmlContents.get(structureId);
+    }
+
+    /**
+     * Get cached value that is dynamically loaded by the Acacia content editor.
+     *
+     * @param attribute the attribute to load the value to
+     * @return the cached value
+     */
+    public String getDynamicValue(String attribute) {
+
+        return null == m_dynamicValues ? null : m_dynamicValues.get(attribute);
     }
 
     /**
@@ -321,6 +343,20 @@ public final class CmsADESessionCache {
     }
 
     /**
+     * Set cached value for the attribute. Used for dynamically loaded values in the Acacia content editor.
+     *
+     * @param attribute the attribute for which the value should be cached
+     * @param value the value to cache
+     */
+    public void setDynamicValue(String attribute, String value) {
+
+        if (null == m_dynamicValues) {
+            m_dynamicValues = new ConcurrentHashMap<String, String>();
+        }
+        m_dynamicValues.put(attribute, value);
+    }
+
+    /**
      * Sets the default initial setting for small element editability in this session.<p>
      *
      * @param editSmallElements true if small elements should be initially editable
@@ -392,5 +428,6 @@ public final class CmsADESessionCache {
     public void uncacheXmlContent(CmsUUID structureId) {
 
         m_xmlContents.remove(structureId);
+        m_dynamicValues = null;
     }
 }

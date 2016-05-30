@@ -1,0 +1,5 @@
+<xsd:simpleType name="OpenCmsDynamicCategory">
+  <xsd:restriction base="xsd:string">
+    <xsd:pattern value="\s*"/>
+  </xsd:restriction>
+</xsd:simpleType>

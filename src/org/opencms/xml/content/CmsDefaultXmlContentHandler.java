@@ -87,6 +87,7 @@ import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsSchemaFormatterBeanWrapper;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -3293,7 +3294,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     }
                 }
                 // remove all previously set categories
-                CmsCategoryService.getInstance().clearCategoriesForResource(tmpCms, resource.getRootPath());
+                boolean clearedCategories = false;
                 // iterate over all values checking for the category widget
                 CmsXmlContentWidgetVisitor widgetCollector = new CmsXmlContentWidgetVisitor(locale);
                 content.visitAllValuesWith(widgetCollector);
@@ -3302,11 +3303,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     Map.Entry<String, I_CmsXmlContentValue> entry = itWidgets.next();
                     String xpath = entry.getKey();
                     I_CmsWidget widget = widgetCollector.getWidgets().get(xpath);
-                    if (!(widget instanceof CmsCategoryWidget)) {
+                    I_CmsXmlContentValue value = entry.getValue();
+                    if (!(widget instanceof CmsCategoryWidget)
+                        || value.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)) {
                         // ignore other values than categories
                         continue;
                     }
-                    I_CmsXmlContentValue value = entry.getValue();
+                    if (!clearedCategories) {
+                        CmsCategoryService.getInstance().clearCategoriesForResource(tmpCms, resource.getRootPath());
+                        clearedCategories = true;
+                    }
                     String stringValue = value.getStringValue(tmpCms);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(stringValue)) {
                         // skip empty values

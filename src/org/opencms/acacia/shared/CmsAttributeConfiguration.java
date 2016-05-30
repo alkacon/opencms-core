@@ -49,6 +49,9 @@ public class CmsAttributeConfiguration implements IsSerializable {
     /** States if the attribute should be synchronized across all locales. */
     private boolean m_localeSynchronized;
 
+    /** States if the attribute is loaded dynamically. */
+    private boolean m_dynamicallyLoaded;
+
     /** The visibility flag. */
     private boolean m_visible;
 
@@ -69,6 +72,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
      * @param displayType the display type
      * @param visible if the attribute should be visible in the editor
      * @param localSynchronized if the attribute should be synchronized across all locales
+     * @param dynamicallyLoaded if the attribute should be loaded dynamically
      */
     public CmsAttributeConfiguration(
         String label,
@@ -78,7 +82,8 @@ public class CmsAttributeConfiguration implements IsSerializable {
         String defaultValue,
         String displayType,
         boolean visible,
-        boolean localSynchronized) {
+        boolean localSynchronized,
+        boolean dynamicallyLoaded) {
 
         m_label = label;
         m_help = help;
@@ -88,6 +93,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
         m_displayType = displayType;
         m_visible = visible;
         m_localeSynchronized = localSynchronized;
+        m_dynamicallyLoaded = dynamicallyLoaded;
     }
 
     /**
@@ -169,13 +175,23 @@ public class CmsAttributeConfiguration implements IsSerializable {
     }
 
     /**
-     * Returns the if the widget should be displayed in single line view.<p>
+     * Returns <code>true</code> if the widget should be displayed in single line view.<p>
      *
      * @return <code>true</code> if the widget should be displayed in single line view
      */
     public boolean isDisplaySingleLine() {
 
         return "singleline".equals(m_displayType);
+    }
+
+    /**
+     * Returns <code>true</code> if the attribute is set dynamically and not from the XML content.<p>
+     *
+     * @return <code>true</code> if the attribute is set dynamically and not from the XML content
+     */
+    public boolean isDynamicallyLoaded() {
+
+        return m_dynamicallyLoaded;
     }
 
     /**
