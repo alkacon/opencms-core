@@ -28,6 +28,8 @@
 package org.opencms.jsp.search.result;
 
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
+import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetQuery;
+import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
@@ -156,15 +158,14 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                             final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
                             String facetParamKey = null;
                             try {
-                                facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(
-                                    facet).getConfig().getParamKey();
+                                facetParamKey = getFacetParamKey((String)facet);
                             } catch (Exception e) {
                                 // Facet did not exist
                                 LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
                             }
                             if (facetParamKey != null) {
                                 if (parameters.containsKey(facetParamKey)) {
-                                    String[] values = parameters.get(facet);
+                                    String[] values = parameters.get(facetParamKey);
                                     Arrays.asList(values).contains(facetItem);
                                     if (Arrays.asList(values).contains(facetItem)) {
                                         String[] newValues = new String[Arrays.asList(values).size() - 1];
@@ -254,8 +255,25 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     public I_CmsSearchStateParameters getResetAllFacetStates() {
 
         final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
+        // Remove selected entries from field facets
         Collection<I_CmsSearchControllerFacetField> fieldFacets = m_result.getController().getFieldFacets().getFieldFacetControllers();
         for (I_CmsSearchControllerFacetField facet : fieldFacets) {
+            String facetParamKey = facet.getConfig().getParamKey();
+            if (parameters.containsKey(facetParamKey)) {
+                parameters.remove(facetParamKey);
+            }
+        }
+        // Remove selected entries from range facets
+        Collection<I_CmsSearchControllerFacetRange> rangeFacets = m_result.getController().getRangeFacets().getRangeFacetControllers();
+        for (I_CmsSearchControllerFacetRange facet : rangeFacets) {
+            String facetParamKey = facet.getConfig().getParamKey();
+            if (parameters.containsKey(facetParamKey)) {
+                parameters.remove(facetParamKey);
+            }
+        }
+        // Remove selected entries from the query facet
+        I_CmsSearchControllerFacetQuery facet = m_result.getController().getQueryFacet();
+        if (null != facet) {
             String facetParamKey = facet.getConfig().getParamKey();
             if (parameters.containsKey(facetParamKey)) {
                 parameters.remove(facetParamKey);
@@ -277,15 +295,8 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                 public Object transform(final Object facet) {
 
                     final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
-                    String facetParamKey = null;
-                    try {
-                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(
-                            facet).getConfig().getParamKey();
-                    } catch (Exception e) {
-                        // Facet did not exist
-                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
-                    }
-                    if ((facetParamKey != null) && parameters.containsKey(facetParamKey)) {
+                    String facetParamKey = getFacetParamKey((String)facet);
+                    if ((facetParamKey == null) && parameters.containsKey(facetParamKey)) {
                         parameters.remove(facetParamKey);
                     }
                     return new CmsSearchStateParameters(m_result, parameters);
@@ -361,16 +372,9 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                         public Object transform(final Object facetItem) {
 
                             final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
-                            String facetParamKey = null;
-                            try {
-                                facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(
-                                    facet).getConfig().getParamKey();
-                            } catch (Exception e) {
-                                // Facet did not exist
-                                LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
-                            }
+                            String facetParamKey = getFacetParamKey((String)facet);
                             if ((facetParamKey != null) && parameters.containsKey(facetParamKey)) {
-                                String[] values = parameters.get(facet);
+                                String[] values = parameters.get(facetParamKey);
                                 List<String> valueList = Arrays.asList(values);
                                 if (!valueList.contains(facetItem)) {
                                     String[] newValues = new String[valueList.size() + 1];
@@ -399,4 +403,33 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
 
         return paramMapToString(m_params);
     }
+
+    /**
+     * Returns the parameter key of the facet with the given name.
+     * @param facet the facet's name.
+     * @return the parameter key for the facet.
+     */
+    String getFacetParamKey(String facet) {
+
+        I_CmsSearchControllerFacetField fieldFacet = m_result.getController().getFieldFacets().getFieldFacetController().get(
+            facet);
+        if (fieldFacet != null) {
+            return fieldFacet.getConfig().getParamKey();
+        }
+        I_CmsSearchControllerFacetRange rangeFacet = m_result.getController().getRangeFacets().getRangeFacetController().get(
+            facet);
+        if (rangeFacet != null) {
+            return rangeFacet.getConfig().getParamKey();
+        }
+        I_CmsSearchControllerFacetQuery queryFacet = m_result.getController().getQueryFacet();
+        if ((queryFacet != null) && queryFacet.getConfig().getName().equals(facet)) {
+            return queryFacet.getConfig().getParamKey();
+        }
+
+        // Facet did not exist
+        LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), new Throwable());
+
+        return null;
+    }
+
 }
