@@ -31,8 +31,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Resource bundle to access CSS and image resources.
@@ -81,15 +79,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/invalidElement.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource invalidElement();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/loadingSmallImage.gif")
     ImageResource loadingSmallImage();
 
@@ -124,15 +113,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/minusImage.png")
     ImageResource minusImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/placeholderImage.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource placeholderImage();
 
     /**
      * Access method.<p>

@@ -123,12 +123,6 @@ li div.itemContainer.cmsHovering{
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
-/*
-@sprite .changed { 
-	gwt-image: "gwtImages.changedIcon";
-}
-*/
-
 
 div.itemContent {
 	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientListItem") literal(")");
@@ -262,7 +256,7 @@ div.itemAdditionalValue{
 }
 
 li.expired div.itemContent{
-	background-image:  repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(252,255,255,.5) 15px, rgba(255,255,255,.5) 30px);
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 240, 242, 1) 10px, rgba(240, 240, 242, 1) 20px);
 	background-position: 50% 50%;
 	height: auto;
 }

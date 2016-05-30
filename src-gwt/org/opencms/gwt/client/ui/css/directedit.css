@@ -56,8 +56,8 @@ div.optionBar div, div.optionBar span {
 	max-width: none;
 }
 
-@sprite div.expiredListElementOverlay{
-	gwt-image: 'coreImages.invalidElement';
+div.expiredListElementOverlay{
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 240, 242, 1) 10px, rgba(240, 240, 242, 1) 20px);
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	padding: 0px;
