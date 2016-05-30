@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -202,7 +203,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      * @param treeEntries List of category entries
      * @param selectedCategories a list of all selected categories
      */
-    public void buildCategoryTree(List<CmsCategoryTreeEntry> treeEntries, List<String> selectedCategories) {
+    public void buildCategoryTree(List<CmsCategoryTreeEntry> treeEntries, Collection<String> selectedCategories) {
 
         m_valuesSet = 0;
         m_allSidePath.clear();
@@ -418,7 +419,10 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      * @param children the list of children
      * @param selectedCategories the list of categories to select
      */
-    private void addChildren(CmsTreeItem parent, List<CmsCategoryTreeEntry> children, List<String> selectedCategories) {
+    private void addChildren(
+        CmsTreeItem parent,
+        List<CmsCategoryTreeEntry> children,
+        Collection<String> selectedCategories) {
 
         if (children != null) {
             for (CmsCategoryTreeEntry child : children) {
@@ -460,7 +464,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      */
     private CmsTreeItem buildTreeItem(
         CmsCategoryTreeEntry category,
-        List<String> selectedCategories,
+        Collection<String> selectedCategories,
         boolean inactive) {
 
         CmsListInfoBean categoryBean = new CmsListInfoBean(
@@ -506,16 +510,14 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      *
      * @return true if it has selected children
      * */
-    private boolean hasSelectedChildren(List<CmsCategoryTreeEntry> children, List<String> selectedCategories) {
+    private boolean hasSelectedChildren(List<CmsCategoryTreeEntry> children, Collection<String> selectedCategories) {
 
         boolean result = false;
         if (children == null) {
             return false;
         }
-        List<String> controll = selectedCategories;
-
         for (CmsCategoryTreeEntry child : children) {
-            result = controll.contains(child.getSitePath());
+            result = selectedCategories.contains(child.getSitePath());
             if (result) {
                 return true;
             }
