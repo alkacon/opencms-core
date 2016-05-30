@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.config;
 
+import java.util.Collection;
 import java.util.List;
 
 /** Configuration common to all facets. Used as base interface for all special facet interfaces. */
@@ -43,10 +44,21 @@ public interface I_CmsSearchConfigurationFacet {
         index
     }
 
+    /** Returns true if the filters of all facets are not applied when calculating the facet items. Otherwise returns false.
+     * @return A flag, indicating if the filters of facet's should be ignored or not.
+     */
+    boolean getIgnoreAllFacetFilters();
+
     /** Returns the facet specific request parameter used to send the information if the maximum number of facet entries should be ignored.
      * @return The facet specific request parameter used to send the information if the maximum number of facet entries should be ignored.
      */
     String getIgnoreMaxParamKey();
+
+    /**
+     * Returns the tags of other facets, for which the filters from this facet should be ignored.
+     * @return the tags of other facets, for which the filters from this facet should be ignored.
+     */
+    String getIgnoreTags();
 
     /** Returns true if the facet filters, such that only documents with all checked facet entries appear, otherwise false.
      * @return A flag, indicating if the facet's filters are concatenated by AND (or OR).
@@ -77,5 +89,10 @@ public interface I_CmsSearchConfigurationFacet {
      * @return The list of facet-entries that should be preselected, if the search form is rendered the first time.
      */
     List<String> getPreSelection();
+
+    /** Propagate the names of the other facets that are configured.
+     * @param names the names of the other facets
+     */
+    void propagateAllFacetNames(Collection<String> names);
 
 }

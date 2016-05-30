@@ -82,7 +82,7 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             if (queryString.isEmpty() && m_config.getSearchForEmptyQueryParam()) {
                 queryString = "*";
             }
-            query.set("q", m_config.getModifiedQuery(queryString));
+            query.set("q", "{!tag=q}" + m_config.getModifiedQuery(queryString));
         }
 
         if (m_config.getSolrIndex() != null) {
@@ -139,16 +139,6 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
         return m_state;
     }
 
-    /** Replaces the %(value) macro accordingly.
-     * @param string The String where the macros should be replaced.
-     * @param value The value used for the replacement.
-     * @return The original String with %(value) macros replaced.
-     */
-    private String resolveMacros(final String string, final String value) {
-
-        return string.replaceAll("\\%\\(value\\)", value);
-    }
-
     /**
      * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateForQueryChange()
      */
@@ -189,5 +179,15 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             }
         }
         m_state.setAdditionalParameters(additionalParameters);
+    }
+
+    /** Replaces the %(value) macro accordingly.
+     * @param string The String where the macros should be replaced.
+     * @param value The value used for the replacement.
+     * @return The original String with %(value) macros replaced.
+     */
+    private String resolveMacros(final String string, final String value) {
+
+        return string.replaceAll("\\%\\(value\\)", value);
     }
 }

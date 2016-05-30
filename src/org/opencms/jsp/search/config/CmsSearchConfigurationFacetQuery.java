@@ -80,14 +80,22 @@ implements I_CmsSearchConfigurationFacetQuery {
      * @param label the label used to display the facet
      * @param isAndFacet true if checked facet entries should all be matched, otherwise only one checked entry must match
      * @param preselection list of entries that should be checked in advance
+     * @param ignoreFiltersFromAllFacets A flag, indicating if filters from all facets should be ignored or not.
      */
     public CmsSearchConfigurationFacetQuery(
         final List<I_CmsFacetQueryItem> queries,
         final String label,
         final Boolean isAndFacet,
-        final List<String> preselection) {
+        final List<String> preselection,
+        final Boolean ignoreFiltersFromAllFacets) {
 
-        super(null, label, I_CmsSearchConfigurationFacetQuery.NAME, isAndFacet, preselection);
+        super(
+            null,
+            label,
+            I_CmsSearchConfigurationFacetQuery.NAME,
+            isAndFacet,
+            preselection,
+            ignoreFiltersFromAllFacets);
         m_queries = queries != null ? queries : new ArrayList<I_CmsFacetQueryItem>();
     }
 
