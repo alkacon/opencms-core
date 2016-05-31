@@ -38,8 +38,11 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
@@ -56,6 +59,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
 
 /**
  * Allows access to the individual elements of an XML content, usually used inside a loop of a
@@ -406,6 +410,9 @@ public class CmsJspContentAccessBean {
         }
     }
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspContentAccessBean.class);
+
     /** Constant Map that always returns the {@link CmsJspContentAccessValueWrapper#NULL_VALUE_WRAPPER}.*/
     protected static final Map<String, CmsJspContentAccessValueWrapper> CONSTANT_NULL_VALUE_WRAPPER_MAP = new CmsConstantMap<String, CmsJspContentAccessValueWrapper>(
         CmsJspContentAccessValueWrapper.NULL_VALUE_WRAPPER);
@@ -448,6 +455,9 @@ public class CmsJspContentAccessBean {
 
     /** Resource the XML content is created from. */
     private CmsResource m_resource;
+
+    /** The categories assigned to the resource. */
+    private List<CmsCategory> m_categories;
 
     /**
      * No argument constructor, required for a JavaBean.<p>
@@ -495,6 +505,18 @@ public class CmsJspContentAccessBean {
     public CmsJspContentAccessBean(CmsObject cms, Locale locale, I_CmsXmlDocument content) {
 
         init(cms, locale, content, content.getFile());
+    }
+
+    /**
+     * Returns the categories assigned to the content's VFS resource.
+     * @return the categories assigned to the content's VFS resource.
+     */
+    public List<CmsCategory> getCategories() {
+
+        if (null == m_categories) {
+            m_categories = readCategories();
+        }
+        return m_categories;
     }
 
     /**
@@ -731,7 +753,7 @@ public class CmsJspContentAccessBean {
                     result = false;
                 }
             }
-        } catch (CmsException e) {
+        } catch (@SuppressWarnings("unused") CmsException e) {
             // should not happen, in case it does just assume not editable
         }
         return result;
@@ -1045,5 +1067,21 @@ public class CmsJspContentAccessBean {
         m_requestedLocale = locale;
         m_content = content;
         m_resource = resource;
+    }
+
+    /**
+     * Reads the categories assigned to the content's VFS resource.
+     * @return the categories assigned to the content's VFS resource.
+     */
+    private List<CmsCategory> readCategories() {
+
+        if (null != m_resource) {
+            try {
+                return CmsCategoryService.getInstance().readResourceCategories(m_cms, m_resource);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+        return new ArrayList<CmsCategory>(0);
     }
 }
