@@ -310,6 +310,12 @@ public interface I_CmsButton {
     public static final String SAVE = "opencms-icon-save";
 
     /** Font icon using a 32x32 grid. */
+    public static final String TREE_MINUS = "opencms-icon-tree-minus";
+
+    /** Font icon using a 32x32 grid. */
+    public static final String TREE_PLUS = "opencms-icon-tree-plus";
+
+    /** Font icon using a 32x32 grid. */
     public static final String EXIT = "opencms-icon-exit";
 
     /** Font icon using a 32x32 grid. */

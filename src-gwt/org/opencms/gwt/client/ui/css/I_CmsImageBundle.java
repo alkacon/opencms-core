@@ -75,54 +75,6 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource groupImage();
 
     /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/loadingSmallImage.gif")
-    ImageResource loadingSmallImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/lockOtherImage.png")
-    ImageResource lockOtherImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/lockSharedImage.png")
-    ImageResource lockSharedImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/lockUserImage.png")
-    ImageResource lockUserImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/minusImage.png")
-    ImageResource minusImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/plusImage.png")
-    ImageResource plusImage();
-
-    /**
      * Image resource accessor.<p>
      *
      * @return an image resource

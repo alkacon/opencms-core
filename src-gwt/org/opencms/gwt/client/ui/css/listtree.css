@@ -24,17 +24,6 @@ div.listTreeItemOpener {
 	display: inline-block;
 }
 
-@sprite span.plus {
-	gwt-image: "gwtImages.plusImage";
-	margin: 4px 0 3px;
-}
-
-@sprite span.minus {
-	gwt-image: "gwtImages.minusImage";
-	margin: 4px 0 3px;
-}
-
-
 .listTreeItemContent {
 	
 }

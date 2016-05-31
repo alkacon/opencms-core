@@ -1349,20 +1349,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String listTreeItemOpener();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String minus();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String plus();
     }
 
     /** Location picker CSS. */

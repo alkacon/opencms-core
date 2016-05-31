@@ -33,8 +33,10 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsListItem;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -46,7 +48,6 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -228,8 +229,8 @@ public class CmsTreeItem extends CmsListItem {
      * @return the path level
      */
     protected static native int getPathLevel(String path)/*-{
-                                                         return path.match(/\//g).length - 1;
-                                                         }-*/;
+		return path.match(/\//g).length - 1;
+    }-*/;
 
     /**
      * Unsupported operation.<p>
@@ -802,9 +803,11 @@ public class CmsTreeItem extends CmsListItem {
     protected CmsToggleButton createOpener() {
 
         final CmsToggleButton opener = new CmsToggleButton();
-        opener.setStyleName(CSS.listTreeItemOpener());
-        opener.setUpFace("", CSS.plus());
-        opener.setDownFace("", CSS.minus());
+        opener.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        opener.setSize(Size.small);
+        opener.addStyleName(CSS.listTreeItemOpener());
+        opener.setUpFace("", I_CmsButton.TREE_PLUS);
+        opener.setDownFace("", I_CmsButton.TREE_MINUS);
         opener.addClickHandler(new ClickHandler() {
 
             /**
@@ -862,26 +865,6 @@ public class CmsTreeItem extends CmsListItem {
         if (m_tree != null) {
             m_tree.fireOpen(this);
         }
-    }
-
-    /**
-     * The '-' image.<p>
-     *
-     * @return the minus image
-     */
-    protected Image getMinusImage() {
-
-        return new Image(I_CmsImageBundle.INSTANCE.minusImage());
-    }
-
-    /**
-     * The '+' image.<p>
-     *
-     * @return the plus image
-     */
-    protected Image getPlusImage() {
-
-        return new Image(I_CmsImageBundle.INSTANCE.plusImage());
     }
 
     /**

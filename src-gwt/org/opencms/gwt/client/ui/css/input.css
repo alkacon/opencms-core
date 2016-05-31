@@ -548,16 +548,6 @@ div.formRow {
 	min-height: value("constants.css.inputHeight");
 }
 
-@sprite .formRowOpenerClosed {
-	gwt-image: "baseImages.plusImage";
-}
-
-
-
-@sprite .formRowOpenerOpen {
-	gwt-image: "baseImages.minusImage";
-}
-
 @eval formLabelWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getLabelWidth();
 @eval openerWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getOpenerWidth();
 @eval widgetContainerWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerWidth();

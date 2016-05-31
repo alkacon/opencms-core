@@ -204,20 +204,6 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      *
      * @return the css class
      */
-    String formRowOpenerClosed();
-
-    /**
-     * Css class reader.<p>
-     *
-     * @return the css class
-     */
-    String formRowOpenerOpen();
-
-    /**
-     * Css class reader.<p>
-     *
-     * @return the css class
-     */
     String formWidgetContainer();
 
     /**
