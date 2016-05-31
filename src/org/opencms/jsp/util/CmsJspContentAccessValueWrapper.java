@@ -390,6 +390,36 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     }
 
     /**
+     * Returns the annotation that enables image drag and drop for this content value.<p>
+     *
+     * Use to insert the annotation attributes into a HTML tag.<p>
+     *
+     * Only makes sense in case this node actually contains the path to an image.<p>
+     *
+     * Example using EL: &lt;span ${value.Image.imageDndAttr}&gt; ... &lt;/span&gt; will result in
+     * &lt;span data-imagednd="..."&gt; ... &lt;/span&gt;<p>
+     *
+     * @return the annotation that enables image drag and drop for this content value
+     */
+    public String getImageDndAttr() {
+
+        String result = "";
+        CmsObject cms = obtainCmsObject();
+
+        if ((cms != null)
+            && (m_contentValue != null)
+            && isDirectEditEnabled(cms)
+            && (m_contentValue.getDocument().getFile() != null)) {
+            CmsJspContentAccessBean.createImageDndAttr(
+                m_contentValue.getDocument().getFile().getStructureId(),
+                m_contentValue.getPath(),
+                String.valueOf(m_contentValue.getLocale()));
+        }
+
+        return result;
+    }
+
+    /**
      * Returns the node index of the XML content value in the source XML document,
      * starting with 0.<p>
      *
@@ -608,6 +638,18 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
 
         String result = "";
         CmsObject cms = obtainCmsObject();
+        //
+        //        This is the way I think the code should be reused:
+        //
+        //        if ((cms != null) && (m_contentValue != null)) {
+        //            if (isDirectEditEnabled(cms)) {
+        //                result = CmsContentService.getRdfaAttributes(
+        //                    m_contentValue.getDocument(),
+        //                    m_contentValue.getLocale(),
+        //                    m_contentValue.getPath());
+        //            }
+        //        }
+        //
         if ((cms != null) && (m_contentValue != null)) {
             if (isDirectEditEnabled(cms)) {
                 // within the offline project return the OpenCms specific entity id's and property names
@@ -617,6 +659,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
                 // TODO: return mapped property names etc. when online
             }
         }
+
         return result;
     }
 

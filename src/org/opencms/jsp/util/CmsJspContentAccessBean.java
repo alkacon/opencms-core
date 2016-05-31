@@ -156,10 +156,10 @@ public class CmsJspContentAccessBean {
 
             String result;
             if (CmsJspContentAccessValueWrapper.isDirectEditEnabled(getCmsObject())) {
-                Locale locale = getLocale();
-                String attrValue = getRawContent().getFile().getStructureId() + "|" + input + "|" + locale;
-                String escapedAttrValue = CmsEncoder.escapeXml(attrValue);
-                result = "data-imagednd=\"" + escapedAttrValue + "\"";
+                result = createImageDndAttr(
+                    getRawContent().getFile().getStructureId(),
+                    String.valueOf(input),
+                    String.valueOf(getLocale()));
             } else {
                 result = "";
             }
@@ -495,6 +495,22 @@ public class CmsJspContentAccessBean {
     public CmsJspContentAccessBean(CmsObject cms, Locale locale, I_CmsXmlDocument content) {
 
         init(cms, locale, content, content.getFile());
+    }
+
+    /**
+     * Generates the HTML attribute "data-imagednd" that enables the ADE image drag and drop feature.<p>
+     *
+     * @param structureId the structure ID of the XML document to insert the image
+     * @param locale the locale to generate the image in
+     * @param imagePath the XML path to the image source node.
+     *
+     * @return the HTML attribute "data-imagednd" that enables the ADE image drag and drop feature
+     */
+    protected static String createImageDndAttr(CmsUUID structureId, String imagePath, String locale) {
+
+        String attrValue = structureId + "|" + imagePath + "|" + locale;
+        String escapedAttrValue = CmsEncoder.escapeXml(attrValue);
+        return ("data-imagednd=\"" + escapedAttrValue + "\"");
     }
 
     /**

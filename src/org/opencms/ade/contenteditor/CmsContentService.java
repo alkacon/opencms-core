@@ -214,20 +214,20 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      *
      * @param document the parent XML document
      * @param contentLocale the content locale
-     * @param childName the child attribute name
+     * @param elementPath the element xpath to get the RDF annotation for
      *
      * @return the RDFA
      */
-    public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String childName) {
+    public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String elementPath) {
 
-        I_CmsXmlSchemaType schemaType = document.getContentDefinition().getSchemaType(childName);
+        I_CmsXmlSchemaType schemaType = document.getContentDefinition().getSchemaType(elementPath);
         StringBuffer result = new StringBuffer();
         if (schemaType != null) {
             result.append("about=\"");
             result.append(
                 CmsContentDefinition.uuidToEntityId(document.getFile().getStructureId(), contentLocale.toString()));
             result.append("\" property=\"");
-            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(childName);
+            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(elementPath);
             result.append("\"");
         }
         return result.toString();
