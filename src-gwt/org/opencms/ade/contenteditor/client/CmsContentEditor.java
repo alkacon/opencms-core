@@ -57,7 +57,7 @@ import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsNotificationMessage;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -530,8 +530,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-                ();
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]();
     }-*/;
 
     /**
@@ -621,12 +620,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                     result.getExternalWidgetConfigurations(),
                     new Command() {
 
-                    public void execute() {
+                        public void execute() {
 
-                        stop(false);
-                        callback.execute(result);
-                    }
-                });
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
             }
         };
         action.execute();
@@ -678,12 +677,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                         result.getExternalWidgetConfigurations(),
                         new Command() {
 
-                        public void execute() {
+                            public void execute() {
 
-                            stop(false);
-                            callback.execute(result);
-                        }
-                    });
+                                stop(false);
+                                callback.execute(result);
+                            }
+                        });
                 }
             }
         };
@@ -719,12 +718,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                     result.getExternalWidgetConfigurations(),
                     new Command() {
 
-                    public void execute() {
+                        public void execute() {
 
-                        stop(false);
-                        callback.execute(result);
-                    }
-                });
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
             }
         };
         action.execute();
@@ -1184,6 +1183,26 @@ public final class CmsContentEditor extends CmsEditorBase {
     }
 
     /**
+     * Checks if the content is valid and sends a notification if not.<p>
+     * This will not trigger a validation run, but will use the latest state.<p>
+     *
+     * @return <code>true</code> in case there are no validation issues
+     */
+    boolean checkValidation() {
+
+        boolean result;
+        if (m_changedEntityIds.isEmpty()) {
+            result = true;
+        } else if (m_saveButton.isEnabled()) {
+            result = true;
+        } else {
+            result = false;
+            CmsNotification.get().send(Type.ERROR, m_saveButton.getTitle());
+        }
+        return result;
+    }
+
+    /**
      * Asks the user to confirm resetting all changes.<p>
      */
     void confirmCancel() {
@@ -1343,10 +1362,12 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     void exitWithSaving() {
 
-        if (m_saveExitButton.isEnabled()) {
-            saveAndExit();
-        } else {
-            cancelEdit();
+        if (checkValidation()) {
+            if (m_saveExitButton.isEnabled()) {
+                saveAndExit();
+            } else {
+                cancelEdit();
+            }
         }
     }
 
@@ -1750,22 +1771,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
                 public void execute(final CmsContentDefinition contentDefinition) {
 
-                    registerContentDefinition(contentDefinition);
-                    final CmsNotificationMessage message = CmsNotification.get().sendBusy(
-                        CmsNotification.Type.NORMAL,
-                        org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
-                    WidgetRegistry.getInstance().registerExternalWidgets(
-                        contentDefinition.getExternalWidgetConfigurations(),
-                        new Command() {
-
-                        public void execute() {
-
-                            setContentDefinition(contentDefinition);
-                            renderFormContent();
-                            setChanged();
-                            CmsNotification.get().removeMessage(message);
-                        }
-                    });
+                    setContentDefinition(contentDefinition);
+                    renderFormContent();
+                    setChanged();
                 }
             });
         } else {
@@ -1924,8 +1932,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     private native void exportObserver()/*-{
         var self = this;
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-                listener, scope) {
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(listener,
+                scope) {
             var wrapper = {
                 onChange : listener.onChange
             }
