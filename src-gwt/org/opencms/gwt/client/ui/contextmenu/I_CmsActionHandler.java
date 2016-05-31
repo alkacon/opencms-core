@@ -25,44 +25,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.css;
+package org.opencms.gwt.client.ui.contextmenu;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.DataResource;
-import com.google.gwt.resources.client.ImageResource;
+import org.opencms.util.CmsUUID;
 
 /**
- * Resource bundle to access CSS and image resources.
- *
- * @since 8.0.0
+ * Handles actions.<p>
  */
-public interface I_CmsImageBundle extends ClientBundle {
-
-    /** The bundle instance. */
-    I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
+public interface I_CmsActionHandler {
 
     /**
-     * Image resource accessor.<p>
+     * Leaves the current page calling the target URI.<p>
      *
-     * @return an image resource
+     * @param targetUri the target URI
      */
-    @Source("images/broken_image.png")
-    ImageResource brokenImage();
+    void leavePage(String targetUri);
 
     /**
-     * Returns the edit cursor icon resource.<p>
+     * Called when site and or project have been changed.<p>
      *
-     * @return the edit cursor icon
+     * @param sitePath the site path to the target resource
+     * @param serverLink the server link to the resource
      */
-    @Source("images/editCursor.gif")
-    DataResource editCursorGif();
+    void onSiteOrProjectChange(String sitePath, String serverLink);
 
     /**
-     * Returns the edit cursor icon resource.<p>
+     * Reloads the resource edited.<p>
      *
-     * @return the edit cursor icon
+     * @param structureId the structure id of the resource to lock
      */
-    @Source("images/editCursor.ico")
-    DataResource editCursorIco();
+    void refreshResource(CmsUUID structureId);
 }

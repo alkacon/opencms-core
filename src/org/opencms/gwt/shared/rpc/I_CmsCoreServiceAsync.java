@@ -28,7 +28,6 @@
 package org.opencms.gwt.shared.rpc;
 
 import org.opencms.db.CmsResourceState;
-import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -236,24 +235,6 @@ public interface I_CmsCoreServiceAsync {
      * @param resultCallback the callback to call when the operation has finished
      */
     void saveUserSettings(Map<String, String> userSettings, Set<String> edited, AsyncCallback<Void> resultCallback);
-
-    /**
-     * Applies the changes stored in the info bean to the vfs of OpenCms.<p>
-     *
-     * @param structureId the structure id of the modified resource
-     * @param bean the bean with the information of the dialog
-     * @param callback the asynchronous callback
-     */
-    void setAvailabilityInfo(CmsUUID structureId, CmsAvailabilityInfoBean bean, AsyncCallback<Void> callback);
-
-    /**
-     * Applies the changes stored in the info bean to the vfs of OpenCms.<p>
-     *
-     * @param vfsPath the vfs path of the modified resource
-     * @param bean the bean with the information of the dialog
-     * @param callback the asynchronous callback
-     */
-    void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean, AsyncCallback<Void> callback);
 
     /**
      * Sets the categories of the given resource. Will remove all other categories.<p>

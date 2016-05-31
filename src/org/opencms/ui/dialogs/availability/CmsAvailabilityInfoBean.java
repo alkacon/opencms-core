@@ -25,27 +25,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.shared;
+package org.opencms.ui.dialogs.availability;
 
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsPrincipalBean;
+
+import java.io.Serializable;
 import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean that holds the informations of the availability dialog.<p>
- *
- * @since 8.0.0
  */
-public class CmsAvailabilityInfoBean implements IsSerializable {
+public class CmsAvailabilityInfoBean implements Serializable {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -3132436076946143159L;
 
     /** The default expiration date of a resource, which is: never expires. */
-    public static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
+    private static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
 
     /** The default release date of a resource, which is: always released. */
-    public static final long DATE_PUBLISH_SCHEDULED_DEFAULT = 0;
+    private static final long DATE_PUBLISH_SCHEDULED_DEFAULT = 0;
 
     /** The default release date of a resource, which is: always released. */
-    public static final long DATE_RELEASED_DEFAULT = 0;
+    private static final long DATE_RELEASED_DEFAULT = 0;
 
     /** The expiration date. */
     private long m_dateExpired = DATE_EXPIRED_DEFAULT;

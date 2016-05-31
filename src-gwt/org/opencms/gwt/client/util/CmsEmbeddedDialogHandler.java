@@ -29,7 +29,7 @@ package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsIFrame;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -50,7 +50,7 @@ public class CmsEmbeddedDialogHandler {
     private CmsIFrame m_frame;
 
     /** The context menu handler. */
-    private I_CmsContextMenuHandler m_handler;
+    private I_CmsActionHandler m_handler;
 
     /**
      * Constructor.<p>
@@ -64,7 +64,7 @@ public class CmsEmbeddedDialogHandler {
      *
      * @param handler the context handler
      */
-    public CmsEmbeddedDialogHandler(I_CmsContextMenuHandler handler) {
+    public CmsEmbeddedDialogHandler(I_CmsActionHandler handler) {
         m_handler = handler;
     }
 
@@ -190,20 +190,20 @@ public class CmsEmbeddedDialogHandler {
      * Initializes the iFrame element.<p>
      */
     private native void initIFrame()/*-{
-        var self = this;
-        $wnd.frames.embeddedDialogFrame.connector = {
-            reload : function() {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::reload()();
-            },
-            finish : function(resources) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::finish(Ljava/lang/String;)(resources);
-            },
-            finishForProjectOrSiteChange : function(sitePath, serverLink) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::onSiteOrProjectChange(Ljava/lang/String;Ljava/lang/String;)(sitePath,serverLink)
-            },
-            leavePage : function(targetUri) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::leavePage(Ljava/lang/String;)(targetUri);
-            }
-        };
+		var self = this;
+		$wnd.frames.embeddedDialogFrame.connector = {
+			reload : function() {
+				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::reload()();
+			},
+			finish : function(resources) {
+				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::finish(Ljava/lang/String;)(resources);
+			},
+			finishForProjectOrSiteChange : function(sitePath, serverLink) {
+				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::onSiteOrProjectChange(Ljava/lang/String;Ljava/lang/String;)(sitePath,serverLink)
+			},
+			leavePage : function(targetUri) {
+				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::leavePage(Ljava/lang/String;)(targetUri);
+			}
+		};
     }-*/;
 }

@@ -28,7 +28,6 @@
 package org.opencms.gwt.shared.rpc;
 
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
@@ -122,28 +121,6 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     List<CmsAliasBean> getAliasesForPage(CmsUUID uuid) throws CmsRpcException;
-
-    /**
-     * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
-     *
-     * @param structureId the structure id to create the {@link CmsAvailabilityInfoBean} for
-     *
-     * @return the {@link CmsAvailabilityInfoBean} for a given resource
-     *
-     * @throws CmsRpcException if the RPC call goes wrong
-     */
-    CmsAvailabilityInfoBean getAvailabilityInfo(CmsUUID structureId) throws CmsRpcException;
-
-    /**
-     * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
-     *
-     * @param vfsPath the vfs path to create the {@link CmsAvailabilityInfoBean} for
-     *
-     * @return the {@link CmsAvailabilityInfoBean} for a given resource
-     *
-     * @throws CmsRpcException if the RPC call goes wrong
-     */
-    CmsAvailabilityInfoBean getAvailabilityInfo(String vfsPath) throws CmsRpcException;
 
     /**
      * Returns a list of potentially broken links, if the given resource was deleted.<p>
@@ -317,7 +294,8 @@ public interface I_CmsVfsService extends RemoteService {
         CmsUUID structureId,
         String locale,
         boolean includeTargets,
-        CmsUUID detailContentId) throws CmsRpcException;
+        CmsUUID detailContentId)
+    throws CmsRpcException;
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>

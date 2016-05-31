@@ -47,8 +47,6 @@ import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientDateBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
@@ -63,7 +61,6 @@ import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
-import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
@@ -89,8 +86,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
@@ -107,7 +102,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -222,51 +216,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * Gets the availability dialog information for the given resource.<p>
-     *
-     * @param cms the CMS context
-     * @param res the resource for which to get the availability info
-     * @return the availability info
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public static CmsAvailabilityInfoBean getAvailabilityInfoStatic(CmsObject cms, CmsResource res)
-    throws CmsException {
-
-        CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-        result.setVfsPath(resourceSitePath);
-
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
-        result.setResType(type.getTypeName());
-
-        result.setDateReleased(res.getDateReleased());
-        result.setDateExpired(res.getDateExpired());
-
-        String notificationInterval = cms.readPropertyObject(
-            res,
-            CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
-            false).getValue();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationInterval)) {
-            result.setNotificationInterval(Integer.valueOf(notificationInterval).intValue());
-        }
-
-        String notificationEnabled = cms.readPropertyObject(
-            res,
-            CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
-            false).getValue();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationEnabled)) {
-            result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
-        }
-
-        result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
-
-        result.setResponsibles(getResponsiblesStatic(cms, res.getRootPath()));
-
-        return result;
-    }
-
-    /**
      * Returns the no preview reason if there is any.<p>
      *
      * @param cms the current cms context
@@ -330,58 +279,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsListInfoBean result = getPageInfo(cms, resource);
         addLockInfo(cms, resource, result);
-        return result;
-    }
-
-    /**
-     * Gets the responsible principals for a resource with a given path.<p>
-     *
-     * @param cms the CMS context
-     * @param vfsPath the path of the resource
-     * @return the map of principals, with the principals as keys and the path as values
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public static Map<CmsPrincipalBean, String> getResponsiblesStatic(CmsObject cms, String vfsPath)
-    throws CmsException {
-
-        Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
-        List<CmsResource> parentResources = new ArrayList<CmsResource>();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(vfsPath);
-        // get all parent folders of the current file
-        parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
-
-        for (CmsResource resource : parentResources) {
-            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-            String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            try {
-
-                cms.getRequestContext().setSiteRoot("/");
-                List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
-                for (CmsAccessControlEntry ace : entries) {
-                    if (ace.isResponsible()) {
-                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                        if (principal != null) {
-                            CmsPrincipalBean prinBean = new CmsPrincipalBean(
-                                principal.getName(),
-                                principal.getDescription(),
-                                principal.isGroup());
-                            if (!resource.getRootPath().equals(vfsPath)) {
-                                if (resource.getRootPath().startsWith(storedSiteRoot)) {
-                                    result.put(prinBean, sitePath);
-                                } else {
-                                    result.put(prinBean, resource.getRootPath());
-                                }
-                            } else {
-                                result.put(prinBean, null);
-                            }
-                        }
-                    }
-                }
-            } finally {
-                cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
-        }
         return result;
     }
 
@@ -549,34 +446,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (Throwable e) {
             error(e);
             return null;
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getAvailabilityInfo(org.opencms.util.CmsUUID)
-     */
-    public CmsAvailabilityInfoBean getAvailabilityInfo(CmsUUID structureId) throws CmsRpcException {
-
-        try {
-            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            return getAvailabilityInfo(res);
-        } catch (Throwable e) {
-            error(e);
-            return null; // will never be reached
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getAvailabilityInfo(java.lang.String)
-     */
-    public CmsAvailabilityInfoBean getAvailabilityInfo(String vfsPath) throws CmsRpcException {
-
-        try {
-            CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
-            return getAvailabilityInfo(res);
-        } catch (Throwable e) {
-            error(e);
-            return null; // will never be reached
         }
     }
 
@@ -885,7 +754,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        CmsUUID detailContentId) throws CmsRpcException {
+        CmsUUID detailContentId)
+    throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -1394,7 +1264,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsObject cms,
         CmsResource historyRes,
         boolean offline,
-        int maxVersion) throws CmsException {
+        int maxVersion)
+    throws CmsException {
 
         CmsHistoryResourceBean result = new CmsHistoryResourceBean();
 
@@ -1498,28 +1369,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         return formatDateTime(cms, date);
-    }
-
-    /**
-     * Returns a bean that contains the infos for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}.<p>
-     *
-     * @param res the resource to get the availability infos for
-     *
-     * @return a bean for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}
-     *
-     * @throws CmsRpcException if something goes wrong
-     */
-    private CmsAvailabilityInfoBean getAvailabilityInfo(CmsResource res) throws CmsRpcException {
-
-        CmsObject cms = getCmsObject();
-        try {
-            CmsAvailabilityInfoBean avail = getAvailabilityInfoStatic(cms, res);
-            avail.setPageInfo(getPageInfo(res));
-            return avail;
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached
-        }
     }
 
     /**
