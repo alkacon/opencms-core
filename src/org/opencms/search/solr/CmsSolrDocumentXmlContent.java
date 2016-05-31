@@ -55,6 +55,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -263,10 +264,12 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         StringBuffer locales = new StringBuffer();
         Locale resourceLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
 
+        Map<String, String> localeItems = null;
+
         // loop over the locales of the content
         for (Locale locale : xmlContent.getLocales()) {
             GalleryNameChooser galleryNameChooser = new GalleryNameChooser(cms, xmlContent, locale);
-            Map<String, String> localeItems = new HashMap<String, String>();
+            localeItems = new HashMap<String, String>();
             StringBuffer textContent = new StringBuffer();
             // store the locales of the content as space separated field
             locales.append(locale.toString());
@@ -377,7 +380,14 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             }
             items.put(locale, localeItems);
         }
-
+        // if the content is locale independent, it should have only one content locale, but that should be indexed for all available locales.
+        // TODO: One could think of different indexing behavior, i.e., index only for getDefaultLocales(cms,resource)
+        //       But using getAvailableLocales(cms,resource) does not work, because locale-available is set to "en" for all that content.
+        if ((xmlContent instanceof CmsXmlContent) && ((CmsXmlContent)xmlContent).isLocaleIndependent()) {
+            for (Locale l : OpenCms.getLocaleManager().getAvailableLocales()) {
+                items.put(l, localeItems);
+            }
+        }
         // add the locales that have been indexed for this document as item and return the extraction result
         // fieldMappings.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString().trim());
         return new CmsExtractionResult(resourceLocale, items, fieldMappings);
