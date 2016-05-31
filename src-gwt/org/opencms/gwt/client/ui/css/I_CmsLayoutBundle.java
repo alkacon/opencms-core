@@ -2421,13 +2421,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      *
-     * @return the image bundle for the gwt module
-     */
-    I_CmsImageBundle gwtImages();
-
-    /**
-     * Access method.<p>
-     *
      * @return the highlight CSS
      */
     @Source("highlight.css")

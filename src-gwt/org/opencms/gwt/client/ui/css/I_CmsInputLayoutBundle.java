@@ -44,13 +44,6 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
     I_CmsInputLayoutBundle INSTANCE = GWT.create(I_CmsInputLayoutBundle.class);
 
     /**
-     * Image bundle accessor.<p>
-     *
-     * @return an image bundle
-     */
-    I_CmsImageBundle baseImages();
-
-    /**
      * The CSS constants bundle.<p>
      *
      * @return a bundle of CSS constants

@@ -87,13 +87,6 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
     /**
      * Access method.<p>
      *
-     * @return the base image bundle
-     */
-    org.opencms.gwt.client.ui.css.I_CmsImageBundle baseImages();
-
-    /**
-     * Access method.<p>
-     *
      * @return the root CSS
      **/
     @Source("clipboard.css")

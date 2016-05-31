@@ -27,9 +27,7 @@
 
 package org.opencms.gwt.client.ui.css;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
@@ -39,9 +37,6 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface I_CmsImageBundle extends ClientBundle {
 
-    /** The bundle instance. */
-    I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
-
     /**
      * Image resource accessor.<p>
      *
@@ -49,20 +44,4 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/broken_image.png")
     ImageResource brokenImage();
-
-    /**
-     * Returns the edit cursor icon resource.<p>
-     *
-     * @return the edit cursor icon
-     */
-    @Source("images/editCursor.gif")
-    DataResource editCursorGif();
-
-    /**
-     * Returns the edit cursor icon resource.<p>
-     *
-     * @return the edit cursor icon
-     */
-    @Source("images/editCursor.ico")
-    DataResource editCursorIco();
 }

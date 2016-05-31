@@ -1,4 +1,4 @@
-@external cms_type_icon;
+@external cms_type_icon, inlineEditable, navMode;
 .itemContainer .itemAdditional{
 	display: none;
 }
@@ -27,20 +27,13 @@ li div.itemContainer.cmsHovering{
 	font-size: value("constants.css.fontSizeSmall");
 	line-height: 17px;
 }
-@url editCursorGifUrl coreImages.editCursorGif;
-@url editCursorIcoUrl coreImages.editCursorIco;
 
-.inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
-	cursor: editCursorIcoUrl, editCursorGifUrl, crosshair;
-}
 .itemContainer .titleInput{
 	font-weight: bold;
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
 	display: inline-block; 
 }
-
-@external navMode;
 
 .itemContent div.stateIcon{
 	left: 0px;

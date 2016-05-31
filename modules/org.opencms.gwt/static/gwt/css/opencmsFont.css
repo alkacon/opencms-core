@@ -58,6 +58,12 @@
 	font-size: inherit !important;
 }
 
+/* Defining the edit cursor style within the 'static' CSS to be able to support SVG cursor images */
+.inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
+	cursor: url(images/editCursor.svg), url(images/editCursor.ico), url(images/editCursor.gif), crosshair;
+	outline: none;
+}
+
 
 /* big icons 32x32 grid */
 .opencms-icon .opencms-icon-filter:before, .opencms-icon.opencms-icon-filter:before {

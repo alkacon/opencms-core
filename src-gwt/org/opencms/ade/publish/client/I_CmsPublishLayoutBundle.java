@@ -28,7 +28,6 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -50,13 +49,6 @@ public interface I_CmsPublishLayoutBundle extends ClientBundle {
      * @return the constants bundle
      */
     I_CmsConstantsBundle constants();
-
-    /**
-     * Image bundle accessor.<p>
-     *
-     * @return an image bundle
-     */
-    I_CmsImageBundle images();
 
     /**
      * The accessor for the CSS bundle.<p>

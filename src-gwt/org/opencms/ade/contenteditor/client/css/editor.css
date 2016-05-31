@@ -1,3 +1,5 @@
+@external inlineEditable;
+
 body.standAloneEditor{
 	background: value("constants.css.backgroundColorMenu");
 	overflow: hidden;
@@ -7,14 +9,6 @@ body.standAloneEditor{
 	padding: 0;
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
-}
-
-@url editCursorGifUrl coreImages.editCursorGif;
-@url editCursorIcoUrl coreImages.editCursorIco;
-
-.inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
-	cursor: editCursorIcoUrl, editCursorGifUrl, crosshair;
-	outline: none;
 }
 
 body.standAloneEditor div.basePanel{

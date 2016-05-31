@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui.css;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
@@ -35,7 +36,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  *
  * @since 8.0.0
  */
-public interface I_CmsToolbarButtonLayoutBundle extends I_CmsImageBundle {
+public interface I_CmsToolbarButtonLayoutBundle extends ClientBundle {
 
     /** The button CSS. */
     @Shared

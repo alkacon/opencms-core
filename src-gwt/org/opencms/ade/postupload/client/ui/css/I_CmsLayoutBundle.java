@@ -28,7 +28,6 @@
 package org.opencms.ade.postupload.client.ui.css;
 
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsPopupCss;
 
 import com.google.gwt.core.client.GWT;
@@ -119,12 +118,4 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("dialog.css")
     I_CmsDialogCss dialogCss();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image bundle for the gwt module
-     */
-    I_CmsImageBundle gwtImages();
-
 }
