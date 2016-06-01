@@ -229,22 +229,24 @@ public class CmsFormDialog extends CmsPopup {
      */
     protected void registerPreviewHandler() {
 
-        NativePreviewHandler eventPreviewHandler = new NativePreviewHandler() {
+        if (m_previewHandlerRegistration == null) {
+            NativePreviewHandler eventPreviewHandler = new NativePreviewHandler() {
 
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
+                public void onPreviewNativeEvent(NativePreviewEvent event) {
 
-                Event nativeEvent = Event.as(event.getNativeEvent());
-                if (DOM.eventGetType(nativeEvent) == Event.ONKEYDOWN) {
-                    int keyCode = nativeEvent.getKeyCode();
-                    if (keyCode == KeyCodes.KEY_ESCAPE) {
-                        onClickCancel();
-                    } else if (keyCode == KeyCodes.KEY_ENTER) {
-                        onClickOk();
+                    Event nativeEvent = Event.as(event.getNativeEvent());
+                    if (DOM.eventGetType(nativeEvent) == Event.ONKEYDOWN) {
+                        int keyCode = nativeEvent.getKeyCode();
+                        if (keyCode == KeyCodes.KEY_ESCAPE) {
+                            onClickCancel();
+                        } else if (keyCode == KeyCodes.KEY_ENTER) {
+                            onClickOk();
+                        }
                     }
                 }
-            }
-        };
-        m_previewHandlerRegistration = Event.addNativePreviewHandler(eventPreviewHandler);
+            };
+            m_previewHandlerRegistration = Event.addNativePreviewHandler(eventPreviewHandler);
+        }
     }
 
     /**
