@@ -405,7 +405,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                 public void onFailure(Throwable caught) {
 
-                    CmsErrorDialog.handleException(caught);
+                    if (caught != null) {
+                        CmsErrorDialog.handleException(caught);
+                    }
                     finalListContainerElement.removeFromParent();
                 }
 
@@ -430,25 +432,25 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                                     settings,
                                     new I_CmsSimpleCallback<CmsContainerElementData>() {
 
-                                    public void execute(CmsContainerElementData newData) {
+                                        public void execute(CmsContainerElementData newData) {
 
-                                        try {
-                                            controller.replaceContainerElement(finalListContainerElement, newData);
-                                            if ((target instanceof CmsContainerPageContainer)
-                                                && (modelReplaceId != null)) {
-                                                m_controller.executeCopyModelReplace(
-                                                    modelReplaceId,
-                                                    ((CmsContainerPageContainer)target).getFormerModelGroupParent(),
-                                                    newData);
+                                            try {
+                                                controller.replaceContainerElement(finalListContainerElement, newData);
+                                                if ((target instanceof CmsContainerPageContainer)
+                                                    && (modelReplaceId != null)) {
+                                                    m_controller.executeCopyModelReplace(
+                                                        modelReplaceId,
+                                                        ((CmsContainerPageContainer)target).getFormerModelGroupParent(),
+                                                        newData);
 
+                                                }
+
+                                                controller.setPageChanged(checkReload);
+                                            } catch (Exception e) {
+                                                throw new RuntimeException(e);
                                             }
-
-                                            controller.setPageChanged(checkReload);
-                                        } catch (Exception e) {
-                                            throw new RuntimeException(e);
                                         }
-                                    }
-                                });
+                                    });
                             }
                         });
 
@@ -465,6 +467,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
             };
             ElementReuseMode reuseMode = CmsContainerpageController.get().getData().getElementReuseMode();
+            if (handler.hasModifierCTRL()) {
+                reuseMode = ElementReuseMode.ask;
+            }
             if (!hasWritePermissions
                 || ((elementData != null) && (elementData.isModelGroup() || elementData.isWasModelGroup()))) {
                 // User is not allowed to create this element in current view, so reuse the element instead

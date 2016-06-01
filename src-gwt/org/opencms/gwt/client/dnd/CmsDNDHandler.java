@@ -66,16 +66,20 @@ public class CmsDNDHandler implements MouseDownHandler {
     /** The animation types. */
     public enum AnimationType {
         /** Move animation. */
-        MOVE, /** No animation. */
-        NONE, /** Fade animation. */
+        MOVE,
+        /** No animation. */
+        NONE,
+        /** Fade animation. */
         SPECIAL
     }
 
     /** The allowed drag and drop orientation. */
     public enum Orientation {
         /** Drag and drop in all directions. */
-        ALL, /** Only horizontal drag and drop, the client-y position will be ignored. */
-        HORIZONTAL, /** Only vertical drag and drop, the client-x position will be ignored. */
+        ALL,
+        /** Only horizontal drag and drop, the client-y position will be ignored. */
+        HORIZONTAL,
+        /** Only vertical drag and drop, the client-x position will be ignored. */
         VERTICAL
     }
 
@@ -409,6 +413,9 @@ public class CmsDNDHandler implements MouseDownHandler {
     /** The registered drop targets. */
     private List<I_CmsDropTarget> m_targets;
 
+    /** Flag indicating whether the CTRL key was pressed when drag started. */
+    private boolean m_modifierCTRL;
+
     /**
      * Constructor.<p>
      *
@@ -541,6 +548,16 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Returns whether the CTRL key was pressed when drag started.<p>
+     *
+     * @return <code>true</code> if CTRL key was pressed when drag started
+     */
+    public boolean hasModifierCTRL() {
+
+        return m_modifierCTRL;
+    }
+
+    /**
      * Returns if the animation is enabled.<p>
      *
      * @return <code>true</code> if the animation is enabled
@@ -591,6 +608,7 @@ public class CmsDNDHandler implements MouseDownHandler {
             // cancel dragging
             return;
         }
+        m_modifierCTRL = event.getNativeEvent().getCtrlKey();
         m_clientX = event.getClientX();
         m_clientY = event.getClientY();
         m_cursorOffsetX = CmsDomUtil.getRelativeX(m_clientX, m_draggable.getElement());
@@ -824,6 +842,7 @@ public class CmsDNDHandler implements MouseDownHandler {
         Document.get().getBody().removeClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
         m_currentAnimation = null;
+        m_modifierCTRL = false;
     }
 
     /**
