@@ -142,11 +142,7 @@ li div.itemContainer.cmsHovering{
 }
 
 div.itemContent {
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-o-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("linear-gradient(")value("constants.css.gradientListItem") literal(")");
+	background-image: value("constants.css.gradientListItem");
     height: 38px;
 	position: relative;
 	white-space: nowrap;

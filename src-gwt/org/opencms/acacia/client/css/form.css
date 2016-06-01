@@ -488,19 +488,11 @@ div.helpBubble{
 /** joined vendor prefix style, for better fall back behavior */
 .formParent{
 	background: value("constants.css.gradientFormDialogColor") !important;
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
-	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
-	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
+	background-image: value("constants.css.gradientFormDialog") !important;
 }
 .entity .attributeValue.focused > .widgetHolder, .dragHelper.attributeValue > .widgetHolder{
 	background: value("constants.css.gradientFormDialogFocusColor");
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
-	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
-	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
+	background-image: value("constants.css.gradientFormDialogFocus");
 }
 
 /** Drag and drop styles. */

@@ -244,11 +244,7 @@
 }
 
 .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-o-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("linear-gradient(")value("constants.css.gradientListItem") literal(")");
+	background-image: value("constants.css.gradientListItem");;
 	height: auto;
 	padding:0;		
 	border:1px solid value("constants.css.borderColor");	

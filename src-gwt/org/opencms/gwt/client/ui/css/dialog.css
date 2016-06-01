@@ -80,10 +80,7 @@ div.cmsState-up-hovering span.closePopupImage:after, div.cmsState-down-hovering 
 	z-index: value("constants.css.zIndexInline");
 }
 div.popup.popupContent, div.popupContent{
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientDialogHeader") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientDialogHeader") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientDialogHeader") literal(")");
-	background-image: literal("linear-gradient(")value("constants.css.gradientDialogHeader") literal(")");
+	background-image: value("constants.css.gradientDialogHeader");
 	background-size: 100% 31px;
 	background-repeat: no-repeat;
 	background-position: top;

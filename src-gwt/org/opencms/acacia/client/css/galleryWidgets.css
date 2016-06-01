@@ -50,9 +50,5 @@ div.locationFields div.locationField > div:first-child{
 /** joined vendor prefix style, for better fall back behavior */
 .resourceInfo > div > div:first-child, div.locationInfo, div.locationMainPanel{
 	background-color: value("constants.css.gradientFormDialogColor");
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: value("constants.css.gradientFormDialog");
 }

@@ -101,15 +101,8 @@ div.imagePreview img {
 	display: block;	
 }
 
-@def DROPZONE_GRADIENT literal("left, #ffa0ae 0%, #ffb2bc 81%, #e8d5d8 100%");  
-
 div.uploadDropZone.dropZoneHover{
-	background: value("constants.css.textColorImportant") !important;
-	background-image: literal("-moz-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
-	background-image: literal("-ms-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
-	background-image: literal("-webkit-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
-	background-image: literal("-o-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
-	background-image: literal("linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: linear-gradient(to right, #ffa0ae 0%, #ffb2bc 81%, #e8d5d8 100%) !important;
 }
 
 div.formats{
