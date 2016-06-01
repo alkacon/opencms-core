@@ -162,11 +162,45 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public static List<CmsCategoryTreeEntry> getCategoriesForSitePathStatic(CmsObject cms, String sitePath)
     throws CmsException {
 
+        return getCategoriesForSitePathStatic(cms, sitePath, null);
+    }
+
+    /**
+     * Helper method for getting the category beans for the given site path.<p>
+     *
+     * @param cms the CMS context to use
+     * @param sitePath the site path
+     * @param localCategoryRepositoryPath the categories for this repository are added separately
+     * @return the list of category beans
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static List<CmsCategoryTreeEntry> getCategoriesForSitePathStatic(
+        CmsObject cms,
+        String sitePath,
+        String localCategoryRepositoryPath) throws CmsException {
+
         List<CmsCategoryTreeEntry> result;
         CmsCategoryService catService = CmsCategoryService.getInstance();
+        List<CmsCategory> categories;
         // get the categories
-        List<CmsCategory> categories = catService.readCategories(cms, "", true, sitePath);
-        result = buildCategoryTree(cms, categories);
+        if (null == localCategoryRepositoryPath) {
+            categories = catService.readCategories(cms, "", true, sitePath);
+            result = buildCategoryTree(cms, categories);
+        } else {
+            List<String> repositories = catService.getCategoryRepositories(cms, sitePath);
+            repositories.remove(localCategoryRepositoryPath);
+            categories = catService.readCategoriesForRepositories(cms, "", true, repositories);
+            result = buildCategoryTree(cms, categories);
+            categories = catService.readCategoriesForRepositories(
+                cms,
+                "",
+                true,
+                Collections.singletonList(localCategoryRepositoryPath));
+            List<CmsCategoryTreeEntry> localCategories = buildCategoryTree(cms, categories);
+            result.addAll(localCategories);
+        }
+
         return result;
     }
 

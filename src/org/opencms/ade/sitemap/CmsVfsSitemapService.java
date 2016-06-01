@@ -358,7 +358,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         cms.createResource(
                             localRepositoryPath,
                             OpenCms.getResourceManager().getResourceType(
-                                CmsResourceTypeFolder.getStaticTypeName()).getTypeId()));
+                            CmsResourceTypeFolder.getStaticTypeName()).getTypeId()));
                 }
                 createdCategory = catService.createCategory(cms, null, name, title, "", localRepositoryPath);
             } else {
@@ -555,15 +555,19 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsObject cms = getCmsObject();
         try {
-            List<CmsCategoryTreeEntry> entries = CmsCoreService.getCategoriesForSitePathStatic(cms, entryPoint);
-            CmsSitemapCategoryData categoryData = new CmsSitemapCategoryData();
-            for (CmsCategoryTreeEntry entry : entries) {
-                categoryData.add(entry);
-            }
             CmsResource entryPointResource = cms.readResource(entryPoint);
             String basePath = CmsStringUtil.joinPaths(
                 entryPointResource.getRootPath(),
                 CmsCategoryService.getInstance().getRepositoryBaseFolderName(getCmsObject()));
+
+            List<CmsCategoryTreeEntry> entries = CmsCoreService.getCategoriesForSitePathStatic(
+                cms,
+                entryPoint,
+                basePath);
+            CmsSitemapCategoryData categoryData = new CmsSitemapCategoryData();
+            for (CmsCategoryTreeEntry entry : entries) {
+                categoryData.add(entry);
+            }
 
             categoryData.setBasePath(basePath);
             return categoryData;
@@ -1653,9 +1657,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 if (isNavigationLevel) {
                     folderProperties.add(
                         new CmsProperty(
-                            CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                            CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER,
-                            null));
+                        CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                        CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER,
+                        null));
                 }
                 entryFolder = cms.createResource(entryFolderPath, folderTypeId, null, folderProperties);
                 if (createSitemapFolderType != null) {
