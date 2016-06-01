@@ -54,6 +54,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -67,6 +69,8 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1067,6 +1071,70 @@ public final class CmsJspStandardContextBean {
             }
         };
         return CmsCollectionsGenericWrapper.createLazyMap(transformer);
+    }
+
+    /**
+     * Transforms the category path of a category to the list of the categories on that path.
+     * @return a map from a category path to list of categories on that path.
+     */
+    public Map<String, List<CmsCategory>> getReadCategories() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+            public Object transform(Object categoryPath) {
+
+                List<CmsCategory> result = new ArrayList<CmsCategory>();
+                CmsCategoryService catService = CmsCategoryService.getInstance();
+
+                String path = (String)categoryPath;
+
+                if ((null == path) || path.isEmpty()) {
+                    return result;
+                }
+
+                //cut trailing slash
+                path = path.substring(0, path.length() - 1);
+
+                List<String> pathParts = Arrays.asList(path.split("/"));
+
+                String currentPath = "";
+                String refPath = getRequestContext().getUri();
+                for (String part : pathParts) {
+                    currentPath += part + "/";
+                    try {
+                        result.add(catService.readCategory(m_cms, currentPath, refPath));
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
+                }
+                return result;
+            }
+
+        });
+    }
+
+    /**
+     * Transforms the category path of a category to the category.
+     * @return a map from root or site path to category.
+     */
+    public Map<String, CmsCategory> getReadCategory() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+            public Object transform(Object categoryPath) {
+
+                try {
+                    return CmsCategoryService.getInstance().readCategory(
+                        m_cms,
+                        (String)categoryPath,
+                        getRequestContext().getUri());
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    return null;
+                }
+            }
+
+        });
     }
 
     /**
