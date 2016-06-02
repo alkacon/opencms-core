@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 
-/** Bean for easy access to categories in JSPs. */
+/** Bean for easy access to categories of a resource in JSPs. */
 public class CmsJspCategoryAccessBean {
 
     /** The log object for this class. */
@@ -68,20 +68,8 @@ public class CmsJspCategoryAccessBean {
     }
 
     /**
-     * Constructor for wrapping a category list.<p>
-     * NOTE: The list must always be a tree starting at the root, i.e., for each category also it's parents must be included.
-     *
-     * @param cms the current {@link CmsObject}.
-     * @param categories the the categories that should be wrapped.
-     */
-    public CmsJspCategoryAccessBean(List<CmsCategory> categories) {
-        this(categories, "");
-    }
-
-    /**
      * Internal constructor for creating wrappers with a subset of the categories.
      *
-     * @param cms the current {@link CmsObject}.
      * @param categories the original categories.
      * @param mainCategoryPath path of the main category for which only sub-categories should be wrapped.
      */

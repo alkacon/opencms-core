@@ -709,6 +709,15 @@ public final class CmsJspStandardContextBean {
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
 
+    /** Lazily initialized map from a category path to the path's category object. */
+    private Map<String, CmsCategory> m_categories;
+
+    /** Lazily initialized map from a category path to all categories on that path. */
+    private Map<String, List<CmsCategory>> m_pathCategories;
+
+    /** Lazily initialized map from the root path of a resource to all categories assigned to the resource. */
+    private Map<String, CmsJspCategoryAccessBean> m_resourceCategories;
+
     /**
      * Creates an empty instance.<p>
      */
@@ -1074,104 +1083,83 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Reads the categories assigned to the currently requested URI.
+     * @return the categories assigned to the currently requested URI.
+     */
+    public CmsJspCategoryAccessBean getReadCategories() {
+
+        return m_resourceCategories.get(getRequestContext().getUri());
+    }
+
+    /**
      * Transforms the category path of a category to the category.
      * @return a map from root or site path to category.
      */
     public Map<String, CmsCategory> getReadCategory() {
 
-        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+        if (null == m_categories) {
+            m_categories = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
-            public Object transform(Object categoryPath) {
+                public Object transform(Object categoryPath) {
 
-                try {
-                    return CmsCategoryService.getInstance().readCategory(
-                        m_cms,
-                        (String)categoryPath,
-                        getRequestContext().getUri());
-                } catch (CmsException e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
-                    return null;
-                }
-            }
-
-        });
-    }
-
-    /**
-     * Wrap the categories as read from the category multi-valued Solr index field for easy access.
-     * NOTE: The categories are read relative to the current uri, i.e., some might be not available and thus filtered.
-     *
-     * @return map from a list of categories (where all parents are included) to the access bean.
-     */
-    public Map<List<String>, CmsJspCategoryAccessBean> getReadIndexedCategories() {
-
-        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
-
-            public Object transform(Object categoryPaths) {
-
-                @SuppressWarnings("unchecked")
-                List<String> paths = (List<String>)categoryPaths;
-                List<CmsCategory> categories = new ArrayList<CmsCategory>(paths.size());
-                CmsCategoryService catService = CmsCategoryService.getInstance();
-                for (String path : paths) {
                     try {
-                        CmsCategory category = catService.readCategory(m_cms, path, getRequestContext().getUri());
-                        categories.add(category);
+                        return CmsCategoryService.getInstance().readCategory(
+                            m_cms,
+                            (String)categoryPath,
+                            getRequestContext().getUri());
                     } catch (CmsException e) {
                         LOG.warn(e.getLocalizedMessage(), e);
+                        return null;
                     }
                 }
-                return new CmsJspCategoryAccessBean(categories);
-            }
-        });
+
+            });
+        }
+        return m_categories;
     }
 
     /**
-     * Transforms the category path of a category to the list of the categories on that path.
+     * Transforms the category path to the list of all categories on that path.<p>
+     *
+     * Example: For path <code>"location/europe/"</code>
+     *          the list <code>[getReadCategory.get("location/"),getReadCategory.get("location/europe/")]</code>
+     *          is returned.
      * @return a map from a category path to list of categories on that path.
      */
-    public Map<String, List<CmsCategory>> getReadParentCategories() {
+    public Map<String, List<CmsCategory>> getReadPathCategories() {
 
-        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+        if (null == m_pathCategories) {
+            m_pathCategories = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
-            public Object transform(Object categoryPath) {
+                public Object transform(Object categoryPath) {
 
-                List<CmsCategory> result = new ArrayList<CmsCategory>();
-                CmsCategoryService catService = CmsCategoryService.getInstance();
+                    List<CmsCategory> result = new ArrayList<CmsCategory>();
 
-                String path = (String)categoryPath;
+                    String path = (String)categoryPath;
 
-                if ((null == path) || path.isEmpty()) {
-                    return result;
-                }
-
-                //cut last two slashs
-                path = path.substring(0, path.length() - 1);
-                int lastSlash = path.lastIndexOf('/');
-                if (lastSlash == -1) {
-                    return result;
-                }
-                path = path.substring(0, lastSlash);
-                if (path.isEmpty()) {
-                    return result;
-                }
-
-                List<String> pathParts = Arrays.asList(path.split("/"));
-
-                String currentPath = "";
-                String refPath = getRequestContext().getUri();
-                for (String part : pathParts) {
-                    currentPath += part + "/";
-                    try {
-                        result.add(catService.readCategory(m_cms, currentPath, refPath));
-                    } catch (CmsException e) {
-                        LOG.warn(e.getLocalizedMessage(), e);
+                    if ((null == path) || (path.length() <= 1)) {
+                        return result;
                     }
-                }
-                return result;
-            }
 
-        });
+                    //cut last slash
+                    path = path.substring(0, path.length() - 1);
+
+                    List<String> pathParts = Arrays.asList(path.split("/"));
+
+                    String currentPath = "";
+                    for (String part : pathParts) {
+                        currentPath += part + "/";
+                        CmsCategory category = getReadCategory().get(currentPath);
+                        if (null != category) {
+                            result.add(category);
+                        }
+                    }
+                    return result;
+                }
+
+            });
+        }
+        return m_pathCategories;
     }
 
     /**
@@ -1181,19 +1169,23 @@ public final class CmsJspStandardContextBean {
      */
     public Map<String, CmsJspCategoryAccessBean> getReadResourceCategories() {
 
-        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+        if (null == m_resourceCategories) {
+            m_resourceCategories = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
-            public Object transform(Object resourceName) {
+                public Object transform(Object resourceName) {
 
-                try {
-                    CmsResource resource = m_cms.readResource(getRequestContext().removeSiteRoot((String)resourceName));
-                    return new CmsJspCategoryAccessBean(m_cms, resource);
-                } catch (CmsException e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
-                    return null;
+                    try {
+                        CmsResource resource = m_cms.readResource(
+                            getRequestContext().removeSiteRoot((String)resourceName));
+                        return new CmsJspCategoryAccessBean(m_cms, resource);
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        return null;
+                    }
                 }
-            }
-        });
+            });
+        }
+        return m_resourceCategories;
     }
 
     /**
