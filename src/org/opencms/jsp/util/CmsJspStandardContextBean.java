@@ -1121,7 +1121,7 @@ public final class CmsJspStandardContextBean {
                         LOG.warn(e.getLocalizedMessage(), e);
                     }
                 }
-                return new CmsJspCategoryAccessBean(m_cms, categories);
+                return new CmsJspCategoryAccessBean(categories);
             }
         });
     }

@@ -36,6 +36,7 @@ import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -49,8 +50,6 @@ public class CmsJspCategoryAccessBean {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspCategoryAccessBean.class);
 
-    /** CmsObject - basically needed for reading categories and the leaf check. */
-    CmsObject m_cms;
     /** The wrapped list of categories. */
     List<CmsCategory> m_categories;
     /** The path of the main category. All categories of {@link #m_categories} are sub-categories of the main category. */
@@ -65,7 +64,7 @@ public class CmsJspCategoryAccessBean {
      * @param resource the resource for which the categories should be read.
      */
     public CmsJspCategoryAccessBean(CmsObject cms, CmsResource resource) {
-        this(cms, getCategories(cms, resource), "");
+        this(getCategories(cms, resource), "");
     }
 
     /**
@@ -75,8 +74,8 @@ public class CmsJspCategoryAccessBean {
      * @param cms the current {@link CmsObject}.
      * @param categories the the categories that should be wrapped.
      */
-    public CmsJspCategoryAccessBean(CmsObject cms, List<CmsCategory> categories) {
-        this(cms, categories, "");
+    public CmsJspCategoryAccessBean(List<CmsCategory> categories) {
+        this(categories, "");
     }
 
     /**
@@ -86,8 +85,7 @@ public class CmsJspCategoryAccessBean {
      * @param categories the original categories.
      * @param mainCategoryPath path of the main category for which only sub-categories should be wrapped.
      */
-    private CmsJspCategoryAccessBean(CmsObject cms, List<CmsCategory> categories, String mainCategoryPath) {
-        m_cms = cms;
+    private CmsJspCategoryAccessBean(List<CmsCategory> categories, String mainCategoryPath) {
         m_mainCategoryPath = mainCategoryPath.isEmpty() || mainCategoryPath.endsWith("/")
         ? mainCategoryPath
         : mainCategoryPath + "/";
@@ -149,20 +147,28 @@ public class CmsJspCategoryAccessBean {
     /**
      * Returns only the leaf categories of the wrapped categories.
      *
+     * The method assumes that categories are ordered in the list, i.e., parents are directly followed by their children.
+     *
+     * NOTE: In the complete category tree a leaf of the wrapped tree part may not be a leaf.
+     *
      * @return only the leaf categories of the wrapped categories.
      */
     public List<CmsCategory> getLeafItems() {
 
         List<CmsCategory> result = new ArrayList<CmsCategory>();
-        for (CmsCategory category : m_categories) {
-            try {
-                if (isLeaf(category)) {
-                    result.add(category);
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
+        if (m_categories.isEmpty()) {
+            return result;
         }
+        Iterator<CmsCategory> it = m_categories.iterator();
+        CmsCategory current = it.next();
+        while (it.hasNext()) {
+            CmsCategory next = it.next();
+            if (!next.getPath().startsWith(current.getPath())) {
+                result.add(current);
+            }
+            current = next;
+        }
+        result.add(current);
         return result;
     }
 
@@ -179,7 +185,7 @@ public class CmsJspCategoryAccessBean {
                 @SuppressWarnings("synthetic-access")
                 public Object transform(Object pathPrefix) {
 
-                    return new CmsJspCategoryAccessBean(m_cms, m_categories, (String)pathPrefix);
+                    return new CmsJspCategoryAccessBean(m_categories, (String)pathPrefix);
                 }
 
             });
@@ -202,21 +208,5 @@ public class CmsJspCategoryAccessBean {
             }
         }
         return categories;
-    }
-
-    /**
-     * Checks if a category is a leaf category (according to the current context).
-     *
-     * @param category the category to check.
-     * @return <code>true</code> if the category is a leaf, <code>false</code> otherwise.
-     * @throws CmsException thrown if the leaf check fails.
-     */
-    private boolean isLeaf(CmsCategory category) throws CmsException {
-
-        return CmsCategoryService.getInstance().readCategories(
-            m_cms,
-            category.getPath(),
-            false,
-            m_cms.getRequestContext().getUri()).isEmpty();
     }
 }
