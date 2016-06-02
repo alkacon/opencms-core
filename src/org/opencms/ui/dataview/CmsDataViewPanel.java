@@ -319,6 +319,9 @@ public class CmsDataViewPanel extends VerticalLayout {
      */
     public void updateFilters(List<CmsDataViewFilter> newFilters) {
 
+        if (newFilters.isEmpty()) {
+            m_filterContainer.setVisible(false);
+        }
         if (m_filters.equals(newFilters)) {
             return;
         }
