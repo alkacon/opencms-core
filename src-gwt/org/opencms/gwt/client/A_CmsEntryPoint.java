@@ -86,7 +86,6 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         bundle.listTreeCss().ensureInjected();
         bundle.stateCss().ensureInjected();
         bundle.tabbedPanelCss().ensureInjected();
-        bundle.listItemCss().ensureInjected();
         bundle.availabilityCss().ensureInjected();
         bundle.fieldsetCss().ensureInjected();
         bundle.resourceStateCss().ensureInjected();

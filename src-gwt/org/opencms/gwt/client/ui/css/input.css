@@ -1,16 +1,5 @@
 @external html-face, gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
-.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom *, .alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom { 
-	vertical-align: baseline;  
-}
-
-.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom .html-face > span:first-child { 
-	vertical-align: -3px; 
-}
-
-
-
-
 /* inner text box of the text box widget */
 input.textBox {
 	border: none;
@@ -90,6 +79,9 @@ input.textboxGhostMode {
 }
 
 .textBoxWidget {}
+.checkBox{
+	vertical-align: middle;
+}
 
 .checkBox div.html-face {
 	font-weight: normal; 
@@ -154,7 +146,7 @@ div.textArea textarea{
 .cmsState .checkBoxImage, 
 .triState .triStateOn, .triState .triStateOff, .triState .triStateMedium,
 .cmsState .radioButtonImage {
-    border: 1px solid value("constants.css.borderColor");
+    border: 1px solid value("constants.css.textColorDisabledButton");
     border-radius: 4px;
     padding: 1px;
     height: 15px;
@@ -173,11 +165,13 @@ div.textArea textarea{
 .cmsState.cmsState-up-disabled .checkBoxImage, .cmsState-down-disabled .checkBoxImage,
 .cmsState.cmsState-up-disabled .radioButtonImage, .cmsState-down-disabled .radioButtonImage, .triState .triStateMedium  {
 	background-color: value("constants.css.backgroundColorDisabled")";
+	border-color: value("constants.css.borderColor");
 }
 
 .cmsState.cmsState-up-hovering .checkBoxImage, .cmsState-down-hovering .checkBoxImage,
 .cmsState.cmsState-up-hovering .radioButtonImage, .cmsState-down-hovering .radioButtonImage {
 	background-color: #e6f4fb; /* lighten 45% of textColorHighlight */
+	border-color: value("constants.css.textColor");
 	color: value("constants.css.textColorHighlight");
 }
 
@@ -521,10 +515,6 @@ input.labelInput {
 	background: transparent;
 	border: none;
 	vertical-align: middle;
-}
-	
-.alignBottom {
-	vertical-align: bottom;
 }
 
 div.formRow {

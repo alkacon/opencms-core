@@ -44,20 +44,6 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      *
      * @return the css class
      */
-    String alignBottom();
-
-    /**
-     * Css class reader.<p>
-     *
-     * @return the css class
-     */
-    String alignCheckboxBottom();
-
-    /**
-     * Css class reader.<p>
-     *
-     * @return the css class
-     */
     String categoryItem();
 
     /**

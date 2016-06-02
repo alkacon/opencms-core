@@ -249,6 +249,9 @@ div.colorPicker{
 
 
 /** Checkbox styles*/
+div.checkBoxStyle div.html-face{
+	line-height: 28px;
+}
 .checkBoxStyle div.html-face > span {
 	border-color: value("constants.css.borderColorEditor");
 }

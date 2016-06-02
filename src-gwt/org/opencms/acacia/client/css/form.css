@@ -121,10 +121,10 @@ div.attributeValue.secondColumn{
 }
 
 .attributeValue.simpleValue.singleLine .buttonBar{
-	top:4px;
+	top:8px;
 }
 .attributeValue.simpleValue.shallowWidget div.buttonBar{
-	top:1px;
+	top:5px;
 }
 
 .attributeValue.emptyValue .label{
@@ -150,7 +150,7 @@ div.attributeValue.secondColumn{
 }
 
 .attributeValue .buttonBar{
-	top: 2px;
+	top: 5px;
 	right: 2px;
 }
 .attributeValue div.buttonBar, div.buttonBar{
@@ -159,10 +159,6 @@ div.attributeValue.secondColumn{
 	white-space: nowrap;
 	border: 1px solid transparent;
 	width: auto;
-}
-
-.attributeValue.simpleValue .buttonBar{
-	top: 23px;
 }
 
 .attributeValue.compactView .buttonBar{

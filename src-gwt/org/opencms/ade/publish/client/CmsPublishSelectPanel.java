@@ -43,7 +43,6 @@ import org.opencms.gwt.client.ui.FontOpenCms;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
@@ -376,7 +375,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         String addContentsText = Messages.get().key(Messages.GUI_CHECKBOX_ADD_CONTENT_0);
         m_checkboxAddContents.setText(addContentsText);
         m_selectAll = new CmsTriStateCheckBox("");
-        m_selectAll.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignCheckboxBottom());
         m_selectAll.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
         m_selectAll.setNextStateAfterIntermediateState(State.on);
         m_selectAll.addValueChangeHandler(new ValueChangeHandler<CmsTriStateCheckBox.State>() {

@@ -1009,18 +1009,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** List item CSS. */
-    interface I_CmsListItemCss extends CssResource {
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String listItemCheckbox();
-
-    }
-
-    /** List item CSS. */
     @Shared
     interface I_CmsListItemWidgetCss extends I_CmsStateCss {
 
@@ -2433,14 +2421,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("linkWarning.css")
     I_CmsLinkWarningCss linkWarningCss();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the list item CSS
-     */
-    @Source("listitem.css")
-    I_CmsListItemCss listItemCss();
 
     /**
      * Access method.<p>
