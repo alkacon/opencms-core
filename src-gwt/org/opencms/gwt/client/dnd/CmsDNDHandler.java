@@ -608,7 +608,6 @@ public class CmsDNDHandler implements MouseDownHandler {
             // cancel dragging
             return;
         }
-        m_modifierCTRL = event.getNativeEvent().getCtrlKey();
         m_clientX = event.getClientX();
         m_clientY = event.getClientY();
         m_cursorOffsetX = CmsDomUtil.getRelativeX(m_clientX, m_draggable.getElement());
@@ -914,6 +913,7 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         m_clientX = event.getClientX();
         m_clientY = event.getClientY();
+        m_modifierCTRL = event.getCtrlKey();
         if ((m_currentTarget == null) || (m_currentTarget.getPlaceholderIndex() < 0)) {
             cancel();
         } else {
