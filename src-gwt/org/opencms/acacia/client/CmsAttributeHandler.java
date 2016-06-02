@@ -50,6 +50,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -598,8 +599,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
      *
      * @param value the value entity
      * @param index the position in which to insert the new value
+     * @param container the widget containing the attribute value views
      */
-    public void insertNewAttributeValue(CmsEntity value, int index) {
+    public void insertNewAttributeValue(CmsEntity value, int index, Panel container) {
 
         // make sure not to add more values than allowed
         int maxOccurrence = getEntityType().getAttributeMaxOccurrence(m_attributeName);
@@ -617,12 +619,17 @@ public class CmsAttributeHandler extends CmsRootHandler {
                     m_widgetService.getAttributeLabel(m_attributeName),
                     m_widgetService.getAttributeHelp(m_attributeName));
             }
-
             CmsRenderer.setAttributeChoice(m_widgetService, valueView, getAttributeType());
+            Widget parentWidget = null;
+            m_attributeValueViews.remove(valueView);
             m_attributeValueViews.add(index, valueView);
-            ((FlowPanel)m_attributeValueViews.get(0).getParent()).insert(valueView, index);
+
+            // CmsDebugLog.consoleLog(m_attributeValueViews.toString());
+
+            ((FlowPanel)container).insert(valueView, index);
 
             insertHandlers(valueIndex);
+
             I_CmsEntityRenderer renderer = m_widgetService.getRendererForAttribute(m_attributeName, getAttributeType());
             valueView.setValueEntity(renderer, value);
 
@@ -831,6 +838,16 @@ public class CmsAttributeHandler extends CmsRootHandler {
      */
     public void removeAttributeValue(CmsAttributeValueView reference) {
 
+        removeAttributeValue(reference, false);
+    }
+
+    /**
+     * Removes the reference attribute value view.<p>
+     *
+     * @param reference the reference view
+     */
+    public void removeAttributeValue(CmsAttributeValueView reference, boolean force) {
+
         CmsAttributeHandler parentHandler = null;
         CmsAttributeValueView parentView = null;
         boolean removeParent = false;
@@ -843,7 +860,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
             removeParent = true;
         }
 
-        if (attribute.isSingleValue()) {
+        if (attribute.isSingleValue() && !force) {
 
             reference.removeValue();
             if (!attribute.isSimpleValue()) {
@@ -873,6 +890,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
         if (handler.isIntitalized()) {
             handler.addChange(m_entity.getId(), m_attributeName, 0, ChangeType.remove);
         }
+
     }
 
     /**
@@ -885,6 +903,26 @@ public class CmsAttributeHandler extends CmsRootHandler {
         if (m_attributeValueViews.size() > valueIndex) {
             removeAttributeValue(m_attributeValueViews.get(valueIndex));
         }
+    }
+
+    /**
+     * Removes the attribute value (and corresponding widget) with the given index, and returns
+     * the parent widget.<p>
+     *
+     * @param valueIndex the value index
+     * @param force true if the widget should be removed even if it is the last one
+     * @return
+     */
+    public Panel removeAttributeValueAndReturnPrevParent(int valueIndex, boolean force) {
+
+        if (m_attributeValueViews.size() > valueIndex) {
+            CmsAttributeValueView view = m_attributeValueViews.get(valueIndex);
+            Panel result = (Panel)view.getParent();
+            removeAttributeValue(view, force);
+            return result;
+        }
+        return null;
+
     }
 
     /**
@@ -1226,9 +1264,11 @@ public class CmsAttributeHandler extends CmsRootHandler {
             CmsRenderer.setAttributeChoice(m_widgetService, valueWidget, getAttributeType());
             if (valueIndex == -1) {
                 ((FlowPanel)reference.getParent()).add(valueWidget);
+                m_attributeValueViews.remove(valueWidget);
                 m_attributeValueViews.add(valueWidget);
             } else {
                 ((FlowPanel)reference.getParent()).insert(valueWidget, valueIndex);
+                m_attributeValueViews.remove(valueWidget);
                 m_attributeValueViews.add(valueIndex, valueWidget);
                 m_widgetService.addChangedOrderPath(getSimplePath(-1));
             }

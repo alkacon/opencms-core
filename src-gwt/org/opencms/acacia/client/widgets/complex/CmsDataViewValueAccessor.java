@@ -33,7 +33,6 @@ import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.entity.CmsEntityBackend;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityAttribute;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsDataViewConstants;
 
@@ -42,6 +41,7 @@ import java.util.List;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -61,6 +61,7 @@ public class CmsDataViewValueAccessor {
     /** The value index. */
     private int m_index;
 
+    /** The widget instance. */
     private Widget m_widget;
 
     /**
@@ -123,21 +124,26 @@ public class CmsDataViewValueAccessor {
                 }
             }
         }
-
-        handler.removeAttributeValue(m_index);
+        Panel container = handler.removeAttributeValueAndReturnPrevParent(m_index, true);
         int i = m_index;
-        CmsDebugLog.consoleLog("i = " + i);
-
         for (CmsDataViewValue value : replacementValues) {
             CmsEntity entity = CmsEntityBackend.getInstance().createEntity(null, m_entity.getTypeName());
+
             writeValueToEntity(value, entity);
+
             // handler.addNewAttributeValue(entity);
-            handler.insertNewAttributeValue(entity, i);
+            handler.insertNewAttributeValue(entity, i, container);
             i += 1;
         }
+
         handler.updateButtonVisisbility();
     }
 
+    /**
+     * Sets the widget instance.<p>
+     *
+     * @param cmsDataViewClientWidget the widget instance
+     */
     public void setWidget(CmsDataViewClientWidget cmsDataViewClientWidget) {
 
         m_widget = cmsDataViewClientWidget;
