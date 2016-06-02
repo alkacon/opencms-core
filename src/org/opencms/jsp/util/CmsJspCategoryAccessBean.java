@@ -69,6 +69,17 @@ public class CmsJspCategoryAccessBean {
     }
 
     /**
+     * Constructor for wrapping a category list.<p>
+     * NOTE: The list must always be a tree starting at the root, i.e., for each category also it's parents must be included.
+     *
+     * @param cms the current {@link CmsObject}.
+     * @param categories the the categories that should be wrapped.
+     */
+    public CmsJspCategoryAccessBean(CmsObject cms, List<CmsCategory> categories) {
+        this(cms, categories, "");
+    }
+
+    /**
      * Internal constructor for creating wrappers with a subset of the categories.
      *
      * @param cms the current {@link CmsObject}.
