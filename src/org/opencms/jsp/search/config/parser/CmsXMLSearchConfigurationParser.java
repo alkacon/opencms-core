@@ -84,6 +84,10 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_IGNORE_QUERY = "IgnoreQuery";
     /** XML element name. */
+    private static final String XML_ELEMENT_IGNORE_RELEASE_DATE = "IgnoreReleaseDate";
+    /** XML element name. */
+    private static final String XML_ELEMENT_IGNORE_EXPIRATION_DATE = "IgnoreExpirationDate";
+    /** XML element name. */
     private static final String XML_ELEMENT_QUERY_MODIFIER = "QueryModifier";
     /** XML element name. */
     private static final String XML_ELEMENT_PAGEPARAM = "PageParam";
@@ -246,7 +250,9 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             getIndex(),
             getCore(),
             getExtraSolrParams(),
-            getAdditionalRequestParameters());
+            getAdditionalRequestParameters(),
+            getIgnoreReleaseDate(),
+            getIgnoreExpirationDate());
     }
 
     /**
@@ -668,12 +674,28 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         }
     }
 
+    /** Returns a flag indicating if also expired resources should be found.
+     * @return A flag indicating if also expired resources should be found.
+     */
+    private Boolean getIgnoreExpirationDate() {
+
+        return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_EXPIRATION_DATE);
+    }
+
     /** Returns a flag, indicating if the query and lastquery parameters should be ignored. E.g., if only the additional parameters should be used for the search.
      * @return A flag, indicating if the query and lastquery parameters should be ignored.
      */
     private Boolean getIgnoreQuery() {
 
         return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_QUERY);
+    }
+
+    /** Returns a flag indicating if also unreleased resources should be found.
+     * @return A flag indicating if also unreleased resources should be found.
+     */
+    private Boolean getIgnoreReleaseDate() {
+
+        return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_RELEASE_DATE);
     }
 
     /** Returns the configured Solr index, or <code>null</code> if the core is not specified.

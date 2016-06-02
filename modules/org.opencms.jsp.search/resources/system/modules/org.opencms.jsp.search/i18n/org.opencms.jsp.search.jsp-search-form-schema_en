@@ -8,6 +8,10 @@ label.JspSearchConfig.SearchForEmptyQuery = Search for empty query
 label.JspSearchConfig.SearchForEmptyQuery.help = If enabled, a search for "*" will be performed if the search query is empty. Otherwise, no search will be performed for the empty query.
 label.JspSearchConfig.IgnoreQuery = Ignore Query
 label.JspSearchConfig.IgnoreQuery.help = If this option is checked, the query string send via the request parameter is ignored. The query should be specified in the "Additional Solr Query Parameters". The option is in paricular helpful when rendering lists (not search forms).
+label.JspSearchConfig.IgnoreReleaseDate = Ignore Release Date
+label.JspSearchConfig.IgnoreReleaseDate.help = If this option is checked, resources that are not released are not filtered by default when viewing a page in edit mode. Online (and in non-edit mode offline), the option does not apply.
+label.JspSearchConfig.IgnoreExpirationDate = Ignore Expiration Date
+label.JspSearchConfig.IgnoreExpirationDate.help = If this option is checked, resources that are expired are not filtered by default when viewing a page in edit mode. Online (and in non-edit mode offline), the option does not apply.
 label.JspSearchConfig.QueryModifier = Query Modifier
 label.JspSearchConfig.QueryModifier.help = Usually, the entered search query is passed to Solr as "q=my query". Via the modifier, "my query" can be replaced. The modifier can contain the macro %(query), which is replaced by the original query string. For example, the modifier "content_en:%(query) OR Title_prop:%(query)" will yield "q=content_en:my query OR Title_prop:my query" for the original query string "my query".
 label.JspSearchConfig.QueryParam = Request Parameter: Query

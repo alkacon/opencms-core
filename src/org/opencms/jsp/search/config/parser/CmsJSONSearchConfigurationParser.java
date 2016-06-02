@@ -83,6 +83,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     private static final String JSON_KEY_IGNORE_QUERY = "ignorequery";
     /** A JSON key. */
+    private static final String JSON_KEY_IGNORE_RELEASE_DATE = "ignoreReleaseDate";
+    /** A JSON key. */
+    private static final String JSON_KEY_IGNORE_EXPIRATION_DATE = "ignoreExpirationDate";
+    /** A JSON key. */
     private static final String JSON_KEY_QUERY_MODIFIER = "querymodifier";
     /** A JSON key. */
     private static final String JSON_KEY_PAGEPARAM = "pageparam";
@@ -244,7 +248,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             getIndex(),
             getCore(),
             getExtraSolrParams(),
-            getAdditionalParameters());
+            getAdditionalParameters(),
+            getIgnoreReleaseDate(),
+            getIgnoreExpirationDate());
     }
 
     /**
@@ -684,12 +690,28 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         }
     }
 
+    /** Returns a flag indicating if also expired resources should be found.
+     * @return A flag indicating if also expired resources should be found.
+     */
+    private Boolean getIgnoreExpirationDate() {
+
+        return parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_EXPIRATION_DATE);
+    }
+
     /** Returns a flag indicating if the query given by the parameters should be ignored.
      * @return A flag indicating if the query given by the parameters should be ignored.
      */
     private Boolean getIgnoreQuery() {
 
         return parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_QUERY);
+    }
+
+    /** Returns a flag indicating if also unreleased resources should be found.
+     * @return A flag indicating if also unreleased resources should be found.
+     */
+    private Boolean getIgnoreReleaseDate() {
+
+        return parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_RELEASE_DATE);
     }
 
     /** Returns the configured Solr index, or <code>null</code> if no core is configured.

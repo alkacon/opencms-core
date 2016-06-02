@@ -31,6 +31,7 @@ import org.opencms.ade.publish.CmsPublishListHelper;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
@@ -60,6 +61,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.jsp.JspException;
@@ -400,11 +402,30 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
             && (!common.getConfig().getIgnoreQueryParam() && !common.getConfig().getSearchForEmptyQueryParam())) {
             return new CmsSearchResultWrapper(m_searchController, null, null, m_cms, null);
         }
-        CmsSolrQuery query = new CmsSolrQuery();
+        Map<String, String[]> queryParams = null;
+        boolean isEditMode = CmsJspTagEditable.isEditableRequest(pageContext.getRequest());
+        if (isEditMode) {
+            String params = "";
+            if (common.getConfig().getIgnoreReleaseDate()) {
+                params += "&fq=released:[* TO *]";
+            }
+            if (common.getConfig().getIgnoreExpirationDate()) {
+                params += "&fq=expired:[* TO *]";
+            }
+            if (!params.isEmpty()) {
+                queryParams = CmsRequestUtil.createParameterMap(params.substring(1));
+            }
+        }
+        CmsSolrQuery query = new CmsSolrQuery(null, queryParams);
         m_searchController.addQueryParts(query);
         try {
             // use "complicated" constructor to allow more than 50 results -> set ignoreMaxResults to true
-            CmsSolrResultList solrResultList = m_index.search(m_cms, query, true);
+            // also set resource filter to allow for returning unreleased/expired resources if necessary.
+            CmsSolrResultList solrResultList = m_index.search(
+                m_cms,
+                query,
+                true,
+                isEditMode ? CmsResourceFilter.IGNORE_EXPIRATION : null);
             return new CmsSearchResultWrapper(m_searchController, solrResultList, query, m_cms, null);
         } catch (CmsSearchException e) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCH_SEARCH_FAILED_0), e);
