@@ -42,6 +42,7 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.json.client.JSONArray;
@@ -97,6 +98,8 @@ public class CmsDataViewClientWidget extends Composite {
 
         Widget widget = createWidget();
         initWidget(widget);
+        widget.getElement().getStyle().setMarginLeft(-20, Unit.PX);
+
         ensureCallback(CALLBACK);
         addDomHandler(new ClickHandler() {
 
