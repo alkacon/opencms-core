@@ -27,10 +27,14 @@
 
 package org.opencms.ui.dataview;
 
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.Messages;
+
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -79,8 +83,17 @@ public class CmsPagingControls extends HorizontalLayout {
     /** Label to show the current page number. */
     private Label m_label = new Label();
 
+    /** The results label. */
+    private Label m_resultsLabel = new Label();
+
     /** The index of the last page. */
     private int m_lastPage;
+
+    /** The page size. */
+    private int m_pageSize;
+
+    /** The result count. */
+    private int m_resultCount;
 
     /**
      * Creates a new instance.<p>
@@ -91,6 +104,11 @@ public class CmsPagingControls extends HorizontalLayout {
         addComponent(m_back);
         addComponent(m_forward);
         addComponent(m_fastForward);
+        addComponent(m_resultsLabel);
+        m_resultsLabel.setWidthUndefined();
+        m_label.setWidthUndefined();
+        setExpandRatio(m_resultsLabel, 1.0f);
+        setComponentAlignment(m_resultsLabel, Alignment.TOP_RIGHT);
         setSpacing(true);
 
         m_forward.addClickListener(new ClickListener() {
@@ -189,12 +207,15 @@ public class CmsPagingControls extends HorizontalLayout {
     /**
      * Resets the paging controls (used when the size of the underlying list changes).<p>
      *
-     * @param lastPage the new last page index
+     * @param resultCount total number of results
+     * @param pageSize size of a page
      * @param fireChanged true if the listeners should be notified
      */
-    public void reset(int lastPage, boolean fireChanged) {
+    public void reset(int resultCount, int pageSize, boolean fireChanged) {
 
-        m_lastPage = lastPage;
+        m_lastPage = resultCount / pageSize;
+        m_resultCount = resultCount;
+        m_pageSize = pageSize;
         setPage(0, false);
         updateButtons();
         if (fireChanged) {
@@ -212,6 +233,14 @@ public class CmsPagingControls extends HorizontalLayout {
 
         m_page = page;
         m_label.setValue("( " + (1 + m_page) + " / " + (m_lastPage + 1) + " )");
+        int start = (m_page * m_pageSize) + 1;
+        int end = Math.min((start + m_pageSize) - 1, m_resultCount);
+        String resultsMsg = CmsVaadinUtils.getMessageText(
+            Messages.GUI_DATAVIEW_RESULTS_3,
+            "" + start,
+            "" + end,
+            "" + m_resultCount);
+        m_resultsLabel.setValue(start <= end ? resultsMsg : "");
         if (fireChanged) {
             firePageChanged(page);
         }

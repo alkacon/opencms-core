@@ -293,7 +293,7 @@ public class CmsDataViewPanel extends VerticalLayout {
 
         if (resetPaging) {
             int total = result.getHitCount();
-            m_pagingControls.reset(total / m_dataView.getPageSize(), false);
+            m_pagingControls.reset(result.getHitCount(), m_dataView.getPageSize(), false);
         }
     }
 
