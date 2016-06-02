@@ -385,12 +385,10 @@ public class CmsExport {
             }
             List<String> superFolders = new ArrayList<String>();
             String currentSubFolder = resourceName;
-            boolean isFolderResource = currentSubFolder.lastIndexOf("/") == (currentSubFolder.length() - 1);
 
             // Check, if the path is really a folder
-            if (!isFolderResource) {
-                currentSubFolder = currentSubFolder.substring(0, currentSubFolder.lastIndexOf("/") + 1);
-            }
+            boolean isFolderResource = currentSubFolder.endsWith("/");
+
             while (currentSubFolder.length() > "/".length()) {
                 currentSubFolder = currentSubFolder.substring(0, currentSubFolder.length() - 1);
                 currentSubFolder = currentSubFolder.substring(0, currentSubFolder.lastIndexOf("/") + 1);
@@ -876,9 +874,11 @@ public class CmsExport {
         String source = trimResourceName(getCms().getSitePath(file));
         I_CmsReport report = getReport();
         m_exportCount++;
-        report.print(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_SUCCESSION_1,
-            String.valueOf(m_exportCount)), I_CmsReport.FORMAT_NOTE);
+        report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_1,
+                String.valueOf(m_exportCount)),
+            I_CmsReport.FORMAT_NOTE);
         report.print(Messages.get().container(Messages.RPT_EXPORT_0), I_CmsReport.FORMAT_NOTE);
         report.print(
             org.opencms.report.Messages.get().container(
