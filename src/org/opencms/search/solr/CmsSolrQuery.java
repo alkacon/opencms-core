@@ -153,8 +153,6 @@ public class CmsSolrQuery extends SolrQuery {
         setFields(ALL_RETURN_FIELDS);
         setRequestHandler(DEFAULT_QUERY_TYPE);
         setRows(DEFAULT_ROWS);
-        // Prevent Solr from returning expired documents
-        addFilterQuery("expired:[NOW TO *]");
 
         // set the values from the request context
         if (cms != null) {
