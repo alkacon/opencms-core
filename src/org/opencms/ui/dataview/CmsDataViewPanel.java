@@ -49,8 +49,9 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -103,6 +104,9 @@ public class CmsDataViewPanel extends VerticalLayout {
     /** The data view instance used to access the data. */
     private I_CmsDataView m_dataView;
 
+    /** Search button. */
+    private Button m_searchButton;
+
     /** The container used to store the current page of search results. */
     private IndexedContainer m_container;
 
@@ -150,14 +154,13 @@ public class CmsDataViewPanel extends VerticalLayout {
                 refreshData(false, null);
             }
         });
-        m_fullTextSearch.addTextChangeListener(new TextChangeListener() {
+        m_searchButton.addClickListener(new ClickListener() {
 
-            private static final long serialVersionUID = 1L;
+            public void buttonClick(ClickEvent event) {
 
-            public void textChange(TextChangeEvent event) {
-
-                refreshData(true, event.getText());
+                refreshData(true, null);
             }
+
         });
         m_container = new IndexedContainer();
         for (CmsDataViewColumn column : m_dataView.getColumns()) {
@@ -352,7 +355,6 @@ public class CmsDataViewPanel extends VerticalLayout {
 
                     String newValue = (String)(event.getProperty().getValue());
                     updateFilter(finalFilter.getId(), newValue);
-                    refreshData(true, null);
                 }
             });
             m_filterContainer.addComponent(select);

@@ -404,6 +404,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATAVIEW_RESULTS_3 = "GUI_DATAVIEW_RESULTS_3";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATAVIEW_SEARCH_0 = "GUI_DATAVIEW_SEARCH_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */
