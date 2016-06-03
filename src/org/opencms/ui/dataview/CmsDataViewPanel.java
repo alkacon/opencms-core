@@ -54,7 +54,6 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -110,11 +109,8 @@ public class CmsDataViewPanel extends VerticalLayout {
     /** Widget used to move to different pages. */
     private CmsPagingControls m_pagingControls;
 
-    /** The panel containing the table. */
-    private Panel m_tablePanel;
-
     /** The table container. */
-    private CssLayout m_tableContainer;
+    private CssLayout m_tablePlaceholder;
 
     /** The widget containing the filters. */
     private HorizontalLayout m_filterContainer;
@@ -191,10 +187,12 @@ public class CmsDataViewPanel extends VerticalLayout {
 
         table.setPageLength(0);
         table.setWidth("100%"); //
+        table.setHeight("100%");
         m_table.set(table);
         table.setSelectable(true);
+        replaceComponent(m_tablePlaceholder, table);
+        setExpandRatio(table, 1.0f);
 
-        m_tableContainer.addComponent(table);
         addAttachListener(new AttachListener() {
 
             private static final long serialVersionUID = 1L;
@@ -289,7 +287,7 @@ public class CmsDataViewPanel extends VerticalLayout {
         for (I_CmsDataViewItem item : result.getItems()) {
             fillItem(item, m_container.addItem(item.getId()));
         }
-        m_tablePanel.setScrollTop(0);
+        //m_tablePanel.setScrollTop(0);
 
         if (resetPaging) {
             int total = result.getHitCount();

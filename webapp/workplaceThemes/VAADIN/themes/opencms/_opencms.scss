@@ -715,6 +715,10 @@
 		white-space: normal !important; 
 	}
 	
+	.o-wrap-table .v-table-body-wrapper {
+		overflow-y: auto !important;
+	}
+	
 	.o-table-image { 
 		max-width: 200px; 
 		max-height: 200px;
