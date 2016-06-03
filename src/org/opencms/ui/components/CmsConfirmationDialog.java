@@ -27,13 +27,13 @@
 
 package org.opencms.ui.components;
 
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
 /**
@@ -104,7 +104,21 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
      */
     public static void show(String title, String message, final Runnable okAction) {
 
-        final Window window = new Window(title);
+        show(title, message, okAction, null);
+    }
+
+    /**
+     * Shows the confirmation dialog in a window.<p>
+     *
+     * @param title the window title
+     * @param message the message to display in the dialog
+     * @param okAction the action to execute when the user clicks OK
+     * @param cancelAction the action for the cancel case
+     */
+    public static void show(String title, String message, final Runnable okAction, final Runnable cancelAction) {
+
+        final Window window = CmsBasicDialog.prepareWindow();
+        window.setCaption(title);
         CmsConfirmationDialog dialog = new CmsConfirmationDialog(message, new Runnable() {
 
             public void run() {
@@ -116,14 +130,14 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
 
             public void run() {
 
+                if (cancelAction != null) {
+                    cancelAction.run();
+                }
                 window.close();
             }
         });
         window.setContent(dialog);
-        window.setWidth("500px");
-        window.setModal(true);
-        window.setResizable(false);
-        A_CmsUI.get().addWindow(window);
+        UI.getCurrent().addWindow(window);
     }
 
     /**

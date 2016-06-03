@@ -42,13 +42,16 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,6 +63,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 
 /**
  * The copy move dialog.<p>
@@ -130,7 +135,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                submit();
+                submit(false);
             }
         });
         addButton(m_okButton);
@@ -159,7 +164,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             @Override
             protected void ok() {
 
-                submit();
+                submit(false);
             }
         });
     }
@@ -276,8 +281,10 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
     /**
      * Submits the dialog action.<p>
+     *
+     * @param overwrite to forcefully overwrite existing files
      */
-    void submit() {
+    void submit(boolean overwrite) {
 
         try {
             CmsResource targetFolder = m_targetFolder.getValue();
@@ -287,7 +294,14 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                         org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
                         m_targetFolder.getValue()));
             }
-            boolean overwrite = isOverwriteExisting();
+            overwrite = overwrite || isOverwriteExisting();
+            if (!overwrite) {
+                List<CmsResource> collidingResources = getExistingFileCollisions(targetFolder);
+                if (collidingResources != null) {
+                    showConfirmOverwrite(collidingResources);
+                    return;
+                }
+            }
             Map<CmsResource, CmsException> errors = new HashMap<CmsResource, CmsException>();
             for (CmsResource source : m_context.getResources()) {
                 try {
@@ -309,6 +323,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             } else {
                 m_context.finish(m_updateResources);
             }
+
         } catch (CmsException e) {
             m_context.error(e);
         }
@@ -325,6 +340,36 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             m_cms = A_CmsUI.getCmsObject();
         }
         return m_cms;
+    }
+
+    /**
+     * Returns the resources that collide with already existing resources.<p>
+     *
+     * @param targetFolder the target folder
+     *
+     * @return the colliding resources or <code>null</code> if no collisions found
+     *
+     * @throws CmsException in case the checking the resources fails
+     */
+    private List<CmsResource> getExistingFileCollisions(CmsResource targetFolder) throws CmsException {
+
+        List<CmsResource> collidingResources = new ArrayList<CmsResource>();
+
+        String finalTarget = targetFolder.getRootPath();
+        if (!finalTarget.endsWith("/")) {
+            finalTarget += "/";
+        }
+        for (CmsResource source : m_context.getResources()) {
+            if (finalTarget.equals(CmsResource.getParentFolder(source.getRootPath()))) {
+                // copying to the same folder, a new name will be generated
+                return null;
+            }
+            String fileName = finalTarget + source.getName();
+            if (getRootCms().existsResource(fileName, CmsResourceFilter.ALL)) {
+                collidingResources.add(source);
+            }
+        }
+        return collidingResources.isEmpty() ? null : collidingResources;
     }
 
     /**
@@ -440,6 +485,38 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     private boolean isOverwriteExisting() {
 
         return (m_overwriteExisting != null) && m_overwriteExisting.getValue().booleanValue();
+    }
+
+    /**
+     * Displays the confirm overwrite dialog.<p>
+     *
+     * @param collidingResources the colliding resources
+     */
+    private void showConfirmOverwrite(List<CmsResource> collidingResources) {
+
+        final Window window = CmsBasicDialog.prepareWindow();
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONFIRM_OVERWRITE_TITLE_0));
+        CmsConfirmationDialog dialog = new CmsConfirmationDialog(
+            CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONFIRM_OVERWRITE_MESSAGE_0),
+            new Runnable() {
+
+                public void run() {
+
+                    window.close();
+                    submit(true);
+                }
+            },
+            new Runnable() {
+
+                public void run() {
+
+                    window.close();
+                    cancel();
+                }
+            });
+        dialog.displayResourceInfo(collidingResources);
+        window.setContent(dialog);
+        UI.getCurrent().addWindow(window);
     }
 
 }
