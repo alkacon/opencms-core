@@ -506,7 +506,8 @@ public class CmsWorkplaceAppManager {
                 new CmsAppHierarchyConfiguration(),
                 new CmsEditorConfiguration(),
                 new CmsQuickLaunchEditorConfiguration(),
-                new CmsTraditionalWorkplaceConfiguration()));
+                new CmsTraditionalWorkplaceConfiguration(),
+                new CmsProjectManagerConfiguration()));
         return result;
     }
 

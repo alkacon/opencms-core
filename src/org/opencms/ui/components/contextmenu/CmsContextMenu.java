@@ -1,19 +1,23 @@
 
 package org.opencms.ui.components.contextmenu;
 
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.shared.CmsContextMenuState;
 import org.opencms.ui.shared.CmsContextMenuState.ContextMenuItemState;
 import org.opencms.ui.shared.rpc.I_CmsContextMenuClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsContextMenuServerRpc;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -1213,6 +1217,40 @@ public class CmsContextMenu extends AbstractExtension {
 
         extend(tree);
         setOpenAutomatically(false);
+    }
+
+    /**
+     * Sets the context menu entries. Removes all previously present entries.<p>
+     *
+     * @param entries the entries
+     * @param data the context data
+     */
+    public <T> void setEntries(Collection<I_CmsSimpleContextMenuEntry<T>> entries, T data) {
+
+        removeAllItems();
+        Locale locale = UI.getCurrent().getLocale();
+        for (final I_CmsSimpleContextMenuEntry<T> entry : entries) {
+            CmsMenuItemVisibilityMode visibility = entry.getVisibility(data);
+            if (!visibility.isInVisible()) {
+                ContextMenuItem item = addItem(entry.getTitle(locale));
+                if (visibility.isInActive()) {
+                    item.setEnabled(false);
+                    if (visibility.getMessageKey() != null) {
+                        item.setDescription(CmsVaadinUtils.getMessageText(visibility.getMessageKey()));
+                    }
+                } else {
+                    item.setData(data);
+                    item.addItemClickListener(new ContextMenuItemClickListener() {
+
+                        @SuppressWarnings("unchecked")
+                        public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                            entry.executeAction((T)((ContextMenuItem)event.getSource()).getData());
+                        }
+                    });
+                }
+            }
+        }
     }
 
     /**

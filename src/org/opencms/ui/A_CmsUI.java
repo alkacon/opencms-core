@@ -39,6 +39,10 @@ import org.opencms.ui.util.CmsDisplayType;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.http.HttpSession;
 
 import com.vaadin.server.VaadinRequest;
@@ -68,11 +72,15 @@ public abstract class A_CmsUI extends UI {
     /** Extension used for opening new browser windows. */
     private CmsWindowExtension m_windowExtension;
 
+    /** UI attribute storage. */
+    private Map<String, Serializable> m_attributes;
+
     /**
      * Constructor.<p>
      */
     public A_CmsUI() {
         m_windowExtension = new CmsWindowExtension(this);
+        m_attributes = new ConcurrentHashMap<String, Serializable>();
     }
 
     /**
@@ -122,6 +130,18 @@ public abstract class A_CmsUI extends UI {
             getWorkplaceSettings().setSite(siteRoot);
             OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
         }
+    }
+
+    /**
+     * Returns the requested UI attribute.<p>
+     *
+     * @param key the attribute key
+     *
+     * @return the attribute
+     */
+    public Serializable getAttribute(String key) {
+
+        return m_attributes.get(key);
     }
 
     /**
@@ -189,6 +209,17 @@ public abstract class A_CmsUI extends UI {
                 Notification.show(warning, Type.ERROR_MESSAGE);
             }
         });
+    }
+
+    /**
+     * Sets an UI attribute.<p>
+     *
+     * @param key the attribute key
+     * @param value the attribute value
+     */
+    public void setAttribute(String key, Serializable value) {
+
+        m_attributes.put(key, value);
     }
 
     /**

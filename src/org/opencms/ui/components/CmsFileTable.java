@@ -196,7 +196,7 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileTable.class);
+    static final Log LOG = CmsLog.getLog(CmsFileTable.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
@@ -273,7 +273,6 @@ public class CmsFileTable extends CmsResourceTable {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void valueChange(ValueChangeEvent event) {
 
                 @SuppressWarnings("unchecked")

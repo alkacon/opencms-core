@@ -27,9 +27,11 @@
 
 package org.opencms.ui.dialogs.permissions;
 
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.shared.rpc.I_CmsPrincipalSelectRpc;
 
 import com.vaadin.server.AbstractExtension;
+import com.vaadin.ui.UI;
 
 /**
  * The principal select extension. Handles communication between the select dialog iframe and the server.<p>
@@ -45,12 +47,39 @@ public class CmsPrincipalSelectExtension extends AbstractExtension implements I_
     /**
      * Constructor.<p>
      *
+     * @param ui the select widget
+     */
+    private CmsPrincipalSelectExtension(UI ui) {
+        extend(ui);
+        registerRpc(this);
+    }
+
+    /**
+     * Returns the principal select extension instance for the current UI.<p>
+     *
+     * @return the instance
+     */
+    protected static CmsPrincipalSelectExtension getInstance() {
+
+        A_CmsUI ui = A_CmsUI.get();
+        CmsPrincipalSelectExtension instance = (CmsPrincipalSelectExtension)ui.getAttribute(
+            CmsPrincipalSelectExtension.class.getName());
+        if (instance == null) {
+            instance = new CmsPrincipalSelectExtension(ui);
+            ui.setAttribute(CmsPrincipalSelectExtension.class.getName(), instance);
+        }
+        return instance;
+    }
+
+    /**
+     * Sets the current select widget.<p>
+     * This needs to be called, when the select window is opened.<p>
+     *
      * @param select the select widget
      */
-    protected CmsPrincipalSelectExtension(CmsPrincipalSelect select) {
-        extend(select);
+    public void setCurrentSelect(CmsPrincipalSelect select) {
+
         m_select = select;
-        registerRpc(this);
     }
 
     /**
@@ -58,7 +87,10 @@ public class CmsPrincipalSelectExtension extends AbstractExtension implements I_
      */
     public void setPrincipal(int type, String principalName) {
 
-        m_select.setPrincipal(type, principalName);
-        m_select.closeWindow();
+        if (m_select != null) {
+            m_select.setPrincipal(type, principalName);
+            m_select.closeWindow();
+            m_select = null;
+        }
     }
 }

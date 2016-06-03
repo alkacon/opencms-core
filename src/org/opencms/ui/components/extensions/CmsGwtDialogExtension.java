@@ -120,7 +120,9 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (reinitUI) {
             CmsAppWorkplaceUi.get().reload();
         }
-        m_updateListener.onUpdate(new ArrayList<String>());
+        if (m_updateListener != null) {
+            m_updateListener.onUpdate(new ArrayList<String>());
+        }
     }
 
     /**
@@ -136,7 +138,9 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
                 // ignore
             }
         }
-        m_updateListener.onUpdate(changedStructureIds);
+        if (m_updateListener != null) {
+            m_updateListener.onUpdate(changedStructureIds);
+        }
 
     }
 

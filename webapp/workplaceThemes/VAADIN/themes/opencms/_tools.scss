@@ -1,0 +1,66 @@
+@mixin o-tools {
+	.o-tools-root{
+		height: 100%;
+		width: 100%;
+		position: relative;
+		
+		.o-tools-breadcrumb{
+			height: 50px;
+			width: 100%;
+			border-bottom: 1px solid first-color(valo-border($strength: 1));
+			padding:14px 22px;
+			
+			a {
+				text-decoration: none;
+			}
+		}
+		.o-tools-container{
+			position: absolute;
+			top: 50px;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+	}
+	
+	.o-responsive[width-range~="0-983px"]{
+		/* small screen styles */
+		.o-tools-root {
+			.o-tools-subnav{
+				width: 100%;
+				text-align: left;
+				border-bottom: 1px solid first-color(valo-border($strength: 1));
+			}
+			
+			.o-tools-main{
+				position: relative;
+				width: 100%;
+				display: block;
+			}
+		}
+	}
+	
+	.o-responsive[width-range~="984px-"]{
+		/* other screen styles */
+		.o-tools-root {
+			.o-tools-subnav{
+				width: 170px;
+				text-align: center;
+				height: 100%;
+				float: left;
+				border-right: 1px solid first-color(valo-border($strength: 1));
+			}
+			
+			.o-tools-main{
+				position: relative;
+				height: 100%;
+				margin-left: 170px;
+				width: auto !important;
+				display: block;
+			}
+			&.o-tools-subnav-hidden .o-tools-main{
+				margin-left: 0;
+			}
+		}
+	}
+}

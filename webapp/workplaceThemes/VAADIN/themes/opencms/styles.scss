@@ -4,6 +4,7 @@
 @import "contextmenu";
 @import "table-n-tree";
 @import "toolbar";
+@import "tools";
 @import "buttons";
 @import "loading-spinner";
 @import "permissions";
@@ -17,6 +18,7 @@
    @include o-table;
    @include o-tree;
    @include o-toolbar;
+   @include o-tools;
    @include o-buttons;
    @include o-loading-spinner;
    @include o-permissions;

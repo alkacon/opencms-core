@@ -97,13 +97,46 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
      */
     public static Button createAppIconButton(I_CmsWorkplaceAppConfiguration appConfig, Locale locale) {
 
-        Button button = new Button(appConfig.getName(locale));
-        Resource icon = appConfig.getIcon();
-        button.setIcon(icon, appConfig.getName(locale));
+        return createIconButton(
+            appConfig.getName(locale),
+            appConfig.getHelpText(locale),
+            appConfig.getIcon(),
+            appConfig.getButtonStyle());
+    }
+
+    /**
+     * Creates an icon button.<p>
+     *
+     * @param name the name
+     * @param description the description
+     * @param icon the icon
+     *
+     * @return the created button
+     */
+    public static Button createIconButton(String name, String description, Resource icon) {
+
+        return createIconButton(name, description, icon, I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT);
+    }
+
+    /**
+     * Creates an icon button.<p>
+     *
+     * @param name the name
+     * @param description the description
+     * @param icon the icon
+     * @param buttonStyle the button style
+     *
+     * @return the created button
+     */
+    public static Button createIconButton(String name, String description, Resource icon, String buttonStyle) {
+
+        Button button = new Button(name);
+        button.setIcon(icon, name);
+        button.setDescription(description);
         button.addStyleName(OpenCmsTheme.APP_BUTTON);
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         button.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
-        button.addStyleName(appConfig.getButtonStyle());
+        button.addStyleName(buttonStyle);
         return button;
     }
 

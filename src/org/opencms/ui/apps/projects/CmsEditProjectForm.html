@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-label _id="m_title" height="80px"/>
+		<v-panel caption="Identification" height="260px">
+			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
+				<v-text-field _id="m_fieldName" width="100%" caption="Name"/>
+				<v-text-field _id="m_fieldDescription" width="100%" caption="Description"/>
+				<p-cms-principal-select _id="m_fieldManager" width="100%" caption="Manager group"/>
+				<p-cms-principal-select _id="m_fieldUser" width="100%" caption="Users group"/>
+				<v-check-box _id="m_fieldDeleteAfterPublish" caption="Delete after publish" />
+			</v-form-layout>
+		</v-panel>
+		<v-panel caption="Resources" height="100%" :expand>
+			<v-form-layout _id="m_resources" margin spacing style-name="o-formlayout-workplace-main">
+			<v-button _id="m_addResource">Add resource</v-button>
+			</v-form-layout>
+		</v-panel>
+		<v-panel height="46px">
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+					<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+				</v-horizontal-layout>
+			</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>

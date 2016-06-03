@@ -149,6 +149,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         boolean editRoles = CmsWorkplace.canEditPermissionsForRoles(m_cms, m_resource.getRootPath());
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_main.setHeightUndefined();
+        m_principalSelect.setMargin(true);
         m_principalSelect.setSelectHandler(this);
         m_principalSelect.setRoleSelectionAllowed(editRoles);
         displayResourceInfo(Collections.singletonList(m_resource));
