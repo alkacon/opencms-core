@@ -42,9 +42,11 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -52,10 +54,12 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -131,6 +135,8 @@ public class CmsDataViewPanel extends VerticalLayout {
     /** The current list of filters. */
     private List<CmsDataViewFilter> m_filters = Lists.newArrayList();
 
+    private Map<Object, CheckBox> m_checkBoxes = Maps.newHashMap();
+
     /** The current map of filters, by id. */
     private Map<String, CmsDataViewFilter> m_filterMap = Maps.newLinkedHashMap();
 
@@ -172,17 +178,42 @@ public class CmsDataViewPanel extends VerticalLayout {
         }
         m_container.addContainerProperty(ID_COLUMN, String.class, null);
 
-        PagedTable table = new PagedTable(m_container);
+        final PagedTable table = new PagedTable(m_container);
         table.setMultiSelect(multiselect);
 
+        table.addGeneratedColumn("checked", new ColumnGenerator() {
+
+            public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+
+                CheckBox cb = getCheckBox(itemId);
+                cb.setValue(Boolean.valueOf(source.isSelected(itemId)));
+                cb.addValueChangeListener(new ValueChangeListener() {
+
+                    public void valueChange(ValueChangeEvent event) {
+
+                        boolean val = ((Boolean)(event.getProperty().getValue())).booleanValue();
+                        if (val) {
+                            source.select(itemId);
+                        } else {
+                            source.unselect(itemId);
+                        }
+                    }
+                });
+                return cb;
+            }
+        });
+
         table.addStyleName("o-wrap-table");
-        Object[] visibleCols = new String[m_dataView.getColumns().size()];
-        int i = 0;
+        Object[] visibleCols = new String[m_dataView.getColumns().size() + 1];
+        visibleCols[0] = "checked";
+        int i = 1;
         for (CmsDataViewColumn col : m_dataView.getColumns()) {
             visibleCols[i++] = col.getId();
 
         }
         table.setVisibleColumns(visibleCols);
+        table.setColumnWidth("checked", 45);
+        table.setColumnHeader("checked", "");
         for (CmsDataViewColumn col : m_dataView.getColumns()) {
             table.setColumnHeader(col.getId(), col.getNiceName());
             table.setColumnWidth(col.getId(), col.getPreferredWidth());
@@ -203,6 +234,32 @@ public class CmsDataViewPanel extends VerticalLayout {
             public void attach(AttachEvent event) {
 
                 refreshData(true, null);
+            }
+        });
+        table.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                Set<Object> ids = Sets.newHashSet();
+                if (event != null) {
+                    if (event.getProperty().getValue() instanceof Collection) {
+                        ids.addAll((Collection)event.getProperty().getValue());
+                    } else {
+                        ids.add(event.getProperty().getValue());
+                    }
+                }
+                for (Map.Entry<Object, CheckBox> entry : m_checkBoxes.entrySet()) {
+                    if (!(ids.contains(entry.getKey()))) {
+                        entry.getValue().setValue(Boolean.FALSE);
+                    }
+                }
+
+                for (Object id : ids) {
+                    getCheckBox(id).setValue(Boolean.TRUE);
+                }
+
             }
         });
         List<CmsDataViewFilter> filters = new ArrayList<CmsDataViewFilter>(m_dataView.getFilters());
@@ -359,6 +416,14 @@ public class CmsDataViewPanel extends VerticalLayout {
             });
             m_filterContainer.addComponent(select);
         }
+    }
+
+    private CheckBox getCheckBox(Object id) {
+
+        if (!m_checkBoxes.containsKey(id)) {
+            m_checkBoxes.put(id, new CheckBox());
+        }
+        return m_checkBoxes.get(id);
     }
 
     /**
