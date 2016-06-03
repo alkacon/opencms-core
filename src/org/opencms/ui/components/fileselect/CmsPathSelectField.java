@@ -43,6 +43,30 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     /** Flag indicating if only root paths are used. */
     private boolean m_useRootPaths;
 
+    /** Flag to indicate whether we are currently setting the internal value. */
+    private boolean m_settingInternalValue;
+
+    /**
+     * Creates a new instance.<p>
+     */
+    public CmsPathSelectField() {
+        m_textField.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
+            public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+
+                String value = (String)(event.getProperty().getValue());
+                if (!m_settingInternalValue) {
+                    setInternalValue(value);
+                }
+            }
+
+        });
+
+    }
+
     /**
      * @see com.vaadin.ui.AbstractField#getType()
      */
@@ -108,5 +132,20 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     public void setValue(String value) {
 
         m_textField.setValue(value);
+    }
+
+    /**
+     * @see com.vaadin.ui.AbstractField#setInternalValue(java.lang.Object)
+     */
+    @Override
+    protected void setInternalValue(String newValue) {
+
+        m_settingInternalValue = true;
+        try {
+            super.setInternalValue(newValue);
+            m_textField.setValue(newValue);
+        } finally {
+            m_settingInternalValue = false;
+        }
     }
 }
