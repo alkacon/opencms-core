@@ -45,7 +45,6 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotificationWidget;
-import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.CmsToolbarPopup;
@@ -662,20 +661,13 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
     public void setPreviewVisible(boolean visible) {
 
         m_previewVisible = visible;
+        m_tabbedPanel.setVisible(!m_previewVisible);
         if (m_previewVisible) {
             useMaxDimensions();
             m_parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
-            if (m_autoHideParent instanceof CmsPopup) {
-                ((CmsPopup)m_autoHideParent).addStyleName(
-                    org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().invertClose());
-            }
         } else {
             m_parentPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
             updateSizes();
-            if (m_autoHideParent instanceof CmsPopup) {
-                ((CmsPopup)m_autoHideParent).removeStyleName(
-                    org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().invertClose());
-            }
         }
     }
 

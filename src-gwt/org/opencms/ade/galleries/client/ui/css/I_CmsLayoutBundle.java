@@ -626,6 +626,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String previewPanel();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String previewTitle();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */

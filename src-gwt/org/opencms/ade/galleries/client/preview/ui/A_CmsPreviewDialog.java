@@ -48,6 +48,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -109,6 +110,10 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     @UiField
     protected CmsPushButton m_selectButton;
 
+    /** The title label. */
+    @UiField
+    protected Label m_title;
+
     /** The tabbed panel of the preview dialog. */
     protected CmsTabbedPanel<Widget> m_tabbedPanel;
 
@@ -127,14 +132,14 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     public A_CmsPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth, boolean disableSelection) {
 
         initWidget(uiBinder.createAndBindUi(this));
-
+        m_title.setText(Messages.get().key(Messages.GUI_PREVIEW_TITLE_0));
         m_galleryMode = dialogMode;
 
         m_dialogHeight = dialogHeight;
         m_dialogWidth = dialogWidth;
         //int detailsHeight = m_dialogHeight > 650 ? 160 : 135;
         int detailsHeight = 200;
-        m_previewHeight = m_dialogHeight - 4 - detailsHeight;
+        m_previewHeight = m_dialogHeight - 32 - detailsHeight;
         m_previewHolder.getElement().getStyle().setHeight(m_previewHeight, Unit.PX);
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabbedPanelStyle.classicTabs);
