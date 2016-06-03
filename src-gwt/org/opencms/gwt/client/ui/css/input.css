@@ -308,6 +308,9 @@ div.error, .error {
 	border-radius: value("constants.css.borderRadius");
 	background-color: value("constants.css.backgroundColorStateHover");
 }
+.comboBox .openerHover.selectBoxSelected:before {
+	display: none;	
+}
 
 .noSelectionSelectBox .openerNoHover.selectBoxSelected, .noSelectionSelectBox .openerHover.selectBoxSelected {
 	background-image: none !important;
@@ -406,6 +409,7 @@ div.selectBoxOpener {
     box-shadow: none;
     background:  value("constants.css.backgroundColorDialog");
     margin: 0 12px 0 5px; 
+    position: relative;
 }
 
 
