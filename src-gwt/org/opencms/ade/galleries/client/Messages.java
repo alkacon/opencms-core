@@ -268,6 +268,9 @@ public final class Messages {
     public static final String GUI_PREVIEW_TAB_PROPERTIES_0 = "GUI_PREVIEW_TAB_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TITLE_0 = "GUI_PREVIEW_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PRIVIEW_BUTTON_NOT_EDITABLE_0 = "GUI_PRIVIEW_BUTTON_NOT_EDITABLE_0";
 
     /** Message constant for key in the resource bundle. */
