@@ -99,6 +99,7 @@ public class CmsPagingControls extends HorizontalLayout {
      * Creates a new instance.<p>
      */
     public CmsPagingControls() {
+        setMargin(true);
         addComponent(m_label);
         addComponent(m_fastBack);
         addComponent(m_back);
