@@ -2,22 +2,20 @@
 
 <export>
 	<info>
-		<creator>Admin</creator>
-		<opencms_version>8.5.2</opencms_version>
-		<createdate>Thu, 11 Aug 2011 07:13:25 GMT</createdate>
 		<infoproject>Offline</infoproject>
-		<export_version>7</export_version>
+		<export_version>10</export_version>
 	</info>
 	<module>
 		<name>org.opencms.locale.ja</name>
 		<nicename><![CDATA[OpenCms 8 Japanese localization for the workplace]]></nicename>
-        <group>OpenCms Localization</group>
-        <class/>
-        <description><![CDATA[<p>This module contains the Japanese language localization files for the OpenCms workplace.</p>
+		<group>OpenCms Localization</group>
+		<class/>
+		<export-mode name="reduced"/>
+		<description><![CDATA[<p>This module contains the Japanese language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the Japanese version of the OpenCms Workplace.</p>
 <p><i>(c) 2012 by  ubicast Co., Ltd(http://www.ubicast.com).</i></p>]]></description>
 		<version>8.5.2</version>
-		<authorname><![CDATA[ ubicast Co., Ltd.]]></authorname>
+		<authorname><![CDATA[ubicast Co., Ltd.]]></authorname>
 		<authoremail><![CDATA[info@ubicast.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
@@ -28,110 +26,36 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/locales/ja/messages/"/>
-			<resource uri="/system/workplace/resources/components/js_calendar/lang/calendar-ja.js"/>
 		</resources>
+		<excluderesources/>
 		<parameters/>
 	</module>
 	<files>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>e383a886-be67-11e0-afdb-406186cb791f</uuidstructure>
-			<datelastmodified>Thu, 04 Aug 2011 07:03:42 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 04 Aug 2011 07:03:42 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>514</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>6dbd9558-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>login-form</name>
-					<value><![CDATA[/system/login/index.html]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/locales</destination>
 			<type>folder</type>
-			<uuidstructure>82b7ea68-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/ja</destination>
 			<type>folder</type>
-			<uuidstructure>11b50227-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/ja/messages</destination>
 			<type>folder</type>
 			<uuidstructure>11e2a1d9-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -141,10 +65,7 @@
 			<destination>system/workplace/locales/ja/messages/org</destination>
 			<type>folder</type>
 			<uuidstructure>11e75ccb-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -154,10 +75,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms</destination>
 			<type>folder</type>
 			<uuidstructure>11e8bc5d-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -167,10 +85,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/ade</destination>
 			<type>folder</type>
 			<uuidstructure>11ea1bef-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -180,10 +95,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/ade/containerpage</destination>
 			<type>folder</type>
 			<uuidstructure>11eba291-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -195,10 +107,7 @@
 			<type>plain</type>
 			<uuidstructure>11ed2933-c242-11e0-81af-406186cb791f</uuidstructure>
 			<uuidresource>11ed2934-c242-11e0-81af-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -213,10 +122,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/ade/galleries</destination>
 			<type>folder</type>
 			<uuidstructure>11f873d6-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -228,10 +134,7 @@
 			<type>plain</type>
 			<uuidstructure>11fa96b8-c242-11e0-81af-406186cb791f</uuidstructure>
 			<uuidresource>11fa96b9-c242-11e0-81af-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -246,10 +149,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/ade/publish</destination>
 			<type>folder</type>
 			<uuidstructure>11fda3fb-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -261,10 +161,7 @@
 			<type>plain</type>
 			<uuidstructure>11ff9fcd-c242-11e0-81af-406186cb791f</uuidstructure>
 			<uuidresource>11ff9fce-c242-11e0-81af-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -281,10 +178,7 @@
 			<type>plain</type>
 			<uuidstructure>11f09ce7-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11f09ce8-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -299,10 +193,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/ade/sitemap</destination>
 			<type>folder</type>
 			<uuidstructure>12028600-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -314,10 +205,7 @@
 			<type>plain</type>
 			<uuidstructure>120481d2-c242-11e0-81af-406186cb791f</uuidstructure>
 			<uuidresource>120481d3-c242-11e0-81af-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -334,10 +222,7 @@
 			<type>plain</type>
 			<uuidstructure>11edb6b4-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11edb6b5-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -352,10 +237,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/ade/upload</destination>
 			<type>folder</type>
 			<uuidstructure>1206f2d5-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -367,10 +249,7 @@
 			<type>plain</type>
 			<uuidstructure>120915b7-c242-11e0-81af-406186cb791f</uuidstructure>
 			<uuidresource>120915b8-c242-11e0-81af-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -387,10 +266,7 @@
 			<type>plain</type>
 			<uuidstructure>11eb45b1-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11eb45b2-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -405,10 +281,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/cache</destination>
 			<type>folder</type>
 			<uuidstructure>11e85f7c-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -420,10 +293,7 @@
 			<type>plain</type>
 			<uuidstructure>11e970ee-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11e970ef-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -438,10 +308,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/configuration</destination>
 			<type>folder</type>
 			<uuidstructure>11e5ee77-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -453,10 +320,7 @@
 			<type>plain</type>
 			<uuidstructure>11e6d8d9-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11e6d8da-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -471,10 +335,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/db</destination>
 			<type>folder</type>
 			<uuidstructure>11e0220d-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -486,10 +347,7 @@
 			<type>plain</type>
 			<uuidstructure>11e1337f-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11e13380-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -504,10 +362,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/db/generic</destination>
 			<type>folder</type>
 			<uuidstructure>11e2e132-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -519,10 +374,7 @@
 			<type>plain</type>
 			<uuidstructure>11e419b4-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11e419b5-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -537,10 +389,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/editors</destination>
 			<type>folder</type>
 			<uuidstructure>11d94431-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -550,10 +399,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/editors/ckeditor</destination>
 			<type>folder</type>
 			<uuidstructure>11dd89f8-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -565,10 +411,7 @@
 			<type>plain</type>
 			<uuidstructure>11de9b6a-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11de9b6b-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -583,10 +426,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/editors/fckeditor</destination>
 			<type>folder</type>
 			<uuidstructure>11daa3c3-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -598,10 +438,7 @@
 			<type>plain</type>
 			<uuidstructure>11dbb535-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11dbb536-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -616,10 +453,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/file</destination>
 			<type>folder</type>
 			<uuidstructure>11cd362d-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -631,10 +465,7 @@
 			<type>plain</type>
 			<uuidstructure>11d4d759-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11d4d75a-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -649,10 +480,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/file/collectors</destination>
 			<type>folder</type>
 			<uuidstructure>11d6ac1c-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -664,10 +492,7 @@
 			<type>plain</type>
 			<uuidstructure>11d7bd8e-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11d7bd8f-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -682,10 +507,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/file/types</destination>
 			<type>folder</type>
 			<uuidstructure>11d154e4-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -697,10 +519,7 @@
 			<type>plain</type>
 			<uuidstructure>11d30296-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11d30297-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -715,10 +534,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/file/wrapper</destination>
 			<type>folder</type>
 			<uuidstructure>11ce479f-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -730,10 +546,7 @@
 			<type>plain</type>
 			<uuidstructure>11cfa731-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11cfa732-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -748,10 +561,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/flex</destination>
 			<type>folder</type>
 			<uuidstructure>11ca28e8-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -763,10 +573,7 @@
 			<type>plain</type>
 			<uuidstructure>11cb3a5a-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11cb3a5b-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -781,10 +588,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/frontend</destination>
 			<type>folder</type>
 			<uuidstructure>11ba986d-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -794,10 +598,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/frontend/layoutpage</destination>
 			<type>folder</type>
 			<uuidstructure>11c790d3-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -809,10 +610,7 @@
 			<type>plain</type>
 			<uuidstructure>11c8a245-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11c8a246-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -827,10 +625,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/frontend/photoalbum</destination>
 			<type>folder</type>
 			<uuidstructure>11c4838e-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -842,10 +637,7 @@
 			<type>plain</type>
 			<uuidstructure>11c5bc10-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11c5bc11-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -860,10 +652,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/frontend/templateone</destination>
 			<type>folder</type>
 			<uuidstructure>11bbf7ff-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -875,10 +664,7 @@
 			<type>plain</type>
 			<uuidstructure>11c03dc6-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11c03dc7-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -893,10 +679,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/frontend/templateone/form</destination>
 			<type>folder</type>
 			<uuidstructure>11c1eb79-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -908,10 +691,7 @@
 			<type>plain</type>
 			<uuidstructure>11c2fceb-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11c2fcec-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -926,10 +706,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/frontend/templateone/modules</destination>
 			<type>folder</type>
 			<uuidstructure>11bd3081-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -941,10 +718,7 @@
 			<type>plain</type>
 			<uuidstructure>11be41f3-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11be41f4-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -959,10 +733,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/gwt</destination>
 			<type>folder</type>
 			<uuidstructure>120b389a-c242-11e0-81af-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 04:43:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -974,10 +745,7 @@
 			<type>plain</type>
 			<uuidstructure>120c711c-c242-11e0-81af-406186cb791f</uuidstructure>
 			<uuidresource>120c711d-c242-11e0-81af-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 04:43:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -994,10 +762,7 @@
 			<type>plain</type>
 			<uuidstructure>11b911ca-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11b911cb-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1012,10 +777,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/i18n</destination>
 			<type>folder</type>
 			<uuidstructure>11b652a5-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1027,10 +789,7 @@
 			<type>plain</type>
 			<uuidstructure>11b76417-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11b76418-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1045,10 +804,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/importexport</destination>
 			<type>folder</type>
 			<uuidstructure>11b36c70-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1060,10 +816,7 @@
 			<type>plain</type>
 			<uuidstructure>11b47de2-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11b47de3-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1078,10 +831,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/jsp</destination>
 			<type>folder</type>
 			<uuidstructure>11aa92c1-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1093,10 +843,7 @@
 			<type>plain</type>
 			<uuidstructure>11aeb178-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11aeb179-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1111,10 +858,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/jsp/decorator</destination>
 			<type>folder</type>
 			<uuidstructure>11b05f2b-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1126,10 +870,7 @@
 			<type>plain</type>
 			<uuidstructure>11b1bebd-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11b1bebe-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1144,10 +885,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/jsp/util</destination>
 			<type>folder</type>
 			<uuidstructure>11aba433-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1159,10 +897,7 @@
 			<type>plain</type>
 			<uuidstructure>11acdcb5-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11acdcb6-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1177,10 +912,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/loader</destination>
 			<type>folder</type>
 			<uuidstructure>11a7375c-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1192,10 +924,7 @@
 			<type>plain</type>
 			<uuidstructure>11a896ee-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11a896ef-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1210,10 +939,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/lock</destination>
 			<type>folder</type>
 			<uuidstructure>11a47837-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1225,10 +951,7 @@
 			<type>plain</type>
 			<uuidstructure>11a589a9-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11a589aa-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1243,10 +966,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/mail</destination>
 			<type>folder</type>
 			<uuidstructure>11a1e022-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1258,10 +978,7 @@
 			<type>plain</type>
 			<uuidstructure>11a2f194-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11a2f195-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1276,10 +993,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/main</destination>
 			<type>folder</type>
 			<uuidstructure>119f20fd-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1291,10 +1005,7 @@
 			<type>plain</type>
 			<uuidstructure>11a0326f-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11a03270-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1309,10 +1020,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/module</destination>
 			<type>folder</type>
 			<uuidstructure>119beca8-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1324,10 +1032,7 @@
 			<type>plain</type>
 			<uuidstructure>119d4c3a-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>119d4c3b-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1342,10 +1047,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/monitor</destination>
 			<type>folder</type>
 			<uuidstructure>11984323-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1357,10 +1059,7 @@
 			<type>plain</type>
 			<uuidstructure>11995495-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11995496-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1375,10 +1074,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/notification</destination>
 			<type>folder</type>
 			<uuidstructure>119583fe-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1390,10 +1086,7 @@
 			<type>plain</type>
 			<uuidstructure>11969570-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11969571-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1408,10 +1101,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/publish</destination>
 			<type>folder</type>
 			<uuidstructure>1192c4d9-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1423,10 +1113,7 @@
 			<type>plain</type>
 			<uuidstructure>1193fd5b-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1193fd5c-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1441,10 +1128,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/relations</destination>
 			<type>folder</type>
 			<uuidstructure>118fdea4-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1456,10 +1140,7 @@
 			<type>plain</type>
 			<uuidstructure>11913e36-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11913e37-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1474,10 +1155,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/report</destination>
 			<type>folder</type>
 			<uuidstructure>118c833f-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1489,10 +1167,7 @@
 			<type>plain</type>
 			<uuidstructure>118de2d1-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>118de2d2-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1507,10 +1182,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/repository</destination>
 			<type>folder</type>
 			<uuidstructure>11883d7a-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1522,10 +1194,7 @@
 			<type>plain</type>
 			<uuidstructure>118a394c-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>118a394d-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1540,10 +1209,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/scheduler</destination>
 			<type>folder</type>
 			<uuidstructure>117f63d0-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1555,10 +1221,7 @@
 			<type>plain</type>
 			<uuidstructure>11815fa2-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11815fa3-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1573,10 +1236,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/scheduler/jobs</destination>
 			<type>folder</type>
 			<uuidstructure>1183f7b5-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1588,10 +1248,7 @@
 			<type>plain</type>
 			<uuidstructure>1185cc77-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1185cc78-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1606,10 +1263,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/search</destination>
 			<type>folder</type>
 			<uuidstructure>11759fc1-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1621,10 +1275,7 @@
 			<type>plain</type>
 			<uuidstructure>1176d843-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1176d844-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1639,10 +1290,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/search/documents</destination>
 			<type>folder</type>
 			<uuidstructure>117c086b-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1654,10 +1302,7 @@
 			<type>plain</type>
 			<uuidstructure>117d40ed-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>117d40ee-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1672,10 +1317,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/search/extractors</destination>
 			<type>folder</type>
 			<uuidstructure>1178d416-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1687,10 +1329,7 @@
 			<type>plain</type>
 			<uuidstructure>117a33a8-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>117a33a9-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1705,10 +1344,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/security</destination>
 			<type>folder</type>
 			<uuidstructure>1172927c-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1720,10 +1356,7 @@
 			<type>plain</type>
 			<uuidstructure>1173cafe-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1173caff-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1738,10 +1371,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/site</destination>
 			<type>folder</type>
 			<uuidstructure>116fac47-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1753,10 +1383,7 @@
 			<type>plain</type>
 			<uuidstructure>1170e4c9-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1170e4ca-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1771,10 +1398,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/staticexport</destination>
 			<type>folder</type>
 			<uuidstructure>116ced22-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1786,10 +1410,7 @@
 			<type>plain</type>
 			<uuidstructure>116e25a4-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>116e25a5-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1804,10 +1425,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/synchronize</destination>
 			<type>folder</type>
 			<uuidstructure>116a07ed-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1819,10 +1437,7 @@
 			<type>plain</type>
 			<uuidstructure>116b677f-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>116b6780-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1837,10 +1452,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/util</destination>
 			<type>folder</type>
 			<uuidstructure>11661048-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1852,10 +1464,7 @@
 			<type>plain</type>
 			<uuidstructure>11676fda-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11676fdb-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1870,10 +1479,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/webdav</destination>
 			<type>folder</type>
 			<uuidstructure>11628dd3-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1885,10 +1491,7 @@
 			<type>plain</type>
 			<uuidstructure>11641475-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11641476-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1903,10 +1506,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/widgets</destination>
 			<type>folder</type>
 			<uuidstructure>115e962e-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1918,10 +1518,7 @@
 			<type>plain</type>
 			<uuidstructure>11601cd0-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11601cd1-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1936,10 +1533,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace</destination>
 			<type>folder</type>
 			<uuidstructure>10cb5625-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1951,10 +1545,7 @@
 			<type>plain</type>
 			<uuidstructure>11311d4f-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11311d50-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1969,10 +1560,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/administration</destination>
 			<type>folder</type>
 			<uuidstructure>115b61d9-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1984,10 +1572,7 @@
 			<type>plain</type>
 			<uuidstructure>115ce87b-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>115ce87c-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2002,10 +1587,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/commons</destination>
 			<type>folder</type>
 			<uuidstructure>1157b854-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2017,10 +1599,7 @@
 			<type>plain</type>
 			<uuidstructure>115917e6-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>115917e7-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2035,10 +1614,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/comparison</destination>
 			<type>folder</type>
 			<uuidstructure>1154ab0f-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2050,10 +1626,7 @@
 			<type>plain</type>
 			<uuidstructure>11560aa1-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11560aa2-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2068,10 +1641,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/demos</destination>
 			<type>folder</type>
 			<uuidstructure>1146a140-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2083,10 +1653,7 @@
 			<type>plain</type>
 			<uuidstructure>114e9087-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>114e9088-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2101,10 +1668,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/demos/list</destination>
 			<type>folder</type>
 			<uuidstructure>1151c4da-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2116,10 +1680,7 @@
 			<type>plain</type>
 			<uuidstructure>1152fd5c-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1152fd5d-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2134,10 +1695,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/demos/widget</destination>
 			<type>folder</type>
 			<uuidstructure>11484ef2-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2149,10 +1707,7 @@
 			<type>plain</type>
 			<uuidstructure>114a4ac4-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>114a4ac5-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2167,10 +1722,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/editors</destination>
 			<type>folder</type>
 			<uuidstructure>11436ceb-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2182,10 +1734,7 @@
 			<type>plain</type>
 			<uuidstructure>1144f38d-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1144f38e-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2200,10 +1749,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/explorer</destination>
 			<type>folder</type>
 			<uuidstructure>113c8f11-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2215,10 +1761,7 @@
 			<type>plain</type>
 			<uuidstructure>113dc793-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>113dc794-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2233,10 +1776,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/explorer/menu</destination>
 			<type>folder</type>
 			<uuidstructure>113f9c56-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2248,10 +1788,7 @@
 			<type>plain</type>
 			<uuidstructure>11414a08-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11414a09-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2266,10 +1803,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/galleries</destination>
 			<type>folder</type>
 			<uuidstructure>1139a8dc-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2281,10 +1815,7 @@
 			<type>plain</type>
 			<uuidstructure>113aba4e-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>113aba4f-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2299,10 +1830,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/help</destination>
 			<type>folder</type>
 			<uuidstructure>1135b137-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2314,10 +1842,7 @@
 			<type>plain</type>
 			<uuidstructure>113737d9-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>113737da-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2332,10 +1857,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/list</destination>
 			<type>folder</type>
 			<uuidstructure>1132cb02-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2347,10 +1869,7 @@
 			<type>plain</type>
 			<uuidstructure>1133dc74-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1133dc75-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2365,10 +1884,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/search</destination>
 			<type>folder</type>
 			<uuidstructure>112e100a-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2380,10 +1896,7 @@
 			<type>plain</type>
 			<uuidstructure>112f488c-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>112f488d-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2398,10 +1911,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/threads</destination>
 			<type>folder</type>
 			<uuidstructure>112b29d5-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2413,10 +1923,7 @@
 			<type>plain</type>
 			<uuidstructure>112c6257-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>112c6258-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2431,10 +1938,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools</destination>
 			<type>folder</type>
 			<uuidstructure>10ccb5b7-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2446,10 +1950,7 @@
 			<type>plain</type>
 			<uuidstructure>10f859c6-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10f859c7-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2464,10 +1965,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/accounts</destination>
 			<type>folder</type>
 			<uuidstructure>1127a760-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2479,10 +1977,7 @@
 			<type>plain</type>
 			<uuidstructure>11292e02-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11292e03-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2497,10 +1992,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/cache</destination>
 			<type>folder</type>
 			<uuidstructure>11233a8b-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2512,10 +2004,7 @@
 			<type>plain</type>
 			<uuidstructure>1124730d-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1124730e-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2530,10 +2019,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/content</destination>
 			<type>folder</type>
 			<uuidstructure>110bbacd-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2545,10 +2031,7 @@
 			<type>plain</type>
 			<uuidstructure>1116b759-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1116b75a-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2563,10 +2046,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/content/check</destination>
 			<type>folder</type>
 			<uuidstructure>11200636-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2578,10 +2058,7 @@
 			<type>plain</type>
 			<uuidstructure>11213eb8-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11213eb9-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2596,10 +2073,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/content/convertxml</destination>
 			<type>folder</type>
 			<uuidstructure>111caad1-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2611,10 +2085,7 @@
 			<type>plain</type>
 			<uuidstructure>111de353-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>111de354-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2629,10 +2100,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/content/languagecopy</destination>
 			<type>folder</type>
 			<uuidstructure>1119285c-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2644,10 +2112,7 @@
 			<type>plain</type>
 			<uuidstructure>111a60de-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>111a60df-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2662,10 +2127,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/content/propertyviewer</destination>
 			<type>folder</type>
 			<uuidstructure>11122374-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2677,10 +2139,7 @@
 			<type>plain</type>
 			<uuidstructure>1113aa16-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>1113aa17-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2695,10 +2154,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/content/updatexml</destination>
 			<type>folder</type>
 			<uuidstructure>110db69f-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2710,10 +2166,7 @@
 			<type>plain</type>
 			<uuidstructure>110f6451-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>110f6452-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2728,10 +2181,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/database</destination>
 			<type>folder</type>
 			<uuidstructure>1106d8c8-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:26:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2743,10 +2193,7 @@
 			<type>plain</type>
 			<uuidstructure>11085f6a-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11085f6b-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2761,10 +2208,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/galleryoverview</destination>
 			<type>folder</type>
 			<uuidstructure>11029303-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2776,10 +2220,7 @@
 			<type>plain</type>
 			<uuidstructure>110467c5-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>110467c6-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:26:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2794,10 +2235,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/history</destination>
 			<type>folder</type>
 			<uuidstructure>10fee97e-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2809,10 +2247,7 @@
 			<type>plain</type>
 			<uuidstructure>11004910-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>11004911-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2827,10 +2262,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/link</destination>
 			<type>folder</type>
 			<uuidstructure>10faf1d9-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2842,10 +2274,7 @@
 			<type>plain</type>
 			<uuidstructure>10fc9f8b-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10fc9f8c-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2860,10 +2289,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/modules</destination>
 			<type>folder</type>
 			<uuidstructure>10f46221-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2875,10 +2301,7 @@
 			<type>plain</type>
 			<uuidstructure>10f60fd3-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10f60fd4-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2893,10 +2316,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/projects</destination>
 			<type>folder</type>
 			<uuidstructure>10f01c5c-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2908,10 +2328,7 @@
 			<type>plain</type>
 			<uuidstructure>10f1ca0e-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10f1ca0f-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2926,10 +2343,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/publishqueue</destination>
 			<type>folder</type>
 			<uuidstructure>10ec99e7-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2941,10 +2355,7 @@
 			<type>plain</type>
 			<uuidstructure>10edd269-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10edd26a-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2959,10 +2370,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/scheduler</destination>
 			<type>folder</type>
 			<uuidstructure>10e8c952-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2974,10 +2382,7 @@
 			<type>plain</type>
 			<uuidstructure>10ea9e14-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10ea9e15-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2992,10 +2397,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/searchindex</destination>
 			<type>folder</type>
 			<uuidstructure>10ddf3d8-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3007,10 +2409,7 @@
 			<type>plain</type>
 			<uuidstructure>10e2d5df-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10e2d5e0-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -3025,10 +2424,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/searchindex/sourcesearch</destination>
 			<type>folder</type>
 			<uuidstructure>10df2c5a-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3040,10 +2436,7 @@
 			<type>plain</type>
 			<uuidstructure>10e08bec-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10e08bed-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -3058,10 +2451,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/workplace</destination>
 			<type>folder</type>
 			<uuidstructure>10ce3c59-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3073,10 +2463,7 @@
 			<type>plain</type>
 			<uuidstructure>10d51a30-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10d51a31-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -3091,10 +2478,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/workplace/broadcast</destination>
 			<type>folder</type>
 			<uuidstructure>10d95ff3-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3106,10 +2490,7 @@
 			<type>plain</type>
 			<uuidstructure>10db5bc5-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10db5bc6-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -3124,10 +2505,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/workplace/tools/workplace/rfsfile</destination>
 			<type>folder</type>
 			<uuidstructure>10cf9beb-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3139,10 +2517,7 @@
 			<type>plain</type>
 			<uuidstructure>10d1228d-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10d1228e-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -3157,10 +2532,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/xml</destination>
 			<type>folder</type>
 			<uuidstructure>10b16571-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3172,10 +2544,7 @@
 			<type>plain</type>
 			<uuidstructure>10c4c66d-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10c4c66e-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -3190,10 +2559,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/xml/content</destination>
 			<type>folder</type>
 			<uuidstructure>10c6e950-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3205,10 +2571,7 @@
 			<type>plain</type>
 			<uuidstructure>10c8be12-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10c8be13-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -3223,10 +2586,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/xml/page</destination>
 			<type>folder</type>
 			<uuidstructure>10befa08-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3238,10 +2598,7 @@
 			<type>plain</type>
 			<uuidstructure>10c080aa-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10c080ab-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -3256,10 +2613,7 @@
 			<destination>system/workplace/locales/ja/messages/org/opencms/xml/types</destination>
 			<type>folder</type>
 			<uuidstructure>10b44ba3-c248-11e0-ae2f-406186cb791f</uuidstructure>
-			<datelastmodified>Tue, 09 Aug 2011 05:25:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -3271,87 +2625,12 @@
 			<type>plain</type>
 			<uuidstructure>10ba8d35-c248-11e0-ae2f-406186cb791f</uuidstructure>
 			<uuidresource>10ba8d36-c248-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Thu, 11 Aug 2011 07:12:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Aug 2011 05:25:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_ja]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources</destination>
-			<type>folder</type>
-			<uuidstructure>6dbfdf50-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/components</destination>
-			<type>folder</type>
-			<uuidstructure>833afc9a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/components/js_calendar</destination>
-			<type>folder</type>
-			<uuidstructure>833d6d9c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/components/js_calendar/lang</destination>
-			<type>folder</type>
-			<uuidstructure>83553b6c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Mar 2006 08:41:14 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/components/js_calendar/lang/calendar-ja.js</source>
-			<destination>system/workplace/resources/components/js_calendar/lang/calendar-ja.js</destination>
-			<type>plain</type>
-			<uuidstructure>9edf27e4-c24d-11e0-ae2f-406186cb791f</uuidstructure>
-			<uuidresource>9edf27e5-c24d-11e0-ae2f-406186cb791f</uuidresource>
-			<datelastmodified>Tue, 09 Aug 2011 06:05:45 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 09 Aug 2011 06:05:45 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[calendar-ja]]></value>
 				</property>
 			</properties>
 			<relations/>
