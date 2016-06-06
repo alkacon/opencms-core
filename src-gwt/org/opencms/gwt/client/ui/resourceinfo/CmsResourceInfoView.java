@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog;
 import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -53,6 +54,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
@@ -241,6 +246,20 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
 
         initWidget(uiBinder.createAndBindUi(this));
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
+        infoBox.addOpenHandler(new OpenHandler<CmsListItemWidget>() {
+
+            public void onOpen(OpenEvent<CmsListItemWidget> event) {
+
+                CmsDomUtil.resizeAncestor(getParent());
+            }
+        });
+        infoBox.addCloseHandler(new CloseHandler<CmsListItemWidget>() {
+
+            public void onClose(CloseEvent<CmsListItemWidget> event) {
+
+                CmsDomUtil.resizeAncestor(getParent());
+            }
+        });
         CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler());
         menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         infoBox.addButton(menuButton);

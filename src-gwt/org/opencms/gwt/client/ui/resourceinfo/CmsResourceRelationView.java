@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHandler;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
@@ -64,6 +65,10 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -143,6 +148,20 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
         SimplePanel infoBoxPanel = new SimplePanel();
         infoBoxPanel.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
         CmsListItemWidget infoWidget = new CmsListItemWidget(status.getListInfo());
+        infoWidget.addOpenHandler(new OpenHandler<CmsListItemWidget>() {
+
+            public void onOpen(OpenEvent<CmsListItemWidget> event) {
+
+                CmsDomUtil.resizeAncestor(getParent());
+            }
+        });
+        infoWidget.addCloseHandler(new CloseHandler<CmsListItemWidget>() {
+
+            public void onClose(CloseEvent<CmsListItemWidget> event) {
+
+                CmsDomUtil.resizeAncestor(getParent());
+            }
+        });
         CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler());
         menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         infoWidget.addButton(menuButton);

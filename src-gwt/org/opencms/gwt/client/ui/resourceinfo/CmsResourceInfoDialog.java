@@ -60,7 +60,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
     protected static final int SCROLLPANEL_HEIGHT = 300;
 
     /** The tab panel. */
-    CmsTabbedPanel<CmsTabContentWrapper> m_tabPanel;
+    private CmsTabbedPanel<CmsTabContentWrapper> m_tabPanel;
 
     /**
      * Creates the dialog for the given resource information.<p>
@@ -197,10 +197,18 @@ public class CmsResourceInfoDialog extends CmsPopup {
 
             public void execute() {
 
-                m_tabPanel.onResizeDescendant();
+                resize();
             }
         });
 
+    }
+
+    /**
+     * Resizes the tab panel.<p>
+     */
+    void resize() {
+
+        m_tabPanel.onResizeDescendant();
     }
 
     /**
