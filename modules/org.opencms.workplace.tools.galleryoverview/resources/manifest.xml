@@ -2,17 +2,75 @@
 
 <export>
 	<info>
-		<creator>Admin</creator>
-		<opencms_version>10.0.0</opencms_version>
-		<createdate>Mon, 25 Jun 2007 14:18:52 GMT</createdate>
 		<infoproject>Offline</infoproject>
-		<export_version>7</export_version>
+		<export_version>10</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.galleryoverview</name>
 		<nicename><![CDATA[OpenCms 10 Gallery administration tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
+    <import-script><![CDATA[
+# sets access control entries  and properties on folders not exclusively belonging to this module
+writeProperty '/system/workplace/admin/galleryoverview/' 'Description' '${key.GUI_GALLERIES_ADMIN_TOOL_HELP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/' 'NavImage' 'tools/galleryoverview/icons/big/gal_manage.png:tools/galleryoverview/icons/small/gal_manage.png'
+writeProperty '/system/workplace/admin/galleryoverview/' 'NavInfo' '${key.GUI_GALLERIES_ADMIN_TOOL_GROUP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/' 'NavPos' '60.0'
+writeProperty '/system/workplace/admin/galleryoverview/' 'NavText' '${key.GUI_GALLERIES_ADMIN_TOOL_NAME_0}'
+writeProperty '/system/workplace/admin/galleryoverview/' 'Title' 'Gallery Overview'
+writeProperty '/system/workplace/admin/galleryoverview/' 'admintoolhandler-class' 'org.opencms.workplace.tools.CmsDefaultToolHandler'
+
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'Description' '${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_HELP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'NavImage' 'tools/galleryoverview/icons/big/gal_download.png'
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'NavInfo' '${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_GROUP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'NavPos' '1.0'
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'NavText' '${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_NAME_0}'
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'Title' 'Download Gallery'
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'admintoolhandler-class' 'org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler'
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'default-file' 'index.jsp'
+writeProperty '/system/workplace/admin/galleryoverview/downloadgallery/' 'internal' '4'
+
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'Description' '${key.GUI_GALLERIES_HTML_ADMIN_TOOL_HELP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'NavImage' 'tools/galleryoverview/icons/big/gal_html.png'
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'NavInfo' '${key.GUI_GALLERIES_HTML_ADMIN_TOOL_GROUP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'NavPos' '2.0'
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'NavText' '${key.GUI_GALLERIES_HTML_ADMIN_TOOL_NAME_0}'
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'Title' 'Html Gallery'
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'admintoolhandler-class' 'org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler'
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'default-file' 'index.jsp'
+writeProperty '/system/workplace/admin/galleryoverview/htmlgallery/' 'internal' '4'
+
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'Description' '${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_HELP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'NavImage' 'tools/galleryoverview/icons/big/gal_image.png'
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'NavInfo' '${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_GROUP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'NavPos' '3.0'
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'NavText' '${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_NAME_0}'
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'Title' 'Image Gallery'
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'admintoolhandler-class' 'org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler'
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'default-file' 'index.jsp'
+writeProperty '/system/workplace/admin/galleryoverview/imagegallery/' 'internal' '4'
+
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'Description' '${key.GUI_GALLERIES_LINK_ADMIN_TOOL_HELP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'NavImage' 'tools/galleryoverview/icons/big/gal_link.png'
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'NavInfo' '${key.GUI_GALLERIES_LINK_ADMIN_TOOL_GROUP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'NavPos' '4.0'
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'NavText' '${key.GUI_GALLERIES_LINK_ADMIN_TOOL_NAME_0}'
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'Title' 'Link Gallery'
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'admintoolhandler-class' 'org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler'
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'default-file' 'index.jsp'
+writeProperty '/system/workplace/admin/galleryoverview/linkgallery/' 'internal' '4'
+
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'Description' '${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_HELP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'NavImage' 'tools/galleryoverview/icons/big/gal_table.png'
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'NavInfo' '${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_GROUP_0}'
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'NavPos' '5.0'
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'NavText' '${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_NAME_0}'
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'Title' 'Content Check'
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'admintoolhandler-class' 'org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler'
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'default-file' 'index.jsp'
+writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'internal' '5'
+		]]></import-script>
+		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains Overviews for every OpenCms gallery types.</p>
 <p><i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>10.0.0</version>
@@ -25,193 +83,49 @@
 			<dependency name="org.opencms.workplace" version="10.0.0"/>
 			<dependency name="org.opencms.workplace.administration" version="10.0.0"/>
 		</dependencies>
-		<exportpoints />
+		<exportpoints/>
 		<resources>
-            <resource uri="/system/workplace/admin/galleryoverview/downloadgallery/index.jsp"/>
-            <resource uri="/system/workplace/admin/galleryoverview/htmlgallery/index.jsp"/>
-            <resource uri="/system/workplace/admin/galleryoverview/imagegallery/index.jsp"/>
-            <resource uri="/system/workplace/admin/galleryoverview/linkgallery/index.jsp"/>
-            <resource uri="/system/workplace/admin/galleryoverview/tablegallery/index.jsp"/>
-            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_download.png"/>
-            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_html.png"/>
-            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_image.png"/>
-            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_link.png"/>
-            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_manage.png"/>
-            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_table.png"/>
-            <resource uri="/system/workplace/resources/tools/galleryoverview/icons/small/gal_manage.png"/>
+			<resource uri="/system/workplace/admin/galleryoverview/downloadgallery/index.jsp"/>
+			<resource uri="/system/workplace/admin/galleryoverview/htmlgallery/index.jsp"/>
+			<resource uri="/system/workplace/admin/galleryoverview/imagegallery/index.jsp"/>
+			<resource uri="/system/workplace/admin/galleryoverview/linkgallery/index.jsp"/>
+			<resource uri="/system/workplace/admin/galleryoverview/tablegallery/index.jsp"/>
+			<resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_download.png"/>
+			<resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_html.png"/>
+			<resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_image.png"/>
+			<resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_link.png"/>
+			<resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_manage.png"/>
+			<resource uri="/system/workplace/resources/tools/galleryoverview/icons/big/gal_table.png"/>
+			<resource uri="/system/workplace/resources/tools/galleryoverview/icons/small/gal_manage.png"/>
 		</resources>
+		<excluderesources/>
 		<parameters/>
 	</module>
 	<files>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>0a0c1bea-2325-11dc-8245-53aeb3024788</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Jun 2007 14:04:50 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>login-form</name>
-					<value><![CDATA[/system/login/index.html]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/admin</destination>
 			<type>folder</type>
-			<uuidstructure>825fb7db-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Administration View]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/galleryoverview</destination>
 			<type>folder</type>
-			<uuidstructure>dc56e0a8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_GALLERIES_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/gal_manage.png:tools/galleryoverview/icons/small/gal_manage.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_GALLERIES_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[60]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GALLERIES_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Gallery Overview]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/galleryoverview/downloadgallery</destination>
 			<type>folder</type>
-			<uuidstructure>dc8b5e31-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/gal_download.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Download Gallery]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.jsp]]></value>
-				</property>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[4]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
+			<properties/>
 		</file>
 		<file>
 			<source>system/workplace/admin/galleryoverview/downloadgallery/index.jsp</source>
@@ -219,10 +133,7 @@
 			<type>jsp</type>
 			<uuidstructure>dc8dcf3b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
-			<datelastmodified>Tue, 09 Jun 2009 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -240,62 +151,14 @@
 		<file>
 			<destination>system/workplace/admin/galleryoverview/htmlgallery</destination>
 			<type>folder</type>
-			<uuidstructure>dc901930-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_GALLERIES_HTML_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/gal_html.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_GALLERIES_HTML_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GALLERIES_HTML_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Html Gallery]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.jsp]]></value>
-				</property>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[4]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/galleryoverview/htmlgallery/index.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>dc94fb3a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -313,62 +176,14 @@
 		<file>
 			<destination>system/workplace/admin/galleryoverview/imagegallery</destination>
 			<type>folder</type>
-			<uuidstructure>dc9c002a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/gal_image.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Image Gallery]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.jsp]]></value>
-				</property>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[4]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/galleryoverview/imagegallery/index.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>dca0e234-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -386,62 +201,14 @@
 		<file>
 			<destination>system/workplace/admin/galleryoverview/linkgallery</destination>
 			<type>folder</type>
-			<uuidstructure>dca80e27-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_GALLERIES_LINK_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/gal_link.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_GALLERIES_LINK_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[4.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GALLERIES_LINK_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Link Gallery]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.jsp]]></value>
-				</property>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[4]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/galleryoverview/linkgallery/index.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>dcaa5821-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -459,62 +226,14 @@
 		<file>
 			<destination>system/workplace/admin/galleryoverview/tablegallery</destination>
 			<type>folder</type>
-			<uuidstructure>dc97452d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/gal_table.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[5.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Table Gallery]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.jsp]]></value>
-				</property>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[5]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/galleryoverview/tablegallery/index.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>dc99b637-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -532,67 +251,27 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
-			<uuidstructure>c3a8d33c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/galleryoverview</destination>
 			<type>folder</type>
-			<uuidstructure>dd4a1a96-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/galleryoverview/icons</destination>
 			<type>folder</type>
-			<uuidstructure>dd4ed588-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/galleryoverview/icons/big</destination>
 			<type>folder</type>
-			<uuidstructure>dd51468a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/galleryoverview/icons/big/gal_download.png</source>
@@ -600,10 +279,7 @@
 			<type>image</type>
 			<uuidstructure>dd53b78b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a00419ca-d732-11d9-b767-0d179596440c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
@@ -620,10 +296,7 @@
 			<type>image</type>
 			<uuidstructure>dd7e981e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a007270d-d732-11d9-b767-0d179596440c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
@@ -640,10 +313,7 @@
 			<type>image</type>
 			<uuidstructure>dd98d6e1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a008d4c0-d732-11d9-b767-0d179596440c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
@@ -660,10 +330,7 @@
 			<type>image</type>
 			<uuidstructure>dd9b20d4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a00be203-d732-11d9-b767-0d179596440c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
@@ -680,10 +347,7 @@
 			<type>image</type>
 			<uuidstructure>dd9d91d7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a00d68a6-d732-11d9-b767-0d179596440c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
@@ -700,10 +364,7 @@
 			<type>image</type>
 			<uuidstructure>dda002da-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a01075e9-d732-11d9-b767-0d179596440c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
@@ -717,15 +378,7 @@
 		<file>
 			<destination>system/workplace/resources/tools/galleryoverview/icons/small</destination>
 			<type>folder</type>
-			<uuidstructure>dda24cce-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/galleryoverview/icons/small/gal_manage.png</source>
@@ -733,10 +386,7 @@
 			<type>image</type>
 			<uuidstructure>dda4bdcf-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c548cec2-d732-11d9-b767-0d179596440c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">

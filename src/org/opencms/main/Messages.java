@@ -169,6 +169,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SHELL_EXEC_METHOD_1 = "GUI_SHELL_EXEC_METHOD_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_FOLDER_ALREADY_EXISTS_1 = "GUI_SHELL_FOLDER_ALREADY_EXISTS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_GOODBYE_0 = "GUI_SHELL_GOODBYE_0";
 
     /** Message constant for key in the resource bundle. */
