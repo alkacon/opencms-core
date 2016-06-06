@@ -517,18 +517,6 @@ public class CmsJspContentAccessBean {
     }
 
     /**
-     * Returns the categories assigned to the content's VFS resource.
-     * @return the categories assigned to the content's VFS resource.
-     */
-    public CmsJspCategoryAccessBean getCategories() {
-
-        if (null == m_categories) {
-            m_categories = readCategories();
-        }
-        return m_categories;
-    }
-
-    /**
      * Returns the OpenCms user context this bean was initialized with.<p>
      *
      * @return the OpenCms user context this bean was initialized with
@@ -965,6 +953,18 @@ public class CmsJspContentAccessBean {
     public Map<String, String> getRdfa() {
 
         return getLocaleRdfa().get(getLocale());
+    }
+
+    /**
+     * Reads and returns the categories assigned to the content's VFS resource.
+     * @return the categories assigned to the content's VFS resource.
+     */
+    public CmsJspCategoryAccessBean getReadCategories() {
+
+        if (null == m_categories) {
+            m_categories = readCategories();
+        }
+        return m_categories;
     }
 
     /**
