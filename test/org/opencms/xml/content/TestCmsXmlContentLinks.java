@@ -81,6 +81,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
     /** simple xml content schema system id, with attachment relation type. */
     private static final String SCHEMA_SYSTEM_ID_14 = "http://www.opencms.org/test14.xsd";
 
+    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
+    private String m_vfsPrefix;
+
     /**
      * Default JUnit constructor.<p>
      *
@@ -445,8 +448,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         assertEquals(enWarnings.size(), 1);
         assertTrue(enWarnings.containsKey("VfsLink[1]"));
         assertTrue(
-            enWarnings.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
-                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0)));
+            enWarnings.containsValue(
+                org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0)));
 
         // reset the time to have the 'normal' behaviour again
         cms.getRequestContext().setRequestTime(System.currentTimeMillis());
@@ -533,8 +537,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         assertEquals(enErrors.size(), 1);
         assertTrue(enErrors.containsKey("VfsLink[1]"));
         assertTrue(
-            enErrors.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
-                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0)));
+            enErrors.containsValue(
+                org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0)));
         assertTrue(errHandler.getWarnings().isEmpty());
 
         // reset the time to have the 'normal' behaviour again
@@ -666,8 +671,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         assertEquals(enWarnings.size(), 1);
         assertTrue(enWarnings.containsKey("ALink[1]/VfsLink[1]"));
         assertTrue(
-            enWarnings.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
-                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0)));
+            enWarnings.containsValue(
+                org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0)));
 
         // reset the time to have the 'normal' behaviour again
         cms.getRequestContext().setRequestTime(System.currentTimeMillis());
@@ -755,8 +761,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         assertEquals(enErrors.size(), 1);
         assertTrue(enErrors.containsKey("ALink[1]/VfsLink[1]"));
         assertTrue(
-            enErrors.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
-                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0)));
+            enErrors.containsValue(
+                org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0)));
         assertTrue(errHandler.getWarnings().isEmpty());
 
         // reset the time to have the 'normal' behaviour again
@@ -851,18 +858,28 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
             // from default site
             checkSetLink("/sites/default", w, targetMacro, "/testfile-w.html", w);
-            checkSetLink("/sites/default", w, targetMacro, "http://localhost:8080/data/opencms/testfile-w.html", w);
-            checkSetLink("/sites/default", w, targetMacro, "/data/opencms/testfile-w.html", w);
-
-            checkSetLink("/sites/default", w, targetMacro, "http://localhost:8082/data/opencms/testfile-a.html", a);
+            checkSetLink(
+                "/sites/default",
+                w,
+                targetMacro,
+                "http://localhost:8080" + getVfsPrefix() + "/testfile-w.html",
+                w);
+            checkSetLink("/sites/default", w, targetMacro, getVfsPrefix() + "/testfile-w.html", w);
 
             checkSetLink(
                 "/sites/default",
                 w,
                 targetMacro,
-                "http://localhost:8080/data/opencms/system/testfile-system.html",
+                "http://localhost:8082" + getVfsPrefix() + "/testfile-a.html",
+                a);
+
+            checkSetLink(
+                "/sites/default",
+                w,
+                targetMacro,
+                "http://localhost:8080" + getVfsPrefix() + "/system/testfile-system.html",
                 r);
-            checkSetLink("/sites/default", w, targetMacro, "/data/opencms/system/testfile-system.html", r);
+            checkSetLink("/sites/default", w, targetMacro, getVfsPrefix() + "/system/testfile-system.html", r);
             checkSetLink("/sites/default", w, targetMacro, "/system/testfile-system.html", r);
 
             checkSetLink("/sites/default", w, targetMacro, "/shared/testfile-shared.html", s);
@@ -870,75 +887,115 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
                 "/sites/default",
                 w,
                 targetMacro,
-                "http://localhost:8080/data/opencms/shared/testfile-shared.html",
+                "http://localhost:8080" + getVfsPrefix() + "/shared/testfile-shared.html",
                 s);
-            checkSetLink("/sites/default", w, targetMacro, "/data/opencms/shared/testfile-shared.html", s);
+            checkSetLink("/sites/default", w, targetMacro, getVfsPrefix() + "/shared/testfile-shared.html", s);
 
             // from shared folder
 
             checkSetLink("/shared", s, targetMacro, "/testfile-shared.html", s);
-            checkSetLink("/shared", s, targetMacro, "http://localhost:8080/data/opencms/testfile-shared.html", s);
             checkSetLink(
                 "/shared",
                 s,
                 targetMacro,
-                "http://localhost:8080/data/opencms/shared/testfile-shared.html",
+                "http://localhost:8080" + getVfsPrefix() + "/testfile-shared.html",
                 s);
-            checkSetLink("/shared", s, targetMacro, "/data/opencms/shared/testfile-shared.html", s);
+            checkSetLink(
+                "/shared",
+                s,
+                targetMacro,
+                "http://localhost:8080" + getVfsPrefix() + "/shared/testfile-shared.html",
+                s);
+            checkSetLink("/shared", s, targetMacro, getVfsPrefix() + "/shared/testfile-shared.html", s);
 
-            checkSetLink("/shared", s, targetMacro, "http://localhost:8082/data/opencms/testfile-a.html", a);
-            checkSetLink("/shared", s, targetMacro, "http://localhost:8080/data/opencms/testfile-w.html", w);
+            checkSetLink("/shared", s, targetMacro, "http://localhost:8082" + getVfsPrefix() + "/testfile-a.html", a);
+            checkSetLink("/shared", s, targetMacro, "http://localhost:8080" + getVfsPrefix() + "/testfile-w.html", w);
 
             checkSetLink(
                 "/shared",
                 s,
                 targetMacro,
-                "http://localhost:8080/data/opencms/system/testfile-system.html",
+                "http://localhost:8080" + getVfsPrefix() + "/system/testfile-system.html",
                 r);
-            checkSetLink("/shared", s, targetMacro, "/data/opencms/system/testfile-system.html", r);
+            checkSetLink("/shared", s, targetMacro, getVfsPrefix() + "/system/testfile-system.html", r);
 
             // from root site
 
             checkSetLink("", r, targetMacro, "/shared/testfile-shared.html", s);
-            checkSetLink("", r, targetMacro, "http://localhost:8080/data/opencms/shared/testfile-shared.html", s);
+            checkSetLink(
+                "",
+                r,
+                targetMacro,
+                "http://localhost:8080" + getVfsPrefix() + "/shared/testfile-shared.html",
+                s);
             checkSetLink("", r, targetMacro, "/system/testfile-system.html", r);
-            checkSetLink("", r, targetMacro, "http://localhost:8080/data/opencms/system/testfile-system.html", r);
+            checkSetLink(
+                "",
+                r,
+                targetMacro,
+                "http://localhost:8080" + getVfsPrefix() + "/system/testfile-system.html",
+                r);
             checkSetLink("", r, targetMacro, "/sites/testsite/testfile-a.html", a);
-            checkSetLink("", r, targetMacro, "http://localhost:8080/data/opencms/sites/testsite/testfile-a.html", a);
+            checkSetLink(
+                "",
+                r,
+                targetMacro,
+                "http://localhost:8080" + getVfsPrefix() + "/sites/testsite/testfile-a.html",
+                a);
 
             // From testsite
 
-            checkSetLink("/sites/testsite", a, targetMacro, "http://localhost:8082/data/opencms/testfile-a.html", a);
+            checkSetLink(
+                "/sites/testsite",
+                a,
+                targetMacro,
+                "http://localhost:8082" + getVfsPrefix() + "/testfile-a.html",
+                a);
             checkSetLink("/sites/testsite", a, targetMacro, "/testfile-a.html", a);
-            checkSetLink("/sites/testsite", a, targetMacro, "http://localhost:8080/data/opencms/testfile-a.html", a);
-            checkSetLink("/sites/testsite", a, targetMacro, "http://localhost:8080/data/opencms/testfile-w.html", w);
+            checkSetLink(
+                "/sites/testsite",
+                a,
+                targetMacro,
+                "http://localhost:8080" + getVfsPrefix() + "/testfile-a.html",
+                a);
+            checkSetLink(
+                "/sites/testsite",
+                a,
+                targetMacro,
+                "http://localhost:8080" + getVfsPrefix() + "/testfile-w.html",
+                w);
             checkSetLink("/sites/testsite", a, targetMacro, "/shared/testfile-shared.html", s);
             checkSetLink(
                 "/sites/testsite",
                 a,
                 targetMacro,
-                "http://localhost:8080/data/opencms/shared/testfile-shared.html",
+                "http://localhost:8080" + getVfsPrefix() + "/shared/testfile-shared.html",
                 s);
             checkSetLink(
                 "/sites/testsite",
                 a,
                 targetMacro,
-                "http://localhost:8082/data/opencms/shared/testfile-shared.html",
+                "http://localhost:8082" + getVfsPrefix() + "/shared/testfile-shared.html",
                 s);
             checkSetLink("/sites/testsite", a, targetMacro, "/system/testfile-system.html", r);
             checkSetLink(
                 "/sites/testsite",
                 a,
                 targetMacro,
-                "http://localhost:8080/data/opencms/system/testfile-system.html",
+                "http://localhost:8080" + getVfsPrefix() + "/system/testfile-system.html",
                 r);
             checkSetLink(
                 "/sites/testsite",
                 a,
                 targetMacro,
-                "http://localhost:8082/data/opencms/system/testfile-system.html",
+                "http://localhost:8082" + getVfsPrefix() + "/system/testfile-system.html",
                 r);
-            checkSetLink("/sites/testsite", a, targetMacro, "http://localhost:8081/data/opencms/testfile-b.html", b);
+            checkSetLink(
+                "/sites/testsite",
+                a,
+                targetMacro,
+                "http://localhost:8081" + getVfsPrefix() + "/testfile-b.html",
+                b);
         }
     }
 
@@ -1066,6 +1123,18 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         cms.unlockResource(FILENAME2);
         OpenCms.getPublishManager().publishResource(cms, FILENAME2);
         OpenCms.getPublishManager().waitWhileRunning();
+    }
+
+    /**
+     * Initializes m_vfsPrefix lazily, otherwise it does not work.
+     * @return the VFS prefix as added to internal links
+     */
+    protected String getVfsPrefix() {
+
+        if (null == m_vfsPrefix) {
+            m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        }
+        return m_vfsPrefix;
     }
 
     /**

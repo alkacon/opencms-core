@@ -58,6 +58,9 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
 
     private static final String UTF8 = CmsEncoder.ENCODING_UTF_8;
 
+    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
+    private String m_vfsPrefix;
+
     /**
      * Default JUnit constructor.<p>
      *
@@ -518,7 +521,7 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
         CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
         assertTrue(table.getLink("link0").isInternal());
         assertEquals(
-            "English WRITTEN! Image <img alt=\"\" src=\"/data/opencms/test/image.gif\" />",
+            "English WRITTEN! Image <img alt=\"\" src=\"" + getVfsPrefix() + "/test/image.gif\" />",
             page.getStringValue(getCmsObject(), "body3", Locale.ENGLISH));
     }
 
@@ -548,7 +551,19 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
         CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
         assertTrue(table.getLink("link0").isInternal());
         assertEquals(
-            "English WRITTEN! Image <img alt=\"\" src=\"/data/opencms/test/image.gif\" />",
+            "English WRITTEN! Image <img alt=\"\" src=\"" + getVfsPrefix() + "/test/image.gif\" />",
             page.getStringValue(getCmsObject(), "body3", Locale.ENGLISH));
+    }
+
+    /**
+     * Initializes m_vfsPrefix lazily, otherwise it does not work.
+     * @return the VFS prefix as added to internal links
+     */
+    protected String getVfsPrefix() {
+
+        if (null == m_vfsPrefix) {
+            m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        }
+        return m_vfsPrefix;
     }
 }

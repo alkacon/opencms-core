@@ -61,6 +61,9 @@ import junit.framework.Test;
  */
 public class TestLiveConfig extends OpenCmsTestCase {
 
+    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
+    String m_vfsPrefix;
+
     /**
      * Test constructor.<p>
      *
@@ -137,7 +140,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         String rootPath = "/sites/bar/.content/blogentries/be_00001.xml";
         CmsResource res = rootCms().readResource(rootPath);
         String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
-        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        assertEquals("http://foo.org" + getVfsPrefix() + "/main/blog/" + res.getStructureId() + "/", link);
         System.out.println(link);
     }
 
@@ -157,7 +160,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         String rootPath = "/sites/bar/.content/blogentries/be_00002.xml";
         CmsResource res = rootCms().readResource(rootPath);
         String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
-        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        assertEquals("http://foo.org" + getVfsPrefix() + "/main/blog/" + res.getStructureId() + "/", link);
         System.out.println(link);
     }
 
@@ -175,7 +178,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         String rootPath = "/sites/foo/.content/blogentries/be_00001.xml";
         CmsResource res = rootCms().readResource(rootPath);
         String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
-        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        assertEquals("http://foo.org" + getVfsPrefix() + "/main/blog/" + res.getStructureId() + "/", link);
         System.out.println(link);
     }
 
@@ -643,6 +646,18 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Initializes m_vfsPrefix lazily, otherwise it does not work.
+     * @return the VFS prefix as added to internal links
+     */
+    protected String getVfsPrefix() {
+
+        if (null == m_vfsPrefix) {
+            m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        }
+        return m_vfsPrefix;
+    }
+
+    /**
      * Helper method for creating a list of given elements.<p>
      *
      * @param elems the elements
@@ -717,5 +732,4 @@ public class TestLiveConfig extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("");
         return cms;
     }
-
 }

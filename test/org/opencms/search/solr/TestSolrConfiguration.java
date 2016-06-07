@@ -72,6 +72,9 @@ import junit.framework.TestSuite;
  */
 public class TestSolrConfiguration extends OpenCmsTestCase {
 
+    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
+    private String m_vfsPrefix;
+
     /**
      * Default JUnit constructor.<p>
      *
@@ -216,7 +219,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         CmsSolrResultList results = index.search(cms, query);
         CmsSearchResource res = AllTests.getByPath(results, "/sites/default/xmlcontent/article_0001.html");
         String link = res.getDocument().getFieldValueAsString("link");
-        assertEquals("/data/opencms/xmlcontent/article_0001.html", link);
+        assertEquals(getVfsPrefix() + "/xmlcontent/article_0001.html", link);
     }
 
     /**
@@ -340,5 +343,17 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         assertTrue(
             "The index folder must be deleted, otherwise some index lock may have prevent a successful purge.",
             !new File(index.getPath()).exists());
+    }
+
+    /**
+     * Initializes m_vfsPrefix lazily, otherwise it does not work.
+     * @return the VFS prefix as added to internal links
+     */
+    protected String getVfsPrefix() {
+
+        if (null == m_vfsPrefix) {
+            m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        }
+        return m_vfsPrefix;
     }
 }
