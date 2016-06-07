@@ -265,6 +265,10 @@ public class CmsLinkManager {
         if (path.startsWith(context + "/")) {
             return path.substring(context.length());
         }
+        String renderPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        if (path.startsWith(renderPrefix + "/")) {
+            return path.substring(renderPrefix.length());
+        }
         return path;
     }
 
