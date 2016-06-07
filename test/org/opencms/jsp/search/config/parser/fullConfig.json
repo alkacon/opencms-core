@@ -1,0 +1,62 @@
+{
+	"core" : "Solr Test Core",
+	"index" : "Solr Test Index",
+	"searchforemptyquery" : false,
+	"ignorequery" : true,
+	"ignoreReleaseDate" : true,
+	"ignoreExpirationDate" : true,
+	"querymodifier" : "content_en:%(query) OR content_de:%(query) OR spell:%(query) OR Title_prop:%(query)",
+	"queryparam" : "querytest",
+	"lastqueryparam" : "lastquerytest",
+	"escapequerychars" : true,
+	"reloadedparam" : "reloadedparam",
+	"extrasolrparams" : "fq=type:plain",
+	"additionalrequestparams" : [
+		{ "param" : "p1", "solrquery" : "fq=lastmodified:[%(value) TO *]" }, 
+		{ "param" : "p2", "solrquery" : "fq=%(value)" }
+	],
+	"pageparam" : "pageparam",
+	"pagesize" : 20,
+	"pagenavlength" : 9,
+	"sortby" : "sortparam",
+	"sortoptions" : [
+		{"label" : "lastmodified descending", "paramvalue" : "sort1", "solrvalue" : "lastmodified desc" },
+		{"solrvalue" : "lastmodified desc" }
+	],
+	"fieldfacets" : [
+		{ "field" : "category_exact", "name" : "category", "label" : "Categories", "mincount" : 1, "limit" : 6, "prefix" : "location/", "order" : "index", "filterquerymodifier" : "nonsense - %(value)", "isAndFacet" : "true", "preselection" : [ "location/europe/", "topic/" ] , "ignoreAllFacetFilters" : true },
+		{ "field" : "Keywords" }
+	],
+	"rangefacets" : [
+		{ "range" : "lastmodified", "name" : "modification", "label" : "Date lastmodified", "start" : "NOW/MONTH-20MONTHS", "end" : "NOW/MONTH", "gap" : "+1MONTHS", "other" : ["before", "after", "between", "all", "none"], "hardend" : false, "mincount" : 1, "isAndFacet" : true, "preselection" : [ "2015-01-01T00:00:00Z", "2016-01-01T00:00:00Z"  ], "ignoreAllFacetFilters" : true },
+		{ "range" : "size", "start" : "0", "end" : "1000000", "gap" : "1000" }
+	],
+	"queryfacet" : {
+		"queryitems" : [
+				{ "query" : "created:[* TO NOW-1YEARS]", "label" : "older than one year" },
+				{ "query" : "created:[* TO NOW-1MONTHS]", "label" : "older than one month" },
+				{ "query" : "created:[NOW-1MONTH TO NOW]" }
+			],
+		"label" : "Creation date",
+		"isAndFacet" : true,
+		"preselection" : [ "created:[NOW-1MONTH TO NOW]", "created:[* TO NOW-1MONTHS]" ],
+		"ignoreAllFacetFilters" : true
+	},
+	"highlighter" : {
+		"field" : "content_en",
+		"snippets" : 2,
+		"fragsize" : 123,
+		"alternateField" : "content",
+		"maxAlternateFieldLength" : 124,
+		"simple.pre" : "<strong>",
+		"simple.post" : "</strong>",
+		"formatter" : "simple",
+		"fragmenter" : "gap",
+		"useFastVectorHighlighting" : true
+	},
+	"didYouMean" : {
+		"didYouMeanQueryParam" : "dymparam",
+		"didYouMeanCollate" : false,
+		"didYouMeanCount" : 7
+	}	
+}
