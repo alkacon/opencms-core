@@ -47,6 +47,7 @@ writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'admintoolh
 			<resource uri="/system/workplace/admin/accounts/accman_users.jsp"/>
 			<resource uri="/system/workplace/admin/accounts/account_managers.jsp"/>
 			<resource uri="/system/workplace/admin/accounts/all_groups_list.jsp"/>
+			<resource uri="/system/workplace/admin/accounts/all_permissions.jsp"/>
 			<resource uri="/system/workplace/admin/accounts/all_users_list.jsp"/>
 			<resource uri="/system/workplace/admin/accounts/group_delete.jsp"/>
 			<resource uri="/system/workplace/admin/accounts/group_edit.jsp"/>
@@ -113,7 +114,7 @@ writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'admintoolh
 			<resource uri="/system/workplace/resources/tools/accounts/icons/big/group_delete.png"/>
 			<resource uri="/system/workplace/resources/tools/accounts/icons/big/imexport.png"/>
 			<resource uri="/system/workplace/resources/tools/accounts/icons/big/import_csv.png"/>
-			<resource uri="/system/workplace/resources/tools/accounts/icons/big/pemissions.png"/>
+			<resource uri="/system/workplace/resources/tools/accounts/icons/big/permissions.png"/>
 			<resource uri="/system/workplace/resources/tools/accounts/icons/big/role.png"/>
 			<resource uri="/system/workplace/resources/tools/accounts/icons/big/role_add.png"/>
 			<resource uri="/system/workplace/resources/tools/accounts/icons/big/unit.png"/>
@@ -293,6 +294,55 @@ writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'admintoolh
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/all_permissions.jsp</source>
+			<destination>system/workplace/admin/accounts/all_permissions.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>b3ca7d4c-5079-42f7-ae2a-7b37453053ec</uuidstructure>
+			<uuidresource>e15f0034-156e-48ab-9206-918323b052b8</uuidresource>
+			<datecreated>Thu, 31 Mar 2011 15:03:43 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_ALLPERMISSIONS_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/permissions.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_ALLPERMISSIONS_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[40]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ALLPERMISSIONS_TOOL_NAME_0}:${key.GUI_ALLPERMISSIONS_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Title - all permissions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial|path:/accounts/orgunit/allpermissions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -2559,7 +2609,7 @@ writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'admintoolh
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[pemissions]]></value>
+					<value><![CDATA[Permissions]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>

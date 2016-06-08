@@ -29,14 +29,14 @@ writeProperty '/system/workplace/admin/workplace/logfileview/' 'Title' 'View log
 writeProperty '/system/workplace/admin/workplace/logfileview/' 'admintoolhandler-class' 'org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler'
 writeProperty '/system/workplace/admin/workplace/logfileview/' 'default-file' 'index.jsp'
 
-writeProperty '/system/workplace/admin/workplace/logfileview/' 'Description' '${key.GUI_WORKPLACE_LOGGING_HELP_0}'
-writeProperty '/system/workplace/admin/workplace/logfileview/' 'NavImage' 'tools/workplace/icons/big/log_preferences.png'
-writeProperty '/system/workplace/admin/workplace/logfileview/' 'NavInfo' '${key.GUI_WORKPLACE_BASIC_GROUP_0}'
-writeProperty '/system/workplace/admin/workplace/logfileview/' 'NavPos' '4.0'
-writeProperty '/system/workplace/admin/workplace/logfileview/' 'NavText' '${key.GUI_WORKPLACE_LOGGING_NAME_0}'
-writeProperty '/system/workplace/admin/workplace/logfileview/' 'Title' 'View log set'
-writeProperty '/system/workplace/admin/workplace/logfileview/' 'admintoolhandler-class' 'org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler'
-writeProperty '/system/workplace/admin/workplace/logfileview/' 'default-file' 'index.jsp'
+writeProperty '/system/workplace/admin/workplace/logging/' 'Description' '${key.GUI_WORKPLACE_LOGGING_HELP_0}'
+writeProperty '/system/workplace/admin/workplace/logging/' 'NavImage' 'tools/workplace/icons/big/log_preferences.png'
+writeProperty '/system/workplace/admin/workplace/logging/' 'NavInfo' '${key.GUI_WORKPLACE_BASIC_GROUP_0}'
+writeProperty '/system/workplace/admin/workplace/logging/' 'NavPos' '4.0'
+writeProperty '/system/workplace/admin/workplace/logging/' 'NavText' '${key.GUI_WORKPLACE_LOGGING_NAME_0}'
+writeProperty '/system/workplace/admin/workplace/logging/' 'Title' 'View log set'
+writeProperty '/system/workplace/admin/workplace/logging/' 'admintoolhandler-class' 'org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler'
+writeProperty '/system/workplace/admin/workplace/logging/' 'default-file' 'index.jsp'
 		]]></import-script>
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains the OpenCms Workplace maintenance tools.</p>
@@ -70,7 +70,7 @@ writeProperty '/system/workplace/admin/workplace/logfileview/' 'default-file' 'i
 			<resource uri="/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp"/>
 			<resource uri="/system/workplace/admin/workplace/logfileview/index.jsp"/>
 			<resource uri="/system/workplace/admin/workplace/logfileview/logfileViewSettings.jsp"/>
-      <resource uri="/system/workplace/admin/workplace/logging/index.jsp"/>
+      		<resource uri="/system/workplace/admin/workplace/logging/index.jsp"/>
 			<resource uri="/system/workplace/resources/tools/workplace/buttons/message_notpending.png"/>
 			<resource uri="/system/workplace/resources/tools/workplace/buttons/message_pending.png"/>
 			<resource uri="/system/workplace/resources/tools/workplace/buttons/multi_send_email.png"/>
