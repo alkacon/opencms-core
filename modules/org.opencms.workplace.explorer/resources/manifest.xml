@@ -1218,7 +1218,27 @@ writeProperty '/system/workplace/explorer/' 'default-file' '/system/workplace/vi
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/views/explorer/directEdit.jsp</source>
+			<source>system/workplace/views/explorer/explorer_fs.jsp</source>
+			<destination>system/workplace/views/explorer/explorer_fs.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c7a55558-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>e3bdbb1e-f058-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Explorer Frameset Definition]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/views/explorer/directEdit.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>71f77f05-7555-11e0-91f8-0d09f51b8a5a</uuidstructure>
@@ -1275,26 +1295,6 @@ writeProperty '/system/workplace/explorer/' 'default-file' '/system/workplace/vi
 				<property>
 					<name>stream</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/views/explorer/explorer_fs.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>c7a55558-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>e3bdbb1e-f058-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Explorer Frameset Definition]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>

@@ -556,7 +556,7 @@ writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'admintoolh
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/pemissions.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/permissions.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1812,7 +1812,7 @@ writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'admintoolh
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/pemissions.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/permissions.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -2549,8 +2549,8 @@ writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'admintoolh
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/accounts/icons/big/pemissions.png</source>
-			<destination>system/workplace/resources/tools/accounts/icons/big/pemissions.png</destination>
+			<source>system/workplace/resources/tools/accounts/icons/big/permissions.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/permissions.png</destination>
 			<type>image</type>
 			<uuidstructure>762ed41f-5c59-11e0-931f-e56374e618d7</uuidstructure>
 			<uuidresource>762ed420-5c59-11e0-931f-e56374e618d7</uuidresource>
