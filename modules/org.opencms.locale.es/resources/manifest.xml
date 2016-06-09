@@ -18,7 +18,7 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<description><![CDATA[<p>This module contains the Spanish language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the Spanish version of the OpenCms Workplace.</p>
 <p><i>&copy; 2016 by OpenCms Hispano (http://www.opencmshispano.com).</i></p>]]></description>
-		<version>9.5.2</version>
+		<version>10.0.1</version>
 		<authorname><![CDATA[OpenCms Hispano]]></authorname>
 		<authoremail><![CDATA[info@opencmshispano.es]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -58,8 +58,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages</destination>
 			<type>folder</type>
-			<uuidstructure>d6e69fe5-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9dbfe9c4-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -68,8 +68,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org</destination>
 			<type>folder</type>
-			<uuidstructure>d6edcbd7-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9dc14956-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -78,8 +78,208 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms</destination>
 			<type>folder</type>
-			<uuidstructure>d6f768c9-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9dc233b8-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade</destination>
+			<type>folder</type>
+			<uuidstructure>9e238d3a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/config</destination>
+			<type>folder</type>
+			<uuidstructure>9e890665-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/config/workplace_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/config/workplace_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e8a3ee7-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e8a3ee8-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/containerpage</destination>
+			<type>folder</type>
+			<uuidstructure>9e942a07-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/containerpage/clientmessages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/containerpage/clientmessages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e95b0a9-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e95b0aa-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/containerpage/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/containerpage/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e97ac7c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e97ac7d-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/detailpage</destination>
+			<type>folder</type>
+			<uuidstructure>9e855ce0-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/detailpage/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/detailpage/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e8731a2-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e8731a3-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/galleries</destination>
+			<type>folder</type>
+			<uuidstructure>9e8f47ff-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/galleries/clientmessages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/galleries/clientmessages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e90f5b1-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e90f5b2-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/galleries/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/galleries/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e927c54-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e927c55-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/publish</destination>
+			<type>folder</type>
+			<uuidstructure>9e995a2f-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/publish/clientmessages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/publish/clientmessages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e9b07e1-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e9b07e2-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/publish/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/publish/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e9c8e84-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e9c8e85-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/sitemap</destination>
+			<type>folder</type>
+			<uuidstructure>9e81653b-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/sitemap/clientmessages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/sitemap/clientmessages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e83881d-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e83881e-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/upload</destination>
+			<type>folder</type>
+			<uuidstructure>9e8c13aa-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/ade/upload/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/ade/upload/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e8dc15c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e8dc15d-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -88,8 +288,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/cache</destination>
 			<type>folder</type>
-			<uuidstructure>d6fc23bb-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e1fe3b5-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -99,9 +299,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/cache/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/cache/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7034fad-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7034fae-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e216a57-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e216a58-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -110,8 +310,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/configuration</destination>
 			<type>folder</type>
-			<uuidstructure>d70a7b9f-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e1cfd80-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -121,9 +321,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/configuration/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/configuration/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7166281-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7166282-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e1e5d12-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e1e5d13-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -132,8 +332,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/db</destination>
 			<type>folder</type>
-			<uuidstructure>d71d8e73-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e192ceb-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -143,24 +343,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/db/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/db/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d730a14a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d730a14b-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e1b01ad-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e1b01ae-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/db/generic</destination>
 			<type>folder</type>
-			<uuidstructure>d724ba65-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e7e30e6-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -170,24 +365,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/db/generic/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/db/generic/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7297557-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7297558-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e7f9078-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e7f9079-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/editors</destination>
 			<type>folder</type>
-			<uuidstructure>d737cd3d-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:21 GMT</datecreated>
+			<uuidstructure>9e17cd59-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -196,8 +386,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/editors/fckeditor</destination>
 			<type>folder</type>
-			<uuidstructure>d741431f-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e7ad581-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -207,9 +397,31 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/editors/fckeditor/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/editors/fckeditor/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d745fe11-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d745fe12-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e7c8333-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e7c8334-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/editors/htmlarea</destination>
+			<type>folder</type>
+			<uuidstructure>9e777a1c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/editors/htmlarea/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/editors/htmlarea/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e7900be-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e7900bf-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -218,8 +430,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/file</destination>
 			<type>folder</type>
-			<uuidstructure>d78b4473-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e144ae4-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -229,9 +441,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/file/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/file/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7bf9aed-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7bf9aee-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e15f896-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e15f897-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -240,8 +452,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/file/collectors</destination>
 			<type>folder</type>
-			<uuidstructure>d7a55c25-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e74baf7-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -251,9 +463,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/file/collectors/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/file/collectors/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7aa3e27-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7aa3e28-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e75f379-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e75f37a-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -262,8 +474,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/file/types</destination>
 			<type>folder</type>
-			<uuidstructure>d7b16a19-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e71fbd2-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -273,9 +485,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/file/types/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/file/types/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7badffb-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7badffc-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e730d44-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e730d45-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -284,8 +496,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/flex</destination>
 			<type>folder</type>
-			<uuidstructure>d7c937df-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e118cbf-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -295,9 +507,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/flex/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/flex/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7cdf2d1-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7cdf2d2-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e12c441-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e12c442-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -306,8 +518,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/frontend</destination>
 			<type>folder</type>
-			<uuidstructure>d7d51ec3-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:22 GMT</datecreated>
+			<uuidstructure>9e0fdf0d-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -316,8 +528,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/frontend/layoutpage</destination>
 			<type>folder</type>
-			<uuidstructure>d7dc4ab5-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e6e524d-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -327,9 +539,31 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/frontend/layoutpage/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/frontend/layoutpage/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7e105a7-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7e105a8-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e6fd8ef-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e6fd8f0-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/frontend/photoalbum</destination>
+			<type>folder</type>
+			<uuidstructure>9e6b6c18-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/frontend/photoalbum/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/frontend/photoalbum/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e6d19ca-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e6d19cb-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -338,8 +572,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/frontend/templateone</destination>
 			<type>folder</type>
-			<uuidstructure>d7e83199-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e6837c3-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -349,24 +583,41 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/frontend/templateone/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/frontend/templateone/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8072b4f-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8072b50-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e6a3395-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e6a3396-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/frontend/templateone/form</destination>
+			<type>folder</type>
+			<uuidstructure>9edc5609-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/frontend/templateone/form/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/frontend/templateone/form/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9edd8e8b-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9edd8e8c-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/frontend/templateone/modules</destination>
 			<type>folder</type>
-			<uuidstructure>d7f1a77b-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9ed9bdf4-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -376,9 +627,43 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/frontend/templateone/modules/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/frontend/templateone/modules/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d7f8d36d-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d7f8d36e-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9edaf676-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9edaf677-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/gwt</destination>
+			<type>folder</type>
+			<uuidstructure>9dc36c3a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/gwt/clientmessages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/gwt/clientmessages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9dc5680c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dc5680d-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/gwt/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/gwt/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9dc7d90f-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dc7d910-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -387,8 +672,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/i18n</destination>
 			<type>folder</type>
-			<uuidstructure>d810c842-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e0d1fe8-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -398,9 +683,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/i18n/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/i18n/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8158334-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8158335-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e0e7f7a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e0e7f7b-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -409,8 +694,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/importexport</destination>
 			<type>folder</type>
-			<uuidstructure>d81caf26-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e0a60c3-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -420,24 +705,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/importexport/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/importexport/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8216a18-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8216a19-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e0b9945-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e0b9946-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/jsp</destination>
 			<type>folder</type>
-			<uuidstructure>d828960b-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e07537e-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -447,24 +727,53 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/jsp/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/jsp/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d83ba7e2-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d83ba7e3-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e08b310-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e08b311-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[message properties]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/jsp/decorator</destination>
+			<type>folder</type>
+			<uuidstructure>9e62926e-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/jsp/decorator/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/jsp/decorator/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e644020-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e644021-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/jsp/util</destination>
 			<type>folder</type>
-			<uuidstructure>d8320bed-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e5c77e6-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/jsp/util/errorpage.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/jsp/util/errorpage.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9e5e4ca8-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e5e4ca9-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -474,24 +783,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/jsp/util/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/jsp/util/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d836edef-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d836edf0-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e60969b-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e60969c-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/loader</destination>
 			<type>folder</type>
-			<uuidstructure>d8451dc5-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e046d49-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -501,9 +805,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/loader/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/loader/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d849ffc7-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d849ffc8-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e05ccdb-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e05ccdc-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -512,8 +816,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/lock</destination>
 			<type>folder</type>
-			<uuidstructure>d85375a9-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e018714-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -523,9 +827,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/lock/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/lock/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d85aa19b-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d85aa19c-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e02e6a6-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e02e6a7-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -534,8 +838,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/mail</destination>
 			<type>folder</type>
-			<uuidstructure>d85f5c8d-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9dfe79cf-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -545,9 +849,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/mail/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/mail/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d866887f-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8668880-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9e002781-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e002782-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -556,8 +860,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/main</destination>
 			<type>folder</type>
-			<uuidstructure>d86db471-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:23 GMT</datecreated>
+			<uuidstructure>9dfb939a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -567,24 +871,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/main/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/main/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8726f63-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8726f64-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9dfd1a3c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dfd1a3d-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/module</destination>
 			<type>folder</type>
-			<uuidstructure>d87c0c56-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9df85f45-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -594,24 +893,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/module/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/module/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d880c748-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d880c749-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9df9bed7-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9df9bed8-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/monitor</destination>
 			<type>folder</type>
-			<uuidstructure>d88a3d2b-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9df55200-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -621,9 +915,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/monitor/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/monitor/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d88f1f2d-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d88f1f2e-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9df6d8a2-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9df6d8a3-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -632,8 +926,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/notification</destination>
 			<type>folder</type>
-			<uuidstructure>d893da1f-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9df26bcb-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -643,24 +937,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/notification/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/notification/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d89b0611-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d89b0612-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9df3cb5d-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9df3cb5e-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/publish</destination>
 			<type>folder</type>
-			<uuidstructure>d8a23204-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9def3776-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -670,9 +959,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/publish/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/publish/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8a6ecf6-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8a6ecf7-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9df10c38-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9df10c39-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -681,8 +970,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/relations</destination>
 			<type>folder</type>
-			<uuidstructure>d8ae18e8-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9dec5141-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -692,9 +981,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/relations/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/relations/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8b544da-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8b544db-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9dedb0d3-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dedb0d4-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -703,8 +992,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/report</destination>
 			<type>folder</type>
-			<uuidstructure>d8b9ffcc-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9de9921c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -714,24 +1003,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/report/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/report/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8c12bbe-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8c12bbf-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9deaf1ae-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9deaf1af-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/scheduler</destination>
 			<type>folder</type>
-			<uuidstructure>d8c857b1-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9de6fa07-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -741,9 +1025,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/scheduler/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/scheduler/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8db6a88-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8db6a89-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9de85999-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9de8599a-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -752,8 +1036,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/scheduler/jobs</destination>
 			<type>folder</type>
-			<uuidstructure>d8cf83a3-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9e5a2df1-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -763,24 +1047,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/scheduler/jobs/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/scheduler/jobs/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8d43e95-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8d43e96-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9e5b3f63-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e5b3f64-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/search</destination>
 			<type>folder</type>
-			<uuidstructure>d8e4e06a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9de43ae2-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -790,24 +1069,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/search/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/search/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8fcae30-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8fcae31-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9de59a74-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9de59a75-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/search/documents</destination>
 			<type>folder</type>
-			<uuidstructure>d8ee7d5c-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9e5747bc-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -817,9 +1091,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/search/documents/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/search/documents/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d8f3384e-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d8f3384f-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9e58a74e-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e58a74f-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -828,8 +1102,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/security</destination>
 			<type>folder</type>
-			<uuidstructure>d903da23-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:24 GMT</datecreated>
+			<uuidstructure>9de1c9dd-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -839,9 +1113,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/security/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/security/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d90b0615-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d90b0616-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9de2db4f-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9de2db50-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -850,8 +1124,20 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/setup</destination>
 			<type>folder</type>
-			<uuidstructure>d914a307-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dddd235-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/setup/htmlmsg.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/setup/htmlmsg.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9de06a4a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9de06a4b-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -861,9 +1147,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/setup/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/setup/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d929ffcd-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d929ffce-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9ddf0ab7-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ddf0ab8-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -872,8 +1158,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/setup/xml</destination>
 			<type>folder</type>
-			<uuidstructure>d91bcef9-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9e54d6b7-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -883,9 +1169,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/setup/xml/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/setup/xml/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d92544db-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d92544dc-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9e560f39-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e560f3a-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -894,8 +1180,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/site</destination>
 			<type>folder</type>
-			<uuidstructure>d9312bbf-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9ddb1310-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -905,9 +1191,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/site/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/site/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d935e6b1-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d935e6b2-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9ddc72a2-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ddc72a3-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -916,8 +1202,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/staticexport</destination>
 			<type>folder</type>
-			<uuidstructure>d93d12a3-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dd8a20b-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -927,24 +1213,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/staticexport/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/staticexport/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d941f4a5-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d941f4a6-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dd9da8d-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dd9da8e-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/synchronize</destination>
 			<type>folder</type>
-			<uuidstructure>d948f988-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dd609f6-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -954,24 +1235,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/synchronize/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/synchronize/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d94ddb8a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d94ddb8b-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dd74278-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dd74279-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/util</destination>
 			<type>folder</type>
-			<uuidstructure>d957516d-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dd2fcb1-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -981,9 +1257,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/util/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/util/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d95c0c5f-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d95c0c60-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dd4aa63-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dd4aa64-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -992,8 +1268,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/widgets</destination>
 			<type>folder</type>
-			<uuidstructure>d9633851-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dcfc85c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1003,9 +1279,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/widgets/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/widgets/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d96a6443-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d96a6444-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dd1760e-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dd1760f-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1014,8 +1290,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>d9740135-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9dcc9407-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1025,24 +1301,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db3b5447-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db3b5448-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9dce1aa9-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dce1aaa-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/administration</destination>
 			<type>folder</type>
-			<uuidstructure>d97d7717-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9e5265b2-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1052,24 +1323,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/administration/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/administration/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d984a309-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d984a30a-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9e539e34-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e539e35-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/commons</destination>
 			<type>folder</type>
-			<uuidstructure>d99089ec-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9e4fa68d-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1079,24 +1345,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/commons/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/commons/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d997b5de-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d997b5df-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9e51061f-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e510620-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/comparison</destination>
 			<type>folder</type>
-			<uuidstructure>d99ee1d1-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:25 GMT</datecreated>
+			<uuidstructure>9e4bfd08-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1106,24 +1367,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/comparison/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/comparison/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d9a39cc3-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d9a39cc4-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e4df8da-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e4df8db-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/demos</destination>
 			<type>folder</type>
-			<uuidstructure>d9ad39b6-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e4916d3-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1133,9 +1389,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/demos/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/demos/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d9cc3370-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d9cc3371-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e4a4f55-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e4a4f56-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1144,8 +1400,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/demos/list</destination>
 			<type>folder</type>
-			<uuidstructure>d9b1f4a8-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9ed725df-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1155,9 +1411,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/demos/list/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/demos/list/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d9b9209a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d9b9209b-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9ed88571-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ed88572-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1166,8 +1422,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/demos/widget</destination>
 			<type>folder</type>
-			<uuidstructure>d9c04c8c-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9ed3f18a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1177,9 +1433,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/demos/widget/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/demos/widget/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d9c5077e-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d9c5077f-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9ed5511c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ed5511d-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1188,8 +1444,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/editors</destination>
 			<type>folder</type>
-			<uuidstructure>d9d0ee62-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e4657ae-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1199,9 +1455,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/editors/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/editors/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d9e40138-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d9e40139-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e479030-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e479031-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1210,8 +1466,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/editors/fckeditor</destination>
 			<type>folder</type>
-			<uuidstructure>d9d5a954-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9ed13265-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1221,9 +1477,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/editors/fckeditor/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/editors/fckeditor/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d9dcd546-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d9dcd547-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9ed291f7-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ed291f8-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1232,8 +1488,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/explorer</destination>
 			<type>folder</type>
-			<uuidstructure>d9eb2d2a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e432359-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1243,9 +1499,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/explorer/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/explorer/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d9fe4000-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d9fe4001-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e44d10b-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e44d10c-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1254,8 +1510,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/explorer/menu</destination>
 			<type>folder</type>
-			<uuidstructure>d9f2591c-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9ece2520-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1265,9 +1521,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/explorer/menu/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/explorer/menu/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d9f7140e-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>d9f7140f-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9ecfd2d2-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ecfd2d3-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1276,8 +1532,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/galleries</destination>
 			<type>folder</type>
-			<uuidstructure>da02faf2-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e3fc7f4-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1287,9 +1543,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/galleries/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/galleries/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da07b5e4-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da07b5e5-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e419cb6-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e419cb7-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1298,8 +1554,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/help</destination>
 			<type>folder</type>
-			<uuidstructure>da0ee1d6-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e3cbaaf-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1309,24 +1565,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/help/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/help/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da160dc8-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da160dc9-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e3e4151-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e3e4152-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/list</destination>
 			<type>folder</type>
-			<uuidstructure>da1faabb-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e39383a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1336,24 +1587,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/list/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/list/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da29209d-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da29209e-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e3ae5ec-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e3ae5ed-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/search</destination>
 			<type>folder</type>
-			<uuidstructure>da32bd90-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e35dcd5-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1363,24 +1609,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/search/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/search/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da377882-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da377883-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:26 GMT</datecreated>
+			<uuidstructure>9e376377-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e376378-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[messages_de]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/threads</destination>
 			<type>folder</type>
-			<uuidstructure>da3ea475-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9e32cf90-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1390,24 +1631,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/threads/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/threads/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da435f67-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da435f68-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9e345632-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e345633-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools</destination>
 			<type>folder</type>
-			<uuidstructure>da4cfc5a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9e2fc24b-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1417,24 +1653,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db342854-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db342855-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e3148ed-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e3148ee-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/accounts</destination>
 			<type>folder</type>
-			<uuidstructure>da51b74c-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ec60ec6-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1444,9 +1675,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/accounts/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/accounts/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da5b2d2e-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da5b2d2f-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ec76e58-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ec76e59-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1455,8 +1686,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/cache</destination>
 			<type>folder</type>
-			<uuidstructure>da600f30-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ec2171e-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1466,9 +1697,21 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/cache/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/cache/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da64ca22-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da64ca23-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ec376b0-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ec376b1-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/cache/workplace_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/cache/workplace_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9ec4d643-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ec4d644-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1477,8 +1720,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/content</destination>
 			<type>folder</type>
-			<uuidstructure>da6bf614-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ebf09d9-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1488,24 +1731,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/content/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/content/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da8152db-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da8152dc-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ec0b78b-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ec0b78c-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/content/check</destination>
 			<type>folder</type>
-			<uuidstructure>da732206-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ee4ba88-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1515,24 +1753,41 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/content/check/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/content/check/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da77dcf8-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da77dcf9-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ee6412a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ee6412b-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/content/check/accounts</destination>
+			<type>folder</type>
+			<uuidstructure>9ee7eedd-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/content/check/accounts/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/content/check/accounts/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9ee9757f-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ee97580-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/database</destination>
 			<type>folder</type>
-			<uuidstructure>da887ece-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ebc23a4-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1542,24 +1797,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/database/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/database/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>da8faac0-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>da8faac1-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9ebd8336-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ebd8337-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/galleryoverview</destination>
 			<type>folder</type>
-			<uuidstructure>da96d6b3-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9eb87b1f-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1569,9 +1819,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/galleryoverview/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/galleryoverview/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>daa04c95-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>daa04c96-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9eba27d1-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9eba27d2-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1580,8 +1830,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/history</destination>
 			<type>folder</type>
-			<uuidstructure>daa77887-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9eb5e30a-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1591,24 +1841,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/history/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/history/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>daac5a89-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>daac5a8a-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9eb71b8c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9eb71b8d-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/link</destination>
 			<type>folder</type>
-			<uuidstructure>dab5d06c-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9eb2aeb5-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1618,24 +1863,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/link/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/link/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>dabf6d5e-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>dabf6d5f-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9eb45c67-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9eb45c68-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/modules</destination>
 			<type>folder</type>
-			<uuidstructure>dac8e341-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9eaeb710-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1645,24 +1885,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/modules/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/modules/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>dacd9e33-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>dacd9e34-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:27 GMT</datecreated>
+			<uuidstructure>9eb10102-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9eb10103-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/projects</destination>
 			<type>folder</type>
-			<uuidstructure>dad4ca26-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9eab0d8b-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1672,9 +1907,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/projects/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/projects/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>dadbf618-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>dadbf619-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9eace24d-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9eace24e-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1683,8 +1918,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/publishqueue</destination>
 			<type>folder</type>
-			<uuidstructure>dae0b10a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ea78b16-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1694,9 +1929,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/publishqueue/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/publishqueue/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>daef08ec-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>daef08ed-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ea938c8-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ea938c9-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1705,8 +1940,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/scheduler</destination>
 			<type>folder</type>
-			<uuidstructure>daf634de-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ea4a4e1-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1716,24 +1951,19 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/scheduler/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/scheduler/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>dafaefd0-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>dafaefd1-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ea62b83-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ea62b84-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/searchindex</destination>
 			<type>folder</type>
-			<uuidstructure>db021bc3-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ea1497c-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1743,24 +1973,41 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/searchindex/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/searchindex/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db0947b5-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db0947b6-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ea2d01e-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ea2d01f-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/sites</destination>
+			<type>folder</type>
+			<uuidstructure>9ec8f4fb-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/sites/messages_es.properties</source>
+			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/sites/messages_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9eca548d-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9eca548e-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>db1073a8-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e9e3c37-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1770,9 +2017,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db2cfc62-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db2cfc63-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e9fc2d9-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e9fc2da-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:31 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1781,8 +2028,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace/broadcast</destination>
 			<type>folder</type>
-			<uuidstructure>db179f9a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ee1fb63-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1792,9 +2039,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace/broadcast/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace/broadcast/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db1c5a8c-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db1c5a8d-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ee333e5-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ee333e6-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1803,8 +2050,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace/rfsfile</destination>
 			<type>folder</type>
-			<uuidstructure>db21157e-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9edf152e-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1814,9 +2061,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace/rfsfile/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/workplace/tools/workplace/rfsfile/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db284170-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db284171-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9ee09bd0-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9ee09bd1-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:32 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1825,8 +2072,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/xml</destination>
 			<type>folder</type>
-			<uuidstructure>db42803a-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9dc938a2-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1836,9 +2083,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/xml/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/xml/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db6fd0d8-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db6fd0d9-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:29 GMT</datecreated>
+			<uuidstructure>9dcabf44-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9dcabf45-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1847,8 +2094,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/xml/content</destination>
 			<type>folder</type>
-			<uuidstructure>db49ac2c-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e2c8df6-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1858,9 +2105,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/xml/content/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/xml/content/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db50d81e-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db50d81f-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e2e1498-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e2e1499-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1869,8 +2116,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/xml/page</destination>
 			<type>folder</type>
-			<uuidstructure>db559210-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e2959a1-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1880,9 +2127,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/xml/page/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/xml/page/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db5f07f2-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db5f07f3-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e2b0753-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e2b0754-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1891,8 +2138,8 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<file>
 			<destination>system/workplace/locales/es/messages/org/opencms/xml/types</destination>
 			<type>folder</type>
-			<uuidstructure>db63e9f4-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e253aec-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1902,9 +2149,9 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 			<source>system/workplace/locales/es/messages/org/opencms/xml/types/messages_es.properties</source>
 			<destination>system/workplace/locales/es/messages/org/opencms/xml/types/messages_es.properties</destination>
 			<type>plain</type>
-			<uuidstructure>db6b15e6-386a-11dd-b6aa-111d34530985</uuidstructure>
-			<uuidresource>db6b15e7-386a-11dd-b6aa-111d34530985</uuidresource>
-			<datecreated>Thu, 12 Jun 2008 10:32:28 GMT</datecreated>
+			<uuidstructure>9e275dce-2e20-11e6-9187-79ccfd198777</uuidstructure>
+			<uuidresource>9e275dcf-2e20-11e6-9187-79ccfd198777</uuidresource>
+			<datecreated>Thu, 09 Jun 2016 09:00:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
