@@ -236,12 +236,12 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                         I_CmsResourceType containerType = OpenCms.getResourceManager().getResourceType(
                             org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME);
                         CmsResource modelPage = cms.createResource(newFolder.getRootPath() + BLANK_HTML, containerType);
-                        String defTitle = Messages.get().container(
+                        String defTitle = Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
                             Messages.GUI_DEFAULT_MODEL_TITLE_1,
-                            m_site.getTitle()).getKey();
-                        String defDes = Messages.get().container(
+                            m_site.getTitle());
+                        String defDes = Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
                             Messages.GUI_DEFAULT_MODEL_DESCRIPTION_1,
-                            m_site.getTitle()).getKey();
+                            m_site.getTitle());
                         CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, defTitle, defTitle);
                         cms.writePropertyObject(modelPage.getRootPath(), prop);
                         prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, defDes, defDes);
@@ -254,7 +254,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                         file.setContents(con.marshal());
                         cms.writeFile(file);
                     } catch (CmsException e) {
-                        addCommitError(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
             }
@@ -719,7 +719,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
         if (cms.existsResource(sitemapConfigName)) {
             configFile = cms.readResource(sitemapConfigName);
-            if (OpenCms.getResourceManager().getResourceType(configFile).getTypeName().equals(
+            if (!OpenCms.getResourceManager().getResourceType(configFile).getTypeName().equals(
                 configType.getTypeName())) {
                 throw new CmsException(
                     Messages.get().container(
