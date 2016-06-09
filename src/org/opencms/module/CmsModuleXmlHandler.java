@@ -309,7 +309,7 @@ public class CmsModuleXmlHandler {
 
         String importScript = module.getImportScript();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(importScript)) {
-            moduleElement.addElement(N_IMPORT_SCRIPT).setText(importScript);
+            moduleElement.addElement(N_IMPORT_SCRIPT).addCDATA(importScript);
         }
 
         String importSite = module.getImportSite();
@@ -669,8 +669,8 @@ public class CmsModuleXmlHandler {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(exportModeName)) {
                 exportMode = ExportMode.valueOf(exportModeName.toUpperCase());
             }
-        } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
-            // TODO: log entry? But shouldn't happen anyway because of DTD restrictions
+        } catch (IllegalArgumentException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
             //stay with default export mode
         }
 
