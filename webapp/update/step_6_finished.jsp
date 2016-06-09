@@ -27,7 +27,7 @@ OpenCms Update Wizard - Finished
 				<td><img src="resources/ok.png" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 100%;">					
-				    Your OpenCms instance has been update successfully.<br>
+				    Your OpenCms instance has been updated successfully.<br>
 					Please restart your servlet container now, and continue working on OpenCms as usual.<br>
 				</td>
 			</tr>
