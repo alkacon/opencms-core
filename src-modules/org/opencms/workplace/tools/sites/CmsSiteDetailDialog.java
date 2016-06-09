@@ -185,64 +185,77 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             m_site.setSiteRoot(siteRoot);
 
             CmsResource siteRootResource = null;
+            String sitePath = null;
             // check if the site root already exists
             try {
                 // take the existing site and do not perform any OU related actions
                 siteRootResource = cms.readResource(siteRoot);
-            } catch (CmsVfsResourceNotFoundException e) {
+                sitePath = cms.getSitePath(siteRootResource);
+            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
                 // not create a new site folder and the according OU if option is checked checked
-                int typeId = OpenCms.getResourceManager().getResourceType(
-                    CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP).getTypeId();
-                siteRootResource = cms.createResource(siteRoot, typeId);
-                String sitePath = cms.getSitePath(siteRootResource);
-                String contentFolder = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP);
+                siteRootResource = cms.createResource(siteRoot, type);
+                sitePath = cms.getSitePath(siteRootResource);
+            }
+
+            // add template  property
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getTemplate())) {
+                CmsProperty prop = new CmsProperty(
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                    getTemplate(),
+                    getTemplate());
+                cms.writePropertyObject(siteRoot, prop);
+            }
+            OpenCms.getPublishManager().publishResource(
+                cms,
+                siteRoot,
+                false,
+                new CmsLogReport(cms.getRequestContext().getLocale(), getClass()));
+
+            // create OU
+            if (m_createou) {
+                OpenCms.getOrgUnitManager().createOrganizationalUnit(
+                    cms,
+                    "/" + siteRootResource.getName(),
+                    m_ouDescription.replace("%(site)", m_site.getTitle() + " [" + m_site.getSiteRoot() + "]"),
+                    0,
+                    siteRootResource.getRootPath());
+            }
+
+            // create sitemap configuration
+            String contentFolder = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
+            String sitemapConfig = CmsStringUtil.joinPaths(contentFolder, CmsADEManager.CONFIG_FILE_NAME);
+            if (!cms.existsResource(sitemapConfig)) {
                 CmsResource config = createSitemapContentFolder(cms, siteRootResource);
                 if (config != null) {
-                    CmsResource newFolder = cms.createResource(
-                        contentFolder + NEW,
-                        CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-                    int containerId = OpenCms.getResourceManager().getResourceType(
-                        org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME).getTypeId();
-                    CmsResource modelPage = cms.createResource(newFolder.getRootPath() + BLANK_HTML, containerId);
-                    String defTitle = Messages.get().container(
-                        Messages.GUI_DEFAULT_MODEL_TITLE_1,
-                        m_site.getTitle()).getKey();
-                    String defDes = Messages.get().container(
-                        Messages.GUI_DEFAULT_MODEL_DESCRIPTION_1,
-                        m_site.getTitle()).getKey();
-                    CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, defTitle, defTitle);
-                    cms.writePropertyObject(modelPage.getRootPath(), prop);
-                    prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, defDes, defDes);
-                    cms.writePropertyObject(modelPage.getRootPath(), prop);
-                    CmsFile file = cms.readFile(config);
-                    CmsXmlContent con = CmsXmlContentFactory.unmarshal(cms, file);
-                    con.addValue(cms, MODEL_PAGE, Locale.ENGLISH, 0);
-                    I_CmsXmlContentValue val = con.getValue(MODEL_PAGE_PAGE, Locale.ENGLISH);
-                    val.setStringValue(cms, modelPage.getRootPath());
-                    file.setContents(con.marshal());
-                    cms.writeFile(file);
-
-                }
-
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getTemplate())) {
-                    CmsProperty prop = new CmsProperty(
-                        CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                        getTemplate(),
-                        getTemplate());
-                    cms.writePropertyObject(siteRoot, prop);
-                }
-                OpenCms.getPublishManager().publishResource(
-                    cms,
-                    siteRoot,
-                    false,
-                    new CmsLogReport(cms.getRequestContext().getLocale(), getClass()));
-                if (m_createou) {
-                    OpenCms.getOrgUnitManager().createOrganizationalUnit(
-                        cms,
-                        "/" + siteRootResource.getName(),
-                        m_ouDescription.replace("%(site)", m_site.getTitle() + " [" + m_site.getSiteRoot() + "]"),
-                        0,
-                        siteRootResource.getRootPath());
+                    try {
+                        CmsResource newFolder = cms.createResource(
+                            contentFolder + NEW,
+                            OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME));
+                        I_CmsResourceType containerType = OpenCms.getResourceManager().getResourceType(
+                            org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME);
+                        CmsResource modelPage = cms.createResource(newFolder.getRootPath() + BLANK_HTML, containerType);
+                        String defTitle = Messages.get().container(
+                            Messages.GUI_DEFAULT_MODEL_TITLE_1,
+                            m_site.getTitle()).getKey();
+                        String defDes = Messages.get().container(
+                            Messages.GUI_DEFAULT_MODEL_DESCRIPTION_1,
+                            m_site.getTitle()).getKey();
+                        CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, defTitle, defTitle);
+                        cms.writePropertyObject(modelPage.getRootPath(), prop);
+                        prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, defDes, defDes);
+                        cms.writePropertyObject(modelPage.getRootPath(), prop);
+                        CmsFile file = cms.readFile(config);
+                        CmsXmlContent con = CmsXmlContentFactory.unmarshal(cms, file);
+                        con.addValue(cms, MODEL_PAGE, Locale.ENGLISH, 0);
+                        I_CmsXmlContentValue val = con.getValue(MODEL_PAGE_PAGE, Locale.ENGLISH);
+                        val.setStringValue(cms, modelPage.getRootPath());
+                        file.setContents(con.marshal());
+                        cms.writeFile(file);
+                    } catch (CmsException e) {
+                        addCommitError(e);
+                    }
                 }
             }
 
@@ -492,7 +505,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                             + OpenCms.getLinkManager().getOnlineLink(clone, m_site.getFavicon())
                             + "' border='0' width='16' height='16' />");
                     addWidget(new CmsWidgetDialogParameter(m_site, "favicon", PAGES[0], dis));
-                } catch (Exception e) {
+                } catch (@SuppressWarnings("unused") Exception e) {
                     // noop
                 }
             }
@@ -534,7 +547,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                             + OpenCms.getLinkManager().getOnlineLink(clone, m_site.getFavicon())
                             + "' border='0' width='16' height='16' />");
                     addWidget(new CmsWidgetDialogParameter(m_site, "favicon", PAGES[0], dis));
-                } catch (Exception e) {
+                } catch (@SuppressWarnings("unused") Exception e) {
                     // noop
                 }
             }
@@ -607,7 +620,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         if (sites.size() > 0) {
             try {
                 maxValue = sites.get(0).getPosition();
-            } catch (Exception e) {
+            } catch (@SuppressWarnings("unused") Exception e) {
                 // should usually never happen
             }
         }
@@ -689,7 +702,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
      * @return the created folder
      *
      * @throws CmsException if something goes wrong
-     * @throws CmsLoaderException
+     * @throws CmsLoaderException if something goes wrong
      */
     private CmsResource createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder)
     throws CmsException, CmsLoaderException {
@@ -701,12 +714,13 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         if (!cms.existsResource(folderName)) {
             cms.createResource(
                 folderName,
-                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
+                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE));
         }
         I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
         if (cms.existsResource(sitemapConfigName)) {
             configFile = cms.readResource(sitemapConfigName);
-            if (configFile.getTypeId() != configType.getTypeId()) {
+            if (OpenCms.getResourceManager().getResourceType(configFile).getTypeName().equals(
+                configType.getTypeName())) {
                 throw new CmsException(
                     Messages.get().container(
                         Messages.ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2,
@@ -716,7 +730,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         } else {
             configFile = cms.createResource(
                 sitemapConfigName,
-                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
+                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE));
         }
         return configFile;
     }
@@ -797,7 +811,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         } else {
             try {
                 getToolManager().jspForwardTool(this, "/sites", new HashMap<String, String[]>());
-            } catch (Exception e) {
+            } catch (@SuppressWarnings("unused") Exception e) {
                 // noop
             }
         }
@@ -812,7 +826,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             if (clone.existsResource(iconPath)) {
                 m_site.setFavicon(iconPath);
             }
-        } catch (Throwable t) {
+        } catch (@SuppressWarnings("unused") Throwable t) {
             // noop
         }
 
