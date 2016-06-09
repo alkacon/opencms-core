@@ -284,34 +284,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     public CmsADEConfigCacheState readCompleteConfiguration() {
 
         long beginTime = System.currentTimeMillis();
-        Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations = Maps.newHashMap();
-        if (m_cms.existsResource("/")) {
-            try {
-                List<CmsResource> configFileCandidates = m_cms.readResources(
-                    "/",
-                    CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
-                for (CmsResource candidate : configFileCandidates) {
-                    if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
-                        try {
-                            CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
-                            String basePath = getBasePath(candidate.getRootPath());
-                            CmsADEConfigDataInternal data = reader.parseSitemapConfiguration(basePath, candidate);
-                            siteConfigurations.put(candidate.getStructureId(), data);
-                        } catch (Exception e) {
-                            LOG.error(
-                                "Error processing sitemap configuration "
-                                    + candidate.getRootPath()
-                                    + ": "
-                                    + e.getLocalizedMessage(),
-                                e);
-                        }
-
-                    }
-                }
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
+        Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations = loadSiteConfigurations();
         List<CmsADEConfigDataInternal> moduleConfigs = loadModuleConfiguration();
         Map<CmsUUID, CmsElementView> elementViews = loadElementViews();
         CmsADEConfigCacheState result = new CmsADEConfigCacheState(
@@ -422,20 +395,24 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
         List<CmsElementView> views = new ArrayList<CmsElementView>();
         views.add(CmsElementView.DEFAULT_ELEMENT_VIEW);
-        try {
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
-                m_elementViewType.getTypeId());
-            List<CmsResource> groups = m_cms.readResources("/", filter);
-            for (CmsResource res : groups) {
-                try {
-                    views.add(new CmsElementView(m_cms, res));
-                } catch (Exception e) {
-                    LOG.error(e.getMessage(), e);
+
+        if (m_cms.existsResource("/")) {
+            try {
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                    m_elementViewType.getTypeId());
+                List<CmsResource> groups = m_cms.readResources("/", filter);
+                for (CmsResource res : groups) {
+                    try {
+                        views.add(new CmsElementView(m_cms, res));
+                    } catch (Exception e) {
+                        LOG.error(e.getMessage(), e);
+                    }
                 }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
         }
+
         Collections.sort(views, new CmsElementView.ElementViewComparator());
         Map<CmsUUID, CmsElementView> elementViews = new LinkedHashMap<CmsUUID, CmsElementView>();
         for (CmsElementView view : views) {
@@ -458,6 +435,43 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    /**
+     * Load the site configurations, with structure id as key.
+     *
+     * @return the site configurations
+     */
+    protected Map<CmsUUID, CmsADEConfigDataInternal> loadSiteConfigurations() {
+        Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations = Maps.newHashMap();
+        if (m_cms.existsResource("/")) {
+            try {
+                List<CmsResource> configFileCandidates = m_cms.readResources(
+                        "/",
+                        CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
+                for (CmsResource candidate : configFileCandidates) {
+                    if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
+                        try {
+                            CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
+                            String basePath = getBasePath(candidate.getRootPath());
+                            CmsADEConfigDataInternal data = reader.parseSitemapConfiguration(basePath, candidate);
+                            siteConfigurations.put(candidate.getStructureId(), data);
+                        } catch (Exception e) {
+                            LOG.error(
+                                    "Error processing sitemap configuration "
+                                            + candidate.getRootPath()
+                                            + ": "
+                                            + e.getLocalizedMessage(),
+                                    e);
+                        }
+
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return siteConfigurations;
     }
 
     /**
