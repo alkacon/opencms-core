@@ -15,6 +15,26 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 10.0.1 - June 14, 2016
+- Improved drag and drop performance in container page editor for pages with many containers
+- Improved performance of the clipboard and favorites menu for many entries
+* Fixed issue #388 where reading macro formatters failed in case of none existent .formatters folder
+* Fixed issue #389 where GWT serialization policy files could not be loaded
+* Fixed issue #396 where user generated blog entries could not be saved
+* Fixed issue #400 where reading formatter configuration could cause null pointers
+* Pull request #361 improves Spanish localization (by serrapos)
+* Pull request #371 fixes issue with reading configuration when no Offline project is present (by StephanSchrader)
+* Pull request #374 improves German localization (by veggie)
+* Pull request #399 fixes issue with wrong keyboard shortcut being displayed in CodeMirror plugin (by gallardo)
+* Fixed issue with synchronization start button not being displayed
+* Fixed issue with non UTF-8 system encoding for macro formatters
+* Fixed issue with opening the quick launch menu failing sometimes
+* Fixed issue with inline editing not matching selected element view
+* Fixed issue with explorer lock conflict warning not shown before direct publish
+* Fixed issue with explorer context menu entry visibility
+* Fixed issue with internal cache performance
+* Fixed issue with macro formatter caching
+
 OpenCms 10.0.0 Final - March 23, 2016
 ! Added user info dialog and quick launch menu to Page and Sitemap editor toolbar
 ! Added editor to allow individual customization of the quick launch menu
