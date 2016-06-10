@@ -59,18 +59,22 @@ public class CmsDirectPublishDialogAction extends A_CmsWorkplaceAction {
      */
     public void executeAction(final I_CmsDialogContext context) {
 
-        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(UI.getCurrent(), new I_CmsUpdateListener<String>() {
+        if (!hasBlockingLocks(context)) {
+            CmsGwtDialogExtension extension = new CmsGwtDialogExtension(
+                UI.getCurrent(),
+                new I_CmsUpdateListener<String>() {
 
-            public void onUpdate(List<String> updatedItems) {
+                    public void onUpdate(List<String> updatedItems) {
 
-                List<CmsUUID> updatedIds = Lists.newArrayList();
-                for (String item : updatedItems) {
-                    updatedIds.add(new CmsUUID(item));
-                }
-                context.finish(updatedIds);
-            }
-        });
-        extension.openPublishDialog(context.getResources());
+                        List<CmsUUID> updatedIds = Lists.newArrayList();
+                        for (String item : updatedItems) {
+                            updatedIds.add(new CmsUUID(item));
+                        }
+                        context.finish(updatedIds);
+                    }
+                });
+            extension.openPublishDialog(context.getResources());
+        }
     }
 
     /**
