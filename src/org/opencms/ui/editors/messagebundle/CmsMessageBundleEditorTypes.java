@@ -228,10 +228,11 @@ public final class CmsMessageBundleEditorTypes {
                     removedKeys.removeAll(newKeys);
                 }
                 for (String key : removedKeys) {
-                    int uses = m_keyset.get(key).intValue();
+                    Integer i = m_keyset.get(key);
+                    int uses = null != i ? i.intValue() : 0;
                     if (uses > 1) {
                         m_keyset.put(key, Integer.valueOf(uses - 1));
-                    } else {
+                    } else if (uses == 1) {
                         m_keyset.remove(key);
                     }
                 }
