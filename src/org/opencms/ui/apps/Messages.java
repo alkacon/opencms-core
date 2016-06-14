@@ -36,6 +36,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_EXPLORER_CAN_NOT_OPEN_PATH_1 = "ERR_EXPLORER_CAN_NOT_OPEN_PATH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1 = "ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

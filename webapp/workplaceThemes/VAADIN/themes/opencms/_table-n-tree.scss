@@ -37,7 +37,7 @@
    	outline: none;
    }
    
-  [class*="v-tree-node-caption-o-state-"] > div:before{
+  .v-tree-node-caption.o-disabled > div:before, [class*="v-tree-node-caption-o-state-"] > div:before{
   	color: $v-font-color;
   }
   
@@ -58,7 +58,7 @@
 		color: $o-state-new-color;
 	}
   
-	.v-tree-node-caption-o-project-other {
+	.v-tree-node-caption.o-disabled, .v-tree-node-caption-o-project-other {
 		color: $o-state-other-project-color;
 	}
 }

@@ -394,7 +394,11 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             try {
                 CmsObject cms = A_CmsUI.getCmsObject();
                 CmsResource target = cms.readResource(targetId);
-                result = cms.hasPermissions(target, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
+                result = cms.hasPermissions(
+                    target,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
             } catch (Exception e) {
                 LOG.debug("Checking folder write permissions failed", e);
             }
@@ -428,6 +432,39 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                 CmsFileExplorer.this,
                 resources);
             return context;
+        }
+    }
+
+    /**
+     * File tree expand listener.<p>
+     */
+    public class TreeExpandListener implements ExpandListener {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 1L;
+        /**
+         * The path fragment being opened.
+         * Will override folder visibility in case the the target path is visible to the user.
+         **/
+        private String m_openPathFragment;
+
+        /**
+         * @see com.vaadin.ui.Tree.ExpandListener#nodeExpand(com.vaadin.ui.Tree.ExpandEvent)
+         */
+        public void nodeExpand(ExpandEvent event) {
+
+            selectTreeItem((CmsUUID)event.getItemId());
+            readTreeLevel((CmsUUID)event.getItemId(), m_openPathFragment);
+        }
+
+        /**
+         * Sets the open path fragment.<p>
+         *
+         * @param openPathFragment the open path fragment
+         */
+        public void setOpenPathFragment(String openPathFragment) {
+
+            m_openPathFragment = openPathFragment;
         }
     }
 
@@ -706,6 +743,12 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
 
+    /** The tree expand listener. */
+    private TreeExpandListener m_expandListener;
+
+    /** the currently selected file tree folder, may be null. */
+    private CmsUUID m_selectTreeFolder;
+
     /**
      * Constructor.<p>
      */
@@ -789,7 +832,8 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             CmsResourceTableProperty.PROPERTY_STATE,
             CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE,
             CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT,
-            CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED);
+            CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED,
+            CmsResourceTableProperty.PROPERTY_DISABLED);
         m_fileTree = new Tree();
         m_fileTree.addStyleName(OpenCmsTheme.SIMPLE_DRAG);
         m_fileTree.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
@@ -797,16 +841,8 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         m_fileTree.setContainerDataSource(m_treeContainer);
         m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE);
         m_fileTree.setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
-        m_fileTree.addExpandListener(new ExpandListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void nodeExpand(ExpandEvent event) {
-
-                selectTreeItem((CmsUUID)event.getItemId());
-                readTreeLevel((CmsUUID)event.getItemId());
-            }
-        });
+        m_expandListener = new TreeExpandListener();
+        m_fileTree.addExpandListener(m_expandListener);
         m_fileTree.addCollapseListener(new CollapseListener() {
 
             private static final long serialVersionUID = 1L;
@@ -814,14 +850,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             public void nodeCollapse(CollapseEvent event) {
 
                 selectTreeItem((CmsUUID)event.getItemId());
-            }
-        });
-        m_fileTree.addCollapseListener(new CollapseListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void nodeCollapse(CollapseEvent event) {
-
                 clearTreeLevel((CmsUUID)event.getItemId());
             }
         });
@@ -832,7 +860,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
             public void itemClick(ItemClickEvent event) {
 
-                readFolder((CmsUUID)event.getItemId());
+                handleFileTreeClick(event);
             }
         });
 
@@ -845,6 +873,17 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                 return CmsFileTable.getStateStyle(source.getContainerDataSource().getItem(itemId));
             }
         });
+        m_fileTree.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                handleFileTreeValueChange();
+            }
+
+        });
+
         m_fileTree.setNullSelectionAllowed(false);
 
         // init drag and drop
@@ -1020,8 +1059,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         CmsObject cms = A_CmsUI.getCmsObject();
         if (force || !cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
             CmsAppWorkplaceUi.get().changeSite(siteRoot);
-            populateFolderTree();
-            openPath(path);
+            openPath(path, true);
             m_siteSelector.select(siteRoot);
         }
     }
@@ -1102,7 +1140,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         context.setAppInfo(inf);
 
         initToolbarButtons(context);
-        populateFolderTree();
         m_fileTable.updateColumnWidths(A_CmsUI.get().getPage().getBrowserWindowWidth() - splitLeft);
     }
 
@@ -1140,8 +1177,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         if ((siteRoot != null) && !siteRoot.equals(getSiteRootFromState())) {
             changeSite(siteRoot, m_openedPaths.get(siteRoot), true);
         } else if ((project != null) && !project.getUuid().equals(getProjectIdFromState())) {
-            populateFolderTree();
-            openPath(getPathFromState());
+            openPath(getPathFromState(), true);
         }
         m_appContext.updateOnChange();
         setToolbarButtonsEnabled(!CmsAppWorkplaceUi.isOnlineProject());
@@ -1172,7 +1208,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             } else if ((siteRoot != null) && !siteRoot.equals(cms.getRequestContext().getSiteRoot())) {
                 changeSite(siteRoot, path);
             } else {
-                openPath(path);
+                openPath(path, true);
             }
         }
     }
@@ -1205,28 +1241,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             CmsErrorDialog.showErrorDialog(e);
             LOG.error(e.getLocalizedMessage(), e);
         }
-    }
-
-    /**
-     * Populates the folder tree.<p>
-     */
-    public void populateFolderTree() {
-
-        CmsObject cms = A_CmsUI.getCmsObject();
-        m_treeContainer.removeAllItems();
-        try {
-            CmsResource siteRoot = cms.readResource("/", FOLDERS);
-            addTreeItem(cms, siteRoot, null, m_treeContainer);
-            List<CmsResource> folderResources = cms.readResources("/", FOLDERS, false);
-            for (CmsResource resource : folderResources) {
-                addTreeItem(cms, resource, siteRoot.getStructureId(), m_treeContainer);
-            }
-            m_fileTree.expandItem(siteRoot.getStructureId());
-        } catch (CmsException e) {
-            CmsErrorDialog.showErrorDialog(e);
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-
     }
 
     /**
@@ -1278,11 +1292,18 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     public void updateAll() {
 
-        readFolder(m_currentFolder);
-        Set<Object> ids = Sets.newHashSet();
-        ids.addAll(m_fileTree.getItemIds());
-        for (Object id : ids) {
-            updateTree((CmsUUID)id);
+        try {
+            readFolder(m_currentFolder);
+            Set<Object> ids = Sets.newHashSet();
+            ids.addAll(m_fileTree.getItemIds());
+            for (Object id : ids) {
+                updateTree((CmsUUID)id);
+            }
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(
+                CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1, m_currentFolder),
+                e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -1322,7 +1343,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                     m_treeContainer.setParent(resource.getStructureId(), parentId);
                 }
             } else {
-                addTreeItem(cms, resource, parentId, m_treeContainer);
+                addTreeItem(cms, resource, parentId, false, m_treeContainer);
             }
         } catch (CmsVfsResourceNotFoundException e) {
             m_treeContainer.removeItemRecursively(id);
@@ -1406,75 +1427,47 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      * Reads the given folder.<p>
      *
      * @param folderId the folder id
+     *
+     * @throws CmsException in case reading the folder fails
      */
-    protected void readFolder(CmsUUID folderId) {
+    protected void readFolder(CmsUUID folderId) throws CmsException {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         m_searchField.clear();
-        try {
-            CmsResource folder = cms.readResource(folderId, FOLDERS);
-            m_currentFolder = folderId;
-            setPathInfo(cms.getSitePath(folder));
-            List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
-            m_fileTable.fillTable(cms, childResources);
-            boolean hasFolderChild = false;
-            for (CmsResource child : childResources) {
-                if (child.isFolder()) {
-                    hasFolderChild = true;
-                    break;
-                }
+        CmsResource folder = cms.readResource(folderId, FOLDERS);
+        m_currentFolder = folderId;
+        setPathInfo(cms.getSitePath(folder));
+        List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
+        m_fileTable.fillTable(cms, childResources);
+        boolean hasFolderChild = false;
+        for (CmsResource child : childResources) {
+            if (child.isFolder()) {
+                hasFolderChild = true;
+                break;
             }
-            m_treeContainer.setChildrenAllowed(folderId, hasFolderChild);
-            String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/")
-            ? ""
-            : cms.getSitePath(folder);
-
-            String state = new StateBean(
-                cms.getRequestContext().getSiteRoot(),
-                sitePath,
-                cms.getRequestContext().getCurrentProject().getUuid().toString()).asString();
-
-            if (!(state).equals(m_currentState)) {
-                m_currentState = state;
-                CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
-            }
-            m_openedPaths.put(cms.getRequestContext().getSiteRoot(), sitePath);
-            m_uploadButton.setTargetFolder(folder.getRootPath());
-            m_uploadArea.setTargetFolder(folder.getRootPath());
-            if (!m_fileTree.isExpanded(folderId)) {
-                expandCurrentFolder();
-            }
-            if (!m_fileTree.isSelected(folderId)) {
-                m_fileTree.select(folderId);
-            }
-        } catch (CmsException e) {
-            CmsErrorDialog.showErrorDialog(e);
-            LOG.error(e.getLocalizedMessage(), e);
         }
-    }
+        m_treeContainer.setChildrenAllowed(folderId, hasFolderChild);
+        String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/")
+        ? ""
+        : cms.getSitePath(folder);
 
-    /**
-     * Reads the given tree level.<p>
-     *
-     * @param parentId the parent id
-     */
-    protected void readTreeLevel(CmsUUID parentId) {
+        String state = new StateBean(
+            cms.getRequestContext().getSiteRoot(),
+            sitePath,
+            cms.getRequestContext().getCurrentProject().getUuid().toString()).asString();
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        try {
-            CmsResource parent = cms.readResource(parentId, FOLDERS);
-            List<CmsResource> folderResources = cms.readResources(cms.getSitePath(parent), FOLDERS, false);
-
-            // sets the parent to leaf mode, in case no child folders are present
-            m_treeContainer.setChildrenAllowed(parentId, !folderResources.isEmpty());
-
-            for (CmsResource resource : folderResources) {
-                addTreeItem(cms, resource, parentId, m_treeContainer);
-            }
-            m_fileTree.markAsDirtyRecursive();
-        } catch (CmsException e) {
-            CmsErrorDialog.showErrorDialog(e);
-            LOG.error(e.getLocalizedMessage(), e);
+        if (!(state).equals(m_currentState)) {
+            m_currentState = state;
+            CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
+        }
+        m_openedPaths.put(cms.getRequestContext().getSiteRoot(), sitePath);
+        m_uploadButton.setTargetFolder(folder.getRootPath());
+        m_uploadArea.setTargetFolder(folder.getRootPath());
+        if (!m_fileTree.isExpanded(folderId)) {
+            expandCurrentFolder();
+        }
+        if (!m_fileTree.isSelected(folderId)) {
+            m_fileTree.select(folderId);
         }
     }
 
@@ -1552,8 +1545,15 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                         if (m_fileTree.getItem(itemId) != null) {
                             m_fileTree.select(itemId);
                         }
-                        readFolder(itemId);
-                        openedFolder = true;
+                        try {
+                            readFolder(itemId);
+                            openedFolder = true;
+                        } catch (CmsException e) {
+                            CmsErrorDialog.showErrorDialog(
+                                CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1, itemId),
+                                e);
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
                     } else {
                         try {
                             CmsObject cms = A_CmsUI.getCmsObject();
@@ -1575,6 +1575,48 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             // update the item on click to show any available changes
             if (!openedFolder) {
                 m_fileTable.update(itemId, false);
+            }
+        }
+    }
+
+    /**
+     * Handles the file tree click events.<p>
+     *
+     * @param event the event
+     */
+    void handleFileTreeClick(ItemClickEvent event) {
+
+        Item resourceItem = m_treeContainer.getItem(event.getItemId());
+        if ((resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).getValue() == null)
+            || !((Boolean)resourceItem.getItemProperty(
+                CmsResourceTableProperty.PROPERTY_DISABLED).getValue()).booleanValue()) {
+            // don't handle disabled item clicks
+            try {
+                readFolder((CmsUUID)event.getItemId());
+            } catch (CmsException e) {
+                CmsErrorDialog.showErrorDialog(
+                    CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1, event.getItemId()),
+                    e);
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+
+    /**
+     * Handles the file tree value changes.<p>
+     */
+    void handleFileTreeValueChange() {
+
+        Item resourceItem = m_treeContainer.getItem(m_fileTree.getValue());
+        if (resourceItem != null) {
+            if ((resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).getValue() != null)
+                && ((Boolean)resourceItem.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_DISABLED).getValue()).booleanValue()) {
+                // in case the folder is disabled due to missing visibility, reset the value to the previous one
+                m_fileTree.setValue(m_selectTreeFolder);
+
+            } else {
+                m_selectTreeFolder = (CmsUUID)m_fileTree.getValue();
             }
         }
     }
@@ -1607,6 +1649,17 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     void openPath(String path) {
 
+        openPath(path, false);
+    }
+
+    /**
+     * Opens the given site path.<p>
+     *
+     * @param path the path
+     * @param initTree <code>true</code> in case the tree needs to be initialized
+     */
+    void openPath(String path, boolean initTree) {
+
         if (path == null) {
             String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
             path = m_openedPaths.get(siteRoot);
@@ -1616,12 +1669,41 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                 path = path.substring(siteRoot.length());
             }
         }
+        boolean existsPath = CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)
+            && A_CmsUI.getCmsObject().existsResource(path, FILES_N_FOLDERS);
+
+        if (path.startsWith("/")) {
+            // remove a leading slash to avoid an empty first path fragment
+            path = path.substring(1);
+        }
+
         String[] pathItems = path.split("/");
+
+        if (initTree) {
+            try {
+                initFolderTree(existsPath);
+            } catch (CmsException e) {
+                CmsErrorDialog.showErrorDialog(
+                    CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_OPEN_PATH_1, path),
+                    e);
+                LOG.error(e.getLocalizedMessage(), e);
+                return;
+            }
+        }
+
         Collection<?> rootItems = m_treeContainer.rootItemIds();
         if (rootItems.size() != 1) {
             throw new RuntimeException("Illeagal state, folder tree has " + rootItems.size() + " children");
         }
+
         CmsUUID folderId = (CmsUUID)rootItems.iterator().next();
+        if (initTree) {
+            if (existsPath) {
+                m_expandListener.setOpenPathFragment(pathItems[0]);
+            }
+            m_fileTree.expandItem(folderId);
+            m_expandListener.setOpenPathFragment(null);
+        }
         Collection<?> children = m_treeContainer.getChildren(folderId);
         for (int i = 0; i < pathItems.length; i++) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(pathItems[i])) {
@@ -1633,7 +1715,10 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                     if (m_treeContainer.getItem(id).getItemProperty(
                         CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).getValue().equals(pathItems[i])) {
                         level = (CmsUUID)id;
+                        m_expandListener.setOpenPathFragment(
+                            existsPath && (i < (pathItems.length - 1)) ? pathItems[i + 1] : null);
                         m_fileTree.expandItem(level);
+                        m_expandListener.setOpenPathFragment(null);
                         break;
                     }
                 }
@@ -1644,7 +1729,51 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             folderId = level;
             children = m_treeContainer.getChildren(folderId);
         }
-        readFolder(folderId);
+        try {
+            readFolder(folderId);
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(
+                CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_OPEN_PATH_1, path),
+                e);
+            LOG.error(e.getLocalizedMessage(), e);
+            return;
+        }
+    }
+
+    /**
+     * Reads the given tree level.<p>
+     *
+     * @param parentId the parent id
+     * @param openPathFragment the open path fragment
+     */
+    void readTreeLevel(CmsUUID parentId, String openPathFragment) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        boolean openedFragment = false;
+        try {
+            CmsResource parent = cms.readResource(parentId, CmsResourceFilter.IGNORE_EXPIRATION);
+            String folderPath = cms.getSitePath(parent);
+            List<CmsResource> folderResources = cms.readResources(folderPath, FOLDERS, false);
+
+            // sets the parent to leaf mode, in case no child folders are present
+            m_treeContainer.setChildrenAllowed(parentId, !folderResources.isEmpty());
+
+            for (CmsResource resource : folderResources) {
+                addTreeItem(cms, resource, parentId, false, m_treeContainer);
+                openedFragment = openedFragment || resource.getName().equals(openPathFragment);
+            }
+            if (!openedFragment && (openPathFragment != null)) {
+                CmsResource resource = cms.readResource(
+                    CmsStringUtil.joinPaths(folderPath, openPathFragment),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                addTreeItem(cms, resource, parentId, true, m_treeContainer);
+            }
+
+            m_fileTree.markAsDirtyRecursive();
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
@@ -1678,8 +1807,21 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
         CmsUUID parentId = (CmsUUID)m_treeContainer.getParent(m_currentFolder);
         if (parentId != null) {
-            readFolder(parentId);
-            m_fileTree.select(parentId);
+            Item resourceItem = m_treeContainer.getItem(parentId);
+            if ((resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).getValue() == null)
+                || !((Boolean)resourceItem.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_DISABLED).getValue()).booleanValue()) {
+                // don't open disabled parent folders
+                try {
+                    readFolder(parentId);
+                    m_fileTree.select(parentId);
+                } catch (CmsException e) {
+                    CmsErrorDialog.showErrorDialog(
+                        CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1, parentId),
+                        e);
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
         }
     }
 
@@ -1701,9 +1843,15 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      * @param cms the cms context
      * @param resource the folder resource
      * @param parentId the parent folder id
+     * @param disabled in case the item is disabled, used for non visible parent folders
      * @param container the data container
      */
-    private void addTreeItem(CmsObject cms, CmsResource resource, CmsUUID parentId, HierarchicalContainer container) {
+    private void addTreeItem(
+        CmsObject cms,
+        CmsResource resource,
+        CmsUUID parentId,
+        boolean disabled,
+        HierarchicalContainer container) {
 
         Item resourceItem = container.getItem(resource.getStructureId());
         if (resourceItem == null) {
@@ -1720,6 +1868,9 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE).setValue(
             new ExternalResource(resUtil.getBigIconPath()));
+        if (disabled) {
+            resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).setValue(Boolean.TRUE);
+        }
         if (parentId != null) {
             container.setChildrenAllowed(parentId, true);
             container.setParent(resource.getStructureId(), parentId);
@@ -1800,6 +1951,31 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
         String siteRoot = StateBean.parse(m_currentState).getSiteRoot();
         return siteRoot;
+    }
+
+    /**
+     * Populates the folder tree.<p>
+     *
+     * @param showInvisible to show non visible root folder as disabled
+     *
+     * @throws CmsException in case reading the root folder fails
+     */
+    private void initFolderTree(boolean showInvisible) throws CmsException {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        m_treeContainer.removeAllItems();
+        try {
+            CmsResource siteRoot = cms.readResource("/", FOLDERS);
+            addTreeItem(cms, siteRoot, null, false, m_treeContainer);
+        } catch (CmsException e) {
+            if (showInvisible) {
+                CmsResource siteRoot = cms.readResource("/", CmsResourceFilter.IGNORE_EXPIRATION);
+                addTreeItem(cms, siteRoot, null, true, m_treeContainer);
+            } else {
+                throw e;
+            }
+        }
+
     }
 
     /**
