@@ -17,16 +17,16 @@ Legend:
 
 OpenCms 10.0.1 - June 14, 2016
 - Improved drag and drop performance in container page editor for pages with many containers
-- Improved performance of the clipboard and favorites menu for many entries
-* Fixed issue #388 where reading macro formatters failed in case of none existent .formatters folder
+- Improved performance of the clipboard and favorites menu
+* Fixed issue #388 where reading macro formatters failed in case a ".formatters" folder did not exist
 * Fixed issue #389 where GWT serialization policy files could not be loaded
 * Fixed issue #396 where user generated blog entries could not be saved
-* Fixed issue #400 where reading formatter configuration could cause null pointers
+* Fixed issue #400 where reading formatter configuration could cause NPE
 * Pull request #361 improves Spanish localization (by serrapos)
 * Pull request #371 fixes issue with reading configuration when no Offline project is present (by StephanSchrader)
 * Pull request #374 improves German localization (by veggie)
 * Pull request #399 fixes issue with wrong keyboard shortcut being displayed in CodeMirror plugin (by gallardo)
-* Fixed issue with synchronization start button not being displayed
+* Fixed issue with synchronization start button not being correctly displayed
 * Fixed issue with non UTF-8 system encoding for macro formatters
 * Fixed issue with opening the quick launch menu failing sometimes
 * Fixed issue with inline editing not matching selected element view
