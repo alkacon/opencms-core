@@ -38,6 +38,8 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsUUID;
@@ -180,7 +182,9 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
                 addTreeItem(cms, resource, parentId);
             }
         } catch (CmsException e) {
-            CmsErrorDialog.showErrorDialog(e);
+            CmsErrorDialog.showErrorDialog(
+                CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1, parentId),
+                e);
             LOG.error(e.getLocalizedMessage(), e);
         }
     }

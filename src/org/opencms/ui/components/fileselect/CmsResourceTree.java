@@ -129,11 +129,8 @@ public class CmsResourceTree extends Tree {
         });
 
         m_container.addTreeItem(cms, m_root, null);
-        m_container.readTreeLevel(cms, m_root.getStructureId(), filter);
-
         try {
-            m_container.readTreeLevel(cms, root.getStructureId(), filter);
-            expandItem(root.getStructureId());
+            expandItem(m_root.getStructureId());
             markAsDirtyRecursive();
 
         } catch (Exception e) {
