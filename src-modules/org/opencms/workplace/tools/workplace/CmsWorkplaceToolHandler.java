@@ -27,9 +27,11 @@
 
 package org.opencms.workplace.tools.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.workplace.tools.A_CmsToolHandler;
 
 /**
@@ -49,6 +51,11 @@ public class CmsWorkplaceToolHandler extends A_CmsToolHandler {
             if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
                 return true;
             }
+        }
+        if (getPath().startsWith("/workplace/synchronize_action")) {
+            CmsUserSettings settings = new CmsUserSettings(cms);
+            CmsSynchronizeSettings syncSettings = settings.getSynchronizeSettings();
+            return (syncSettings != null) && syncSettings.isSyncEnabled();
         }
         return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
     }
