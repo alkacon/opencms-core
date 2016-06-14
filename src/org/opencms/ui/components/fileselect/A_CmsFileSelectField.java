@@ -144,12 +144,14 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     protected void openFileSelector() {
 
         try {
-            CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
+
             final Window window = CmsBasicDialog.prepareWindow();
             window.setCaption(
                 m_fileSelectCaption != null
                 ? m_fileSelectCaption
                 : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
+            A_CmsUI.get().addWindow(window);
+            CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
             window.setContent(fileSelect);
             fileSelect.addSelectionHandler(new I_CmsSelectionHandler<CmsResource>() {
 
@@ -159,8 +161,6 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
                     window.close();
                 }
             });
-
-            A_CmsUI.get().addWindow(window);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
             CmsErrorDialog.showErrorDialog(e);
