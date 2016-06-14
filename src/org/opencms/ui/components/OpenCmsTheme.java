@@ -105,6 +105,9 @@ public class OpenCmsTheme {
     public static final String DIFF_TYPE_UNCHANGED = "diffTypeUnchanged";
 
     /** CSS style name. */
+    public static final String DISABLED = "o-disabled";
+
+    /** CSS style name. */
     public static final String EXPIRED = "o-expired";
 
     /** CSS style name. */
