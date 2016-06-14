@@ -11,7 +11,7 @@
 		<class/>
 		<export-mode name="reduced"/>
 		<description><![CDATA[Exposes a configuration content that can be used to configure search forms]]></description>
-		<version>10.0.0</version>
+		<version>10.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated/>

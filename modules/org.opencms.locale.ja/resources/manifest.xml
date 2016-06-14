@@ -14,7 +14,7 @@
 		<description><![CDATA[<p>This module contains the Japanese language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the Japanese version of the OpenCms Workplace.</p>
 <p><i>(c) 2012 by  ubicast Co., Ltd(http://www.ubicast.com).</i></p>]]></description>
-		<version>8.5.2</version>
+		<version>10.0.1</version>
 		<authorname><![CDATA[ubicast Co., Ltd.]]></authorname>
 		<authoremail><![CDATA[info@ubicast.com]]></authoremail>
 		<datecreated/>
