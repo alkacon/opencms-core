@@ -10,6 +10,11 @@
 		<nicename><![CDATA[OpenCms 10 German localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
+		<import-script><![CDATA[
+# sets access control entries  and properties on folders not exclusively belonging to this module
+writeProperty '/system/workplace/locales/de/' 'content-encoding' 'ISO-8859-1'
+writeProperty '/system/workplace/locales/de/' 'locale' 'de'
+		]]></import-script>
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains the German language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the german version of the OpenCms Workplace.</p>
