@@ -33,7 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -126,7 +126,8 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
         if ((project != null) || (siteRoot != null)) {
             String sitePath = null;
             if (siteRoot != null) {
-                sitePath = CmsFileExplorer.getOpenedPath(A_CmsUI.get().getHttpSession(), siteRoot);
+                sitePath = CmsQuickLaunchLocationCache.getLocationCache(
+                    A_CmsUI.get().getHttpSession()).getFileExplorerLocation(siteRoot);
             } else if ((m_resources != null) && !m_resources.isEmpty()) {
                 sitePath = A_CmsUI.getCmsObject().getSitePath(m_resources.get(0));
             }

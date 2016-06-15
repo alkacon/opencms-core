@@ -89,7 +89,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -722,8 +721,8 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The new button. */
     private Button m_newButton;
 
-    /** The opened paths by site. */
-    private Map<String, String> m_openedPaths;
+    /** The quick launch location cache. */
+    private CmsQuickLaunchLocationCache m_locationCache;
 
     /** The publish button. */
     private Button m_publishButton;
@@ -949,68 +948,17 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             }
         });
 
-        m_openedPaths = getOpenedPaths(A_CmsUI.get().getHttpSession());
+        m_locationCache = CmsQuickLaunchLocationCache.getLocationCache(CmsAppWorkplaceUi.get().getHttpSession());
         String startSite = CmsAppWorkplaceUi.get().getWorkplaceSettings().getUserSettings().getStartSite();
         // remove trailing slashes
         while (startSite.endsWith("/")) {
             startSite = startSite.substring(0, startSite.length() - 1);
         }
-        if (!m_openedPaths.containsKey(startSite)) {
+        if (m_locationCache.getFileExplorerLocation(startSite) == null) {
             // add the configured start folder for the start site
             String startFolder = CmsAppWorkplaceUi.get().getWorkplaceSettings().getUserSettings().getStartFolder();
-            m_openedPaths.put(startSite, startFolder);
+            m_locationCache.setFileExplorerLocation(startSite, startFolder);
         }
-    }
-
-    /**
-     * Returns the opened path for the given site root from the opened paths store.<p>
-     *
-     * @param session the current user session
-     * @param siteRoot the site root
-     *
-     * @return the opened path
-     */
-    public static String getOpenedPath(HttpSession session, String siteRoot) {
-
-        // remove trailing slashes
-        while (siteRoot.endsWith("/")) {
-            siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
-        }
-        return getOpenedPaths(session).get(siteRoot);
-    }
-
-    /**
-     * Returns the opened paths map.<p>
-     *
-     * @param session the current session
-     *
-     * @return the opened paths map
-     */
-    public static Map<String, String> getOpenedPaths(HttpSession session) {
-
-        @SuppressWarnings("unchecked")
-        Map<String, String> openedPaths = (Map<String, String>)session.getAttribute(OPENED_PATHS);
-        if (openedPaths == null) {
-            openedPaths = new HashMap<String, String>();
-            session.setAttribute(OPENED_PATHS, openedPaths);
-        }
-        return openedPaths;
-    }
-
-    /**
-     * Puts the given site root/path combination in the opened paths store.<p>
-     *
-     * @param session the current user session
-     * @param siteRoot the site root
-     * @param path the path
-     */
-    public static void putOpenedPath(HttpSession session, String siteRoot, String path) {
-
-        // remove trailing slashes
-        while (siteRoot.endsWith("/")) {
-            siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
-        }
-        getOpenedPaths(session).put(siteRoot, path);
     }
 
     /**
@@ -1057,8 +1005,21 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     public void changeSite(String siteRoot, String path, boolean force) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        if (force || !cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
+        String currentSiteRoot = cms.getRequestContext().getSiteRoot();
+        if (force || !currentSiteRoot.equals(siteRoot)) {
             CmsAppWorkplaceUi.get().changeSite(siteRoot);
+            if (path == null) {
+                path = m_locationCache.getFileExplorerLocation(siteRoot);
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot)
+                    && ((path == null) || !path.startsWith("/system"))) {
+                    // switching to the root site and previous root site folder is not below /system
+                    // -> stay in the current folder
+                    path = m_locationCache.getFileExplorerLocation(currentSiteRoot);
+                    if (path != null) {
+                        path = CmsStringUtil.joinPaths(currentSiteRoot, path);
+                    }
+                }
+            }
             openPath(path, true);
             m_siteSelector.select(siteRoot);
         }
@@ -1175,7 +1136,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     public void onSiteOrProjectChange(CmsProject project, String siteRoot) {
 
         if ((siteRoot != null) && !siteRoot.equals(getSiteRootFromState())) {
-            changeSite(siteRoot, m_openedPaths.get(siteRoot), true);
+            changeSite(siteRoot, null, true);
         } else if ((project != null) && !project.getUuid().equals(getProjectIdFromState())) {
             openPath(getPathFromState(), true);
         }
@@ -1460,7 +1421,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             m_currentState = state;
             CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
         }
-        m_openedPaths.put(cms.getRequestContext().getSiteRoot(), sitePath);
+        m_locationCache.setFileExplorerLocation(cms.getRequestContext().getSiteRoot(), sitePath);
         m_uploadButton.setTargetFolder(folder.getRootPath());
         m_uploadArea.setTargetFolder(folder.getRootPath());
         if (!m_fileTree.isExpanded(folderId)) {
@@ -1662,7 +1623,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
         if (path == null) {
             String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
-            path = m_openedPaths.get(siteRoot);
+            path = m_locationCache.getFileExplorerLocation(siteRoot);
             if (path == null) {
                 path = "";
             } else if (OpenCms.getSiteManager().startsWithShared(path)) {
@@ -2060,9 +2021,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     private void setPathInfo(String path) {
 
-        CmsQuickLaunchLocationCache.getLocationCache(A_CmsUI.get().getHttpSession()).setFileExplorerLocation(
-            A_CmsUI.getCmsObject().getRequestContext().getSiteRoot(),
-            path);
         m_infoPath.setValue(path);
 
         // generate the path bread crumb
