@@ -491,7 +491,8 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getDetailwidth())) {
                     try {
                         int width = Integer.parseInt(getDetailwidth());
-                        jsIncludes.addAll(config.getDetailFormatter(getDetailtype(), width).getCssHeadIncludes());
+                        jsIncludes.addAll(
+                            config.getDetailFormatter(getDetailtype(), width).getJavascriptHeadIncludes());
                         requiresAllIncludes = false;
                     } catch (NumberFormatException ne) {
                         // nothing to do, we will include JavaScript for all detail containers
@@ -503,9 +504,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     }
                 }
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                    standardContext.getDetailContentId()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                        standardContext.getDetailContentId()),
+                    e);
             }
         }
         for (String jsUri : jsIncludes) {
