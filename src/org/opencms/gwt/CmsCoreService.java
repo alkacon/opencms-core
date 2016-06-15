@@ -70,6 +70,7 @@ import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsUserInfo;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
 import org.opencms.util.CmsFileUtil;
@@ -178,7 +179,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public static List<CmsCategoryTreeEntry> getCategoriesForSitePathStatic(
         CmsObject cms,
         String sitePath,
-        String localCategoryRepositoryPath) throws CmsException {
+        String localCategoryRepositoryPath)
+    throws CmsException {
 
         List<CmsCategoryTreeEntry> result;
         CmsCategoryService catService = CmsCategoryService.getInstance();
@@ -302,13 +304,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
         ? OpenCms.getSiteManager().getSharedFolder()
         : "";
-        String link = CmsVaadinUtils.getWorkplaceLink()
-            + "#!explorer/"
-            + cms.getRequestContext().getCurrentProject().getUuid()
-            + "!!"
-            + siteRoot
-            + "!!"
-            + cms.getRequestContext().removeSiteRoot(resourceRootFolder);
+        String link = getFileExplorerLink(cms, siteRoot) + cms.getRequestContext().removeSiteRoot(resourceRootFolder);
         return link;
     }
 
@@ -545,6 +541,26 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the file explorer link prefix. Append resource site path for complete link.<p>
+     *
+     * @param cms the cms context
+     * @param siteRoot the site root
+     *
+     * @return the file explorer link prefix
+     */
+    private static String getFileExplorerLink(CmsObject cms, String siteRoot) {
+
+        return CmsVaadinUtils.getWorkplaceLink()
+            + "#!"
+            + CmsFileExplorerConfiguration.APP_ID
+            + "/"
+            + cms.getRequestContext().getCurrentProject().getUuid()
+            + "!!"
+            + siteRoot
+            + "!!";
     }
 
     /**
@@ -1128,6 +1144,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             EDITOR_BACKLINK_URI,
             loginUrl,
             OpenCms.getStaticExportManager().getVfsPrefix(),
+            getFileExplorerLink(cms, cms.getRequestContext().getSiteRoot()),
             OpenCms.getSystemInfo().getStaticResourceContext(),
             CmsEmbeddedDialogsUI.getEmbeddedDialogsContextPath(),
             cms.getRequestContext().getSiteRoot(),

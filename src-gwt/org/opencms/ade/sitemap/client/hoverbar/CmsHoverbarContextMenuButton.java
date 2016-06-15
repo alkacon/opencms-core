@@ -117,6 +117,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
 
         result.add(new CmsGotoMenuEntry(hoverbar));
+        result.add(new CmsGotoExplorerMenuEntry(hoverbar));
         result.add(new CmsOpenGalleryMenuEntry(hoverbar));
         result.add(new CmsEditRedirectMenuEntry(hoverbar));
         result.add(new CmsEditModelPageMenuEntry(hoverbar));

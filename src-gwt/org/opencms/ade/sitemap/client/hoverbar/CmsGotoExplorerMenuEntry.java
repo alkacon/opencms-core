@@ -29,23 +29,26 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.gwt.client.CmsCoreProvider;
+
+import com.google.gwt.user.client.Window;
 
 /**
- * Sitemap context menu got page entry.<p>
+ * Sitemap context menu open in explorer entry.<p>
  *
  * @since 8.0.0
  */
-public class CmsGotoMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsGotoExplorerMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      *
      * @param hoverbar the hoverbar
      */
-    public CmsGotoMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsGotoExplorerMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_EXPLORER_0));
         setActive(true);
         setVisible(true);
     }
@@ -55,7 +58,7 @@ public class CmsGotoMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        getHoverbar().getController().leaveEditor(getHoverbar().getEntry().getSitePath());
+        Window.Location.assign(CmsCoreProvider.get().getExplorerLink(getHoverbar().getEntry().getSitePath()));
     }
 
     /**

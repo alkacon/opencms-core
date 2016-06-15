@@ -299,6 +299,9 @@ public class CmsCoreData implements IsSerializable {
     /** The current workplace locale. */
     private String m_wpLocale;
 
+    /** The file explorer link. */
+    private String m_fileExplorerLink;
+
     /**
      * Constructor.<p>
      */
@@ -319,6 +322,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getContentEditorBacklinkUrl(),
             clone.getLoginURL(),
             clone.getVfsPrefix(),
+            clone.getFileExplorerLink(),
             clone.getWorkplaceResourcesPrefix(),
             clone.getEmbeddedDialogsUrl(),
             clone.getSiteRoot(),
@@ -346,6 +350,7 @@ public class CmsCoreData implements IsSerializable {
      * @param contentEditorBacklinkUrl the XML content editor back-link URL
      * @param loginUrl the login JSP URL
      * @param vfsPrefix the OpenCms VFS prefix
+     * @param fileExplorerLink the file explorer link
      * @param workplaceResourcesPrefix the workplace resources path prefix
      * @param embeddedDialogsUrl the embedded dialogs URL
      * @param siteRoot the current site root
@@ -370,6 +375,7 @@ public class CmsCoreData implements IsSerializable {
         String contentEditorBacklinkUrl,
         String loginUrl,
         String vfsPrefix,
+        String fileExplorerLink,
         String workplaceResourcesPrefix,
         String embeddedDialogsUrl,
         String siteRoot,
@@ -411,6 +417,7 @@ public class CmsCoreData implements IsSerializable {
         m_uploadFileSizeLimit = uploadFileSizeLimit;
         m_keepAlive = isKeepAlive;
         m_adeParameters = adeParameters;
+        m_fileExplorerLink = fileExplorerLink;
     }
 
     /**
@@ -631,6 +638,16 @@ public class CmsCoreData implements IsSerializable {
     public boolean isToolbarVisible() {
 
         return m_toolbarVisible;
+    }
+
+    /**
+     * Returns the file explorer link prefix. Append resource site path for complete link.<p>
+     *
+     * @return the file explorer link prefix
+     */
+    protected String getFileExplorerLink() {
+
+        return m_fileExplorerLink;
     }
 
     /**

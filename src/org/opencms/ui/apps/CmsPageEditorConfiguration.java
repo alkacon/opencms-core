@@ -33,6 +33,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
 
@@ -141,7 +142,8 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        boolean active = !cms.getRequestContext().getCurrentProject().isOnlineProject();
+        boolean active = !cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot());
         HttpServletRequest req = CmsVaadinUtils.getRequest();
         String message = null;
         if (active) {
