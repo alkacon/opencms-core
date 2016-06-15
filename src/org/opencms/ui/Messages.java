@@ -39,6 +39,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_USER_NOT_SELF_MANAGED_1 = "ERR_USER_NOT_SELF_MANAGED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ACTION_OPEN_FORM_EDITOR_0 = "GUI_ACTION_OPEN_FORM_EDITOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ACTION_OPEN_PAGE_0 = "GUI_ACTION_OPEN_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_APP_NOT_AVAILABLE_0 = "GUI_APP_NOT_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */

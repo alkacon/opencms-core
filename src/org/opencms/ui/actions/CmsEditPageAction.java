@@ -29,62 +29,32 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.main.CmsLog;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.apps.CmsAppView;
-import org.opencms.ui.apps.CmsAppView.CacheStatus;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
-import org.opencms.ui.apps.CmsEditor;
-import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
-import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
-import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
-import com.vaadin.navigator.View;
-import com.vaadin.ui.UI;
-
 /**
- * The edit dialog action. Used for non XML contents.<p>
+ * The edit page action. Available for container pages.<p>
  */
-public class CmsEditDialogAction extends A_CmsWorkplaceAction {
+public class CmsEditPageAction extends A_CmsWorkplaceAction {
 
     /** The action id. */
-    public static final String ACTION_ID = "edit";
-
-    /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.EDIT;
-
-    /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditDialogAction.class);
+    public static final String ACTION_ID = "editpage";
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        String backLink;
-        try {
-            String currentLocation = UI.getCurrent().getPage().getLocation().toString();
-            backLink = URLEncoder.encode(currentLocation, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            backLink = UI.getCurrent().getPage().getLocation().toString();
+        if ((context.getResources().size() == 1)
+            && CmsResourceTypeXmlContainerPage.isContainerPage(context.getResources().get(0))) {
+            A_CmsUI.get().getPage().setLocation(
+                OpenCms.getLinkManager().substituteLink(A_CmsUI.getCmsObject(), context.getResources().get(0)));
         }
-        View view = CmsAppWorkplaceUi.get().getCurrentView();
-        if (view instanceof CmsAppView) {
-            ((CmsAppView)view).setCacheStatus(CacheStatus.cacheOnce);
-        }
-        CmsAppWorkplaceUi.get().showApp(
-            OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
-            CmsEditor.getEditState(context.getResources().get(0).getStructureId(), false, backLink));
     }
 
     /**
@@ -100,7 +70,7 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
      */
     public String getTitle() {
 
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_EDIT_0);
+        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_ACTION_OPEN_PAGE_0);
     }
 
     /**
@@ -108,8 +78,8 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if ((resources.size() == 1) && !CmsResourceTypeXmlContent.isXmlContent(resources.get(0))) {
-            return VISIBILITY.getVisibility(cms, resources);
+        if ((resources.size() == 1) && CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }

@@ -33,13 +33,13 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppView;
 import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
-import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.io.UnsupportedEncodingException;
@@ -52,18 +52,18 @@ import com.vaadin.navigator.View;
 import com.vaadin.ui.UI;
 
 /**
- * The edit dialog action. Used for non XML contents.<p>
+ * The form edit dialog action. Used for XML contents only.<p>
  */
-public class CmsEditDialogAction extends A_CmsWorkplaceAction {
+public class CmsFormEditDialogAction extends A_CmsWorkplaceAction {
 
     /** The action id. */
-    public static final String ACTION_ID = "edit";
+    public static final String ACTION_ID = "formedit";
 
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.EDIT;
 
     /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditDialogAction.class);
+    private static final Log LOG = CmsLog.getLog(CmsFormEditDialogAction.class);
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -100,7 +100,7 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
      */
     public String getTitle() {
 
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_EDIT_0);
+        return getWorkplaceMessage(Messages.GUI_ACTION_OPEN_FORM_EDITOR_0);
     }
 
     /**
@@ -108,7 +108,7 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if ((resources.size() == 1) && !CmsResourceTypeXmlContent.isXmlContent(resources.get(0))) {
+        if ((resources.size() == 1) && CmsResourceTypeXmlContent.isXmlContent(resources.get(0))) {
             return VISIBILITY.getVisibility(cms, resources);
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
