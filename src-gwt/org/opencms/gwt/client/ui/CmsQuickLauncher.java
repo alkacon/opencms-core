@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsToolbarCss;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -119,16 +120,21 @@ public class CmsQuickLauncher extends CmsMenuButton {
             if (data.isLegacy()) {
                 addStyleName(toolbarCss.quickButtonLegacy());
             }
-            addDomHandler(new ClickHandler() {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(data.getErrorMessage())) {
+                setTitle(data.getErrorMessage());
+                addStyleName(toolbarCss.quickButtonDeactivated());
+            } else {
+                addDomHandler(new ClickHandler() {
 
-                @SuppressWarnings("synthetic-access")
-                public void onClick(ClickEvent event) {
+                    @SuppressWarnings("synthetic-access")
+                    public void onClick(ClickEvent event) {
 
-                    closeMenu();
-                    m_handler.handleQuickLaunch(data);
+                        closeMenu();
+                        m_handler.handleQuickLaunch(data);
 
-                }
-            }, ClickEvent.getType());
+                    }
+                }, ClickEvent.getType());
+            }
         }
 
         /**

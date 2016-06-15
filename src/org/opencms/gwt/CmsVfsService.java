@@ -888,8 +888,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public List<CmsQuickLaunchData> loadQuickLaunchItems(CmsQuickLaunchParams params) throws CmsRpcException {
 
         try {
-            CmsQuickLaunchProvider provider = new CmsQuickLaunchProvider(getCmsObject());
-            return provider.getQuickLaunchData(params);
+            return CmsQuickLaunchProvider.getQuickLaunchData(getCmsObject(), getRequest().getSession(), params);
         } catch (Exception e) {
             error(e);
             return null;

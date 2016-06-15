@@ -325,7 +325,7 @@ public class CmsWorkplaceAppManager {
         while (it.hasNext()) {
             I_CmsWorkplaceAppConfiguration appConfig = it.next();
             CmsAppVisibilityStatus visibility = appConfig.getVisibility(cms);
-            if (!visibility.isVisible() || !visibility.isActive()) {
+            if (!visibility.isVisible()) {
                 it.remove();
             }
         }

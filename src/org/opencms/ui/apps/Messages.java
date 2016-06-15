@@ -84,6 +84,12 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_NEW_RESOURCE_TITLE_0 = "GUI_NEW_RESOURCE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PAGE_EDITOR_NOT_AVAILABLE_0 = "GUI_PAGE_EDITOR_NOT_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PAGE_EDITOR_PLEASE_SELECT_PAGE_0 = "GUI_PAGE_EDITOR_PLEASE_SELECT_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PAGEEDITOR_HELP_0 = "GUI_PAGEEDITOR_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -114,7 +120,13 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_QUICK_LAUNCH_TITLE_0 = "GUI_QUICK_LAUNCH_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0 = "GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_HELP_0 = "GUI_SITEMAP_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_NOT_AVAILABLE_0 = "GUI_SITEMAP_NOT_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_TITLE_0 = "GUI_SITEMAP_TITLE_0";

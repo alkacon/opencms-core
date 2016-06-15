@@ -31,14 +31,16 @@ import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
-import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.CmsLegacyAppConfiguration;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
+import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.CmsTraditionalWorkplaceConfiguration;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
@@ -47,6 +49,8 @@ import org.opencms.workplace.CmsWorkplace;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -62,45 +66,37 @@ public class CmsQuickLaunchProvider {
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsQuickLaunchProvider.class);
 
-    /** Current CMS context. */
-    private CmsObject m_cms;
-
-    /**
-     * Creates a new instance.<p>
-     *
-     * @param cms the current CMS context
-     */
-    public CmsQuickLaunchProvider(CmsObject cms) {
-
-        m_cms = cms;
-    }
-
     /**
      * Gets the quick launch data for the current user and context.<p>
      *
      * The context is a string which identifies where the quick launch menu is located
+     * @param cms the cms context
+     * @param session  the user session
      *
      * @param params the quick launch parameters
      *
      * @return the list of available quick launch items
      */
-    public List<CmsQuickLaunchData> getQuickLaunchData(CmsQuickLaunchParams params) {
+    public static List<CmsQuickLaunchData> getQuickLaunchData(
+        CmsObject cms,
+        HttpSession session,
+        CmsQuickLaunchParams params) {
 
         List<CmsQuickLaunchData> result = Lists.newArrayList();
-        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
-        CmsUserSettings userSettings = new CmsUserSettings(m_cms);
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        CmsUserSettings userSettings = new CmsUserSettings(cms);
         boolean usesNewWorkplace = userSettings.usesNewWorkplace();
         List<I_CmsWorkplaceAppConfiguration> appConfigs = new ArrayList<I_CmsWorkplaceAppConfiguration>(
-            OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(m_cms));
+            OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(cms));
         if (!usesNewWorkplace) {
             // the workplace app is only available within ADE in case of the traditional workplace user setting
             I_CmsWorkplaceAppConfiguration config = OpenCms.getWorkplaceAppManager().getAppConfiguration(
                 CmsTraditionalWorkplaceConfiguration.APP_ID);
-            if ((config != null) && config.getVisibility(m_cms).isActive()) {
+            if ((config != null) && config.getVisibility(cms).isActive()) {
                 appConfigs.add(config);
             }
         }
-
+        CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(session);
         for (I_CmsWorkplaceAppConfiguration config : appConfigs) {
             try {
                 boolean reload = false;
@@ -112,30 +108,30 @@ public class CmsQuickLaunchProvider {
                     if (!usesNewWorkplace) {
                         continue;
                     }
-                    link = CmsCoreService.getVaadinWorkplaceLink(m_cms, params.getPageId());
+                    String page = locationCache.getFileExplorerLocation(cms.getRequestContext().getSiteRoot());
+                    if (page != null) {
+                        link = CmsCoreService.getVaadinWorkplaceLink(cms, cms.getRequestContext().addSiteRoot(page));
+                    } else {
+                        if (cms.existsResource("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                            link = CmsCoreService.getVaadinWorkplaceLink(cms, cms.getRequestContext().getSiteRoot());
+                        } else if (cms.existsResource(params.getPageId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                            link = CmsCoreService.getVaadinWorkplaceLink(cms, params.getPageId());
+                        } else {
+                            errorTitle = config.getName(locale);
+                            errorMessage = Messages.get().getBundle(locale).key(
+                                Messages.GUI_QUICKLAUNCH_EXPLORER_NOT_ALLOWED_0);
+                        }
+                    }
                 } else if (CmsPageEditorConfiguration.APP_ID.equals(config.getId())) {
                     if (params.isPageContext()) {
                         reload = true;
                     } else if (params.isSitemapContext()) {
-                        if (params.getReturnCode() != null) {
-                            CmsReturnLinkInfo linkInfo = CmsCoreService.internalGetLinkForReturnCode(
-                                m_cms,
-                                params.getReturnCode());
-                            link = linkInfo.getLink();
-                            if (link == null) {
-                                errorTitle = Messages.get().getBundle(locale).key(
-                                    Messages.GUI_QUICKLAUNCH_PAGE_NOT_FOUND_TITLE_0);
-
-                                errorMessage = Messages.get().getBundle(locale).key(
-                                    Messages.GUI_QUICKLAUNCH_PAGE_NOT_FOUND_0);
-                            }
-                        } else {
-                            CmsResource resource = m_cms.readDefaultFile("/");
-                            CmsReturnLinkInfo linkInfo = CmsCoreService.internalGetLinkForReturnCode(
-                                m_cms,
-                                "" + resource.getStructureId());
-                            link = linkInfo.getLink();
-
+                        String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+                        if (page == null) {
+                            page = locationCache.getSitemapEditorLocation(cms.getRequestContext().getSiteRoot());
+                        }
+                        if (page != null) {
+                            link = OpenCms.getLinkManager().substituteLink(cms, page);
                         }
                     }
                 } else if (CmsSitemapEditorConfiguration.APP_ID.equals(config.getId())) {
@@ -143,18 +139,16 @@ public class CmsQuickLaunchProvider {
                         reload = true;
                     } else if (params.isPageContext()) {
                         String sitemapLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                            m_cms,
+                            cms,
                             CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
-                        String returnCode = params.getDetailId() != null
-                        ? "" + params.getPageId() + ":" + params.getDetailId()
-                        : "" + params.getPageId();
-                        link = sitemapLink + "?path=" + params.getPath() + "&returncode=" + returnCode;
+                        String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+                        link = sitemapLink + "?path=" + page;
                     }
                 } else if (CmsTraditionalWorkplaceConfiguration.APP_ID.equals(config.getId())) {
                     String resourceRootFolder = params.getPageId() != null
-                    ? CmsResource.getFolderPath(m_cms.readResource(params.getPageId()).getRootPath())
-                    : m_cms.getRequestContext().getSiteRoot();
-                    link = CmsWorkplace.getWorkplaceExplorerLink(m_cms, resourceRootFolder);
+                    ? CmsResource.getFolderPath(cms.readResource(params.getPageId()).getRootPath())
+                    : cms.getRequestContext().getSiteRoot();
+                    link = CmsWorkplace.getWorkplaceExplorerLink(cms, resourceRootFolder);
                     useLegacyButtonStyle = true;
                 } else {
                     if (!usesNewWorkplace) {
@@ -168,7 +162,12 @@ public class CmsQuickLaunchProvider {
                     imageLink = ((ExternalResource)icon).getURL();
                     // no icon if not an external resource
                 }
-                String name = config.getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms));
+                String name = config.getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                CmsAppVisibilityStatus visibility = config.getVisibility(cms);
+                if (!visibility.isActive()) {
+                    errorTitle = name;
+                    errorMessage = visibility.getHelpText();
+                }
                 CmsQuickLaunchData data = new CmsQuickLaunchData(
                     link,
                     name,

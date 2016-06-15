@@ -112,10 +112,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NO_PREVIEW_WRONG_MIME_TYPE_0 = "GUI_NO_PREVIEW_WRONG_MIME_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_QUICKLAUNCH_PAGE_NOT_FOUND_0 = "GUI_QUICKLAUNCH_PAGE_NOT_FOUND_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_QUICKLAUNCH_PAGE_NOT_FOUND_TITLE_0 = "GUI_QUICKLAUNCH_PAGE_NOT_FOUND_TITLE_0";
+    public static final String GUI_QUICKLAUNCH_EXPLORER_NOT_ALLOWED_0 = "GUI_QUICKLAUNCH_EXPLORER_NOT_ALLOWED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STATUS_PERMALINK_0 = "GUI_STATUS_PERMALINK_0";

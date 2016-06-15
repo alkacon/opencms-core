@@ -28,25 +28,16 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.gwt.CmsCoreService;
-import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.jsp.CmsJspTagEnableAde;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.containerpage.CmsADESessionCache;
-import org.opencms.xml.containerpage.CmsADESessionCache.LastPageBean;
 
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpSession;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
@@ -60,9 +51,6 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
 
     /** The app id. */
     public static final String APP_ID = "pageeditor";
-
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsPageEditorConfiguration.class);
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -153,7 +141,21 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        return new CmsAppVisibilityStatus(true, !cms.getRequestContext().getCurrentProject().isOnlineProject(), null);
+        boolean active = !cms.getRequestContext().getCurrentProject().isOnlineProject();
+        HttpServletRequest req = CmsVaadinUtils.getRequest();
+        String message = null;
+        if (active) {
+            if (req != null) {
+                // this is a VAADIN UI request
+                active = getPath(cms, req.getSession()) != null;
+                if (!active) {
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_PAGE_EDITOR_PLEASE_SELECT_PAGE_0);
+                }
+            }
+        } else {
+            message = CmsVaadinUtils.getMessageText(Messages.GUI_PAGE_EDITOR_NOT_AVAILABLE_0);
+        }
+        return new CmsAppVisibilityStatus(true, active, message);
     }
 
     /**
@@ -162,49 +164,35 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     void openPageEditor() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        String siteRoot = cms.getRequestContext().getSiteRoot();
         HttpServletRequest req = CmsVaadinUtils.getRequest();
+        if (req == null) {
+            // called from outside the VAADIN UI, not allowed
+            throw new RuntimeException("Wrong usage, this can not be called from outside a VAADIN UI.");
+        }
         CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-        CmsADESessionCache cache = CmsADESessionCache.getCache(req, cms);
-        LastPageBean lastPage = cache.getLastPage();
-        if (lastPage != null) {
-            if (cms.getRequestContext().getSiteRoot().equals(lastPage.getSiteRoot())) {
-                String returncode = lastPage.getDetailId() != null
-                ? lastPage.getPageId() + ":" + lastPage.getDetailId()
-                : "" + lastPage.getPageId();
-                try {
-                    CmsReturnLinkInfo linkInfo = CmsCoreService.internalGetLinkForReturnCode(cms, returncode);
-                    if (linkInfo.getLink() != null) {
-                        A_CmsUI.get().getPage().setLocation(linkInfo.getLink());
-                        return;
-                    } else {
-                        cache.clearLastPage();
-                    }
-                } catch (CmsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                    cache.clearLastPage();
-                }
-            } else {
-                // Switching sites clears the last page
-                cache.clearLastPage();
-            }
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
-            && !OpenCms.getSiteManager().getSharedFolder().equals(siteRoot)) {
-            try {
-                CmsResource res = cms.readDefaultFile("/");
-                if (res != null) {
-                    String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                    A_CmsUI.get().getPage().setLocation(link);
-                    return;
-                }
-            } catch (CmsException e) {
-                LOG.debug("Unable to open page editor for site " + siteRoot + ".", e);
-            }
+        String page = getPath(cms, req.getSession());
+        if (page != null) {
+            A_CmsUI.get().getPage().setLocation(OpenCms.getLinkManager().substituteLink(cms, page));
 
+        } else {
+            String message = CmsVaadinUtils.getMessageText(Messages.GUI_PAGE_EDITOR_NOT_AVAILABLE_0);
+            Notification.show(message, Type.WARNING_MESSAGE);
         }
-        String message = CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_PAGE_EDITOR_NOT_AVAILABLE_0);
-        Notification.show(message, Type.WARNING_MESSAGE);
+    }
+
+    /**
+     * Returns the page editor path to open.<p>
+     *
+     * @param cms the cms context
+     * @param session the user session
+     *
+     * @return the path or <code>null</code>
+     */
+    private String getPath(CmsObject cms, HttpSession session) {
+
+        CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(session);
+        String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+        return page;
     }
 
 }

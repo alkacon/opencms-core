@@ -2060,6 +2060,9 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     private void setPathInfo(String path) {
 
+        CmsQuickLaunchLocationCache.getLocationCache(A_CmsUI.get().getHttpSession()).setFileExplorerLocation(
+            A_CmsUI.getCmsObject().getRequestContext().getSiteRoot(),
+            path);
         m_infoPath.setValue(path);
 
         // generate the path bread crumb
