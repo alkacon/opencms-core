@@ -27,6 +27,7 @@
 
 package org.opencms.acacia.client.widgets.complex;
 
+import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
@@ -91,6 +92,7 @@ public class CmsDataViewClientWidget extends Composite {
     public CmsDataViewClientWidget(CmsDataViewValueAccessor valueAccessor, String configString) {
         m_valueAccessor = valueAccessor;
         m_valueAccessor.setWidget(this);
+
         accessors.put(valueAccessor.getId(), valueAccessor);
         m_config = configString;
 
@@ -98,6 +100,7 @@ public class CmsDataViewClientWidget extends Composite {
 
         Widget widget = createWidget();
         initWidget(widget);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.form().widget());
         widget.getElement().getStyle().setMarginLeft(-20, Unit.PX);
 
         ensureCallback(CALLBACK);
