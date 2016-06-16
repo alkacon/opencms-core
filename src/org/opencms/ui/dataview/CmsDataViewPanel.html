@@ -9,11 +9,12 @@
 <body>
 	<v-vertical-layout width="100%" size-full spacing> 
 			<v-form-layout> 
-				<v-text-field _id="m_fullTextSearch" width="200px" caption="%(key.GUI_DATAVIEW_QUERY_0)"/>
+				<v-horizontal-layout caption="%(key.GUI_DATAVIEW_QUERY_0)" spacing>
+					<v-text-field _id="m_fullTextSearch" width="200px" />
+					<v-button _id="m_searchButton">%(key.GUI_DATAVIEW_SEARCH_0)</v-button>
+				</v-horizontal-layout>
 				<v-horizontal-layout _id="m_filterContainer" width="-1px" spacing caption="%(key.GUI_DATAVIEW_FILTERS_0)"/>
-				<v-button _id="m_searchButton">%(key.GUI_DATAVIEW_SEARCH_0)</v-button>
 			</v-form-layout>
-
 			<v-css-layout _id="m_tablePlaceholder" />
 			<d-cms-paging-controls _id="m_pagingControls" width="100%" />
 	</v-vertical-layout>
