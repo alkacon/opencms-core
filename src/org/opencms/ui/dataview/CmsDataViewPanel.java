@@ -51,6 +51,8 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -158,6 +160,17 @@ public class CmsDataViewPanel extends VerticalLayout {
             public void pageChanged(int page) {
 
                 refreshData(false, null);
+            }
+        });
+        m_fullTextSearch.addShortcutListener(new ShortcutListener("Save", KeyCode.ENTER, null) {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+
+                refreshData(false, null);
+
             }
         });
         m_searchButton.addClickListener(new ClickListener() {
