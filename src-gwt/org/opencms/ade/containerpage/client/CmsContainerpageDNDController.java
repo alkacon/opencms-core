@@ -272,9 +272,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
 
         }
-        if (target instanceof CmsContainerPageContainer) {
-            CmsContainerpageEditor.getZIndexManager().start(containerId);
-        } else {
+        if (!(target instanceof CmsContainerPageContainer)) {
             handler.setStartPosition(-1, 0);
         }
         return true;
@@ -532,10 +530,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 ((I_CmsDropContainer)target).checkMaxElementsOnEnter();
             }
         }
-        if (target instanceof CmsContainerPageContainer) {
-            CmsContainerPageContainer cont = (CmsContainerPageContainer)target;
-            CmsContainerpageEditor.getZIndexManager().enter(cont.getContainerId());
-        }
         return true;
     }
 
@@ -561,11 +555,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
         updateHighlighting(false);
-        if (target instanceof CmsContainerPageContainer) {
-            String id = ((CmsContainerPageContainer)target).getContainerId();
-            CmsContainerpageEditor.getZIndexManager().leave(id);
-        }
-
     }
 
     /**
@@ -914,7 +903,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     private void stopDrag(final CmsDNDHandler handler) {
 
         removeDragOverlay();
-        CmsContainerpageEditor.getZIndexManager().stop();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
             target.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
             target.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());

@@ -997,11 +997,6 @@ public final class CmsContainerpageController {
             m_targetContainers.remove(containerId);
             m_containers.remove(containerId);
         }
-        CmsContainerpageEditor.getZIndexManager().clear();
-        for (CmsContainerPageContainer cont : m_targetContainers.values()) {
-            Element elem = cont.getElement();
-            CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
-        }
         if (removed.size() > 0) {
             scheduleGalleryUpdate();
         }
@@ -1988,10 +1983,6 @@ public final class CmsContainerpageController {
         CmsDomUtil.fixFlashZindex(RootPanel.getBodyElement());
         m_targetContainers = m_containerpageUtil.consumeContainers(m_containers, RootPanel.getBodyElement());
         updateContainerLevelInfo();
-        for (CmsContainerPageContainer cont : m_targetContainers.values()) {
-            Element elem = cont.getElement();
-            CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
-        }
         resetEditButtons();
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 

@@ -5,7 +5,4 @@
 	<inherits name="org.opencms.ade.contenteditor.ContentEditor" />
 	<source path="client" />
 	<source path="shared" />
-	<replace-with class="org.opencms.ade.containerpage.client.impl.CmsDummyZIndexManager">
-        <when-type-assignable class="org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager"/>
-    </replace-with>
 </module>

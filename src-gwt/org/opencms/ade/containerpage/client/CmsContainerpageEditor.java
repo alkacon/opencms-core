@@ -102,9 +102,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     }
 
-    /** The Z index manager. */
-    private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
-
     /** Add menu. */
     private CmsToolbarGalleryMenu m_add;
 
@@ -152,16 +149,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
-
-    /**
-     * Returns the Z index manager for the container page editor.<p>
-     *
-     * @return the Z index manager
-     **/
-    public static I_CmsContainerZIndexManager getZIndexManager() {
-
-        return Z_INDEX_MANAGER;
-    }
 
     /**
      * Opens a message dialog with the given content.<p>
@@ -412,18 +399,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
-            }
-        }
+		$wnd.__openStacktraceDialog = function(event) {
+			event = (event) ? event : ((window.event) ? window.event : "");
+			var elem = (event.target) ? event.target : event.srcElement;
+			if (elem != null) {
+				var children = elem.getElementsByTagName("span");
+				if (children.length > 0) {
+					var title = children[0].getAttribute("title");
+					var content = children[0].innerHTML;
+					@org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+				}
+			}
+		}
     }-*/;
 
 }
