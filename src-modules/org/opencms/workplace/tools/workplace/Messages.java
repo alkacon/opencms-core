@@ -149,6 +149,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_NAME_0 = "GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_SYNC_ACTION_HELP_0 = "GUI_WORKPLACE_SYNC_ACTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_SYNC_ACTION_NAME_0 = "GUI_WORKPLACE_SYNC_ACTION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_SYNC_HELP_0 = "GUI_WORKPLACE_SYNC_HELP_0";
 
     /** Message constant for key in the resource bundle. */

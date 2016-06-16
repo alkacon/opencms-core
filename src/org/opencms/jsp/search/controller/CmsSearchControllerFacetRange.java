@@ -163,8 +163,8 @@ public class CmsSearchControllerFacetRange implements I_CmsSearchControllerFacet
         StringBuffer value = new StringBuffer();
         value.append("{!key=").append(m_config.getName());
         addFacetOptions(value);
-        if (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet()) {
-            value.append(" ex=").append(m_config.getName());
+        if (m_config.getIgnoreAllFacetFilters() || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
+            value.append(" ex=").append(m_config.getIgnoreTags());
         }
         value.append("}");
         value.append(m_config.getRange());

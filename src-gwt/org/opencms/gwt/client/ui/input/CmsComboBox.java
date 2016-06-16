@@ -117,8 +117,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
      */
     public CmsComboBox(Map<String, String> items) {
 
-        super();
-        addStyleName(CSS_CLASS);
+        this();
         setItems(items);
     }
 

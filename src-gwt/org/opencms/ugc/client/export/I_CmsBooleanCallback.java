@@ -36,7 +36,7 @@ import org.timepedia.exporter.client.Exportable;
  * Callback interface for functions taking a boolean value as a parameter.<p>
  */
 @Export
-@ExportPackage("opencms")
+@ExportPackage("opencmsugc")
 @ExportClosure
 public interface I_CmsBooleanCallback extends Exportable {
 

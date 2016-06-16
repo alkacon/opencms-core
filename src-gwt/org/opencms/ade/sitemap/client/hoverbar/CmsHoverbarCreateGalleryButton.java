@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.ui.CmsCreateGalleryDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.util.CmsUUID;
 
@@ -62,9 +63,9 @@ public class CmsHoverbarCreateGalleryButton extends CmsPushButton {
 
         m_resourceTypeId = resourceTypeId;
         m_parentId = parentId;
-        setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
         setTitle(Messages.get().key(Messages.GUI_GALLERIES_CREATE_0));
-        setButtonStyle(ButtonStyle.IMAGE, null);
+        setImageClass(I_CmsButton.ADD_SMALL);
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         addClickHandler(new ClickHandler() {
 
             /**

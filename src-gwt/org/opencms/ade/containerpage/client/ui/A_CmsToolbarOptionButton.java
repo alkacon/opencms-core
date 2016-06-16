@@ -83,8 +83,6 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsCon
         }
         CmsElementOptionButton button = new CmsElementOptionButton(this, element);
         button.addClickHandler(m_elementClickHandler);
-        //        button.setEnabled(hasPermissions(element));
-        // TODO: if element option is not allowed, set reason as button title
         return button;
     }
 
@@ -112,8 +110,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsCon
      */
     public void onToolbarActivate() {
 
-        showSingleElementOption(true);
-
+        // nothing to do
     }
 
     /**
@@ -121,7 +118,6 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsCon
      */
     public void onToolbarDeactivate() {
 
-        showSingleElementOption(false);
-
+        // nothing to do
     }
 }

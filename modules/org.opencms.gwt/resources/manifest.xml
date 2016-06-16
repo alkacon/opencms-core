@@ -2,130 +2,85 @@
 
 <export>
 	<info>
-		<creator>Admin</creator>
-		<opencms_version>10.0.0</opencms_version>
-		<createdate>Tue, 20 Oct 2009 07:26:16 GMT</createdate>
 		<infoproject>Offline</infoproject>
-		<export_version>7</export_version>
+		<export_version>10</export_version>
 	</info>
 	<module>
 		<name>org.opencms.gwt</name>
 		<nicename><![CDATA[OpenCms GWT Base Module]]></nicename>
 		<group>OpenCms Editors</group>
-		<class />
+		<class/>
+		<export-mode name="reduced"/>
 		<description><![CDATA[<p>Provides an OpenCms GWT framework.</p>
 <p><i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>10.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated />
-		<userinstalled />
-		<dateinstalled />
-		<dependencies />
-		<exportpoints />
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
 		<resources>
-			<resource uri="/system/modules/org.opencms.gwt/" />
+			<resource uri="/system/modules/org.opencms.gwt/"/>
+			<resource uri="/system/workplace/resources/filetypes/resourceNotFoundBig.png"/>
+			<resource uri="/system/workplace/resources/filetypes/resourceNotFoundSmall.png"/>
 		</resources>
-		<parameters />
+		<excluderesources/>
+		<parameters/>
 	</module>
 	<files>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>d854892a-bd47-11de-b5e8-fb52ca9afb23</uuidstructure>
-			<datelastmodified>Tue, 20 Oct 2009 07:11:53 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 20 Oct 2009 07:11:53 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>514</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>c86ce418-1a41-11df-bb09-654568eded92</uuidstructure>
-			<datelastmodified>Mon, 15 Feb 2010 14:52:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 15 Feb 2010 14:52:48 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>514</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.gwt</destination>
 			<type>folder</type>
 			<uuidstructure>c0adf2a2-1147-11db-bbab-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 14:05:57 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol />
+			<properties/>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
-		      <source>system/modules/org.opencms.gwt/editor-backlink.html</source>
-		      <destination>system/modules/org.opencms.gwt/editor-backlink.html</destination>
-		      <type>plain</type>
-		      <uuidstructure>387d8625-4607-11df-941d-2393f34d19cc</uuidstructure>
-		      <uuidresource>387d8626-4607-11df-941d-2393f34d19cc</uuidresource>
-		      <datelastmodified>Mon, 12 Apr 2010 07:44:36 GMT</datelastmodified>
-		      <userlastmodified>Admin</userlastmodified>
-		      <datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
-		      <usercreated>Admin</usercreated>
-		      <flags>0</flags>
-		      <properties/>
-		      <relations/>
-		      <accesscontrol/>
-    	</file>
-   		<file>
-		      <source>system/modules/org.opencms.gwt/about.jsp</source>
-		      <destination>system/modules/org.opencms.gwt/about.jsp</destination>
-		      <type>jsp</type>
-		      <uuidstructure>1761c0f6-b2be-4d21-892f-0cfe75f67779</uuidstructure>
-		      <uuidresource>9d8e5c90-9bad-4209-b71f-88a618eaef69</uuidresource>
-		      <datelastmodified>Mon, 12 Apr 2010 07:44:36 GMT</datelastmodified>
-		      <userlastmodified>Admin</userlastmodified>
-		      <datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
-		      <usercreated>Admin</usercreated>
-		      <flags>0</flags>
-		      <properties/>
-		      <relations/>
-		      <accesscontrol/>
-    	</file>
+			<source>system/modules/org.opencms.gwt/about.jsp</source>
+			<destination>system/modules/org.opencms.gwt/about.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>1761c0f6-b2be-4d21-892f-0cfe75f67779</uuidstructure>
+			<uuidresource>9d8e5c90-9bad-4209-b71f-88a618eaef69</uuidresource>
+			<datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.gwt/editor-backlink.html</source>
+			<destination>system/modules/org.opencms.gwt/editor-backlink.html</destination>
+			<type>plain</type>
+			<uuidstructure>387d8625-4607-11df-941d-2393f34d19cc</uuidstructure>
+			<uuidresource>387d8626-4607-11df-941d-2393f34d19cc</uuidresource>
+			<datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/modules/org.opencms.gwt/resourceIcon.css</source>
 			<destination>system/modules/org.opencms.gwt/resourceIcon.css</destination>
 			<type>jsp</type>
 			<uuidstructure>c69e7fdf-619d-11df-ace9-2393f34d19cc</uuidstructure>
 			<uuidresource>c69e7fe0-619d-11df-ace9-2393f34d19cc</uuidresource>
-			<datelastmodified>Mon, 17 May 2010 10:20:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 17 May 2010 10:20:11 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
@@ -139,71 +94,17 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>login-form</name>
-					<value><![CDATA[/system/login/index.html]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/resourceNotFoundBig.png</source>
@@ -211,10 +112,7 @@
 			<type>image</type>
 			<uuidstructure>b36a0f4a-1779-11e2-8a36-61f65c67cbab</uuidstructure>
 			<uuidresource>b36a0f4b-1779-11e2-8a36-61f65c67cbab</uuidresource>
-			<datelastmodified>Tue, 16 Oct 2012 10:11:02 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Oct 2012 10:10:24 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -239,10 +137,7 @@
 			<type>image</type>
 			<uuidstructure>b36ef14e-1779-11e2-8a36-61f65c67cbab</uuidstructure>
 			<uuidresource>b36ef14f-1779-11e2-8a36-61f65c67cbab</uuidresource>
-			<datelastmodified>Tue, 16 Oct 2012 10:11:31 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Oct 2012 10:10:24 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>

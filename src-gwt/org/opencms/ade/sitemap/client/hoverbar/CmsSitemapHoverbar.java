@@ -99,17 +99,13 @@ public final class CmsSitemapHoverbar extends FlowPanel {
         m_eventBus = new SimpleEventBus();
         m_enabled = true;
         setStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbar());
-        if (controller.isEditable()) {
-            if (contextmenu) {
-                add(new CmsHoverbarContextMenuButton(this, contextMenuProvider));
-            }
-            if (moveable) {
-                add(new CmsHoverbarMoveButton(this));
-            }
-        } else {
-            add(new CmsHoverbarGotoParentButton(this));
-            add(new CmsHoverbarGotoSubSitemapButton(this));
-            add(new CmsHoverbarGotoButton(this));
+        if (contextmenu) {
+            add(new CmsHoverbarContextMenuButton(this, contextMenuProvider));
+        }
+        if (controller.isEditable() && moveable) {
+
+            add(new CmsHoverbarMoveButton(this));
+
         }
     }
 

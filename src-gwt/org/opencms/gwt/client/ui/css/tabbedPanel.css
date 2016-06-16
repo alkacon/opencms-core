@@ -243,9 +243,8 @@
 	margin-top: 0;
 }
 
-@sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
-	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%;
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
+	background-image: value("constants.css.gradientListItem");;
 	height: auto;
 	padding:0;		
 	border:1px solid value("constants.css.borderColor");	
@@ -253,20 +252,37 @@
 	color:value("constants.css.textColor");
 	position:relative;
 	cursor:pointer;
-	background-color: value("constants.css.backgroundColorStateStandard");
 	border-top-left-radius: value("constants.css.borderRadius");
 	border-top-right-radius: value("constants.css.borderRadius");
 	vertical-align: top;
 	margin:0 0 0 2px;
 }
-
-@sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
-	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%;
-	height: auto;
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:before{
+	content: "";
+	position: absolute;
+	top:0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	backgound: transparent;
+	opacity: 0.4;
+	z-index: 0;
+	border-top-left-radius: value("constants.css.borderRadius");
+	border-top-right-radius: value("constants.css.borderRadius");
+}
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover:before {  	
 	background-color: value("constants.css.backgroundColorStateHover");
 }
+.classicTabs.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab:before {
+	background-color: value("constants.css.backgroundColorStateDisabled");
+}
 
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab > div {
+	position: relative;
+}
+.classicTabs.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
+	color:value("constants.css.textColorDisabledButton") !important;
+}
 .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected, .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected:hover {    
     background: value("constants.css.backgroundColorMenu") none repeat scroll 0 0;
 	cursor: default;
@@ -280,16 +296,6 @@
 	padding: 3px 5px 4px;
 	font-size:value("constants.css.fontSize");
 	font-family: value("constants.css.fontFamily");
-}
-
-@sprite .classicTabs.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab {
-	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto;
-	cursor: default;
-}
-.classicTabs.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
-	color:value("constants.css.textColorDisabledButton") !important;
 }
 
 /* disables text selection */

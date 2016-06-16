@@ -58,7 +58,6 @@ import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
-import org.opencms.gwt.client.ui.CmsNotificationMessage;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -538,7 +537,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]();
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+                ();
     }-*/;
 
     /**
@@ -1821,22 +1821,10 @@ public final class CmsContentEditor extends CmsEditorBase {
 
                 public void execute(final CmsContentDefinition contentDefinition) {
 
-                    registerContentDefinition(contentDefinition);
-                    final CmsNotificationMessage message = CmsNotification.get().sendBusy(
-                        CmsNotification.Type.NORMAL,
-                        org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
-                    WidgetRegistry.getInstance().registerExternalWidgets(
-                        contentDefinition.getExternalWidgetConfigurations(),
-                        new Command() {
+                    setContentDefinition(contentDefinition);
+                    renderFormContent();
+                    setChanged();
 
-                        public void execute() {
-
-                            setContentDefinition(contentDefinition);
-                            renderFormContent();
-                            setChanged();
-                            CmsNotification.get().removeMessage(message);
-                        }
-                    });
                 }
             });
         } else {
@@ -1995,8 +1983,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     private native void exportObserver()/*-{
         var self = this;
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(listener,
-                scope) {
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+                listener, scope) {
             var wrapper = {
                 onChange : listener.onChange
             }
@@ -2121,8 +2109,8 @@ public final class CmsContentEditor extends CmsEditorBase {
         }
         if (m_copyLocaleButton == null) {
             m_copyLocaleButton = createButton(
-                I_CmsButton.ButtonData.COPY_LOCALE.getTitle(),
-                I_CmsButton.ButtonData.COPY_LOCALE.getIconClass());
+                I_CmsButton.ButtonData.COPY_LOCALE_BUTTON.getTitle(),
+                I_CmsButton.ButtonData.COPY_LOCALE_BUTTON.getIconClass());
             m_copyLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -2142,8 +2130,8 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_toolbar = new CmsToolbar();
         m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_0));
         m_publishButton = createButton(
-            I_CmsButton.ButtonData.PUBLISH.getTitle(),
-            I_CmsButton.ButtonData.PUBLISH.getIconClass());
+            I_CmsButton.ButtonData.PUBLISH_BUTTON.getTitle(),
+            I_CmsButton.ButtonData.PUBLISH_BUTTON.getIconClass());
         m_toolbar.addLeft(m_publishButton);
         m_publishButton.addClickHandler(new ClickHandler() {
 
@@ -2197,7 +2185,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_toolbar.addLeft(m_saveExitButton);
         m_saveButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0),
-            I_CmsButton.ButtonData.SAVE.getIconClass());
+            I_CmsButton.ButtonData.SAVE_BUTTON.getIconClass());
         m_saveButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -2280,7 +2268,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         m_cancelButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_RESET_0),
-            I_CmsButton.ButtonData.RESET.getIconClass());
+            I_CmsButton.ButtonData.RESET_BUTTON.getIconClass());
         m_cancelButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {

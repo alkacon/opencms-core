@@ -153,7 +153,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
      */
     public CmsToolbarGalleryMenu(CmsContainerpageHandler handler, CmsDNDHandler dragHandler) {
 
-        super(I_CmsButton.ButtonData.ADD, handler);
+        super(I_CmsButton.ButtonData.WAND_BUTTON, handler);
         m_dragHandler = dragHandler;
         FlowPanel contentPanel = new FlowPanel();
         m_tabsContainer = new SimplePanel();
@@ -167,7 +167,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
      */
     public void onToolbarActivate() {
 
-        Document.get().getBody().addClassName(I_CmsButton.ButtonData.ADD.getIconClass());
+        Document.get().getBody().addClassName(I_CmsButton.ButtonData.WAND_BUTTON.getIconClass());
         if (m_dialog == null) {
             int dialogHeight = CmsToolbarPopup.getAvailableHeight();
             int dialogWidth = CmsToolbarPopup.getAvailableWidth();
@@ -193,7 +193,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
      */
     public void onToolbarDeactivate() {
 
-        Document.get().getBody().removeClassName(I_CmsButton.ButtonData.ADD.getIconClass());
+        Document.get().getBody().removeClassName(I_CmsButton.ButtonData.WAND_BUTTON.getIconClass());
     }
 
     /**

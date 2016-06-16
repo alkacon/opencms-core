@@ -33,9 +33,7 @@ import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.category.CmsDataValue;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -76,8 +74,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
          */
         MoveHandle(CmsListItem draggable) {
 
-            setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
-            setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            setImageClass(I_CmsButton.MOVE_SMALL);
+            setButtonStyle(ButtonStyle.FONT_ICON, null);
             setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_TO_0));
             addStyleName(MOVE_HANDLE_MARKER_CLASS);
             m_draggable = draggable;
@@ -98,9 +96,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /** The width of a checkbox. */
     private static final int CHECKBOX_WIDTH = 20;
-
-    /** The CSS bundle used for this widget. */
-    private static final I_CmsListItemCss CSS = I_CmsLayoutBundle.INSTANCE.listItemCss();
 
     /** The checkbox of this list item, or null if there is no checkbox. */
     protected CmsCheckBox m_checkbox;
@@ -577,8 +572,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         assert m_checkbox == null;
         m_checkbox = checkbox;
         addDecoration(m_checkbox, CHECKBOX_WIDTH, false);
-        m_checkbox.addStyleName(CSS.listItemCheckbox());
-
     }
 
     /**

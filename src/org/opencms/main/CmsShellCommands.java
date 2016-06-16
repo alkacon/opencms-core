@@ -226,6 +226,11 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsResource createFolder(String targetFolder, String folderName) throws Exception {
 
+        if (m_cms.existsResource(targetFolder + folderName)) {
+            m_shell.getOut().println(
+                getMessages().key(Messages.GUI_SHELL_FOLDER_ALREADY_EXISTS_1, targetFolder + folderName));
+            return null;
+        }
         return m_cms.createResource(targetFolder + folderName, CmsResourceTypeFolder.getStaticTypeId());
     }
 
@@ -297,7 +302,8 @@ class CmsShellCommands implements I_CmsShellCommands {
         String description,
         String firstname,
         String lastname,
-        String email) throws Exception {
+        String email)
+    throws Exception {
 
         if (existsUser(name)) {
             m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_USER_ALREADY_EXISTS_1, name));

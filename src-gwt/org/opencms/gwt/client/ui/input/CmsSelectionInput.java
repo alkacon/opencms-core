@@ -28,7 +28,9 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
@@ -79,8 +81,13 @@ public class CmsSelectionInput extends Composite {
     public CmsSelectionInput(String openerIcon) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_opener.setImageClass(openerIcon);
-        m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        if (openerIcon == null) {
+            m_opener.setImageClass(I_CmsButton.GALLERY);
+        } else {
+            m_opener.setImageClass(openerIcon);
+        }
+        m_opener.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_opener.setSize(Size.small);
     }
 
     /**

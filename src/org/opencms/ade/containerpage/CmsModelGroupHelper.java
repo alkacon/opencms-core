@@ -150,7 +150,8 @@ public class CmsModelGroupHelper {
     public CmsContainerPageBean prepareforModelGroupContent(
         Map<String, CmsContainerElementBean> elements,
         CmsContainerPageBean page,
-        Locale locale) throws CmsException {
+        Locale locale)
+    throws CmsException {
 
         for (Entry<String, CmsContainerElementBean> entry : elements.entrySet()) {
             CmsContainerElementBean element = entry.getValue();
@@ -401,9 +402,18 @@ public class CmsModelGroupHelper {
                     }
                     if (hasChangedProperty(modelGroup, title, description, groupType)) {
                         List<CmsProperty> props = new ArrayList<CmsProperty>();
+                        if (title == null) {
+                            title = "";
+                        }
                         props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, title));
+                        if (description == null) {
+                            description = "";
+                        }
                         props.add(
                             new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, description));
+                        if (groupType == null) {
+                            groupType = "";
+                        }
                         props.add(
                             new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, groupType, groupType));
                         m_cms.writePropertyObjects(modelGroup, props);
@@ -568,7 +578,8 @@ public class CmsModelGroupHelper {
     private List<CmsContainerBean> createNewElementsForModelGroup(
         CmsObject cms,
         List<CmsContainerBean> modelContainers,
-        Locale locale) throws CmsException {
+        Locale locale)
+    throws CmsException {
 
         Map<CmsUUID, CmsResource> newResources = new HashMap<CmsUUID, CmsResource>();
         CmsObject cloneCms = OpenCms.initCmsObject(cms);
@@ -754,17 +765,31 @@ public class CmsModelGroupHelper {
     throws CmsException {
 
         boolean propsChanged = false;
-        if (!title.equals(
-            m_cms.readPropertyObject(modelGroup, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue())) {
+        if (!matchesProperty(modelGroup, title, CmsPropertyDefinition.PROPERTY_TITLE)) {
             propsChanged = true;
-        } else if (!description.equals(
-            m_cms.readPropertyObject(modelGroup, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue())) {
+        } else if (!matchesProperty(modelGroup, description, CmsPropertyDefinition.PROPERTY_DESCRIPTION)) {
             propsChanged = true;
-        } else if (!groupType.equals(
-            m_cms.readPropertyObject(modelGroup, CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, false).getValue())) {
+        } else if (!matchesProperty(modelGroup, groupType, CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS)) {
             propsChanged = true;
         }
         return propsChanged;
+    }
+
+    /**
+     * Returns whether the given value matches the current resource property.<p>
+     *
+     * @param resource the resource
+     * @param value the value
+     * @param propertyName the property name
+     *
+     * @return <code>true</code> if the value matches
+     *
+     * @throws CmsException in case reading the property fails
+     */
+    private boolean matchesProperty(CmsResource resource, String value, String propertyName) throws CmsException {
+
+        CmsProperty prop = m_cms.readPropertyObject(resource, propertyName, false);
+        return value == null ? prop.isNullProperty() : value.equals(prop.getValue());
     }
 
     /**

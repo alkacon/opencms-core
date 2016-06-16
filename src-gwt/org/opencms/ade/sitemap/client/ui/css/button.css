@@ -36,7 +36,7 @@
 
 div.hoverbar{
 	position: absolute;
-	top: 6px;
+	top: 9px;
 	right: 5px;
 	overflow: visible;
 }
@@ -44,60 +44,6 @@ div.hoverbar{
 .dragStarted .hoverbar .cmsState{
 	display: none;
 }
-.dragStarted .hoverbar .cmsState.hoverbarMove{
+.dragStarted .hoverbar > .cmsState{
 	display: inline-block;
 }	
-
-@sprite .cmsState-up-hovering .hoverbarContext, .context .hoverbarContext, .cmsState-down .hoverbarContext, .cmsState-down-hovering .hoverbarContext{
-    gwt-image: "icons.menuIconActive";
-}
-@sprite .cmsState-up .hoverbarContext, .cmsState-up-disabled .hoverbarContext, .cmsState-down-disabled .hoverbarContext{
-    gwt-image: "icons.menuIconDeactivated";
-}
-
-
-
-@sprite .cmsState-up-hovering .hoverbarParent, .cmsState-down-hovering .hoverbarParent, .cmsState-down .hoverbarParent, .context .hoverbarParent{
-    gwt-image: "icons.gotoParentIcon";
-}
-@sprite .cmsState-up .hoverbarParent, .cmsState-up-disabled .hoverbarParent, .cmsState-down-disabled .hoverbarParent{
-    gwt-image: "icons.gotoParentIcon";
-}
-
-@sprite .cmsState-up-hovering .hoverbarGotoSub, .cmsState-down-hovering .hoverbarGotoSub, .cmsState-down .hoverbarGotoSub, .context .hoverbarGotoSub {
-    gwt-image: "icons.subSitemapIcon";
-}
-@sprite .cmsState-up .hoverbarGotoSub, .cmsState-up-disabled .hoverbarGotoSub, .cmsState-down-disabled .hoverbarGotoSub {
-    gwt-image: "icons.subSitemapIconDeactivated";
-}
-
-@sprite .cmsState-up-hovering .hoverbarGoto, .cmsState-down-hovering .hoverbarGoto, .cmsState-down .hoverbarGoto, .context .hoverbarGoto{
-    gwt-image: "icons.gotoPageIcon";
-}
-@sprite .cmsState-up .hoverbarGoto, .cmsState-up-disabled .hoverbarGoto, .cmsState-down-disabled .hoverbarGoto{
-    gwt-image: "icons.gotoPageIcon";
-}
-
-@sprite .cmsState-up-hovering .hoverbarMove, .cmsState-down-hovering .hoverbarMove, .cmsState-down .hoverbarMove{
-    gwt-image: "icons.moveIconActive";
-}
-@sprite .cmsState-up .hoverbarMove, .cmsState-up-disabled .hoverbarMove, .cmsState-down-disabled .hoverbarMove{
-    gwt-image: "icons.moveIconDeactivated";
-}
-
-
-@sprite .cmsState-up-disabled .showPage, .cmsState-down-disabled .showPage, .cmsState-up .showPage{
-	gwt-image: "icons.showPageIcon";
-}
-
-@sprite .cmsState-up-hovering .showPage, .cmsState-down-hovering .showPage, .cmsState-down .showPage{
-    gwt-image: "icons.showPageIcon";
-}
-
-@sprite .cmsState-up-disabled .undelete, .cmsState-down-disabled .undelete, .cmsState-up .undelete{
-	gwt-image: "icons.replaceIcon";
-}
-
-@sprite .cmsState-up-hovering .undelete, .cmsState-down-hovering .undelete, .cmsState-down .undelete{
-    gwt-image: "icons.replaceIcon";
-}

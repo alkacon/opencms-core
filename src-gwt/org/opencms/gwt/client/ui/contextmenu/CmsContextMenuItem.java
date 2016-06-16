@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui.contextmenu;
 
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.util.CmsStringUtil;
 
@@ -109,10 +109,8 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
         if (hasSubMenu) {
             // if this menu item has a sub menu show the arrow-icon behind the text of the icon
             html.append("<div class=\"");
-            html.append(
-                I_CmsLayoutBundle.INSTANCE.contextmenuCss().arrow()
-                    + " "
-                    + I_CmsImageBundle.INSTANCE.style().triangleRight());
+            html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().arrow()).append(" ").append(
+                I_CmsButton.ICON_FONT).append(" ").append(I_CmsButton.TRIANGLE_RIGHT);
             html.append("\"></div>");
         }
         String iconClass = m_entry.getIconClass();

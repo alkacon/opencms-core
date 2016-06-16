@@ -53,36 +53,6 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
         m_state = new CmsSearchStateFacet();
     }
 
-    /** Add query part for the facet, without filters.
-     * @param query The query part that is extended for the facet
-     */
-    protected void addFacetPart(CmsSolrQuery query) {
-
-        query.set("facet", "true");
-        for (I_CmsFacetQueryItem q : m_config.getQueryList()) {
-            query.set("facet.query", "{!ex=" + m_config.getName() + "}" + q.getQuery());
-        }
-    }
-
-    /** Adds filter parts to the query.
-     * @param query The query.
-     */
-    protected void addFilterQueryParts(CmsSolrQuery query) {
-
-        if (!m_state.getCheckedEntries().isEmpty()) {
-            final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
-            StringBuffer value = new StringBuffer();
-            value.append("{!tag=").append(m_config.getName()).append("}(").append(fieldIterator.next());
-            final String concater = m_config.getIsAndFacet() ? " AND " : " OR ";
-            while (fieldIterator.hasNext()) {
-                value.append(concater);
-                value.append(fieldIterator.next());
-            }
-            value.append(')');
-            query.add("fq", value.toString());
-        }
-    }
-
     /**
      * @see org.opencms.jsp.search.controller.I_CmsSearchController#addParametersForCurrentState(java.util.Map)
      */
@@ -160,6 +130,41 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
             for (String checked : m_config.getPreSelection()) {
                 m_state.addChecked(checked);
             }
+        }
+    }
+
+    /** Add query part for the facet, without filters.
+     * @param query The query part that is extended for the facet
+     */
+    protected void addFacetPart(CmsSolrQuery query) {
+
+        query.set("facet", "true");
+        String excludes = "";
+        if (m_config.getIgnoreAllFacetFilters() || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
+            excludes = "{!ex=" + m_config.getIgnoreTags() + "}";
+        }
+
+        for (I_CmsFacetQueryItem q : m_config.getQueryList()) {
+            query.set("facet.query", excludes + q.getQuery());
+        }
+    }
+
+    /** Adds filter parts to the query.
+     * @param query The query.
+     */
+    protected void addFilterQueryParts(CmsSolrQuery query) {
+
+        if (!m_state.getCheckedEntries().isEmpty()) {
+            final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
+            StringBuffer value = new StringBuffer();
+            value.append("{!tag=").append(m_config.getName()).append("}(").append(fieldIterator.next());
+            final String concater = m_config.getIsAndFacet() ? " AND " : " OR ";
+            while (fieldIterator.hasNext()) {
+                value.append(concater);
+                value.append(fieldIterator.next());
+            }
+            value.append(')');
+            query.add("fq", value.toString());
         }
     }
 

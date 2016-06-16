@@ -3,7 +3,7 @@
 /* The height and width are set as inline style. */
 div.previewDialog {
 	position:absolute;
-	top:0px;
+	top: 28px;
 	left:0px;
 	right: 0px;
 	bottom: 0px;
@@ -11,27 +11,16 @@ div.previewDialog {
 	background-color: value("constants.css.backgroundColorDialog");
 	z-index: value("constants.css.zIndexInline");
 }
-.previewDialog * {
-	margin: 0;
-	padding: 0;
-	color: value("constants.css.textColor");
-	font-family: value("constants.css.fontFamily");
-	font-size: value("constants.css.fontSize");
-	line-height: value("constants.css.lineHeight");
-	background: transparent;
-	text-align: left;
-	height: auto;
-	width: auto;
-	min-height: 0;
-	max-height: none;
-	min-width: 0;
-	max-width: none;
+div.previewDialog div.previewTitle{
+	position:absolute;
+	top: -28px;
+	left:0px;
+	display: block;
 }
+
 .hidePreview .previewDialog{
 	display: none;
 }
-
-.hiding{}
 
 .hiding .hiding{
 	display: none;	

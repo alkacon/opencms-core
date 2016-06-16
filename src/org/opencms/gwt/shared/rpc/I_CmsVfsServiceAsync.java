@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.shared.rpc;
 
-import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
@@ -120,22 +119,6 @@ public interface I_CmsVfsServiceAsync {
      *
      */
     void getAliasesForPage(CmsUUID structureId, AsyncCallback<List<CmsAliasBean>> callback);
-
-    /**
-     * Gets a {@link CmsAvailabilityInfoBean} for a given resource.<p>
-     *
-     * @param structureId the structure id to create the {@link CmsAvailabilityInfoBean} for
-     * @param callback the asynchronous callback
-     */
-    void getAvailabilityInfo(CmsUUID structureId, AsyncCallback<CmsAvailabilityInfoBean> callback);
-
-    /**
-     * Gets a {@link CmsAvailabilityInfoBean} for a given resource.<p>
-     *
-     * @param vfsPath the vfs path to create the {@link CmsAvailabilityInfoBean} for
-     * @param callback the asynchronous callback
-     */
-    void getAvailabilityInfo(String vfsPath, AsyncCallback<CmsAvailabilityInfoBean> callback);
 
     /**
      * Returns a list of potentially broken links, if the given resource was deleted.<p>

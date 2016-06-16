@@ -93,7 +93,8 @@ public class CmsNewChoiceMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
+        boolean show = getHoverbar().getController().isEditable()
+            && !CmsSitemapView.getInstance().isSpecialMode()
             && (entry != null)
             && entry.isEditable()
             && (controller.getData().getDefaultNewElementInfo() != null)

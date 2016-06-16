@@ -54,6 +54,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -67,6 +69,8 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -705,6 +709,15 @@ public final class CmsJspStandardContextBean {
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
 
+    /** Lazily initialized map from a category path to the path's category object. */
+    private Map<String, CmsCategory> m_categories;
+
+    /** Lazily initialized map from a category path to all categories on that path. */
+    private Map<String, List<CmsCategory>> m_pathCategories;
+
+    /** Lazily initialized map from the root path of a resource to all categories assigned to the resource. */
+    private Map<String, CmsJspCategoryAccessBean> m_resourceCategories;
+
     /**
      * Creates an empty instance.<p>
      */
@@ -1067,6 +1080,112 @@ public final class CmsJspStandardContextBean {
             }
         };
         return CmsCollectionsGenericWrapper.createLazyMap(transformer);
+    }
+
+    /**
+     * Reads the categories assigned to the currently requested URI.
+     * @return the categories assigned to the currently requested URI.
+     */
+    public CmsJspCategoryAccessBean getReadCategories() {
+
+        return m_resourceCategories.get(getRequestContext().getUri());
+    }
+
+    /**
+     * Transforms the category path of a category to the category.
+     * @return a map from root or site path to category.
+     */
+    public Map<String, CmsCategory> getReadCategory() {
+
+        if (null == m_categories) {
+            m_categories = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                public Object transform(Object categoryPath) {
+
+                    try {
+                        return CmsCategoryService.getInstance().readCategory(
+                            m_cms,
+                            (String)categoryPath,
+                            getRequestContext().getUri());
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        return null;
+                    }
+                }
+
+            });
+        }
+        return m_categories;
+    }
+
+    /**
+     * Transforms the category path to the list of all categories on that path.<p>
+     *
+     * Example: For path <code>"location/europe/"</code>
+     *          the list <code>[getReadCategory.get("location/"),getReadCategory.get("location/europe/")]</code>
+     *          is returned.
+     * @return a map from a category path to list of categories on that path.
+     */
+    public Map<String, List<CmsCategory>> getReadPathCategories() {
+
+        if (null == m_pathCategories) {
+            m_pathCategories = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                public Object transform(Object categoryPath) {
+
+                    List<CmsCategory> result = new ArrayList<CmsCategory>();
+
+                    String path = (String)categoryPath;
+
+                    if ((null == path) || (path.length() <= 1)) {
+                        return result;
+                    }
+
+                    //cut last slash
+                    path = path.substring(0, path.length() - 1);
+
+                    List<String> pathParts = Arrays.asList(path.split("/"));
+
+                    String currentPath = "";
+                    for (String part : pathParts) {
+                        currentPath += part + "/";
+                        CmsCategory category = getReadCategory().get(currentPath);
+                        if (null != category) {
+                            result.add(category);
+                        }
+                    }
+                    return result;
+                }
+
+            });
+        }
+        return m_pathCategories;
+    }
+
+    /**
+     * Reads the categories assigned to a resource.
+     *
+     * @return map from the resource path (root path) to the assigned categories
+     */
+    public Map<String, CmsJspCategoryAccessBean> getReadResourceCategories() {
+
+        if (null == m_resourceCategories) {
+            m_resourceCategories = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                public Object transform(Object resourceName) {
+
+                    try {
+                        CmsResource resource = m_cms.readResource(
+                            getRequestContext().removeSiteRoot((String)resourceName));
+                        return new CmsJspCategoryAccessBean(m_cms, resource);
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        return null;
+                    }
+                }
+            });
+        }
+        return m_resourceCategories;
     }
 
     /**

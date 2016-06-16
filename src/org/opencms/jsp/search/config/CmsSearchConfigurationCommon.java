@@ -57,6 +57,10 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     private final String m_extraSolrParams;
     /** Additional request parameters mapped to their Solr query parts. */
     private final Map<String, String> m_additionalParameters;
+    /** Flag, indicating if the release date should be ignored. */
+    private boolean m_ignoreReleaseDate;
+    /** Flag, indicating if the expiration date should be ignored. */
+    private boolean m_ignoreExpirationDate;
 
     /** Constructor for the common search configuration, where all configuration parameters are provided.
      * @param queryParam The query request param used by the search form.
@@ -70,6 +74,8 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
      * @param solrCore The Solr core that should be used for the search.
      * @param extraSolrParams Extra params that are directly appended to each search query.
      * @param additionalParameters A map from additional request parameters to Solr query parts.
+     * @param ignoreReleaseDate A flag, indicating if the release date should be ignored.
+     * @param ignoreExpirationDate A flag, indicating if the expiration date should be ignored.
      */
     public CmsSearchConfigurationCommon(
         final String queryParam,
@@ -82,7 +88,9 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
         final String solrIndex,
         final String solrCore,
         final String extraSolrParams,
-        final Map<String, String> additionalParameters) {
+        final Map<String, String> additionalParameters,
+        final Boolean ignoreReleaseDate,
+        final Boolean ignoreExpirationDate) {
 
         m_queryParam = queryParam;
         m_lastQueryParam = lastQueryParam;
@@ -95,6 +103,8 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
         m_solrCore = solrCore;
         m_extraSolrParams = extraSolrParams == null ? "" : extraSolrParams;
         m_additionalParameters = additionalParameters != null ? additionalParameters : new HashMap<String, String>();
+        m_ignoreReleaseDate = null == ignoreReleaseDate ? false : ignoreReleaseDate.booleanValue();
+        m_ignoreExpirationDate = null == ignoreExpirationDate ? false : ignoreExpirationDate.booleanValue();
     }
 
     /**
@@ -124,11 +134,27 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     }
 
     /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getIgnoreExpirationDate()
+     */
+    public boolean getIgnoreExpirationDate() {
+
+        return m_ignoreExpirationDate;
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getIgnoreQueryParam()
      */
     public boolean getIgnoreQueryParam() {
 
         return m_ignoreQuery;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getIgnoreReleaseDate()
+     */
+    public boolean getIgnoreReleaseDate() {
+
+        return m_ignoreReleaseDate;
     }
 
     /**

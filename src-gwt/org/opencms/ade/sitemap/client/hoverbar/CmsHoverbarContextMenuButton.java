@@ -28,10 +28,9 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsMenuButton;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
@@ -73,12 +72,12 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         final CmsSitemapHoverbar hoverbar,
         I_CmsContextMenuItemProvider menuItemProvider) {
 
-        super(null, I_CmsImageBundle.INSTANCE.buttonCss().hoverbarContext());
+        super(null, I_CmsButton.CONTEXT_MENU_SMALL);
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
         m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
-        m_button.setSize(Size.small);
+        m_button.setSize(I_CmsButton.Size.medium);
         // set the widget
         setMenuWidget(m_menuPanel);
         //    getPopupContent().removeAutoHidePartner(getElement());
@@ -118,6 +117,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
 
         result.add(new CmsGotoMenuEntry(hoverbar));
+        result.add(new CmsGotoExplorerMenuEntry(hoverbar));
         result.add(new CmsOpenGalleryMenuEntry(hoverbar));
         result.add(new CmsEditRedirectMenuEntry(hoverbar));
         result.add(new CmsEditModelPageMenuEntry(hoverbar));

@@ -293,9 +293,8 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
      */
     protected void setSubMenuPosition(final A_CmsContextMenuItem item) {
 
-        // in case the menu is positioned fixed, the scroll position is irrelevant
-        int scrollLeft = m_isFixed ? 0 : Window.getScrollLeft();
-        int scrollTop = m_isFixed ? 0 : Window.getScrollTop();
+        int scrollLeft = Window.getScrollLeft();
+        int scrollTop = Window.getScrollTop();
 
         // calculate the left space
         // add 10 because of the shadow and for avoiding that the browser's right window border touches the sub menu
@@ -327,42 +326,23 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
         int left;
         int top;
-        if (showRight && showBottom) {
-            // bottom-right
-            // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the
-            // item's absolute left and add the width of the item / by subtracting 4 the overlay it created
-            left = (item.getAbsoluteLeft() + item.getOffsetWidth()) - 4;
-            // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the
-            // item's absolute top and subtract the scroll top of Window / by subtracting 4 the shadow is balanced
+
+        if (showBottom) {
             top = item.getAbsoluteTop() - 4;
-        } else if (!showRight && showBottom) {
-            // bottom-left
-            // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width
-            // of the sub menu, so take the item's absolute left, subtract the sub menu's width and the scroll left
-            // by subtracting 4 the overlay it created
-            left = item.getAbsoluteLeft() - item.getSubMenu().getOffsetWidth() - 4;
-            // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the
-            // item's absolute top and subtract the scroll top of Window / by subtracting 4 the shadow is balanced
-            top = item.getAbsoluteTop() - 4;
-        } else if (showRight && !showBottom) {
-            // top-right
-            // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the
-            // item's absolute left and add the width of the item / by subtracting 4 the overlay it created
-            left = (item.getAbsoluteLeft() + item.getOffsetWidth()) - 4;
-            // if to show the sub menu on the top, the bottom-left corner of the item plus the height of the sub menu
-            // is the top coordinate, so take the item's absolute top subtract the scroll top and the height of the sub
-            // menu and add the height of the item / by subtracting 4 the shadow is balanced
-            top = ((item.getAbsoluteTop() - item.getSubMenu().getOffsetHeight()) + item.getOffsetHeight()) - 4;
         } else {
-            // top-left
-            // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width
-            // of the sub menu, so take the item's absolute left, subtract the sub menu's width and the scroll left
-            // by subtracting 4 the overlay it created
-            left = item.getAbsoluteLeft() - item.getSubMenu().getOffsetWidth() - 4;
-            // if to show the sub menu on the top, the bottom-left corner of the item plus the height of the sub menu
-            // is the top coordinate, so take the item's absolute top subtract the scroll top and the height of the sub
-            // menu and add the height of the item / by subtracting 4 the shadow is balanced
             top = ((item.getAbsoluteTop() - item.getSubMenu().getOffsetHeight()) + item.getOffsetHeight()) - 4;
+        }
+
+        if (showRight) {
+            left = (item.getAbsoluteLeft() + item.getOffsetWidth()) - 4;
+        } else {
+            left = item.getAbsoluteLeft() - item.getSubMenu().getOffsetWidth() - 4;
+        }
+
+        // in case of fixed popup position, subtract the scroll position
+        if (m_isFixed) {
+            left -= scrollLeft;
+            top -= scrollTop;
         }
 
         // finally set the position of the popup

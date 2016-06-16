@@ -17,6 +17,7 @@
 			<xsd:element name="Label" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="IsAndFacet" type="OpenCmsBoolean" minOccurs="0" />
 			<xsd:element name="PreSelection" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="IgnoreAllFacetFilters" type="OpenCmsBoolean" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -29,6 +30,7 @@
 				<searchsetting element="Label" searchcontent="false" />
 				<searchsetting element="IsAndFacet" searchcontent="false" />
 				<searchsetting element="PreSelection" searchcontent="false" />
+				<searchsetting element="IgnoreAllFacetFilters" searchcontent="false" />
 			</searchsettings>
 		</xsd:appinfo>
 	</xsd:annotation>

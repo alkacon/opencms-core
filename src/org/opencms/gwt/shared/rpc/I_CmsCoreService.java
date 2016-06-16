@@ -29,7 +29,6 @@ package org.opencms.gwt.shared.rpc;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -268,26 +267,6 @@ public interface I_CmsCoreService extends RemoteService {
     void saveUserSettings(Map<String, String> userSettings, Set<String> edited) throws CmsRpcException;
 
     /**
-     * Applies the changes stored in the info bean to the vfs of OpenCms.<p>
-     *
-     * @param structureId the structure id of the modified resource
-     * @param bean the bean with the information of the dialog
-     *
-     * @throws CmsRpcException if the RPC call goes wrong
-     */
-    void setAvailabilityInfo(CmsUUID structureId, CmsAvailabilityInfoBean bean) throws CmsRpcException;
-
-    /**
-     * Applies the changes stored in the info bean to the vfs of OpenCms.<p>
-     *
-     * @param vfsPath the vfs path of the modified resource
-     * @param bean the bean with the information of the dialog
-     *
-     * @throws CmsRpcException if the RPC call goes wrong
-     */
-    void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean) throws CmsRpcException;
-
-    /**
      * Sets the categories of the given resource. Will remove all other categories.<p>
      *
      * @param structureId the resource structure id
@@ -364,6 +343,7 @@ public interface I_CmsCoreService extends RemoteService {
         String formValidatorClass,
         Map<String, CmsValidationQuery> validationQueries,
         Map<String, String> values,
-        String config) throws CmsRpcException;
+        String config)
+    throws CmsRpcException;
 
 }

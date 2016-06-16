@@ -29,8 +29,6 @@ package org.opencms.gwt;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -39,7 +37,6 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -58,7 +55,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsBroadcast;
-import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -67,8 +63,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.scheduler.CmsScheduledJobInfo;
-import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
@@ -76,14 +70,13 @@ import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsUserInfo;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
-import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
@@ -96,18 +89,13 @@ import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -175,11 +163,46 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public static List<CmsCategoryTreeEntry> getCategoriesForSitePathStatic(CmsObject cms, String sitePath)
     throws CmsException {
 
+        return getCategoriesForSitePathStatic(cms, sitePath, null);
+    }
+
+    /**
+     * Helper method for getting the category beans for the given site path.<p>
+     *
+     * @param cms the CMS context to use
+     * @param sitePath the site path
+     * @param localCategoryRepositoryPath the categories for this repository are added separately
+     * @return the list of category beans
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static List<CmsCategoryTreeEntry> getCategoriesForSitePathStatic(
+        CmsObject cms,
+        String sitePath,
+        String localCategoryRepositoryPath)
+    throws CmsException {
+
         List<CmsCategoryTreeEntry> result;
         CmsCategoryService catService = CmsCategoryService.getInstance();
+        List<CmsCategory> categories;
         // get the categories
-        List<CmsCategory> categories = catService.readCategories(cms, "", true, sitePath);
-        result = buildCategoryTree(cms, categories);
+        if (null == localCategoryRepositoryPath) {
+            categories = catService.readCategories(cms, "", true, sitePath);
+            result = buildCategoryTree(cms, categories);
+        } else {
+            List<String> repositories = catService.getCategoryRepositories(cms, sitePath);
+            repositories.remove(localCategoryRepositoryPath);
+            categories = catService.readCategoriesForRepositories(cms, "", true, repositories);
+            result = buildCategoryTree(cms, categories);
+            categories = catService.readCategoriesForRepositories(
+                cms,
+                "",
+                true,
+                Collections.singletonList(localCategoryRepositoryPath));
+            List<CmsCategoryTreeEntry> localCategories = buildCategoryTree(cms, categories);
+            result.addAll(localCategories);
+        }
+
         return result;
     }
 
@@ -281,13 +304,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
         ? OpenCms.getSiteManager().getSharedFolder()
         : "";
-        String link = CmsVaadinUtils.getWorkplaceLink()
-            + "#!explorer/"
-            + cms.getRequestContext().getCurrentProject().getUuid()
-            + "!!"
-            + siteRoot
-            + "!!"
-            + cms.getRequestContext().removeSiteRoot(resourceRootFolder);
+        String link = getFileExplorerLink(cms, siteRoot) + cms.getRequestContext().removeSiteRoot(resourceRootFolder);
         return link;
     }
 
@@ -524,6 +541,26 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the file explorer link prefix. Append resource site path for complete link.<p>
+     *
+     * @param cms the cms context
+     * @param siteRoot the site root
+     *
+     * @return the file explorer link prefix
+     */
+    private static String getFileExplorerLink(CmsObject cms, String siteRoot) {
+
+        return CmsVaadinUtils.getWorkplaceLink()
+            + "#!"
+            + CmsFileExplorerConfiguration.APP_ID
+            + "/"
+            + cms.getRequestContext().getCurrentProject().getUuid()
+            + "!!"
+            + siteRoot
+            + "!!";
     }
 
     /**
@@ -1107,6 +1144,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             EDITOR_BACKLINK_URI,
             loginUrl,
             OpenCms.getStaticExportManager().getVfsPrefix(),
+            getFileExplorerLink(cms, cms.getRequestContext().getSiteRoot()),
             OpenCms.getSystemInfo().getStaticResourceContext(),
             CmsEmbeddedDialogsUI.getEmbeddedDialogsContextPath(),
             cms.getRequestContext().getSiteRoot(),
@@ -1142,33 +1180,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             userSettings.keySet().retainAll(edited);
             converter.saveSettings(userSettings);
         } catch (Exception e) {
-            error(e);
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setAvailabilityInfo(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsAvailabilityInfoBean)
-     */
-    public void setAvailabilityInfo(CmsUUID structureId, CmsAvailabilityInfoBean bean) throws CmsRpcException {
-
-        try {
-            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            setAvailabilityInfo(res, bean);
-        } catch (CmsException e) {
-            error(e);
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setAvailabilityInfo(java.lang.String, org.opencms.gwt.shared.CmsAvailabilityInfoBean)
-     */
-    public void setAvailabilityInfo(String uri, CmsAvailabilityInfoBean bean) throws CmsRpcException {
-
-        try {
-            String sitePath = getCmsObject().getRequestContext().removeSiteRoot(uri);
-            CmsResource resource = getCmsObject().readResource(sitePath);
-            setAvailabilityInfo(resource, bean);
-        } catch (CmsException e) {
             error(e);
         }
     }
@@ -1361,194 +1372,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Modifies the availability of the given resource.<p>
-     *
-     * @param resource the resource whose availability should be modified
-     * @param dateReleased the date released
-     * @param dateExpired the date expired
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void modifyAvailability(CmsResource resource, long dateReleased, long dateExpired) throws CmsException {
-
-        // modify release and expire date of the resource if needed
-        getCmsObject().setDateReleased(resource, dateReleased, false);
-        getCmsObject().setDateExpired(resource, dateExpired, false);
-    }
-
-    /**
-     * Modifies the notification properties of the given resource.<p>
-     *
-     * @param resource the resource whose notification properties should be modified
-     * @param notificationInterval the modification interval
-     * @param notificationEnabled signals whether the notification is enabled or disabled
-     * @param modifySiblings signals whether siblings should be also modified
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void modifyNotification(
-        CmsResource resource,
-        int notificationInterval,
-        boolean notificationEnabled,
-        boolean modifySiblings)
-    throws CmsException {
-
-        List<CmsResource> resources = new ArrayList<CmsResource>();
-        if (modifySiblings) {
-            // modify all siblings of a resource
-            resources = getCmsObject().readSiblings(resource, CmsResourceFilter.IGNORE_EXPIRATION);
-        } else {
-            // modify only resource without siblings
-            resources.add(resource);
-        }
-        for (CmsResource curResource : resources) {
-            String resourcePath = getCmsObject().getRequestContext().removeSiteRoot(curResource.getRootPath());
-            // write notification settings
-            writeProperty(
-                resourcePath,
-                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
-                String.valueOf(notificationInterval));
-            writeProperty(
-                resourcePath,
-                CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
-                String.valueOf(notificationEnabled));
-        }
-
-    }
-
-    /**
-     * Modifies the publish scheduled.<p>
-     *
-     * Creates a temporary project and adds the given resource to it. Afterwards a scheduled job is created
-     * and the project is assigned to it. Then the publish job is enqueued.<p>
-     *
-     * @param resource the resource which should be scheduled for publishing
-     * @param pubDate the date when the resource should be published
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void modifyPublishScheduled(CmsResource resource, long pubDate) throws CmsException {
-
-        if (pubDate != CmsAvailabilityInfoBean.DATE_PUBLISH_SCHEDULED_DEFAULT) {
-
-            CmsObject cms = getCmsObject();
-
-            CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
-            Locale locale = getCmsObject().getRequestContext().getLocale();
-            Date date = new Date(pubDate);
-
-            // make copies from the admin cmsobject and the user cmsobject
-            // get the admin cms object
-            CmsWorkplaceAction action = CmsWorkplaceAction.getInstance();
-            CmsObject cmsAdmin = action.getCmsAdminObject();
-            // get the user cms object
-
-            // set the current user site to the admin cms object
-            cmsAdmin.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
-
-            // create the temporary project, which is deleted after publishing
-            // the publish scheduled date in project name
-            String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, locale);
-            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
-            String projectName = messages.key(
-                org.opencms.workplace.commons.Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2,
-                new Object[] {resource.getName(), dateTime});
-
-            // the HTML encoding for slashes is necessary because of the slashes in english date time format
-            // in project names slahes are not allowed, because these are separators for organizaional units
-            projectName = projectName.replace("/", "&#47;");
-            // create the project
-            CmsProject tmpProject = cmsAdmin.createProject(
-                projectName,
-                "",
-                CmsRole.WORKPLACE_USER.getGroupName(),
-                CmsRole.PROJECT_MANAGER.getGroupName(),
-                CmsProject.PROJECT_TYPE_TEMPORARY);
-            // make the project invisible for all users
-            tmpProject.setHidden(true);
-            // write the project to the database
-            cmsAdmin.writeProject(tmpProject);
-            // set project as current project
-            cmsAdmin.getRequestContext().setCurrentProject(tmpProject);
-            cms.getRequestContext().setCurrentProject(tmpProject);
-
-            // copy the resource to the project
-            cmsAdmin.copyResourceToProject(resource);
-
-            // create a new scheduled job
-            CmsScheduledJobInfo job = new CmsScheduledJobInfo();
-            // the job name
-            String jobName = projectName;
-            // set the job parameters
-            job.setJobName(jobName);
-            job.setClassName("org.opencms.scheduler.jobs.CmsPublishScheduledJob");
-            // create the cron expression
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            String cronExpr = ""
-                + calendar.get(Calendar.SECOND)
-                + " "
-                + calendar.get(Calendar.MINUTE)
-                + " "
-                + calendar.get(Calendar.HOUR_OF_DAY)
-                + " "
-                + calendar.get(Calendar.DAY_OF_MONTH)
-                + " "
-                + (calendar.get(Calendar.MONTH) + 1)
-                + " "
-                + "?"
-                + " "
-                + calendar.get(Calendar.YEAR);
-            // set the cron expression
-            job.setCronExpression(cronExpr);
-            // set the job active
-            job.setActive(true);
-            // create the context info
-            CmsContextInfo contextInfo = new CmsContextInfo();
-            contextInfo.setProjectName(projectName);
-            contextInfo.setUserName(cmsAdmin.getRequestContext().getCurrentUser().getName());
-            // create the job schedule parameter
-            SortedMap<String, String> params = new TreeMap<String, String>();
-            // the user to send mail to
-            params.put(CmsPublishScheduledJob.PARAM_USER, user.getName());
-            // the job name
-            params.put(CmsPublishScheduledJob.PARAM_JOBNAME, jobName);
-            // the link check
-            params.put(CmsPublishScheduledJob.PARAM_LINKCHECK, "true");
-            // add the job schedule parameter
-            job.setParameters(params);
-            // add the context info to the scheduled job
-            job.setContextInfo(contextInfo);
-            // add the job to the scheduled job list
-            OpenCms.getScheduleManager().scheduleJob(cmsAdmin, job);
-        }
-    }
-
-    /**
-     * Sets the availability of a resource by modifying the date release, date expired,
-     * setting a scheduled publish job according to the info bean.<p>
-     *
-     * Will also modify the notification settings of the resource.<p>
-     *
-     * @param resource the resource to modify
-     * @param bean the bean with the information of the dialog
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void setAvailabilityInfo(CmsResource resource, CmsAvailabilityInfoBean bean) throws CmsException {
-
-        ensureLock(resource);
-        modifyPublishScheduled(resource, bean.getDatePubScheduled());
-        modifyAvailability(resource, bean.getDateReleased(), bean.getDateExpired());
-        modifyNotification(
-            resource,
-            bean.getNotificationInterval(),
-            bean.isNotificationEnabled(),
-            bean.isModifySiblings());
-        tryUnlock(resource);
-    }
-
-    /**
      * Internal helper method for validating a single value.<p>
      *
      * @param validator the class name of the validation service
@@ -1564,65 +1387,4 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         I_CmsValidationService validationService = getValidationService(validator);
         return validationService.validate(getCmsObject(), value, config);
     }
-
-    /**
-     * Writes a property value for a resource.<p>
-     *
-     * @param resourcePath the path of the resource
-     * @param propertyName the name of the property
-     * @param propertyValue the new value of the property
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void writeProperty(String resourcePath, String propertyName, String propertyValue) throws CmsException {
-
-        if (CmsStringUtil.isEmpty(propertyValue)) {
-            propertyValue = CmsProperty.DELETE_VALUE;
-        }
-
-        CmsProperty newProp = new CmsProperty();
-        newProp.setName(propertyName);
-        CmsProperty oldProp = getCmsObject().readPropertyObject(resourcePath, propertyName, false);
-        if (oldProp.isNullProperty()) {
-            // property value was not already set
-            if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
-                newProp.setStructureValue(propertyValue);
-            } else {
-                newProp.setResourceValue(propertyValue);
-            }
-        } else {
-            if (oldProp.getStructureValue() != null) {
-                newProp.setStructureValue(propertyValue);
-                newProp.setResourceValue(oldProp.getResourceValue());
-            } else {
-                newProp.setResourceValue(propertyValue);
-            }
-        }
-
-        newProp.setAutoCreatePropertyDefinition(true);
-
-        String oldStructureValue = oldProp.getStructureValue();
-        String newStructureValue = newProp.getStructureValue();
-        if (CmsStringUtil.isEmpty(oldStructureValue)) {
-            oldStructureValue = CmsProperty.DELETE_VALUE;
-        }
-        if (CmsStringUtil.isEmpty(newStructureValue)) {
-            newStructureValue = CmsProperty.DELETE_VALUE;
-        }
-
-        String oldResourceValue = oldProp.getResourceValue();
-        String newResourceValue = newProp.getResourceValue();
-        if (CmsStringUtil.isEmpty(oldResourceValue)) {
-            oldResourceValue = CmsProperty.DELETE_VALUE;
-        }
-        if (CmsStringUtil.isEmpty(newResourceValue)) {
-            newResourceValue = CmsProperty.DELETE_VALUE;
-        }
-
-        // change property only if it has been changed
-        if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
-            getCmsObject().writePropertyObject(resourcePath, newProp);
-        }
-    }
-
 }

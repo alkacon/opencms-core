@@ -59,10 +59,7 @@ public class CmsCreateGalleryMenuEntry extends A_CmsSitemapMenuEntry {
 
         final CmsSitemapController controller = getHoverbar().getController();
         final CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        CmsCreateGalleryDialog dialog = new CmsCreateGalleryDialog(
-            controller,
-            entry.getResourceTypeId(),
-            entry.getId());
+        CmsCreateGalleryDialog dialog = new CmsCreateGalleryDialog(controller, entry.getResourceTypeId(), entry.getId());
         dialog.center();
     }
 
@@ -73,7 +70,8 @@ public class CmsCreateGalleryMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         // only gallery managers are allowed to create galleries
-        if (CmsSitemapView.getInstance().isGalleryMode()
+        if (getHoverbar().getController().isEditable()
+            && CmsSitemapView.getInstance().isGalleryMode()
             && getHoverbar().getController().getData().isGalleryManager()) {
             setVisible(true);
         } else {

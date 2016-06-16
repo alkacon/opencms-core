@@ -38,8 +38,10 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -114,7 +116,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     private static final int MAX_HEIGHT = 242;
 
     /** Category widget. */
-    protected CmsCategoryField m_categoryField = new CmsCategoryField();
+    protected CmsCategoryField m_categoryField;
 
     /** The priview handler. */
     protected HandlerRegistration m_previewHandlerRegistration;
@@ -137,8 +139,11 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     /** Height of the display field. */
     int m_height = DEFAULT_HEIGHT;
 
+    /** Flag indicating the category tree is being loaded. */
+    boolean m_loadingCategoryTree;
+
     /** List of all selected categories. */
-    List<String> m_selected = new ArrayList<String>();
+    Set<String> m_selected;
 
     /** Map of selected Values in relation to the select level. */
     String m_selectedValue;
@@ -150,7 +155,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     private String m_category = "";
 
     /** List of all possible category folder. */
-    private List<String> m_categoryList = new ArrayList<String>();
+    private List<String> m_categoryList;
 
     /** Sets the value if the parent should be selected with the children. */
     private boolean m_children;
@@ -166,18 +171,18 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
      * @param config The configuration string given from OpenCms XSD
      */
     public CmsCategoryWidget(String config) {
-
+        m_categoryField = new CmsCategoryField();
         initWidget(m_categoryField);
+        m_selected = new HashSet<String>();
+        m_categoryList = new ArrayList<String>();
         //merge configuration string
         parseConfiguration(config);
-
         if (m_selectiontype.equals("multi")) {
             m_isSingelValue = false;
         } else {
             m_isSingelValue = true;
         }
         m_categoryField.setParentSelection(m_children);
-        genearteList();
         m_categoryField.getScrollPanel().addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().categoryPanel());
         m_categoryField.addDomHandler(new ClickHandler() {
 
@@ -263,9 +268,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
      */
     public boolean owns(Element element) {
 
-        // TODO implement this in case we want the delete behavior for optional fields
-        return false;
-
+        return getElement().isOrHasChild(element);
     }
 
     /**
@@ -306,6 +309,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     public void setValue(String value, boolean fireEvents) {
 
         String[] selectedArray = value.split(",");
+        m_selected.clear();
         if (value.indexOf(",") > -1) {
             for (String values : selectedArray) {
                 m_selected.add(values);
@@ -316,6 +320,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
         if (fireEvents) {
             fireChangeEvent();
         }
+        displayValue();
     }
 
     /**
@@ -335,9 +340,8 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
             result = m_cmsCategoryTree.getAllSelectedSitePath();
         }
         m_selected.clear();
-        m_selected = result;
-        m_categoryField.buildCategoryTree(m_resultList, m_selected);
-        setheight();
+        m_selected.addAll(result);
+        displayValue();
         m_cmsPopup.hide();
         fireChangeEvent();
 
@@ -351,9 +355,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
         if (m_cmsPopup == null) {
 
             m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
-            List<String> selected = new ArrayList<String>();
-            selected = m_selected;
-            m_cmsCategoryTree = new CmsCategoryTree(selected, 300, m_isSingelValue, m_resultList);
+            m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingelValue, m_resultList);
             m_cmsPopup.add(m_cmsCategoryTree);
             m_cmsPopup.setModal(false);
             m_cmsPopup.setAutoHideEnabled(true);
@@ -406,43 +408,53 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     }
 
     /**
-     * Generate the a list of all categories and display them.<p>
+     * Displays the current value.<p>
      */
-    private void genearteList() {
+    private void displayValue() {
 
-        // generate a list of all configured categories.
-        final List<String> categories = m_categoryList;
-        final String category = m_category;
+        if (m_resultList == null) {
+            if (!m_loadingCategoryTree) {
+                m_loadingCategoryTree = true;
+                // generate a list of all configured categories.
+                final List<String> categories = m_categoryList;
+                final String category = m_category;
+                CmsRpcAction<List<CmsCategoryTreeEntry>> action = new CmsRpcAction<List<CmsCategoryTreeEntry>>() {
 
-        // start request
-        CmsRpcAction<List<CmsCategoryTreeEntry>> action = new CmsRpcAction<List<CmsCategoryTreeEntry>>() {
+                    /**
+                     * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                     */
+                    @Override
+                    public void execute() {
 
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            public void execute() {
+                        CmsCoreProvider.getService().getCategories(category, true, categories, this);
 
-                CmsCoreProvider.getService().getCategories(category, true, categories, this);
+                    }
 
+                    /**
+                     * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                     */
+                    @Override
+                    protected void onResponse(List<CmsCategoryTreeEntry> result) {
+
+                        // copy the result to the global variable.
+                        m_resultList = result;
+                        m_loadingCategoryTree = false;
+                        // start to generate the tree view.
+                        m_categoryField.buildCategoryTree(m_resultList, m_selected);
+                        setheight();
+                    }
+
+                };
+                action.execute();
             }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(List<CmsCategoryTreeEntry> result) {
-
-                // copy the result to the global variable.
-                m_resultList = result;
-                // start to generate the tree view.
-                m_categoryField.buildCategoryTree(m_resultList, m_selected);
-                setheight();
-
+        } else {
+            String selected = "";
+            for (String sel : m_selected) {
+                selected += sel + "  ";
             }
-
-        };
-        action.execute();
+            m_categoryField.buildCategoryTree(m_resultList, m_selected);
+            setheight();
+        }
     }
 
     /**

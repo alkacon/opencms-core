@@ -24,6 +24,8 @@
 			<xsd:element name="Index" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="SearchForEmptyQuery" type="OpenCmsBoolean" minOccurs="0" />
 			<xsd:element name="IgnoreQuery" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="IgnoreReleaseDate" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="IgnoreExpirationDate" type="OpenCmsBoolean" minOccurs="0" />
 			<xsd:element name="QueryModifier" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="LastQueryParam" type="OpenCmsString" minOccurs="0" />
@@ -54,6 +56,8 @@
 			<defaults>
 				<default element="Title" value="%(key.default.JspSearchConfig.Title)" />
 				<default element="IgnoreQuery" value="true" />
+				<default element="IgnoreReleaseDate" value="true" />
+				<default element="IgnoreExpirationDate" value="true" />
 				<default element="EscapeQueryCharacters" value="true" />
 			</defaults>
 			<layouts/>
@@ -63,9 +67,15 @@
 				<searchsetting element="Title" searchcontent="false" />
 				<searchsetting element="Core" searchcontent="false" />
 				<searchsetting element="Index" searchcontent="false" />
+				<searchsetting element="SearchForEmptyQuery" searchcontent="false" />
+				<searchsetting element="IgnoreQuery" searchcontent="false" />
+				<searchsetting element="IgnoreReleaseDate" searchcontent="false" />
+				<searchsetting element="IgnoreExpirationDate" searchcontent="false" />
+				<searchsetting element="QueryModifier" searchcontent="false" />
 				<searchsetting element="QueryParam" searchcontent="false" />
 				<searchsetting element="LastQueryParam" searchcontent="false" />
 				<searchsetting element="EscapeQueryCharacters" searchcontent="false" />
+				<searchsetting element="ReloadedParam" searchcontent="false" />
 				<searchsetting element="ExtraSolrParams" searchcontent="false" />
 				<searchsetting element="AdditionalRequestParams" searchcontent="false" />
 				<searchsetting element="PageParam" searchcontent="false" />

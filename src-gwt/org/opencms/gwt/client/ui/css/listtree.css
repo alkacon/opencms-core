@@ -7,7 +7,6 @@ li.listTreeItem {
 
 div.listTreeItemOpener {
 	margin-left: 1px;
-	margin-right: 3px;
 	cursor: pointer;
 	outline: none;
 }
@@ -23,17 +22,6 @@ div.listTreeItemOpener > img {
 div.listTreeItemOpener {
 	display: inline-block;
 }
-
-@sprite span.plus {
-	gwt-image: "gwtImages.plusImage";
-	margin: 4px 0 3px;
-}
-
-@sprite span.minus {
-	gwt-image: "gwtImages.minusImage";
-	margin: 4px 0 3px;
-}
-
 
 .listTreeItemContent {
 	

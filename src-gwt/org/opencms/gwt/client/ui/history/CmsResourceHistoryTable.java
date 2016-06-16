@@ -28,8 +28,8 @@
 package org.opencms.gwt.client.ui.history;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsCellTableResources;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsHistoryResourceBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
 
@@ -182,7 +182,7 @@ public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
 
         CmsButtonCell<CmsHistoryResourceBean> previewCell = new CmsButtonCell<CmsHistoryResourceBean>(
             CmsHistoryMessages.titlePreview(),
-            I_CmsImageBundle.INSTANCE.style().tablePreviewIcon(),
+            I_CmsButton.ICON_FONT + " " + I_CmsButton.PREVIEW_SMALL,
             new ActionCell.Delegate<CmsHistoryResourceBean>() {
 
                 @SuppressWarnings("synthetic-access")
@@ -228,7 +228,7 @@ public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
 
         CmsButtonCell<CmsHistoryResourceBean> replaceCell = new CmsButtonCell<CmsHistoryResourceBean>(
             CmsHistoryMessages.titleRevert(),
-            I_CmsImageBundle.INSTANCE.style().tableReplaceIcon(),
+            I_CmsButton.ICON_FONT + " " + I_CmsButton.RESET,
             new ActionCell.Delegate<CmsHistoryResourceBean>() {
 
                 @SuppressWarnings("synthetic-access")

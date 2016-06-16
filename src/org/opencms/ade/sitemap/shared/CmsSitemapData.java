@@ -435,9 +435,11 @@ public class CmsSitemapData implements IsSerializable {
      */
     public CmsNewResourceInfo getNewResourceInfoById(CmsUUID id) {
 
-        for (CmsNewResourceInfo info : m_newElementInfos) {
-            if (info.getCopyResourceId().equals(id)) {
-                return info;
+        if (m_newElementInfos != null) {
+            for (CmsNewResourceInfo info : m_newElementInfos) {
+                if (info.getCopyResourceId().equals(id)) {
+                    return info;
+                }
             }
         }
         return null;

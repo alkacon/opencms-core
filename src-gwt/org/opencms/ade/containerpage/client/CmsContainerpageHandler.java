@@ -65,6 +65,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsClientVariantInfo;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -170,6 +171,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     /** The currently active tool-bar button. */
     private I_CmsToolbarButton m_activeButton;
 
+    /** The edit button visibility style variable. */
+    private CmsStyleVariable m_editButtonVibility;
+
     /** Overlay to prevent user actions while shown. */
     private SimplePanel m_overlay;
 
@@ -183,6 +187,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
         m_controller = controller;
         m_editor = editor;
+        m_editButtonVibility = new CmsStyleVariable(RootPanel.get());
     }
 
     /**
@@ -191,6 +196,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void activateSelection() {
 
         m_editor.getSelection().setActive(true);
+        setEditButtonsVisible(true);
         reInitInlineEditing();
     }
 
@@ -909,6 +915,21 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void setActiveButton(I_CmsToolbarButton button) {
 
         m_activeButton = button;
+    }
+
+    /**
+     * Sets the edit button visible.<p>
+     *
+     * @param visible the visibility
+     */
+    public void setEditButtonsVisible(boolean visible) {
+
+        if (visible) {
+            m_editButtonVibility.setValue(
+                org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().editButtonsVisible());
+        } else {
+            m_editButtonVibility.setValue(null);
+        }
     }
 
     /**

@@ -53,6 +53,30 @@ implements I_CmsSearchConfigurationFacetQuery {
         }
 
         /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(final Object queryItem) {
+
+            if (this.hashCode() != queryItem.hashCode()) {
+                return false;
+            }
+
+            if (queryItem instanceof CmsFacetQueryItem) {
+                CmsFacetQueryItem item = (CmsFacetQueryItem)queryItem;
+                boolean equalQueries = ((null == m_query) && (null == item.getQuery()))
+                    || ((null != item.getQuery()) && m_query.equals(item.getQuery()));
+                boolean equalLabels = false;
+                if (equalQueries) {
+                    equalLabels = ((null == m_label) && (null == item.getLabel()))
+                        || ((null != item.getLabel()) && m_label.equals(item.getLabel()));
+                }
+                return equalQueries && equalLabels;
+            }
+            return false;
+        }
+
+        /**
          * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem#getLabel()
          */
         @Override
@@ -70,6 +94,22 @@ implements I_CmsSearchConfigurationFacetQuery {
             return m_query;
         }
 
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+
+            int hashCode = 0;
+            if (null != m_label) {
+                hashCode = m_label.hashCode();
+            }
+            if (null != m_query) {
+                hashCode += m_query.hashCode() / 2;
+            }
+            return hashCode;
+        }
+
     }
 
     /** List of queries for the facet. */
@@ -80,14 +120,22 @@ implements I_CmsSearchConfigurationFacetQuery {
      * @param label the label used to display the facet
      * @param isAndFacet true if checked facet entries should all be matched, otherwise only one checked entry must match
      * @param preselection list of entries that should be checked in advance
+     * @param ignoreFiltersFromAllFacets A flag, indicating if filters from all facets should be ignored or not.
      */
     public CmsSearchConfigurationFacetQuery(
         final List<I_CmsFacetQueryItem> queries,
         final String label,
         final Boolean isAndFacet,
-        final List<String> preselection) {
+        final List<String> preselection,
+        final Boolean ignoreFiltersFromAllFacets) {
 
-        super(null, label, I_CmsSearchConfigurationFacetQuery.NAME, isAndFacet, preselection);
+        super(
+            null,
+            label,
+            I_CmsSearchConfigurationFacetQuery.NAME,
+            isAndFacet,
+            preselection,
+            ignoreFiltersFromAllFacets);
         m_queries = queries != null ? queries : new ArrayList<I_CmsFacetQueryItem>();
     }
 

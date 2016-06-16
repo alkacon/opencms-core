@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * @since version 8.0.1
  */
-public interface I_CmsContextMenuHandler {
+public interface I_CmsContextMenuHandler extends I_CmsActionHandler {
 
     /**
      * Tries to lock the given resource and returns <code>true</code> on success.
@@ -69,28 +69,6 @@ public interface I_CmsContextMenuHandler {
      * @return the editor handler
      */
     I_CmsContentEditorHandler getEditorHandler();
-
-    /**
-     * Leaves the current page calling the target URI.<p>
-     *
-     * @param targetUri the target URI
-     */
-    void leavePage(String targetUri);
-
-    /**
-     * Called when site and or project have been changed.<p>
-     *
-     * @param sitePath the site path to the target resource
-     * @param serverLink the server link to the resource
-     */
-    void onSiteOrProjectChange(String sitePath, String serverLink);
-
-    /**
-     * Reloads the resource edited.<p>
-     *
-     * @param structureId the structure id of the resource to lock
-     */
-    void refreshResource(CmsUUID structureId);
 
     /**
      * Unlocks the resource if appropriate.<p>

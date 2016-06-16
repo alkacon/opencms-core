@@ -62,8 +62,8 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
     public CmsToolbarClipboardButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
         super(
-            I_CmsButton.ButtonData.CLIPBOARD.getTitle(),
-            I_CmsButton.ButtonData.CLIPBOARD.getIconClass(),
+            I_CmsButton.ButtonData.CLIPBOARD_BUTTON.getTitle(),
+            I_CmsButton.ButtonData.CLIPBOARD_BUTTON.getIconClass(),
             toolbar,
             controller);
     }

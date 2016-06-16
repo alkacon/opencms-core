@@ -2,17 +2,15 @@
 
 <export>
 	<info>
-		<creator>Admin</creator>
-		<opencms_version>10.0.0</opencms_version>
-		<createdate>Fri, 28 Jun 2013 08:58:29 GMT</createdate>
 		<infoproject>Offline</infoproject>
-		<export_version>7</export_version>
+		<export_version>10</export_version>
 	</info>
 	<module>
 		<name>org.opencms.editors.codemirror</name>
 		<nicename><![CDATA[OpenCms CodeMirror editor]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
+		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module adds the Open Source text editor CodeMirror to the OpenCms Workplace.</p>
 <p>Install this module if you want a source code editor with syntax highlighting. The version of CodeMirror is 5.10.</p>
 <p><i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
@@ -30,61 +28,25 @@
 			<resource uri="/system/modules/org.opencms.editors.codemirror/"/>
 			<resource uri="/system/workplace/editors/codemirror/"/>
 		</resources>
+		<excluderesources/>
 		<parameters/>
 	</module>
 	<files>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>bdbc3c0f-79ce-11e2-bd62-170bfb738a71</uuidstructure>
-			<datelastmodified>Mon, 18 Feb 2013 13:26:02 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 18 Feb 2013 13:26:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>514</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>c165471b-79ce-11e2-bd62-170bfb738a71</uuidstructure>
-			<datelastmodified>Mon, 18 Feb 2013 13:26:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 18 Feb 2013 13:26:08 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>514</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.editors.codemirror</destination>
 			<type>folder</type>
 			<uuidstructure>5e05bc1b-ba11-11e1-8da3-49528da9658f</uuidstructure>
-			<datelastmodified>Tue, 19 Jun 2012 13:19:15 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Jun 2012 13:19:15 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -94,10 +56,7 @@
 			<destination>system/modules/org.opencms.editors.codemirror/classes</destination>
 			<type>folder</type>
 			<uuidstructure>655ed69d-ba11-11e1-8da3-49528da9658f</uuidstructure>
-			<datelastmodified>Tue, 19 Jun 2012 13:19:27 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Jun 2012 13:19:27 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -107,10 +66,7 @@
 			<destination>system/modules/org.opencms.editors.codemirror/classes/org</destination>
 			<type>folder</type>
 			<uuidstructure>721080b1-ba11-11e1-8da3-49528da9658f</uuidstructure>
-			<datelastmodified>Tue, 19 Jun 2012 13:19:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Jun 2012 13:19:48 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -120,10 +76,7 @@
 			<destination>system/modules/org.opencms.editors.codemirror/classes/org/opencms</destination>
 			<type>folder</type>
 			<uuidstructure>78503bf3-ba11-11e1-8da3-49528da9658f</uuidstructure>
-			<datelastmodified>Tue, 19 Jun 2012 13:19:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Jun 2012 13:19:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -133,10 +86,7 @@
 			<destination>system/modules/org.opencms.editors.codemirror/classes/org/opencms/editors</destination>
 			<type>folder</type>
 			<uuidstructure>7f66a825-ba11-11e1-8da3-49528da9658f</uuidstructure>
-			<datelastmodified>Tue, 19 Jun 2012 13:20:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Jun 2012 13:20:11 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -146,10 +96,7 @@
 			<destination>system/modules/org.opencms.editors.codemirror/classes/org/opencms/editors/codemirror</destination>
 			<type>folder</type>
 			<uuidstructure>85851fc7-ba11-11e1-8da3-49528da9658f</uuidstructure>
-			<datelastmodified>Tue, 19 Jun 2012 13:20:21 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Jun 2012 13:20:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -161,10 +108,7 @@
 			<type>plain</type>
 			<uuidstructure>8e0aac59-ba11-11e1-8da3-49528da9658f</uuidstructure>
 			<uuidresource>8e0aac5a-ba11-11e1-8da3-49528da9658f</uuidresource>
-			<datelastmodified>Fri, 07 Jun 2013 09:16:09 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Jun 2012 13:20:35 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -178,89 +122,18 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>login-form</name>
-					<value><![CDATA[/system/login/index.html]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/editors</destination>
 			<type>folder</type>
-			<uuidstructure>896ef88a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<properties/>
 		</file>
 		<file>
 			<destination>system/workplace/editors/codemirror</destination>
 			<type>folder</type>
 			<uuidstructure>1ea80741-50b0-11e1-b660-49528da9658f</uuidstructure>
-			<datelastmodified>Mon, 06 Feb 2012 10:48:53 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Feb 2012 10:48:35 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -277,10 +150,7 @@
 			<type>jsp</type>
 			<uuidstructure>35f091b4-50b0-11e1-b660-49528da9658f</uuidstructure>
 			<uuidresource>35f091b5-50b0-11e1-b660-49528da9658f</uuidresource>
-			<datelastmodified>Fri, 28 Jun 2013 08:56:12 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Feb 2012 10:49:14 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -301,10 +171,7 @@
 			<type>plain</type>
 			<uuidstructure>35f79698-50b0-11e1-b660-49528da9658f</uuidstructure>
 			<uuidresource>35f79699-50b0-11e1-b660-49528da9658f</uuidresource>
-			<datelastmodified>Thu, 21 Jun 2012 09:16:23 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Feb 2012 10:49:14 GMT</datecreated>
-			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>

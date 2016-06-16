@@ -28,12 +28,8 @@
 package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -70,9 +66,6 @@ public class CmsLazyTreeItem extends CmsTreeItem {
             super(true, new Label(Messages.get().key(Messages.GUI_LOADING_0)));
         }
     }
-
-    /** The CSS bundle used for this widget. */
-    private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
 
     /** The loading item. */
     private LoadingItem m_loadingItem = new LoadingItem();
@@ -133,8 +126,6 @@ public class CmsLazyTreeItem extends CmsTreeItem {
      */
     public void onFinishLoading() {
 
-        m_opener.setUpFace("", CSS.plus());
-        m_opener.setDownFace("", CSS.minus());
         m_loadState = LoadState.LOADED;
         if (m_useLoadItem) {
             m_loadingItem.removeFromParent();
@@ -151,20 +142,6 @@ public class CmsLazyTreeItem extends CmsTreeItem {
         if (m_useLoadItem) {
             addChild(m_loadingItem);
         }
-        m_opener.getUpFace().setImage(getLoadingImage());
-        m_opener.getDownFace().setImage(getLoadingImage());
-    }
-
-    /**
-     * Returns the loading image.<p>
-     *
-     * @return the loading image
-     */
-    protected Image getLoadingImage() {
-
-        Image image = new Image(I_CmsImageBundle.INSTANCE.loadingSmallImage());
-        image.setPixelSize(11, 11);
-        return image;
     }
 
     /**

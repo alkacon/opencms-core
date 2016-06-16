@@ -6,7 +6,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="messages" type="org.opencms.ade.containerpage.client.ui.CmsConfirmRemoveWidget.MessageStrings" />
-	<ui:with field="imagebundle" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" /> 
 	<ui:style>
 		.mt {
 			margin-top: 7px; 

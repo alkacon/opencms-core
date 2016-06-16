@@ -62,6 +62,9 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
     /** Used encoding. */
     private static final String UTF8 = CmsEncoder.ENCODING_UTF_8;
 
+    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
+    private String m_vfsPrefix;
+
     /**
      * Default JUnit constructor.<p>
      *
@@ -114,6 +117,44 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the usage of an anchor link.<p>
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testAnchorLink() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing usage of an anchor link");
+
+        String filename = "xmlpageAnchor.html";
+        CmsResource res = cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId());
+
+        // check the relations
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.ALL).isEmpty());
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.SOURCES).isEmpty());
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS).isEmpty());
+
+        CmsFile file = cms.readFile(res);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
+        assertTrue(page.hasLocale(Locale.ENGLISH));
+        try {
+            page.addLocale(cms, Locale.ENGLISH);
+            fail("where is the default locale!?");
+        } catch (Exception e) {
+            // should fail
+        }
+        page.addValue("test", Locale.ENGLISH);
+        page.getValue("test", Locale.ENGLISH).setStringValue(cms, "<a href='#test'>test</a>");
+        file.setContents(page.marshal());
+        cms.writeFile(file);
+
+        // check the relations, anchors should not be considered as a relation
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.ALL).isEmpty());
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.SOURCES).isEmpty());
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS).isEmpty());
+    }
+
+    /**
      * Tests comments in the page HTML source code.<p>
      *
      * @throws Exception if something goes wrong
@@ -150,19 +191,31 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         assertEquals(content, result);
 
         // mix of comment and links
-        content = "<!-- First comment --><img src=\"/data/opencms/image.gif\" alt=\"an image\" />\n<!-- This is a comment -->\n<a href=\"/data/opencms/index.html\">Link</a><!-- Another comment -->";
+        content = "<!-- First comment --><img src=\""
+            + getVfsPrefix()
+            + "/image.gif\" alt=\"an image\" />\n<!-- This is a comment -->\n<a href=\""
+            + getVfsPrefix()
+            + "/index.html\">Link</a><!-- Another comment -->";
         page.setStringValue(cms, element, Locale.ENGLISH, content);
         result = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(content, result);
 
         // commented out html tags
-        content = "<!-- <img src=\"/data/opencms/image.gif\" alt=\"an image\" />\n<h1>some text</h1>--><!-- This is a comment -->\n<a href=\"/data/opencms/index.html\">Link</a><!-- Another comment -->";
+        content = "<!-- <img src=\""
+            + getVfsPrefix()
+            + "/image.gif\" alt=\"an image\" />\n<h1>some text</h1>--><!-- This is a comment -->\n<a href=\""
+            + getVfsPrefix()
+            + "/index.html\">Link</a><!-- Another comment -->";
         page.setStringValue(cms, element, Locale.ENGLISH, content);
         result = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(content, result);
 
         // nested comments
-        content = "<!-- Start of comment <!-- img src=\"/data/opencms/image.gif\" alt=\"an image\" / -->\n<h1>some text</h1><!-- This is a comment -->\n End of comment! --> <a href=\"/data/opencms/index.html\">Link</a><!-- Another comment -->";
+        content = "<!-- Start of comment <!-- img src=\""
+            + getVfsPrefix()
+            + "/image.gif\" alt=\"an image\" / -->\n<h1>some text</h1><!-- This is a comment -->\n End of comment! --> <a href=\""
+            + getVfsPrefix()
+            + "/index.html\">Link</a><!-- Another comment -->";
         page.setStringValue(cms, element, Locale.ENGLISH, content);
         result = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(content, result);
@@ -201,20 +254,24 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?a=b&someparam=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?a=b&amp;someparam=de\">link</a>", text);
+        assertEquals(
+            "<a href=\"" + getVfsPrefix() + "/folder1/subfolder11/index.html?a=b&amp;someparam=de\">link</a>",
+            text);
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?language=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?language=de\">link</a>", text);
+        assertEquals("<a href=\"" + getVfsPrefix() + "/folder1/subfolder11/index.html?language=de\">link</a>", text);
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?a=b&language=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?a=b&amp;language=de\">link</a>", text);
+        assertEquals(
+            "<a href=\"" + getVfsPrefix() + "/folder1/subfolder11/index.html?a=b&amp;language=de\">link</a>",
+            text);
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html?a=b&language=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(
-            "<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&amp;language=de\">link</a>",
+            "<a href=\"" + getVfsPrefix() + "/folder1/subfolder11/index_noexist.html?a=b&amp;language=de\">link</a>",
             text);
 
         page.setStringValue(
@@ -224,7 +281,9 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
             "<a href=\"index_noexist.html?a=b&product=somthing\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(
-            "<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&amp;product=somthing\">link</a>",
+            "<a href=\""
+                + getVfsPrefix()
+                + "/folder1/subfolder11/index_noexist.html?a=b&amp;product=somthing\">link</a>",
             text);
     }
 
@@ -255,7 +314,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         // test link replacement with existing file
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html\">link</a>", text);
+        assertEquals("<a href=\"" + getVfsPrefix() + "/folder1/subfolder11/index.html\">link</a>", text);
         file.setContents(page.marshal());
 
         // move the file
@@ -268,7 +327,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         // test link replacement with moved file
         page = CmsXmlPageFactory.unmarshal(cms, file);
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_new.html\">link</a>", text);
+        assertEquals("<a href=\"" + getVfsPrefix() + "/folder1/subfolder11/index_new.html\">link</a>", text);
         assertEquals(
             movedRes.getStructureId(),
             page.getLinkTable(element, Locale.ENGLISH).getLink("link0").getStructureId());
@@ -289,7 +348,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         // test link replacement with recreated resource
         page = CmsXmlPageFactory.unmarshal(cms, file);
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_new.html\">link</a>", text);
+        assertEquals("<a href=\"" + getVfsPrefix() + "/folder1/subfolder11/index_new.html\">link</a>", text);
         assertEquals(
             newRes.getStructureId(),
             page.getLinkTable(element, Locale.ENGLISH).getLink("link0").getStructureId());
@@ -298,7 +357,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         // test link replacement with non-existing file
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html\">link</a>", text);
+        assertEquals("<a href=\"" + getVfsPrefix() + "/folder1/subfolder11/index_noexist.html\">link</a>", text);
     }
 
     /**
@@ -338,7 +397,9 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
             "<a href=\"index.html?bad=\u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF&good=aouAOUS\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(
-            "<a href=\"/data/opencms/index.html?bad=\u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF&amp;good=aouAOUS\">link</a>",
+            "<a href=\""
+                + getVfsPrefix()
+                + "/index.html?bad=\u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF&amp;good=aouAOUS\">link</a>",
             text);
 
         file.setContents(page.marshal());
@@ -349,7 +410,9 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(
-            "<a href=\"/data/opencms/index.html?bad=\u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF&amp;good=aouAOUS\">link</a>",
+            "<a href=\""
+                + getVfsPrefix()
+                + "/index.html?bad=\u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF&amp;good=aouAOUS\">link</a>",
             text);
     }
 
@@ -442,44 +505,6 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the usage of an anchor link.<p>
-     *
-     * @throws Exception in case something goes wrong
-     */
-    public void testAnchorLink() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing usage of an anchor link");
-
-        String filename = "xmlpageAnchor.html";
-        CmsResource res = cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId());
-
-        // check the relations
-        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.ALL).isEmpty());
-        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.SOURCES).isEmpty());
-        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS).isEmpty());
-
-        CmsFile file = cms.readFile(res);
-        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
-        assertTrue(page.hasLocale(Locale.ENGLISH));
-        try {
-            page.addLocale(cms, Locale.ENGLISH);
-            fail("where is the default locale!?");
-        } catch (Exception e) {
-            // should fail
-        }
-        page.addValue("test", Locale.ENGLISH);
-        page.getValue("test", Locale.ENGLISH).setStringValue(cms, "<a href='#test'>test</a>");
-        file.setContents(page.marshal());
-        cms.writeFile(file);
-
-        // check the relations, anchors should not be considered as a relation
-        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.ALL).isEmpty());
-        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.SOURCES).isEmpty());
-        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS).isEmpty());
-    }
-
-    /**
      * Tests accessing element names in the XML page.<p>
      *
      * @throws Exception in case something goes wrong
@@ -521,6 +546,18 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         echo("Xml Page Element Rename Start");
         wp.actionRename(new CmsShellReport(Locale.ENGLISH));
         echo("Xml Page Element Rename End");
+    }
+
+    /**
+     * Initializes m_vfsPrefix lazily, otherwise it does not work.
+     * @return the VFS prefix as added to internal links
+     */
+    protected String getVfsPrefix() {
+
+        if (null == m_vfsPrefix) {
+            m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        }
+        return m_vfsPrefix;
     }
 
 }

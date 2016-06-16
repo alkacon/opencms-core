@@ -87,18 +87,6 @@ public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignm
     }
 
     /**
-     * Constructor.<p>
-     *
-     * @param buttonData the button data
-     */
-    public CmsToggleButton(I_CmsButton.ButtonData buttonData) {
-
-        this();
-        setImageClass(buttonData.getIconClass());
-        setTitle(buttonData.getTitle());
-    }
-
-    /**
      * Disables the button and changes the button title attribute to the disabled reason.<p>
      *
      * @param disabledReason the disabled reason

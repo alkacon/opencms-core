@@ -31,7 +31,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 
 /**
- * Sitemap context menu delete entry.<p>
+ * Sitemap context menu got page entry.<p>
  *
  * @since 8.0.0
  */

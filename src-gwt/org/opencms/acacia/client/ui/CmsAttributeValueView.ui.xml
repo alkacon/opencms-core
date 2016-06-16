@@ -4,6 +4,7 @@
 	xmlns:aui="urn:import:org.opencms.gwt.client.ui"
 	xmlns:ed="urn:import:org.opencms.acacia.client.ui">
 	<ui:with field="style" type="org.opencms.acacia.client.css.I_CmsLayoutBundle" />
+	<ui:with field="mainstyle" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{style.form.attributeValue}">
 		<g:FlowPanel ui:field="m_widgetHolder" styleName="{style.form.widgetHolder}" />
 		<g:FlowPanel ui:field="m_buttonBar" addStyleNames="{style.form.buttonBar}">

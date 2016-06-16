@@ -4,8 +4,8 @@
 	visibility: hidden;
 }
 
-@sprite .positionIndicator{
-	gwt-image: "baseImages.placeholderImage";
+.positionIndicator{
+	background-image: value("constants.css.gradientPlaceholder");
 	height: 4px;
 	right: 6px;
 	left: 6px;
@@ -62,10 +62,6 @@ div.itemTitle{
 .navMode .cms_type_icon, .vfsMode .cms_type_icon, .galleriesMode .cms_type_icon, .modelPageMode .cms_type_icon {
 	cursor: pointer;
 }
-
-@sprite div.cms_type_icon.navigationLevelIcon{
-	gwt-image: "baseImages.bigIcons.fileTypeNavLevel";
-} 
 
 .vfsMode li.notInNavigationEntry{
 	display: block;

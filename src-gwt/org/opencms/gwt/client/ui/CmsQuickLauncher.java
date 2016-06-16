@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsToolbarCss;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -106,27 +107,34 @@ public class CmsQuickLauncher extends CmsMenuButton {
          * @param data the quick launch data bean
          */
         public QuickLaunchButton(final CmsQuickLaunchData data) {
+
             super();
             I_CmsToolbarCss toolbarCss = I_CmsLayoutBundle.INSTANCE.toolbarCss();
 
-            initWidget(
-                div(toolbarCss.quickButton(), div(
+            initWidget(div(
+                toolbarCss.quickButton(),
+                div(
                     toolbarCss.quickButtonWrap(),
                     div(null, div(toolbarCss.quickButtonImageContainer(), new Image(data.getIconUrl()))),
                     div(null, new InlineLabel(data.getTitle())))));
             if (data.isLegacy()) {
                 addStyleName(toolbarCss.quickButtonLegacy());
             }
-            addDomHandler(new ClickHandler() {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(data.getErrorMessage())) {
+                setTitle(data.getErrorMessage());
+                addStyleName(toolbarCss.quickButtonDeactivated());
+            } else {
+                addDomHandler(new ClickHandler() {
 
-                @SuppressWarnings("synthetic-access")
-                public void onClick(ClickEvent event) {
+                    @SuppressWarnings("synthetic-access")
+                    public void onClick(ClickEvent event) {
 
-                    closeMenu();
-                    m_handler.handleQuickLaunch(data);
+                        closeMenu();
+                        m_handler.handleQuickLaunch(data);
 
-                }
-            }, ClickEvent.getType());
+                    }
+                }, ClickEvent.getType());
+            }
         }
 
         /**
@@ -168,7 +176,6 @@ public class CmsQuickLauncher extends CmsMenuButton {
 
         super();
         setVisible(false); // only turn visible once the handler is set
-        m_button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton());
         getPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contextMenu());
         getPopup().setWidth(0);
         m_button.getUpFace().setHTML(BUTTON_HTML);

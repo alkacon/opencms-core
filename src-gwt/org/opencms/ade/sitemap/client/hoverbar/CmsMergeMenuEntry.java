@@ -90,7 +90,7 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        if (CmsSitemapView.getInstance().isNavigationMode()) {
+        if (getHoverbar().getController().isEditable() && CmsSitemapView.getInstance().isNavigationMode()) {
             CmsSitemapController controller = getHoverbar().getController();
             CmsClientSitemapEntry entry = getHoverbar().getEntry();
             boolean show = (entry != null) && entry.isSubSitemapType() && !controller.isRoot(entry.getSitePath());

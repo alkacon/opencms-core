@@ -57,10 +57,10 @@ public class CmsSettingsOptionButton extends CmsPushButton implements I_CmsGroup
     public CmsSettingsOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.PROPERTIES.getIconClass());
+        setImageClass(I_CmsButton.ButtonData.SETTINGS_BUTTON.getIconClass());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        setTitle(I_CmsButton.ButtonData.PROPERTIES.getTitle());
-        addStyleName(I_CmsButton.ButtonData.PROPERTIES.getIconClass());
+        setTitle(I_CmsButton.ButtonData.SETTINGS_BUTTON.getTitle());
+        addStyleName(I_CmsButton.ButtonData.SETTINGS_BUTTON.getIconClass());
         m_elementWidget = elementWidget;
         m_editor = editor;
     }

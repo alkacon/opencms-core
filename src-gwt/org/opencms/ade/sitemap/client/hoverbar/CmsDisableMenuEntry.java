@@ -84,8 +84,8 @@ public class CmsDisableMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
         boolean show = CmsSitemapView.getInstance().isModelPageMode()
-            && (CmsSitemapView.getInstance().isModelPageEntry(id)
-                || CmsSitemapView.getInstance().isParentModelPageEntry(id));
+            && (CmsSitemapView.getInstance().isModelPageEntry(id) || CmsSitemapView.getInstance().isParentModelPageEntry(
+                id));
         setVisible(show);
     }
 
@@ -98,6 +98,6 @@ public class CmsDisableMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
-        return CmsSitemapView.getInstance().isDisabledModelPageEntry(id);
+        return getHoverbar().getController().isEditable() && CmsSitemapView.getInstance().isDisabledModelPageEntry(id);
     }
 }

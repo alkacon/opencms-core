@@ -44,7 +44,7 @@ public class CmsToolbarPublishButton extends A_CmsToolbarButton<CmsDirectEditToo
      */
     public CmsToolbarPublishButton(CmsDirectEditToolbarHandler handler) {
 
-        super(I_CmsButton.ButtonData.PUBLISH, handler);
+        super(I_CmsButton.ButtonData.PUBLISH_BUTTON, handler);
     }
 
     /**

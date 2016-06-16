@@ -23,6 +23,7 @@
 			<xsd:element name="MinCount" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="IsAndFacet" type="OpenCmsBoolean" minOccurs="0" />
 			<xsd:element name="PreSelection" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="IgnoreAllFacetFilters" type="OpenCmsBoolean" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -40,6 +41,7 @@
 				<searchsetting element="HardEnd" searchcontent="false" />
 				<searchsetting element="IsAndFacet" searchcontent="false" />
 				<searchsetting element="PreSelection" searchcontent="false" />
+				<searchsetting element="IgnoreAllFacetFilters" searchcontent="false" />
 			</searchsettings>
 			<layouts>
 				<layout element="Other" widget="MultiSelectWidget" configuration="before:%(key.option.RangeFacetConfig.Other.before)|between:%(key.option.RangeFacetConfig.Other.between)|after:%(key.option.RangeFacetConfig.Other.after)" />

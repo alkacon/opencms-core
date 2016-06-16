@@ -53,6 +53,9 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     /** Content for a simple test page. */
     private static final String PAGE_01 = "<html><body><a href=\"/system/news/test.html?__locale=de\">test</a></body></html>";
 
+    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
+    private String m_vfsPrefix;
+
     /**
      * Default JUnit constructor.<p>
      *
@@ -74,6 +77,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         TestSuite suite1 = new TestSuite();
+        TestSuite suite2 = new TestSuite();
         suite1.setName(TestCmsLinkManager.class.getName());
 
         suite1.addTest(new TestCmsLinkManager("testToAbsolute"));
@@ -83,7 +87,14 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         suite1.addTest(new TestCmsLinkManager("testRootPathAdjustment"));
         suite1.addTest(new TestCmsLinkManager("testAbsolutePathAdjustment"));
 
-        TestSetup wrapper = new TestSetup(suite1) {
+        suite2.addTest(new TestCmsLinkManager("testToAbsoluteWithAdjustedVfsPrefix"));
+        suite2.addTest(new TestCmsLinkManager("testLinkSubstitutionWithAdjustedVfsPrefix"));
+        suite2.addTest(new TestCmsLinkManager("testSymmetricSubstitutionWithAdjustedVfsPrefix"));
+        suite2.addTest(new TestCmsLinkManager("testCustomLinkHandlerWithAdjustedVfsPrefix"));
+        suite2.addTest(new TestCmsLinkManager("testRootPathAdjustmentWithAdjustedVfsPrefix"));
+        suite2.addTest(new TestCmsLinkManager("testAbsolutePathAdjustmentWithAdjustedVfsPrefix"));
+
+        TestSetup wrapper1 = new TestSetup(suite1) {
 
             @Override
             protected void setUp() {
@@ -99,9 +110,28 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         };
 
-        suite.addTest(wrapper);
+        // Test where the vfsPrefix is only the webapp-name, i.e., "/data",
+        // not webappname/servletname, i.e., "/data/opencms".
+        TestSetup wrapper2 = new TestSetup(suite2) {
+
+            @Override
+            protected void setUp() {
+
+                setupOpenCms("simpletest", "/", "/../org/opencms/staticexport");
+            }
+
+            @Override
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+
+        };
+
+        suite.addTest(wrapper1);
+        suite.addTest(wrapper2);
         // Test adjustment when OpenCms context is empty
-        suite.addTest(wrapTest("*", "/data", "testRootPathAdjustmentCopy"));
+        suite.addTest(wrapTest("*", "/data", "", "testRootPathAdjustmentWithEmptyOpenCmsContext"));
 
         return suite;
     }
@@ -112,10 +142,15 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
      *
      * @param servletName the servlet name used for the OpenCms instance
      * @param defaultWebAppName the default webapp name used for the OpenCms instance
+     * @param vfsPrefix The vfsPrefix attached to absolute internal links.
      * @param testCase the name of the test case to wrap
      * @return the wrapped test case
      */
-    protected static Test wrapTest(final String servletName, final String defaultWebAppName, final String testCase) {
+    protected static Test wrapTest(
+        final String servletName,
+        final String defaultWebAppName,
+        final String vfsPrefix,
+        final String testCase) {
 
         return new TestSetup(new TestCmsLinkManager(testCase)) {
 
@@ -184,6 +219,15 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     }
 
     /**
+     * @throws CmsException  from getCmsObject()
+     * @see #testAbsolutePathAdjustment()
+     */
+    public void testAbsolutePathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
+
+        testAbsolutePathAdjustment();
+    }
+
+    /**
      * Tests symmetric link / root path substitution with a custom link handler.<p>
      *
      * @throws Exception if test fails
@@ -230,6 +274,15 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     }
 
     /**
+     * @throws Exception if tests fail
+     * @see #testCustomLinkHandler()
+     */
+    public void testCustomLinkHandlerWithAdjustedVfsPrefix() throws Exception {
+
+        testCustomLinkHandler();
+    }
+
+    /**
      * Tests the link substitution.<p>
      *
      * @throws Exception if test fails
@@ -245,21 +298,21 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         test = linkManager.substituteLink(cms, "/folder1/index.html?additionalParam", "/sites/default");
         System.out.println(test);
-        assertEquals("/data/opencms/folder1/index.html?additionalParam", test);
+        assertEquals(getVfsPrefix() + "/folder1/index.html?additionalParam", test);
 
         test = linkManager.substituteLink(
             cms,
             CmsLinkManager.getAbsoluteUri("/", "/folder1/index.html"),
             "/sites/default");
         System.out.println(test);
-        assertEquals("/data/opencms/", test);
+        assertEquals(getVfsPrefix() + "/", test);
 
         test = linkManager.substituteLink(
             cms,
             CmsLinkManager.getAbsoluteUri("./", "/folder1/index.html"),
             "/sites/default");
         System.out.println(test);
-        assertEquals("/data/opencms/folder1/", test);
+        assertEquals(getVfsPrefix() + "/folder1/", test);
 
         test = CmsLinkManager.getRelativeUri("/index.html", "/index.html");
         System.out.println(test);
@@ -280,6 +333,15 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         test = CmsLinkManager.getRelativeUri("/", "/");
         System.out.println(test);
         assertEquals("./", test);
+    }
+
+    /**
+     * @throws Exception if tests fail
+     * @see #testLinkSubstitution()
+     */
+    public void testLinkSubstitutionWithAdjustedVfsPrefix() throws Exception {
+
+        testLinkSubstitution();
     }
 
     /**
@@ -314,13 +376,22 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     }
 
     /**
+     * @throws CmsException from getCmsObject()
+     * @see #testRootPathAdjustment()
+     */
+    public void testRootPathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
+
+        testRootPathAdjustment();
+    }
+
+    /**
      * Just a copy of the called method - if the same method is called twice,
      * the JUnit Eclipse plugin (or JUnit itself?) behaves strange (if the test failed or succeeded is only mentioned
      * for the last test occurrence.
      *
      * @throws CmsException from getCmsObject()
      */
-    public void testRootPathAdjustmentCopy() throws CmsException {
+    public void testRootPathAdjustmentWithEmptyOpenCmsContext() throws CmsException {
 
         testRootPathAdjustment();
     }
@@ -351,6 +422,15 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     }
 
     /**
+     * @throws Exception if tests fail
+     * @see #testSymmetricSubstitution()
+     */
+    public void testSymmetricSubstitutionWithAdjustedVfsPrefix() throws Exception {
+
+        testSymmetricSubstitution();
+    }
+
+    /**
      * Tests the method getAbsoluteUri.<p>
      */
     public void testToAbsolute() {
@@ -376,6 +456,26 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         test = CmsLinkManager.getAbsoluteUri("/dirA/index.html", "/dir1/dir2/dir3/");
         System.out.println(test);
         assertEquals(test, "/dirA/index.html");
+    }
+
+    /**
+     * @see #testToAbsolute()
+     */
+    public void testToAbsoluteWithAdjustedVfsPrefix() {
+
+        testToAbsolute();
+    }
+
+    /**
+     * Initializes m_vfsPrefix lazily, otherwise it does not work.
+     * @return the VFS prefix as added to internal links
+     */
+    protected String getVfsPrefix() {
+
+        if (null == m_vfsPrefix) {
+            m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        }
+        return m_vfsPrefix;
     }
 
     /**

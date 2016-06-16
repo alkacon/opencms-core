@@ -115,6 +115,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     /** Schema id 9. */
     private static final String SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
 
+    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
+    private String m_vfsPrefix;
+
     /**
      * Default JUnit constructor.<p>
      *
@@ -1000,9 +1003,15 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(
             "Incorrect links in resulting output",
             "<a href=\"http://www.alkacon.com\">Alkacon</a>\n"
-                + "<a href=\"/data/opencms/index.html\">Index page</a>\n"
-                + "<a href=\"/data/opencms/folder1/index.html?a=b&amp;c=d#anchor\">Index page</a>\n"
-                + "<a href=\"/data/opencms/folder1/index.html?a2=b2&amp;c2=d2\">Index page with unescaped ampersand</a>",
+                + "<a href=\""
+                + getVfsPrefix()
+                + "/index.html\">Index page</a>\n"
+                + "<a href=\""
+                + getVfsPrefix()
+                + "/folder1/index.html?a=b&amp;c=d#anchor\">Index page</a>\n"
+                + "<a href=\""
+                + getVfsPrefix()
+                + "/folder1/index.html?a2=b2&amp;c2=d2\">Index page with unescaped ampersand</a>",
             // note that the & in the links appear correctly escaped here
             retranslatedOutput.trim());
 
@@ -2474,5 +2483,17 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent.getValue("Author", Locale.ENGLISH).setStringValue(cms, "Alkacon Software GmbH");
         file.setContents(xmlcontent.marshal());
         cms.writeFile(file);
+    }
+
+    /**
+     * Initializes m_vfsPrefix lazily, otherwise it does not work.
+     * @return the VFS prefix as added to internal links
+     */
+    protected String getVfsPrefix() {
+
+        if (null == m_vfsPrefix) {
+            m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        }
+        return m_vfsPrefix;
     }
 }

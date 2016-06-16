@@ -132,6 +132,30 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         }
     }
 
+    /** Adds the query parts for the facet options, except the filter parts.
+     * @param query The query part that is extended with the facet options.
+     * @param useLimit Flag, if the limit option should be set.
+     */
+    protected void addFacetOptions(StringBuffer query, final boolean useLimit) {
+
+        // mincount
+        if (m_config.getMinCount() != null) {
+            appendFacetOption(query, "mincount", m_config.getMinCount().toString());
+        }
+        // limit
+        if (useLimit && (m_config.getLimit() != null)) {
+            appendFacetOption(query, "limit", m_config.getLimit().toString());
+        }
+        // sort
+        if (m_config.getSortOrder() != null) {
+            appendFacetOption(query, "sort", m_config.getSortOrder().toString());
+        }
+        // prefix
+        if (!m_config.getPrefix().isEmpty()) {
+            appendFacetOption(query, "prefix", m_config.getPrefix());
+        }
+    }
+
     /** Generate query part for the facet, without filters.
      * @param query The query, where the facet part should be added
      */
@@ -140,8 +164,8 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         StringBuffer value = new StringBuffer();
         value.append("{!key=").append(m_config.getName());
         addFacetOptions(value, m_state.getUseLimit());
-        if (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet()) {
-            value.append(" ex=").append(m_config.getName());
+        if (m_config.getIgnoreAllFacetFilters() || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
+            value.append(" ex=").append(m_config.getIgnoreTags());
         }
         value.append("}");
         value.append(m_config.getField());
@@ -167,30 +191,6 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
             }
             value.append(')');
             query.add("fq", value.toString());
-        }
-    }
-
-    /** Adds the query parts for the facet options, except the filter parts.
-     * @param query The query part that is extended with the facet options.
-     * @param useLimit Flag, if the limit option should be set.
-     */
-    protected void addFacetOptions(StringBuffer query, final boolean useLimit) {
-
-        // mincount
-        if (m_config.getMinCount() != null) {
-            appendFacetOption(query, "mincount", m_config.getMinCount().toString());
-        }
-        // limit
-        if (useLimit && (m_config.getLimit() != null)) {
-            appendFacetOption(query, "limit", m_config.getLimit().toString());
-        }
-        // sort
-        if (m_config.getSortOrder() != null) {
-            appendFacetOption(query, "sort", m_config.getSortOrder().toString());
-        }
-        // prefix
-        if (!m_config.getPrefix().isEmpty()) {
-            appendFacetOption(query, "prefix", m_config.getPrefix());
         }
     }
 

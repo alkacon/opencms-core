@@ -7,14 +7,13 @@
 	
 	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	
 	<g:HTMLPanel styleName="{resources.tabbedPanelCss.tabPanel}">
 		<div class="{resources.generalCss.cornerAll} {galleryResources.galleryDialogCss.searchTabBorderLayer}">
 			<div class="{galleryResources.galleryDialogCss.searchTabRow}">
 				<g:Label ui:field="m_searchLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
 				<div class="{galleryResources.galleryDialogCss.searchTabInputWide} {galleryResources.galleryDialogCss.hasButton}">
-					<cms:CmsPushButton ui:field="m_searchButton" imageClass="{images.style.searchIcon}"/><input:CmsTextBox ui:field="m_searchInput" />
+					<cms:CmsPushButton ui:field="m_searchButton" /><input:CmsTextBox ui:field="m_searchInput" />
 				</div>
 			</div>
 		    <g:HTMLPanel ui:field="m_scopeRow" addStyleNames="{galleryResources.galleryDialogCss.searchTabRow}">

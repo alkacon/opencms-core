@@ -453,6 +453,9 @@ div.toolbarToggle{
   position: relative; 
 }
 
+.quickButton.quickButtonDeactivated{
+	opacity: 0.5;
+}
  
 
 .quickButton .quickButtonImageContainer > img {

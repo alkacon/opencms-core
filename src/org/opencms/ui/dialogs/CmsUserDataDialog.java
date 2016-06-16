@@ -30,6 +30,7 @@ package org.opencms.ui.dialogs;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
@@ -52,8 +53,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.data.validator.AbstractStringValidator;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -62,12 +62,68 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * Dialog to edit the user data.<p>
  */
 public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
+
+    /**
+     * Validator employing the configured OpenCms validation handler.<p>
+     */
+    private static class FieldValidator extends AbstractStringValidator {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 4432834072807177046L;
+
+        /** The field to validate. */
+        private Field m_field;
+
+        /**
+         * Constructor.<p>
+         *
+         * @param field the field to validate
+         */
+        public FieldValidator(Field field) {
+            super(null);
+            m_field = field;
+        }
+
+        /**
+         * @see com.vaadin.data.validator.AbstractValidator#isValidValue(java.lang.Object)
+         */
+        @SuppressWarnings("incomplete-switch")
+        @Override
+        protected boolean isValidValue(String value) {
+
+            boolean result = true;
+
+            try {
+                switch (m_field) {
+                    case email:
+                        OpenCms.getValidationHandler().checkEmail(value);
+                        break;
+                    case firstname:
+                        OpenCms.getValidationHandler().checkFirstname(value);
+                        break;
+                    case lastname:
+                        OpenCms.getValidationHandler().checkLastname(value);
+                        break;
+                    case zipcode:
+                        OpenCms.getValidationHandler().checkZipCode(value);
+                        break;
+
+                }
+            } catch (CmsIllegalArgumentException e) {
+                result = false;
+                setErrorMessage(e.getLocalizedMessage(UI.getCurrent().getLocale()));
+            }
+
+            return result;
+        }
+    }
 
     /** The embedded dialog id. */
     public static final String DIALOG_ID = "edituserdata";
@@ -271,19 +327,7 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
         field.setWidth("100%");
         field.setEnabled(info.isEditable());
         if (info.isEditable()) {
-            if (info.getField().equals(Field.firstname) || info.getField().equals(Field.lastname)) {
-                StringLengthValidator validator = new StringLengthValidator(
-                    CmsVaadinUtils.getMessageText(
-                        org.opencms.ui.dialogs.Messages.GUI_USER_DATA_NOT_EMPTY_VALIDATION_ERROR_1,
-                        label));
-                validator.setMinLength(Integer.valueOf(1));
-                field.addValidator(validator);
-            } else if (info.getField().equals(Field.email)) {
-                EmailValidator validator = new EmailValidator(
-                    CmsVaadinUtils.getMessageText(
-                        org.opencms.ui.dialogs.Messages.GUI_USER_DATA_EMAIL_VALIDATION_ERROR_0));
-                field.addValidator(validator);
-            }
+            field.addValidator(new FieldValidator(info.getField()));
         }
         field.setImmediate(true);
         return field;

@@ -50,9 +50,6 @@ public class CmsVfsWidget extends Composite implements I_CmsEditWidget {
     /***/
     private String m_config = "";
 
-    /** The icon string. */
-    private String m_imageClass = "";
-
     /** The link selector. */
     private CmsVfsSelection m_linkSelect;
 
@@ -64,9 +61,8 @@ public class CmsVfsWidget extends Composite implements I_CmsEditWidget {
      */
     public CmsVfsWidget(String config, String type, String icon) {
 
-        m_imageClass = icon;
         m_config = config;
-        m_linkSelect = new CmsVfsSelection(m_imageClass, type, m_config);
+        m_linkSelect = new CmsVfsSelection(icon, type, m_config);
         m_linkSelect.getTextAreaContainer().addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 

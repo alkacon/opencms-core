@@ -100,7 +100,9 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        boolean visible = (getHoverbar().getId() != null) && !getHoverbar().getId().isNullUUID();
+        boolean visible = getHoverbar().getController().isEditable()
+            && (getHoverbar().getId() != null)
+            && !getHoverbar().getId().isNullUUID();
         setVisible(visible);
     }
 
@@ -114,8 +116,7 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
      */
     CmsXmlContentProperty createBasicStringProperty(String name, String niceName) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(
-            name, //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(name, //name
             "string", // type
             "string", // widget
             "", // widgetconfig

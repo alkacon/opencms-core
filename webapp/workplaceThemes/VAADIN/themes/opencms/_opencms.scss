@@ -281,52 +281,39 @@
 		position: relative;
 		padding: 4px;
 		 	
-		.o-lock-shared, .o-lock-user, .o-lock-other{
+		.o-lock-shared, .o-lock-user, .o-lock-other, .o-lock-publish, .o-state-changed, .o-state-new, .o-sibling{
 			position: absolute;
+			background-size: 16px 16px;
+			height:16px;
+			width: 16px;
+			color: transparent;
+			z-index:2;
+		}
+		.o-lock-shared, .o-lock-user, .o-lock-other, .o-lock-publish{
 			bottom: 0;
 			right: 0;
-			height:16px;
-			width: 16px;
-			color: transparent;
-			z-index:2;
 		}
 		.o-lock-shared{
-			background: transparent url(img/lockShared.png) no-repeat center right;
+			background-image: url(img/lock-shared.svg);
 		}
 		.o-lock-user{
-			background: transparent url(img/lockUser.png) no-repeat center right;
+			background-image: url(img/lock-own.svg);
 		}
 		.o-lock-other{
-			background: transparent url(img/lockOther.png) no-repeat center right;
+			background-image: url(img/lock-other.svg)
 		}
-		 	
+		.o-lock-publish{
+			background-image: url(img/lock-publish.svg);
+		}
 		.o-sibling{
-			position: absolute;
 			bottom: 0;
 			left: 0;
-			height:16px;
-			width: 16px;
-			color: transparent;
-			z-index:2;
-			background: transparent url(img/sibling.png) no-repeat center right;
+			background-image: url(img/overlay-sibling.svg);
 		}
-		 	
-		 .o-state-changed, .o-state-new {
-			 height: 16px;
-			 width: 16px;
-			 color: transparent;
-			 position: absolute;
-			 top: 0;
-			 right: 0;
-			 z-index:2;
-		}
-		  
-		.o-state-changed {
-			background: transparent url(img/changed.png) no-repeat center right;
-		} 
-		 
-		.o-state-new {
-			background: transparent url(img/changed.png) no-repeat center right;
+		.o-state-changed, .o-state-new {
+			background-image: url(img/overlay-changed.svg);
+			top: 0;
+			right: 0;
 		}
 	}
 	.o-app-info{

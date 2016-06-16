@@ -865,7 +865,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(defaultQuery, query.toString());
 
         // test creating default query by String
-        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=expired:[NOW TO *]&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=released:[* TO NOW]";
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
         query = new CmsSolrQuery(getCmsObject(), null);
         assertEquals(defaultContextQuery, query.toString());
 
@@ -883,7 +883,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
      */
     public void testQueryParameterStrength() throws Throwable {
 
-        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=expired:[NOW TO *]&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=released:[* TO NOW]";
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
         String modifiedContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
 
         // members should be stronger than request context

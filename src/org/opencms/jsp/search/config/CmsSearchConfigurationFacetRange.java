@@ -45,7 +45,7 @@ implements I_CmsSearchConfigurationFacetRange {
     private String m_end;
     /** The range size for one facet entry. */
     private String m_gap;
-    /** Additional information collected by the facet */
+    /** Additional information collected by the facet. */
     private Collection<Other> m_other;
     /** The value to use for facet.range.hardend. */
     private boolean m_hardEnd;
@@ -62,6 +62,7 @@ implements I_CmsSearchConfigurationFacetRange {
      * @param label The label that can be shown over the facet entries in your search form.
      * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
      * @param preselection The list of facet items that should be preselected for the first search.
+     * @param ignoreFilterFromAllFacets A flag, indicating if filters from all facets should be ignored or not.
      */
     public CmsSearchConfigurationFacetRange(
         final String range,
@@ -74,9 +75,10 @@ implements I_CmsSearchConfigurationFacetRange {
         final Integer minCount,
         final String label,
         final Boolean isAndFacet,
-        final List<String> preselection) {
+        final List<String> preselection,
+        final Boolean ignoreFilterFromAllFacets) {
 
-        super(minCount, label, null != name ? name : range, isAndFacet, preselection);
+        super(minCount, label, null != name ? name : range, isAndFacet, preselection, ignoreFilterFromAllFacets);
 
         m_range = range;
         m_start = start;

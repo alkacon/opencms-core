@@ -155,6 +155,16 @@ public class CmsResourceTableProperty {
         new DateConverter());
 
     /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_DISABLED = new CmsResourceTableProperty(
+        "PROPERTY_DISABLED",
+        Boolean.class,
+        Boolean.FALSE,
+        "",
+        true,
+        0,
+        0);
+
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_INSIDE_PROJECT = new CmsResourceTableProperty(
         "PROPERTY_INSIDE_PROJECT",
         Boolean.class,

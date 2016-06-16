@@ -30,7 +30,6 @@ package org.opencms.acacia.client.widgets;
 import org.opencms.acacia.client.I_CmsWidgetFactory;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsVfsSelection;
 
 import com.google.gwt.dom.client.Element;
@@ -57,8 +56,7 @@ public class CmsHtmlGalleryWidgetFactory implements I_CmsWidgetFactory, I_CmsHas
      */
     public I_CmsFormEditWidget createFormWidget(String configuration) {
 
-        return new CmsFormWidgetWrapper(
-            new CmsVfsWidget(configuration, CmsVfsSelection.HTML, I_CmsImageBundle.INSTANCE.style().popupIcon()));
+        return new CmsFormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.HTML, null));
     }
 
     /**

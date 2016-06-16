@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -34,10 +35,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -156,7 +161,22 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        return new CmsAppVisibilityStatus(true, true, null);
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        boolean active = CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot);
+        HttpServletRequest req = CmsVaadinUtils.getRequest();
+        String message = null;
+        if (active) {
+            if (req != null) {
+                // this is a VAADIN UI request
+                active = getPath(cms, req.getSession()) != null;
+                if (!active) {
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0);
+                }
+            }
+        } else {
+            message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_NOT_AVAILABLE_0);
+        }
+        return new CmsAppVisibilityStatus(true, active, message);
     }
 
     /**
@@ -166,19 +186,48 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
 
         CmsObject cms = A_CmsUI.getCmsObject();
         String siteRoot = cms.getRequestContext().getSiteRoot();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
-            && !OpenCms.getSiteManager().getSharedFolder().equals(siteRoot)) {
-            try {
-                CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
-                String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                A_CmsUI.get().getPage().setLocation(link);
-                return;
-            } catch (CmsException e) {
-                LOG.debug("Unable to open sitemap editor.", e);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)) {
+            String path = getPath(cms, A_CmsUI.get().getHttpSession());
+            if (path != null) {
+                try {
+                    CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
+                    String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                    A_CmsUI.get().getPage().setLocation(link + "?path=" + path);
+                    return;
+                } catch (CmsException e) {
+                    LOG.debug("Unable to open sitemap editor.", e);
+                }
             }
-
         }
-        Notification.show("The sitemap editor is not available for the current site.", Type.WARNING_MESSAGE);
+        Notification.show(CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_NOT_AVAILABLE_0), Type.WARNING_MESSAGE);
+    }
+
+    /**
+     * Returns the page editor path to open.<p>
+     *
+     * @param cms the cms context
+     * @param session the user session
+     *
+     * @return the path or <code>null</code>
+     */
+    private String getPath(CmsObject cms, HttpSession session) {
+
+        CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(session);
+        String page = locationCache.getFileExplorerLocation(cms.getRequestContext().getSiteRoot());
+        if (page != null) {
+            CmsADEConfigData conf = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().addSiteRoot(page));
+            if ((conf == null) || (conf.getBasePath() == null)) {
+                page = null;
+            } else {
+                page = cms.getRequestContext().removeSiteRoot(conf.getBasePath());
+            }
+        }
+        if (page == null) {
+            page = locationCache.getSitemapEditorLocation(cms.getRequestContext().getSiteRoot());
+        }
+        return page;
     }
 
 }

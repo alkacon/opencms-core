@@ -60,7 +60,6 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
 
         CmsElementOptionButton button = super.createOptionForElement(element);
         button.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
-        button.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
         if (!CmsContainerpageController.get().getData().isModelGroup() && element.isModelGroup()) {
             button.disable("");
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {

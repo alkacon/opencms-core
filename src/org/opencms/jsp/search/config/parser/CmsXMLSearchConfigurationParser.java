@@ -84,6 +84,10 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_IGNORE_QUERY = "IgnoreQuery";
     /** XML element name. */
+    private static final String XML_ELEMENT_IGNORE_RELEASE_DATE = "IgnoreReleaseDate";
+    /** XML element name. */
+    private static final String XML_ELEMENT_IGNORE_EXPIRATION_DATE = "IgnoreExpirationDate";
+    /** XML element name. */
     private static final String XML_ELEMENT_QUERY_MODIFIER = "QueryModifier";
     /** XML element name. */
     private static final String XML_ELEMENT_PAGEPARAM = "PageParam";
@@ -130,6 +134,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String XML_ELEMENT_FACET_ISANDFACET = "IsAndFacet";
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_PRESELECTION = "PreSelection";
+    /** XML element name. */
+    private static final String XML_ELEMENT_FACET_IGNOREALLFACETFILTERS = "IgnoreAllFacetFilters";
     /** XML element name. */
     private static final String XML_ELEMENT_QUERY_FACET_QUERY = "QueryItem";
     /** XML element name. */
@@ -244,7 +250,9 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             getIndex(),
             getCore(),
             getExtraSolrParams(),
-            getAdditionalRequestParameters());
+            getAdditionalRequestParameters(),
+            getIgnoreReleaseDate(),
+            getIgnoreExpirationDate());
     }
 
     /**
@@ -352,7 +360,14 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             final String label = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_LABEL);
             final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
-            return new CmsSearchConfigurationFacetQuery(queries, label, isAndFacet, preselection);
+            final Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
+                pathPrefix + XML_ELEMENT_FACET_IGNOREALLFACETFILTERS);
+            return new CmsSearchConfigurationFacetQuery(
+                queries,
+                label,
+                isAndFacet,
+                preselection,
+                ignoreAllFacetFilters);
         } catch (final Exception e) {
             LOG.error(
                 Messages.get().getBundle().key(
@@ -444,6 +459,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 pathPrefix + XML_ELEMENT_FACET_FILTERQUERYMODIFIER);
             final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
+            final Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
+                pathPrefix + XML_ELEMENT_FACET_IGNOREALLFACETFILTERS);
             return new CmsSearchConfigurationFacetField(
                 field,
                 name,
@@ -454,7 +471,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 order,
                 filterQueryModifier,
                 isAndFacet,
-                preselection);
+                preselection,
+                ignoreAllFacetFilters);
         } catch (final Exception e) {
             LOG.error(
                 Messages.get().getBundle().key(
@@ -571,6 +589,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             final Boolean hardEnd = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_RANGE_FACET_HARDEND);
             final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
+            final Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
+                pathPrefix + XML_ELEMENT_FACET_IGNOREALLFACETFILTERS);
             return new CmsSearchConfigurationFacetRange(
                 range,
                 start,
@@ -582,7 +602,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 minCount,
                 label,
                 isAndFacet,
-                preselection);
+                preselection,
+                ignoreAllFacetFilters);
         } catch (final Exception e) {
             LOG.error(
                 Messages.get().getBundle().key(
@@ -653,12 +674,28 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         }
     }
 
+    /** Returns a flag indicating if also expired resources should be found.
+     * @return A flag indicating if also expired resources should be found.
+     */
+    private Boolean getIgnoreExpirationDate() {
+
+        return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_EXPIRATION_DATE);
+    }
+
     /** Returns a flag, indicating if the query and lastquery parameters should be ignored. E.g., if only the additional parameters should be used for the search.
      * @return A flag, indicating if the query and lastquery parameters should be ignored.
      */
     private Boolean getIgnoreQuery() {
 
         return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_QUERY);
+    }
+
+    /** Returns a flag indicating if also unreleased resources should be found.
+     * @return A flag indicating if also unreleased resources should be found.
+     */
+    private Boolean getIgnoreReleaseDate() {
+
+        return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_RELEASE_DATE);
     }
 
     /** Returns the configured Solr index, or <code>null</code> if the core is not specified.

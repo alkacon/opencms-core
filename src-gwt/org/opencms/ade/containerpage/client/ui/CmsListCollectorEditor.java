@@ -78,10 +78,9 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     public CmsPushButton createFavButton() {
 
         CmsPushButton favButton = new CmsPushButton();
-        favButton.setImageClass(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getIconClass());
-        favButton.addStyleName(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getIconClass());
+        favButton.setImageClass(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getSmallIconClass());
         favButton.setTitle(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getTitle());
-        favButton.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
+        favButton.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
         add(favButton);
         favButton.addClickHandler(new ClickHandler() {
 

@@ -44,20 +44,6 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
     I_CmsInputLayoutBundle INSTANCE = GWT.create(I_CmsInputLayoutBundle.class);
 
     /**
-     * Image bundle accessor.<p>
-     *
-     * @return an image bundle
-     */
-    I_CmsBackgroundImageBundle backgrounds();
-
-    /**
-     * Image bundle accessor.<p>
-     *
-     * @return an image bundle
-     */
-    I_CmsImageBundle baseImages();
-
-    /**
      * The CSS constants bundle.<p>
      *
      * @return a bundle of CSS constants
@@ -72,11 +58,4 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
     @Source("input.css")
     @Import(value = {I_CmsFieldsetCss.class, I_CmsPropertiesCss.class})
     I_CmsInputCss inputCss();
-
-    /**
-     * Returns the image bundle for the input package.<p>
-     *
-     * @return an image bundle
-     */
-    I_CmsInputImageBundle inputImages();
 }

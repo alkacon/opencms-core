@@ -29,8 +29,8 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 
@@ -52,7 +52,7 @@ public class CmsToolbarGoToParentButton extends CmsPushButton {
      */
     public CmsToolbarGoToParentButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
-        setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarParent());
+        setImageClass(I_CmsButton.EDIT_UP_SMALL);
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_PARENT_0));
         setButtonStyle(ButtonStyle.FONT_ICON, null);
         setSize(Size.big);

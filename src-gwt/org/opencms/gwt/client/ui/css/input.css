@@ -1,17 +1,4 @@
-@external gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
-
-@external html-face;
-
-.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom *, .alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom { 
-	vertical-align: baseline;  
-}
-
-.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom .html-face > span:first-child { 
-	vertical-align: -3px; 
-}
-
-
-
+@external html-face, gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 /* inner text box of the text box widget */
 input.textBox {
@@ -92,6 +79,9 @@ input.textboxGhostMode {
 }
 
 .textBoxWidget {}
+.checkBox{
+	vertical-align: middle;
+}
 
 .checkBox div.html-face {
 	font-weight: normal; 
@@ -146,89 +136,77 @@ div.textArea textarea{
 	outline: none;
 }
 
-@sprite .cmsState-up-disabled .checkBoxImage {
-	gwt-image: "inputImages.checkboxUncheckedDisabled";
+.checkBoxImageChecked {
+	line-height: value("constants.css.inputHeight");
+	font-size: 16px;
+	color: inherit;
+	width: 16px;
+}
+.checkBoxImageUnchecked{}
+.cmsState .checkBoxImage, 
+.triState .triStateOn, .triState .triStateOff, .triState .triStateMedium,
+.cmsState .radioButtonImage {
+    border: 1px solid value("constants.css.textColorDisabledButton");
+    border-radius: 4px;
+    padding: 1px;
+    height: 15px;
+    width: 15px;
+    font-size: 11px;
+    line-height: 13px;
+    background-color: value("constants.css.backgroundColorInfo");
+    color: inherit;
+}
+.cmsState span.radioButtonImage {
+	border-radius: 7px;
+	padding: 3px;
+	font-size: 7px;
+    line-height: 9px;
+}
+.cmsState.cmsState-up-disabled .checkBoxImage, .cmsState-down-disabled .checkBoxImage,
+.cmsState.cmsState-up-disabled .radioButtonImage, .cmsState-down-disabled .radioButtonImage, .triState .triStateMedium  {
+	background-color: value("constants.css.backgroundColorDisabled")";
+	border-color: value("constants.css.borderColor");
 }
 
-@sprite .linkEdit {
-	gwt-image: "baseImages.icons.editIconActive";
+.cmsState.cmsState-up-hovering .checkBoxImage, .cmsState-down-hovering .checkBoxImage,
+.cmsState.cmsState-up-hovering .radioButtonImage, .cmsState-down-hovering .radioButtonImage {
+	background-color: #e6f4fb; /* lighten 45% of textColorHighlight */
+	border-color: value("constants.css.textColor");
+	color: value("constants.css.textColorHighlight");
 }
 
-@sprite .inherited {
-	gwt-image: "baseImages.icons.inheritedIcon";
+.cmsState.cmsState-down-disabled .checkBoxImage:before, .cmsState.cmsState-down-disabled .radioButtonImage:before {
+	color: value("constants.css.textColorDisabled")";
 }
 
-@sprite .cmsState-down-disabled .checkBoxImage {
-	gwt-image: "inputImages.checkboxCheckedDisabled";
+.cmsState-down .checkBoxImage:before, .cmsState-down-hovering .checkBoxImage:before, .cmsState-down-disabled .checkBoxImage:before,.checkBoxImageChecked:before, .triState .triStateOn:before, .triState .triStateMedium:before {
+	content: "\e916";
 }
-@sprite .cmsState-up .checkBoxImage, .checkBoxImageUnchecked {
-	gwt-image: "inputImages.checkboxUnchecked";
+.cmsState-down .radioButtonImage:before, .cmsState-down-hovering .radioButtonImage:before, .cmsState-down-disabled .radioButtonImage:before{
+	content: "\e62b";
 }
-@sprite .cmsState-down .checkBoxImage, .checkBoxImageChecked {
-	gwt-image: "inputImages.checkboxChecked";
-}
-@sprite .cmsState-up-hovering .checkBoxImage {
-	gwt-image: "inputImages.checkboxUncheckedHover";
-}
-@sprite .cmsState-down-hovering .checkBoxImage {
-	gwt-image: "inputImages.checkboxCheckedHover";
+.cmsState-down .checkBoxImage:before, .cmsState-down-hovering .checkBoxImage:before, .cmsState-down-disabled .checkBoxImage:before, 
+.checkBoxImageChecked:before, .triState .triStateOn:before, .triState .triStateMedium:before,
+.cmsState-down .radioButtonImage:before, .cmsState-down-hovering .radioButtonImage:before, .cmsState-down-disabled .radioButtonImage:before {
+	font-family: opencms-font;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
-
-@sprite .triState .triStateOn {
-	gwt-image: "inputImages.checkboxChecked";
-	
-}
-
-@sprite .triState.cmsState-down-hovering .triStateOn,.triState.cmsState-up-hovering .triStateOn {
-	gwt-image: "inputImages.checkboxCheckedHover";
-}
-
-
-@sprite .triState .triStateOff {
-	gwt-image: "inputImages.checkboxUnchecked";
-	
-}
-
-@sprite .triState.cmsState-up-hovering .triStateOff, .triState.cmsState-down-hovering .triStateOff {
-	gwt-image: "inputImages.checkboxUncheckedHover";
-}
-
-
-@sprite .triState .triStateMedium {
-	gwt-image: "inputImages.checkboxCheckedSome";
-}
-
-@sprite .triState.cmsState-up-hovering .triStateMedium, .triState.cmsState-down-hovering .triStateMedium {
-	gwt-image: "inputImages.checkboxCheckedSomeHover";
+.inherited {
+	color: #2197DB;
+	font-size: 14px;
 }
 
 .radioButton .gwt-ToggleButton {
 	outline: none;
-}
-
-@sprite .cmsState-up-disabled .radioButtonImage {
-	gwt-image: "inputImages.radioUncheckedDisabled";
-}
-
-@sprite .cmsState-down-disabled .radioButtonImage {
-	gwt-image: "inputImages.radioCheckedDisabled";
-}
-
-@sprite .cmsState-up .radioButtonImage {
-	gwt-image: "inputImages.radioUnchecked";
-}
-
-@sprite .cmsState-down .radioButtonImage {
-	gwt-image: "inputImages.radioChecked";
-}
-
-@sprite .cmsState-up-hovering .radioButtonImage {
-	gwt-image: "inputImages.radioUncheckedHover";
-}
-
-@sprite .cmsState-down-hovering .radioButtonImage {
-	gwt-image: "inputImages.radioCheckedHover";
 }
 	
 /* Style for edited text box */
@@ -297,15 +275,18 @@ div.error, .error {
 	color: value("constants.css.textColorDisabled");
 }
 
-@sprite .openerNoHover.selectBoxSelected {
+.openerNoHover.selectBoxSelected, .openerHover.selectBoxSelected {
 	width: auto; 
 	height:auto;
 	min-height: 0px;
+	position: relative;
 	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%;
+	background-image: value("constants.css.gradientListItem");;
 	outline: none;
-	background-color: value("constants.css.backgroundColorStateStandard");
+}
+
+.selectBoxSelected .selectBoxOpener {
+	position:relative;
 }
 
 .comboBox .openerNoHover.selectBoxSelected, .comboBox .openerHover.selectBoxSelected { 
@@ -314,16 +295,21 @@ div.error, .error {
 }
 
 
-@sprite .openerHover.selectBoxSelected {
-	width: auto;
-	height: auto;
-	min-height: 0px;
-	cursor: pointer;
-	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%;
-	outline: none;
+.openerHover.selectBoxSelected:before {
+	content: "";
+	position: absolute;
+	top:0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	backgound: transparent;
+	opacity: 0.4;
+	z-index: 0;
+	border-radius: value("constants.css.borderRadius");
 	background-color: value("constants.css.backgroundColorStateHover");
+}
+.comboBox .openerHover.selectBoxSelected:before {
+	display: none;	
 }
 
 .noSelectionSelectBox .openerNoHover.selectBoxSelected, .noSelectionSelectBox .openerHover.selectBoxSelected {
@@ -385,15 +371,16 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 }
 
 .selectIcon { 
-	position: absolute;
-	right: 0;
-	top: 4px;
+	position: absolute !important;
+	right: 2px;
+	top: 8px;
 }
 
-.selectComboIcon {
-	position: absolute;
+div.selectComboIcon {
+	position: absolute !important;
 	right: 20px; 
 	top: 4px;
+	color: value("constants.css.textColor") !important;
 }
 
 .selectBoxRoot {
@@ -422,6 +409,7 @@ div.selectBoxOpener {
     box-shadow: none;
     background:  value("constants.css.backgroundColorDialog");
     margin: 0 12px 0 5px; 
+    position: relative;
 }
 
 
@@ -450,22 +438,11 @@ div.categoryItem{
 	margin-top: 6px;
 }
 
-@def FADER_LEFT_RIGHT literal("left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%"); 
-@def FADER_TOP_BOTTOM literal("top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%");  
-
 div.fader, div.textArea div.fader {
-	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background-image: literal("-moz-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
-	background-image: literal("-ms-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
-	background-image: literal("-webkit-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
-	background-image: literal("linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+	background-image: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%) !important;
 }
 div.textArea div.fader{
-	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background-image: literal("-moz-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
-	background-image: literal("-ms-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
-	background-image: literal("-webkit-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
-	background-image: literal("linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
+	background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%) !important;
 } 
 
 div.fader{
@@ -543,25 +520,11 @@ input.labelInput {
 	border: none;
 	vertical-align: middle;
 }
-	
-.alignBottom {
-	vertical-align: bottom;
-}
 
 div.formRow {
 	margin: 2px 0;
 	position: relative;
 	min-height: value("constants.css.inputHeight");
-}
-
-@sprite .formRowOpenerClosed {
-	gwt-image: "baseImages.plusImage";
-}
-
-
-
-@sprite .formRowOpenerOpen {
-	gwt-image: "baseImages.minusImage";
 }
 
 @eval formLabelWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getLabelWidth();

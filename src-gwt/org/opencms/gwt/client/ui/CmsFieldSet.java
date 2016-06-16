@@ -27,7 +27,9 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -54,7 +56,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -86,7 +87,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /** The image for the top and bottom arrow. */
     @UiField
-    protected Image m_image;
+    protected CmsPushButton m_opener;
 
     /** The legend of the fieldset. */
     @UiField
@@ -118,6 +119,10 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
     public CmsFieldSet() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_opener.setImageClass(I_CmsButton.ICON_FONT + " " + I_CmsButton.TRIANGLE_RIGHT);
+        m_opener.setDownImageClass(I_CmsButton.ICON_FONT + " " + I_CmsButton.TRIANGLE_DOWN);
+        m_opener.setButtonStyle(ButtonStyle.TEXT, ButtonColor.GRAY);
+        m_opener.setSize(Size.small);
         m_visibilityStyle = new CmsStyleVariable(m_fieldset);
         setOpen(true);
 
@@ -254,11 +259,11 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
                 I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
                     + " "
                     + I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
-            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowBottomImage());
+            m_opener.setDown(true);
         } else {
             // hide content
             m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetInvisible());
-            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRightImage());
+            m_opener.setDown(false);
         }
         CmsDomUtil.resizeAncestor(getParent());
     }
@@ -271,9 +276,9 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
     public void setOpenerVisible(boolean visible) {
 
         if (visible) {
-            m_image.getElement().getStyle().clearDisplay();
+            m_opener.getElement().getStyle().clearDisplay();
         } else {
-            m_image.getElement().getStyle().setDisplay(Display.NONE);
+            m_opener.getElement().getStyle().setDisplay(Display.NONE);
         }
     }
 
@@ -297,7 +302,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
      *
      * @param e the event
      */
-    @UiHandler("m_image")
+    @UiHandler("m_opener")
     protected void handleClick(ClickEvent e) {
 
         if (m_animation != null) {

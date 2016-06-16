@@ -28,7 +28,9 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -81,7 +83,9 @@ public class CmsSearchParamPanel extends Composite {
     public CmsSearchParamPanel(String title, A_CmsTab tab) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_button.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_button.setImageClass(I_CmsButton.DELETE_SMALL);
+        m_button.setSize(Size.small);
         m_title = title;
         m_tab = tab;
     }

@@ -52,6 +52,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2 = "LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERROR_FAILED_READING_CATEGORIES_1 = "ERROR_FAILED_READING_CATEGORIES_1";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.messages";
 

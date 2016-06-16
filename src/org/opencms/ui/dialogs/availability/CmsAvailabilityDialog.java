@@ -32,8 +32,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.gwt.CmsVfsService;
-import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockActionRecord;
@@ -44,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
@@ -56,6 +56,7 @@ import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -280,7 +281,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         if (m_dialogContext.getResources().size() == 1) {
             CmsResource resource = m_dialogContext.getResources().get(0);
             try {
-                m_availabilityInfo = CmsVfsService.getAvailabilityInfoStatic(A_CmsUI.getCmsObject(), resource);
+                m_availabilityInfo = getAvailabilityInfo(A_CmsUI.getCmsObject(), resource);
                 m_initialNotificationInterval = "" + m_availabilityInfo.getNotificationInterval();
                 m_initialNotificationEnabled = Boolean.valueOf(m_availabilityInfo.isNotificationEnabled());
             } catch (CmsLoaderException e) {
@@ -295,17 +296,21 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
     /**
      * Actually performs the availability change.<p>
      *
+     * @return the ids of the changed resources
+     *
      * @throws CmsException if something goes wrong
      */
-    protected void changeAvailability() throws CmsException {
+    protected List<CmsUUID> changeAvailability() throws CmsException {
 
         Date released = m_releasedField.getValue();
         Date expired = m_expiredField.getValue();
         boolean resetReleased = m_resetReleased.getValue().booleanValue();
         boolean resetExpired = m_resetExpired.getValue().booleanValue();
         boolean modifySubresources = m_subresourceModificationField.getValue().booleanValue();
+        List<CmsUUID> changedIds = new ArrayList<CmsUUID>();
         for (CmsResource resource : m_dialogContext.getResources()) {
             changeAvailability(resource, released, resetReleased, expired, resetExpired, modifySubresources);
+            changedIds.add(resource.getStructureId());
         }
 
         String notificationInterval = m_notificationIntervalField.getValue().trim();
@@ -331,7 +336,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
             }
 
         }
-
+        return changedIds;
     }
 
     /**
@@ -343,15 +348,110 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
     }
 
     /**
+     * Returns the availability info.<p>
+     *
+     * @param cms the cms context
+     * @param res the resource
+     *
+     * @return the info
+     *
+     * @throws CmsException if reading the info fails
+     */
+    CmsAvailabilityInfoBean getAvailabilityInfo(CmsObject cms, CmsResource res) throws CmsException {
+
+        CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+        result.setVfsPath(resourceSitePath);
+
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+        result.setResType(type.getTypeName());
+
+        result.setDateReleased(res.getDateReleased());
+        result.setDateExpired(res.getDateExpired());
+
+        String notificationInterval = cms.readPropertyObject(
+            res,
+            CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+            false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationInterval)) {
+            result.setNotificationInterval(Integer.valueOf(notificationInterval).intValue());
+        }
+
+        String notificationEnabled = cms.readPropertyObject(
+            res,
+            CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
+            false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationEnabled)) {
+            result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
+        }
+
+        result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
+
+        result.setResponsibles(getResponsibles(cms, res.getRootPath()));
+
+        return result;
+    }
+
+    /**
+     * Returns the responsibles.<p>
+     *
+     * @param cms the cms context
+     * @param rootPath the resource root path
+     *
+     * @return the responsibles
+     *
+     * @throws CmsException in case reading the resource fails
+     */
+    Map<CmsPrincipalBean, String> getResponsibles(CmsObject cms, String rootPath) throws CmsException {
+
+        Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
+        List<CmsResource> parentResources = new ArrayList<CmsResource>();
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(rootPath);
+        // get all parent folders of the current file
+        parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+
+        for (CmsResource resource : parentResources) {
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+            String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            try {
+
+                cms.getRequestContext().setSiteRoot("/");
+                List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
+                for (CmsAccessControlEntry ace : entries) {
+                    if (ace.isResponsible()) {
+                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
+                        if (principal != null) {
+                            CmsPrincipalBean prinBean = new CmsPrincipalBean(
+                                principal.getName(),
+                                principal.getDescription(),
+                                principal.isGroup());
+                            if (!resource.getRootPath().equals(rootPath)) {
+                                if (resource.getRootPath().startsWith(storedSiteRoot)) {
+                                    result.put(prinBean, sitePath);
+                                } else {
+                                    result.put(prinBean, resource.getRootPath());
+                                }
+                            } else {
+                                result.put(prinBean, null);
+                            }
+                        }
+                    }
+                }
+            } finally {
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Submits the dialog.<p>
      */
     void submit() {
 
         if (validate()) {
             try {
-
-                changeAvailability();
-                m_dialogContext.finish(null);
+                m_dialogContext.finish(changeAvailability());
             } catch (Throwable t) {
                 m_dialogContext.error(t);
             }
@@ -376,7 +476,8 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         boolean resetReleased,
         Date expired,
         boolean resetExpired,
-        boolean modifySubresources) throws CmsException {
+        boolean modifySubresources)
+    throws CmsException {
 
         CmsObject cms = m_dialogContext.getCms();
         CmsLockActionRecord lockActionRecord = CmsLockUtil.ensureLock(cms, resource);
@@ -444,7 +545,8 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         String resName,
         boolean enableNotification,
         int notificationInterval,
-        boolean modifySiblings) throws CmsException {
+        boolean modifySiblings)
+    throws CmsException {
 
         List<CmsResource> resources = new ArrayList<CmsResource>();
         if (modifySiblings) {

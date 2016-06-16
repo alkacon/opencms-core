@@ -61,6 +61,7 @@ implements I_CmsSearchConfigurationFacetField {
      * @param filterQueryModifier Modifier for the filter queries when a facet entry is checked. Can contain "%(value)" - what is replaced by the facet entry's value.
      * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
      * @param preselection The list of facet items that should be preselected for the first search.
+     * @param ignoreFiltersFromAllFacets A flag, indicating if filters from all facets should be ignored or not.
      */
     public CmsSearchConfigurationFacetField(
         final String field,
@@ -72,9 +73,10 @@ implements I_CmsSearchConfigurationFacetField {
         final SortOrder order,
         final String filterQueryModifier,
         final Boolean isAndFacet,
-        final List<String> preselection) {
+        final List<String> preselection,
+        final Boolean ignoreFiltersFromAllFacets) {
 
-        super(minCount, label, null != name ? name : field, isAndFacet, preselection);
+        super(minCount, label, null != name ? name : field, isAndFacet, preselection, ignoreFiltersFromAllFacets);
 
         if (prefix != null) {
             m_prefix = prefix;

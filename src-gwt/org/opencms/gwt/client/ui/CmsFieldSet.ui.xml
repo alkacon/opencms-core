@@ -1,12 +1,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
 	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_wrapper">
 		<g:FlowPanel ui:field="m_fieldset">
-			<g:Image ui:field="m_image" resource="{images.arrowBottomImage}" styleName="{style.fieldsetCss.image}"></g:Image>
+			<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.fieldsetCss.image}" />
 			<input:CmsLabel ui:field="m_legend" styleName="{style.fieldsetCss.legend}"></input:CmsLabel>
 			<g:FlowPanel ui:field="m_content" styleName="{style.fieldsetCss.content}"></g:FlowPanel>
 		</g:FlowPanel>

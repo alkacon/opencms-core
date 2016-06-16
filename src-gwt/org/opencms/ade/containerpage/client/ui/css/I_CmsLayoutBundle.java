@@ -27,11 +27,8 @@
 
 package org.opencms.ade.containerpage.client.ui.css;
 
-import org.opencms.gwt.client.ui.css.I_CmsBackgroundImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsDirectEditCss;
-import org.opencms.gwt.client.ui.css.I_CmsIconBundle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -136,9 +133,9 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String ignoreSmallElements();
 
         /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
+        *
+        * @return the CSS class name
+        */
         String lockedElement();
 
         /** Access method.<p>
@@ -287,13 +284,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
     /**
-     * The accessor for the background images.<p>
-     *
-     * @return the background image bundle
-     */
-    I_CmsBackgroundImageBundle backgrounds();
-
-    /**
      * The accessor for the CSS constants bundle.<p>
      *
      * @return the constants bundle
@@ -323,18 +313,4 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("groupcontainer.css")
     I_CmsGroupContainer groupcontainerCss();
-
-    /**
-     * The accessor for the images.<p>
-     *
-     * @return the image bundle
-     */
-    I_CmsIconBundle images();
-
-    /**
-     * The accessor for the other images.<p>
-     *
-     * @return the other image bundle
-     */
-    I_CmsImageBundle otherImages();
 }

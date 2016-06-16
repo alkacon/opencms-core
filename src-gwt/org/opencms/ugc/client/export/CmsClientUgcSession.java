@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Client side object representing a form editing session.<p>
  */
 @Export
-@ExportPackage("opencms")
+@ExportPackage("opencmsugc")
 public class CmsClientUgcSession implements Exportable {
 
     /** The CmsXmlContentFormApi which was used to create this session object. */

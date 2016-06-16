@@ -30,12 +30,12 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.util.CmsStringUtil;
 
@@ -61,11 +61,10 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
      */
     public CmsHoverbarMoveButton(final CmsSitemapHoverbar hoverbar) {
 
-        addStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         addStyleName(CmsListItem.MOVE_HANDLE_MARKER_CLASS);
-        setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
+        setImageClass(I_CmsButton.MOVE_SMALL);
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
-        setButtonStyle(ButtonStyle.IMAGE, null);
         hoverbar.addShowHandler(new I_CmsHoverbarShowHandler() {
 
             /**

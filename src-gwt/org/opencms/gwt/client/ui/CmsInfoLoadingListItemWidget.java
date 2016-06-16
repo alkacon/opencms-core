@@ -29,7 +29,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -54,35 +54,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
 
     /**
-     * Creates a new list item widget from an info bean.<p>
-     *
-     * @param infoBean the bean containing the information to display
-     */
-    public CmsInfoLoadingListItemWidget(CmsListInfoBean infoBean) {
-
-        super(infoBean);
-    }
-
-    /** Flag which keeps track of whether the additional info panel is shown. */
-    protected boolean m_additionalInfoOpen;
-
-    /** Flag which keeps track of whether additional info items are currently being loaded. */
-    protected boolean m_loading;
-
-    /**
-     * Sets the loader for additional info items.<p>
-     *
-     * @param loader the loader for additional info items
-     */
-    public void setAdditionalInfoLoader(I_CmsAdditionalInfoLoader loader) {
-
-        m_additionalInfoLoader = loader;
-    }
-
-    /** The loader for additional info items. */
-    protected I_CmsAdditionalInfoLoader m_additionalInfoLoader = new DummyAdditionalInfoLoader();
-
-    /**
      * The default loader for additional info items, which does nothing.
      */
     public class DummyAdditionalInfoLoader implements I_CmsAdditionalInfoLoader {
@@ -96,24 +67,36 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
         }
     }
 
+    /** Flag which keeps track of whether the additional info panel is shown. */
+    protected boolean m_additionalInfoOpen;
+
+    /** Flag which keeps track of whether additional info items are currently being loaded. */
+    protected boolean m_loading;
+
+    /** The loader for additional info items. */
+    protected I_CmsAdditionalInfoLoader m_additionalInfoLoader = new DummyAdditionalInfoLoader();
+
     /** The dynamically loaded additional info items. */
     private List<AdditionalInfoItem> m_dynamicInfo = new ArrayList<AdditionalInfoItem>();
 
     /**
-     * Sets the dynamically loaded additional info items.<p>
+     * Creates a new list item widget from an info bean.<p>
      *
-     * @param info the dynamically loaded additional info items
+     * @param infoBean the bean containing the information to display
      */
-    protected void setDynamicInfo(List<AdditionalInfoItem> info) {
+    public CmsInfoLoadingListItemWidget(CmsListInfoBean infoBean) {
 
-        for (AdditionalInfoItem item : m_dynamicInfo) {
-            item.removeFromParent();
-        }
-        for (AdditionalInfoItem item : info) {
-            m_dynamicInfo.add(item);
-            m_additionalInfo.add(item);
-        }
-        updateTruncation();
+        super(infoBean);
+    }
+
+    /**
+     * Sets the loader for additional info items.<p>
+     *
+     * @param loader the loader for additional info items
+     */
+    public void setAdditionalInfoLoader(I_CmsAdditionalInfoLoader loader) {
+
+        m_additionalInfoLoader = loader;
     }
 
     /**
@@ -123,10 +106,9 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
     protected void initAdditionalInfo(final CmsListInfoBean infoBean) {
 
         if (infoBean.hasAdditionalInfo()) {
-            m_openClose = new CmsPushButton(
-                I_CmsImageBundle.INSTANCE.style().triangleRight(),
-                I_CmsImageBundle.INSTANCE.style().triangleDown());
-            m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            m_openClose = new CmsPushButton(I_CmsButton.TRIANGLE_RIGHT, I_CmsButton.TRIANGLE_DOWN);
+            m_openClose.setButtonStyle(ButtonStyle.FONT_ICON, null);
+            m_openClose.setSize(Size.small);
             m_titleRow.insert(m_openClose, 0);
             m_openClose.addClickHandler(new ClickHandler() {
 
@@ -176,6 +158,23 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
                 m_additionalInfo.add(new AdditionalInfoItem(additionalInfo));
             }
         }
+    }
+
+    /**
+     * Sets the dynamically loaded additional info items.<p>
+     *
+     * @param info the dynamically loaded additional info items
+     */
+    protected void setDynamicInfo(List<AdditionalInfoItem> info) {
+
+        for (AdditionalInfoItem item : m_dynamicInfo) {
+            item.removeFromParent();
+        }
+        for (AdditionalInfoItem item : info) {
+            m_dynamicInfo.add(item);
+            m_additionalInfo.add(item);
+        }
+        updateTruncation();
     }
 
 }

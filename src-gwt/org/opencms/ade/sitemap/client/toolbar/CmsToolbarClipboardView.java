@@ -32,13 +32,13 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -188,9 +188,9 @@ public class CmsToolbarClipboardView {
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         CmsListItem listItem = new CmsClipboardDeletedItem(itemWidget, entry);
         CmsPushButton button = new CmsPushButton();
-        button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().undelete());
+        button.setImageClass(I_CmsButton.RESET);
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_UNDELETE_0));
-        button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        button.setButtonStyle(ButtonStyle.FONT_ICON, null);
         button.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -230,9 +230,9 @@ public class CmsToolbarClipboardView {
         final CmsListItem listItem = new CmsListItem(itemWidget);
 
         CmsPushButton button = new CmsPushButton();
-        button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().showPage());
+        button.setImageClass(I_CmsButton.PREVIEW_SMALL);
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        button.setButtonStyle(ButtonStyle.FONT_ICON, null);
         button.addClickHandler(new ClickHandler() {
 
             /**

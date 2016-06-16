@@ -156,10 +156,10 @@ public class CmsJspContentAccessBean {
 
             String result;
             if (CmsJspContentAccessValueWrapper.isDirectEditEnabled(getCmsObject())) {
-                Locale locale = getLocale();
-                String attrValue = getRawContent().getFile().getStructureId() + "|" + input + "|" + locale;
-                String escapedAttrValue = CmsEncoder.escapeXml(attrValue);
-                result = "data-imagednd=\"" + escapedAttrValue + "\"";
+                result = createImageDndAttr(
+                    getRawContent().getFile().getStructureId(),
+                    String.valueOf(input),
+                    String.valueOf(getLocale()));
             } else {
                 result = "";
             }
@@ -449,6 +449,9 @@ public class CmsJspContentAccessBean {
     /** Resource the XML content is created from. */
     private CmsResource m_resource;
 
+    /** The categories assigned to the resource. */
+    private CmsJspCategoryAccessBean m_categories;
+
     /**
      * No argument constructor, required for a JavaBean.<p>
      *
@@ -495,6 +498,22 @@ public class CmsJspContentAccessBean {
     public CmsJspContentAccessBean(CmsObject cms, Locale locale, I_CmsXmlDocument content) {
 
         init(cms, locale, content, content.getFile());
+    }
+
+    /**
+     * Generates the HTML attribute "data-imagednd" that enables the ADE image drag and drop feature.<p>
+     *
+     * @param structureId the structure ID of the XML document to insert the image
+     * @param locale the locale to generate the image in
+     * @param imagePath the XML path to the image source node.
+     *
+     * @return the HTML attribute "data-imagednd" that enables the ADE image drag and drop feature
+     */
+    protected static String createImageDndAttr(CmsUUID structureId, String imagePath, String locale) {
+
+        String attrValue = structureId + "|" + imagePath + "|" + locale;
+        String escapedAttrValue = CmsEncoder.escapeXml(attrValue);
+        return ("data-imagednd=\"" + escapedAttrValue + "\"");
     }
 
     /**
@@ -715,7 +734,7 @@ public class CmsJspContentAccessBean {
                     result = false;
                 }
             }
-        } catch (CmsException e) {
+        } catch (@SuppressWarnings("unused") CmsException e) {
             // should not happen, in case it does just assume not editable
         }
         return result;
@@ -937,6 +956,18 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Reads and returns the categories assigned to the content's VFS resource.
+     * @return the categories assigned to the content's VFS resource.
+     */
+    public CmsJspCategoryAccessBean getReadCategories() {
+
+        if (null == m_categories) {
+            m_categories = readCategories();
+        }
+        return m_categories;
+    }
+
+    /**
      * Returns a lazy initialized Map that provides Lists of direct sub values
      * of the given value from the XML content in the current locale.<p>
      *
@@ -1029,5 +1060,14 @@ public class CmsJspContentAccessBean {
         m_requestedLocale = locale;
         m_content = content;
         m_resource = resource;
+    }
+
+    /**
+     * Reads the categories assigned to the content's VFS resource.
+     * @return the categories assigned to the content's VFS resource.
+     */
+    private CmsJspCategoryAccessBean readCategories() {
+
+        return new CmsJspCategoryAccessBean(getCmsObject(), m_resource);
     }
 }

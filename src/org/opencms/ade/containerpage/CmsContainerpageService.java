@@ -96,6 +96,7 @@ import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -1036,7 +1037,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource detailResource = CmsDetailPageResourceHandler.getDetailResource(request);
             String noEditReason;
             String detailContainerPage = null;
+            CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(
+                request.getSession());
             if (detailResource != null) {
+                locationCache.setPageEditorLocation(
+                    cms.getRequestContext().getSiteRoot(),
+                    cms.getSitePath(detailResource));
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
                 detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(detailResource.getRootPath());
@@ -1050,6 +1056,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     noEditReason = getNoEditReason(rootCms, rootCms.readResource(permissionFolder));
                 }
             } else {
+                locationCache.setPageEditorLocation(
+                    cms.getRequestContext().getSiteRoot(),
+                    cms.getSitePath(containerPage));
                 noEditReason = getNoEditReason(cms, containerPage);
             }
 

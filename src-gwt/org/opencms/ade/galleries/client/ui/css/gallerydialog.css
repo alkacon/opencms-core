@@ -48,15 +48,14 @@ div.listIcon {
 	margin:7px;
 }
 
-@sprite div.showParams {
-	gwt-image: "backgrounds.stateBackground";
-	background-position: 50% 50%;
+div.showParams {
+	background-image: value("constants.css.gradientListItem");
 	height: auto;
 	border:1px solid value("constants.css.borderColor");
 	margin-right:3px;
 	margin-bottom:3px;
-	padding: 0 2px 0 4px;
-	background-color: value("constants.css.backgroundColorStateStandard");
+	padding: 0 20px 0 4px;
+	position: relative;
 }
 
 div.tabParamsPanel {
@@ -70,13 +69,19 @@ div.tabOptions {
 }
 
 div.paramsText {
-	margin-right:5px;
 	max-width: 600px;
 	line-height: value("constants.css.inputInnerHeight");
 }
 
 .showParams, .paramsText {
 	display: inline-block;
+}
+
+div.showParams div.cmsState{
+	font-size:10px;
+	position: absolute;
+	right: 4px;
+	top: 8px;
 }
 
 div.searchTabRow {
@@ -165,14 +170,18 @@ div.noParamsMessage > table {
 	height: 90px;
 	margin: auto;
 }
-@sprite .noParamsMessage > table > tbody > tr > td:first-child {
-	gwt-image: "gwtImages.informationBigImage";
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
+.noParamsMessage > table > tbody > tr > td:first-child {
 	vertical-align: middle;
 	padding: 15px;
 	width: 32px;
 }
+.noParamsMessage > table > tbody > tr > td:first-child:before {
+	content: "\ed6c";
+	font-family: opencms-font !important;
+	font-size: 32px;
+	vertical-align: middle;
+}
+
 .noParamsMessage > table > tbody > tr > td {
 	vertical-align: middle;
 	padding: 15px 15px 15px 0px;

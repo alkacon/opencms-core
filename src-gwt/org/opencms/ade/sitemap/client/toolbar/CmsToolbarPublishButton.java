@@ -62,8 +62,8 @@ public class CmsToolbarPublishButton extends CmsPushButton {
     public CmsToolbarPublishButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
         m_editorHandler = toolbar.getToolbarHandler().getEditorHandler();
-        setImageClass(I_CmsButton.ButtonData.PUBLISH.getIconClass());
-        setTitle(I_CmsButton.ButtonData.PUBLISH.getTitle());
+        setImageClass(I_CmsButton.ButtonData.PUBLISH_BUTTON.getIconClass());
+        setTitle(I_CmsButton.ButtonData.PUBLISH_BUTTON.getTitle());
         setButtonStyle(ButtonStyle.FONT_ICON, null);
         setSize(Size.big);
 

@@ -337,6 +337,11 @@ public class CmsFileTable extends CmsResourceTable {
                 && !((Boolean)resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).getValue()).booleanValue()) {
                 result += " " + OpenCmsTheme.EXPIRED;
             }
+            if ((resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).getValue() != null)
+                && ((Boolean)resourceItem.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_DISABLED).getValue()).booleanValue()) {
+                result += " " + OpenCmsTheme.DISABLED;
+            }
         }
         return result;
     }

@@ -44,12 +44,12 @@ public class CmsUgcEntryPoint implements EntryPoint {
      * @param api the API to expose as Javascript object
      */
     public native void installJavascriptApi(CmsXmlContentUgcApi api) /*-{
-        $wnd.OpenCmsUgc = new $wnd.opencms.CmsXmlContentUgcApi(api);
-    }-*/;
+                                                                     $wnd.OpenCmsUgc = new $wnd.opencmsugc.CmsXmlContentUgcApi(api);
+                                                                     }-*/;
 
     /**
-    * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
-    */
+     * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
+     */
     public void onModuleLoad() {
 
         ExporterUtil.exportAll();
@@ -62,9 +62,9 @@ public class CmsUgcEntryPoint implements EntryPoint {
      * Calls the init form method after the API has been exported.<p>
      */
     private native void callInitFunction() /*-{
-        if ($wnd.initUgc != undefined && typeof $wnd.initUgc == 'function') {
-            $wnd.initUgc();
-        }
-    }-*/;
+                                           if ($wnd.initUgc != undefined && typeof $wnd.initUgc == 'function') {
+                                           $wnd.initUgc();
+                                           }
+                                           }-*/;
 
 }

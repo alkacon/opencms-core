@@ -508,6 +508,29 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * Like {@link #search(CmsObject, CmsSolrQuery, boolean)}, but additionally a resource filter can be specified.
+     * By default, the filter depends on the index.
+     *
+     * @param cms the current OpenCms context
+     * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
+     * @param query the OpenCms Solr query
+     * @param filter the resource filter to use for post-processing.
+     *
+     * @return the list of documents found.
+     *
+     * @throws CmsSearchException if something goes wrong
+     */
+    public CmsSolrResultList search(
+        CmsObject cms,
+        final CmsSolrQuery query,
+        boolean ignoreMaxRows,
+        final CmsResourceFilter filter)
+    throws CmsSearchException {
+
+        return search(cms, query, ignoreMaxRows, null, false, filter);
+    }
+
+    /**
      * Default search method.<p>
      *
      * @param cms the current CMS object

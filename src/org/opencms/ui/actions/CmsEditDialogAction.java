@@ -29,6 +29,7 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
@@ -36,7 +37,6 @@ import org.opencms.ui.apps.CmsAppView;
 import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
-import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.explorer.Messages;
@@ -52,7 +52,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.ui.UI;
 
 /**
- * The edit dialog action.<p>
+ * The edit dialog action. Used for non XML contents.<p>
  */
 public class CmsEditDialogAction extends A_CmsWorkplaceAction {
 
@@ -60,8 +60,7 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
     public static final String ACTION_ID = "edit";
 
     /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
-        CmsStandardVisibilityCheck.EDIT);
+    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.EDIT;
 
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditDialogAction.class);
@@ -109,6 +108,10 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        return VISIBILITY.getVisibility(cms, resources);
+        if ((resources.size() == 1) && !CmsResourceTypeXmlContent.isXmlContent(resources.get(0))) {
+            return VISIBILITY.getVisibility(cms, resources);
+        } else {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
     }
 }

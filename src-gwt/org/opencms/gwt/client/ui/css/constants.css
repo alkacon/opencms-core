@@ -44,6 +44,8 @@
 /** The important text color. Use it only for displaying important text. */
 @def textColorImportant #B31B34;
 
+@def textColorHighlight #2197DB;
+
 @def colorWarning #ffa826;
 
 @def colorError #B31B34;
@@ -151,14 +153,18 @@
  * Background gradients.
  */
  
- @def gradientListItem literal("to bottom, #FFFFFF 0%, #FFFFFF 48%, #F0F0F2 52%, #F0F0F2 100%");
+ @def gradientListItem literal("linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 48%, #F0F0F2 52%, #F0F0F2 100%)");
+ 
+ @def gradientInvalid literal("repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 240, 242, 1) 10px, rgba(240, 240, 242, 1) 20px)");
+ 
+ @def gradientPlaceholder literal("repeating-linear-gradient(45deg, #000000, #000000 10px, #FCFFFF 10px, #FFFFFF 20px)");
 /**
  * The dialog header background. 
  */
-@def gradientDialogHeader literal("to bottom, #3E4654 2%, #1F232A 98%, #1F232A");
+@def gradientDialogHeader literal("linear-gradient(to bottom, #3E4654 2%, #1F232A 98%, #1F232A)");
 /** The form dialog background gradient. */
-@def gradientFormDialog literal("left, #FFFFFF 0%, #FAFAFD 80%, #F0F0F2 100%");  
-@def gradientFormDialogFocus literal("left,  #F0F0F2 0%, #F0F0F2 80%, #FAFAFD 100%");  
+@def gradientFormDialog literal("linear-gradient(to right, #FFFFFF 0%, #FAFAFD 80%, #F0F0F2 100%)");  
+@def gradientFormDialogFocus literal("linear-gradient(to right,  #F0F0F2 0%, #F0F0F2 80%, #FAFAFD 100%)");  
 @def gradientFormDialogColor #F0F0F2;
 @def gradientFormDialogFocusColor #E0E0E2;
 

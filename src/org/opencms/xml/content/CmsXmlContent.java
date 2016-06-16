@@ -32,7 +32,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeLocaleIndependentXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -695,8 +697,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         }
 
         try {
-            if (OpenCms.getResourceManager().getResourceType(
-                file) instanceof CmsResourceTypeLocaleIndependentXmlContent) {
+            I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(file);
+            if ((resourceType instanceof CmsResourceTypeLocaleIndependentXmlContent)
+                || (resourceType instanceof CmsResourceTypeXmlAdeConfiguration)) {
                 return true;
             }
         } catch (Exception e) {

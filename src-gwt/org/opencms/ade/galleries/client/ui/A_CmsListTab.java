@@ -38,10 +38,10 @@ import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -474,15 +474,17 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      */
     protected CmsPushButton createNewExternalLinkButton(final String parentPath) {
 
-        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
+        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(
+            CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
         CmsPushButton createNewButton = null;
         if (typeInfo != null) {
             final String niceName = typeInfo.getTitle();
             final String description = typeInfo.getDescription();
-            createNewButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().addIcon());
-            createNewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
-            createNewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            createNewButton = new CmsPushButton(I_CmsButton.ADD_SMALL);
+            createNewButton.setTitle(
+                org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
+            createNewButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
             createNewButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -524,9 +526,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected CmsPushButton createSelectButton(A_SelectionHandler selectionHandler) {
 
         CmsPushButton selectButton = new CmsPushButton();
-        selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
+        selectButton.setImageClass(I_CmsButton.SEARCH_SMALL);
         selectButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
-        selectButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        selectButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
         selectionHandler.setSelectButton(selectButton);
         selectButton.addClickHandler(selectionHandler);
         return selectButton;
@@ -549,8 +551,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         String resourceType) {
 
         CmsPushButton result = new CmsPushButton();
-        result.setImageClass(I_CmsImageBundle.INSTANCE.style().checkIcon());
-        result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        result.setImageClass(I_CmsButton.CHECK_SMALL);
+        result.setButtonStyle(ButtonStyle.FONT_ICON, null);
         result.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         result.addClickHandler(new SelectHandler(resourcePath, structureId, title, resourceType));
         return result;
@@ -568,31 +570,28 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(
 
-        new Supplier<I_CmsUploadContext>() {
+            new Supplier<I_CmsUploadContext>() {
 
-            public I_CmsUploadContext get() {
+                public I_CmsUploadContext get() {
 
-                return new I_CmsUploadContext() {
+                    return new I_CmsUploadContext() {
 
-                    public void onUploadFinished(List<String> uploadedFiles) {
+                        public void onUploadFinished(List<String> uploadedFiles) {
 
-                        getTabHandler().updateIndex();
-                    }
+                            getTabHandler().updateIndex();
+                        }
 
-                };
-            }
-        });
+                    };
+                }
+            });
 
         buttonHandler.setTargetFolder(target);
         buttonHandler.setIsTargetRootPath(isRootPath);
         CmsUploadButton uploadButton = new CmsUploadButton(buttonHandler);
-
-        //uploadButton.setTargetFolder(target);
         uploadButton.setText(null);
         uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, target));
-        uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
-        //uploadButton.setDialogCloseHandler(getTabHandler());
+        uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        uploadButton.setImageClass(I_CmsButton.UPLOAD_SMALL);
         return uploadButton;
     }
 
@@ -706,8 +705,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             m_quickSearch.setGhostModeClear(true);
             m_options.insert(m_quickSearch, 0);
             m_searchButton = new CmsPushButton();
-            m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-            m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            m_searchButton.setImageClass(I_CmsButton.SEARCH_SMALL);
+            m_searchButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
             m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
             m_searchButton.getElement().getStyle().setMarginTop(4, Unit.PX);
             m_options.insert(m_searchButton, 0);

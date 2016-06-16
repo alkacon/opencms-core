@@ -281,6 +281,18 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * Returns the link to view the given resource in the file explorer.<p>
+     *
+     * @param sitePath the resource site path
+     *
+     * @return the link
+     */
+    public String getExplorerLink(String sitePath) {
+
+        return getFileExplorerLink() + sitePath;
+    }
+
+    /**
      * Gets the unique active item container which holds a reference to the currently active content element flyout menu.<p>
      *
      * @return the unique active item container for flyout menus

@@ -505,7 +505,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         // relative URI (i.e. no scheme component, but filename can still start with "/")
         String context = OpenCms.getSystemInfo().getOpenCmsContext();
-        if ((context != null) && path.startsWith(context + "/")) {
+        String vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
+        if ((context != null) && (path.startsWith(context + "/") || (path.startsWith(vfsPrefix + "/")))) {
             // URI is starting with opencms context
 
             // cut context from path

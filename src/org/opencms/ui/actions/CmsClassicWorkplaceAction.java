@@ -32,7 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -51,9 +51,8 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
     public void executeAction(final I_CmsDialogContext context) {
 
         CmsObject cms = context.getCms();
-        String initPath = CmsFileExplorer.getOpenedPath(
-            A_CmsUI.get().getHttpSession(),
-            cms.getRequestContext().getSiteRoot());
+        String initPath = CmsQuickLaunchLocationCache.getLocationCache(
+            A_CmsUI.get().getHttpSession()).getFileExplorerLocation(cms.getRequestContext().getSiteRoot());
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(initPath)) {
             initPath = cms.getRequestContext().addSiteRoot(initPath);

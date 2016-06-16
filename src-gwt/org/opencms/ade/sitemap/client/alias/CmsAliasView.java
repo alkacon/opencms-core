@@ -36,10 +36,8 @@ import org.opencms.ade.sitemap.client.alias.rewrite.CmsRewriteAliasTable;
 import org.opencms.ade.sitemap.client.alias.simple.CmsAliasCellTable;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle.I_CmsImageStyle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
@@ -55,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -527,11 +524,8 @@ public class CmsAliasView extends Composite {
      */
     private void setNewButtonStyle(CmsPushButton newButton) {
 
-        I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
-        newButton.setImageClass(imagestyle.addIcon());
-        newButton.setSize(Size.small);
-        newButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        newButton.getElement().getStyle().setMarginTop(1, Unit.PX);
+        newButton.setImageClass(I_CmsButton.ADD_SMALL);
+        newButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
     }
 
 }

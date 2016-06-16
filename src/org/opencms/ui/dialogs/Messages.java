@@ -42,6 +42,12 @@ public class Messages extends A_CmsMessageBundle {
     public static final String ERR_DIALOG_NOT_AVAILABLE_1 = "ERR_DIALOG_NOT_AVAILABLE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_CONFIRM_OVERWRITE_MESSAGE_0 = "GUI_COPY_MOVE_CONFIRM_OVERWRITE_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_CONFIRM_OVERWRITE_TITLE_0 = "GUI_COPY_MOVE_CONFIRM_OVERWRITE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0 = "GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */

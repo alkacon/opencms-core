@@ -59,11 +59,15 @@ import org.opencms.jsp.CmsJspTagEdit;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.widgets.CmsCategoryWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
@@ -78,11 +82,13 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -214,20 +220,20 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      *
      * @param document the parent XML document
      * @param contentLocale the content locale
-     * @param childName the child attribute name
+     * @param elementPath the element xpath to get the RDF annotation for
      *
      * @return the RDFA
      */
-    public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String childName) {
+    public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String elementPath) {
 
-        I_CmsXmlSchemaType schemaType = document.getContentDefinition().getSchemaType(childName);
+        I_CmsXmlSchemaType schemaType = document.getContentDefinition().getSchemaType(elementPath);
         StringBuffer result = new StringBuffer();
         if (schemaType != null) {
             result.append("about=\"");
             result.append(
                 CmsContentDefinition.uuidToEntityId(document.getFile().getStructureId(), contentLocale.toString()));
             result.append("\" property=\"");
-            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(childName);
+            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(elementPath);
             result.append("\"");
         }
         return result.toString();
@@ -296,7 +302,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         handler.handleChange(cms, content, locale, changedScopes);
                     }
                 }
-                result = readContentDefinition(file, content, entityId, locale, false);
+                result = readContentDefinition(file, content, entityId, locale, false, editedLocaleEntity);
             } catch (Exception e) {
                 error(e);
             }
@@ -393,7 +399,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 content,
                 CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
                 contentLocale,
-                false);
+                false,
+                editedLocaleEntity);
         } catch (Exception e) {
             error(e);
         }
@@ -417,6 +424,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            getSessionCache().clearDynamicValues();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
                 result = readContentDefnitionForNew(
                     newLink,
@@ -433,7 +441,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     content,
                     CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
                     contentLocale,
-                    false);
+                    false,
+                    null);
             }
         } catch (Throwable t) {
             error(t);
@@ -462,7 +471,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 content,
                 CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
                 contentLocale,
-                true);
+                true,
+                editedLocaleEntity);
         } catch (Exception e) {
             error(e);
         }
@@ -497,6 +507,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         locale = CmsLocaleManager.getLocale(paramLocale);
                     }
                     CmsContentDefinition result;
+                    getSessionCache().clearDynamicValues();
                     if (createNew) {
                         if (locale == null) {
                             locale = OpenCms.getLocaleManager().getDefaultLocale(cms, paramResource);
@@ -526,7 +537,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         if (locale == null) {
                             locale = getBestAvailableLocale(resource, content);
                         }
-                        result = readContentDefinition(file, content, null, locale, false);
+                        result = readContentDefinition(file, content, null, locale, false, null);
                     }
                     result.setDirectEdit(isDirectEdit);
                     return result;
@@ -578,6 +589,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     return validationResult;
                 }
                 writeContent(cms, file, content, getFileEncoding(cms, file));
+
+                writeCategories(file, content, lastEditedEntity);
+
                 // update offline indices
                 OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
                 if (clearOnSuccess) {
@@ -805,7 +819,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         try {
             result = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
                 OpenCms.getSystemInfo().getDefaultEncoding());
-        } catch (CmsException e) {
+        } catch (@SuppressWarnings("unused") CmsException e) {
             result = OpenCms.getSystemInfo().getDefaultEncoding();
         }
         return CmsEncoder.lookupEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding());
@@ -822,6 +836,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param typeName the entity type name
      * @param visitor the content type visitor
      * @param includeInvisible include invisible attributes
+     * @param editedLocalEntity the edited locale entity
      *
      * @return the entity
      */
@@ -833,7 +848,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String parentPath,
         String typeName,
         CmsContentTypeVisitor visitor,
-        boolean includeInvisible) {
+        boolean includeInvisible,
+        CmsEntity editedLocalEntity) {
 
         String newEntityId = entityId + (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentPath) ? "/" + parentPath : "");
         CmsEntity newEntity = new CmsEntity(newEntityId, typeName);
@@ -891,7 +907,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 newEntity.addAttributeValue(CmsType.CHOICE_ATTRIBUTE_NAME, result);
             }
             String path = parentPath + child.getName();
-            if (visitor.getTypes().get(subTypeName).isSimpleType()) {
+            if (visitor.isDynamicallyLoaded(attributeName)) {
+                I_CmsXmlContentValue value = content.getValue(path, locale, counter);
+                String attributeValue = getDynamicAttributeValue(
+                    content.getFile(),
+                    value,
+                    attributeName,
+                    editedLocalEntity);
+                result.addAttributeValue(attributeName, attributeValue);
+            } else if (visitor.getTypes().get(subTypeName).isSimpleType()) {
                 I_CmsXmlContentValue value = content.getValue(path, locale, counter);
                 result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
@@ -903,7 +927,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     path + "[" + (counter + 1) + "]",
                     subTypeName,
                     visitor,
-                    includeInvisible);
+                    includeInvisible,
+                    editedLocalEntity);
                 result.addAttributeValue(attributeName, subEntity);
 
             }
@@ -1031,7 +1056,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 for (int i = 0; i < choiceEntities.size(); i++) {
                     List<CmsEntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
                     // each choice entity may only have a single attribute with a single value
-                    assert (choiceAttributes.size() == 1)
+                    assert(choiceAttributes.size() == 1)
                         && choiceAttributes.get(
                             0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
                     CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
@@ -1095,7 +1120,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         boolean performedAutoCorrection = false;
         try {
             content.validateXmlStructure(new CmsXmlEntityResolver(cms));
-        } catch (CmsXmlException eXml) {
+        } catch (@SuppressWarnings("unused") CmsXmlException eXml) {
             // validation failed
             content.setAutoCorrectionEnabled(true);
             content.correctXmlStructure(cms);
@@ -1298,6 +1323,64 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Returns the value that has to be set for the dynamic attribute.
+     *
+     * @param file the file where the current content is stored
+     * @param value the content value that is represented by the attribute
+     * @param attributeName the attribute's name
+     * @param editedLocalEntity the entities that where edited last
+     * @return the value that has to be set for the dynamic attribute.
+     */
+    private String getDynamicAttributeValue(
+        CmsFile file,
+        I_CmsXmlContentValue value,
+        String attributeName,
+        CmsEntity editedLocalEntity) {
+
+        if (null != editedLocalEntity) {
+            getSessionCache().setDynamicValue(
+                attributeName,
+                editedLocalEntity.getAttribute(attributeName).getSimpleValue());
+        }
+        String currentValue = getSessionCache().getDynamicValue(attributeName);
+        if (null != currentValue) {
+            return currentValue;
+        }
+        if (null != file) {
+            if (value.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)) {
+                List<CmsCategory> categories = new ArrayList<CmsCategory>(0);
+                try {
+                    categories = CmsCategoryService.getInstance().readResourceCategories(getCmsObject(), file);
+                } catch (CmsException e) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERROR_FAILED_READING_CATEGORIES_1), e);
+                }
+                I_CmsWidget widget = null;
+                try {
+                    widget = value.getContentDefinition().getContentHandler().getWidget(value);
+                } catch (CmsXmlException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+                if ((null != widget) && (widget instanceof CmsCategoryWidget)) {
+                    String mainCategoryPath = ((CmsCategoryWidget)widget).getStartingCategory(
+                        getCmsObject(),
+                        getCmsObject().getSitePath(file));
+                    StringBuffer pathes = new StringBuffer();
+                    for (CmsCategory category : categories) {
+                        if (category.getRootPath().startsWith(getCmsObject().addSiteRoot(mainCategoryPath))) {
+                            pathes.append(category.getBasePath()).append(category.getPath()).append(',');
+                        }
+                    }
+                    String dynamicConfigString = pathes.length() > 0 ? pathes.substring(0, pathes.length() - 1) : "";
+                    getSessionCache().setDynamicValue(attributeName, dynamicConfigString);
+                    return dynamicConfigString;
+                }
+            }
+        }
+        return "";
+
+    }
+
+    /**
      * Returns the path elements for the given content value.<p>
      *
      * @param content the XML content
@@ -1361,6 +1444,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param entityId the entity id
      * @param locale the content locale
      * @param newLocale if the locale content should be created as new
+     * @param editedLocaleEntity the edited locale entity
      *
      * @return the content definition
      *
@@ -1371,7 +1455,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsXmlContent content,
         String entityId,
         Locale locale,
-        boolean newLocale) throws CmsException {
+        boolean newLocale,
+        CmsEntity editedLocaleEntity) throws CmsException {
 
         long timer = 0;
         if (LOG.isDebugEnabled()) {
@@ -1453,7 +1538,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             "",
             getTypeUri(content.getContentDefinition()),
             visitor,
-            false);
+            false,
+            editedLocaleEntity);
+
         if (LOG.isDebugEnabled()) {
             LOG.debug(
                 Messages.get().getBundle().key(
@@ -1574,7 +1661,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsResource resource = getCmsObject().readResource(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsFile file = getCmsObject().readFile(resource);
         CmsXmlContent content = getContentDocument(file, false);
-        CmsContentDefinition contentDefinition = readContentDefinition(file, content, null, locale, false);
+        CmsContentDefinition contentDefinition = readContentDefinition(file, content, null, locale, false, null);
         contentDefinition.setDeleteOnCancel(true);
         return contentDefinition;
     }
@@ -1616,7 +1703,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     "",
                     getTypeUri(content.getContentDefinition()),
                     visitor,
-                    true);
+                    true,
+                    entity);
             }
             content.removeLocale(contentLocale);
         }
@@ -1700,6 +1788,89 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             }
         }
         return new CmsValidationResult(errorsByEntity, warningsByEntity);
+    }
+
+    /**
+     * Writes the categories that are dynamically read/wrote by the content editor.
+     *
+     * @param file the file where the content is stored.
+     * @param content the content.
+     */
+    private void writeCategories(CmsFile file, CmsXmlContent content, CmsEntity lastEditedEntity) {
+
+        // do nothing if one of the arguments is empty.
+        if ((null == content) || (null == file)) {
+            return;
+        }
+
+        CmsObject cms = getCmsObject();
+        if (!content.getLocales().isEmpty()) {
+            Locale locale = content.getLocales().iterator().next();
+            CmsEntity entity = lastEditedEntity;
+            List<I_CmsXmlContentValue> values = content.getValues(locale);
+            for (I_CmsXmlContentValue value : values) {
+                if (value.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)) {
+                    I_CmsWidget widget = null;
+                    try {
+                        widget = value.getContentDefinition().getContentHandler().getWidget(value);
+                    } catch (CmsXmlException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    List<CmsCategory> categories = new ArrayList<CmsCategory>(0);
+                    try {
+                        categories = CmsCategoryService.getInstance().readResourceCategories(cms, file);
+                    } catch (CmsException e) {
+                        LOG.error(Messages.get().getBundle().key(Messages.ERROR_FAILED_READING_CATEGORIES_1), e);
+                    }
+                    if ((null != widget) && (widget instanceof CmsCategoryWidget)) {
+                        String mainCategoryPath = ((CmsCategoryWidget)widget).getStartingCategory(
+                            cms,
+                            cms.getSitePath(file));
+                        for (CmsCategory category : categories) {
+                            if (category.getRootPath().startsWith(cms.addSiteRoot(mainCategoryPath))) {
+                                try {
+                                    CmsCategoryService.getInstance().removeResourceFromCategory(
+                                        cms,
+                                        cms.getSitePath(file),
+                                        category);
+                                } catch (CmsException e) {
+                                    LOG.error(e.getLocalizedMessage(), e);
+                                }
+                            }
+                        }
+                        if (null == entity) {
+                            try {
+                                CmsContentDefinition definition = readContentDefinition(
+                                    file,
+                                    content,
+                                    "dummy",
+                                    locale,
+                                    false,
+                                    null);
+                                entity = definition.getEntity();
+                            } catch (CmsException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                        String checkedCategories = "";
+                        if (null != entity) {
+                            checkedCategories = CmsEntity.getValueForPath(entity, new String[] {value.getPath()});
+                        }
+                        List<String> checkedCategoryList = Arrays.asList(checkedCategories.split(","));
+                        for (String category : checkedCategoryList) {
+                            try {
+                                CmsCategoryService.getInstance().addResourceToCategory(
+                                    cms,
+                                    cms.getSitePath(file),
+                                    CmsCategoryService.getInstance().getCategory(cms, category));
+                            } catch (CmsException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

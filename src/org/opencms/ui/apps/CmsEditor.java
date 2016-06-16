@@ -32,6 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
@@ -171,8 +172,6 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
         if (resId == null) {
             path = getResourcePathFromState(state);
         }
-
-        CmsAppWorkplaceUi.get();
         CmsObject cms = A_CmsUI.getCmsObject();
         final String backlink = getBackLinkFromState(state);
         try {
@@ -182,6 +181,8 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
             } else {
                 resource = cms.readResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
             }
+            // make sure the user has the required role
+            OpenCms.getRoleManager().checkRoleForResource(cms, CmsRole.ELEMENT_AUTHOR, cms.getSitePath(resource));
             I_CmsEditor editor = OpenCms.getWorkplaceAppManager().getEditorForResource(resource, isPlainText(state));
             if (editor != null) {
                 m_editorInstance = editor.newInstance();

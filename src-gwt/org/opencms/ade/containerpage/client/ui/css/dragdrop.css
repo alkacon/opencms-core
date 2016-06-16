@@ -10,7 +10,12 @@ div.dragHandle{
 	padding: 2px;
 	text-align: right;
 	cursor: pointer;
+	height: 20px;
+	width: 20px;
+	font-size: 20px;
+	color: value("constants.css.textColor");
 }
+
 
 .dragging iframe{
 		visibility: hidden !important;
@@ -66,8 +71,8 @@ div.dragHandle{
 	opacity: 0;
 }
 
-@sprite .placeholderOverlay{
-	gwt-image: 'otherImages.placeholderImage';
+.placeholderOverlay{
+	background-image: value("constants.css.gradientPlaceholder");
 	display: none;
 	position:absolute;
 	z-index: value("constants.css.zIndexInline");

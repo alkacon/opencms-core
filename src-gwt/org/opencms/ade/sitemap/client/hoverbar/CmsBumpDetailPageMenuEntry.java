@@ -69,7 +69,8 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
+        boolean show = controller.isEditable()
+            && !CmsSitemapView.getInstance().isSpecialMode()
             && (entry != null)
             && controller.isDetailPage(entry)
             && controller.getData().canEditDetailPages()

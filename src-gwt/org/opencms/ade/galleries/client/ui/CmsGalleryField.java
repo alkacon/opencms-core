@@ -45,8 +45,9 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.input.CmsSimpleTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
@@ -235,11 +236,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_uploadButton.setText(null);
         m_uploadButton.setTitle(
             Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
-        m_uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadSmallIcon());
+        m_uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_uploadButton.setImageClass(I_CmsButton.UPLOAD);
+        m_uploadButton.setSize(Size.small);
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_main = uibinder.createAndBindUi(this);
-        m_main.getElement().getStyle().setBackgroundColor("white");
         initWidget(m_main);
         m_allowUploads = allowUploads;
         if (m_allowUploads) {
@@ -247,8 +248,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
         m_configuration = configuration;
         I_CmsLayoutBundle.INSTANCE.galleryFieldCss().ensureInjected();
-        m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+        m_opener.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_opener.setImageClass(I_CmsButton.GALLERY);
+        m_opener.setSize(Size.small);
     }
 
     /**
@@ -393,8 +395,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         if (m_allowUploads && (dropZone != null) && (m_uploadDropZone == null)) {
             m_uploadDropZone = dropZone;
             initUploadZone(m_uploadDropZone);
-            m_uploadDropZone.setTitle(org.opencms.ade.upload.client.Messages.get().key(
-                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0));
+            m_uploadDropZone.setTitle(
+                org.opencms.ade.upload.client.Messages.get().key(
+                    org.opencms.ade.upload.client.Messages.GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0));
             m_uploadDropZone.addClassName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().uploadDropZone());
         }
     }
@@ -831,39 +834,39 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * @param element the drop zone element
      */
     private native void initUploadZone(JavaScriptObject element)/*-{
-        // check for file api support
-        if ((typeof FileReader == 'function' || typeof FileReader == 'object')
-                && (typeof FormData == 'function' || typeof FormData == 'object')) {
-            var self = this;
+		// check for file api support
+		if ((typeof FileReader == 'function' || typeof FileReader == 'object')
+				&& (typeof FormData == 'function' || typeof FormData == 'object')) {
+			var self = this;
 
-            function dragover(event) {
-                event.stopPropagation();
-                event.preventDefault();
-                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
-            }
+			function dragover(event) {
+				event.stopPropagation();
+				event.preventDefault();
+				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
+			}
 
-            function dragleave(event) {
-                event.stopPropagation();
-                event.preventDefault();
-                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
-            }
+			function dragleave(event) {
+				event.stopPropagation();
+				event.preventDefault();
+				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+			}
 
-            function drop(event) {
-                event.preventDefault();
-                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
-                if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget != null) {
-                    var dt = event.dataTransfer;
-                    var files = dt.files;
-                    self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
-                }
-            }
+			function drop(event) {
+				event.preventDefault();
+				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+				if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget != null) {
+					var dt = event.dataTransfer;
+					var files = dt.files;
+					self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+				}
+			}
 
-            element.addEventListener("dragover", dragover, false);
-            element.addEventListener("dragexit", dragleave, false);
-            element.addEventListener("dragleave", dragleave, false);
-            element.addEventListener("dragend", dragleave, false);
-            element.addEventListener("drop", drop, false);
-        }
+			element.addEventListener("dragover", dragover, false);
+			element.addEventListener("dragexit", dragleave, false);
+			element.addEventListener("dragleave", dragleave, false);
+			element.addEventListener("dragend", dragleave, false);
+			element.addEventListener("drop", drop, false);
+		}
     }-*/;
 
     /**

@@ -68,7 +68,6 @@ div.cmsMenuBar .cmsMenuItem.selected * {
 .cmsMenuItem .iconBox { 
 	float: left;
 	width: 24px; 
-	padding-top: 4px;
 }
 
 .cmsMenuBar .cmsMenuItem .html-face > span{
@@ -78,8 +77,11 @@ div.cmsMenuBar .cmsMenuItem.selected * {
 .cmsMenuBar .cmsMenuItem .arrow { /* symbol for sub menus */
 	float: right;
 	margin-right: 2px;
-	margin-top: 4px;
+	margin-top: 6px;
+	font-size: 16px;
 }
+
+
 .cmsMenuBar .menuItemSeparator { /* section breaks between menu items */ 
 	height: 3px;
 	line-height: 0px;

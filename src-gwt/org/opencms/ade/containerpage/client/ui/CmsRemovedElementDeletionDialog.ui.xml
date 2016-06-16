@@ -5,8 +5,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="messages" type="org.opencms.ade.containerpage.client.ui.CmsRemovedElementDeletionDialog.Messages" />
-	<ui:with field="imagebundle" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" /> 
-	
 	<ui:style>
 		.mainLabel {	
 			padding: 12px; 
@@ -15,13 +13,14 @@
 		.infoIconDiv {
 			width: 32px;
 			height: 32px; 
+			font-size: 32px;
 			margin-top: 10px;
 		}
 	</ui:style>
 	<g:FlowPanel>
 		<g:SimplePanel ui:field="m_infoBoxContainer"></g:SimplePanel>
 		<g:HorizontalPanel>
-			<g:Label addStyleNames="{imagebundle.style.infoBigIcon} {style.infoIconDiv}" /> 
+			<g:Label addStyleNames="opencms-icon opencms-icon-circle-info {style.infoIconDiv}" /> 
 			<g:Label addStyleNames="{style.mainLabel}" text="{messages.messageMainText}"></g:Label>
 		</g:HorizontalPanel>
 		<g:FlowPanel visible="false">

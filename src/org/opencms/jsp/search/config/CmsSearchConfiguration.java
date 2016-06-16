@@ -29,6 +29,8 @@ package org.opencms.jsp.search.config;
 
 import org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -73,6 +75,8 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
         m_queryFacet = parser.parseQueryFacet();
         m_highlighting = parser.parseHighlighter();
         m_didYouMean = parser.parseDidYouMean();
+
+        propagateFacetNames();
 
     }
 
@@ -144,5 +148,32 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     public I_CmsSearchConfigurationSorting getSortConfig() {
 
         return m_sorting;
+    }
+
+    /**
+     * Propagates the names of all facets to each single facet.
+     */
+    private void propagateFacetNames() {
+
+        // collect all names and configurations
+        Collection<String> facetNames = new ArrayList<String>();
+        Collection<I_CmsSearchConfigurationFacet> facetConfigs = new ArrayList<I_CmsSearchConfigurationFacet>();
+        facetNames.addAll(m_fieldFacets.keySet());
+        facetConfigs.addAll(m_fieldFacets.values());
+        facetNames.addAll(m_rangeFacets.keySet());
+        facetConfigs.addAll(m_rangeFacets.values());
+        if (null != m_queryFacet) {
+            facetNames.add(m_queryFacet.getName());
+            facetConfigs.add(m_queryFacet);
+        }
+
+        // propagate all names
+        for (I_CmsSearchConfigurationFacet facetConfig : facetConfigs) {
+            facetConfig.propagateAllFacetNames(facetNames);
+        }
+        for (I_CmsSearchConfigurationFacet facetConfig : m_rangeFacets.values()) {
+            facetConfig.propagateAllFacetNames(facetNames);
+        }
+
     }
 }

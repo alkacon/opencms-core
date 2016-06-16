@@ -1,8 +1,3 @@
-@sprite .brokenLink {
-    gwt-image: "gwtImages.bigIcons.brokenLinkBigIcon";
-    margin-right: 4px;
-}
-
 .deletedEntryLabel {
 	text-decoration: line-through;
 }

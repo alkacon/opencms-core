@@ -32,13 +32,13 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsCategoryDialogCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -47,6 +47,7 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -271,9 +272,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
 
     }
 
-    /** The css bundle used for this widget. */
-    protected static final I_CmsCategoryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.categoryDialogCss();
-
     /** The filtering delay. */
     private static final int FILTER_DELAY = 100;
 
@@ -312,7 +310,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     protected CmsPushButton m_searchButton;
 
     /** List of all selected categories. */
-    protected List<String> m_selectedCategories;
+    protected Collection<String> m_selectedCategories;
 
     /** Result string for single selection. */
     protected String m_singleResult = "";
@@ -356,7 +354,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param categories the categories
      **/
     public CmsCategoryTree(
-        List<String> selectedCategories,
+        Collection<String> selectedCategories,
         int height,
         boolean isSingleValue,
         List<CmsCategoryTreeEntry> categories) {
@@ -385,7 +383,10 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param children the list of children
      * @param selectedCategories the list of categories to select
      */
-    public void addChildren(CmsTreeItem parent, List<CmsCategoryTreeEntry> children, List<String> selectedCategories) {
+    public void addChildren(
+        CmsTreeItem parent,
+        List<CmsCategoryTreeEntry> children,
+        Collection<String> selectedCategories) {
 
         if (children != null) {
             for (CmsCategoryTreeEntry child : children) {
@@ -561,7 +562,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param categoriesBeans the updates list of categories tree item beans
      * @param selectedCategories the categories to select in the list by update
      */
-    public void updateContentList(List<CmsTreeItem> categoriesBeans, List<String> selectedCategories) {
+    public void updateContentList(List<CmsTreeItem> categoriesBeans, Collection<String> selectedCategories) {
 
         m_scrollList.clearList();
         // clearList();
@@ -588,7 +589,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param treeEntries the root category entry
      * @param selectedCategories the categories to select after update
      */
-    public void updateContentTree(List<CmsCategoryTreeEntry> treeEntries, List<String> selectedCategories) {
+    public void updateContentTree(List<CmsCategoryTreeEntry> treeEntries, Collection<String> selectedCategories) {
 
         m_scrollList.clearList();
         if (m_categories == null) {
@@ -646,8 +647,9 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         m_quickSearch.setGhostModeClear(true);
         m_options.insert(m_quickSearch, 0);
         m_searchButton = new CmsPushButton();
-        m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-        m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_searchButton.setImageClass(I_CmsButton.SEARCH);
+        m_searchButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_searchButton.setSize(Size.small);
         m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
         m_searchButton.getElement().getStyle().setMarginTop(4, Unit.PX);
         m_searchButton.getElement().getStyle().setMarginLeft(4, Unit.PX);
@@ -828,7 +830,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             m_options.add(m_sortSelectBox);
             // create the box label
             Label infoLabel = new Label();
-            infoLabel.setStyleName(DIALOG_CSS.infoLabel());
+            infoLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.categoryDialogCss().infoLabel());
             m_infoLabel = infoLabel;
             // add it to the right panel
             m_options.insert(infoLabel, 0);
@@ -932,7 +934,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param item the tree item
      * @param path The path of the Item that should be selected
      * @param result the resulting categories
-     * 
+     *
      * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path, List<String> result) {
@@ -1024,7 +1026,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      *
      * @return the tree item widget
      */
-    private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
+    private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, Collection<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
         CmsDataValue dataValue = new CmsDataValue(

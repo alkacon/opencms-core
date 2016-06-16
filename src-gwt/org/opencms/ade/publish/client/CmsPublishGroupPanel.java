@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.FontOpenCms;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
@@ -46,7 +47,6 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -391,8 +391,8 @@ public class CmsPublishGroupPanel extends Composite {
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean, DEFAULT_SLOT_MAPPING);
         if ((m_editorHandler != null) && resourceBean.getPermissionInfo().hasWritePermission()) {
             CmsPushButton editButton = new CmsPushButton();
-            editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
-            editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            editButton.setImageClass(I_CmsButton.PEN_SMALL);
+            editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
             editButton.setTitle(
                 org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
             editButton.addClickHandler(new ClickHandler() {
@@ -493,7 +493,6 @@ public class CmsPublishGroupPanel extends Composite {
 
         m_selectGroup = new CmsTriStateCheckBox("");
         m_selectGroup.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inlineBlock());
-        m_selectGroup.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignBottom());
         m_selectGroup.setNextStateAfterIntermediateState(State.on);
         m_selectGroup.addValueChangeHandler(new ValueChangeHandler<CmsTriStateCheckBox.State>() {
 
@@ -509,6 +508,5 @@ public class CmsPublishGroupPanel extends Composite {
 
         });
         m_header.add(m_selectGroup);
-        m_header.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignCheckboxBottom());
     }
 }

@@ -58,7 +58,6 @@ public class CmsSeoMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsSeoMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        //setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoPage());
         setLabel(org.opencms.gwt.client.seo.Messages.get().key(Messages.GUI_SEO_OPTIONS_0));
         setActive(true);
         setVisible(true);
@@ -132,7 +131,10 @@ public class CmsSeoMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isSpecialMode() && (entry != null) && entry.isEditable();
+        boolean show = getHoverbar().getController().isEditable()
+            && !CmsSitemapView.getInstance().isSpecialMode()
+            && (entry != null)
+            && entry.isEditable();
         setVisible(show);
     }
 }

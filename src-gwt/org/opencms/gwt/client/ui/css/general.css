@@ -64,11 +64,7 @@ div.header{
 
 /** joined vendor prefix style, for better fall back behavior */
 div.header{
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: value("constants.css.gradientFormDialog");
 }
 
 div.header h2{
@@ -142,8 +138,8 @@ div.header div.headerButtons > div{
     overflow: hidden !important;
 }
 
-@sprite div.disablingOverlay{
-	gwt-image: 'gwtImages.placeholderImage';
+div.disablingOverlay{
+	background-image: value("constants.css.gradientInvalid");
 	display: block;
 	position:absolute;
 	z-index: value("constants.css.zIndexInline");

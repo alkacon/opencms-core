@@ -126,13 +126,6 @@ public interface I_CmsSitemapItemCss extends CssResource {
      *
      * @return a CSS class
      **/
-    String navigationLevelIcon();
-
-    /**
-     * CSS class accessor.<p>
-     *
-     * @return a CSS class
-     **/
     String navMode();
 
     /**

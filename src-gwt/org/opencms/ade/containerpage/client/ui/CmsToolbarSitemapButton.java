@@ -45,7 +45,7 @@ public class CmsToolbarSitemapButton extends A_CmsToolbarButton<CmsContainerpage
      */
     public CmsToolbarSitemapButton(CmsContainerpageHandler handler) {
 
-        super(I_CmsButton.ButtonData.SITEMAP, handler);
+        super(I_CmsButton.ButtonData.SITEMAP_BUTTON, handler);
     }
 
     /**

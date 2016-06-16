@@ -44,7 +44,7 @@ public class CmsAliasSelectionColumn extends A_CmsAliasTableColumn<CmsAliasTable
     /**
      * Creates a new column instance.<p>
      *
-     * @param table
+     * @param table the table
      */
     public CmsAliasSelectionColumn(CmsAliasCellTable table) {
 

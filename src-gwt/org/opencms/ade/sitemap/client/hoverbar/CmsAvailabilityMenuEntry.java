@@ -32,12 +32,12 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
-import org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
+import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsUUID;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import java.util.Collections;
 
 /**
  * Sitemap context menu availability entry.<p>
@@ -71,18 +71,28 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
         } else {
             editId = entry.getId();
         }
-        CmsAvailabilityDialog dialog = new CmsAvailabilityDialog(
-            editId,
-            CmsSitemapView.getInstance().getIconForEntry(entry));
-        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
-            public void onClose(CloseEvent<PopupPanel> event) {
+        CmsEmbeddedDialogHandler dialogHandler = new CmsEmbeddedDialogHandler(new I_CmsActionHandler() {
+
+            public void leavePage(String targetUri) {
+
+                // not supported
+            }
+
+            public void onSiteOrProjectChange(String sitePath, String serverLink) {
+
+                // not supported
+            }
+
+            public void refreshResource(CmsUUID structureId) {
 
                 updateEntry();
-
             }
         });
-        dialog.loadAndShow();
+        dialogHandler.openDialog(
+            "org.opencms.ui.actions.CmsAvailabilityDialogAction",
+            CmsGwtConstants.CONTEXT_TYPE_SITEMAP_TOOLBAR,
+            Collections.singletonList(editId));
     }
 
     /**
@@ -93,7 +103,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isSpecialMode() && (entry != null);
+        boolean show = controller.isEditable() && !CmsSitemapView.getInstance().isSpecialMode() && (entry != null);
         setVisible(show);
         if (show && (entry != null) && !entry.isEditable()) {
             setActive(false);

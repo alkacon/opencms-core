@@ -111,11 +111,9 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
      */
     public CmsToolbarChooseEditorModeButton(boolean canEditModelPages) {
 
-        super(null, I_CmsButton.ButtonData.SITEMAP.getIconClass());
+        super(null, I_CmsButton.ButtonData.SITEMAP_BUTTON.getIconClass());
         m_canEditModelPages = canEditModelPages;
         setTitle(Messages.get().key(Messages.GUI_SELECT_VIEW_0));
-        m_button.addStyleName(I_CmsButton.Size.big.getCssClassName());
-        m_button.addStyleName(I_CmsButton.ButtonStyle.FONT_ICON.getCssClassName());
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
         m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
@@ -153,19 +151,19 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
     public CmsContextMenu createContextMenu() {
 
         m_entries = new ArrayList<I_CmsContextMenuEntry>();
-        m_entries.add(
-            new EditorModeEntry(
-                Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0),
-                EditorMode.navigation));
-        m_entries.add(
-            new EditorModeEntry(Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0), EditorMode.vfs));
-        m_entries.add(
-            new EditorModeEntry(Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0), EditorMode.galleries));
+        m_entries.add(new EditorModeEntry(
+            Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0),
+            EditorMode.navigation));
+        m_entries.add(new EditorModeEntry(
+            Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0),
+            EditorMode.vfs));
+        m_entries.add(new EditorModeEntry(
+            Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0),
+            EditorMode.galleries));
         if (CmsCoreProvider.get().getUserInfo().isCategoryManager()) {
-            m_entries.add(
-                new EditorModeEntry(
-                    Messages.get().key(Messages.GUI_CONTEXTMENU_CATEGORY_MODE_0),
-                    EditorMode.categories));
+            m_entries.add(new EditorModeEntry(
+                Messages.get().key(Messages.GUI_CONTEXTMENU_CATEGORY_MODE_0),
+                EditorMode.categories));
         }
         if (m_canEditModelPages) {
             m_entries.add(new EditorModeEntry(Messages.get().key(Messages.GUI_MODEL_PAGES_0), EditorMode.modelpages));
