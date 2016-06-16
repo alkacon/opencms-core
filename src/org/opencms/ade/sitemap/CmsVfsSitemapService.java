@@ -358,8 +358,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     tryUnlock(
                         cms.createResource(
                             localRepositoryPath,
-                            OpenCms.getResourceManager().getResourceType(
-                                CmsResourceTypeFolder.getStaticTypeName()).getTypeId()));
+                            OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName())));
                 }
                 createdCategory = catService.createCategory(cms, null, name, title, "", localRepositoryPath);
             } else {
@@ -389,7 +388,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsGalleryFolderEntry folderEntry = null;
         try {
             if (!cms.existsResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                CmsResource parent = cms.createResource(parentFolder, CmsResourceTypeFolder.getStaticTypeId());
+                CmsResource parent = cms.createResource(
+                    parentFolder,
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
                 tryUnlock(parent);
             }
             String folderName = OpenCms.getResourceManager().getFileTranslator().translateResource(title);
@@ -400,6 +401,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 folderName);
             String folderPath = CmsStringUtil.joinPaths(parentFolder, folderName);
 
+            @SuppressWarnings("deprecation")
             CmsResource galleryFolder = cms.createResource(
                 folderPath,
                 folderTypeId,
@@ -665,6 +667,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#mergeSubSitemap(java.lang.String, org.opencms.util.CmsUUID)
      */
+    @SuppressWarnings("deprecation")
     public CmsSitemapChange mergeSubSitemap(String entryPoint, CmsUUID subSitemapId) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
@@ -1353,6 +1356,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @return the gallery folder resource types
      */
+    @SuppressWarnings("deprecation")
     private List<CmsGalleryType> collectGalleryTypes() {
 
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
@@ -1577,6 +1581,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @throws CmsException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     private CmsClientSitemapEntry createNewEntry(String entryPoint, CmsSitemapChange change) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -1825,6 +1830,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @return the resource type info bean
      */
+    @SuppressWarnings("deprecation")
     private CmsNewResourceInfo createResourceTypeInfo(I_CmsResourceType resType, CmsResource copyResource) {
 
         String name = resType.getTypeName();
@@ -1862,6 +1868,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @throws CmsException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     private void createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder) throws CmsException {
 
         String sitePath = cms.getSitePath(subSitemapFolder);
@@ -1870,7 +1877,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         if (!cms.existsResource(folderName)) {
             cms.createResource(
                 folderName,
-                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
+                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE));
         }
         I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
         if (cms.existsResource(sitemapConfigName)) {
@@ -1885,7 +1892,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         } else {
             cms.createResource(
                 sitemapConfigName,
-                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
+                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE));
         }
 
     }
@@ -2154,6 +2161,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     throws CmsException {
 
         List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
+        @SuppressWarnings("deprecation")
         List<CmsResource> galleryFolders = getCmsObject().readResources(
             entryPointUri,
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryType.getTypeId()));
@@ -2473,6 +2481,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @throws CmsRpcException in case of an error
      */
+    @SuppressWarnings("deprecation")
     private int getSubsitemapType() throws CmsRpcException {
 
         try {
@@ -2591,6 +2600,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @return <code>true</code> if the given type id matches the xml-redirect resource type
      */
+    @SuppressWarnings("deprecation")
     private boolean isRedirectType(int typeId) {
 
         try {
