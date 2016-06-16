@@ -27,6 +27,7 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 import org.opencms.ui.shared.components.CmsMaxHeightState;
 import org.opencms.ui.shared.rpc.I_CmsMaxHeightServerRpc;
@@ -37,6 +38,8 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ServerConnector;
+import com.vaadin.client.communication.StateChangeEvent;
+import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
 
@@ -49,23 +52,23 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
     /** The serial version id. */
     private static final long serialVersionUID = -3661096843568550285L;
 
-    /** The native mutation observer. */
-    private JavaScriptObject m_mutationObserver;
-
-    /** The RPC proxy. */
-    private I_CmsMaxHeightServerRpc m_rpc;
-
-    /** The widget to enhance. */
-    private Widget m_widget;
-
     /** The currently set height. */
     private int m_currentHeight;
 
     /** Flag indicating the required height is currently being evaluated. */
     private boolean m_evaluating;
 
+    /** The native mutation observer. */
+    private JavaScriptObject m_mutationObserver;
+
+    /** The RPC proxy. */
+    private I_CmsMaxHeightServerRpc m_rpc;
+
     /** Flag which is set when this connector is unregistered. */
     private boolean m_unregistered;
+
+    /** The widget to enhance. */
+    private Widget m_widget;
 
     /**
      * Constructor.<p>
@@ -106,6 +109,15 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
         // Get the extended widget
         m_widget = ((ComponentConnector)target).getWidget();
         addMutationObserver(m_widget.getElement());
+        addStateChangeHandler(new StateChangeHandler() {
+
+            @SuppressWarnings("synthetic-access")
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+
+                m_currentHeight = -1;
+                handleMutation();
+            }
+        });
     }
 
     /**
@@ -142,33 +154,33 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
      * @param element the element
      */
     private native void addMutationObserver(Element element)/*-{
-        var self = this;
-        var observer = new MutationObserver(
-                function(mutations) {
-                    self.@org.opencms.ui.client.CmsMaxHeightConnector::handleMutation()();
-                });
-        this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = observer;
-
-        // configuration of the observer:
-        var config = {
-            attributes : true,
-            childList : true,
-            characterData : true,
-            subtree : true
-        };
-
-        // pass in the target node, as well as the observer options
-        observer.observe(element, config);
-    }-*/;
+                                                            var self = this;
+                                                            var observer = new MutationObserver(
+                                                            function(mutations) {
+                                                            self.@org.opencms.ui.client.CmsMaxHeightConnector::handleMutation()();
+                                                            });
+                                                            this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = observer;
+                                                            
+                                                            // configuration of the observer:
+                                                            var config = {
+                                                            attributes : true,
+                                                            childList : true,
+                                                            characterData : true,
+                                                            subtree : true
+                                                            };
+                                                            
+                                                            // pass in the target node, as well as the observer options
+                                                            observer.observe(element, config);
+                                                            }-*/;
 
     /**
      * Removes the mutation observer.<p>
      */
     private native void removeObserver()/*-{
-        if (this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver != null) {
-            this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver
-                    .disconnect();
-            this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = null;
-        }
-    }-*/;
+                                        if (this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver != null) {
+                                        this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver
+                                        .disconnect();
+                                        this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = null;
+                                        }
+                                        }-*/;
 }

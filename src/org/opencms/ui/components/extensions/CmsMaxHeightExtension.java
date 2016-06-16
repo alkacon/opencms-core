@@ -62,6 +62,7 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
         extend(component);
         registerRpc(this);
         getState().setMaxHeight(maxHeight);
+
     }
 
     /**
@@ -97,6 +98,16 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
     public void removeHeightChangeHandler(Runnable action) {
 
         m_heightChangeHandlers.remove(action);
+    }
+
+    /**
+     * Updates the maximum height.<p>
+     *
+     * @param maxHeight the new value for the maximum height
+     */
+    public void updateMaxHeight(int maxHeight) {
+
+        getState().setMaxHeight(maxHeight);
     }
 
     /**

@@ -40,6 +40,8 @@ import org.jsoup.nodes.Element;
 
 import com.google.common.collect.Lists;
 import com.vaadin.event.Action.Handler;
+import com.vaadin.server.Page.BrowserWindowResizeEvent;
+import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -73,6 +75,12 @@ public class CmsBasicDialog extends VerticalLayout {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The shortcut action handler. */
+    private Handler m_actionHandler;
+
+    /** The left button panel. */
+    private HorizontalLayout m_buttonPanelLeft;
+
     /** The button bar. */
     private HorizontalLayout m_buttonPanelRight;
 
@@ -91,11 +99,7 @@ public class CmsBasicDialog extends VerticalLayout {
     /** Extension used to regulate max height. */
     private CmsMaxHeightExtension m_maxHeightExtension;
 
-    /** The left button panel. */
-    private HorizontalLayout m_buttonPanelLeft;
-
-    /** The shortcut action handler. */
-    private Handler m_actionHandler;
+    private BrowserWindowResizeListener m_windowResizeListener;
 
     /**
      * Creates new instance.<p>
@@ -410,12 +414,23 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
+     * Calculates max dialog height given the window height.<p>
+     *
+     * @param windowHeight the window height
+     * @return the maximal dialog height
+     */
+    private int calculateMaxHeight(int windowHeight) {
+
+        return (int)((0.95 * windowHeight) - 40);
+    }
+
+    /**
      * Adds the max height extension to the dialog panel.<p>
      */
     private void enableMaxHeight() {
 
         // use the window height minus an offset for the window header and some spacing
-        int maxHeight = (int)((0.95 * A_CmsUI.get().getPage().getBrowserWindowHeight()) - 40);
+        int maxHeight = calculateMaxHeight(A_CmsUI.get().getPage().getBrowserWindowHeight());
         m_maxHeightExtension = new CmsMaxHeightExtension(this, maxHeight);
         m_maxHeightExtension.addHeightChangeHandler(new Runnable() {
 
@@ -425,8 +440,32 @@ public class CmsBasicDialog extends VerticalLayout {
                 if (wnd != null) {
                     wnd.center();
                 }
-
             }
         });
+
+        addDetachListener(new DetachListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
+            public void detach(DetachEvent event) {
+
+                A_CmsUI.get().getPage().removeBrowserWindowResizeListener(m_windowResizeListener);
+            }
+        });
+
+        m_windowResizeListener = new BrowserWindowResizeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
+            public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+                int newHeight = event.getHeight();
+                m_maxHeightExtension.updateMaxHeight(calculateMaxHeight(newHeight));
+            }
+        };
+        A_CmsUI.get().getPage().addBrowserWindowResizeListener(m_windowResizeListener);
+
     }
 }
