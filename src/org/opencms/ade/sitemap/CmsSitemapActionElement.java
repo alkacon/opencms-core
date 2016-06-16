@@ -34,10 +34,13 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.main.CmsLog;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Sitemap action used to generate the sitemap editor.<p>
@@ -53,6 +56,9 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
 
     /** The GWT module name. */
     public static final String GWT_MODULE_NAME = "sitemap";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSitemapActionElement.class);
 
     /** The current sitemap data. */
     private CmsSitemapData m_sitemapData;
@@ -107,8 +113,8 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
                 m_sitemapData = CmsVfsSitemapService.prefetch(
                     getRequest(),
                     getCmsObject().getRequestContext().getUri());
-            } catch (@SuppressWarnings("unused") CmsRpcException e) {
-                // ignore, should never happen, and it is already logged
+            } catch (CmsRpcException e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return m_sitemapData;
@@ -121,14 +127,18 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
      */
     public String getTitle() {
 
-        String folderTitle = getSitemapData().getOpenPath();
-        CmsClientSitemapEntry root = getSitemapData().getRoot();
-        if (root != null) {
-            CmsClientProperty titleProp = root.getOwnProperties().get(CmsPropertyDefinition.PROPERTY_TITLE);
-            if ((titleProp != null) && !titleProp.isEmpty()) {
-                folderTitle = root.getOwnProperties().get(CmsPropertyDefinition.PROPERTY_TITLE).getEffectiveValue();
-            } else {
-                folderTitle = root.getName();
+        CmsSitemapData data = getSitemapData();
+        String folderTitle = "";
+        if (data != null) {
+            folderTitle = getSitemapData().getOpenPath();
+            CmsClientSitemapEntry root = getSitemapData().getRoot();
+            if (root != null) {
+                CmsClientProperty titleProp = root.getOwnProperties().get(CmsPropertyDefinition.PROPERTY_TITLE);
+                if ((titleProp != null) && !titleProp.isEmpty()) {
+                    folderTitle = root.getOwnProperties().get(CmsPropertyDefinition.PROPERTY_TITLE).getEffectiveValue();
+                } else {
+                    folderTitle = root.getName();
+                }
             }
         }
         return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EDITOR_TITLE_1, folderTitle);
