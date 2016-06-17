@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.util.CmsHtml2TextConverter;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -348,6 +349,22 @@ public final class CmsJspElFunctions {
         }
         // input was null
         return Integer.valueOf(0);
+    }
+
+    /**
+     * Returns a parameter value from the module parameters.<p>
+     *
+     * @param name the name of the module
+     * @param key the parameter to return the value for
+     * @return the parameter value from the module parameters, or <code>null</code> if the parameter is not set
+     */
+    public static String getModuleParam(String name, String key) {
+
+        CmsModule module = OpenCms.getModuleManager().getModule(name);
+        if (module != null) {
+            return module.getParameter(key);
+        }
+        return null;
     }
 
     /**

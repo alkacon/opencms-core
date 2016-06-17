@@ -125,7 +125,7 @@
             <name>default</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
-    </tag>        
+    </tag>
 
     <tag>
         <description>
@@ -171,8 +171,8 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
-    </tag> 
-    
+    </tag>
+
     <tag>
         <description>
             This tag enables access to some system information like OpenCms version etc.
@@ -229,8 +229,8 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
-    </tag>     
-            
+    </tag>
+
     <tag>
         <description><![CDATA[
             The tag adjusts the links to the OpenCms VFS provided in the tag's body (including request parameters).
@@ -253,7 +253,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>          
-    </tag>   
+    </tag>
 
     <tag>
     	<description><![CDATA[
@@ -290,7 +290,7 @@
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     </tag>
-    
+
    <tag>
     	<description><![CDATA[
     		This tag is used to generate a png or jpg thumbnail from a PDF and expands to a link to the thumbnail.
@@ -332,7 +332,7 @@
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     </tag>
-    
+
     <tag>
     	<description><![CDATA[Initializes a user generated content form session.]]></description>
     	<name>ugc</name>
@@ -369,7 +369,7 @@
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     </tag>
-    
+
     <tag>
         <description><![CDATA[
             This tag is used to decorate HTML.</P>
@@ -484,7 +484,7 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>       
     </tag>
-    
+
     <tag>
         <description><![CDATA[
             This tag loads XML content items from the OpenCms VFS.
@@ -674,8 +674,8 @@
             <required>false</required>            
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
-    </tag>    
-        
+    </tag>
+
     <tag>
         <description><![CDATA[
             <em>Deprecated.</em></P>
@@ -696,8 +696,8 @@
             <name>escapeHtml</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
-    </tag>  
-    
+    </tag>
+
     <tag>
         <description><![CDATA[
             This tag provides access to information about the XML contents collected via <code>&lt;cms:contentload&gt;</code>.
@@ -746,8 +746,8 @@
             <name>scope</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
-    </tag>      
-    
+    </tag>
+
     <tag>
         <description><![CDATA[
             This tag provides access to an XML content.</P>
@@ -803,8 +803,8 @@
             <required>false</required>            
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
-    </tag>    
-    
+    </tag>
+
     <tag>
         <description><![CDATA[
             <em>Deprecated.</em> </P>
@@ -817,8 +817,8 @@
             <name>element</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
-    </tag>   
-    
+    </tag>
+
     <tag>
         <description><![CDATA[
             <em>Deprecated. Use properties of org.opencms.jsp.util.CmsJspContentAccessBean via the EL instead.</em></P>
@@ -869,7 +869,7 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>
-    
+
     <tag>
         <description><![CDATA[
             This tag loads resources from the OpenCms VFS. 
@@ -946,7 +946,7 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
     </tag>
-    
+
     <tag>
         <description><![CDATA[
             This tag provides access OpenCms resources.
@@ -1105,8 +1105,8 @@
         <name>label</name>
         <tag-class>org.opencms.jsp.CmsJspTagLabel</tag-class>
         <body-content>scriptless</body-content>
-    </tag>            
-    
+    </tag>
+
     <tag>
         <description><![CDATA[
             This tag is used for including OpenCms subelements in a page.
@@ -1178,7 +1178,7 @@
             <name>cacheable</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>                    
-    </tag>        
+    </tag>
 
     <tag>
         <description><![CDATA[
@@ -1257,10 +1257,9 @@
 
     <tag>
         <description><![CDATA[
-            This tag is used to enable the direct edit functionality.</P>
-            It is placed in the header of a none-container-page template for most use cases.</P>
-            An exeception is the use with attribute <code>editEmpty</code>, which is the last none-deprecated use case.</P>
-            
+            <p>This tag is used to enable the direct edit functionality.</p>
+            <p>It is placed in the header of a none-container-page template for most use cases.</p>
+            <p>An exeception is the use with attribute <code>editEmpty</code>, which is the last none-deprecated use case.</p>
             <em>Note that most of the functionality is now done by <code>&lt;enable-ade&gt;</code> for container page templates.</em>            
         ]]></description>
         <name>editable</name>
@@ -1307,7 +1306,7 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>
-    
+
     <tag>
         <description><![CDATA[
             This tag is used to output different HTML for various device types.</P>
@@ -1366,8 +1365,8 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-    </tag>      
-    
+    </tag>
+
     <tag>
         <description><![CDATA[
             This tag allows using the OpenCms native image scaling mechanism.
@@ -1678,8 +1677,8 @@
             <name>usemap</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>                         
-    </tag>    
-    
+    </tag>
+
     <tag>
         <description><![CDATA[
             This tag can be used to write JSP code from a JSP to files in the static export.</P>
@@ -1688,7 +1687,7 @@
         <name>export</name>
         <tag-class>org.opencms.jsp.CmsJspTagExport</tag-class>
         <body-content>tagdependent</body-content>  
-    </tag>    
+    </tag>
 
     <tag>
         <description><![CDATA[
@@ -1731,7 +1730,7 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>
-            
+
     <tag>
         <description>
             This tag enables the template mechanism for container pages.
@@ -2031,8 +2030,8 @@
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>              
-    </tag>   
-    
+    </tag>
+
     <tag>
         <description>
             This tag sends no-cache headers to the browser.
@@ -2041,7 +2040,7 @@
         <tag-class>org.opencms.jsp.CmsJspTagNoCache</tag-class>
         <body-content>empty</body-content>
     </tag>
-        
+
     <tag>
         <description><![CDATA[
             This tag enables content-dependent dynamic inclusion of css/javascript resources on a containerpage.</P>
@@ -2110,7 +2109,7 @@
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-        
+
     <tag>
         <description><![CDATA[
             This tag provides access to a list of elements that should be shown in the navigation, i.e., elements where at least one of the properties <code>NavText</code> or <code>NavPos</code> are set. 
@@ -2202,8 +2201,8 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
-    </tag>     
-                    
+    </tag>
+
     <tag>
         <description><![CDATA[
             Provides access to the settings of an ADE container element.</P>
@@ -2243,8 +2242,8 @@
             <name>default</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
-    </tag>    
-    
+    </tag>
+
     <tag>
       	<description><![CDATA[
             <p>This tag provides support to generate search forms and result lists for a server-side handled Solr search.
@@ -2303,7 +2302,6 @@
               <code>contentInfoMaxItems</code></p>
               <em>Default: <code>false</code></em>.
               <p><em>Hint:</em>The attribute is ignored if <code>contentInfoMaxItems</code> is specified.</p>
-              
             ]]></description>
             <name>addContentInfo</name>
             <required>false</required>                    
@@ -2321,7 +2319,7 @@
             <type>java.lang.Integer</type>
         </attribute>        
     </tag>   
-     
+
      <tag>
     	<description>
     		Enables automatic parameter escaping for a Flex Request. 
@@ -2354,8 +2352,8 @@
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     </tag>
-    
-              
+
+
     <function>
         <description><![CDATA[
             Provides simple access to a org.opencms.jsp.util.CmsJspVfsAccessBean.</P>
@@ -2368,7 +2366,7 @@
             org.opencms.jsp.util.CmsJspVfsAccessBean getVfsAccessBean(java.lang.Object)
         </function-signature>
     </function>
-    
+
     <function>
         <description><![CDATA[
             <P>Allows conversion of Long values to Dates.
@@ -2382,7 +2380,7 @@
             java.util.Date convertDate(java.lang.Object)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
             Takes a list of Java beans as first argument and a property name for a property of these beans as second argument.
@@ -2394,7 +2392,7 @@
             java.util.List convertList(java.util.List, java.lang.String)
         </function-signature>
     </function>
-    
+
     <function>
         <description><![CDATA[
             Returns the current OpenCms user context from the page context when <code>pageContext</code> is given as argument.
@@ -2405,7 +2403,7 @@
             org.opencms.file.CmsObject getCmsObject(java.lang.Object)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
             Returns the size of the given list.
@@ -2416,7 +2414,18 @@
             java.lang.Integer getListSize(java.util.Collection)
         </function-signature>
     </function>
-        
+
+    <function>
+        <description>
+            Returns a parameter value from the module parameters.
+        </description>
+        <name>getModuleParam</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String getModuleParam(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+
   	<function>
         <description>
             Allows conversion of Objects to Locales.
@@ -2429,7 +2438,7 @@
             java.util.Locale convertLocale(java.lang.Object)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
              Strips all HTML markup from the given input.
@@ -2439,8 +2448,8 @@
         <function-signature>
             java.lang.String stripHtml(java.lang.Object)
         </function-signature>
-    </function>    
-    
+    </function>
+
     <function>
         <description>
             Returns a prefix of the String argument, that is not longer then the given int value.
@@ -2451,7 +2460,7 @@
             java.lang.String trimToSize(java.lang.String, int)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
             Allows conversion of String values to CmsUUIDs.
@@ -2463,7 +2472,7 @@
             org.opencms.util.CmsUUID convertUUID(java.lang.Object)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
           Given an URL as String, formatted for a GET request, as first argument and a request parameter name as second parameter, the value of this request parameter in the first argument is returned.
@@ -2474,7 +2483,7 @@
             java.lang.String getRequestParam(java.lang.String, java.lang.String)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
             Returns the link, that is given as argument of type String and formatted for a GET request, without parameters.
@@ -2485,7 +2494,7 @@
             java.lang.String getRequestLink(java.lang.String)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
             Encodes a String in a way that is compatible with the JavaScript escape function.
@@ -2496,7 +2505,7 @@
             java.lang.String escape(java.lang.String, java.lang.String)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
             Decodes a String in a way that is compatible with the JavaScript unescape function.
@@ -2520,7 +2529,7 @@
             java.lang.String getNavigationUri(java.lang.Object)
         </function-signature>
     </function>
-    
+
     <function>
         <description>
            Uses the 1st String as key to look up from the map that is passed as the 2nd String, and returns either the 
@@ -2531,8 +2540,8 @@
         <function-signature>
             java.lang.String lookup(java.lang.String, java.lang.String, java.lang.String)
         </function-signature>
-    </function>    
-    
+    </function>
+
     <function>
         <description>
            Uses the 1st String as key to look up from the map that is passed as the 2nd String, and returns either the 
@@ -2543,5 +2552,5 @@
         <function-signature>
             java.lang.String lookup(java.lang.String, java.lang.String)
         </function-signature>
-    </function>        
+    </function>
 </taglib>
