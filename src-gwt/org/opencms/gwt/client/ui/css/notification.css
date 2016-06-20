@@ -78,8 +78,8 @@ div.messageWrap{
 
 .notificationContainer div.closeButton{
 	position: absolute;
-	top:2px;
-	right: 2px;
+	top:4px;
+	right:4px;
 }
 
 div.notificationContainer, .notificationContainer div.messagesPanel > div{
