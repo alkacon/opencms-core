@@ -282,29 +282,32 @@ public class CmsElementUtil {
         CmsFormatterConfiguration configs,
         boolean allowNested) {
 
-        I_CmsFormatterBean formatter;
-
+        I_CmsFormatterBean formatter = null;
+        Map<String, I_CmsFormatterBean> formatters = configs.getFormatterSelection(
+            container.getType(),
+            container.getWidth(),
+            allowNested);
         String formatterId = element.getSettings().get(
             CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
         if (formatterId != null) {
-            Map<String, I_CmsFormatterBean> formatters = configs.getFormatterSelection(
-                container.getType(),
-                container.getWidth(),
-                allowNested);
             formatter = formatters.get(formatterId);
-            if (formatter == null) {
-                for (I_CmsFormatterBean currentFormatter : formatters.values()) {
-                    if ((currentFormatter.getJspStructureId() != null)
-                        && currentFormatter.getJspStructureId().equals(element.getFormatterId())) {
-                        formatter = currentFormatter;
-                        break;
-                    }
+        }
+        if (formatter == null) {
+            formatterId = element.getSettings().get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY);
+            if (formatterId != null) {
+                formatter = formatters.get(formatterId);
+            }
+        }
+        if (formatter == null) {
+            for (I_CmsFormatterBean currentFormatter : formatters.values()) {
+                if ((currentFormatter.getJspStructureId() != null)
+                    && currentFormatter.getJspStructureId().equals(element.getFormatterId())) {
+                    formatter = currentFormatter;
+                    break;
                 }
             }
-            if (formatter == null) {
-                formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
-            }
-        } else {
+        }
+        if (formatter == null) {
             formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
         }
         return formatter;

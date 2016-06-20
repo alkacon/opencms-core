@@ -1783,7 +1783,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsContainerElementBean newElementBean = null;
         if (formatter != null) {
             Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
-            settings.put(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()), formatterConfigId);
+            String formatterKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
+            settings.put(formatterKey, formatterConfigId);
+            // remove not used formatter settings
+            Iterator<Entry<String, String>> entries = settings.entrySet().iterator();
+            while (entries.hasNext()) {
+                Entry<String, String> entry = entries.next();
+                if (entry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)
+                    && !entry.getKey().equals(formatterKey)) {
+                    entries.remove();
+                }
+            }
+
             newElementBean = new CmsContainerElementBean(
                 element.getId(),
                 formatter.getJspStructureId(),
@@ -2441,6 +2452,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             CmsContainerElementBean element = getCachedElement(clientId, containerPage.getRootPath());
             Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
+            String formatterID = null;
+            Iterator<Entry<String, String>> entries = settings.entrySet().iterator();
+            while (entries.hasNext()) {
+                Entry<String, String> entry = entries.next();
+                if (entry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                    formatterID = entry.getValue();
+                    entries.remove();
+                }
+            }
+            settings.put(CmsFormatterConfig.FORMATTER_SETTINGS_KEY, formatterID);
             settings.put(SOURCE_CONTAINERPAGE_ID_SETTING, containerPage.getStructureId().toString());
             element = CmsContainerElementBean.cloneWithSettings(element, settings);
             Iterator<CmsContainerElementBean> listIt = list.iterator();
