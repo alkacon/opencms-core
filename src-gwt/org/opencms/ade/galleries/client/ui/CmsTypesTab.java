@@ -321,10 +321,7 @@ public class CmsTypesTab extends A_CmsListTab {
      */
     protected void setShowAllTypes(boolean showAllTypes) {
 
-        m_typeListMode.setValue(
-            showAllTypes
-            ? I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesFull()
-            : I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesImportant());
+        m_typeListMode.setValue(showAllTypes ? null : I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesImportant());
         m_tabHandler.updateSize();
     }
 

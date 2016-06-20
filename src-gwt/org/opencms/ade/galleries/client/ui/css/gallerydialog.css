@@ -1,6 +1,5 @@
 @external html-face, cmsState;
 
-.editorGallery {}
 div.editorGallery{
 	box-shadow: none;
 	border-radius: 0;
@@ -155,45 +154,9 @@ div.quickFilterBox {
 	margin-right: 4px;
 }
 
-div.noParamsMessage {
-	position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border:1px solid value("constants.css.borderColor");
-	background-color: value("constants.css.backgroundColorDialog");
-    margin: 6px;
-    padding: 6px;
-}
-div.noParamsMessage > table {
-	height: 90px;
-	margin: auto;
-}
-.noParamsMessage > table > tbody > tr > td:first-child {
-	vertical-align: middle;
-	padding: 15px;
-	width: 32px;
-}
-.noParamsMessage > table > tbody > tr > td:first-child:before {
-	content: "\ed6c";
-	font-family: opencms-font !important;
-	font-size: 32px;
-	vertical-align: middle;
-}
-
-.noParamsMessage > table > tbody > tr > td {
-	vertical-align: middle;
-	padding: 15px 15px 15px 0px;
-}
-
-.typesFull {} 
-
 .typesImportant .shouldOnlyShowInFullTypeList {
 	display: none; 
 } 
-
-.shouldOnlyShowInFullTypeList {}
 
 .typeModeSwitch * {
 	font-weight: normal !important; 

@@ -467,30 +467,6 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
-     * Shows the message if no search params were selected.<p>
-     */
-    public void showNoParamsMessage() {
-
-        m_scrollList.clear();
-        if (m_noParamsMessage == null) {
-            StringBuffer buf = new StringBuffer();
-            buf.append("<div class=\"");
-            buf.append(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().noParamsMessage());
-            buf.append(" ");
-            buf.append(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-            buf.append("\">");
-            buf.append("<table cellpadding=\"0\" cellspacing=\"0\">");
-            buf.append("<tr><td></td><td>");
-            buf.append(Messages.get().key(Messages.GUI_RESULT_NO_PARAMS_0));
-            buf.append("</td></tr>");
-            buf.append("</table>");
-            buf.append("</div>");
-            m_noParamsMessage = new HTML(buf.toString());
-        }
-        m_tab.add(m_noParamsMessage);
-    }
-
-    /**
      * Updates the height (with border) of the result list panel according to the search parameter panels shown.<p>
      */
     public void updateListSize() {

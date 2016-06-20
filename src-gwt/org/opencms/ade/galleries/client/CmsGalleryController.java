@@ -1502,7 +1502,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
         if (m_searchObject.isEmpty()) {
             // don't search: notify the user that at least one search criteria should be selected
-            m_handler.showNoParamsMessage();
+            m_handler.showFirstTab();
         } else {
             // perform the search
 

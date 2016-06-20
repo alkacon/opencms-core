@@ -123,12 +123,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          *
          * @return the CSS class name
          */
-        String noParamsMessage();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String paramsText();
 
         /** Access method.<p>
@@ -244,12 +238,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String typeModeSwitch();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String typesFull();
 
         /** Access method.<p>
          *

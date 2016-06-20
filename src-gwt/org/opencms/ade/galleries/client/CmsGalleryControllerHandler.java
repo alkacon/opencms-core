@@ -446,12 +446,11 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     }
 
     /**
-     * Shows the message if no search params were selected.<p>
+     * Shows the first available tab.<p>
      */
-    public void showNoParamsMessage() {
+    public void showFirstTab() {
 
-        m_galleryDialog.getResultsTab().showNoParamsMessage();
-
+        m_galleryDialog.selectTab(0, false);
     }
 
     /**
