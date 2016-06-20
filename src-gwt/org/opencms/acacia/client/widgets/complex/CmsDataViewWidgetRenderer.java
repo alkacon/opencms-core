@@ -105,7 +105,8 @@ public class CmsDataViewWidgetRenderer implements I_CmsEntityRenderer {
         int attributeIndex,
         Panel context) {
 
-        notSupported();
+        // ignore
+
     }
 
     /**
@@ -118,7 +119,7 @@ public class CmsDataViewWidgetRenderer implements I_CmsEntityRenderer {
         I_CmsAttributeHandler parentHandler,
         int attributeIndex) {
 
-        throw new UnsupportedOperationException("Custom renderer does not support tabs!");
+        return null;
 
     }
 
@@ -148,7 +149,7 @@ public class CmsDataViewWidgetRenderer implements I_CmsEntityRenderer {
         I_CmsAttributeHandler parentHandler,
         int attributeIndex) {
 
-        notSupported();
+        // ignore
     }
 
     /**
@@ -164,7 +165,7 @@ public class CmsDataViewWidgetRenderer implements I_CmsEntityRenderer {
         int minOccurrence,
         int maxOccurrence) {
 
-        notSupported();
+        // ignore
     }
 
     /**
