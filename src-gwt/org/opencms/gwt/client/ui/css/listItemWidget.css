@@ -270,8 +270,6 @@ div.itemAdditionalValue{
 
 li.expired div.itemContent{
 	background-image: value("constants.css.gradientInvalid");
-	background-position: 50% 50%;
-	height: auto;
 }
 
 /** These styles are for dragging. */
