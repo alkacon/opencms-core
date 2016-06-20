@@ -140,7 +140,9 @@ public class CmsModelGroupHelper {
      * Adds the model group elements to the page.<p>
      *
      * @param elements the requested elements
+     * @param foundGroups list to add the found group element client ids to
      * @param page the page
+     * @param allwaysCopy <code>true</code> to create element copies in case of non model groups and createNew is set
      * @param locale the content locale
      *
      * @return the adjusted page
@@ -149,7 +151,9 @@ public class CmsModelGroupHelper {
      */
     public CmsContainerPageBean prepareforModelGroupContent(
         Map<String, CmsContainerElementBean> elements,
+        List<String> foundGroups,
         CmsContainerPageBean page,
+        boolean allwaysCopy,
         Locale locale)
     throws CmsException {
 
@@ -186,6 +190,8 @@ public class CmsModelGroupHelper {
                 Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
                 String source = settings.get(CmsContainerpageService.SOURCE_CONTAINERPAGE_ID_SETTING);
                 settings.remove(CmsContainerpageService.SOURCE_CONTAINERPAGE_ID_SETTING);
+                // TODO: Make sure source id is available for second call
+
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(source)) {
                     try {
                         CmsUUID sourceId = new CmsUUID(source);
@@ -239,7 +245,10 @@ public class CmsModelGroupHelper {
                                     modelInstanceId,
                                     element.getInstanceId(),
                                     containerByParent);
-                                modelContainers = createNewElementsForModelGroup(m_cms, modelContainers, locale);
+                                if (allwaysCopy) {
+                                    modelContainers = createNewElementsForModelGroup(m_cms, modelContainers, locale);
+                                }
+                                foundGroups.add(element.editorHash());
                                 modelContainers.addAll(page.getContainers().values());
                                 page = new CmsContainerPageBean(modelContainers);
                             }

@@ -173,6 +173,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
      * @param allowNested if nested containers are allowed
+     * @param alwaysCopy <code>true</code> in case reading data for a clipboard element used as a copy group
      * @param dndSource the drag and drop source container (if we are getting the data for the drag and drop case)
      * @param locale the content locale
      *
@@ -187,6 +188,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
         boolean allowNested,
+        boolean alwaysCopy,
         String dndSource,
         String locale)
     throws CmsRpcException;

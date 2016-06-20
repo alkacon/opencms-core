@@ -210,7 +210,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 });
                 formatterFieldset.add(m_formatterSelect);
             }
-            if (m_controller.getData().isModelPage() || isEditableModelGroup) {
+            if (isDeveloper || m_controller.getData().isModelPage() || isEditableModelGroup) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
                 modelGroupFieldSet.setLegend(Messages.get().key(Messages.GUI_CREATE_NEW_LEGEND_0
 
@@ -578,27 +578,28 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
      * @param cssContent the CSS snippet
      */
     private native void ensureInlineCss(String formatterId, String cssContent)/*-{
-        var styles = $wnd.document.styleSheets;
-        for (var i = 0; i < styles.length; i++) {
-            // IE uses the owningElement property
-            var styleNode = styles[i].owningElement ? styles[i].owningElement : styles[i].ownerNode;
-            if (styleNode != null && styleNode.rel == formatterId) {
-                // inline css is present
-                return;
-            }
-        }
-        // include inline css into head
-        var headID = $wnd.document.getElementsByTagName("head")[0];
-        var cssNode = $wnd.document.createElement('style');
-        cssNode.type = 'text/css';
-        cssNode.rel = formatterId;
-        if (cssNode.styleSheet) {
-            // in case of IE
-            cssNode.styleSheet.cssText = cssContent;
-        } else {
-            // otherwise
-            cssNode.appendChild(document.createTextNode(cssContent));
-        }
-        headID.appendChild(cssNode);
+		var styles = $wnd.document.styleSheets;
+		for (var i = 0; i < styles.length; i++) {
+			// IE uses the owningElement property
+			var styleNode = styles[i].owningElement ? styles[i].owningElement
+					: styles[i].ownerNode;
+			if (styleNode != null && styleNode.rel == formatterId) {
+				// inline css is present
+				return;
+			}
+		}
+		// include inline css into head
+		var headID = $wnd.document.getElementsByTagName("head")[0];
+		var cssNode = $wnd.document.createElement('style');
+		cssNode.type = 'text/css';
+		cssNode.rel = formatterId;
+		if (cssNode.styleSheet) {
+			// in case of IE
+			cssNode.styleSheet.cssText = cssContent;
+		} else {
+			// otherwise
+			cssNode.appendChild(document.createTextNode(cssContent));
+		}
+		headID.appendChild(cssNode);
     }-*/;
 }

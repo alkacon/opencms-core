@@ -634,7 +634,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 newResource.getStructureId(),
                 null,
                 bean.getIndividualSettings(),
-                !typeConfig.isCopyInModels());
+                typeConfig.isCopyInModels());
             String newClientId = newBean.editorHash();
             getSessionCache().setCacheContainerElement(newClientId, newBean);
             element = new CmsContainerElement();
@@ -665,16 +665,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, boolean, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, boolean, boolean, java.lang.String, java.lang.String)
      */
     public Map<String, CmsContainerElementData> getElementsData(
         CmsContainerPageRpcContext context,
-
         CmsUUID detailContentId,
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
         boolean allowNested,
+        boolean allwaysCopy,
         String dndSource,
         String locale)
     throws CmsRpcException {
@@ -692,6 +692,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 detailContentId,
                 containers,
                 allowNested,
+                allwaysCopy,
                 dndSource,
                 CmsStringUtil.isNotEmptyOrWhitespaceOnly(dndSource),
                 CmsLocaleManager.getLocale(locale));
@@ -1324,7 +1325,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         // update offline indices
         OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
         return new CmsGroupContainerSaveResult(
-            getElementsData(context, detailContentId, reqParams, ids, containers, false, null, locale),
+            getElementsData(context, detailContentId, reqParams, ids, containers, false, false, null, locale),
             removedElements);
     }
 
@@ -1391,6 +1392,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 sitePath,
                 detailContentId,
                 containers,
+                false,
                 false,
                 null,
                 false,
@@ -1831,6 +1833,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param detailContentId the detail content structure id
      * @param containers the containers for which the element data should be fetched
      * @param allowNested if nested containers are allowed
+     * @param allwaysCopy <code>true</code> in case reading data for a clipboard element used as a copy group
      * @param dndOriginContainer the container from which an element was dragged (null if this method is not called for DND)
      * @param isDragMode if the page is in drag mode
      * @param locale the locale to use
@@ -1846,6 +1849,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
         boolean allowNested,
+        boolean allwaysCopy,
         String dndOriginContainer,
         boolean isDragMode,
         Locale locale)
@@ -1868,7 +1872,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             element.initResource(cms);
             idMapping.put(elemId, element);
         }
-
+        List<String> foundGroups = new ArrayList<String>();
         if (CmsContainerElement.MENU_CONTAINER_ID.equals(dndOriginContainer)) {
             // this indicates the element is added to the page and not being repositioned, check for model group data
             CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
@@ -1876,7 +1880,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getConfigData(uriParam),
                 getSessionCache(),
                 isEditingModelGroups(cms, page));
-            pageBean = modelHelper.prepareforModelGroupContent(idMapping, pageBean, locale);
+            pageBean = modelHelper.prepareforModelGroupContent(idMapping, foundGroups, pageBean, allwaysCopy, locale);
         }
 
         CmsElementUtil elemUtil = new CmsElementUtil(
@@ -1915,6 +1919,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         detailContentId,
                         containers,
                         allowNested,
+                        false,
                         null,
                         isDragMode,
                         locale);
@@ -1949,6 +1954,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
             }
             ids.add(element.editorHash());
+        }
+        for (CmsContainerElementData elementData : result.values()) {
+            elementData.setGroup(foundGroups.contains(elementData.getClientId()));
         }
         return result;
     }

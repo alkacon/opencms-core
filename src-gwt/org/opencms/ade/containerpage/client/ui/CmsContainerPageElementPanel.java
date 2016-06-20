@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -450,6 +451,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * In case the inner HTML contains the reload marker.<p>
+     *
+     * @return <code>true</code> in case the inner HTML contains the reload marker
+     */
+    public boolean hasReloadMarker() {
+
+        return getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER);
+    }
+
+    /**
      * Returns true if the element has settings to edit.<p>
      *
      * @return true if the element has settings to edit
@@ -500,7 +511,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         if (m_highlighting == null) {
             m_highlighting = new CmsHighlightingBorder(
                 position,
-                isNew() || isCreateNew()
+                isNew() || (CmsContainerpageController.get().getData().isModelPage() && isCreateNew())
                 ? CmsHighlightingBorder.BorderColor.blue
                 : CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);

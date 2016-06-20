@@ -64,6 +64,9 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The inheritance name. */
     private String m_inheritanceName;
 
+    /** Indicates whether this element is used as a group. */
+    private boolean m_isGroup;
+
     /** The last user modifying the element. */
     private String m_lastModifiedByUser;
 
@@ -340,6 +343,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
+     * Returns if this element is used as a group.<p>
+     *
+     * @return if this element is used as a group
+     */
+    public boolean isGroup() {
+
+        return m_isGroup;
+    }
+
+    /**
      * Returns true if the element should be shown in the current template context.<p>
      *
      * @param currentContext the current template context
@@ -394,6 +407,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setFormatters(Map<String, Map<String, CmsFormatterConfig>> formatters) {
 
         m_formatters = formatters;
+    }
+
+    /**
+     * Sets if this element is used as a group.<p>
+     *
+     * @param isGroup if this element is used as a group
+     */
+    public void setGroup(boolean isGroup) {
+
+        m_isGroup = isGroup;
     }
 
     /**

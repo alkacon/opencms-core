@@ -330,7 +330,8 @@ public class CmsContainerpageUtil {
     public CmsContainerPageElementPanel createElement(
         CmsContainerElementData containerElement,
         I_CmsDropContainer container,
-        boolean isNew) throws Exception {
+        boolean isNew)
+    throws Exception {
 
         if (containerElement.isGroupContainer() || containerElement.isInheritContainer()) {
             List<CmsContainerElementData> subElements = new ArrayList<CmsContainerElementData>();
@@ -376,7 +377,8 @@ public class CmsContainerpageUtil {
     public CmsContainerPageElementPanel createGroupcontainerElement(
         CmsContainerElementData containerElement,
         List<CmsContainerElementData> subElements,
-        I_CmsDropContainer container) throws Exception {
+        I_CmsDropContainer container)
+    throws Exception {
 
         Element element = DOM.createDiv();
         element.addClassName(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
@@ -503,7 +505,7 @@ public class CmsContainerpageUtil {
             elementData.isModelGroup(),
             elementData.isWasModelGroup(),
             elementData.getElementView());
-        dragElement.setCreateNew(elementData.isCreateNew() && m_controller.getData().isModelPage());
+        dragElement.setCreateNew(elementData.isCreateNew());
         if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             addOptionBar(dragElement);
         }

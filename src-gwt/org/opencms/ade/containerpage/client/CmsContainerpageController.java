@@ -452,9 +452,9 @@ public final class CmsContainerpageController {
                     m_clientIds,
                     getPageState(),
                     !isGroupcontainerEditing(),
+                    false,
                     null,
                     getLocale(),
-
                     this);
             }
 
@@ -512,11 +512,10 @@ public final class CmsContainerpageController {
                 m_clientIds,
                 getPageState(),
                 !isGroupcontainerEditing(),
+                false,
                 null,
                 getLocale(),
-
                 this);
-
         }
 
         /**
@@ -573,6 +572,8 @@ public final class CmsContainerpageController {
 
         /** The requested client id. */
         private String m_clientId;
+        /** Always copy createNew elements in case reading data for a clipboard element used as a copy group. */
+        private boolean m_alwaysCopy;
 
         /** If this action was triggered by drag and drop from a container, this should contain the id of the origin container. */
         private String m_dndContainer;
@@ -582,12 +583,17 @@ public final class CmsContainerpageController {
          *
          * @param clientId the client id
          * @param callback the call-back
+         * @param alwaysCopy <code>true</code> in case reading data for a clipboard element used as a copy group
          */
-        public SingleElementAction(String clientId, I_CmsSimpleCallback<CmsContainerElementData> callback) {
+        public SingleElementAction(
+            String clientId,
+            boolean alwaysCopy,
+            I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
             super();
             m_clientId = clientId;
             m_callback = callback;
+            m_alwaysCopy = alwaysCopy;
         }
 
         /**
@@ -647,6 +653,7 @@ public final class CmsContainerpageController {
                     clientIds,
                     getPageState(),
                     !isGroupcontainerEditing(),
+                    m_alwaysCopy,
                     m_dndContainer,
                     getLocale(),
 
@@ -1006,9 +1013,9 @@ public final class CmsContainerpageController {
      * Copies an element and asynchronously returns the structure id of the copy.<p>
      *
      * @param id the element id
-     * @param asyncCallback the callback for the result
+     * @param callback the callback for the result
      */
-    public void copyElement(final String id, final AsyncCallback<CmsUUID> asyncCallback) {
+    public void copyElement(final String id, final I_CmsSimpleCallback<CmsUUID> callback) {
 
         CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
 
@@ -1023,7 +1030,7 @@ public final class CmsContainerpageController {
             protected void onResponse(CmsUUID result) {
 
                 stop(false);
-                asyncCallback.onSuccess(result);
+                callback.execute(result);
             }
 
         };
@@ -1482,30 +1489,20 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Requests the data for a container element specified by the client id. The data will be provided to the given call-back function.<p>
-     *
-     * @param clientId the element id
-     * @param callback the call-back to execute with the requested data
-     */
-    public void getElement(final String clientId, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
-
-        SingleElementAction action = new SingleElementAction(clientId, callback);
-        action.execute();
-    }
-
-    /**
      * Requests the data for a container element specified by the client id for drag and drop from a container. The data will be provided to the given call-back function.<p>
      *
      * @param clientId the element id
      * @param containerId the id of the container from which the element is being dragged
+     * @param alwaysCopy <code>true</code> in case reading data for a clipboard element used as a copy group
      * @param callback the call-back to execute with the requested data
      */
     public void getElementForDragAndDropFromContainer(
         final String clientId,
         final String containerId,
+        boolean alwaysCopy,
         final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
-        SingleElementAction action = new SingleElementAction(clientId, callback);
+        SingleElementAction action = new SingleElementAction(clientId, alwaysCopy, callback);
         action.setDndContainer(containerId);
         action.execute();
     }
