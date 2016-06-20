@@ -163,7 +163,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 } else {
                     buttonLeft = "20%";
                 }
-                context.getResponse().getWriter().print(getPreviewInclude(buttonLeft));
+                context.getOut().print(getPreviewInclude(buttonLeft));
             } catch (IOException e) {
                 throw new JspException(e);
             }
@@ -178,7 +178,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                     context,
                     (HttpServletRequest)req,
                     (HttpServletResponse)context.getResponse());
-                context.getResponse().getWriter().print(actionEl.exportAll());
+                context.getOut().print(actionEl.exportAll());
             } catch (Exception e) {
                 throw new JspException(e);
             }
