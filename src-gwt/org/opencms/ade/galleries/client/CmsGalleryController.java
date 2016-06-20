@@ -1464,6 +1464,17 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Updates the gallery data.<p>
+     *
+     * @param data the gallery data
+     */
+    public void updateGalleryData(CmsGalleryDataBean data) {
+
+        m_dialogBean = data;
+        m_handler.updateGalleryData(m_searchObject, data, this);
+    }
+
+    /**
      * Updates the gallery index and triggers a new search afterwards.<p>
      */
     public void updateIndex() {

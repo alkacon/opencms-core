@@ -39,6 +39,7 @@ import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -699,6 +700,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         m_width = clientWidth;
         m_parentPanel.setWidth(m_width + "px");
         truncateTabs();
+    }
+
+    /**
+     * Updates the gallery data.<p>
+     *
+     * @param data the gallery data
+     */
+    public void updateGalleryData(CmsGalleryDataBean data) {
+
+        m_controller.updateGalleryData(data);
     }
 
     /**

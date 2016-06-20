@@ -200,12 +200,17 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
      * Updates the gallery data.<p>
      *
      * @param galleryData the gallery data
+     * @param viewChanged <code>true</code> in case the element view changed
      */
-    public void updateGalleryData(CmsGalleryDataBean galleryData) {
+    public void updateGalleryData(CmsGalleryDataBean galleryData, boolean viewChanged) {
 
         if (m_dialog != null) {
-            m_dialog.removeFromParent();
-            m_dialog = null;
+            if (viewChanged) {
+                m_dialog.removeFromParent();
+                m_dialog = null;
+            } else {
+                m_dialog.updateGalleryData(galleryData);
+            }
         }
         m_galleryData = galleryData;
     }

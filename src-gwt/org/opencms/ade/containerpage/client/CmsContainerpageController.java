@@ -2025,7 +2025,7 @@ public final class CmsContainerpageController {
             m_contentEditorHandler.openEditorForHistory(historyToken);
         }
 
-        updateGalleryData(null);
+        updateGalleryData(false, null);
     }
 
     /**
@@ -3008,7 +3008,7 @@ public final class CmsContainerpageController {
             m_currentEditLevel = -1;
             reinitializeButtons();
             reInitInlineEditing();
-            updateGalleryData(nextAction);
+            updateGalleryData(true, nextAction);
         }
     }
 
@@ -3423,7 +3423,7 @@ public final class CmsContainerpageController {
                 public void run() {
 
                     m_galleryUpdateTimer = null;
-                    updateGalleryData(null);
+                    updateGalleryData(false, null);
                 }
             };
             m_galleryUpdateTimer.schedule(50);
@@ -3554,9 +3554,10 @@ public final class CmsContainerpageController {
      * Updates the gallery data according to the current element view and the editable containers.<p>
      * This method should only be called from the gallery update timer to avoid unnecessary requests.<p>
      *
+     * @param viewChanged <code>true</code> in case the element view changed
      * @param nextAction the action to execute after updating the gallery data
      */
-    void updateGalleryData(final Runnable nextAction) {
+    void updateGalleryData(final boolean viewChanged, final Runnable nextAction) {
 
         CmsRpcAction<CmsGalleryDataBean> dataAction = new CmsRpcAction<CmsGalleryDataBean>() {
 
@@ -3574,7 +3575,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(CmsGalleryDataBean result) {
 
-                m_handler.m_editor.getAdd().updateGalleryData(result);
+                m_handler.m_editor.getAdd().updateGalleryData(result, viewChanged);
                 if (nextAction != null) {
                     nextAction.run();
                 }

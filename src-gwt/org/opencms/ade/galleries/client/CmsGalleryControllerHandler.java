@@ -454,6 +454,30 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     }
 
     /**
+     * Updates the gallery data.<p>
+     *
+     * @param searchObj the current search object
+     * @param dialogBean the gallery data
+     * @param controller he gallery controller
+     */
+    public void updateGalleryData(
+        CmsGallerySearchBean searchObj,
+        CmsGalleryDataBean dialogBean,
+        CmsGalleryController controller) {
+
+        if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
+            Collections.sort(dialogBean.getGalleries(), new CmsComparatorTitle(true));
+            setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
+        }
+        if ((m_galleryDialog.getTypesTab() != null) && (dialogBean.getTypes() != null)) {
+            setTypesTabContent(controller.getSearchTypes(), searchObj.getTypes());
+        }
+        if ((m_galleryDialog.getCategoriesTab() != null) && (dialogBean.getCategories() != null)) {
+            setCategoriesTabContent(dialogBean.getCategories());
+        }
+    }
+
+    /**
      * Causes the preloaded tree states to be displayed in the tree tabs.<p>
      *
      * @param result the gallery search bean from which to take the preload data
