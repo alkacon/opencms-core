@@ -28,6 +28,7 @@
 package org.opencms.ui.dataview;
 
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.dataview.CmsPagingControls.I_PagingCallback;
 import org.opencms.ui.util.CmsComponentField;
 import org.opencms.widgets.dataview.CmsDataViewColumn;
@@ -192,6 +193,7 @@ public class CmsDataViewPanel extends VerticalLayout {
         m_container.addContainerProperty(ID_COLUMN, String.class, null);
 
         final PagedTable table = new PagedTable(m_container);
+        table.addStyleName(OpenCmsTheme.TABLE_CELL_PADDING);
         table.setMultiSelect(multiselect);
 
         table.addGeneratedColumn("checked", new ColumnGenerator() {
