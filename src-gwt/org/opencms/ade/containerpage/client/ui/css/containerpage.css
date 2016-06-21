@@ -134,7 +134,7 @@ div.optionBar .cmsState, div.optionBar .html-face, div.optionBar span{
 }
 .emptyGroupContainer{
 	min-height: 27px;
-	background-image: value("constants.css.gradientPlaceholder");
+	background-image: value("constants.css.gradientInvalid");
 	border: 1px solid value("constants.css.borderColor");
 }
 
@@ -157,6 +157,7 @@ div.groupcontainerPlaceholder{
 	width: 100%;
 	height: 100%;
 	z-index: value("constants.css.zIndexHighlighting");
+	opacity: 0.2;
 }
 
 .groupcontainerEditor .cms_ade_groupcontainer .optionBar{
