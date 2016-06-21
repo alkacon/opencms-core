@@ -28,12 +28,11 @@
 package org.opencms.acacia.client.widgets.complex;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
+import org.opencms.acacia.client.widgets.complex.CmsDataViewPreviewWidget.I_ImageProvider;
 import org.opencms.acacia.shared.CmsEntity;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
 import org.opencms.gwt.shared.CmsDataViewConstants;
 import org.opencms.gwt.shared.CmsDataViewParamEncoder;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -52,7 +51,6 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -174,18 +172,18 @@ public class CmsDataViewClientWidget extends Composite {
     Widget createWidget() {
 
         if (isTrue(m_jsonConfig, CmsDataViewConstants.CONFIG_PREVIEW)) {
-            return new CmsDataViewPreviewWidget(m_config, m_valueAccessor);
+            return new CmsDataViewPreviewWidget(
+                m_config,
+                m_valueAccessor,
+                new CmsDataViewPreviewWidget.ContentImageLoader());
         } else {
+            I_ImageProvider provider = null;
             CmsDataViewValue val = m_valueAccessor.getValue();
-            CmsListInfoBean info = new CmsListInfoBean();
-            info.setTitle(val.getTitle());
-            info.setSubTitle(val.getDescription());
-            CmsListItemWidget result = new CmsListItemWidget(info);
             JSONValue iconVal = m_jsonConfig.get(CmsDataViewConstants.CONFIG_ICON);
             if ((iconVal != null) && (iconVal.isString() != null)) {
-                result.setIcon(new Image(iconVal.isString().stringValue()));
+                provider = new CmsDataViewPreviewWidget.SimpleImageLoader(iconVal.isString().stringValue());
             }
-            return result;
+            return new CmsDataViewPreviewWidget(m_config, m_valueAccessor, provider);
         }
 
     }

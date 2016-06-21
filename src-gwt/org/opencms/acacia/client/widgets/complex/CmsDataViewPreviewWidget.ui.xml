@@ -42,7 +42,7 @@
 			
 	</ui:style>
 	<g:FlowPanel styleName="{style.container}">
-		<g:FlowPanel styleName="{style.imageContainer}">
+		<g:FlowPanel ui:field="m_imageContainer" styleName="{style.imageContainer}">
 			<g:Image ui:field="m_image"></g:Image>
 		</g:FlowPanel>
 		<g:FlowPanel styleName="{style.labelContainer}">
