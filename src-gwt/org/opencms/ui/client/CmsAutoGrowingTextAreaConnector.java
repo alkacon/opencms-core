@@ -27,14 +27,13 @@
 
 package org.opencms.ui.client;
 
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.ui.components.extensions.CmsAutoGrowingTextArea;
 import org.opencms.ui.shared.components.CmsAutoGrowingTextAreaState;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TextAreaElement;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -89,16 +88,15 @@ public class CmsAutoGrowingTextAreaConnector extends AbstractExtensionConnector 
 
             }
         }, KeyUpEvent.getType());
-        m_widget.addDomHandler(new FocusHandler() {
 
-            public void onFocus(FocusEvent event) {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
 
                 handle();
-
             }
-        }, FocusEvent.getType());
+        });
 
-        handle();
     }
 
     /**
@@ -130,24 +128,8 @@ public class CmsAutoGrowingTextAreaConnector extends AbstractExtensionConnector 
                 if ((totalHeight % m_lineHeight) > 0) {
                     requiredRows++;
                 }
-                CmsDebugLog.consoleLog("requiredRows: " + requiredRows);
                 int minRows = getState().getMinRows();
                 int maxRows = getState().getMaxRows();
-                CmsDebugLog.consoleLog(
-                    "currentRows: "
-                        + currentRows
-                        + ", minRows: "
-                        + minRows
-                        + ", maxRows: "
-                        + maxRows
-                        + ", requiredRows: "
-                        + requiredRows
-                        + ", lineHeight: "
-                        + m_lineHeight
-                        + ", paddingHeight: "
-                        + m_paddingHeight
-                        + ", scrollHeight: "
-                        + scrollHeight);
                 if ((requiredRows <= minRows) && (currentRows != minRows)) {
                     elem.setRows(minRows);
                 } else if ((requiredRows >= maxRows) && (currentRows != maxRows)) {
