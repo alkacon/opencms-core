@@ -293,8 +293,6 @@ public class CmsMessageBundleEditorModel {
 
         initDescriptor();
 
-        initDescriptor();
-
         if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.PROPERTY)) {
             initPropertyBundle();
         }

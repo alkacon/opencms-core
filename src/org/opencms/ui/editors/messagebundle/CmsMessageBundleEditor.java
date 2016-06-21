@@ -66,11 +66,12 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomTable;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 
 /**
@@ -120,6 +121,12 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
     /** The app's info component. */
     private HorizontalLayout m_appInfo;
+
+    /** The right half of the app info component. */
+    private HorizontalLayout m_rightAppInfo;
+
+    /** The text field displaying the name of the currently edited file. */
+    private TextField m_fileName;
 
     /**
      * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
@@ -312,8 +319,8 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (null == m_addKeyButton) {
             m_addKeyButton = createAddKeyButton();
         }
-        m_appInfo.addComponent(m_addKeyButton);
-        m_appInfo.setComponentAlignment(m_addKeyButton, Alignment.MIDDLE_RIGHT);
+        m_rightAppInfo.addComponent(m_addKeyButton);
+        m_rightAppInfo.setComponentAlignment(m_addKeyButton, Alignment.MIDDLE_RIGHT);
 
     }
 
@@ -393,6 +400,26 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
+     * Create the display for the file path.
+     * @return the display for the file path.
+     */
+    private Component createFilePathDisplay() {
+
+        FormLayout fileNameDisplay = new FormLayout();
+        fileNameDisplay.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
+        fileNameDisplay.setSizeFull();
+        m_fileName = new TextField();
+        m_fileName.setWidth("100%");
+        m_fileName.setValue(m_model.getEditedFilePath());
+        m_fileName.setEnabled(true);
+        m_fileName.setReadOnly(true);
+        m_fileName.setCaption(m_messages.key(Messages.GUI_FILENAME_LABEL_0));
+        fileNameDisplay.addComponent(m_fileName);
+        fileNameDisplay.setSpacing(true);
+        return fileNameDisplay;
+    }
+
+    /**
      * Creates the switcher component for the key sets.
      *
      * @return the switcher component.
@@ -400,12 +427,12 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     @SuppressWarnings("serial")
     private Component createKeysetSwitcher() {
 
-        HorizontalLayout allkeys = new HorizontalLayout();
+        FormLayout allkeys = new FormLayout();
         allkeys.setHeight("100%");
         allkeys.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
         allkeys.setSpacing(true);
-        Label allkeysLabel = new Label(m_messages.key(Messages.GUI_KEYSET_SWITCHER_LABEL_0));
         ComboBox allkeysSelect = new ComboBox();
+        allkeysSelect.setCaption(m_messages.key(Messages.GUI_KEYSET_SWITCHER_LABEL_0));
         allkeysSelect.setNullSelectionAllowed(false);
 
         allkeysSelect.addItem(CmsMessageBundleEditorTypes.KeySetMode.ALL);
@@ -429,7 +456,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             }
 
         });
-        allkeys.addComponent(allkeysLabel);
         allkeys.addComponent(allkeysSelect);
         return allkeys;
     }
@@ -441,12 +467,11 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     @SuppressWarnings("serial")
     private Component createLanguageSwitcher() {
 
-        HorizontalLayout languages = new HorizontalLayout();
+        FormLayout languages = new FormLayout();
         languages.setHeight("100%");
         languages.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        languages.setSpacing(true);
-        Label languageLabel = new Label(m_messages.key(Messages.GUI_LANGUAGE_SWITCHER_LABEL_0));
         ComboBox languageSelect = new ComboBox();
+        languageSelect.setCaption(m_messages.key(Messages.GUI_LANGUAGE_SWITCHER_LABEL_0));
         languageSelect.setNullSelectionAllowed(false);
 
         // set Locales
@@ -467,11 +492,15 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (m_model.getLocales().size() > 1) {
             languageSelect.addValueChangeListener(new ValueChangeListener() {
 
+                @SuppressWarnings("synthetic-access")
                 public void valueChange(ValueChangeEvent event) {
 
                     try {
                         m_table.clearFilters();
                         m_model.setLocale((Locale)event.getProperty().getValue());
+                        m_fileName.setReadOnly(false);
+                        m_fileName.setValue(m_model.getEditedFilePath());
+                        m_fileName.setReadOnly(true);
                     } catch (IOException | CmsException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -482,7 +511,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         } else {
             languageSelect.setEnabled(false);
         }
-        languages.addComponent(languageLabel);
         languages.addComponent(languageSelect);
         return languages;
     }
@@ -603,14 +631,12 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     @SuppressWarnings("serial")
     private Component createViewSwitcher() {
 
-        HorizontalLayout views = new HorizontalLayout();
+        FormLayout views = new FormLayout();
         views.setHeight("100%");
         views.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        views.setSpacing(true);
-
-        Label viewLabel = new Label(m_messages.key(Messages.GUI_VIEW_SWITCHER_LABEL_0));
 
         final ComboBox viewSelect = new ComboBox();
+        viewSelect.setCaption(m_messages.key(Messages.GUI_VIEW_SWITCHER_LABEL_0));
 
         // add Modes
         viewSelect.addItem(CmsMessageBundleEditorTypes.EditMode.DEFAULT);
@@ -638,7 +664,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                 }
             }
         });
-        views.addComponent(viewLabel);
         views.addComponent(viewSelect);
         return views;
     }
@@ -652,17 +677,37 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_appInfo = new HorizontalLayout();
         m_appInfo.setSizeFull();
         m_appInfo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
+        m_appInfo.setSpacing(true);
+
+        HorizontalLayout left = new HorizontalLayout();
+        left.setSizeFull();
+        left.setSpacing(true);
+
+        m_rightAppInfo = new HorizontalLayout();
+        m_rightAppInfo.setSizeFull();
+        m_rightAppInfo.setSpacing(true);
+
+        m_appInfo.addComponent(left);
+        m_appInfo.setExpandRatio(left, 1f);
+        m_appInfo.addComponent(m_rightAppInfo);
+        m_appInfo.setExpandRatio(m_rightAppInfo, 1f);
+
         Component languages = createLanguageSwitcher();
-        m_appInfo.addComponent(languages);
+        left.addComponent(languages);
         if (!(m_model.hasDescriptor()
             || m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR))) {
             Component keysetSwitcher = createKeysetSwitcher();
-            m_appInfo.addComponent(keysetSwitcher);
+            left.addComponent(keysetSwitcher);
         }
         if (m_model.hasMasterMode()) {
             Component viewSwitcher = createViewSwitcher();
-            m_appInfo.addComponent(viewSwitcher);
+            left.addComponent(viewSwitcher);
         }
+
+        Component fileNameDisplay = createFilePathDisplay();
+        m_rightAppInfo.addComponent(fileNameDisplay);
+        m_rightAppInfo.setExpandRatio(fileNameDisplay, 2f);
+
         if (!m_model.hasDescriptor()) {
             addAddKeyButton();
         }
@@ -700,7 +745,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     private void removeAddKeyButton() {
 
-        m_appInfo.removeComponent(m_addKeyButton);
+        m_rightAppInfo.removeComponent(m_addKeyButton);
     }
 
     /**
