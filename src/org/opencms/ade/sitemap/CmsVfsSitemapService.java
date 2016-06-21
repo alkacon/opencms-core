@@ -2030,10 +2030,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param targetPath the target path
      *
      * @return the sitemap children
-     *
-     * @throws CmsException if something goes wrong
      */
-    private List<CmsClientSitemapEntry> getChildren(String root, int levels, String targetPath) throws CmsException {
+    private List<CmsClientSitemapEntry> getChildren(String root, int levels, String targetPath) {
 
         List<CmsClientSitemapEntry> children = new ArrayList<CmsClientSitemapEntry>();
         int i = 0;
@@ -2041,20 +2039,24 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             root,
             Visibility.all,
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
-            CmsClientSitemapEntry child = toClientEntry(navElement, false);
-            if (child != null) {
-                child.setPosition(i);
-                children.add(child);
-                int nextLevels = levels;
-                if ((nextLevels == 2) && (targetPath != null) && targetPath.startsWith(child.getSitePath())) {
-                    nextLevels = 3;
-                }
-                if (child.isFolderType() && ((nextLevels > 1) || (nextLevels == -1)) && !isSubSitemap(navElement)) {
+            try {
+                CmsClientSitemapEntry child = toClientEntry(navElement, false);
+                if (child != null) {
+                    child.setPosition(i);
+                    children.add(child);
+                    int nextLevels = levels;
+                    if ((nextLevels == 2) && (targetPath != null) && targetPath.startsWith(child.getSitePath())) {
+                        nextLevels = 3;
+                    }
+                    if (child.isFolderType() && ((nextLevels > 1) || (nextLevels == -1)) && !isSubSitemap(navElement)) {
 
-                    child.setSubEntries(getChildren(child.getSitePath(), nextLevels - 1, targetPath), null);
-                    child.setChildrenLoadedInitially(true);
+                        child.setSubEntries(getChildren(child.getSitePath(), nextLevels - 1, targetPath), null);
+                        child.setChildrenLoadedInitially(true);
+                    }
+                    i++;
                 }
-                i++;
+            } catch (CmsException e) {
+                LOG.error("Could not read sitemap entry.", e);
             }
         }
         return children;
