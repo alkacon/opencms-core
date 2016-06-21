@@ -36,6 +36,7 @@ import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.components.extensions.CmsAutoGrowingTextArea;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -493,19 +494,21 @@ public final class CmsMessageBundleEditorTypes {
 
             TableProperty pid = (TableProperty)propertyId;
 
-            AbstractTextField tf;
-            if (pid.equals(TableProperty.KEY)) {
-                tf = new TextField();
-            } else {
-                TextArea atf = new TextArea();
-                atf.setRows(2);
-                tf = atf;
-            }
-            tf.setWidth("100%");
-            tf.setResponsive(true);
-
             for (int i = 1; i <= m_editableColumns.size(); i++) {
                 if (pid.equals(m_editableColumns.get(i - 1))) {
+
+                    AbstractTextField tf;
+                    if (pid.equals(TableProperty.KEY)) {
+                        tf = new TextField();
+                    } else {
+                        TextArea atf = new TextArea();
+                        atf.setRows(1);
+                        CmsAutoGrowingTextArea.addTo(atf, 20);
+                        tf = atf;
+                    }
+                    tf.setWidth("100%");
+                    tf.setResponsive(true);
+
                     tf.setInputPrompt(CmsMessageBundleEditor.m_messages.key(Messages.GUI_PLEASE_ADD_VALUE_0));
                     tf.setData(i + ":" + itemId);
                     if (!m_valueFields.containsKey(Integer.valueOf(i))) {
