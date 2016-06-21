@@ -43,6 +43,7 @@ import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TranslateTableFieldFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -56,6 +57,8 @@ import org.tepi.filtertable.FilterTable;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.AbstractTextField;
@@ -97,6 +100,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
     /** The field factories for the different modes. */
     private final Map<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableFieldFactory> m_fieldFactories = new HashMap<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableFieldFactory>(
+        2);
+    /** The cell style generators for the different modes. */
+    private final Map<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator> m_styleGenerators = new HashMap<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator>(
         2);
     /** The model behind the UI. */
     CmsMessageBundleEditorModel m_model;
@@ -179,14 +185,23 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                     new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
                         m_table,
                         m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+                m_styleGenerators.put(
+                    CmsMessageBundleEditorTypes.EditMode.MASTER,
+                    new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                        m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
             }
             m_fieldFactories.put(
                 CmsMessageBundleEditorTypes.EditMode.DEFAULT,
                 new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
                     m_table,
                     m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+            m_styleGenerators.put(
+                CmsMessageBundleEditorTypes.EditMode.DEFAULT,
+                new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
 
             m_table.setTableFieldFactory(m_fieldFactories.get(m_model.getEditMode()));
+            m_table.setCellStyleGenerator(m_styleGenerators.get(m_model.getEditMode()));
 
             context.setAppContent(main);
 
@@ -291,6 +306,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             m_table.clearFilters();
             if (m_model.setEditMode(newMode)) {
                 m_table.setTableFieldFactory(m_fieldFactories.get(newMode));
+                m_table.setCellStyleGenerator(m_styleGenerators.get(newMode));
                 adjustOptionsColumn(oldMode, newMode);
                 if (newMode.equals(CmsMessageBundleEditorTypes.EditMode.MASTER)) {
                     addAddKeyButton();
@@ -614,14 +630,34 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
         }
         table.setColumnWidth(TableProperty.OPTIONS, 72);
-        table.setColumnExpandRatio(TableProperty.KEY, 2f);
-        table.setColumnExpandRatio(TableProperty.DESCRIPTION, 5f);
-        table.setColumnExpandRatio(TableProperty.DEFAULT, 3f);
-        table.setColumnExpandRatio(TableProperty.TRANSLATION, 3f);
+        table.setColumnExpandRatio(TableProperty.KEY, 1f);
+        table.setColumnExpandRatio(TableProperty.DESCRIPTION, 1f);
+        table.setColumnExpandRatio(TableProperty.DEFAULT, 1f);
+        table.setColumnExpandRatio(TableProperty.TRANSLATION, 1f);
 
         table.setPageLength(30);
         table.setCacheRate(1);
         table.sort(new Object[] {TableProperty.KEY}, new boolean[] {true});
+        table.addItemClickListener(new ItemClickListener() {
+
+            private static final long serialVersionUID = 5418404788437252894L;
+
+            public void itemClick(ItemClickEvent event) {
+
+                Object propertyId = event.getPropertyId();
+                Object itemId = event.getItemId();
+                int col = m_model.getEditableColumns().indexOf(propertyId);
+                if (col >= 0) {
+                    AbstractTextField newTF = ((TranslateTableFieldFactory)m_table.getTableFieldFactory()).getValueFields().get(
+                        Integer.valueOf(col + 1)).get(itemId);
+                    if (newTF != null) {
+                        newTF.focus();
+                    }
+                }
+
+            }
+        });
+        table.setNullSelectionAllowed(false);
         return table;
     }
 

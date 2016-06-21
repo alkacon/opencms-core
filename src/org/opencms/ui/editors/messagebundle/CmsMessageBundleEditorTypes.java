@@ -65,6 +65,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomTable;
+import com.vaadin.ui.CustomTable.CellStyleGenerator;
 import com.vaadin.ui.CustomTable.ColumnGenerator;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
@@ -165,7 +166,7 @@ public final class CmsMessageBundleEditorTypes {
     static class EditorState {
 
         /** The editable columns (from left to right).*/
-        private List<Object> m_editableColumns;
+        private List<TableProperty> m_editableColumns;
         /** Flag, indicating if the options column should be shown. */
         private boolean m_showOptions;
 
@@ -173,7 +174,7 @@ public final class CmsMessageBundleEditorTypes {
          * @param editableColumns the property ids of the editable columns (from left to right)
          * @param showOptions flag, indicating if the options column should be shown.
          */
-        public EditorState(List<Object> editableColumns, boolean showOptions) {
+        public EditorState(List<TableProperty> editableColumns, boolean showOptions) {
             m_editableColumns = editableColumns;
             m_showOptions = showOptions;
         }
@@ -181,7 +182,7 @@ public final class CmsMessageBundleEditorTypes {
         /** Returns the editable columns from left to right (as there property ids).
          * @return the editable columns from left to right (as there property ids).
          */
-        public List<Object> getEditableColumns() {
+        public List<TableProperty> getEditableColumns() {
 
             return m_editableColumns;
         }
@@ -335,6 +336,10 @@ public final class CmsMessageBundleEditorTypes {
             buttons.add(delete);
             m_buttons.put(itemId, buttons);
 
+            if (source.isSelected(itemId)) {
+                selectItem(itemId);
+            }
+
             return options;
         }
 
@@ -460,6 +465,37 @@ public final class CmsMessageBundleEditorTypes {
         }
     }
 
+    /** Custom cell style generator to allow different style for editable columns. */
+    @SuppressWarnings("serial")
+    static class TranslateTableCellStyleGenerator implements CellStyleGenerator {
+
+        /** The editable columns. */
+        private List<TableProperty> m_editableColums;
+
+        /**
+         * Default constructor, taking the list of editable columns.
+         *
+         * @param editableColumns the list of editable columns.
+         */
+        public TranslateTableCellStyleGenerator(List<TableProperty> editableColumns) {
+            m_editableColums = editableColumns;
+            if (null == m_editableColums) {
+                m_editableColums = new ArrayList<TableProperty>();
+            }
+        }
+
+        /**
+         * @see com.vaadin.ui.CustomTable.CellStyleGenerator#getStyle(com.vaadin.ui.CustomTable, java.lang.Object, java.lang.Object)
+         */
+        public String getStyle(CustomTable source, Object itemId, Object propertyId) {
+
+            String result = TableProperty.KEY.equals(propertyId) ? "key-" : "";
+            result += m_editableColums.contains(propertyId) ? "editable" : "fix";
+            return result;
+        }
+
+    }
+
     /** TableFieldFactory for making only some columns editable and to support enhanced navigation. */
     @SuppressWarnings("serial")
     static class TranslateTableFieldFactory extends DefaultFieldFactory {
@@ -467,7 +503,7 @@ public final class CmsMessageBundleEditorTypes {
         /** Mapping from column -> row -> AbstractTextField. */
         private final Map<Integer, Map<Integer, AbstractTextField>> m_valueFields;
         /** The editable columns. */
-        private final List<Object> m_editableColumns;
+        private final List<TableProperty> m_editableColumns;
         /** Reference to the table, the factory is used for. */
         final CustomTable m_table;
 
@@ -476,7 +512,7 @@ public final class CmsMessageBundleEditorTypes {
          * @param table The table, the factory is used for.
          * @param editableColumns the property names of the editable columns of the table.
          */
-        public TranslateTableFieldFactory(CustomTable table, List<Object> editableColumns) {
+        public TranslateTableFieldFactory(CustomTable table, List<TableProperty> editableColumns) {
             m_table = table;
             m_valueFields = new HashMap<Integer, Map<Integer, AbstractTextField>>();
             m_editableColumns = editableColumns;
@@ -519,7 +555,9 @@ public final class CmsMessageBundleEditorTypes {
 
                         public void focus(FocusEvent event) {
 
-                            m_table.select(itemId);
+                            if (!m_table.isSelected(itemId)) {
+                                m_table.select(itemId);
+                            }
                         }
 
                     });

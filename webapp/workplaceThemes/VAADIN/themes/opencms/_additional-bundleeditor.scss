@@ -2,16 +2,44 @@
 
 	.o-message-bundle-editor table.v-table-table .v-table-cell-wrapper {
 		line-height: normal;
+		padding-top: 6px;
+		padding-bottom: 6px;
 	}
 	
 	.o-message-bundle-editor table.v-table-table .v-table-cell-content {
 		white-space: normal;
+		vertical-align: top;
+	}
+
+	.o-message-bundle-editor table.v-table-table .v-table-cell-content-key-fix, .o-message-bundle-editor table.v-table-table .v-table-cell-content-key-fix input.v-textfield, .o-message-bundle-editor table.v-table-table .v-table-cell-content-key-editable, .o-message-bundle-editor table.v-table-table .v-table-cell-content-key-editable input.v-textfield {
+		font-weight: bold;
+	}
+
+	.o-message-bundle-editor table.v-table-table .v-selected .v-table-cell-content.v-table-cell-content-editable,.o-message-bundle-editor table.v-table-table .v-selected .v-table-cell-content.v-table-cell-content-key-editable {
+		outline-color: adjust-color($v-selection-color, $lightness: -8%, $saturation: -8%);
+		outline-style: solid;
+		outline-width: 1px;
+		outline-offset: -1px;
+		background: white;
+	}
+	
+	.o-message-bundle-editor .v-table-body .v-table-cell-wrapper > .v-textarea, .o-message-bundle-editor .v-table-body .v-table-cell-wrapper > .v-textfield {
+		background: transparent;
+		border: none;
+		box-shadow: none;
+		padding: 0px;
+		height: auto;
+		margin: 0px;
 	}
 	
 	.o-message-bundle-editor .v-table-body .v-textarea[class*="prompt"], .v-table-alert-empty .v-table-body .v-textfield[class*="prompt"] {
 		color: $o-state-new-color
-	}
+	}	
 	
+	.o-message-bundle-editor .v-table-row-odd {
+		background: white;
+	}
+		
 	.o-message-bundle-editor .v-table .filters-panel input.v-textfield.v-widget {
 		height: $v-unit-size;
 		border-radius: $v-border-radius;
