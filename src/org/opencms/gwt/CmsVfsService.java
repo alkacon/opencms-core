@@ -94,6 +94,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.dataview.I_CmsDataView;
+import org.opencms.widgets.dataview.I_CmsDataViewItem;
 import org.opencms.workplace.comparison.CmsHistoryListUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -510,7 +511,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             String classArg = obj.optString(CmsDataViewConstants.CONFIG_VIEW_ARG);
             I_CmsDataView data = (I_CmsDataView)(Class.forName(className).newInstance());
             data.initialize(getCmsObject(), classArg, OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
-            return data.getItemById(id).getImage();
+            I_CmsDataViewItem item = data.getItemById(id);
+            if (item == null) {
+                LOG.warn("no dataview item found for id: " + id + " (config=" + config + ")");
+                return null;
+            }
+            return item.getImage();
         } catch (Exception e) {
             error(e);
             return null;
@@ -775,8 +781,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        CmsUUID detailContentId)
-    throws CmsRpcException {
+        CmsUUID detailContentId) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -1284,8 +1289,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsObject cms,
         CmsResource historyRes,
         boolean offline,
-        int maxVersion)
-    throws CmsException {
+        int maxVersion) throws CmsException {
 
         CmsHistoryResourceBean result = new CmsHistoryResourceBean();
 

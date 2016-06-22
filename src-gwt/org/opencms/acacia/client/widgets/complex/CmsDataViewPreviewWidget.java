@@ -168,6 +168,9 @@ public class CmsDataViewPreviewWidget extends Composite {
 
                 public void onSuccess(String imageUrl) {
 
+                    if (imageUrl == null) {
+                        imageUrl = "";
+                    }
                     m_image.setUrl(imageUrl);
                 }
             });
