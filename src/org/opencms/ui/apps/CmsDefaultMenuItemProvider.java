@@ -100,7 +100,6 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
         return Arrays.<I_CmsContextMenuItem> asList(
             new CmsContextMenuActionItem(new CmsEditPageAction(), null, 10, 0),
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 50, 0),
-            new CmsContextMenuActionItem(new CmsFormEditDialogAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsEditPointerAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsGalleryDialogAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsLockAction(), null, 100, 0),
@@ -144,6 +143,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),
             new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),
+            new CmsContextMenuActionItem(new CmsFormEditDialogAction(), advanced.getId(), 800, 0),
             new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 900, 0),
             new CmsContextMenuActionItem(new CmsRestoreDeletedAction(), advanced.getId(), 1000, 0),
 

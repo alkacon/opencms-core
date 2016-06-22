@@ -29,7 +29,7 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
@@ -52,7 +52,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.ui.UI;
 
 /**
- * The form edit dialog action. Used for XML contents only.<p>
+ * The form edit dialog action. Used for XML container pages only.<p>
  */
 public class CmsFormEditDialogAction extends A_CmsWorkplaceAction {
 
@@ -108,7 +108,7 @@ public class CmsFormEditDialogAction extends A_CmsWorkplaceAction {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if ((resources.size() == 1) && CmsResourceTypeXmlContent.isXmlContent(resources.get(0))) {
+        if ((resources.size() == 1) && CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))) {
             return VISIBILITY.getVisibility(cms, resources);
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
