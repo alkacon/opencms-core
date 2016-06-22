@@ -1,4 +1,4 @@
-tinymce.addI18n('ko_KR',{
+tinymce.addI18n('ko',{
 "Cut": "\uc798\ub77c\ub0b4\uae30",
 "Heading 5": "\uc81c\ubaa9 5",
 "Header 2": "\uc81c\ubaa9 2",

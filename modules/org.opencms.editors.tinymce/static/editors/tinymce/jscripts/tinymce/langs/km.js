@@ -1,4 +1,4 @@
-tinymce.addI18n('km_KH',{
+tinymce.addI18n('km',{
 "Cut": "\u1780\u17b6\u178f\u17cb",
 "Heading 5": "\u1780\u17d2\u1794\u17b6\u179b 5",
 "Header 2": "\u1780\u17d2\u1794\u17b6\u179b 2",

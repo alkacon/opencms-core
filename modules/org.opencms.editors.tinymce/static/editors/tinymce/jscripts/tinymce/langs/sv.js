@@ -1,4 +1,4 @@
-tinymce.addI18n('sv_SE',{
+tinymce.addI18n('sv',{
 "Cut": "Klipp ut",
 "Heading 5": "Rubrik 5",
 "Header 2": "Rubrik 2",
