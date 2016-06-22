@@ -152,45 +152,46 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                     Map<String, I_CmsSearchStateParameters> m_uncheckEntries = CmsCollectionsGenericWrapper.createLazyMap(
                         new Transformer() {
 
-                        @Override
-                        public Object transform(final Object facetItem) {
+                            @Override
+                            public Object transform(final Object facetItem) {
 
-                            final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
-                            String facetParamKey = null;
-                            try {
-                                facetParamKey = getFacetParamKey((String)facet);
-                            } catch (Exception e) {
-                                // Facet did not exist
-                                LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
-                            }
-                            if (facetParamKey != null) {
-                                if (parameters.containsKey(facetParamKey)) {
-                                    String[] values = parameters.get(facetParamKey);
-                                    Arrays.asList(values).contains(facetItem);
-                                    if (Arrays.asList(values).contains(facetItem)) {
-                                        String[] newValues = new String[Arrays.asList(values).size() - 1];
-                                        int j = 0;
-                                        for (int i = 0; i < (Arrays.asList(values).size() - 1); i++) {
-                                            if (!values[i].equals(facetItem)) {
-                                                newValues[j] = values[i];
-                                                j++;
-                                            }
-                                        }
-                                        parameters.put(facetParamKey, newValues);
-                                    }
-                                } else {
-                                    parameters.put(facetParamKey, new String[] {(String)facetItem});
+                                final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
+                                String facetParamKey = null;
+                                try {
+                                    facetParamKey = getFacetParamKey((String)facet);
+                                } catch (Exception e) {
+                                    // Facet did not exist
+                                    LOG.warn(
+                                        Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet),
+                                        e);
                                 }
+                                if (facetParamKey != null) {
+                                    if (parameters.containsKey(facetParamKey)) {
+                                        String[] values = parameters.get(facetParamKey);
+                                        Arrays.asList(values).contains(facetItem);
+                                        if (Arrays.asList(values).contains(facetItem)) {
+                                            String[] newValues = new String[Arrays.asList(values).size() + 1];
+                                            int j = 0;
+                                            for (int i = 0; i < (values.length); i++) {
+                                                newValues[i] = values[i];
+                                            }
+                                            newValues[values.length] = (String)facetItem;
+                                            parameters.put(facetParamKey, newValues);
+                                        }
+                                    } else {
+                                        parameters.put(facetParamKey, new String[] {(String)facetItem});
+                                    }
 
+                                }
+                                return new CmsSearchStateParameters(m_result, parameters);
                             }
-                            return new CmsSearchStateParameters(m_result, parameters);
-                        }
-                    });
+                        });
                     return m_uncheckEntries;
                 }
             });
         }
         return m_uncheckFacetMap;
+
     }
 
     /**
@@ -296,7 +297,7 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
 
                     final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
                     String facetParamKey = getFacetParamKey((String)facet);
-                    if ((facetParamKey == null) && parameters.containsKey(facetParamKey)) {
+                    if ((facetParamKey != null) && parameters.containsKey(facetParamKey)) {
                         parameters.remove(facetParamKey);
                     }
                     return new CmsSearchStateParameters(m_result, parameters);
@@ -368,26 +369,29 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                     Map<String, I_CmsSearchStateParameters> m_checkEntries = CmsCollectionsGenericWrapper.createLazyMap(
                         new Transformer() {
 
-                        @Override
-                        public Object transform(final Object facetItem) {
+                            @Override
+                            public Object transform(final Object facetItem) {
 
-                            final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
-                            String facetParamKey = getFacetParamKey((String)facet);
-                            if ((facetParamKey != null) && parameters.containsKey(facetParamKey)) {
-                                String[] values = parameters.get(facetParamKey);
-                                List<String> valueList = Arrays.asList(values);
-                                if (!valueList.contains(facetItem)) {
-                                    String[] newValues = new String[valueList.size() + 1];
-                                    for (int i = 0; i < (valueList.size() - 1); i++) {
-                                        newValues[i] = values[i];
+                                final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
+                                String facetParamKey = getFacetParamKey((String)facet);
+                                if ((facetParamKey != null) && parameters.containsKey(facetParamKey)) {
+                                    String[] values = parameters.get(facetParamKey);
+                                    List<String> valueList = Arrays.asList(values);
+                                    String item = (String)facetItem;
+                                    if (valueList.contains(facetItem)) {
+                                        String[] newValues = new String[valueList.size() - 1];
+                                        int i = 0;
+                                        for (String value : valueList) {
+                                            if (value != item) {
+                                                newValues[i++] = value;
+                                            }
+                                        }
+                                        parameters.put(facetParamKey, newValues);
                                     }
-                                    newValues[valueList.size()] = (String)facetItem;
-                                    parameters.put(facetParamKey, newValues);
                                 }
+                                return new CmsSearchStateParameters(m_result, parameters);
                             }
-                            return new CmsSearchStateParameters(m_result, parameters);
-                        }
-                    });
+                        });
                     return m_checkEntries;
                 }
             });
