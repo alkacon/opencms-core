@@ -54,6 +54,7 @@ import org.tepi.filtertable.FilterTable;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.validator.AbstractStringValidator;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.FocusEvent;
@@ -264,6 +265,32 @@ public final class CmsMessageBundleEditorTypes {
         /** All keys used in any of the available languages. */
         ALL, /** Only keys used for the current language. */
         USED_ONLY;
+    }
+
+    /** Validates keys. */
+    @SuppressWarnings("serial")
+    static class KeyValidator extends AbstractStringValidator {
+
+        /**
+         * Default constructor.
+         */
+        public KeyValidator() {
+            super(CmsMessageBundleEditor.m_messages.key(Messages.GUI_INVALID_KEY_0));
+
+        }
+
+        /**
+         * @see com.vaadin.data.validator.AbstractValidator#isValidValue(java.lang.Object)
+         */
+        @Override
+        protected boolean isValidValue(String value) {
+
+            if (null == value) {
+                return true;
+            }
+            return !value.matches(".*\\p{IsWhite_Space}.*");
+        }
+
     }
 
     /** A column generator that additionally adjusts the appearance of the options buttons to selection changes on the table. */
@@ -536,6 +563,7 @@ public final class CmsMessageBundleEditorTypes {
                     AbstractTextField tf;
                     if (pid.equals(TableProperty.KEY)) {
                         tf = new TextField();
+                        tf.addValidator(new KeyValidator());
                     } else {
                         TextArea atf = new TextArea();
                         atf.setRows(1);

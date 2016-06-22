@@ -83,6 +83,8 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_FILTER_SHOW_ALL = "GUI_FILTER_SHOW_ALL";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILENAME_LABEL_0 = "GUI_FILENAME_LABEL_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INVALID_KEY_0 = "GUI_INVALID_KEY_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
