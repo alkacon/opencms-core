@@ -180,7 +180,7 @@ div.groupcontainerPlaceholder{
 	background: transparent;
 }
 
-.optionBar .opencms-icon .opencms-icon-edit-point:before {
+.optionBar .opencms-icon .opencms-icon-edit-point:before, .optionBar div.opencms-icon.cmsState-up-disabled .opencms-icon-edit-point:before {
 	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYwIDE2MCI+DQogIDxwYXRoIGQ9Ik0xMTYgMTcuN2E3MiA3MiAwIDAgMSAyNi4zIDk4LjRBNzIgNzIgMCAwIDEgNDQgMTQyLjUgNzIgNzIgMCAwIDEgMTcuNiA0NCA3MiA3MiAwIDAgMSAxMTYgMTcuNyIvPg0KICA8cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTA0IDM4LjVhNDggNDggMCAwIDEgMTcuNSA2NS41QTQ4IDQ4IDAgMCAxIDU2IDEyMS41IDQ4IDQ4IDAgMCAxIDM4LjUgNTYgNDggNDggMCAwIDEgMTA0IDM4LjQiLz4NCiAgPHBhdGggZD0iTTkyIDU5LjJhMjQgMjQgMCAwIDEgOC44IDMyLjggMjQgMjQgMCAwIDEtMzIuOCA4LjhBMjQgMjQgMCAwIDEgNTkuMiA2OCAyNCAyNCAwIDAgMSA5MiA1OS4yIi8+DQo8L3N2Zz4=");
 	background-size: 100% 100%;
     content: "";
