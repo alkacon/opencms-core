@@ -1,4 +1,4 @@
-tinymce.addI18n('is_IS',{
+tinymce.addI18n('is',{
 "Cut": "Skera",
 "Header 2": "Fyrirs\u00f6gn 2",
 "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.": "Vafrinn \u00feinn sty\u00f0ur ekki beinann a\u00f0gang a\u00f0 klippibor\u00f0inu.  Nota\u00f0u Ctrl-X\/C\/V \u00e1 lyklabor\u00f0inu \u00ed sta\u00f0inn.",

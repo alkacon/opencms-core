@@ -1,4 +1,4 @@
-tinymce.addI18n('hu_HU',{
+tinymce.addI18n('hu',{
 "Cut": "Kiv\u00e1g\u00e1s",
 "Heading 5": "Fejl\u00e9c 5",
 "Header 2": "C\u00edmsor 2",

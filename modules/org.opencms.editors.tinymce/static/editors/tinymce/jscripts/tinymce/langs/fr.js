@@ -1,4 +1,4 @@
-tinymce.addI18n('fr_FR',{
+tinymce.addI18n('fr',{
 "Cut": "Couper",
 "Header 2": "Titre 2",
 "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.": "Votre navigateur ne supporte pas la copie directe. Merci d'utiliser les touches Ctrl+X\/C\/V.",

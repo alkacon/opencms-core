@@ -1,4 +1,4 @@
-tinymce.addI18n('nb_NO',{
+tinymce.addI18n('nb',{
 "Cut": "Klipp ut",
 "Heading 5": "Overskrift 5",
 "Header 2": "Overskrift 2",
