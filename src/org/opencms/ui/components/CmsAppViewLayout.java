@@ -112,6 +112,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#addToolbarButtonRight(com.vaadin.ui.Component)
+     */
+    public void addToolbarButtonRight(Component button) {
+
+        m_toolbar.addButtonRight(button);
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsAppUIContext#clearToolbarButtons()
      */
     public void clearToolbarButtons() {
@@ -125,6 +133,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     public void closePopupViews() {
 
         m_toolbar.closePopupViews();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#enableDefaultToolbarButtons(boolean)
+     */
+    public void enableDefaultToolbarButtons(boolean enabled) {
+
+        m_toolbar.enableDefaultButtons(enabled);
     }
 
     /**

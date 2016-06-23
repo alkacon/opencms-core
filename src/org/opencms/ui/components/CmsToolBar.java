@@ -264,7 +264,12 @@ public class CmsToolBar extends CssLayout {
      */
     public void addButtonRight(Component button) {
 
-        m_itemsRight.addComponent(button);
+        int dropDownIndex = m_itemsRight.getComponentIndex(m_userDropDown);
+        if (dropDownIndex >= 0) {
+            m_itemsRight.addComponent(button, dropDownIndex);
+        } else {
+            m_itemsRight.addComponent(button);
+        }
     }
 
     /**
@@ -294,6 +299,24 @@ public class CmsToolBar extends CssLayout {
 
         closePopupViews(m_itemsLeft);
         closePopupViews(m_itemsRight);
+    }
+
+    /**
+     * Enables or removes the default toolbar buttons.<p>
+     * These are the context menu and the quick launch drop down.<p>
+     * The default is <code>enabled = true</code>.<p>
+     *
+     * @param enabled <code>true</code> to enable the buttons
+     */
+    public void enableDefaultButtons(boolean enabled) {
+
+        if (enabled) {
+            m_itemsRight.addComponent(m_contextMenu, 0);
+            m_itemsRight.addComponent(m_quickLaunchDropDown, 1);
+        } else {
+            m_itemsRight.removeComponent(m_contextMenu);
+            m_itemsRight.removeComponent(m_quickLaunchDropDown);
+        }
     }
 
     /**
@@ -496,9 +519,10 @@ public class CmsToolBar extends CssLayout {
 
                 CmsObject cms = A_CmsUI.getCmsObject();
                 return getDropDownButtonHtml(
-                    new ExternalResource(OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
-                        cms,
-                        cms.getRequestContext().getCurrentUser())));
+                    new ExternalResource(
+                        OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
+                            cms,
+                            cms.getRequestContext().getCurrentUser())));
             }
 
             public Component getPopupComponent() {

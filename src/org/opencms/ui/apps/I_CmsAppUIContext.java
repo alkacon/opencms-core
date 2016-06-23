@@ -67,9 +67,25 @@ public interface I_CmsAppUIContext extends Serializable {
     void addToolbarButton(Component button);
 
     /**
+     * Adds a toolbar button to the right hand side.<p>
+     *
+     * @param button the button to add
+     */
+    void addToolbarButtonRight(Component button);
+
+    /**
      * Removes the app's toolbar buttons.<p>
      */
     void clearToolbarButtons();
+
+    /**
+     * Enables or removes the default toolbar buttons.<p>
+     * These are the context menu and the quick launch drop down.<p>
+     * The default is <code>enabled = true</code>.<p>
+     *
+     * @param enabled <code>true</code> to enable the buttons
+     */
+    void enableDefaultToolbarButtons(boolean enabled);
 
     /**
      * Sets the app content component.<p>
