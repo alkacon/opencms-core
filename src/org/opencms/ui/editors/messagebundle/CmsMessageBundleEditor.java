@@ -398,21 +398,20 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     private void adjustVisibleColumns() {
 
-        if ((m_model.hasDescriptor() && m_model.hasDefaultValues())
-            || m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
-            m_table.setColumnCollapsed(TableProperty.DEFAULT, false);
-        } else {
-            m_table.setColumnCollapsed(TableProperty.DEFAULT, true);
-        }
+        if (m_table.isColumnCollapsingAllowed()) {
+            if ((m_model.hasDefaultValues()) || m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
+                m_table.setColumnCollapsed(TableProperty.DEFAULT, false);
+            } else {
+                m_table.setColumnCollapsed(TableProperty.DEFAULT, true);
+            }
 
-        if ((m_model.hasDescriptor()
-            && (m_model.getEditMode().equals(EditMode.MASTER) || m_model.hasDescriptionValues()))
-            || m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
-            m_table.setColumnCollapsed(TableProperty.DESCRIPTION, false);
-        } else {
-            m_table.setColumnCollapsed(TableProperty.DESCRIPTION, true);
+            if (((m_model.getEditMode().equals(EditMode.MASTER) || m_model.hasDescriptionValues()))
+                || m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
+                m_table.setColumnCollapsed(TableProperty.DESCRIPTION, false);
+            } else {
+                m_table.setColumnCollapsed(TableProperty.DESCRIPTION, true);
+            }
         }
-
     }
 
     /**
