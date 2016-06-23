@@ -392,25 +392,30 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         controller.init(containerpageHandler, dndHandler, contentEditorHandler, containerpageUtil);
 
         // export open stack trace dialog function
-        exportStacktraceDialogMethod();
+        exportMethods(controller);
     }
 
     /**
-     * Exports the openMessageDialog method to the page context.<p>
+     * Exports the __openMessageDialog and the __reinitializeEditButtons method to the page context.<p>
+     *
+     * @param controller the controller
      */
-    private native void exportStacktraceDialogMethod() /*-{
-		$wnd.__openStacktraceDialog = function(event) {
-			event = (event) ? event : ((window.event) ? window.event : "");
-			var elem = (event.target) ? event.target : event.srcElement;
-			if (elem != null) {
-				var children = elem.getElementsByTagName("span");
-				if (children.length > 0) {
-					var title = children[0].getAttribute("title");
-					var content = children[0].innerHTML;
-					@org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-				}
-			}
-		}
+    private native void exportMethods(CmsContainerpageController controller) /*-{
+        var contr = controller;
+        $wnd.__openStacktraceDialog = function(event) {
+            event = (event) ? event : ((window.event) ? window.event : "");
+            var elem = (event.target) ? event.target : event.srcElement;
+            if (elem != null) {
+                var children = elem.getElementsByTagName("span");
+                if (children.length > 0) {
+                    var title = children[0].getAttribute("title");
+                    var content = children[0].innerHTML;
+                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                }
+            }
+        }
+        $wnd.__reinitializeEditButtons = function() {
+            contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
+        }
     }-*/;
-
 }
