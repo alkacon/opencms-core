@@ -92,9 +92,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditor.class);
 
-    /** Property name for the generated table column with the add/delete buttons. */
-    // public static final String PROPERTY_ID_OPTIONS = "options";
-
     /** Messages used by the GUI. */
     static CmsMessages m_messages;
 
@@ -579,8 +576,12 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
             public void valueChange(ValueChangeEvent event) {
 
+                Object sortProperty = m_table.getSortContainerPropertyId();
+                boolean isAcending = m_table.isSortAscending();
                 m_table.clearFilters();
                 m_model.setKeySetMode((CmsMessageBundleEditorTypes.KeySetMode)event.getProperty().getValue());
+                m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
+                m_table.select(m_table.getCurrentPageFirstItemId());
             }
 
         });
@@ -624,11 +625,15 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                 public void valueChange(ValueChangeEvent event) {
 
                     try {
+                        Object sortProperty = m_table.getSortContainerPropertyId();
+                        boolean isAcending = m_table.isSortAscending();
                         m_table.clearFilters();
                         m_model.setLocale((Locale)event.getProperty().getValue());
                         m_fileName.setReadOnly(false);
                         m_fileName.setValue(m_model.getEditedFilePath());
                         m_fileName.setReadOnly(true);
+                        m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
+                        m_table.select(m_table.getCurrentPageFirstItemId());
                     } catch (IOException | CmsException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -781,6 +786,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             }
         });
         table.setNullSelectionAllowed(false);
+        table.select(table.getCurrentPageFirstItemId());
         return table;
     }
 
@@ -818,8 +824,13 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
             public void valueChange(ValueChangeEvent event) {
 
+                Object sortProperty = m_table.getSortContainerPropertyId();
+                boolean isAcending = m_table.isSortAscending();
                 if (!setEditMode((CmsMessageBundleEditorTypes.EditMode)event.getProperty().getValue())) {
                     viewSelect.setValue(m_model.getEditMode());
+                } else {
+                    m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
+                    m_table.select(m_table.getCurrentPageFirstItemId());
                 }
             }
         });
@@ -839,7 +850,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_appInfo.setSpacing(true);
 
         HorizontalLayout left = new HorizontalLayout();
-        left.setSizeFull();
+        left.setHeight("100%");
         left.setSpacing(true);
 
         m_rightAppInfo = new HorizontalLayout();
@@ -847,7 +858,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_rightAppInfo.setSpacing(true);
 
         m_appInfo.addComponent(left);
-        m_appInfo.setExpandRatio(left, 1f);
         m_appInfo.addComponent(m_rightAppInfo);
         m_appInfo.setExpandRatio(m_rightAppInfo, 1f);
 
