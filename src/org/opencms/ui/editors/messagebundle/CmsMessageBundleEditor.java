@@ -35,6 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsUIServlet;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.I_CmsAppUIContext;
@@ -42,6 +43,8 @@ import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleType;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TranslateTableFieldFactory;
 
@@ -134,6 +137,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** The text field displaying the name of the currently edited file. */
     private TextField m_fileName;
 
+    /** The app's UI context. */
+    private I_CmsAppUIContext m_context;
+
     /**
      * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
      */
@@ -148,7 +154,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     public boolean beforeViewChange(ViewChangeEvent event) {
 
-        unlockAction();
+        cleanUpAction();
         return true;
     }
 
@@ -169,6 +175,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         m_resource = resource;
         m_backLink = backLink;
+        m_context = context;
 
         try {
             m_model = new CmsMessageBundleEditorModel(m_cms, m_resource);
@@ -202,6 +209,8 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
             m_table.setTableFieldFactory(m_fieldFactories.get(m_model.getEditMode()));
             m_table.setCellStyleGenerator(m_styleGenerators.get(m_model.getEditMode()));
+
+            adjustVisibleColumns();
 
             context.setAppContent(main);
 
@@ -254,7 +263,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     public void onWindowClose() {
 
-        unlockAction();
+        cleanUpAction();
 
     }
 
@@ -328,6 +337,17 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
+     * Add the "Add descriptor" button to the app info section.
+     */
+    private void addAddDescriptorButton() {
+
+        Component button = createAddDescriptorButton();
+        m_rightAppInfo.addComponent(button);
+        m_rightAppInfo.setComponentAlignment(button, Alignment.MIDDLE_RIGHT);
+
+    }
+
+    /**
      * Add the "Add key" button to the app info section.
      */
     private void addAddKeyButton() {
@@ -366,13 +386,106 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         CmsMessageBundleEditorTypes.EditMode newMode) {
 
         if (m_model.isShowOptionsColumn(oldMode) != m_model.isShowOptionsColumn(newMode)) {
+            m_table.removeGeneratedColumn(TableProperty.OPTIONS);
             if (m_model.isShowOptionsColumn(newMode)) {
                 m_table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
-
-            } else {
-                m_table.removeGeneratedColumn(TableProperty.OPTIONS);
             }
         }
+    }
+
+    /**
+     * Adjust the visible columns.
+     */
+    private void adjustVisibleColumns() {
+
+        if ((m_model.hasDescriptor() && m_model.hasDefaultValues())
+            || m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
+            m_table.setColumnCollapsed(TableProperty.DEFAULT, false);
+        } else {
+            m_table.setColumnCollapsed(TableProperty.DEFAULT, true);
+        }
+
+        if ((m_model.hasDescriptor()
+            && (m_model.getEditMode().equals(EditMode.MASTER) || m_model.hasDescriptionValues()))
+            || m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
+            m_table.setColumnCollapsed(TableProperty.DESCRIPTION, false);
+        } else {
+            m_table.setColumnCollapsed(TableProperty.DESCRIPTION, true);
+        }
+
+    }
+
+    /**
+     * Unlock all edited resources.
+     */
+    private void cleanUpAction() {
+
+        try {
+            m_model.deleteDescriptorIfNecessary();
+        } catch (CmsException e) {
+            LOG.error(m_messages.key(Messages.ERR_DELETING_DESCRIPTOR_0), e);
+        }
+        // unlock resource
+        try {
+            m_model.unlock();
+        } catch (CmsException e) {
+            LOG.error(m_messages.key(Messages.ERR_UNLOCKING_RESOURCES_0), e);
+        }
+
+    }
+
+    /**
+     * Returns a button component. On click, it triggers adding a bundle descriptor.
+     * @return a button for adding a descriptor to a bundle.
+     */
+    @SuppressWarnings("serial")
+    private Component createAddDescriptorButton() {
+
+        Button addDescriptorButton = new Button();
+        addDescriptorButton.setCaption(m_messages.key(Messages.GUI_ADD_DESCRIPTOR_0));
+        addDescriptorButton.addClickListener(new ClickListener() {
+
+            @SuppressWarnings("synthetic-access")
+            public void buttonClick(ClickEvent event) {
+
+                if (!m_model.addDescriptor()) {
+                    CmsVaadinUtils.showAlert(
+                        m_messages.key(Messages.ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_0),
+                        m_messages.key(Messages.ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_DESCRIPTION_0),
+                        null);
+                } else {
+                    try {
+                        m_table.setContainerDataSource(m_model.getContainerForCurrentLocale());
+                    } catch (IOException | CmsException e) {
+                        // Can never appear here, since container is created by addDescriptor already.
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    m_fieldFactories.put(
+                        CmsMessageBundleEditorTypes.EditMode.DEFAULT,
+                        new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+                            m_table,
+                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+                    m_styleGenerators.put(
+                        CmsMessageBundleEditorTypes.EditMode.DEFAULT,
+                        new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+                    m_fieldFactories.put(
+                        CmsMessageBundleEditorTypes.EditMode.MASTER,
+                        new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+                            m_table,
+                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+                    m_styleGenerators.put(
+                        CmsMessageBundleEditorTypes.EditMode.MASTER,
+                        new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+                    setEditMode(EditMode.MASTER);
+                    m_table.setColumnCollapsingAllowed(true);
+                    adjustVisibleColumns();
+                    fillAppInfo(m_context);
+                }
+            }
+        });
+        return addDescriptorButton;
     }
 
     /**
@@ -600,19 +713,29 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (table.getItemIds().isEmpty() && !m_model.hasDescriptor()) {
             table.addItem();
         }
+
         table.setColumnHeader(TableProperty.KEY, m_configurableMessages.getColumnHeader(TableProperty.KEY));
+        table.setColumnCollapsible(TableProperty.KEY, false);
+
         table.setColumnHeader(TableProperty.DEFAULT, m_configurableMessages.getColumnHeader(TableProperty.DEFAULT));
+        table.setColumnCollapsible(TableProperty.DEFAULT, true);
+
         table.setColumnHeader(
             TableProperty.DESCRIPTION,
             m_configurableMessages.getColumnHeader(TableProperty.DESCRIPTION));
+        table.setColumnCollapsible(TableProperty.DESCRIPTION, true);
+
         table.setColumnHeader(
             TableProperty.TRANSLATION,
             m_configurableMessages.getColumnHeader(TableProperty.TRANSLATION));
+        table.setColumnCollapsible(TableProperty.TRANSLATION, false);
+
         table.setColumnHeader(TableProperty.OPTIONS, m_configurableMessages.getColumnHeader(TableProperty.OPTIONS));
         table.setFilterDecorator(new CmsMessageBundleEditorFilterDecorator());
 
         table.setFilterBarVisible(true);
         table.setFilterFieldVisible(TableProperty.OPTIONS, false);
+        table.setColumnCollapsible(TableProperty.OPTIONS, false);
 
         table.setSortEnabled(true);
         table.setEditable(true);
@@ -620,7 +743,8 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         table.setSelectable(true);
         table.setImmediate(true);
         table.setMultiSelect(false);
-        table.setColumnCollapsingAllowed(false);
+
+        table.setColumnCollapsingAllowed(m_model.hasDescriptor());
 
         table.setColumnReorderingAllowed(false);
 
@@ -746,6 +870,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
         if (!m_model.hasDescriptor()) {
             addAddKeyButton();
+            addAddDescriptorButton();
         }
         context.setAppInfo(m_appInfo);
     }
@@ -782,19 +907,5 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     private void removeAddKeyButton() {
 
         m_rightAppInfo.removeComponent(m_addKeyButton);
-    }
-
-    /**
-     * Unlock all edited resources.
-     */
-    private void unlockAction() {
-
-        // unlock resource
-        try {
-            m_model.unlock();
-        } catch (CmsException e) {
-            LOG.error(m_messages.key(Messages.ERR_UNLOCKING_RESOURCES_0), e);
-        }
-
     }
 }

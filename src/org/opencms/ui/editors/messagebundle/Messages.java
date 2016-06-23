@@ -60,8 +60,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0 = "GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0";
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COLUMN_HEADER_OPTIONS_0 = "GUI_COLUMN_HEADER_OPTIONS_0";
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_ADD_KEY_0 = "GUI_ADD_KEY_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_LOCALE_0 = "GUI_DEFAULT_LOCALE_0";
@@ -85,6 +83,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_FILENAME_LABEL_0 = "GUI_FILENAME_LABEL_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INVALID_KEY_0 = "GUI_INVALID_KEY_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADD_DESCRIPTOR_0 = "GUI_ADD_DESCRIPTOR_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETING_DESCRIPTOR_0 = "ERR_DELETING_DESCRIPTOR_0";
+    /** Message constant for key in the resource bundle. */
+    protected static final String ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_0 = "ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_0";
+    /** Message constant for key in the resource bundle. */
+    protected static final String ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_DESCRIPTION_0 = "ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_DESCRIPTION_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_FILE_UNSUPPORTED_ENCODING_2 = "ERR_READING_FILE_UNSUPPORTED_ENCODING_2";
 
     /**
      * Hides the public constructor for this utility class.<p>

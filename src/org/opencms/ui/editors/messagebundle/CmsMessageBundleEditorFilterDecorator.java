@@ -30,7 +30,6 @@ package org.opencms.ui.editors.messagebundle;
 import org.opencms.i18n.CmsMessageException;
 import org.opencms.main.CmsLog;
 
-import java.io.Serializable;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -42,8 +41,11 @@ import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.UI;
 
-class CmsMessageBundleEditorFilterDecorator implements FilterDecorator, Serializable {
+/** Adjust the style of the filter bar of the table. */
+class CmsMessageBundleEditorFilterDecorator implements FilterDecorator {
 
+    /** Serialization id. - {@link java.io.Serializable} is a super interface of {@link FilterDecorator}. */
+    private static final long serialVersionUID = -7166112054012313157L;
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorFilterDecorator.class);
 

@@ -139,6 +139,8 @@ public final class CmsMessageBundleEditorTypes {
         public static final String N_DEFAULT = "Default";
         /** Locale in which the content is available. */
         public static final Locale LOCALE = new Locale("en");
+        /** The mandatory postfix of a bundle descriptor. */
+        public static final String POSTFIX = "_desc";
 
     }
 
@@ -439,6 +441,7 @@ public final class CmsMessageBundleEditorTypes {
         public void handleAction(Action action, Object sender, Object target) {
 
             TranslateTableFieldFactory fieldFactory = (TranslateTableFieldFactory)m_table.getTableFieldFactory();
+            List<TableProperty> editableColums = fieldFactory.getEditableColumns();
 
             if (target instanceof AbstractTextField) {
                 // Move according to keypress
@@ -466,21 +469,20 @@ public final class CmsMessageBundleEditorTypes {
                         rowId = visibleItemIds.get(currentRow - 1).intValue();
                     }
                 } else if (action == m_tabNext) {
-                    if (colId == fieldFactory.getEditableColumns()) {
-                        colId = 1;
+                    int nextColId = getNextColId(editableColums, colId);
+                    if (colId >= nextColId) {
                         int currentRow = visibleItemIds.indexOf(Integer.valueOf(rowId));
                         rowId = visibleItemIds.get((currentRow + 1) % visibleItemIds.size()).intValue();
-                    } else {
-                        colId++;
                     }
+                    colId = nextColId;
                 } else if (action == m_tabPrev) {
-                    if (colId == 1) {
+                    int previousColId = getPreviousColId(editableColums, colId);
+                    if (colId <= previousColId) {
                         int currentRow = visibleItemIds.indexOf(Integer.valueOf(rowId));
-                        colId = fieldFactory.getEditableColumns();
-                        rowId = visibleItemIds.get((currentRow - 1) % visibleItemIds.size()).intValue();
-                    } else {
-                        colId--;
+                        rowId = visibleItemIds.get(
+                            ((currentRow + visibleItemIds.size()) - 1) % visibleItemIds.size()).intValue();
                     }
+                    colId = previousColId;
                 }
 
                 AbstractTextField newTF = fieldFactory.getValueFields().get(Integer.valueOf(colId)).get(
@@ -489,6 +491,40 @@ public final class CmsMessageBundleEditorTypes {
                     newTF.focus();
                 }
             }
+        }
+
+        /**
+         * Calculates the id of the next editable column.
+         * @param editableColumns all editable columns
+         * @param colId id (index in <code>editableColumns</code> plus 1) of the current column.
+         * @return id of the next editable column.
+         */
+        private int getNextColId(List<TableProperty> editableColumns, int colId) {
+
+            for (int i = colId % editableColumns.size(); i != (colId - 1); i = (i + 1) % editableColumns.size()) {
+                if (!m_table.isColumnCollapsed(editableColumns.get(i))) {
+                    return i + 1;
+                }
+            }
+            return colId;
+        }
+
+        /**
+         * Calculates the id of the previous editable column.
+         * @param editableColumns all editable columns
+         * @param colId id (index in <code>editableColumns</code> plus 1) of the current column.
+         * @return id of the previous editable column.
+         */
+        private int getPreviousColId(List<TableProperty> editableColumns, int colId) {
+
+            // use +4 instead of -1 to prevent negativ numbers
+            for (int i = ((colId + editableColumns.size()) - 2) % editableColumns.size(); i != (colId
+                - 1); i = ((i + editableColumns.size()) - 1) % editableColumns.size()) {
+                if (!m_table.isColumnCollapsed(editableColumns.get(i))) {
+                    return i + 1;
+                }
+            }
+            return colId;
         }
     }
 
@@ -597,12 +633,12 @@ public final class CmsMessageBundleEditorTypes {
         }
 
         /**
-         * Returns the number of editable columns.
-         * @return the number of editable columns.
+         * Returns the editable columns.
+         * @return the editable columns.
          */
-        public int getEditableColumns() {
+        public List<TableProperty> getEditableColumns() {
 
-            return m_editableColumns.size();
+            return m_editableColumns;
         }
 
         /**
@@ -617,9 +653,6 @@ public final class CmsMessageBundleEditorTypes {
 
     /** The log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorTypes.class);
-
-    /** Post fix for bundle descriptors, which must obey the name scheme {basename}_desc. */
-    public static final String DESCRIPTOR_POSTFIX = "_desc";
 
     /** Hide default constructor. */
     private CmsMessageBundleEditorTypes() {
@@ -636,7 +669,7 @@ public final class CmsMessageBundleEditorTypes {
 
         CmsSolrQuery query = new CmsSolrQuery();
         query.setResourceTypes(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR.toString());
-        query.setFilterQueries("filename:\"" + basename + CmsMessageBundleEditorTypes.DESCRIPTOR_POSTFIX + "\"");
+        query.setFilterQueries("filename:\"" + basename + CmsMessageBundleEditorTypes.Descriptor.POSTFIX + "\"");
         query.add("fl", "path");
         CmsSolrResultList results;
         try {
