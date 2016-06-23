@@ -88,6 +88,13 @@ public interface I_CmsAppUIContext extends Serializable {
     void enableDefaultToolbarButtons(boolean enabled);
 
     /**
+     * Removes the given button from the toolbar.<p>
+     *
+     * @param button the button to remove
+     */
+    void removeToolbarButton(Component button);
+
+    /**
      * Sets the app content component.<p>
      *
      * @param appContent the app content

@@ -320,6 +320,17 @@ public class CmsToolBar extends CssLayout {
     }
 
     /**
+     * Removes the given button from the toolbar.<p>
+     *
+     * @param button the button to remove
+     */
+    public void removeButton(Component button) {
+
+        m_itemsLeft.removeComponent(button);
+        m_itemsRight.removeComponent(button);
+    }
+
+    /**
      * Sets the app title.<p>
      *
      * @param appTitle the app title

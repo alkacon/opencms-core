@@ -153,6 +153,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#removeToolbarButton(com.vaadin.ui.Component)
+     */
+    public void removeToolbarButton(Component button) {
+
+        m_toolbar.removeButton(button);
+    }
+
+    /**
      * Sets the app content component.<p>
      *
      * @param appContent the app content
