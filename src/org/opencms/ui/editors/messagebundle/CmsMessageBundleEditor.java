@@ -512,7 +512,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     @SuppressWarnings("serial")
     private Component createCloseButton() {
 
-        Button closeBtn = CmsToolBar.createButton(FontOpenCms.CIRCLE_INV_CANCEL, "Cancel");
+        Button closeBtn = CmsToolBar.createButton(
+            FontOpenCms.CIRCLE_INV_CANCEL,
+            m_messages.key(Messages.GUI_BUTTON_CANCEL_0));
         closeBtn.addClickListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
@@ -672,7 +674,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     @SuppressWarnings("serial")
     private Component createSaveButton() {
 
-        Button saveBtn = CmsToolBar.createButton(FontOpenCms.SAVE, "Save");
+        Button saveBtn = CmsToolBar.createButton(FontOpenCms.SAVE, m_messages.key(Messages.GUI_BUTTON_SAVE_0));
         saveBtn.addClickListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
@@ -690,7 +692,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     @SuppressWarnings("serial")
     private Component createSaveExitButton() {
 
-        Button saveExitBtn = CmsToolBar.createButton(FontOpenCms.SAVE_EXIT, "Save and Exit");
+        Button saveExitBtn = CmsToolBar.createButton(
+            FontOpenCms.SAVE_EXIT,
+            m_messages.key(Messages.GUI_BUTTON_SAVE_AND_EXIT_0));
         saveExitBtn.addClickListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {

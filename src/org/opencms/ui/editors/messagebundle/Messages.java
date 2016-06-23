@@ -93,6 +93,12 @@ public final class Messages extends A_CmsMessageBundle {
     protected static final String ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_DESCRIPTION_0 = "ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_DESCRIPTION_0";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_FILE_UNSUPPORTED_ENCODING_2 = "ERR_READING_FILE_UNSUPPORTED_ENCODING_2";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_SAVE_0 = "GUI_BUTTON_SAVE_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_SAVE_AND_EXIT_0 = "GUI_BUTTON_SAVE_AND_EXIT_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_CANCEL_0 = "GUI_BUTTON_CANCEL_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
