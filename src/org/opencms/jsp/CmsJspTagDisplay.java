@@ -39,6 +39,9 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
+import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
+import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
@@ -148,6 +151,11 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     element.initSettings(cms, formatter);
                     boolean openedEditable = false;
                     if (editable && contextBean.getIsEditMode()) {
+                        if (CmsJspTagEditable.getDirectEditProvider(context) == null) {
+                            I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
+                            eb.init(cms, CmsDirectEditMode.TRUE, element.getSitePath());
+                            request.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
+                        }
                         openedEditable = CmsJspTagEdit.insertDirectEditStart(
                             cms,
                             context,
