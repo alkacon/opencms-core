@@ -351,7 +351,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
         CmsObject cms,
         CmsContainerElementBean element,
         ServletRequest req,
-        String containerType) throws CmsException {
+        String containerType)
+    throws CmsException {
 
         List<CmsContainerElementBean> subElements;
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
@@ -556,22 +557,24 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 }
                 // create tag for container
                 String tagName = CmsStringUtil.isEmptyOrWhitespaceOnly(getTag()) ? DEFAULT_TAG_NAME : getTag();
-                pageContext.getOut().print(getTagOpen(
-                    tagName,
-                    getName(),
-                    getTagClass(),
-                    isNested(),
-                    !m_editableRequest,
-                    m_editableRequest ? getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly) : null));
+                pageContext.getOut().print(
+                    getTagOpen(
+                        tagName,
+                        getName(),
+                        getTagClass(),
+                        isNested(),
+                        !m_editableRequest,
+                        m_editableRequest ? getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly) : null));
 
                 standardContext.setContainer(container);
                 // validate the type
                 if (!getType().equals(container.getType())) {
                     container.setType(getType());
-                    LOG.warn(new CmsIllegalStateException(
-                        Messages.get().container(
-                            Messages.LOG_WRONG_CONTAINER_TYPE_4,
-                            new Object[] {requestUri, locale, getName(), getType()})));
+                    LOG.warn(
+                        new CmsIllegalStateException(
+                            Messages.get().container(
+                                Messages.LOG_WRONG_CONTAINER_TYPE_4,
+                                new Object[] {requestUri, locale, getName(), getType()})));
                 }
 
                 // update the cache
@@ -1019,7 +1022,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
         CmsObject cms,
         CmsContainerElementBean elementBean,
         CmsContainerPageBean page,
-        boolean isGroupContainer) throws Exception {
+        boolean isGroupContainer)
+    throws Exception {
 
         if (m_editableRequest) {
             StringBuffer result = new StringBuffer("<div class='");
@@ -1194,7 +1198,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
             errorBox.append(exception.getLocalizedMessage());
             if (stacktrace != null) {
                 errorBox.append(
-                    "<span onclick=\"__openStacktraceDialog(event);\" style=\"border: 1px solid black; cursor: pointer;\">");
+                    "<span onclick=\"opencms.openStacktraceDialog(event);\" style=\"border: 1px solid black; cursor: pointer;\">");
                 errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
                 String title = Messages.get().getBundle().key(
                     Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
@@ -1231,7 +1235,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
         CmsJspStandardContextBean standardContext,
         CmsContainerElementBean element,
         Locale locale,
-        boolean alreadyFull) throws Exception {
+        boolean alreadyFull)
+    throws Exception {
 
         CmsTemplateContext context = (CmsTemplateContext)(request.getAttribute(
             CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));

@@ -401,21 +401,23 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * @param controller the controller
      */
     private native void exportMethods(CmsContainerpageController controller) /*-{
-        var contr = controller;
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
-            }
-        }
-        $wnd.__reinitializeEditButtons = function() {
-            contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
-        }
+		var contr = controller;
+		$wnd.opencms = {
+			openStacktraceDialog : function(event) {
+				event = (event) ? event : ((window.event) ? window.event : "");
+				var elem = (event.target) ? event.target : event.srcElement;
+				if (elem != null) {
+					var children = elem.getElementsByTagName("span");
+					if (children.length > 0) {
+						var title = children[0].getAttribute("title");
+						var content = children[0].innerHTML;
+						@org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+					}
+				}
+			},
+			reinitializeEditButtons : function() {
+				contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
+			}
+		}
     }-*/;
 }
