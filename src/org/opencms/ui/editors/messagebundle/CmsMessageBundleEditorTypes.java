@@ -29,6 +29,7 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchException;
@@ -73,6 +74,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 
 /** Types and helper classes used by the message bundle editor. */
 public final class CmsMessageBundleEditorTypes {
@@ -329,13 +331,13 @@ public final class CmsMessageBundleEditorTypes {
          */
         public Object generateCell(final CustomTable source, final Object itemId, final Object columnId) {
 
+            CmsMessages messages = Messages.get().getBundle(UI.getCurrent().getLocale());
             HorizontalLayout options = new HorizontalLayout();
             Button delete = new Button();
             delete.addStyleName("icon-only");
             delete.addStyleName("borderless-colored");
-            // delete.addStyleName("danger");
-            delete.setDescription("Delete this row");
-            delete.setIcon(FontOpenCms.CIRCLE_MINUS, "Delete");
+            delete.setDescription(messages.key(Messages.GUI_REMOVE_ROW_0));
+            delete.setIcon(FontOpenCms.CIRCLE_MINUS, messages.key(Messages.GUI_REMOVE_ROW_0));
             delete.addClickListener(new ClickListener() {
 
                 public void buttonClick(ClickEvent event) {
@@ -345,11 +347,10 @@ public final class CmsMessageBundleEditorTypes {
             });
 
             Button add = new Button();
-            add.setDescription("Add new row below");
-            add.setIcon(FontOpenCms.CIRCLE_PLUS, "Add");
+            add.setDescription(messages.key(Messages.GUI_ADD_ROW_BELOW_0));
+            add.setIcon(FontOpenCms.CIRCLE_PLUS, messages.key(Messages.GUI_ADD_ROW_BELOW_0));
             add.addStyleName("icon-only");
             add.addStyleName("borderless-colored");
-            add.addStyleName("friendly");
             add.addClickListener(new ClickListener() {
 
                 public void buttonClick(ClickEvent event) {

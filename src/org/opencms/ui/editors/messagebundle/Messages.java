@@ -60,7 +60,11 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0 = "GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0";
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ADD_KEY_0 = "GUI_ADD_KEY_0";
+    public static final String GUI_ADD_ROW_0 = "GUI_ADD_ROW_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADD_ROW_BELOW_0 = "GUI_ADD_ROW_BELOW_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REMOVE_ROW_0 = "GUI_REMOVE_ROW_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_LOCALE_0 = "GUI_DEFAULT_LOCALE_0";
     /** Message constant for key in the resource bundle. */

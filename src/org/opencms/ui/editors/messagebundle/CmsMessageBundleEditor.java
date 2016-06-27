@@ -134,9 +134,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** The text field displaying the name of the currently edited file. */
     private TextField m_fileName;
 
-    /** The app's UI context. */
-    private I_CmsAppUIContext m_context;
-
     /**
      * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
      */
@@ -172,7 +169,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         m_resource = resource;
         m_backLink = backLink;
-        m_context = context;
 
         try {
             m_model = new CmsMessageBundleEditorModel(m_cms, m_resource);
@@ -334,17 +330,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
-     * Add the "Add descriptor" button to the app info section.
-     */
-    private void addAddDescriptorButton() {
-
-        Component button = createAddDescriptorButton();
-        m_rightAppInfo.addComponent(button);
-        m_rightAppInfo.setComponentAlignment(button, Alignment.MIDDLE_RIGHT);
-
-    }
-
-    /**
      * Add the "Add key" button to the app info section.
      */
     private void addAddKeyButton() {
@@ -437,8 +422,12 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     @SuppressWarnings("serial")
     private Component createAddDescriptorButton() {
 
-        Button addDescriptorButton = new Button();
-        addDescriptorButton.setCaption(m_messages.key(Messages.GUI_ADD_DESCRIPTOR_0));
+        Button addDescriptorButton = CmsToolBar.createButton(
+            FontOpenCms.COPY_LOCALE,
+            m_messages.key(Messages.GUI_ADD_DESCRIPTOR_0));
+
+        addDescriptorButton.setDisableOnClick(true);
+
         addDescriptorButton.addClickListener(new ClickListener() {
 
             @SuppressWarnings("synthetic-access")
@@ -477,7 +466,8 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                     setEditMode(EditMode.MASTER);
                     m_table.setColumnCollapsingAllowed(true);
                     adjustVisibleColumns();
-                    fillAppInfo(m_context);
+                    // fillAppInfo(m_context);
+                    // m_context.removeToolbarButton(event.getComponent());
                 }
             }
         });
@@ -491,10 +481,13 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     @SuppressWarnings("serial")
     private Component createAddKeyButton() {
 
-        Button addKeyButton = new Button();
-        addKeyButton.setCaption(m_messages.key(Messages.GUI_ADD_KEY_0));
-        // addKeyButton.setHeight("100%");
-        addKeyButton.addClickListener(new ClickListener() {
+        Button add = new Button();
+        add.setDescription(m_messages.key(Messages.GUI_ADD_ROW_0));
+        add.setIcon(FontOpenCms.CIRCLE_PLUS, m_messages.key(Messages.GUI_ADD_ROW_0));
+        add.addStyleName("icon-only");
+        add.addStyleName("borderless-colored");
+        add.addStyleName("friendly");
+        add.addClickListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
 
@@ -502,7 +495,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
             }
         });
-        return addKeyButton;
+        return add;
     }
 
     /**
@@ -883,7 +876,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
         if (!m_model.hasDescriptor()) {
             addAddKeyButton();
-            addAddDescriptorButton();
         }
         context.setAppInfo(m_appInfo);
     }
@@ -900,9 +892,16 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         Component saveExitBtn = createSaveExitButton();
         Component closeBtn = createCloseButton();
 
-        context.addToolbarButton(closeBtn);
+        context.enableDefaultToolbarButtons(false);
+        context.addToolbarButtonRight(closeBtn);
         context.addToolbarButton(saveExitBtn);
         context.addToolbarButton(saveBtn);
+
+        Component addDescriptorBtn = createAddDescriptorButton();
+        if (m_model.hasDescriptor() || m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
+            addDescriptorBtn.setEnabled(false);
+        }
+        context.addToolbarButton(addDescriptorBtn);
     }
 
     /** Generates the options column for the table.
