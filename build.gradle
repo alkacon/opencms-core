@@ -34,8 +34,8 @@ repositories {
         }
     }
     jcenter()
-    maven { 
-        url "http://maven.vaadin.com/vaadin-addons" 
+    maven {
+        url "http://maven.vaadin.com/vaadin-addons"
     }
 }
 

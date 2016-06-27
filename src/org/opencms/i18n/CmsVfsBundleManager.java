@@ -314,14 +314,6 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
             CmsVfsResourceBundle bundle = new CmsVfsResourceBundle(params);
             addBundle(name, locale, bundle);
         }
-        //        CmsVfsBundleParameters params = new CmsVfsBundleParameters(
-        //            name,
-        //            path,
-        //            CmsLocaleManager.getDefaultLocale(),
-        //            true,
-        //            CmsVfsResourceBundle.TYPE_XML);
-        //        CmsVfsResourceBundle defaultLocaleBundle = new CmsVfsResourceBundle(params);
-        //        addBundle(name, null, defaultLocaleBundle);
     }
 
     /**

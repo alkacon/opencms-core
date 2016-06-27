@@ -124,15 +124,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_STATUS_STRUCTURE_ID_0 = "GUI_STATUS_STRUCTURE_ID_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_STATUS_PERMALINK_0 = "GUI_STATUS_PERMALINK_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_STATUS_RESOURCE_ID_0 = "GUI_STATUS_RESOURCE_ID_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_STATUS_STRUCTURE_ID_0 = "GUI_STATUS_STRUCTURE_ID_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_STATUS_TAB_FROM_CP_0 = "GUI_STATUS_TAB_FROM_CP_0";
 
     /** Message constant for key in the resource bundle. */

@@ -307,6 +307,25 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/macro_formatter.xsd</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="bundledescriptor" id="320">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>				
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/bundledescriptor.xsd
+				</param>
+			</type>			
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap" icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
@@ -568,6 +587,18 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				<newresource uri="" order="2300" autosetnavigation="false" autosettitle="false" info=""/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="bundledescriptor" key="fileicon.bundledescriptor"
+				icon="document.png" bigicon="document_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=bundledescriptor"
+					order="29" autosetnavigation="false" autosettitle="false"
+					info="desc.bundledescriptor" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>
