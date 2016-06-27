@@ -281,7 +281,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String entityId,
         CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
-        Collection<String> changedScopes) throws CmsRpcException {
+        Collection<String> changedScopes)
+    throws CmsRpcException {
 
         CmsContentDefinition result = null;
         CmsUUID structureId = CmsContentDefinition.entityIdToUuid(editedLocaleEntity.getId());
@@ -382,7 +383,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public CmsContentDefinition loadDefinition(
         String entityId,
         CmsEntity editedLocaleEntity,
-        Collection<String> skipPaths) throws CmsRpcException {
+        Collection<String> skipPaths)
+    throws CmsRpcException {
 
         CmsContentDefinition definition = null;
         try {
@@ -416,7 +418,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsUUID modelFileId,
         String editContext,
         String mode,
-        String postCreateHandler) throws CmsRpcException {
+        String postCreateHandler)
+    throws CmsRpcException {
 
         CmsContentDefinition result = null;
         getCmsObject().getRequestContext().setAttribute(CmsXmlContentEditor.ATTRIBUTE_EDITCONTEXT, editContext);
@@ -456,7 +459,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public CmsContentDefinition loadNewDefinition(
         String entityId,
         CmsEntity editedLocaleEntity,
-        Collection<String> skipPaths) throws CmsRpcException {
+        Collection<String> skipPaths)
+    throws CmsRpcException {
 
         CmsContentDefinition definition = null;
         try {
@@ -560,7 +564,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,
-        boolean clearOnSuccess) throws CmsRpcException {
+        boolean clearOnSuccess)
+    throws CmsRpcException {
 
         CmsUUID structureId = null;
         if (lastEditedEntity != null) {
@@ -972,7 +977,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsXmlContent content,
         Collection<String> skipPaths,
         Collection<CmsEntity> entities,
-        Locale lastEdited) throws CmsXmlException {
+        Locale lastEdited)
+    throws CmsXmlException {
 
         CmsEntity lastEditedEntity = null;
         for (CmsEntity entity : entities) {
@@ -1059,7 +1065,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 for (int i = 0; i < choiceEntities.size(); i++) {
                     List<CmsEntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
                     // each choice entity may only have a single attribute with a single value
-                    assert(choiceAttributes.size() == 1)
+                    assert (choiceAttributes.size() == 1)
                         && choiceAttributes.get(
                             0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
                     CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
@@ -1329,7 +1335,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         getCmsObject().getSitePath(file));
                     StringBuffer pathes = new StringBuffer();
                     for (CmsCategory category : categories) {
-                        if (category.getRootPath().startsWith(getCmsObject().addSiteRoot(mainCategoryPath))) {
+                        if (category.getPath().startsWith(mainCategoryPath)) {
                             pathes.append(category.getBasePath()).append(category.getPath()).append(',');
                         }
                     }
@@ -1419,7 +1425,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String entityId,
         Locale locale,
         boolean newLocale,
-        CmsEntity editedLocaleEntity) throws CmsException {
+        CmsEntity editedLocaleEntity)
+    throws CmsException {
 
         long timer = 0;
         if (LOG.isDebugEnabled()) {
@@ -1574,7 +1581,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsUUID modelFileId,
         Locale locale,
         String mode,
-        String postCreateHandler) throws CmsException {
+        String postCreateHandler)
+    throws CmsException {
 
         String sitePath = getCmsObject().getSitePath(referenceResource);
         String resourceType = OpenCms.getResourceManager().getResourceType(referenceResource.getTypeId()).getTypeName();
@@ -1643,7 +1651,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsFile file,
         CmsXmlContent content,
         Collection<String> skipPaths,
-        CmsEntity entity) throws CmsXmlException {
+        CmsEntity entity)
+    throws CmsXmlException {
 
         CmsObject cms = getCmsObject();
         String entityId = entity.getId();
