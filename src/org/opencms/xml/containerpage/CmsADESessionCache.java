@@ -27,7 +27,9 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsElementView;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.file.CmsObject;
@@ -37,8 +39,13 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -118,8 +125,14 @@ public final class CmsADESessionCache {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADESessionCache.class);
 
+    /** The list size for recently used formatters. */
+    private static final int RECENT_FORMATTERS_SIZE = 10;
+
     /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
+
+    /** The current values of dynamically loaded attributes in the Acacia editor. */
+    private Map<String, String> m_dynamicValues;
 
     /** The current element view id. */
     private CmsUUID m_elementView;
@@ -129,6 +142,9 @@ public final class CmsADESessionCache {
 
     /** Bean containing last page info. */
     private LastPageBean m_lastPage;
+
+    /** The recently used formatters by resource type. */
+    private Map<String, List<CmsUUID>> m_recentFormatters = new ConcurrentHashMap<String, List<CmsUUID>>();
 
     /** The sitemap editor mode. */
     private EditorMode m_sitemapEditorMode;
@@ -141,9 +157,6 @@ public final class CmsADESessionCache {
 
     /** The cached XML content documents by structure id. */
     private Map<CmsUUID, CmsXmlContent> m_xmlContents;
-
-    /** The current values of dynamically loaded attributes in the Acacia editor. */
-    private Map<String, String> m_dynamicValues;
 
     /**
      * Initializes the session cache.<p>
@@ -199,6 +212,26 @@ public final class CmsADESessionCache {
             request.getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, cache);
         }
         return cache;
+    }
+
+    /**
+     * Adds the formatter id to the recently used list for the given type.<p>
+     *
+     * @param resType the resource type
+     * @param formatterId the formatter id
+     */
+    public void addRecentFormatter(String resType, CmsUUID formatterId) {
+
+        List<CmsUUID> formatterIds = m_recentFormatters.get(resType);
+        if (formatterIds == null) {
+            formatterIds = new ArrayList<CmsUUID>();
+            m_recentFormatters.put(resType, formatterIds);
+        }
+        formatterIds.remove(formatterId);
+        if (formatterIds.size() >= (RECENT_FORMATTERS_SIZE - 1)) {
+            formatterIds.remove(RECENT_FORMATTERS_SIZE - 1);
+        }
+        formatterIds.add(0, formatterId);
     }
 
     /**
@@ -270,6 +303,40 @@ public final class CmsADESessionCache {
     public LastPageBean getLastPage() {
 
         return m_lastPage;
+    }
+
+    /**
+     * Returns the least recently used matching formatter for the given resource type.<p>
+     *
+     * @param resType the resource type
+     * @param container the container to match
+     * @param allowNested in case nested containers are allowed
+     * @param config the config data
+     *
+     * @return the formatter if any
+     */
+    public I_CmsFormatterBean getRecentFormatter(
+        String resType,
+        CmsContainer container,
+        boolean allowNested,
+        CmsADEConfigData config) {
+
+        I_CmsFormatterBean result = null;
+        List<CmsUUID> formatterIds = m_recentFormatters.get(resType);
+        if (formatterIds != null) {
+            Map<CmsUUID, I_CmsFormatterBean> availableFormatters = config.getActiveFormatters();
+            Set<String> types = new HashSet<String>(Arrays.asList(container.getType().trim().split(" *, *")));
+            for (CmsUUID id : formatterIds) {
+                I_CmsFormatterBean formatter = availableFormatters.get(id);
+                if ((formatter != null)
+                    && CmsFormatterConfiguration.matchFormatter(formatter, types, container.getWidth(), allowNested)) {
+                    result = formatter;
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**

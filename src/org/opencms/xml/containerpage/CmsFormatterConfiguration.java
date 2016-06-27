@@ -164,18 +164,7 @@ public final class CmsFormatterConfiguration {
          */
         public boolean apply(I_CmsFormatterBean formatter) {
 
-            if (!m_allowNested && formatter.hasNestedContainers()) {
-                return false;
-            }
-            if (formatter.isMatchAll()) {
-                return true;
-            }
-            if (formatter.isTypeFormatter()) {
-                return !Sets.intersection(m_types, formatter.getContainerTypes()).isEmpty();
-            } else {
-                return (m_width == MATCH_ALL_CONTAINER_WIDTH)
-                    || ((formatter.getMinWidth() <= m_width) && (m_width <= formatter.getMaxWidth()));
-            }
+            return matchFormatter(formatter, m_types, m_width, m_allowNested);
         }
     }
 
@@ -194,11 +183,11 @@ public final class CmsFormatterConfiguration {
     /** All formatters that have been added to this configuration. */
     private List<I_CmsFormatterBean> m_allFormatters;
 
-    /** Cache for the searchContent option. */
-    private Map<CmsUUID, Boolean> m_searchContent = Maps.newHashMap();
-
     /** The available display formatters. */
     private List<I_CmsFormatterBean> m_displayFormatters;
+
+    /** Cache for the searchContent option. */
+    private Map<CmsUUID, Boolean> m_searchContent = Maps.newHashMap();
 
     /**
      * Creates a new formatter configuration based on the given list of formatters.<p>
@@ -250,6 +239,36 @@ public final class CmsFormatterConfiguration {
             m_adminCms.getRequestContext().setSiteRoot("");
         } catch (CmsException e) {
             // this should never happen
+        }
+    }
+
+    /**
+     * Checks whether the given formatter bean matches the container types, width and nested flag.<p>
+     *
+     * @param formatter the formatter bean
+     * @param types the container types
+     * @param width the container width
+     * @param allowNested whether nested containers are allowed
+     *
+     * @return <code>true</code> in case the formatter matches
+     */
+    public static boolean matchFormatter(
+        I_CmsFormatterBean formatter,
+        Set<String> types,
+        int width,
+        boolean allowNested) {
+
+        if (!allowNested && formatter.hasNestedContainers()) {
+            return false;
+        }
+        if (formatter.isMatchAll()) {
+            return true;
+        }
+        if (formatter.isTypeFormatter()) {
+            return !Sets.intersection(types, formatter.getContainerTypes()).isEmpty();
+        } else {
+            return (width == MATCH_ALL_CONTAINER_WIDTH)
+                || ((formatter.getMinWidth() <= width) && (width <= formatter.getMaxWidth()));
         }
     }
 

@@ -502,10 +502,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (modelResources.isEmpty()) {
                 CmsContainerElementBean bean = getCachedElement(clientId, currentPage.getRootPath());
                 I_CmsFormatterBean formatter = CmsElementUtil.getFormatterForContainer(
+                    cms,
                     bean,
                     container,
-                    getConfigData(currentPage.getRootPath()).getFormatters(cms, bean.getResource()),
-                    true);
+                    getConfigData(currentPage.getRootPath()),
+                    true,
+                    getSessionCache());
                 CmsUUID modelResId = null;
                 if (formatter instanceof CmsMacroFormatterBean) {
                     modelResId = ((CmsMacroFormatterBean)formatter).getDefaultContentStructureId();
@@ -784,7 +786,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
             CmsContainerElementBean elementBean = getCachedElement(clientId, pageResource.getRootPath());
             elementBean.initResource(cms);
-
+            storeFormatterSelection(elementBean, settings);
             // make sure to keep the element instance id
             if (!settings.containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)
                 && elementBean.getIndividualSettings().containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
@@ -1193,6 +1195,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
             CmsContainerElementBean elementBean = getCachedElement(clientId, pageResource.getRootPath());
             elementBean.initResource(cms);
+            storeFormatterSelection(elementBean, settings);
             // make sure to keep the element instance id
             if (!settings.containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)
                 && elementBean.getIndividualSettings().containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
@@ -1545,6 +1548,38 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             settings,
             element.isCreateNew());
         return result;
+    }
+
+    /**
+     * Adds the formatter to the recently used formatter list.<p>
+     *
+     * @param elementBean the element bean
+     * @param settings the changed settings
+     */
+    void storeFormatterSelection(CmsContainerElementBean elementBean, Map<String, String> settings) {
+
+        Entry<String, String> previousFormatterEntry = null;
+        for (Entry<String, String> entry : elementBean.getIndividualSettings().entrySet()) {
+            if (entry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                previousFormatterEntry = entry;
+                break;
+            }
+        }
+        Entry<String, String> formatterEntry = null;
+        for (Entry<String, String> entry : settings.entrySet()) {
+            if (entry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                formatterEntry = entry;
+                break;
+            }
+        }
+        if ((formatterEntry != null)
+            && ((previousFormatterEntry == null)
+                || !formatterEntry.getKey().equals(previousFormatterEntry.getKey())
+                || !formatterEntry.getValue().equals(previousFormatterEntry.getValue()))) {
+            // the formatter setting has changed
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(elementBean.getResource());
+            getSessionCache().addRecentFormatter(resType.getTypeName(), new CmsUUID(formatterEntry.getValue()));
+        }
     }
 
     /**
