@@ -407,6 +407,7 @@ public class CmsDataViewPanel extends VerticalLayout {
             ComboBox select = new ComboBox(filter.getNiceName());
             select.setWidth("175px");
             select.setNullSelectionAllowed(false);
+            select.setPageLength(0);
             Map<String, String> options = filter.getOptions();
             for (Map.Entry<String, String> entry : options.entrySet()) {
                 String key = entry.getKey();
