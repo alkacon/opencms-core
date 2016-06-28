@@ -129,7 +129,7 @@ public class CmsDataViewFilter {
         }
         Iterator<Map.Entry<String, String>> iter1, iter2;
         iter1 = m_options.entrySet().iterator();
-        iter2 = m_options.entrySet().iterator();
+        iter2 = otherOptions.entrySet().iterator();
         while (iter1.hasNext()) {
             Map.Entry<String, String> entry1 = iter1.next();
             Map.Entry<String, String> entry2 = iter2.next();
