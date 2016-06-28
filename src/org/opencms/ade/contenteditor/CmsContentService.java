@@ -1306,7 +1306,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String attributeName,
         CmsEntity editedLocalEntity) {
 
-        if (null != editedLocalEntity) {
+        if ((null != editedLocalEntity) && (editedLocalEntity.getAttribute(attributeName) != null)) {
             getSessionCache().setDynamicValue(
                 attributeName,
                 editedLocalEntity.getAttribute(attributeName).getSimpleValue());
@@ -1799,7 +1799,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             cms,
                             cms.getSitePath(file));
                         for (CmsCategory category : categories) {
-                            if (category.getRootPath().startsWith(cms.addSiteRoot(mainCategoryPath))) {
+                            if (category.getPath().startsWith(mainCategoryPath)) {
                                 try {
                                     CmsCategoryService.getInstance().removeResourceFromCategory(
                                         cms,
