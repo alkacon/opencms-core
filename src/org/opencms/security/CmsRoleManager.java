@@ -109,7 +109,7 @@ public class CmsRoleManager {
     public void checkRoleForResource(CmsObject cms, CmsRole role, String resourceName)
     throws CmsException, CmsRoleViolationException {
 
-        CmsResource resource = cms.readResource(resourceName);
+        CmsResource resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
         m_securityManager.checkRoleForResource(cms.getRequestContext(), role, resource);
     }
 
@@ -155,7 +155,8 @@ public class CmsRoleManager {
         CmsObject cms,
         String ouFqn,
         boolean includeSubOus,
-        boolean includeWebusers) throws CmsException {
+        boolean includeWebusers)
+    throws CmsException {
 
         List<CmsOrganizationalUnit> result = Lists.newArrayList();
         List<CmsOrganizationalUnit> ous = getOrgUnitsForRole(
@@ -341,7 +342,8 @@ public class CmsRoleManager {
         String ouFqn,
         boolean includeChildOus,
         boolean directRolesOnly,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         List<CmsGroup> groups;
         ouFqn = CmsOrganizationalUnit.removeLeadingSeparator(ouFqn);
@@ -402,7 +404,8 @@ public class CmsRoleManager {
         CmsObject cms,
         CmsRole role,
         boolean includeOtherOuUsers,
-        boolean directUsersOnly) throws CmsException {
+        boolean directUsersOnly)
+    throws CmsException {
 
         return m_securityManager.getUsersOfGroup(
             cms.getRequestContext(),
@@ -485,7 +488,7 @@ public class CmsRoleManager {
 
         CmsResource resource;
         try {
-            resource = cms.readResource(resourceName);
+            resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // ignore
             return false;
