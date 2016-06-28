@@ -30,6 +30,7 @@ package org.opencms.jsp;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.util.CmsJspContentAccessValueWrapper;
@@ -260,8 +261,10 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             // this will always be true if the page is called through OpenCms
             CmsObject cms = CmsFlexController.getCmsObject(request);
             try {
-                CmsResource res = cms.readResource(m_value);
                 boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
+                CmsResource res = isOnline
+                ? cms.readResource(m_value)
+                : cms.readResource(m_value, CmsResourceFilter.IGNORE_EXPIRATION);
                 I_CmsFormatterBean formatter = getFormatterForType(cms, res, isOnline);
                 displayAction(
                     res,
