@@ -85,6 +85,10 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<resource uri="/system/workplace/resources/filetypes/sitemap_config_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/subsitemap.png"/>
 			<resource uri="/system/workplace/resources/filetypes/subsitemap_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/localization.png"/>
+			<resource uri="/system/workplace/resources/filetypes/localization_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/localization_descriptor.png"/>
+			<resource uri="/system/workplace/resources/filetypes/localization_descriptor_big.png"/>
 		</resources>
 		<excluderesources/>
 		<parameters/>
@@ -540,13 +544,13 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle" icon="document.png" bigicon="document_big.png" reference="xmlcontent">
+			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle" icon="localization.png" bigicon="localization_big.png" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=xmlvfsbundle" order="28" autosetnavigation="false" autosettitle="false" info="desc.xmlvfsbundle"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle" icon="plain.png" bigicon="plain_big.png" reference="plain">
+			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle" icon="localization.png" bigicon="localization_big.png" reference="plain">
 				<newresource page="otheroptions" uri="newresource.jsp?newresourcetype=propertyvfsbundle" order="30" autosetnavigation="false" autosettitle="false" info="desc.propertyvfsbundle"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
@@ -590,7 +594,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="bundledescriptor" key="fileicon.bundledescriptor"
-				icon="document.png" bigicon="document_big.png"
+				icon="localization_descriptor.png" bigicon="localization_descriptor_big.png"
 				reference="xmlcontent">
 				<newresource page="otheroptions"
 					uri="newresource_xmlcontent.jsp?newresourcetype=bundledescriptor"
@@ -1747,6 +1751,74 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/localization.png</source>
+			<destination>system/workplace/resources/filetypes/localization.png</destination>
+			<type>image</type>
+			<uuidstructure>c62ed49f-3d04-11e6-8bb0-155d29dc604a</uuidstructure>
+			<uuidresource>c62ed4a0-3d04-11e6-8bb0-155d29dc604a</uuidresource>
+			<datecreated>Tue, 28 Jun 2016 07:48:59 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/localization_big.png</source>
+			<destination>system/workplace/resources/filetypes/localization_big.png</destination>
+			<type>image</type>
+			<uuidstructure>c637fc63-3d04-11e6-8bb0-155d29dc604a</uuidstructure>
+			<uuidresource>c637fc64-3d04-11e6-8bb0-155d29dc604a</uuidresource>
+			<datecreated>Tue, 28 Jun 2016 07:48:59 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/localization_descriptor.png</source>
+			<destination>system/workplace/resources/filetypes/localization_descriptor.png</destination>
+			<type>image</type>
+			<uuidstructure>c63d5397-3d04-11e6-8bb0-155d29dc604a</uuidstructure>
+			<uuidresource>c63d5398-3d04-11e6-8bb0-155d29dc604a</uuidresource>
+			<datecreated>Tue, 28 Jun 2016 07:48:59 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/localization_descriptor_big.png</source>
+			<destination>system/workplace/resources/filetypes/localization_descriptor_big.png</destination>
+			<type>image</type>
+			<uuidstructure>c642d1db-3d04-11e6-8bb0-155d29dc604a</uuidstructure>
+			<uuidresource>c642d1dc-3d04-11e6-8bb0-155d29dc604a</uuidresource>
+			<datecreated>Tue, 28 Jun 2016 07:48:59 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<source>system/workplace/resources/filetypes/modelgroup_copy.png</source>
 			<destination>system/workplace/resources/filetypes/modelgroup_copy.png</destination>
