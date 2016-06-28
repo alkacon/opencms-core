@@ -10841,6 +10841,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsRelationFilter.TARGETS.filterNotDefinedInContent()).iterator();
         while (itRelations.hasNext()) {
             CmsRelation relation = itRelations.next();
+            if (relation.getType() == CmsRelationType.LOCALE_VARIANT) {
+                continue;
+            }
             try {
                 CmsResource relTarget = relation.getTarget(cms, CmsResourceFilter.ALL);
                 addRelationToResource(dbc, target, relTarget, relation.getType(), true);

@@ -107,6 +107,9 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'weak' links. */
     public static final CmsRelationType XML_WEAK = new CmsRelationType(4, PREFIX_XML + VALUE_WEAK, false, true);
 
+    /** Constant for the type of relations between resources which are locale variants. */
+    public static final CmsRelationType LOCALE_VARIANT = new CmsRelationType(11, "LOCALE_VARIANT", false, false);
+
     /** Constant for the weak links from xmlcontent to the used xsd. */
     public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", true, true);
 
@@ -127,7 +130,8 @@ public final class CmsRelationType implements Serializable {
         EMBEDDED_OBJECT,
         OU_RESOURCE,
         CATEGORY,
-        XSD};
+        XSD,
+        LOCALE_VARIANT};
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;
