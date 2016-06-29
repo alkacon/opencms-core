@@ -27,7 +27,6 @@
 
 package org.opencms.i18n;
 
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
@@ -37,6 +36,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.AccessControlException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -414,43 +414,15 @@ public final class CmsResourceBundleLoader {
      */
     private static ResourceBundle tryBundle(String baseName, Locale locale, boolean wantBase) {
 
-        String language = locale.getLanguage();
-        String country = locale.getCountry();
-        String variant = locale.getVariant();
-
-        int baseLen = baseName.length();
-
-        // Build up a StringBuffer containing the complete bundle name, fully
-        // qualified by locale.
-        StringBuffer sb = new StringBuffer(baseLen + variant.length() + 7);
-
-        sb.append(baseName);
-
-        if (language.length() > 0) {
-            sb.append('_');
-            sb.append(language);
-
-            if (country.length() > 0) {
-                sb.append('_');
-                sb.append(country);
-
-                if (variant.length() > 0) {
-                    sb.append('_');
-                    sb.append(variant);
-                }
-            }
-        }
-
-        // Now try to load bundles, starting with the most specialized name.
-        // Build up the parent chain as we go.
-        String bundleName = sb.toString();
         I_CmsResourceBundle first = null; // The most specialized bundle.
         I_CmsResourceBundle last = null; // The least specialized bundle.
-        // Flag, indicating if the bundle with the default locale should be used as base.
-        // This is only the case if the base bundle is not found.
-        boolean tryDefaultLocaleAsBase = false;
 
-        while (true) {
+        List<String> bundleNames = CmsLocaleManager.getLocaleVariants(baseName, locale, true, true);
+        for (String bundleName : bundleNames) {
+            // break if we would try the base bundle, but we do not want it directly
+            if (bundleName.equals(baseName) && !wantBase && (first == null)) {
+                break;
+            }
             I_CmsResourceBundle foundBundle = tryBundle(bundleName);
             if (foundBundle != null) {
                 if (first == null) {
@@ -463,29 +435,8 @@ public final class CmsResourceBundleLoader {
                 foundBundle.setLocale(locale);
 
                 last = foundBundle;
-            } else {
-                if (baseName.length() == bundleName.length()) {
-                    // The base bundle was searched, but is missing - try the bundle with the default locale instead.
-                    tryDefaultLocaleAsBase = true;
-                }
-            }
-            int idx = bundleName.lastIndexOf('_');
-            // Try the non-localized base name only if we already have a
-            // localized child bundle, or wantBase is true.
-            // if tryDefaultLocaleAsBase is true, we already tried the base bundle before.
-            if (!tryDefaultLocaleAsBase && ((idx > baseLen) || ((idx == baseLen) && ((first != null) || wantBase)))) {
-                bundleName = bundleName.substring(0, idx);
-            } else {
-                // if the tryDefaultLocaleAsBase and idx >= baseLen, we already tried the default locale as base.
-                if (tryDefaultLocaleAsBase && (idx < baseLen)) {
-                    OpenCms.getLocaleManager();
-                    bundleName = baseName + "_" + CmsLocaleManager.getDefaultLocale().toString();
-                } else {
-                    break;
-                }
             }
         }
-
         return (ResourceBundle)first;
     }
 }
