@@ -36,12 +36,14 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -100,20 +102,105 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspTagProperty extends TagSupport {
 
+    /** Tells for which resource properties should be looked up (with or without searching), depending on the {@link FileUse}. */
+    public static class CmsPropertyAction {
+
+        /** The VFS site path of the resource for which the properties should be read. */
+        private String m_vfsUri;
+        /** A flag, indicating if the property should be searched or not. */
+        private boolean m_search;
+
+        /**
+         * Default constructor.
+         * @param req the current servlet request.
+         * @param action the action to perform.
+         */
+        public CmsPropertyAction(ServletRequest req, String action) {
+
+            CmsFlexController controller = CmsFlexController.getController(req);
+
+            FileUse useAction = FileUse.URI;
+            if (action != null) {
+                // if action is set overwrite default
+                useAction = FileUse.parse(action);
+            }
+
+            if (useAction != null) {
+                switch (useAction) {
+                    case URI:
+                    case PARENT:
+                        // read properties of parent (i.e. top requested) file
+                        m_vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                        break;
+                    case SEARCH:
+                    case SEARCH_URI:
+                    case SEARCH_PARENT:
+                        // try to find property on parent file and all parent folders
+                        m_vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                        m_search = true;
+                        break;
+                    case ELEMENT_URI:
+                    case THIS:
+                        // read properties of this file
+                        m_vfsUri = controller.getCurrentRequest().getElementUri();
+                        break;
+                    case SEARCH_ELEMENT_URI:
+                    case SEARCH_THIS:
+                        // try to find property on this file and all parent folders
+                        m_vfsUri = controller.getCurrentRequest().getElementUri();
+                        m_search = true;
+                        break;
+                    default:
+                        // just to prevent the warning since all cases are handled
+                }
+            } else {
+                // read properties of the file named in the attribute
+                m_vfsUri = CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri());
+                m_search = false;
+            }
+        }
+
+        /**
+         * Returns the VFS site path of the resource for which the properties should be read.
+         *
+         * @return the VFS site path of the resource for which the properties should be read.
+         */
+        public String getVfsUri() {
+
+            return m_vfsUri;
+        }
+
+        /**
+         * Returns <code>true</code> if it should be searched for the property, otherwise <code>false</code>.
+         * @return <code>true</code> if it should be searched for the property, otherwise <code>false</code>.
+         */
+        public boolean isSearch() {
+
+            return m_search;
+        }
+    }
+
     /** Constants for <code>file</code> attribute interpretation. */
     private enum FileUse {
 
         /** Use element uri. */
-        ELEMENT_URI("element.uri"), /** Use parent (same as {@link #URI}). */
-        PARENT("parent"), /** Use search (same as {@link #SEARCH_URI}). */
-        SEARCH("search"), /** Use search element uri. */
-        SEARCH_ELEMENT_URI("search.element.uri"), /** Use search parent (same as {@link #SEARCH_URI}). */
-        SEARCH_PARENT("search-parent"), /** Use seach this (same as {@link #SEARCH_ELEMENT_URI}). */
-        SEARCH_THIS("search-this"), /** Use search uri. */
+        ELEMENT_URI("element.uri"),
+        /** Use parent (same as {@link #URI}). */
+        PARENT("parent"),
+        /** Use search (same as {@link #SEARCH_URI}). */
+        SEARCH("search"),
+        /** Use search element uri. */
+        SEARCH_ELEMENT_URI("search.element.uri"),
+        /** Use search parent (same as {@link #SEARCH_URI}). */
+        SEARCH_PARENT("search-parent"),
+        /** Use seach this (same as {@link #SEARCH_ELEMENT_URI}). */
+        SEARCH_THIS("search-this"),
+        /** Use search uri. */
         SEARCH_URI("search.uri"),
         /** Use sitemap entries. */
         /** Use this (same as {@link #ELEMENT_URI}). */
-        THIS("this"), /** Use uri. */
+        THIS("this"),
+        /** Use uri. */
         URI("uri");
 
         /** Property name. */
@@ -164,6 +251,9 @@ public class CmsJspTagProperty extends TagSupport {
     /** The default value. */
     private String m_defaultValue;
 
+    /** The locale for which the property should be read. */
+    private Locale m_locale;
+
     /** Indicates if HTML should be escaped. */
     private boolean m_escapeHtml;
 
@@ -187,52 +277,12 @@ public class CmsJspTagProperty extends TagSupport {
 
         CmsFlexController controller = CmsFlexController.getController(req);
 
-        FileUse useAction = FileUse.URI;
-        if (action != null) {
-            // if action is set overwrite default
-            useAction = FileUse.parse(action);
-        }
-
-        String vfsUri = null;
-        boolean search = false;
-        if (useAction != null) {
-            switch (useAction) {
-                case URI:
-                case PARENT:
-                    // read properties of parent (i.e. top requested) file
-                    vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                    break;
-                case SEARCH:
-                case SEARCH_URI:
-                case SEARCH_PARENT:
-                    // try to find property on parent file and all parent folders
-                    vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                    search = true;
-                    break;
-                case ELEMENT_URI:
-                case THIS:
-                    // read properties of this file
-                    vfsUri = controller.getCurrentRequest().getElementUri();
-                    break;
-                case SEARCH_ELEMENT_URI:
-                case SEARCH_THIS:
-                    // try to find property on this file and all parent folders
-                    vfsUri = controller.getCurrentRequest().getElementUri();
-                    search = true;
-                    break;
-                default:
-                    // just to prevent the warning since all cases are handled
-            }
-        } else {
-            // read properties of the file named in the attribute
-            vfsUri = CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri());
-            search = false;
-        }
-
         // now read the property from the VFS
         Map<String, String> value = new HashMap<String, String>();
-        if (vfsUri != null) {
-            value = CmsProperty.toMap(controller.getCmsObject().readPropertyObjects(vfsUri, search));
+        CmsPropertyAction propertyAction = new CmsPropertyAction(req, action);
+        if (null != propertyAction.getVfsUri()) {
+            value = CmsProperty.toMap(
+                controller.getCmsObject().readPropertyObjects(propertyAction.getVfsUri(), propertyAction.isSearch()));
         }
         return value;
     }
@@ -255,9 +305,45 @@ public class CmsJspTagProperty extends TagSupport {
         String action,
         String defaultValue,
         boolean escape,
-        ServletRequest req) throws CmsException {
+        ServletRequest req)
+    throws CmsException {
 
-        String value = propertiesTagAction(action, req).get(property);
+        return propertyTagAction(property, action, defaultValue, escape, req, null);
+    }
+
+    /**
+     * Internal action method.<p>
+     *
+     * @param property the property to look up
+     * @param action the search action
+     * @param defaultValue the default value
+     * @param escape if the result html should be escaped or not
+     * @param req the current request
+     * @param locale the locale for which the property should be read
+     *
+     * @return the value of the property or <code>null</code> if not found (and no defaultValue was provided)
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static String propertyTagAction(
+        String property,
+        String action,
+        String defaultValue,
+        boolean escape,
+        ServletRequest req,
+        Locale locale)
+    throws CmsException {
+
+        CmsFlexController controller = CmsFlexController.getController(req);
+        String value = null;
+        CmsPropertyAction propertyAction = new CmsPropertyAction(req, action);
+        if (null != propertyAction.getVfsUri()) {
+            value = controller.getCmsObject().readPropertyObject(
+                propertyAction.getVfsUri(),
+                property,
+                propertyAction.isSearch(),
+                locale).getValue();
+        }
         if (value == null) {
             value = defaultValue;
         }
@@ -291,7 +377,7 @@ public class CmsJspTagProperty extends TagSupport {
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
-                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, req);
+                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, req, m_locale);
                 // Make sure that no null String is returned
                 if (prop == null) {
                     prop = "";
@@ -397,6 +483,21 @@ public class CmsJspTagProperty extends TagSupport {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(file)) {
             m_propertyFile = file;
+        }
+    }
+
+    /**
+     * Sets the locale for which the property should be read.
+     *
+     * @param locale the locale for which the property should be read.
+     */
+    public void setLocale(String locale) {
+
+        try {
+            m_locale = LocaleUtils.toLocale(locale);
+        } catch (IllegalArgumentException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_TAG_INVALID_LOCALE_1, "cms:property"), e);
+            m_locale = null;
         }
     }
 
