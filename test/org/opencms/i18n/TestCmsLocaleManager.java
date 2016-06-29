@@ -30,6 +30,7 @@ package org.opencms.i18n;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,5 +75,63 @@ public class TestCmsLocaleManager extends OpenCmsTestCase {
         // no match, result must be first default
         result = localeManager.getBestMatchingLocale(Locale.FRENCH, localeManager.getDefaultLocales(), available);
         assertEquals(Locale.US, result);
+    }
+
+    /** Tests if locale variants are returned correctly. */
+    public void testGetLocaleVariants() {
+
+        String base = "base";
+
+        // We do not need the instance, but we have to set the default locale somehow
+        @SuppressWarnings("unused")
+        CmsLocaleManager manager = new CmsLocaleManager(new Locale("en", "GB"));
+        Locale locale1 = new Locale("de", "DE", "WIN");
+
+        // Tests with locale that is completely different from the default locale
+
+        List<String> expected = Arrays.asList(new String[] {base + "_de_DE_WIN", base + "_de_DE", base + "_de"});
+        List<String> actual = CmsLocaleManager.getLocaleVariants(base, locale1, false, false);
+        assertEquals(expected, actual);
+
+        expected = Arrays.asList(new String[] {base + "_de_DE_WIN", base + "_de_DE", base + "_de", base});
+        actual = CmsLocaleManager.getLocaleVariants(base, locale1, true, false);
+        assertEquals(expected, actual);
+
+        expected = Arrays.asList(new String[] {base + "_de_DE_WIN", base + "_de_DE", base + "_de", base + "_en_GB"});
+        actual = CmsLocaleManager.getLocaleVariants(base, locale1, false, true);
+        assertEquals(expected, actual);
+
+        expected = Arrays.asList(
+            new String[] {base + "_de_DE_WIN", base + "_de_DE", base + "_de", base, base + "_en_GB"});
+        actual = CmsLocaleManager.getLocaleVariants(base, locale1, true, true);
+        assertEquals(expected, actual);
+
+        // Tests with locale that is a variant of the default locale
+        Locale locale2 = new Locale("en", "GB", "WIN");
+        expected = Arrays.asList(new String[] {base + "_en_GB_WIN", base + "_en_GB", base + "_en"});
+        actual = CmsLocaleManager.getLocaleVariants(base, locale2, false, true);
+        assertEquals(expected, actual);
+
+        expected = Arrays.asList(new String[] {base + "_en_GB_WIN", base + "_en_GB", base + "_en", base});
+        actual = CmsLocaleManager.getLocaleVariants(base, locale2, true, true);
+        assertEquals(expected, actual);
+
+        // Tests with null as locale
+        expected = Arrays.asList(new String[] {});
+        actual = CmsLocaleManager.getLocaleVariants(base, null, false, false);
+        assertEquals(expected, actual);
+
+        expected = Arrays.asList(new String[] {base});
+        actual = CmsLocaleManager.getLocaleVariants(base, null, true, false);
+        assertEquals(expected, actual);
+
+        expected = Arrays.asList(new String[] {base + "_en_GB"});
+        actual = CmsLocaleManager.getLocaleVariants(base, null, false, true);
+        assertEquals(expected, actual);
+
+        expected = Arrays.asList(new String[] {base, base + "_en_GB"});
+        actual = CmsLocaleManager.getLocaleVariants(base, null, true, true);
+        assertEquals(expected, actual);
+
     }
 }

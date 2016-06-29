@@ -82,7 +82,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private static final Log LOG = CmsLog.getLog(CmsLocaleManager.class);
 
     /** The default locale, this is the first configured locale. */
-    private static Locale m_defaultLocale;
+    private static Locale m_defaultLocale = Locale.ENGLISH;
 
     /**
      * Required for setting the default locale on the first possible time.<p>
@@ -254,6 +254,56 @@ public class CmsLocaleManager implements I_CmsEventListener {
             return null;
         }
         return getLocales(CmsStringUtil.splitAsList(localeNames, ','));
+    }
+
+    /**
+     * <p>
+     * Extends a base name with locale suffixes and yields the list of extended names
+     * in the order they typically should be used according to the given locale.
+     * </p>
+     * <p>
+     * <strong>Example</strong>: If you have base name <code>base</code> and the locale with {@link String} representation <code>de_DE</code>,
+     * the result will be (assuming <code>en</code> is the default locale):
+     * <ul>
+     *  <li> for <code>wantBase == false</code> and <code>defaultAsBase == false</code>: <code> [base_de_DE, base_de]</li>
+     *  <li> for <code>wantBase == true</code> and <code>defaultAsBase == false</code>: <code> [base_de_DE, base_de, base]</li>
+     *  <li> for <code>wantBase == false</code> and <code>defaultAsBase == true</code>: <code> [base_de_DE, base_de, base_en]</li>
+     *  <li> for <code>wantBase == true</code> and <code>defaultAsBase == true</code>: <code> [base_de_DE, base_de, base, base_en]</li>
+     * </ul>
+     * If the requested locale is a variant of the default locale,
+     * the list will never contain the default locale as last element because it appears already earlier.
+     *
+     * @param basename the base name that should be extended by locale post-fixes
+     * @param locale the locale for which the list of extensions should be generated.
+     * @param wantBase flag, indicating if the base name without locale post-fix should be yielded as well.
+     * @param defaultAsBase flag, indicating, if the variant with the default locale should be used as base.
+     * @return the list of locale variants of the base name in the order they should be used.
+     */
+    public static List<String> getLocaleVariants(
+        String basename,
+        Locale locale,
+        boolean wantBase,
+        boolean defaultAsBase) {
+
+        List<String> result = new ArrayList<String>();
+        if (null == basename) {
+            return result;
+        } else {
+            String localeString = null == locale ? "" : "_" + locale.toString();
+            boolean wantDefaultAsBase = defaultAsBase
+                && !(localeString.startsWith("_" + getDefaultLocale().toString()));
+            while (!localeString.isEmpty()) {
+                result.add(basename + localeString);
+                localeString = localeString.substring(0, localeString.lastIndexOf('_'));
+            }
+            if (wantBase) {
+                result.add(basename);
+            }
+            if (wantDefaultAsBase) {
+                result.add(basename + "_" + getDefaultLocale().toString());
+            }
+            return result;
+        }
     }
 
     /**
