@@ -153,7 +153,8 @@ public final class CmsSecurityManager {
     public static CmsSecurityManager newInstance(
         CmsConfigurationManager configurationManager,
         I_CmsDbContextFactory runtimeInfoFactory,
-        CmsPublishEngine publishEngine) throws CmsInitException {
+        CmsPublishEngine publishEngine)
+    throws CmsInitException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
             // OpenCms is already initialized
@@ -205,7 +206,8 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsResource target,
         CmsRelationType type,
-        boolean importCase) throws CmsException {
+        boolean importCase)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -340,7 +342,8 @@ public final class CmsSecurityManager {
         String propertyDefinition,
         String oldValue,
         String newValue,
-        boolean recursive) throws CmsException, CmsVfsException {
+        boolean recursive)
+    throws CmsException, CmsVfsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsResource> result = null;
@@ -441,7 +444,8 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
-        CmsResourceFilter filter) throws CmsException, CmsSecurityException {
+        CmsResourceFilter filter)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -772,7 +776,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         CmsResource source,
         String destination,
-        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException, CmsSecurityException {
+        CmsResource.CmsResourceCopyMode siblingMode)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -942,7 +947,8 @@ public final class CmsSecurityManager {
         String ouFqn,
         String description,
         int flags,
-        CmsResource resource) throws CmsException {
+        CmsResource resource)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsOrganizationalUnit result = null;
@@ -984,7 +990,8 @@ public final class CmsSecurityManager {
         String description,
         String groupname,
         String managergroupname,
-        CmsProject.CmsProjectType projecttype) throws CmsException, CmsRoleViolationException {
+        CmsProject.CmsProjectType projecttype)
+    throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject result = null;
@@ -1058,13 +1065,15 @@ public final class CmsSecurityManager {
         String resourcePath,
         CmsResource resource,
         byte[] content,
-        List<CmsProperty> properties) throws CmsVfsResourceAlreadyExistsException, CmsVfsException, CmsException {
+        List<CmsProperty> properties)
+    throws CmsVfsResourceAlreadyExistsException, CmsVfsException, CmsException {
 
         if (existsResource(context, resourcePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
             // check if the resource already exists by name
-            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                resource.getRootPath()));
+            throw new CmsVfsResourceAlreadyExistsException(
+                org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                    resource.getRootPath()));
         }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsResource newResource = null;
@@ -1104,7 +1113,8 @@ public final class CmsSecurityManager {
         String resourcename,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         String checkExistsPath = "/".equals(resourcename) ? "/" : CmsFileUtil.removeTrailingSeparator(resourcename);
         // We use checkExistsPath instead of resourcename because when creating a folder /foo/bar/, we want to fail
@@ -1112,9 +1122,10 @@ public final class CmsSecurityManager {
 
         if (existsResource(context, checkExistsPath, CmsResourceFilter.ALL)) {
             // check if the resource already exists by name
-            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                resourcename));
+            throw new CmsVfsResourceAlreadyExistsException(
+                org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                    resourcename));
         }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsResource newResource = null;
@@ -1147,7 +1158,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         CmsResource source,
         String destination,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsResource sibling = null;
@@ -1211,7 +1223,8 @@ public final class CmsSecurityManager {
         String name,
         String password,
         String description,
-        Map<String, Object> additionalInfos) throws CmsException, CmsRoleViolationException {
+        Map<String, Object> additionalInfos)
+    throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
@@ -1360,7 +1373,8 @@ public final class CmsSecurityManager {
         int versionsToKeep,
         int versionsDeleted,
         long timeDeleted,
-        I_CmsReport report) throws CmsException, CmsRoleViolationException {
+        I_CmsReport report)
+    throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -1561,7 +1575,8 @@ public final class CmsSecurityManager {
     public void deleteResource(
         CmsRequestContext context,
         CmsResource resource,
-        CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException, CmsSecurityException {
+        CmsResource.CmsResourceDeleteMode siblingMode)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(context);
@@ -1615,7 +1630,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         String resourceName,
         int linkType,
-        String linkParameter) throws CmsException {
+        String linkParameter)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -1856,7 +1872,8 @@ public final class CmsSecurityManager {
     public List<CmsAccessControlEntry> getAccessControlEntries(
         CmsRequestContext context,
         CmsResource resource,
-        boolean getInherited) throws CmsException {
+        boolean getInherited)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsAccessControlEntry> result = null;
@@ -1889,7 +1906,8 @@ public final class CmsSecurityManager {
     public CmsAccessControlList getAccessControlList(
         CmsRequestContext context,
         CmsResource resource,
-        boolean inheritedOnly) throws CmsException {
+        boolean inheritedOnly)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsAccessControlList result = null;
@@ -1972,7 +1990,8 @@ public final class CmsSecurityManager {
     public List<CmsProject> getAllAccessibleProjects(
         CmsRequestContext context,
         CmsOrganizationalUnit orgUnit,
-        boolean includeSubOus) throws CmsException {
+        boolean includeSubOus)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsProject> result = null;
@@ -2031,7 +2050,8 @@ public final class CmsSecurityManager {
     public List<CmsProject> getAllManageableProjects(
         CmsRequestContext context,
         CmsOrganizationalUnit orgUnit,
-        boolean includeSubOus) throws CmsException {
+        boolean includeSubOus)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsProject> result = null;
@@ -2132,7 +2152,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         CmsOrganizationalUnit orgUnit,
         boolean includeSubOus,
-        boolean readRoles) throws CmsException {
+        boolean readRoles)
+    throws CmsException {
 
         List<CmsGroup> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -2168,7 +2189,8 @@ public final class CmsSecurityManager {
         boolean includeChildOus,
         boolean readRoles,
         boolean directGroupsOnly,
-        String remoteAddress) throws CmsException {
+        String remoteAddress)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsGroup> result = null;
@@ -2258,7 +2280,8 @@ public final class CmsSecurityManager {
     public List<CmsResource> getLockedResourcesObjects(
         CmsRequestContext context,
         CmsResource resource,
-        CmsLockFilter filter) throws CmsException {
+        CmsLockFilter filter)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsResource> result = null;
@@ -2293,7 +2316,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         CmsResource resource,
         CmsLockFilter filter,
-        Map<String, CmsResource> cache) throws CmsException {
+        Map<String, CmsResource> cache)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsResource> result = null;
@@ -2388,7 +2412,8 @@ public final class CmsSecurityManager {
     public List<CmsOrganizationalUnit> getOrganizationalUnits(
         CmsRequestContext context,
         CmsOrganizationalUnit parent,
-        boolean includeChildren) throws CmsException {
+        boolean includeChildren)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsOrganizationalUnit> result = null;
@@ -2416,7 +2441,8 @@ public final class CmsSecurityManager {
     public List<CmsOrganizationalUnit> getOrgUnitsForRole(
         CmsRequestContext requestContext,
         CmsRole role,
-        boolean includeSubOus) throws CmsException {
+        boolean includeSubOus)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
         List<CmsOrganizationalUnit> result = null;
@@ -2529,7 +2555,8 @@ public final class CmsSecurityManager {
     public CmsPublishList getRelatedResourcesToPublish(
         CmsRequestContext context,
         CmsPublishList publishList,
-        CmsRelationFilter filter) throws CmsException {
+        CmsRelationFilter filter)
+    throws CmsException {
 
         if (!publishList.isDirectPublish()) {
             throw new CmsIllegalArgumentException(
@@ -2570,7 +2597,8 @@ public final class CmsSecurityManager {
     public List<CmsRelation> getRelationsForResource(
         CmsRequestContext context,
         CmsResource resource,
-        CmsRelationFilter filter) throws CmsException {
+        CmsRelationFilter filter)
+    throws CmsException {
 
         List<CmsRelation> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -2646,7 +2674,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         CmsUUID principalId,
         CmsPermissionSet permissions,
-        boolean includeAttr) throws CmsException {
+        boolean includeAttr)
+    throws CmsException {
 
         Set<CmsResource> dependencies;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -2806,7 +2835,8 @@ public final class CmsSecurityManager {
         String groupname,
         boolean includeOtherOuUsers,
         boolean directUsersOnly,
-        boolean readRoles) throws CmsException {
+        boolean readRoles)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsUser> result = null;
@@ -2870,7 +2900,8 @@ public final class CmsSecurityManager {
     public List<CmsUser> getUsersWithoutAdditionalInfo(
         CmsRequestContext context,
         CmsOrganizationalUnit orgUnit,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         List<CmsUser> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -2914,7 +2945,8 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
-        CmsResourceFilter filter) throws CmsException {
+        CmsResourceFilter filter)
+    throws CmsException {
 
         I_CmsPermissionHandler.CmsPermissionCheckResult result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -3152,7 +3184,8 @@ public final class CmsSecurityManager {
     public void importAccessControlEntries(
         CmsRequestContext context,
         CmsResource resource,
-        List<CmsAccessControlEntry> acEntries) throws CmsException, CmsSecurityException {
+        List<CmsAccessControlEntry> acEntries)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -3199,7 +3232,8 @@ public final class CmsSecurityManager {
         CmsResource resource,
         byte[] content,
         List<CmsProperty> properties,
-        boolean importCase) throws CmsException {
+        boolean importCase)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsResource newResource = null;
@@ -3234,7 +3268,8 @@ public final class CmsSecurityManager {
         String siteRoot,
         String source,
         String target,
-        CmsAliasMode mode) throws CmsException {
+        CmsAliasMode mode)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
         try {
@@ -3276,7 +3311,8 @@ public final class CmsSecurityManager {
         String email,
         int flags,
         long dateCreated,
-        Map<String, Object> additionalInfos) throws CmsException, CmsRoleViolationException {
+        Map<String, Object> additionalInfos)
+    throws CmsException, CmsRoleViolationException {
 
         CmsUser newUser = null;
 
@@ -3353,7 +3389,8 @@ public final class CmsSecurityManager {
     public void init(
         CmsConfigurationManager configurationManager,
         I_CmsDbContextFactory dbContextFactory,
-        CmsPublishEngine publishEngine) throws CmsInitException {
+        CmsPublishEngine publishEngine)
+    throws CmsInitException {
 
         if (dbContextFactory == null) {
             throw new CmsInitException(
@@ -3929,7 +3966,8 @@ public final class CmsSecurityManager {
     public List<CmsResource> readAllSubscribedResources(
         CmsRequestContext context,
         String poolName,
-        CmsPrincipal principal) throws CmsException {
+        CmsPrincipal principal)
+    throws CmsException {
 
         List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -4080,7 +4118,8 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsResourceFilter filter,
         boolean getFolders,
-        boolean getFiles) throws CmsException, CmsSecurityException {
+        boolean getFiles)
+    throws CmsException, CmsSecurityException {
 
         List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -4126,7 +4165,8 @@ public final class CmsSecurityManager {
     public CmsResource readDefaultFile(
         CmsRequestContext context,
         CmsResource resource,
-        CmsResourceFilter resourceFilter) throws CmsSecurityException {
+        CmsResourceFilter resourceFilter)
+    throws CmsSecurityException {
 
         CmsResource result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -4167,7 +4207,8 @@ public final class CmsSecurityManager {
     public List<I_CmsHistoryResource> readDeletedResources(
         CmsRequestContext context,
         CmsResource resource,
-        boolean readTree) throws CmsException {
+        boolean readTree)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<I_CmsHistoryResource> result = null;
@@ -4775,10 +4816,41 @@ public final class CmsSecurityManager {
     public CmsProperty readPropertyObject(CmsRequestContext context, CmsResource resource, String key, boolean search)
     throws CmsException {
 
+        return readPropertyObject(context, resource, key, search, null);
+    }
+
+    /**
+     * Reads a property object from a resource specified by a property name.<p>
+     *
+     * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
+     *
+     * @param context the context of the current request
+     * @param resource the resource where the property is mapped to
+     * @param key the property key name
+     * @param search if <code>true</code>, the property is searched on all parent folders of the resource.
+     *      if it's not found attached directly to the resource.
+     * @param locale the locale for which the property should be read.
+     *
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsProperty readPropertyObject(
+        CmsRequestContext context,
+        CmsResource resource,
+        String key,
+        boolean search,
+        Locale locale)
+    throws CmsException {
+
         CmsProperty result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            result = m_driverManager.readPropertyObject(dbc, resource, key, search);
+            if (null == locale) {
+                result = m_driverManager.readPropertyObject(dbc, resource, key, search);
+            } else {
+                result = m_driverManager.readPropertyObject(dbc, resource, key, search, locale);
+            }
         } catch (Exception e) {
             dbc.report(
                 null,
@@ -5006,7 +5078,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         CmsResource parent,
         CmsResourceFilter filter,
-        boolean readTree) throws CmsException, CmsSecurityException {
+        boolean readTree)
+    throws CmsException, CmsSecurityException {
 
         List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5039,7 +5112,8 @@ public final class CmsSecurityManager {
     public List<CmsResource> readResourcesVisitedBy(
         CmsRequestContext context,
         String poolName,
-        CmsVisitedByFilter filter) throws CmsException {
+        CmsVisitedByFilter filter)
+    throws CmsException {
 
         List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5078,7 +5152,8 @@ public final class CmsSecurityManager {
         CmsResource folder,
         String propertyDefinition,
         String value,
-        CmsResourceFilter filter) throws CmsException {
+        CmsResourceFilter filter)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsResource> result = null;
@@ -5259,7 +5334,8 @@ public final class CmsSecurityManager {
         List<CmsGroup> groups,
         CmsResource parent,
         boolean includeSubFolders,
-        long deletedFrom) throws CmsException {
+        long deletedFrom)
+    throws CmsException {
 
         List<I_CmsHistoryResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5297,7 +5373,8 @@ public final class CmsSecurityManager {
     public List<CmsResource> readSubscribedResources(
         CmsRequestContext context,
         String poolName,
-        CmsSubscriptionFilter filter) throws CmsException {
+        CmsSubscriptionFilter filter)
+    throws CmsException {
 
         List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5485,7 +5562,8 @@ public final class CmsSecurityManager {
     public void removeResourceFromOrgUnit(
         CmsRequestContext context,
         CmsOrganizationalUnit orgUnit,
-        CmsResource resource) throws CmsException {
+        CmsResource resource)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -5618,7 +5696,8 @@ public final class CmsSecurityManager {
         CmsResource resource,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsSecurityException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -6069,7 +6148,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         String poolName,
         CmsPrincipal principal,
-        CmsResource resource) throws CmsException {
+        CmsResource resource)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -6293,7 +6373,8 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         String poolName,
         CmsPrincipal principal,
-        CmsResource resource) throws CmsException {
+        CmsResource resource)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -6468,7 +6549,8 @@ public final class CmsSecurityManager {
     public Map<String, List<CmsRelation>> validateRelations(
         CmsRequestContext context,
         CmsPublishList publishList,
-        I_CmsReport report) throws Exception {
+        I_CmsReport report)
+    throws Exception {
 
         Map<String, List<CmsRelation>> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -6818,7 +6900,8 @@ public final class CmsSecurityManager {
         String resourceName,
         int linkType,
         String linkParameter,
-        long timestamp) throws CmsException {
+        long timestamp)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -6858,7 +6941,8 @@ public final class CmsSecurityManager {
         Iterator<String> nameSeq,
         CmsUUID structureId,
         String locale,
-        boolean replaceOnPublish) throws CmsException {
+        boolean replaceOnPublish)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -6925,7 +7009,8 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
-        CmsResourceFilter filter) throws CmsException, CmsSecurityException {
+        CmsResourceFilter filter)
+    throws CmsException, CmsSecurityException {
 
         // get the permissions
         I_CmsPermissionHandler.CmsPermissionCheckResult permissions = hasPermissions(
@@ -6957,7 +7042,7 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         I_CmsPermissionHandler.CmsPermissionCheckResult permissions)
-        throws CmsSecurityException, CmsLockException, CmsVfsResourceNotFoundException {
+    throws CmsSecurityException, CmsLockException, CmsVfsResourceNotFoundException {
 
         if (permissions == I_CmsPermissionHandler.PERM_FILTERED) {
             throw new CmsVfsResourceNotFoundException(
@@ -7190,7 +7275,8 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
-        CmsResourceFilter filter) throws CmsException {
+        CmsResourceFilter filter)
+    throws CmsException {
 
         return m_permissionHandler.hasPermissions(dbc, resource, requiredPermissions, checkLock, filter);
     }

@@ -285,7 +285,8 @@ public final class CmsObject {
         String principalName,
         int allowedPermissions,
         int deniedPermissions,
-        int flags) throws CmsException {
+        int flags)
+    throws CmsException {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
 
@@ -448,7 +449,8 @@ public final class CmsObject {
         String property,
         String oldValue,
         String newValue,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         return m_securityManager.changeResourcesInFolderWithProperty(
@@ -699,7 +701,8 @@ public final class CmsObject {
         String description,
         String groupname,
         String managergroupname,
-        CmsProject.CmsProjectType projecttype) throws CmsException {
+        CmsProject.CmsProjectType projecttype)
+    throws CmsException {
 
         return m_securityManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
     }
@@ -737,7 +740,8 @@ public final class CmsObject {
         String sitePath,
         CmsResource resource,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         resource.setUserLastModified(getRequestContext().getCurrentUser().getId());
         resource.setDateLastModified(System.currentTimeMillis());
@@ -789,7 +793,8 @@ public final class CmsObject {
         String resourcename,
         I_CmsResourceType type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException {
 
         return type.createResource(this, m_securityManager, resourcename, content, properties);
     }
@@ -1484,7 +1489,8 @@ public final class CmsObject {
         String username,
         boolean directGroupsOnly,
         boolean includeOtherOus,
-        String remoteAddress) throws CmsException {
+        String remoteAddress)
+    throws CmsException {
 
         return m_securityManager.getGroupsOfUser(
             m_context,
@@ -1574,7 +1580,8 @@ public final class CmsObject {
     public List<CmsResource> getLockedResourcesWithCache(
         CmsResource resource,
         CmsLockFilter filter,
-        Map<String, CmsResource> cache) throws CmsException {
+        Map<String, CmsResource> cache)
+    throws CmsException {
 
         return m_securityManager.getLockedResourcesObjectsWithCache(m_context, resource, filter, cache);
     }
@@ -1746,7 +1753,8 @@ public final class CmsObject {
     public Set<CmsResource> getResourcesForPrincipal(
         CmsUUID principalId,
         CmsPermissionSet permissions,
-        boolean includeAttr) throws CmsException {
+        boolean includeAttr)
+    throws CmsException {
 
         return m_securityManager.getResourcesForPrincipal(getRequestContext(), principalId, permissions, includeAttr);
     }
@@ -1921,7 +1929,8 @@ public final class CmsObject {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
-        CmsResourceFilter filter) throws CmsException {
+        CmsResourceFilter filter)
+    throws CmsException {
 
         return I_CmsPermissionHandler.PERM_ALLOWED == m_securityManager.hasPermissions(
             m_context,
@@ -1985,7 +1994,8 @@ public final class CmsObject {
         String resourcename,
         CmsResource resource,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         return getResourceType(resource).importResource(
             this,
@@ -2022,7 +2032,8 @@ public final class CmsObject {
         String email,
         int flags,
         long dateCreated,
-        Map<String, Object> additionalInfos) throws CmsException {
+        Map<String, Object> additionalInfos)
+    throws CmsException {
 
         return m_securityManager.importUser(
             m_context,
@@ -2870,6 +2881,30 @@ public final class CmsObject {
     }
 
     /**
+     * Reads the locale specific version of a property object from a resource specified by a property name.<p>
+     *
+     * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
+     *
+     * This method is more efficient then using <code>{@link CmsObject#readPropertyObject(String, String, boolean)}</code>
+     * if you already have an instance of the resource to look up the property from.<p>
+     *
+     * @param resource the resource where the property is attached to
+     * @param property the property name
+     * @param search if true, the property is searched on all parent folders of the resource,
+     *      if it's not found attached directly to the resource
+     * @param locale the locale for which the property should be read.
+     *
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsProperty readPropertyObject(CmsResource resource, String property, boolean search, Locale locale)
+    throws CmsException {
+
+        return m_securityManager.readPropertyObject(m_context, resource, property, search, locale);
+    }
+
+    /**
      * Reads a property object from a resource specified by a property name.<p>
      *
      * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
@@ -2887,6 +2922,28 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
         return m_securityManager.readPropertyObject(m_context, resource, property, search);
+    }
+
+    /**
+     * Reads the locale specific version of a property object from a resource specified by a property name.<p>
+     *
+     * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
+     *
+     * @param resourcePath the name of resource where the property is attached to
+     * @param property the property name
+     * @param search if true, the property is searched on all parent folders of the resource,
+     *      if it's not found attached directly to the resource
+     * @param locale the locale for which the property should be read.
+     *
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsProperty readPropertyObject(String resourcePath, String property, boolean search, Locale locale)
+    throws CmsException {
+
+        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
+        return m_securityManager.readPropertyObject(m_context, resource, property, search, locale);
     }
 
     /**
@@ -3284,7 +3341,8 @@ public final class CmsObject {
         String path,
         String propertyDefinition,
         String value,
-        CmsResourceFilter filter) throws CmsException {
+        CmsResourceFilter filter)
+    throws CmsException {
 
         CmsResource resource = readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
         return m_securityManager.readResourcesWithProperty(m_context, resource, propertyDefinition, value, filter);
@@ -3560,7 +3618,8 @@ public final class CmsObject {
         String resourcename,
         I_CmsResourceType type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).replaceResource(this, m_securityManager, resource, type, content, properties);
@@ -3935,7 +3994,7 @@ public final class CmsObject {
      *
      * @param publishTag the correlative publish tag
      * @param publishDate the date of publishing
-    
+
      * @throws CmsException if operation was not successful
      */
     public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {
@@ -4051,7 +4110,8 @@ public final class CmsObject {
         String resourceName,
         int linkType,
         String linkParameter,
-        long timestamp) throws CmsException {
+        long timestamp)
+    throws CmsException {
 
         m_securityManager.writeStaticExportPublishedResource(
             m_context,
@@ -4080,7 +4140,8 @@ public final class CmsObject {
         Iterator<String> nameSeq,
         CmsUUID structureId,
         String locale,
-        boolean replaceOnPublish) throws CmsException {
+        boolean replaceOnPublish)
+    throws CmsException {
 
         return m_securityManager.writeUrlNameMapping(m_context, nameSeq, structureId, locale, replaceOnPublish);
     }

@@ -28,6 +28,7 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -64,6 +65,138 @@ public class TestProperty extends OpenCmsTestCase {
     }
 
     /**
+     * Test the writeProperty method to create a list of properties.<p>
+     * @param tc the OpenCmsTestCase
+     * @param cms the CmsObject
+     * @param resource1 the resource to create the properies
+     * @param propertyList1 the properties to create
+     * @throws Throwable if something goes wrong
+     */
+    public static void createProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    throws Throwable {
+
+        tc.storeResources(cms, resource1);
+
+        long timestamp = System.currentTimeMillis();
+
+        cms.lockResource(resource1);
+        cms.writePropertyObjects(resource1, propertyList1);
+        cms.unlockResource(resource1);
+
+        // now evaluate the result
+        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
+        // project must be current project
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
+        // date last modified must be after the test timestamp
+        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
+        // the user last modified must be the current user
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
+        // the properties must be new
+        tc.assertPropertyNew(cms, resource1, propertyList1);
+    }
+
+    /**
+     * Test the writeProperty method to create one property.<p>
+     * @param tc the OpenCmsTestCase
+     * @param cms the CmsObject
+     * @param resource1 the resource to add a propery
+     * @param property1 the property to create
+     * @throws Throwable if something goes wrong
+     */
+    public static void createProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
+    throws Throwable {
+
+        tc.storeResources(cms, resource1);
+
+        long timestamp = System.currentTimeMillis();
+
+        cms.lockResource(resource1);
+        cms.writePropertyObject(resource1, property1);
+        cms.unlockResource(resource1);
+
+        // now evaluate the result
+        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
+        // project must be current project
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
+        // date last modified must be after the test timestamp
+        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
+        // the user last modified must be the current user
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
+        // the property must be new
+        tc.assertPropertyNew(cms, resource1, property1);
+    }
+
+    /**
+     * Test the writeProperty method to remove a list of properties.<p>
+     * @param tc the OpenCmsTestCase
+     * @param cms the CmsObject
+     * @param resource1 the resource to remove the properies
+     * @param propertyList1 the properties to remove
+     * @throws Throwable if something goes wrong
+     */
+    public static void removeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    throws Throwable {
+
+        tc.storeResources(cms, resource1);
+
+        long timestamp = System.currentTimeMillis();
+
+        cms.lockResource(resource1);
+        cms.writePropertyObjects(resource1, propertyList1);
+        cms.unlockResource(resource1);
+
+        // now evaluate the result
+        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
+        // project must be current project
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
+        // date last modified must be after the test timestamp
+        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
+        // the user last modified must be the current user
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
+        // the properties must have been removed
+        tc.assertPropertyRemoved(cms, resource1, propertyList1);
+    }
+
+    /**
+     * Test the writeProperty method to remove one property.<p>
+     * @param tc the OpenCmsTestCase
+     * @param cms the CmsObject
+     * @param resource1 the resource to remove a propery
+     * @param property1 the property to remove
+     * @throws Throwable if something goes wrong
+     */
+    public static void removeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
+    throws Throwable {
+
+        tc.storeResources(cms, resource1);
+
+        long timestamp = System.currentTimeMillis();
+
+        cms.lockResource(resource1);
+        cms.writePropertyObject(resource1, property1);
+        cms.unlockResource(resource1);
+
+        // now evaluate the result
+        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
+        // project must be current project
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
+        // date last modified must be after the test timestamp
+        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
+        // the user last modified must be the current user
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
+        // the property must be removed
+        tc.assertPropertyRemoved(cms, resource1, property1);
+    }
+
+    /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
@@ -90,6 +223,7 @@ public class TestProperty extends OpenCmsTestCase {
         suite.addTest(new TestProperty("testDefaultPropertyCreation"));
         suite.addTest(new TestProperty("testCaseSensitiveProperties"));
         suite.addTest(new TestProperty("testReadResourcesWithProperty"));
+        suite.addTest(new TestProperty("testReadLocalizedProperty"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -107,6 +241,268 @@ public class TestProperty extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Test the writeProperty method with a list of properties.<p>
+     * @param tc the OpenCmsTestCase
+     * @param cms the CmsObject
+     * @param resource1 the resource to write the properies
+     * @param propertyList1 the properties to write
+     * @throws Throwable if something goes wrong
+     */
+    public static void writeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    throws Throwable {
+
+        tc.storeResources(cms, resource1);
+
+        long timestamp = System.currentTimeMillis();
+
+        cms.lockResource(resource1);
+        cms.writePropertyObjects(resource1, propertyList1);
+        cms.unlockResource(resource1);
+
+        // now evaluate the result
+        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
+        // project must be current project
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        tc.assertState(cms, resource1, CmsResource.STATE_CHANGED);
+        // date last modified must be after the test timestamp
+        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
+        // the user last modified must be the current user
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
+        // the property must have the new value
+        tc.assertPropertyChanged(cms, resource1, propertyList1);
+    }
+
+    /**
+     * Test the writeProperty method with one property.<p>
+     * @param tc the OpenCmsTestCase
+     * @param cms the CmsObject
+     * @param resource1 the resource to write a propery
+     * @param property1 the property to write
+     * @throws Throwable if something goes wrong
+     */
+    public static void writeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
+    throws Throwable {
+
+        tc.storeResources(cms, resource1);
+
+        long timestamp = System.currentTimeMillis();
+
+        cms.lockResource(resource1);
+        cms.writePropertyObject(resource1, property1);
+        cms.unlockResource(resource1);
+
+        // now evaluate the result
+        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
+        // project must be current project
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
+        // date last modified must be after the test timestamp
+        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
+        // the user last modified must be the current user
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
+        // the property must have the new value
+        tc.assertPropertyChanged(cms, resource1, property1);
+    }
+
+    /**
+     * Tests the proper behaviour for case sensitiveness in property definition names.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testCaseSensitiveProperties() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing proper behaviour for case sensitiveness in property definition names");
+        CmsProperty myProperty = new CmsProperty("myProperty", "myValue", "myValue");
+        CmsProperty myproperty = new CmsProperty("myproperty", "myvalue", "myvalue");
+        cms.lockResource("/index.html");
+        cms.writePropertyObject("/index.html", myProperty);
+        cms.writePropertyObject("/index.html", myproperty);
+        cms.unlockResource("/index.html");
+        assertEquals("myValue", cms.readPropertyObject("/index.html", "myProperty", false).getResourceValue());
+        assertEquals("myvalue", cms.readPropertyObject("/index.html", "myproperty", false).getResourceValue());
+    }
+
+    /**
+     * Tests the writePropertyObjects method for removing of properties.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateProperties() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing creating multiple properties on a resource");
+        CmsProperty property8 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
+        CmsProperty property9 = new CmsProperty("AnotherNewproperty", "anothervalue", null);
+        List propertyList3 = new ArrayList();
+        propertyList3.add(property8);
+        propertyList3.add(property9);
+        createProperties(this, cms, "/index.html", propertyList3);
+    }
+
+    /**
+     * Tests the writePropertyObject method for removing of properties.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateProperty() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing creating one property on a resource");
+        CmsProperty property7 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
+        createProperty(this, cms, "/folder1/index.html", property7);
+    }
+
+    /**
+     * Test default property creation (from resource type configuration).<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testDefaultPropertyCreation() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing default property creation");
+
+        String resourcename = "/folder1/article_test.html";
+        byte[] content = new byte[0];
+
+        // resource 27 is article (xml content) with default properties
+        cms.createResource(resourcename, OpenCmsTestCase.ARTICLE_TYPEID, content, null);
+
+        // ensure created resource type
+        assertResourceType(cms, resourcename, OpenCmsTestCase.ARTICLE_TYPEID);
+        // project must be current project
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
+        // state must be "new"
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
+
+        CmsProperty property1, property2;
+        property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Test title", null);
+        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertTrue(property1.isIdentical(property2));
+
+        property1 = new CmsProperty(
+            "template-elements",
+            "/system/modules/org.opencms.frontend.templateone.form/pages/form.html",
+            null);
+        property2 = cms.readPropertyObject(resourcename, "template-elements", false);
+        assertTrue(property1.isIdentical(property2));
+
+        property1 = new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            null,
+            "Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
+        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        assertTrue(property1.isIdentical(property2));
+
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
+    }
+
+    /**
+     * Tests changing the values of a frozen property.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testFrozenProperty() throws Throwable {
+
+        CmsProperty property = CmsProperty.getNullProperty();
+        if (!property.isFrozen()) {
+            fail("NULL_PROPERTY is not frozen!");
+        }
+        boolean gotException = false;
+        try {
+            property.setAutoCreatePropertyDefinition(true);
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setFrozen(false);
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setName("SomeString");
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setValue("SomeString", CmsProperty.TYPE_INDIVIDUAL);
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setResourceValue("SomeString");
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setStructureValue("SomeString");
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setResourceValueList(Collections.singletonList("SomeString"));
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setStructureValueList(Collections.singletonList("SomeString"));
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+    }
+
+    /**
+     * Tests the NULL_PROPERTY.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testNullProperty() throws Exception {
+
+        // get the null property
+        CmsProperty nullProperty = CmsProperty.getNullProperty();
+        // create another property
+        CmsProperty p = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Some title", null);
+        // do a comparison
+        assertFalse("Created property must not be equal to NULL_PROPERTY", p.equals(nullProperty));
+        assertFalse("NULL_PROPERTY must not be equal to created Property", nullProperty.equals(p));
+        assertTrue("NULL_PROPERTY must be equal to itself", nullProperty.equals(nullProperty));
+        assertTrue("NULL_PROPERTY must be identical to itself", nullProperty == CmsProperty.getNullProperty());
     }
 
     /**
@@ -256,250 +652,71 @@ public class TestProperty extends OpenCmsTestCase {
     }
 
     /**
-     * Test the writeProperty method to create a list of properties.<p>
-     * @param tc the OpenCmsTestCase
-     * @param cms the CmsObject
-     * @param resource1 the resource to create the properies
-     * @param propertyList1 the properties to create
-     * @throws Throwable if something goes wrong
+     * Test for reading locale specific properties
+     * @throws CmsException thrown if writing or reading the properties fails.
      */
-    public static void createProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
-    throws Throwable {
+    public void testReadLocalizedProperty() throws CmsException {
 
-        tc.storeResources(cms, resource1);
+        CmsObject cms = getCmsObject();
+        echo("Test reading local specific properties");
+        CmsProperty property1 = new CmsProperty("all", "all", "all");
+        CmsProperty property1de = new CmsProperty("all_de", "all de", "all de");
+        CmsProperty property1deDE = new CmsProperty("all_de_DE", "all de DE", "all de DE");
+        CmsProperty property2 = new CmsProperty("onlyde_de", "onlyde de", "onlyde de");
 
-        long timestamp = System.currentTimeMillis();
+        List<CmsProperty> propertyList = new ArrayList<CmsProperty>();
+        propertyList.add(property1);
+        propertyList.add(property1de);
+        propertyList.add(property1deDE);
+        propertyList.add(property2);
 
-        cms.lockResource(resource1);
-        cms.writePropertyObjects(resource1, propertyList1);
-        cms.unlockResource(resource1);
+        String resource = "/index.html";
 
-        // now evaluate the result
-        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
-        // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
-        // date last modified must be after the test timestamp
-        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
-        // the properties must be new
-        tc.assertPropertyNew(cms, resource1, propertyList1);
+        cms.lockResource(resource);
+        cms.writePropertyObjects(resource, propertyList);
+        cms.unlockResource(resource);
+
+        CmsProperty prop = cms.readPropertyObject(resource, "all", false, new Locale("de", "DE"));
+        assertEquals("all de DE", prop.getStructureValue());
+        prop = cms.readPropertyObject(resource, "all", false, new Locale("de"));
+        assertEquals("all de", prop.getStructureValue());
+        prop = cms.readPropertyObject(resource, "all", false, null);
+        assertEquals("all", prop.getStructureValue());
+        prop = cms.readPropertyObject(resource, "all", false, new Locale("en", "GB"));
+        assertEquals("all", prop.getStructureValue());
+
+        prop = cms.readPropertyObject(resource, "onlyde", false, new Locale("de", "DE"));
+        assertEquals("onlyde de", prop.getStructureValue());
+        prop = cms.readPropertyObject(resource, "onlyde", false, new Locale("de"));
+        assertEquals("onlyde de", prop.getStructureValue());
+        prop = cms.readPropertyObject(resource, "onlyde", false, null);
+        assertEquals(CmsProperty.getNullProperty(), prop);
+        prop = cms.readPropertyObject(resource, "onlyde", false, new Locale("en", "GB"));
+        assertEquals(CmsProperty.getNullProperty(), prop);
+
     }
 
     /**
-     * Test the writeProperty method to create one property.<p>
-     * @param tc the OpenCmsTestCase
-     * @param cms the CmsObject
-     * @param resource1 the resource to add a propery
-     * @param property1 the property to create
-     * @throws Throwable if something goes wrong
-     */
-    public static void createProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
-    throws Throwable {
-
-        tc.storeResources(cms, resource1);
-
-        long timestamp = System.currentTimeMillis();
-
-        cms.lockResource(resource1);
-        cms.writePropertyObject(resource1, property1);
-        cms.unlockResource(resource1);
-
-        // now evaluate the result
-        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
-        // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
-        // date last modified must be after the test timestamp
-        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
-        // the property must be new
-        tc.assertPropertyNew(cms, resource1, property1);
-    }
-
-    /**
-     * Test the writeProperty method to remove a list of properties.<p>
-     * @param tc the OpenCmsTestCase
-     * @param cms the CmsObject
-     * @param resource1 the resource to remove the properies
-     * @param propertyList1 the properties to remove
-     * @throws Throwable if something goes wrong
-     */
-    public static void removeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
-    throws Throwable {
-
-        tc.storeResources(cms, resource1);
-
-        long timestamp = System.currentTimeMillis();
-
-        cms.lockResource(resource1);
-        cms.writePropertyObjects(resource1, propertyList1);
-        cms.unlockResource(resource1);
-
-        // now evaluate the result
-        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
-        // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
-        // date last modified must be after the test timestamp
-        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
-        // the properties must have been removed
-        tc.assertPropertyRemoved(cms, resource1, propertyList1);
-    }
-
-    /**
-     * Test the writeProperty method to remove one property.<p>
-     * @param tc the OpenCmsTestCase
-     * @param cms the CmsObject
-     * @param resource1 the resource to remove a propery
-     * @param property1 the property to remove
-     * @throws Throwable if something goes wrong
-     */
-    public static void removeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
-    throws Throwable {
-
-        tc.storeResources(cms, resource1);
-
-        long timestamp = System.currentTimeMillis();
-
-        cms.lockResource(resource1);
-        cms.writePropertyObject(resource1, property1);
-        cms.unlockResource(resource1);
-
-        // now evaluate the result
-        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
-        // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
-        // date last modified must be after the test timestamp
-        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
-        // the property must be removed
-        tc.assertPropertyRemoved(cms, resource1, property1);
-    }
-
-    /**
-     * Test the writeProperty method with a list of properties.<p>
-     * @param tc the OpenCmsTestCase
-     * @param cms the CmsObject
-     * @param resource1 the resource to write the properies
-     * @param propertyList1 the properties to write
-     * @throws Throwable if something goes wrong
-     */
-    public static void writeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
-    throws Throwable {
-
-        tc.storeResources(cms, resource1);
-
-        long timestamp = System.currentTimeMillis();
-
-        cms.lockResource(resource1);
-        cms.writePropertyObjects(resource1, propertyList1);
-        cms.unlockResource(resource1);
-
-        // now evaluate the result
-        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
-        // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        tc.assertState(cms, resource1, CmsResource.STATE_CHANGED);
-        // date last modified must be after the test timestamp
-        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
-        // the property must have the new value
-        tc.assertPropertyChanged(cms, resource1, propertyList1);
-    }
-
-    /**
-     * Test the writeProperty method with one property.<p>
-     * @param tc the OpenCmsTestCase
-     * @param cms the CmsObject
-     * @param resource1 the resource to write a propery
-     * @param property1 the property to write
-     * @throws Throwable if something goes wrong
-     */
-    public static void writeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
-    throws Throwable {
-
-        tc.storeResources(cms, resource1);
-
-        long timestamp = System.currentTimeMillis();
-
-        cms.lockResource(resource1);
-        cms.writePropertyObject(resource1, property1);
-        cms.unlockResource(resource1);
-
-        // now evaluate the result
-        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
-        // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
-        // date last modified must be after the test timestamp
-        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
-        // the property must have the new value
-        tc.assertPropertyChanged(cms, resource1, property1);
-    }
-
-    /**
-     * Tests the writePropertyObjects method for removing of properties.<p>
+     * Tests the writePropertyObject method for writing of a property on a folder.<p>
      *
      * @throws Throwable if something goes wrong
      */
-    public void testCreateProperties() throws Throwable {
+    public void testReadResourcesWithProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing creating multiple properties on a resource");
-        CmsProperty property8 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
-        CmsProperty property9 = new CmsProperty("AnotherNewproperty", "anothervalue", null);
-        List propertyList3 = new ArrayList();
-        propertyList3.add(property8);
-        propertyList3.add(property9);
-        createProperties(this, cms, "/index.html", propertyList3);
-    }
+        echo("Testing reading resources with property");
 
-    /**
-     * Tests the proper behaviour for case sensitiveness in property definition names.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testCaseSensitiveProperties() throws Throwable {
+        String typesUri = "/types";
+        CmsResource res = cms.readResource(typesUri);
+        // now set "exportname" property and try again
+        cms.lockResource(typesUri);
+        cms.writePropertyObject(typesUri, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "myfolder", null));
+        // publish the changes
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsObject cms = getCmsObject();
-        echo("Testing proper behaviour for case sensitiveness in property definition names");
-        CmsProperty myProperty = new CmsProperty("myProperty", "myValue", "myValue");
-        CmsProperty myproperty = new CmsProperty("myproperty", "myvalue", "myvalue");
-        cms.lockResource("/index.html");
-        cms.writePropertyObject("/index.html", myProperty);
-        cms.writePropertyObject("/index.html", myproperty);
-        cms.unlockResource("/index.html");
-        assertEquals("myValue", cms.readPropertyObject("/index.html", "myProperty", false).getResourceValue());
-        assertEquals("myvalue", cms.readPropertyObject("/index.html", "myproperty", false).getResourceValue());
-    }
-
-    /**
-     * Tests the writePropertyObject method for removing of properties.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testCreateProperty() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing creating one property on a resource");
-        CmsProperty property7 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
-        createProperty(this, cms, "/folder1/index.html", property7);
+        List result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
+        assertTrue(result.contains(res));
     }
 
     /**
@@ -530,124 +747,6 @@ public class TestProperty extends OpenCmsTestCase {
         echo("Testing removing one property on a resource");
         CmsProperty property4 = new CmsProperty("Title", CmsProperty.DELETE_VALUE, CmsProperty.DELETE_VALUE);
         removeProperty(this, cms, "/folder1/page2.html", property4);
-    }
-
-    /**
-     * Tests the writeProperties method.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testWriteProperties() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing writing multiple properties on a resource");
-        CmsProperty property2 = new CmsProperty("Title", "OpenCms", null);
-        CmsProperty property3 = new CmsProperty("NavPos", "1", null);
-        List propertyList1 = new ArrayList();
-        propertyList1.add(property2);
-        propertyList1.add(property3);
-        writeProperties(this, cms, "/folder1/page3.html", propertyList1);
-    }
-
-    /**
-     * Tests the writePropertyObject method.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testWriteProperty() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing writing one  property on a resource");
-        CmsProperty property1 = new CmsProperty("Title", "OpenCms", null);
-        writeProperty(this, cms, "/folder1/image1.gif", property1);
-    }
-
-    /**
-     * Tests the writePropertyObject method for writing of a property on a folder.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testWritePropertyOnFolder() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing writing one property on a folder");
-        CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);
-        writeProperty(this, cms, "/folder2/", property10);
-    }
-
-    /**
-     * Tests the writePropertyObject method for writing of a property on a folder.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testReadResourcesWithProperty() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing reading resources with property");
-
-        String typesUri = "/types";
-        CmsResource res = cms.readResource(typesUri);
-        // now set "exportname" property and try again
-        cms.lockResource(typesUri);
-        cms.writePropertyObject(typesUri, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "myfolder", null));
-        // publish the changes
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        List result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
-        assertTrue(result.contains(res));
-    }
-
-    /**
-     * Test default property creation (from resource type configuration).<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testDefaultPropertyCreation() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing default property creation");
-
-        String resourcename = "/folder1/article_test.html";
-        byte[] content = new byte[0];
-
-        // resource 27 is article (xml content) with default properties
-        cms.createResource(resourcename, OpenCmsTestCase.ARTICLE_TYPEID, content, null);
-
-        // ensure created resource type
-        assertResourceType(cms, resourcename, OpenCmsTestCase.ARTICLE_TYPEID);
-        // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
-        // state must be "new"
-        assertState(cms, resourcename, CmsResource.STATE_NEW);
-        // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
-
-        CmsProperty property1, property2;
-        property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Test title", null);
-        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertTrue(property1.isIdentical(property2));
-
-        property1 = new CmsProperty(
-            "template-elements",
-            "/system/modules/org.opencms.frontend.templateone.form/pages/form.html",
-            null);
-        property2 = cms.readPropertyObject(resourcename, "template-elements", false);
-        assertTrue(property1.isIdentical(property2));
-
-        property1 = new CmsProperty(
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-            null,
-            "Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
-        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-        assertTrue(property1.isIdentical(property2));
-
-        // publish the project
-        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
     }
 
     /**
@@ -701,97 +800,45 @@ public class TestProperty extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the NULL_PROPERTY.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    public void testNullProperty() throws Exception {
-
-        // get the null property
-        CmsProperty nullProperty = CmsProperty.getNullProperty();
-        // create another property
-        CmsProperty p = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Some title", null);
-        // do a comparison
-        assertFalse("Created property must not be equal to NULL_PROPERTY", p.equals(nullProperty));
-        assertFalse("NULL_PROPERTY must not be equal to created Property", nullProperty.equals(p));
-        assertTrue("NULL_PROPERTY must be equal to itself", nullProperty.equals(nullProperty));
-        assertTrue("NULL_PROPERTY must be identical to itself", nullProperty == CmsProperty.getNullProperty());
-    }
-
-    /**
-     * Tests changing the values of a frozen property.<p>
+     * Tests the writeProperties method.<p>
      *
      * @throws Throwable if something goes wrong
      */
-    public void testFrozenProperty() throws Throwable {
+    public void testWriteProperties() throws Throwable {
 
-        CmsProperty property = CmsProperty.getNullProperty();
-        if (!property.isFrozen()) {
-            fail("NULL_PROPERTY is not frozen!");
-        }
-        boolean gotException = false;
-        try {
-            property.setAutoCreatePropertyDefinition(true);
-        } catch (CmsRuntimeException e) {
-            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
-            gotException = true;
-        }
-        assertTrue("Operation did not throw the required Exception", gotException);
-        gotException = false;
-        try {
-            property.setFrozen(false);
-        } catch (CmsRuntimeException e) {
-            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
-            gotException = true;
-        }
-        assertTrue("Operation did not throw the required Exception", gotException);
-        gotException = false;
-        try {
-            property.setName("SomeString");
-        } catch (CmsRuntimeException e) {
-            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
-            gotException = true;
-        }
-        assertTrue("Operation did not throw the required Exception", gotException);
-        gotException = false;
-        try {
-            property.setValue("SomeString", CmsProperty.TYPE_INDIVIDUAL);
-        } catch (CmsRuntimeException e) {
-            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
-            gotException = true;
-        }
-        assertTrue("Operation did not throw the required Exception", gotException);
-        gotException = false;
-        try {
-            property.setResourceValue("SomeString");
-        } catch (CmsRuntimeException e) {
-            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
-            gotException = true;
-        }
-        assertTrue("Operation did not throw the required Exception", gotException);
-        gotException = false;
-        try {
-            property.setStructureValue("SomeString");
-        } catch (CmsRuntimeException e) {
-            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
-            gotException = true;
-        }
-        assertTrue("Operation did not throw the required Exception", gotException);
-        gotException = false;
-        try {
-            property.setResourceValueList(Collections.singletonList("SomeString"));
-        } catch (CmsRuntimeException e) {
-            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
-            gotException = true;
-        }
-        assertTrue("Operation did not throw the required Exception", gotException);
-        gotException = false;
-        try {
-            property.setStructureValueList(Collections.singletonList("SomeString"));
-        } catch (CmsRuntimeException e) {
-            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
-            gotException = true;
-        }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        CmsObject cms = getCmsObject();
+        echo("Testing writing multiple properties on a resource");
+        CmsProperty property2 = new CmsProperty("Title", "OpenCms", null);
+        CmsProperty property3 = new CmsProperty("NavPos", "1", null);
+        List propertyList1 = new ArrayList();
+        propertyList1.add(property2);
+        propertyList1.add(property3);
+        writeProperties(this, cms, "/folder1/page3.html", propertyList1);
+    }
+
+    /**
+     * Tests the writePropertyObject method.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testWriteProperty() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing writing one  property on a resource");
+        CmsProperty property1 = new CmsProperty("Title", "OpenCms", null);
+        writeProperty(this, cms, "/folder1/image1.gif", property1);
+    }
+
+    /**
+     * Tests the writePropertyObject method for writing of a property on a folder.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testWritePropertyOnFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing writing one property on a folder");
+        CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);
+        writeProperty(this, cms, "/folder2/", property10);
     }
 }
