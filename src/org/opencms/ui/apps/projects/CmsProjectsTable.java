@@ -34,9 +34,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
-import org.opencms.ui.components.contextmenu.CmsContextMenu;
-import org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -53,7 +53,6 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 
@@ -68,7 +67,7 @@ public class CmsProjectsTable extends Table {
     class DeleteEntry implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>> {
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(Set<CmsUUID> data) {
 
@@ -84,7 +83,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
          */
         public String getTitle(Locale locale) {
 
@@ -93,7 +92,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<CmsUUID> data) {
 
@@ -107,7 +106,7 @@ public class CmsProjectsTable extends Table {
     class EditEntry implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>> {
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(Set<CmsUUID> data) {
 
@@ -118,7 +117,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
          */
         public String getTitle(Locale locale) {
 
@@ -127,7 +126,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<CmsUUID> data) {
 
@@ -143,7 +142,7 @@ public class CmsProjectsTable extends Table {
     class PublishEntry implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>> {
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(Set<CmsUUID> data) {
 
@@ -159,7 +158,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
          */
         public String getTitle(Locale locale) {
 
@@ -168,7 +167,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<CmsUUID> data) {
 
@@ -193,15 +192,18 @@ public class CmsProjectsTable extends Table {
     class ShowFilesEntry implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>> {
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(Set<CmsUUID> data) {
 
-            Notification.show("Show files");
+            CmsUUID id = data.iterator().next();
+            m_manager.openSubView(
+                A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_FILES, "projectId", id.toString()),
+                true);
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
          */
         public String getTitle(Locale locale) {
 
@@ -210,7 +212,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<CmsUUID> data) {
 
@@ -226,7 +228,7 @@ public class CmsProjectsTable extends Table {
     class UnlockEntry implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>> {
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(Set<CmsUUID> data) {
 
@@ -241,7 +243,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
          */
         public String getTitle(Locale locale) {
 
@@ -250,7 +252,7 @@ public class CmsProjectsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.components.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<CmsUUID> data) {
 

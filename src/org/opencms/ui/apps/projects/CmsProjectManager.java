@@ -42,7 +42,6 @@ import java.util.Map;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 
 /**
  * The project manager app.<p>
@@ -93,6 +92,17 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
                     e.printStackTrace();
                 }
             }
+        } else if (state.startsWith(PATH_NAME_FILES)) {
+            CmsUUID projectId = getIdFromState(state);
+            if (projectId != null) {
+                crumbs.put(CmsProjectManagerConfiguration.APP_ID, "Project Management");
+                try {
+                    crumbs.put("", "Files of project: " + A_CmsUI.getCmsObject().readProject(projectId).getName());
+                } catch (CmsException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
         return crumbs;
     }
@@ -108,11 +118,16 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
         } else if (state.equals(PATH_NAME_ADD)) {
             return getNewProjectForm();
         } else if (state.equals(PATH_NAME_HISTORY)) {
-            return new Label("show project history dialog");
+            return new CmsProjectHistoryTable();
         } else if (state.startsWith(PATH_NAME_EDIT)) {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
                 return new CmsEditProjectForm(this, projectId);
+            }
+        } else if (state.startsWith(PATH_NAME_FILES)) {
+            CmsUUID projectId = getIdFromState(state);
+            if (projectId != null) {
+                return new CmsProjectFiles(projectId);
             }
         }
 

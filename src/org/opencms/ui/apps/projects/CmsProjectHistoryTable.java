@@ -1,0 +1,188 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ui.apps.projects;
+
+import org.opencms.file.CmsObject;
+import org.opencms.file.history.CmsHistoryProject;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.util.CmsUUID;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
+
+/**
+ * The project history table.<p>
+ */
+public class CmsProjectHistoryTable extends Table {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 7343623156086839992L;
+
+    /** Publish date property. */
+    public static final String PROP_PUBLISH_DATE = "publishDate";
+
+    /** Publish user property. */
+    public static final String PROP_PUBLISH_USER = "publishUser";
+
+    /** The data container. */
+    IndexedContainer m_container;
+
+    /** The project manager instance. */
+    CmsProjectManager m_manager;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsProjectHistoryTable() {
+        setSizeFull();
+        m_container = new IndexedContainer();
+        m_container.addContainerProperty(CmsProjectsTable.PROP_ID, CmsUUID.class, null);
+        m_container.addContainerProperty(CmsProjectsTable.PROP_NAME, String.class, "");
+        m_container.addContainerProperty(CmsProjectsTable.PROP_DESCRIPTION, String.class, "");
+        m_container.addContainerProperty(PROP_PUBLISH_DATE, Date.class, "");
+        m_container.addContainerProperty(PROP_PUBLISH_USER, String.class, "");
+        m_container.addContainerProperty(CmsProjectsTable.PROP_ORG_UNIT, String.class, "");
+        m_container.addContainerProperty(CmsProjectsTable.PROP_OWNER, String.class, "");
+        m_container.addContainerProperty(CmsProjectsTable.PROP_MANAGER, String.class, "");
+        m_container.addContainerProperty(CmsProjectsTable.PROP_USER, String.class, "");
+        m_container.addContainerProperty(CmsProjectsTable.PROP_DATE_CREATED, Date.class, "");
+        m_container.addContainerProperty(CmsProjectsTable.PROP_RESOURCES, Label.class, "");
+
+        setContainerDataSource(m_container);
+        setColumnHeader(CmsProjectsTable.PROP_NAME, "Name");
+        setColumnHeader(CmsProjectsTable.PROP_DESCRIPTION, "Description");
+        setColumnHeader(PROP_PUBLISH_DATE, "Publishing date");
+        setColumnHeader(PROP_PUBLISH_USER, "Published by");
+        setColumnHeader(CmsProjectsTable.PROP_ORG_UNIT, "Org Unit");
+        setColumnHeader(CmsProjectsTable.PROP_OWNER, "Owner");
+        setColumnHeader(CmsProjectsTable.PROP_MANAGER, "Manager Group");
+        setColumnHeader(CmsProjectsTable.PROP_USER, "Users Group");
+        setColumnHeader(CmsProjectsTable.PROP_DATE_CREATED, "Date Created");
+        setColumnHeader(CmsProjectsTable.PROP_RESOURCES, "Resources");
+
+        setSelectable(true);
+        setMultiSelect(true);
+        loadProjects();
+    }
+
+    /**
+     * Loads the projects table.<p>
+     */
+    public void loadProjects() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        Locale locale = UI.getCurrent().getLocale();
+        m_container.removeAllItems();
+        boolean isMultiOU = false;
+        // hide ou column if only one ou exists
+        try {
+            isMultiOU = !OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, "", true).isEmpty();
+        } catch (CmsException e) {
+            // noop
+        }
+        if (isMultiOU) {
+            setVisibleColumns(
+                CmsProjectsTable.PROP_NAME,
+                CmsProjectsTable.PROP_DESCRIPTION,
+                PROP_PUBLISH_DATE,
+                PROP_PUBLISH_USER,
+                CmsProjectsTable.PROP_ORG_UNIT,
+                CmsProjectsTable.PROP_OWNER,
+                CmsProjectsTable.PROP_MANAGER,
+                CmsProjectsTable.PROP_USER,
+                CmsProjectsTable.PROP_DATE_CREATED,
+                CmsProjectsTable.PROP_RESOURCES);
+        } else {
+            setVisibleColumns(
+                CmsProjectsTable.PROP_NAME,
+                CmsProjectsTable.PROP_DESCRIPTION,
+                PROP_PUBLISH_DATE,
+                PROP_PUBLISH_USER,
+                CmsProjectsTable.PROP_OWNER,
+                CmsProjectsTable.PROP_MANAGER,
+                CmsProjectsTable.PROP_USER,
+                CmsProjectsTable.PROP_DATE_CREATED,
+                CmsProjectsTable.PROP_RESOURCES);
+        }
+
+        // get content
+        try {
+            List<CmsHistoryProject> projects = cms.getAllHistoricalProjects();
+            for (CmsHistoryProject project : projects) {
+                Item item = m_container.addItem(new Integer(project.getPublishTag()));
+                if (item != null) {
+                    item.getItemProperty(CmsProjectsTable.PROP_ID).setValue(project.getUuid());
+                    item.getItemProperty(CmsProjectsTable.PROP_NAME).setValue(project.getSimpleName());
+                    item.getItemProperty(CmsProjectsTable.PROP_DESCRIPTION).setValue(project.getDescription());
+                    item.getItemProperty(PROP_PUBLISH_DATE).setValue(new Date(project.getPublishingDate()));
+                    item.getItemProperty(PROP_PUBLISH_USER).setValue(project.getPublishedByName(cms));
+                    try {
+                        item.getItemProperty(CmsProjectsTable.PROP_ORG_UNIT).setValue(
+                            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, project.getOuFqn()).getDisplayName(
+                                locale));
+                        item.getItemProperty(CmsProjectsTable.PROP_OWNER).setValue(
+                            cms.readUser(project.getOwnerId()).getName());
+                        item.getItemProperty(CmsProjectsTable.PROP_MANAGER).setValue(
+                            cms.readGroup(project.getManagerGroupId()).getSimpleName());
+                        item.getItemProperty(CmsProjectsTable.PROP_USER).setValue(
+                            cms.readGroup(project.getGroupId()).getSimpleName());
+                    } catch (CmsException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    item.getItemProperty(CmsProjectsTable.PROP_DATE_CREATED).setValue(
+                        new Date(project.getDateCreated()));
+
+                    StringBuffer html = new StringBuffer(512);
+                    for (String resource : cms.readProjectResources(project)) {
+                        html.append(resource);
+                        html.append("<br />");
+                    }
+                    Label resLabel = new Label();
+                    resLabel.setContentMode(ContentMode.HTML);
+                    resLabel.setValue(html.toString());
+                    item.getItemProperty(CmsProjectsTable.PROP_RESOURCES).setValue(resLabel);
+                }
+            }
+            m_container.sort(new Object[] {PROP_PUBLISH_DATE}, new boolean[] {false});
+        } catch (CmsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+}

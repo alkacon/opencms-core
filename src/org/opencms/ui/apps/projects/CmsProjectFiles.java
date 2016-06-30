@@ -27,8 +27,60 @@
 
 package org.opencms.ui.apps.projects;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.I_CmsContextProvider;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsFileTableDialogContext;
+import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
+import org.opencms.util.CmsUUID;
 
-public class CmsProjectFiles extends CmsFileTable {
+import java.util.List;
 
+/**
+ * The project files table.<p>
+ */
+public class CmsProjectFiles extends CmsFileTable implements I_CmsContextProvider {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -8713755588920379969L;
+
+    /**
+     * Constructor.<p>
+     *
+     * @param projectId the project id
+     */
+    public CmsProjectFiles(CmsUUID projectId) {
+        super(null);
+        setContextProvider(this);
+        setMenuBuilder(new CmsResourceContextMenuBuilder());
+        CmsObject cms = A_CmsUI.getCmsObject();
+        List<CmsResource> childResources;
+        try {
+            childResources = cms.readProjectView(projectId, CmsResource.STATE_KEEP);
+            fillTable(cms, childResources);
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog("Unable to display project files", e);
+        }
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsContextProvider#getDialogContext()
+     */
+    public I_CmsDialogContext getDialogContext() {
+
+        CmsFileTableDialogContext context = new CmsFileTableDialogContext(
+            ContextType.fileTable,
+            this,
+            m_currentResources);
+        context.setEditableProperties(CmsFileExplorer.INLINE_EDIT_PROPERTIES);
+        return context;
+    }
 }
