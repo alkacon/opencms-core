@@ -37,6 +37,7 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
@@ -72,7 +73,7 @@ public class CmsJspNavigationBean {
                             m_cms.getRequestContext().getUri())) {
                         result = Boolean.TRUE;
                     }
-                } catch (CmsException e) {
+                } catch (@SuppressWarnings("unused") CmsException e) {
                     // error reading resource, result is false
                 }
             } else {
@@ -151,6 +152,7 @@ public class CmsJspNavigationBean {
      * @param endLevel the optional end level
      * @param resource the optional resource for the navigation
      * @param param the optional parameter for the navigation
+     * @param locale the locale, for which Properties should be read.
      */
     public CmsJspNavigationBean(
         CmsObject cms,
@@ -158,10 +160,11 @@ public class CmsJspNavigationBean {
         int startLevel,
         int endLevel,
         String resource,
-        String param) {
+        String param,
+        Locale locale) {
 
         m_cms = cms;
-        m_builder = new CmsJspNavBuilder(m_cms);
+        m_builder = new CmsJspNavBuilder(m_cms, locale);
         m_type = type;
         m_startLevel = startLevel;
         m_endLevel = endLevel;

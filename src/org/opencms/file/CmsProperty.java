@@ -27,6 +27,7 @@
 
 package org.opencms.file;
 
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 
@@ -37,8 +38,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.RandomAccess;
+
+import org.apache.commons.collections.Transformer;
 
 /**
  * Represents a property (meta-information) mapped to a VFS resource.<p>
@@ -83,6 +87,50 @@ import java.util.RandomAccess;
  * @since 6.0.0
  */
 public class CmsProperty implements Serializable, Cloneable, Comparable<CmsProperty> {
+
+    /** Transforms a given properties map, to a map where the returned values for a property are
+     * dependent on the locale.
+     */
+    public static class CmsPropertyLocaleTransformer implements Transformer {
+    
+        /** The original properties map. */
+        private Map<String, String> m_properties;
+        /** The locale, w.r.t. which the properties should be accessed. */
+        private Locale m_locale;
+    
+        /**
+         * Default constructor.
+         * @param properties the "raw" properties map as read for a resource.
+         * @param locale the locale w.r.t. which the properties should be accessed.
+         */
+        public CmsPropertyLocaleTransformer(Map<String, String> properties, Locale locale) {
+            m_properties = null == properties ? new HashMap<String, String>() : properties;
+            m_locale = null == locale ? new Locale("") : locale;
+        }
+    
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object propertyName) {
+    
+            return readProperty((String)propertyName);
+        }
+    
+        /**
+         * Looks up a property in {@link #m_properties}, but returns the localized variant.
+         *
+         * @param propertyName the property to look up
+         * @return the value of the property
+         */
+        protected String readProperty(String propertyName) {
+    
+            if (null == m_locale) {
+                return m_properties.get(propertyName);
+            } else {
+                return m_properties.get(getLocalizedKey(m_properties, propertyName, m_locale));
+            }
+        }
+    }
 
     /**
      * Signals that the resource property values of a resource
@@ -266,6 +314,26 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
         }
 
         return NULL_PROPERTY;
+    }
+
+    /**
+     * Returns the key for the best matching local-specific property version.
+     *
+     * @param propertiesMap the "raw" property map
+     * @param key the name of the property to search for
+     * @param locale the locale to search for
+     *
+     * @return the key for the best matching local-specific property version.
+     */
+    public static String getLocalizedKey(Map<String, ?> propertiesMap, String key, Locale locale) {
+
+        List<String> localizedKeys = CmsLocaleManager.getLocaleVariants(key, locale, true, false);
+        for (String localizedKey : localizedKeys) {
+            if (propertiesMap.containsKey(localizedKey)) {
+                return localizedKey;
+            }
+        }
+        return key;
     }
 
     /**

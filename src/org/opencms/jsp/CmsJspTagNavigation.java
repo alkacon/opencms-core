@@ -31,9 +31,15 @@ import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.util.CmsJspNavigationBean;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Locale;
+
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.logging.Log;
 
 /**
  * Implementation of the <code>&lt;cms:navigation var="..." /&gt;</code> tag,
@@ -46,10 +52,14 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     /** Constants for <code>type</code> attribute interpretation. */
     public enum Type {
         /** Bread crumb navigation. */
-        breadCrumb, /** Navigation for folder. */
-        forFolder, /** Navigation for resource. */
-        forResource, /** Navigation for a site. */
-        forSite, /** Navigation tree for folder. */
+        breadCrumb,
+        /** Navigation for folder. */
+        forFolder,
+        /** Navigation for resource. */
+        forResource,
+        /** Navigation for a site. */
+        forSite,
+        /** Navigation tree for folder. */
         treeForFolder;
 
         /**
@@ -66,6 +76,9 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
             return Enum.valueOf(Type.class, name);
         }
     }
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagNavigation.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 8589202895748764705L;
@@ -87,6 +100,9 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /** The navigation type. */
     protected Type m_type;
+
+    /** The locale for which the property should be read. */
+    protected Locale m_locale;
 
     /**
      * Empty constructor, required for JSP tags.<p>
@@ -197,6 +213,21 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
+     * Sets the locale for which the property should be read.
+     *
+     * @param locale the locale for which the property should be read.
+     */
+    public void setLocale(String locale) {
+
+        try {
+            m_locale = LocaleUtils.toLocale(locale);
+        } catch (IllegalArgumentException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_TAG_INVALID_LOCALE_1, "cms:navigation"), e);
+            m_locale = null;
+        }
+    }
+
+    /**
      * Sets the optional parameter for the navigation.<p>
      *
      * @param param the optional parameter for the navigation to set
@@ -259,7 +290,14 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
         int endLevel = m_endLevel == null ? Integer.MIN_VALUE : Integer.parseInt(m_endLevel);
 
         // load navigation bean in the JSP context
-        CmsJspNavigationBean bean = new CmsJspNavigationBean(m_cms, m_type, startLevel, endLevel, m_resource, m_param);
+        CmsJspNavigationBean bean = new CmsJspNavigationBean(
+            m_cms,
+            m_type,
+            startLevel,
+            endLevel,
+            m_resource,
+            m_param,
+            m_locale);
         storeAttribute(getVar(), bean);
     }
 }

@@ -2211,6 +2211,16 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
+        <attribute>
+        	<description><![CDATA[
+        		The locale, for which properties should be read.
+        		E.g., if you read the property "Title" for the locale "de_DE", then "Title_de_DE" will be read first,
+        		and only if it does not exist, "Title_de" and "Title" are tried as well.
+        	]]></description>
+        	<name>locale</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>

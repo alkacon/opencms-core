@@ -42,6 +42,7 @@ import org.opencms.util.CmsFileUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -89,6 +90,9 @@ public class CmsJspNavBuilder {
     /** The current request folder. */
     protected String m_requestUriFolder;
 
+    /** The locale for which the property should be read. */
+    protected Locale m_locale;
+
     /**
      * Empty constructor, so that this bean can be initialized from a JSP.<p>
      */
@@ -104,7 +108,18 @@ public class CmsJspNavBuilder {
      */
     public CmsJspNavBuilder(CmsObject cms) {
 
-        init(cms);
+        init(cms, null);
+    }
+
+    /**
+     * Constructor for a version that reads properties according to a locale.<p>
+     *
+     * @param cms context provider for the current request
+     * @param locale the locale for which properties should be accessed
+     */
+    public CmsJspNavBuilder(CmsObject cms, Locale locale) {
+
+        init(cms, locale);
     }
 
     /**
@@ -637,10 +652,12 @@ public class CmsJspNavBuilder {
      * Initializes this bean.<p>
      *
      * @param cms the current cms context
+     * @param locale the locale for which properties should be read
      */
-    public void init(CmsObject cms) {
+    public void init(CmsObject cms, Locale locale) {
 
         m_cms = cms;
+        m_locale = locale;
         m_requestUri = m_cms.getRequestContext().getUri();
         m_requestUriFolder = CmsResource.getFolderPath(m_requestUri);
     }
@@ -719,7 +736,7 @@ public class CmsJspNavBuilder {
                             // do not show navigation entries for unreleased or expired resources
                             return null;
                         }
-                    } catch (CmsException e) {
+                    } catch (@SuppressWarnings("unused") CmsException e) {
                         // may happen if permissions are not sufficient can be ignored
                     }
                 }
@@ -744,6 +761,6 @@ public class CmsJspNavBuilder {
             return null;
         }
 
-        return new CmsJspNavElement(sitePath, resource, propertiesMap, level);
+        return new CmsJspNavElement(sitePath, resource, propertiesMap, level, m_locale);
     }
 }
