@@ -31,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
-import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
@@ -52,9 +51,6 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     /** The window used to display the dialog. */
     protected Window m_window;
 
-    /** The app context. */
-    private I_CmsAppUIContext m_appContext;
-
     /** The context type. */
     private ContextType m_contextType;
 
@@ -65,11 +61,9 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
      * Constructor.<p>
      *
      * @param contextType the context type, to be used for visibility evaluation
-     * @param appContext the app context
      * @param resources the list of resources
      */
-    protected A_CmsDialogContext(ContextType contextType, I_CmsAppUIContext appContext, List<CmsResource> resources) {
-        m_appContext = appContext;
+    protected A_CmsDialogContext(ContextType contextType, List<CmsResource> resources) {
         m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
         m_contextType = contextType;
     }
@@ -108,14 +102,6 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
 
         closeWindow();
         CmsAppWorkplaceUi.get().enableGlobalShortcuts();
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#getAppContext()
-     */
-    public I_CmsAppUIContext getAppContext() {
-
-        return m_appContext;
     }
 
     /**

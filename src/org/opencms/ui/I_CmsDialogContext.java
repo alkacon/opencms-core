@@ -30,7 +30,6 @@ package org.opencms.ui;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
-import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.util.CmsUUID;
 
@@ -97,13 +96,6 @@ public interface I_CmsDialogContext {
      * @return the structure ids of all the resources in the current view
      */
     List<CmsUUID> getAllStructureIdsInView();
-
-    /**
-     * Returns the app UI context.<p>
-     *
-     * @return the app UI context
-     */
-    I_CmsAppUIContext getAppContext();
 
     /**
      * Gets the CMS context to be used for dialog operations.<p>

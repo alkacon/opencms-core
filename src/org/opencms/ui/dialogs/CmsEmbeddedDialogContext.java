@@ -34,7 +34,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
-import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
@@ -174,14 +173,6 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     public List<CmsUUID> getAllStructureIdsInView() {
 
         return Collections.emptyList();
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#getAppContext()
-     */
-    public I_CmsAppUIContext getAppContext() {
-
-        return null;
     }
 
     /**

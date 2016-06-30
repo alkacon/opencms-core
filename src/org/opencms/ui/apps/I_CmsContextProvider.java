@@ -25,25 +25,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
+package org.opencms.ui.apps;
 
-import org.opencms.file.CmsResource;
-import org.opencms.ui.components.contextmenu.CmsContextMenu;
-
-import java.util.List;
+import org.opencms.ui.I_CmsDialogContext;
 
 /**
- * Builds an explorer context menu based on the set of selected resources' IDs.<p>
+ * Provides the dialog context to context menus and other context sensitive dialogs.<p>
  */
-public interface I_CmsContextMenuBuilder {
+public interface I_CmsContextProvider {
 
     /**
-     * Fills the given context menu with options appropriate for the selected resources.<p>
+     * Returns the dialog context for dialogs opened from the context menu.<p>
      *
-     * @param selectedResources the selected resources
-     *
-     * @param menu the menu
+     * @return the dialog context
      */
-    void buildContextMenu(List<CmsResource> selectedResources, CmsContextMenu menu);
-
+    I_CmsDialogContext getDialogContext();
 }

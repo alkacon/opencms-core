@@ -53,19 +53,24 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.I_CmsContextMenuBuilder;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
-import org.opencms.ui.components.contextmenu.CmsContextMenu;
+import org.opencms.ui.apps.I_CmsContextProvider;
+import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.I_CmsContextMenuBuilder;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -83,6 +88,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -195,6 +201,19 @@ public class CmsFileTable extends CmsResourceTable {
         }
     }
 
+    /**
+     * Handles folder selects in the file table.<p>
+     */
+    public interface I_FolderSelectHandler {
+
+        /**
+         * Called when the folder name is left clicked.<p>
+         *
+         * @param folderId the selected folder id
+         */
+        void onFolderSelect(CmsUUID folderId);
+    }
+
     /** The logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsFileTable.class);
 
@@ -225,12 +244,21 @@ public class CmsFileTable extends CmsResourceTable {
     /** The original edit value. */
     private String m_originalEditValue;
 
+    /** The dialog context provider. */
+    private I_CmsContextProvider m_contextProvider;
+
+    /** The folder select handler. */
+    private I_FolderSelectHandler m_folderSelectHandler;
+
     /**
      * Default constructor.<p>
+     *
+     * @param contextProvider the dialog context provider
      */
-    public CmsFileTable() {
+    public CmsFileTable(I_CmsContextProvider contextProvider) {
 
         super();
+        m_contextProvider = contextProvider;
         m_container.setItemSorter(new FileSorter());
         m_fileTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
         m_fileTable.addStyleName(OpenCmsTheme.SIMPLE_DRAG);
@@ -291,8 +319,18 @@ public class CmsFileTable extends CmsResourceTable {
 
                 if (!selectedIds.isEmpty() && (m_menuBuilder != null)) {
                     m_menu.removeAllItems();
-                    m_menuBuilder.buildContextMenu(selectedResources, m_menu);
+                    m_menuBuilder.buildContextMenu(getContextProvider().getDialogContext(), m_menu);
                 }
+            }
+        });
+
+        m_fileTable.addItemClickListener(new ItemClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void itemClick(ItemClickEvent event) {
+
+                handleFileItemClick(event);
             }
         });
 
@@ -343,16 +381,6 @@ public class CmsFileTable extends CmsResourceTable {
             }
         }
         return result;
-    }
-
-    /**
-     * Adds an item click listener to the table.<p>
-     *
-     * @param listener the listener
-     */
-    public void addItemClickListener(ItemClickListener listener) {
-
-        m_fileTable.addItemClickListener(listener);
     }
 
     /**
@@ -484,6 +512,16 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Sets the folder select handler.<p>
+     *
+     * @param folderSelectHandler the folder select handler
+     */
+    public void setFolderSelectHandler(I_FolderSelectHandler folderSelectHandler) {
+
+        m_folderSelectHandler = folderSelectHandler;
+    }
+
+    /**
      * Sets the menu builder.<p>
      *
      * @param builder the menu builder
@@ -604,6 +642,16 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Sets the dialog context provider.<p>
+     *
+     * @param provider the dialog context provider
+     */
+    protected void setContextProvider(I_CmsContextProvider provider) {
+
+        m_contextProvider = provider;
+    }
+
+    /**
      * Cancels the current edit process.<p>
      */
     void cancelEdit() {
@@ -612,6 +660,16 @@ public class CmsFileTable extends CmsResourceTable {
             m_editHandler.cancel();
         }
         clearEdit();
+    }
+
+    /**
+     * Returns the dialog context provider.<p>
+     *
+     * @return the dialog context provider
+     */
+    I_CmsContextProvider getContextProvider() {
+
+        return m_contextProvider;
     }
 
     /**
@@ -632,6 +690,60 @@ public class CmsFileTable extends CmsResourceTable {
     CmsResourceTableProperty getEditProperty() {
 
         return m_editProperty;
+    }
+
+    /**
+     * Handles the file table item click.<p>
+     *
+     * @param event the click event
+     */
+    void handleFileItemClick(ItemClickEvent event) {
+
+        if (isEditing()) {
+            stopEdit();
+
+        } else if (!event.isCtrlKey() && !event.isShiftKey()) {
+            CmsUUID itemId = (CmsUUID)event.getItemId();
+            boolean openedFolder = false;
+            // don't interfere with multi-selection using control key
+            if (event.getButton().equals(MouseButton.RIGHT)) {
+                handleSelection(itemId);
+                openContextMenu(event);
+            } else {
+                if ((event.getPropertyId() == null)
+                    || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
+                    openContextMenu(event);
+                } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
+                    Boolean isFolder = (Boolean)event.getItem().getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
+                    if ((isFolder != null) && isFolder.booleanValue()) {
+                        if (m_folderSelectHandler != null) {
+                            m_folderSelectHandler.onFolderSelect(itemId);
+                        }
+                        openedFolder = true;
+                    } else {
+                        try {
+                            CmsObject cms = A_CmsUI.getCmsObject();
+                            CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
+                            String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                            HttpServletRequest req = CmsVaadinUtils.getRequest();
+                            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
+                            A_CmsUI.get().getPage().setLocation(link);
+                            return;
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            LOG.info(e.getLocalizedMessage(), e);
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+
+            }
+            // update the item on click to show any available changes
+            if (!openedFolder) {
+                update(itemId, false);
+            }
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 
 package org.opencms.ui.client.contextmenu;
 
-import org.opencms.ui.components.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.shared.CmsContextMenuState;
 import org.opencms.ui.shared.CmsContextMenuState.ContextMenuItemState;
 import org.opencms.ui.shared.rpc.I_CmsContextMenuClientRpc;

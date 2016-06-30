@@ -1,5 +1,5 @@
 
-package org.opencms.ui.components.contextmenu;
+package org.opencms.ui.contextmenu;
 
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.shared.CmsContextMenuState;

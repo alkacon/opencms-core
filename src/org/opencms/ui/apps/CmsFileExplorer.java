@@ -29,25 +29,16 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.jsp.CmsJspTagEnableAde;
-import org.opencms.lock.CmsLockActionRecord;
-import org.opencms.lock.CmsLockActionRecord.LockChange;
-import org.opencms.lock.CmsLockException;
-import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
-import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
@@ -61,25 +52,19 @@ import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.CmsUploadButton;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
-import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.ui.components.contextmenu.CmsContextMenu;
-import org.opencms.ui.components.contextmenu.CmsContextMenu.ContextMenuItem;
-import org.opencms.ui.components.contextmenu.CmsContextMenu.ContextMenuItemClickEvent;
-import org.opencms.ui.components.contextmenu.CmsContextMenu.ContextMenuItemClickListener;
 import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
-import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
-import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
+import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.ui.dialogs.CmsNewDialog;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -87,8 +72,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -113,12 +96,9 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.server.UserError;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
 import com.vaadin.ui.Button;
@@ -145,157 +125,8 @@ import com.vaadin.ui.themes.ValoTheme;
  * The file explorer app.<p>
  */
 public class CmsFileExplorer
-implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions {
-
-    /**
-     * Handles inline editing within the file table.<p>
-     */
-    public class ContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
-
-        /** The serial version id. */
-        private static final long serialVersionUID = -9160838301862765592L;
-
-        /** The edited content structure id. */
-        private CmsUUID m_editId;
-
-        /** The edited property. */
-        private CmsResourceTableProperty m_editProperty;
-
-        /** The lock action record. */
-        private CmsLockActionRecord m_lockActionRecord;
-
-        /**
-         * Constructor.<p>
-         *
-         * @param editId the content structure id
-         * @param editProperty the property to edit
-         */
-        public ContextMenuEditHandler(CmsUUID editId, CmsResourceTableProperty editProperty) {
-            m_editId = editId;
-            m_editProperty = editProperty;
-        }
-
-        /**
-         * Cancels the edit process. Unlocks the resource if required.<p>
-         *
-         * @see org.opencms.ui.components.I_CmsFilePropertyEditHandler#cancel()
-         */
-        public void cancel() {
-
-            if (m_lockActionRecord.getChange() == LockChange.locked) {
-                CmsObject cms = A_CmsUI.getCmsObject();
-                try {
-                    CmsResource res = cms.readResource(m_editId);
-                    cms.unlockResource(res);
-                } catch (CmsException e) {
-                    LOG.warn("Failed to unlock resource " + m_editId.toString(), e);
-                }
-            }
-            CmsAppWorkplaceUi.get().enableGlobalShortcuts();
-        }
-
-        /**
-         * @see org.opencms.ui.components.I_CmsFilePropertyEditHandler#save(java.lang.String)
-         */
-        public void save(String value) {
-
-            try {
-                CmsObject cms = A_CmsUI.getCmsObject();
-                CmsResource res = cms.readResource(m_editId);
-                try {
-                    if (CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(m_editProperty)
-                        || CmsResourceTableProperty.PROPERTY_TITLE.equals(m_editProperty)) {
-
-                        CmsProperty prop = new CmsProperty(
-                            m_editProperty == CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT
-                            ? CmsPropertyDefinition.PROPERTY_NAVTEXT
-                            : CmsPropertyDefinition.PROPERTY_TITLE,
-                            value,
-                            null);
-                        cms.writePropertyObject(cms.getSitePath(res), prop);
-                    } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(m_editProperty)) {
-                        String sourcePath = cms.getSitePath(res);
-                        cms.renameResource(
-                            sourcePath,
-                            CmsStringUtil.joinPaths(CmsResource.getParentFolder(sourcePath), value));
-                    }
-                } finally {
-                    if (m_lockActionRecord.getChange() == LockChange.locked) {
-                        CmsResource updatedRes = cms.readResource(res.getStructureId(), CmsResourceFilter.ALL);
-                        try {
-                            cms.unlockResource(updatedRes);
-                        } catch (CmsLockException e) {
-                            LOG.warn(e.getLocalizedMessage(), e);
-                        }
-                    }
-                    CmsAppWorkplaceUi.get().enableGlobalShortcuts();
-                    m_fileTable.clearSelection();
-                }
-            } catch (CmsException e) {
-                LOG.error("Exception while saving changed " + m_editProperty + " to resource " + m_editId, e);
-                CmsErrorDialog.showErrorDialog(e);
-            }
-
-        }
-
-        /**
-         * @see org.opencms.ui.components.I_CmsFilePropertyEditHandler#start()
-         */
-        public void start() {
-
-            CmsObject cms = A_CmsUI.getCmsObject();
-            try {
-                CmsResource res = cms.readResource(m_editId);
-                m_lockActionRecord = CmsLockUtil.ensureLock(cms, res);
-                CmsAppWorkplaceUi.get().disableGlobalShortcuts();
-                m_fileTable.startEdit(m_editId, m_editProperty, this);
-            } catch (CmsException e) {
-                CmsErrorDialog.showErrorDialog(e);
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-        }
-
-        /**
-         * @see com.vaadin.event.FieldEvents.TextChangeListener#textChange(com.vaadin.event.FieldEvents.TextChangeEvent)
-         */
-        public void textChange(TextChangeEvent event) {
-
-            TextField tf = (TextField)event.getSource();
-            try {
-                validate(event.getText());
-                tf.setComponentError(null);
-            } catch (InvalidValueException e) {
-                tf.setComponentError(new UserError(e.getHtmlMessage(), ContentMode.HTML, null));
-            }
-        }
-
-        /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
-         */
-        public void validate(Object value) throws InvalidValueException {
-
-            if ((m_editProperty == CmsResourceTableProperty.PROPERTY_RESOURCE_NAME) && (value instanceof String)) {
-                try {
-                    String newName = (String)value;
-                    CmsResource.checkResourceName(newName);
-                    CmsObject cms = A_CmsUI.getCmsObject();
-                    CmsResource res = cms.readResource(m_editId);
-                    if (!res.getName().equals(newName)) {
-                        String sourcePath = cms.getSitePath(res);
-                        if (cms.existsResource(
-                            CmsStringUtil.joinPaths(CmsResource.getParentFolder(sourcePath), newName))) {
-                            throw new InvalidValueException("The selected filename already exists.");
-                        }
-                    }
-                } catch (CmsIllegalArgumentException e) {
-                    throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
-                } catch (CmsException e) {
-                    LOG.warn("Error while validating new filename", e);
-                    throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
-                }
-            }
-        }
-    }
+implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions,
+I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
 
     /** The drop handler for copy/move operations. */
     public class ExplorerDropHandler implements DropHandler {
@@ -427,7 +258,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             }
             CmsExplorerDialogContext context = new CmsExplorerDialogContext(
                 ContextType.fileTable,
-                m_appContext,
+                m_fileTable,
                 CmsFileExplorer.this,
                 resources);
             return context;
@@ -464,81 +295,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         public void setOpenPathFragment(String openPathFragment) {
 
             m_openPathFragment = openPathFragment;
-        }
-    }
-
-    /**
-     * Context menu builder for explorer.<p>
-     */
-    protected class MenuBuilder implements I_CmsContextMenuBuilder {
-
-        /** Tree builder used to build the tree of menu items. */
-        private CmsContextMenuTreeBuilder m_treeBuilder;
-
-        /**
-         * @see org.opencms.ui.I_CmsContextMenuBuilder#buildContextMenu(java.util.List, org.opencms.ui.components.contextmenu.CmsContextMenu)
-         */
-        public void buildContextMenu(List<CmsResource> resources, CmsContextMenu menu) {
-
-            CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(createDialogContext());
-            m_treeBuilder = treeBuilder;
-            CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(
-                OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems());
-            for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
-                createItem(menu, node);
-            }
-        }
-
-        /**
-         * Gets the localized title for the context menu item by resolving any message key macros in the raw title using the current locale.<p>
-         *
-         * @param item the unlocalized title
-         * @return the localized title
-         */
-        String getTitle(I_CmsContextMenuItem item) {
-
-            return CmsVaadinUtils.localizeString(item.getTitle(A_CmsUI.get().getLocale()));
-        }
-
-        /**
-         * Creates a context menu item.<p>
-         *
-         * @param parent the parent (either the context menu itself, or a parent item)
-         * @param node the node which should be added as a context menu item
-         *
-         * @return the created item
-         */
-        private ContextMenuItem createItem(Object parent, CmsTreeNode<I_CmsContextMenuItem> node) {
-
-            final I_CmsContextMenuItem data = node.getData();
-            ContextMenuItem guiMenuItem = null;
-            if (parent instanceof CmsContextMenu) {
-                guiMenuItem = ((CmsContextMenu)parent).addItem(getTitle(data));
-            } else {
-                guiMenuItem = ((ContextMenuItem)parent).addItem(getTitle(data));
-            }
-            if (m_treeBuilder.getVisibility(data).isInActive()) {
-                guiMenuItem.setEnabled(false);
-                String key = m_treeBuilder.getVisibility(data).getMessageKey();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key)) {
-                    guiMenuItem.setDescription(CmsVaadinUtils.getMessageText(key));
-                }
-            }
-            if (node.getChildren().size() > 0) {
-                for (CmsTreeNode<I_CmsContextMenuItem> childNode : node.getChildren()) {
-                    createItem(guiMenuItem, childNode);
-                }
-            } else {
-                guiMenuItem.addItemClickListener(new ContextMenuItemClickListener() {
-
-                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                        data.executeAction(createDialogContext());
-                    }
-                });
-
-            }
-            return guiMenuItem;
         }
     }
 
@@ -631,6 +387,12 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         }
     }
 
+    /** The in line editable resource properties. */
+    public static final Collection<CmsResourceTableProperty> INLINE_EDIT_PROPERTIES = Arrays.asList(
+        CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
+        CmsResourceTableProperty.PROPERTY_TITLE,
+        CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT);
+
     /** The opened paths session attribute name. */
     public static final String OPENED_PATHS = "explorer-opened-paths";
 
@@ -709,6 +471,9 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The current app state. */
     private String m_currentState;
 
+    /** The tree expand listener. */
+    private TreeExpandListener m_expandListener;
+
     /** The folder tree. */
     private Tree m_fileTree;
 
@@ -718,17 +483,20 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The last context menu resources. */
     private List<CmsResource> m_lastDialogContextResources;
 
-    /** The new button. */
-    private Button m_newButton;
-
     /** The quick launch location cache. */
     private CmsQuickLaunchLocationCache m_locationCache;
+
+    /** The new button. */
+    private Button m_newButton;
 
     /** The publish button. */
     private Button m_publishButton;
 
     /** The search field. */
     private TextField m_searchField;
+
+    /** the currently selected file tree folder, may be null. */
+    private CmsUUID m_selectTreeFolder;
 
     /** The site selector. */
     private ComboBox m_siteSelector;
@@ -742,12 +510,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
 
-    /** The tree expand listener. */
-    private TreeExpandListener m_expandListener;
-
-    /** the currently selected file tree folder, may be null. */
-    private CmsUUID m_selectTreeFolder;
-
     /**
      * Constructor.<p>
      */
@@ -758,7 +520,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             public void run() {
 
                 if (!m_fileTable.getSelectedIds().isEmpty()) {
-                    I_CmsDialogContext context1 = createDialogContext();
+                    I_CmsDialogContext context1 = getDialogContext();
                     context1.start("Delete", new CmsDeleteDialog(context1));
                 }
             }
@@ -777,7 +539,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             public void run() {
 
                 I_CmsWorkplaceAction propAction = new CmsPropertiesDialogAction();
-                I_CmsDialogContext context = createDialogContext();
+                I_CmsDialogContext context = getDialogContext();
                 if (propAction.getVisibility(context).isActive()) {
                     propAction.executeAction(context);
                 }
@@ -788,10 +550,9 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
             public void run() {
 
-                if ((m_fileTable.getSelectedIds().size() == 1)
-                    && isPropertyEditable(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME)) {
-                    CmsUUID id = m_fileTable.getSelectedIds().iterator().next();
-                    editItemProperty(id, CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
+                CmsExplorerDialogContext context = getDialogContext();
+                if (context.isPropertyEditable(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME)) {
+                    context.editProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
                 }
             }
         });
@@ -804,19 +565,10 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             }
         });
 
-        m_fileTable = new CmsFileTable();
+        m_fileTable = new CmsFileTable(this);
         m_fileTable.setSizeFull();
-        m_fileTable.setMenuBuilder(new MenuBuilder());
-        m_fileTable.addItemClickListener(new ItemClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void itemClick(ItemClickEvent event) {
-
-                handleFileItemClick(event);
-            }
-        });
-
+        m_fileTable.setMenuBuilder(new CmsResourceContextMenuBuilder());
+        m_fileTable.setFolderSelectHandler(this);
         m_uploadArea = new CmsUploadAreaExtension(m_fileTable);
         m_uploadArea.addUploadListener(new I_UploadListener() {
 
@@ -1046,6 +798,22 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsContextProvider#getDialogContext()
+     */
+    public CmsExplorerDialogContext getDialogContext() {
+
+        List<CmsResource> resources = m_fileTable.getSelectedResources();
+        m_lastDialogContextResources = resources;
+        CmsExplorerDialogContext context = new CmsExplorerDialogContext(
+            ContextType.fileTable,
+            m_fileTable,
+            this,
+            resources);
+        context.setEditableProperties(INLINE_EDIT_PROPERTIES);
+        return context;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsHasShortcutActions#getShortcutActions()
      */
     public Map<Action, Runnable> getShortcutActions() {
@@ -1060,7 +828,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
         m_appContext = context;
         m_appContext.setMenuDialogContext(
-            new CmsExplorerDialogContext(ContextType.appToolbar, m_appContext, this, null));
+            new CmsExplorerDialogContext(ContextType.appToolbar, m_fileTable, this, null));
         HorizontalSplitPanel sp = new HorizontalSplitPanel();
         sp.setSizeFull();
         sp.setFirstComponent(m_fileTree);
@@ -1110,6 +878,25 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     public boolean isCachable() {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.ui.components.CmsFileTable.I_FolderSelectHandler#onFolderSelect(org.opencms.util.CmsUUID)
+     */
+    public void onFolderSelect(CmsUUID itemId) {
+
+        expandCurrentFolder();
+        if (m_fileTree.getItem(itemId) != null) {
+            m_fileTree.select(itemId);
+        }
+        try {
+            readFolder(itemId);
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(
+                CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1, itemId),
+                e);
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
@@ -1346,45 +1133,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     }
 
     /**
-     * Creates the dialog context for dialogs opened from the context menu.<p>
-     *
-     * @return the dialog context
-     */
-    protected I_CmsDialogContext createDialogContext() {
-
-        List<CmsResource> resources = m_fileTable.getSelectedResources();
-        m_lastDialogContextResources = resources;
-        return new CmsExplorerDialogContext(ContextType.fileTable, m_appContext, this, resources);
-    }
-
-    /**
-     * Edits the given property for the requested item.<p>
-     *
-     * @param itemId the item id
-     * @param propertyId the property id
-     */
-    protected void editItemProperty(CmsUUID itemId, CmsResourceTableProperty propertyId) {
-
-        new ContextMenuEditHandler(itemId, propertyId).start();
-    }
-
-    /**
-     * Checks whether the given property is editable.<p>
-     *
-     * @param propertyId the property id
-     *
-     * @return <code>true</code> if the given property is editable
-     */
-    protected boolean isPropertyEditable(CmsResourceTableProperty propertyId) {
-
-        return String.class.equals(propertyId.getColumnType())
-            && ((propertyId == CmsResourceTableProperty.PROPERTY_RESOURCE_NAME)
-                || (propertyId == CmsResourceTableProperty.PROPERTY_TITLE)
-                || (propertyId == CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT))
-            && m_fileTable.isColumnVisible(propertyId);
-    }
-
-    /**
      * Reads the given folder.<p>
      *
      * @param folderId the folder id
@@ -1478,69 +1226,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     }
 
     /**
-     * Handles the file table item click.<p>
-     *
-     * @param event the click event
-     */
-    void handleFileItemClick(ItemClickEvent event) {
-
-        if (m_fileTable.isEditing()) {
-            m_fileTable.stopEdit();
-
-        } else if (!event.isCtrlKey() && !event.isShiftKey()) {
-            CmsUUID itemId = (CmsUUID)event.getItemId();
-            boolean openedFolder = false;
-            // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT)) {
-                m_fileTable.handleSelection(itemId);
-                m_fileTable.openContextMenu(event);
-            } else {
-                if ((event.getPropertyId() == null)
-                    || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
-                    m_fileTable.openContextMenu(event);
-                } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
-                    Boolean isFolder = (Boolean)event.getItem().getItemProperty(
-                        CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
-                    if ((isFolder != null) && isFolder.booleanValue()) {
-                        expandCurrentFolder();
-                        if (m_fileTree.getItem(itemId) != null) {
-                            m_fileTree.select(itemId);
-                        }
-                        try {
-                            readFolder(itemId);
-                            openedFolder = true;
-                        } catch (CmsException e) {
-                            CmsErrorDialog.showErrorDialog(
-                                CmsVaadinUtils.getMessageText(Messages.ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1, itemId),
-                                e);
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    } else {
-                        try {
-                            CmsObject cms = A_CmsUI.getCmsObject();
-                            CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
-                            String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                            HttpServletRequest req = CmsVaadinUtils.getRequest();
-                            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-                            A_CmsUI.get().getPage().setLocation(link);
-                            return;
-                        } catch (CmsVfsResourceNotFoundException e) {
-                            LOG.info(e.getLocalizedMessage(), e);
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    }
-                }
-
-            }
-            // update the item on click to show any available changes
-            if (!openedFolder) {
-                m_fileTable.update(itemId, false);
-            }
-        }
-    }
-
-    /**
      * Handles the file tree click events.<p>
      *
      * @param event the event
@@ -1591,7 +1276,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             CmsObject cms = A_CmsUI.getCmsObject();
 
             CmsResource folderRes = cms.readResource(m_currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
-            I_CmsDialogContext newDialogContext = createDialogContext();
+            I_CmsDialogContext newDialogContext = getDialogContext();
 
             CmsNewDialog newDialog = new CmsNewDialog(folderRes, newDialogContext);
             newDialogContext.start(

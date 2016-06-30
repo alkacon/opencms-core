@@ -88,7 +88,7 @@ public class CmsToolBar extends CssLayout {
          * Constructor.<p>
          */
         protected ToolbarContext() {
-            super(ContextType.appToolbar, null, Collections.<CmsResource> emptyList());
+            super(ContextType.appToolbar, Collections.<CmsResource> emptyList());
         }
 
         /**

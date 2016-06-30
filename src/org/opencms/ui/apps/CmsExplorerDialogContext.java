@@ -33,22 +33,19 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.I_CmsEditPropertyContext;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.components.CmsResourceTableProperty;
+import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsFileTableDialogContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 /**
  * Dialog context for the explorer.<p>
  */
-public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_CmsEditPropertyContext {
+public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
 
     /** The explorer instance. */
     private CmsFileExplorer m_explorer;
@@ -57,25 +54,17 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
      * Creates a new instance.<p>
      *
      * @param contextType the context type
-     * @param appContext the app context
+     * @param fileTable the file table
      * @param explorer the explorer app instance
      * @param resources the list of selected resources
      */
     public CmsExplorerDialogContext(
         ContextType contextType,
-        I_CmsAppUIContext appContext,
+        CmsFileTable fileTable,
         CmsFileExplorer explorer,
         List<CmsResource> resources) {
-        super(contextType, appContext, resources);
+        super(contextType, fileTable, resources);
         m_explorer = explorer;
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsEditPropertyContext#editProperty(java.lang.Object)
-     */
-    public void editProperty(Object propertyId) {
-
-        m_explorer.editItemProperty(getResources().get(0).getStructureId(), (CmsResourceTableProperty)propertyId);
     }
 
     /**
@@ -84,7 +73,7 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
     @Override
     public void finish(CmsProject project, String siteRoot) {
 
-        super.finish(null);
+        finish(null);
         m_explorer.onSiteOrProjectChange(project, siteRoot);
     }
 
@@ -94,24 +83,23 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
     @Override
     public void finish(Collection<CmsUUID> ids) {
 
-        super.finish(ids);
-        if (ids == null) {
-            ids = Lists.newArrayList();
-            for (CmsResource res : getResources()) {
-                ids.add(res.getStructureId());
+        closeWindow();
+        CmsAppWorkplaceUi.get().enableGlobalShortcuts();
+        if (ids != null) {
+            for (CmsUUID id : ids) {
+                if (id.isNullUUID()) {
+                    m_explorer.updateAll();
+                    return;
+                }
             }
+            m_explorer.update(ids);
         }
-        for (CmsUUID id : ids) {
-            if (id.isNullUUID()) {
-                m_explorer.updateAll();
-            }
-        }
-        m_explorer.update(ids);
     }
 
     /**
      * @see org.opencms.ui.I_CmsDialogContext#focus(org.opencms.util.CmsUUID)
      */
+    @Override
     public void focus(CmsUUID cmsUUID) {
 
         try {
@@ -138,23 +126,5 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
         }
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#getAllStructureIdsInView()
-     */
-    public List<CmsUUID> getAllStructureIdsInView() {
-
-        return Lists.newArrayList(m_explorer.getAllIds());
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsEditPropertyContext#isPropertyEditable(java.lang.Object)
-     */
-    public boolean isPropertyEditable(Object propertyId) {
-
-        return (getResources().size() == 1)
-            && (propertyId instanceof CmsResourceTableProperty)
-            && m_explorer.isPropertyEditable((CmsResourceTableProperty)propertyId);
     }
 }
