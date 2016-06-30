@@ -43,6 +43,7 @@ import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlLocaleValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlStringValue;
@@ -86,8 +87,10 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public enum SequenceType {
         /** A <code>xsd:choice</code> where the choice elements can appear more than once in a mix. */
-        MULTIPLE_CHOICE, /** A simple <code>xsd:sequence</code>. */
-        SEQUENCE, /** A <code>xsd:choice</code> where only one choice element can be selected. */
+        MULTIPLE_CHOICE,
+        /** A simple <code>xsd:sequence</code>. */
+        SEQUENCE,
+        /** A <code>xsd:choice</code> where only one choice element can be selected. */
         SINGLE_CHOICE
     }
 
@@ -565,7 +568,8 @@ public class CmsXmlContentDefinition implements Cloneable {
     protected static void validateAttributesExists(
         Element element,
         String[] requiredAttributes,
-        String[] optionalAttributes) throws CmsXmlException {
+        String[] optionalAttributes)
+    throws CmsXmlException {
 
         if (element.attributeCount() < requiredAttributes.length) {
             throw new CmsXmlException(
@@ -623,7 +627,8 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(
         Element element,
-        Set<CmsXmlContentDefinition> includes) throws CmsXmlException {
+        Set<CmsXmlContentDefinition> includes)
+    throws CmsXmlException {
 
         validateAttributesExists(element, new String[] {XSD_ATTRIBUTE_NAME}, new String[0]);
 
@@ -778,6 +783,16 @@ public class CmsXmlContentDefinition implements Cloneable {
                 }
                 // create the type with the type manager
                 I_CmsXmlSchemaType type = typeManager.getContentType(typeElement, includes);
+
+                if (type.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)
+                    && ((type.getMaxOccurs() != 1) || (type.getMinOccurs() != 1))) {
+                    throw new CmsXmlException(
+                        Messages.get().container(
+                            Messages.ERR_EL_OF_TYPE_MUST_OCCUR_EXACTLY_ONCE_2,
+                            typeElement.getUniquePath(),
+                            type.getTypeName()));
+                }
+
                 if (sequenceType == SequenceType.MULTIPLE_CHOICE) {
                     // if this is a multiple choice sequence,
                     // all elements must have "minOccurs" 0 or 1 and "maxOccurs" of 1
@@ -860,7 +875,8 @@ public class CmsXmlContentDefinition implements Cloneable {
     private static CmsXmlContentDefinition unmarshalInternal(
         Document document,
         String schemaLocation,
-        EntityResolver resolver) throws CmsXmlException {
+        EntityResolver resolver)
+    throws CmsXmlException {
 
         // analyze the document and generate the XML content type definition
         Element root = document.getRootElement();

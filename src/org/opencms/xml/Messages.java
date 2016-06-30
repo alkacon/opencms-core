@@ -86,6 +86,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EL_MISSING_ATTRIBUTE_2 = "ERR_EL_MISSING_ATTRIBUTE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_EL_OF_TYPE_MUST_OCCUR_EXACTLY_ONCE_2 = "ERR_EL_OF_TYPE_MUST_OCCUR_EXACTLY_ONCE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INIT_TYPE_MANAGER_0 = "ERR_INIT_TYPE_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
