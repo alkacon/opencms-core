@@ -132,6 +132,9 @@ public class OpenCmsTheme {
     public static final String LOCK_OTHER = "o-lock-other";
 
     /** CSS style name. */
+    public static final String LOCK_PUBLISH = "o-lock-publish";
+
+    /** CSS style name. */
     public static final String LOCK_SHARED = "o-lock-shared";
 
     /** CSS style name. */

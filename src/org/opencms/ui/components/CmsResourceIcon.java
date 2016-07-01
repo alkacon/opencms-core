@@ -78,27 +78,34 @@ public class CmsResourceIcon extends Label {
 
         if (resUtil != null) {
             String lockIcon;
-            switch (resUtil.getLockState()) {
-                case 1:
-                    lockIcon = OpenCmsTheme.LOCK_OTHER;
-                    break;
+            String message = null;
+            if (resUtil.getLock().getSystemLock().isPublish()) {
+                lockIcon = OpenCmsTheme.LOCK_PUBLISH;
+                message = CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_PUBLISH_TOOLTIP_0);
+            } else {
+                switch (resUtil.getLockState()) {
+                    case 1:
+                        lockIcon = OpenCmsTheme.LOCK_OTHER;
+                        break;
 
-                case 2:
-                    lockIcon = OpenCmsTheme.LOCK_SHARED;
-                    break;
-                case 3:
-                    lockIcon = OpenCmsTheme.LOCK_USER;
-                    break;
-                default:
-                    lockIcon = null;
-            }
-            if (lockIcon != null) {
-                content += getOverlaySpan(
-                    lockIcon,
-                    CmsVaadinUtils.getMessageText(
+                    case 2:
+                        lockIcon = OpenCmsTheme.LOCK_SHARED;
+                        break;
+                    case 3:
+                        lockIcon = OpenCmsTheme.LOCK_USER;
+                        break;
+                    default:
+                        lockIcon = null;
+                }
+                if (lockIcon != null) {
+                    message = CmsVaadinUtils.getMessageText(
                         Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
                         resUtil.getLockedByName(),
-                        resUtil.getLockedInProjectName()));
+                        resUtil.getLockedInProjectName());
+                }
+            }
+            if (lockIcon != null) {
+                content += getOverlaySpan(lockIcon, message);
             }
         }
         if (state != null) {
