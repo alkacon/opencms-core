@@ -32,8 +32,10 @@ import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -87,8 +89,7 @@ public class CmsProjectsTable extends Table {
          */
         public String getTitle(Locale locale) {
 
-            // TODO Auto-generated method stub
-            return "Delete";
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DELETE_0);
         }
 
         /**
@@ -121,8 +122,7 @@ public class CmsProjectsTable extends Table {
          */
         public String getTitle(Locale locale) {
 
-            // TODO Auto-generated method stub
-            return "Edit";
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_EDIT_0);
         }
 
         /**
@@ -162,8 +162,7 @@ public class CmsProjectsTable extends Table {
          */
         public String getTitle(Locale locale) {
 
-            // TODO Auto-generated method stub
-            return "Publish";
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_PUBLISH_0);
         }
 
         /**
@@ -207,8 +206,7 @@ public class CmsProjectsTable extends Table {
          */
         public String getTitle(Locale locale) {
 
-            // TODO Auto-generated method stub
-            return "Show files";
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_SHOW_FILES_0);
         }
 
         /**
@@ -247,8 +245,7 @@ public class CmsProjectsTable extends Table {
          */
         public String getTitle(Locale locale) {
 
-            // TODO Auto-generated method stub
-            return "Unlock files";
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_UNLOCK_FILES_0);
         }
 
         /**
@@ -333,14 +330,14 @@ public class CmsProjectsTable extends Table {
         m_container.addContainerProperty(PROP_RESOURCES, Label.class, "");
 
         setContainerDataSource(m_container);
-        setColumnHeader(PROP_NAME, "Name");
-        setColumnHeader(PROP_DESCRIPTION, "Description");
-        setColumnHeader(PROP_ORG_UNIT, "Org Unit");
-        setColumnHeader(PROP_OWNER, "Owner");
-        setColumnHeader(PROP_MANAGER, "Manager Group");
-        setColumnHeader(PROP_USER, "Users Group");
-        setColumnHeader(PROP_DATE_CREATED, "Date Created");
-        setColumnHeader(PROP_RESOURCES, "Resources");
+        setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_NAME_0));
+        setColumnHeader(PROP_DESCRIPTION, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DESCRIPTION_0));
+        setColumnHeader(PROP_ORG_UNIT, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ORG_UNIT_0));
+        setColumnHeader(PROP_OWNER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_OWNER_0));
+        setColumnHeader(PROP_MANAGER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_GROUP_0));
+        setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_USER_GROUP_0));
+        setColumnHeader(PROP_DATE_CREATED, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DATE_CREATED_0));
+        setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCES_0));
         setSelectable(true);
         setMultiSelect(true);
         m_menu = new CmsContextMenu();
@@ -473,5 +470,4 @@ public class CmsProjectsTable extends Table {
             }
         }
     }
-
 }

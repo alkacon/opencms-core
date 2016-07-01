@@ -8,19 +8,19 @@
 </head>
 <body>
 	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
-		<v-label _id="m_title" height="80px"/>
-		<v-panel caption="Identification" height="260px">
+		<v-label _id="m_title" style-name="h2"/>
+		<v-panel caption="%(key.GUI_PROJECTS_IDENTIFICATION_0)" height="260px">
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
-				<v-text-field _id="m_fieldName" width="100%" caption="Name"/>
-				<v-text-field _id="m_fieldDescription" width="100%" caption="Description"/>
-				<p-cms-principal-select _id="m_fieldManager" width="100%" caption="Manager group"/>
-				<p-cms-principal-select _id="m_fieldUser" width="100%" caption="Users group"/>
-				<v-check-box _id="m_fieldDeleteAfterPublish" caption="Delete after publish" />
+				<v-text-field _id="m_fieldName" width="100%" caption="%(key.GUI_PROJECTS_NAME_0)"/>
+				<v-text-field _id="m_fieldDescription" width="100%" caption="%(key.GUI_PROJECTS_DESCRIPTION_0)"/>
+				<p-cms-principal-select _id="m_fieldManager" width="100%" caption="%(key.GUI_PROJECTS_MANAGER_GROUP_0)"/>
+				<p-cms-principal-select _id="m_fieldUser" width="100%" caption="%(key.GUI_PROJECTS_USER_GROUP_0)"/>
+				<v-check-box _id="m_fieldDeleteAfterPublish" caption="%(key.GUI_PROJECTS_DELETE_AFTER_PUBLISH_0)" />
 			</v-form-layout>
 		</v-panel>
-		<v-panel caption="Resources" height="100%" :expand>
+		<v-panel caption="%(key.GUI_PROJECTS_RESOURCES_0)" height="100%" :expand>
 			<v-form-layout _id="m_resources" margin spacing style-name="o-formlayout-workplace-main">
-			<v-button _id="m_addResource">Add resource</v-button>
+			<v-button _id="m_addResource">%(key.GUI_PROJECTS_ADD_RESOURCE_0)</v-button>
 			</v-form-layout>
 		</v-panel>
 		<v-panel height="46px">

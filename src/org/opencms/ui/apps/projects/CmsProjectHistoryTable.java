@@ -32,6 +32,8 @@ import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsUUID;
 
 import java.util.Date;
@@ -84,16 +86,26 @@ public class CmsProjectHistoryTable extends Table {
         m_container.addContainerProperty(CmsProjectsTable.PROP_RESOURCES, Label.class, "");
 
         setContainerDataSource(m_container);
-        setColumnHeader(CmsProjectsTable.PROP_NAME, "Name");
-        setColumnHeader(CmsProjectsTable.PROP_DESCRIPTION, "Description");
-        setColumnHeader(PROP_PUBLISH_DATE, "Publishing date");
-        setColumnHeader(PROP_PUBLISH_USER, "Published by");
-        setColumnHeader(CmsProjectsTable.PROP_ORG_UNIT, "Org Unit");
-        setColumnHeader(CmsProjectsTable.PROP_OWNER, "Owner");
-        setColumnHeader(CmsProjectsTable.PROP_MANAGER, "Manager Group");
-        setColumnHeader(CmsProjectsTable.PROP_USER, "Users Group");
-        setColumnHeader(CmsProjectsTable.PROP_DATE_CREATED, "Date Created");
-        setColumnHeader(CmsProjectsTable.PROP_RESOURCES, "Resources");
+        setColumnHeader(CmsProjectsTable.PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_NAME_0));
+        setColumnHeader(
+            CmsProjectsTable.PROP_DESCRIPTION,
+            CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DESCRIPTION_0));
+        setColumnHeader(PROP_PUBLISH_DATE, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_PUBLISH_DATE_0));
+        setColumnHeader(PROP_PUBLISH_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_PUBLISHED_BY_0));
+        setColumnHeader(
+            CmsProjectsTable.PROP_ORG_UNIT,
+            CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ORG_UNIT_0));
+        setColumnHeader(CmsProjectsTable.PROP_OWNER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_OWNER_0));
+        setColumnHeader(
+            CmsProjectsTable.PROP_MANAGER,
+            CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_GROUP_0));
+        setColumnHeader(CmsProjectsTable.PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_USER_GROUP_0));
+        setColumnHeader(
+            CmsProjectsTable.PROP_DATE_CREATED,
+            CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DATE_CREATED_0));
+        setColumnHeader(
+            CmsProjectsTable.PROP_RESOURCES,
+            CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCES_0));
 
         setSelectable(true);
         setMultiSelect(true);

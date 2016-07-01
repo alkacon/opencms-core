@@ -32,6 +32,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
@@ -108,7 +109,7 @@ public class CmsEditProjectForm extends VerticalLayout {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_manager = manager;
-        m_title.setValue("Create new project");
+        m_title.setValue(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_CREATE_NEW_0));
         m_fieldManager.setWidgetType(WidgetType.groupwidget);
         m_fieldUser.setWidgetType(WidgetType.groupwidget);
         m_addResource.addClickListener(new ClickListener() {
@@ -152,7 +153,7 @@ public class CmsEditProjectForm extends VerticalLayout {
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             m_project = cms.readProject(projectId);
-            m_title.setValue("Edit project " + m_project.getName());
+            m_title.setValue(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_EDIT_1, m_project.getName()));
             m_fieldName.setValue(m_project.getName());
             m_fieldName.setEnabled(false);
             m_fieldDescription.setValue(m_project.getDescription());
@@ -181,8 +182,8 @@ public class CmsEditProjectForm extends VerticalLayout {
         }
         CmsRemovableFormRow<CmsPathSelectField> row = new CmsRemovableFormRow<CmsPathSelectField>(
             field,
-            "Remove resource");
-        row.setCaption("Resource");
+            CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_REMOVE_RESOURCE_0));
+        row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCE_0));
         m_resources.addComponent(row);
     }
 

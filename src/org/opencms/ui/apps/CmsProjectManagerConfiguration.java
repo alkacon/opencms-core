@@ -27,6 +27,9 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.apps.projects.CmsProjectManager;
 import org.opencms.ui.components.OpenCmsTheme;
 
@@ -100,7 +103,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getName(Locale locale) {
 
-        return "Project Management";
+        return Messages.get().getBundle(locale).key(Messages.GUI_PROJECTS_MANAGER_TITLE_0);
     }
 
     /**
@@ -110,5 +113,17 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     public int getOrder() {
 
         return 5;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     */
+    @Override
+    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
+
+        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.PROJECT_MANAGER)
+        ? CmsAppVisibilityStatus.ACTIVE
+        : CmsAppVisibilityStatus.INVISIBLE;
+        return status;
     }
 }

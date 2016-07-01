@@ -31,10 +31,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.I_CmsContextProvider;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
@@ -66,7 +68,9 @@ public class CmsProjectFiles extends CmsFileTable implements I_CmsContextProvide
             childResources = cms.readProjectView(projectId, CmsResource.STATE_KEEP);
             fillTable(cms, childResources);
         } catch (CmsException e) {
-            CmsErrorDialog.showErrorDialog("Unable to display project files", e);
+            CmsErrorDialog.showErrorDialog(
+                CmsVaadinUtils.getMessageText(Messages.ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0),
+                e);
         }
 
     }

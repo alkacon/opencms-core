@@ -42,6 +42,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1 = "ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0 = "ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -94,6 +97,90 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PAGEEDITOR_TITLE_0 = "GUI_PAGEEDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_ADD_0 = "GUI_PROJECTS_ADD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_ADD_DESCRIPTION_0 = "GUI_PROJECTS_ADD_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_ADD_RESOURCE_0 = "GUI_PROJECTS_ADD_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_CREATE_NEW_0 = "GUI_PROJECTS_CREATE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_DATE_CREATED_0 = "GUI_PROJECTS_DATE_CREATED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_DELETE_0 = "GUI_PROJECTS_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_DELETE_AFTER_PUBLISH_0 = "GUI_PROJECTS_DELETE_AFTER_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_DESCRIPTION_0 = "GUI_PROJECTS_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_EDIT_0 = "GUI_PROJECTS_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_EDIT_1 = "GUI_PROJECTS_EDIT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_FILES_1 = "GUI_PROJECTS_FILES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_HISTORY_0 = "GUI_PROJECTS_HISTORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_HISTORY_DESCRIPTION_0 = "GUI_PROJECTS_HISTORY_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_IDENTIFICATION_0 = "GUI_PROJECTS_IDENTIFICATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_MANAGER_GROUP_0 = "GUI_PROJECTS_MANAGER_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_MANAGER_TITLE_0 = "GUI_PROJECTS_MANAGER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_NAME_0 = "GUI_PROJECTS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_ORG_UNIT_0 = "GUI_PROJECTS_ORG_UNIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_OWNER_0 = "GUI_PROJECTS_OWNER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_PUBLISH_0 = "GUI_PROJECTS_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_PUBLISH_DATE_0 = "GUI_PROJECTS_PUBLISH_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_PUBLISHED_BY_0 = "GUI_PROJECTS_PUBLISHED_BY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_REMOVE_RESOURCE_0 = "GUI_PROJECTS_REMOVE_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_RESOURCE_0 = "GUI_PROJECTS_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_RESOURCES_0 = "GUI_PROJECTS_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_SHOW_FILES_0 = "GUI_PROJECTS_SHOW_FILES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_UNLOCK_FILES_0 = "GUI_PROJECTS_UNLOCK_FILES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_USER_GROUP_0 = "GUI_PROJECTS_USER_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_BUTTON_TITLE_0 = "GUI_PUBLISH_BUTTON_TITLE_0";

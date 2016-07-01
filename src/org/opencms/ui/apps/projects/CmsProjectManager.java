@@ -29,8 +29,10 @@ package org.opencms.ui.apps.projects;
 
 import org.opencms.main.CmsException;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsProjectManagerConfiguration;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -74,19 +76,29 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
 
         Map<String, String> crumbs = new LinkedHashMap<String, String>();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", "Project Management");
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
         } else if (state.equals(PATH_NAME_ADD)) {
-            crumbs.put(CmsProjectManagerConfiguration.APP_ID, "Project Management");
-            crumbs.put("", "Add Project");
+            crumbs.put(
+                CmsProjectManagerConfiguration.APP_ID,
+                CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_0));
         } else if (state.equals(PATH_NAME_HISTORY)) {
-            crumbs.put(CmsProjectManagerConfiguration.APP_ID, "Project Management");
-            crumbs.put("", "Project History");
+            crumbs.put(
+                CmsProjectManagerConfiguration.APP_ID,
+                CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_HISTORY_0));
         } else if (state.startsWith(PATH_NAME_EDIT)) {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
-                crumbs.put(CmsProjectManagerConfiguration.APP_ID, "Project Management");
+                crumbs.put(
+                    CmsProjectManagerConfiguration.APP_ID,
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
                 try {
-                    crumbs.put("", "Edit project: " + A_CmsUI.getCmsObject().readProject(projectId).getName());
+                    crumbs.put(
+                        "",
+                        CmsVaadinUtils.getMessageText(
+                            Messages.GUI_PROJECTS_EDIT_1,
+                            A_CmsUI.getCmsObject().readProject(projectId).getName()));
                 } catch (CmsException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -95,9 +107,15 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
         } else if (state.startsWith(PATH_NAME_FILES)) {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
-                crumbs.put(CmsProjectManagerConfiguration.APP_ID, "Project Management");
+                crumbs.put(
+                    CmsProjectManagerConfiguration.APP_ID,
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
                 try {
-                    crumbs.put("", "Files of project: " + A_CmsUI.getCmsObject().readProject(projectId).getName());
+                    crumbs.put(
+                        "",
+                        CmsVaadinUtils.getMessageText(
+                            Messages.GUI_PROJECTS_FILES_1,
+                            A_CmsUI.getCmsObject().readProject(projectId).getName()));
                 } catch (CmsException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -166,14 +184,14 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             List<NavEntry> subNav = new ArrayList<NavEntry>();
             subNav.add(
                 new NavEntry(
-                    "Add Project",
-                    "Adds a new project.",
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_0),
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_DESCRIPTION_0),
                     new ExternalResource(OpenCmsTheme.getImageLink(ICON_ADD)),
                     PATH_NAME_ADD));
             subNav.add(
                 new NavEntry(
-                    "Project History",
-                    "Displays the project history.",
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_HISTORY_0),
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_HISTORY_DESCRIPTION_0),
                     new ExternalResource(OpenCmsTheme.getImageLink(ICON_HISTORY)),
                     PATH_NAME_HISTORY));
             return subNav;
