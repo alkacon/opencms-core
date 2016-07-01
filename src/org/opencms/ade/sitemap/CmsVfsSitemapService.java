@@ -566,7 +566,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<CmsCategoryTreeEntry> entries = CmsCoreService.getCategoriesForSitePathStatic(
                 cms,
                 entryPoint,
-                basePath);
+                cms.getRequestContext().removeSiteRoot(basePath));
             CmsSitemapCategoryData categoryData = new CmsSitemapCategoryData();
             for (CmsCategoryTreeEntry entry : entries) {
                 categoryData.add(entry);
