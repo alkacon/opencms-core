@@ -40,6 +40,7 @@ import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
@@ -1500,6 +1501,16 @@ public final class CmsObject {
             false,
             directGroupsOnly,
             remoteAddress);
+    }
+
+    /**
+     * Creates a new locale group service.<p>
+     *
+     * @return a locale group service instance
+     */
+    public CmsLocaleGroupService getLocaleGroupService() {
+
+        return new CmsLocaleGroupService(this);
     }
 
     /**

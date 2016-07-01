@@ -531,6 +531,25 @@ public class OpenCmsTestCase extends TestCase {
         final String importFolder,
         final String targetFolder) {
 
+        return generateSetupTestWrapper(testClass, importFolder, targetFolder, null);
+    }
+
+    /**
+     * Generates a wrapper for a test class which handles setting up the OpenCms instance.<p>
+     *
+     * @param testClass the test class to wrap
+     * @param importFolder the RFS folder with the test data to import
+     * @param targetFolder the VFS target folder for the test data
+     * @param configFolder folder with special configuration
+     *
+     * @return the wrapped test
+     */
+    public static Test generateSetupTestWrapper(
+        final Class<? extends Test> testClass,
+        final String importFolder,
+        final String targetFolder,
+        final String configFolder) {
+
         try {
             TestSuite suite = generateTestSuite(testClass);
             TestSetup wrapper = new TestSetup(suite) {
@@ -541,7 +560,7 @@ public class OpenCmsTestCase extends TestCase {
                 @Override
                 protected void setUp() {
 
-                    setupOpenCms(importFolder, targetFolder, null, testClass.getName());
+                    setupOpenCms(importFolder, targetFolder, configFolder, testClass.getName());
                 }
 
                 /**
@@ -983,7 +1002,7 @@ public class OpenCmsTestCase extends TestCase {
         String specialConfigFolder,
         String testName) {
 
-        return setupOpenCms(importFolder, targetFolder, null, null, testName, true);
+        return setupOpenCms(importFolder, targetFolder, null, specialConfigFolder, testName, true);
     }
 
     /**
