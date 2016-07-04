@@ -491,8 +491,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getDetailwidth())) {
                     try {
                         int width = Integer.parseInt(getDetailwidth());
-                        jsIncludes.addAll(
-                            config.getDetailFormatter(getDetailtype(), width).getJavascriptHeadIncludes());
+                        I_CmsFormatterBean formatter = config.getDetailFormatter(getDetailtype(), width);
+                        jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                        inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
                         requiresAllIncludes = false;
                     } catch (NumberFormatException ne) {
                         // nothing to do, we will include JavaScript for all detail containers
@@ -501,6 +502,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 if (requiresAllIncludes) {
                     for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
                         jsIncludes.addAll(getHeadIncludes(formatter, includeType));
+                        inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
                     }
                 }
             } catch (CmsException e) {
@@ -519,11 +521,12 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     + "\"></script>");
         }
         if (!inlineJS.isEmpty()) {
-            StringBuffer inline = new StringBuffer("\n<script type=\"text/javascript\">\n");
+            StringBuffer inline = new StringBuffer();
             for (Entry<String, String> jsEntry : inlineJS.entrySet()) {
+                inline.append("\n<script type=\"text/javascript\">\n");
                 inline.append(jsEntry.getValue()).append("\n\n");
+                inline.append("\n</script>\n");
             }
-            inline.append("\n</script>\n");
             pageContext.getOut().print(inline.toString());
         }
     }
