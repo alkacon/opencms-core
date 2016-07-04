@@ -36,6 +36,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PAGECOPY_INVALID_PAGE_0 = "ERR_PAGECOPY_INVALID_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PAGECOPY_SOURCE_IS_TARGET_0 = "ERR_PAGECOPY_SOURCE_IS_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_USER_NOT_SELF_MANAGED_1 = "ERR_USER_NOT_SELF_MANAGED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -70,6 +76,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHILD_DIALOG_GO_BACK_0 = "GUI_CHILD_DIALOG_GO_BACK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_COPY_MODE_0 = "GUI_COPYPAGE_COPY_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_DIALOG_TITLE_0 = "GUI_COPYPAGE_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_MODE_REUSE_0 = "GUI_COPYPAGE_MODE_REUSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_MODE_SMART_0 = "GUI_COPYPAGE_MODE_SMART_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_MODE_SMART_CHANGE_LOCALES_0 = "GUI_COPYPAGE_MODE_SMART_CHANGE_LOCALES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOGTITLE_COPYMOVE_0 = "GUI_DIALOGTITLE_COPYMOVE_0";
@@ -337,6 +358,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SYSTEM_SESSION_EXPIRED_ERROR_MESSAGE_0 = "GUI_SYSTEM_SESSION_EXPIRED_ERROR_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TARGET_FOLDER_0 = "GUI_TARGET_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MULTI_FILE_0 = "GUI_UNDO_MULTI_FILE_0";

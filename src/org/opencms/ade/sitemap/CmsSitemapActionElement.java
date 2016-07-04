@@ -35,6 +35,7 @@ import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.main.CmsLog;
+import org.opencms.ui.CmsVaadinUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,6 +99,14 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
                 I_CmsSitemapService.class.getMethod("prefetch", String.class),
                 getSitemapData()));
         sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
+        sb.append(
+            "  <script type=\"text/javascript\"\n" + "          src=\"/opencms/VAADIN/vaadinBootstrap.js\"></script>");
+        sb.append(
+            "<script type='text/javascript'>    \n"
+                + "function initVaadin() { "
+                + CmsVaadinUtils.getBootstrapScript(getCmsObject(), "sitemap-ui", "workplace/sitemap/")
+                + " } "
+                + "</script>");
         return sb.toString();
     }
 

@@ -202,6 +202,9 @@ public final class Messages {
     public static final String GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_MENU_ENTRY_0 = "GUI_COPYPAGE_MENU_ENTRY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

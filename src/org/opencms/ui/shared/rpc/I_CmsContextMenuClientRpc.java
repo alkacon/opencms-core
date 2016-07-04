@@ -18,7 +18,7 @@ public interface I_CmsContextMenuClientRpc extends ClientRpc {
 
     /**
      * Sends request to client widget to open context menu to given position.<p>
-     * 
+     *
      * @param x the client x position
      * @param y the client y position
      */
@@ -29,7 +29,7 @@ public interface I_CmsContextMenuClientRpc extends ClientRpc {
      * identified by given connectorId. (Method is on purpose with different
      * name from showContextMenu as overloading does not work properly in
      * javascript environment.)<p>
-     * 
+     *
      * @param connectorId the connector id
      */
     public void showContextMenuRelativeTo(String connectorId);

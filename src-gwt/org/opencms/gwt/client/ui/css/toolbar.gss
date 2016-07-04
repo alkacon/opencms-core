@@ -1,4 +1,4 @@
-@external cms-user-info, cms-user-image;
+@external cms-user-info, cms-user-image, opencms;
 
 @def TOOLBAR_HEIGHT 52px;
 
@@ -212,6 +212,12 @@
 	position: fixed;
 	z-index: value("constants.css.zIndexPopup"); 
 }
+
+.opencms .toolbar { 
+	z-index: 9000;
+}
+
+
 
 .toolbarBackground{
 	animation-name: toolbarfadein;

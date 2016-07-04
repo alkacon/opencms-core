@@ -206,11 +206,11 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** Style variable which keeps track of whether we are in VFS mode or navigation mode. */
     private CmsStyleVariable m_inNavigationStyle;
 
-    /** Model page data beans for the model page mode. */
-    private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = new HashMap<CmsUUID, CmsModelPageEntry>();
-
     /** The model group pages root entry. */
     private CmsModelPageTreeItem m_modelGroupRoot;
+
+    /** Model page data beans for the model page mode. */
+    private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = new HashMap<CmsUUID, CmsModelPageEntry>();
 
     /** Root tree item for the model page mode. */
     private CmsModelPageTreeItem m_modelPageRoot;
@@ -227,17 +227,17 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** The tree open handler. */
     private TreeOpenHandler m_openHandler;
 
-    /** The sitemap toolbar. */
-    private CmsSitemapToolbar m_toolbar;
-
-    /** The registered tree items. */
-    private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
-
     /** The parent model page root. */
     private CmsModelPageTreeItem m_parentModelPageRoot;
 
     /** The parent model page entries. */
     private Map<CmsUUID, CmsModelPageTreeItem> m_parentModelPageTreeItems = new HashMap<CmsUUID, CmsModelPageTreeItem>();
+
+    /** The sitemap toolbar. */
+    private CmsSitemapToolbar m_toolbar;
+
+    /** The registered tree items. */
+    private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
 
     /**
      * Returns the instance.<p>
@@ -351,15 +351,15 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                             !(id.isNullUUID()),
                             new I_CmsContextMenuItemProvider() {
 
-                                public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
+                            public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
 
-                                    List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
+                                List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
 
-                                    result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
-                                    result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
-                                    return result;
-                                }
-                            });
+                                result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
+                                result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
+                                return result;
+                            }
+                        });
                         if (input == localRoot) {
                             hoverbar.setAlwaysVisible();
                         }
@@ -382,16 +382,16 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                                     hoverbarId,
                                     new AsyncCallback<CmsCategoryTitleAndName>() {
 
-                                        public void onFailure(Throwable caught) {
+                                    public void onFailure(Throwable caught) {
 
-                                            // do nothing
-                                        }
+                                        // do nothing
+                                    }
 
-                                        public void onSuccess(CmsCategoryTitleAndName result) {
+                                    public void onSuccess(CmsCategoryTitleAndName result) {
 
-                                            controller.createCategory(hoverbarId, result.getTitle(), result.getName());
-                                        }
-                                    });
+                                        controller.createCategory(hoverbarId, result.getTitle(), result.getName());
+                                    }
+                                });
                             }
                         });
                     }
@@ -1024,7 +1024,10 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         super.onModuleLoad();
         CmsBroadcastTimer.start();
         m_instance = this;
+
+        initVaadin();
         RootPanel rootPanel = RootPanel.get();
+
         m_editorMode = EditorMode.navigation;
         // init
         I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().ensureInjected();
@@ -1037,6 +1040,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         m_treeItems = new HashMap<CmsUUID, CmsSitemapTreeItem>();
         // controller
         m_controller = new CmsSitemapController();
+
         if (m_controller.getData() == null) {
             CmsErrorDialog dialog = new CmsErrorDialog(Messages.get().key(Messages.GUI_ERROR_ON_SITEMAP_LOAD_0), null);
             dialog.center();
@@ -1585,6 +1589,13 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         }
         return result;
     }
+
+    /**
+     * Initializes the Vaadin part of the sitemap editor.<p>
+     */
+    private native void initVaadin() /*-{
+                                     $wnd.initVaadin();
+                                     }-*/;
 
     /**
      * Checks if the given entry represents the last opened page.<p>

@@ -66,6 +66,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinService;
+import com.vaadin.shared.Version;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -138,6 +139,34 @@ public final class CmsVaadinUtils {
 
     /** The combo box value item property id. */
     public static final String PROPERTY_VALUE = "value";
+
+    /** The Vaadin bootstrap script, with some macros to be dynamically replaced later. */
+    protected static final String BOOTSTRAP_SCRIPT = "vaadin.initApplication(\"%(elementId)\", {\n"
+        + "        \"browserDetailsUrl\": \"%(vaadinServlet)\",\n"
+        + "        \"serviceUrl\": \"%(vaadinServlet)\",\n"
+        + "        \"widgetset\": \"org.opencms.ui.WidgetSet\",\n"
+        + "        \"theme\": \"opencms\",\n"
+        + "        \"versionInfo\": {\"vaadinVersion\": \"%(vaadinVersion)\"},\n"
+        + "        \"vaadinDir\": \"%(vaadinDir)\",\n"
+        + "        \"heartbeatInterval\": 300,\n"
+        + "        \"debug\": false,\n"
+        + "        \"standalone\": false,\n"
+        + "        \"authErrMsg\": {\n"
+        + "            \"message\": \"Take note of any unsaved data, \"+\n"
+        + "                       \"and <u>click here<\\/u> to continue.\",\n"
+        + "            \"caption\": \"Authentication problem\"\n"
+        + "        },\n"
+        + "        \"comErrMsg\": {\n"
+        + "            \"message\": \"Take note of any unsaved data, \"+\n"
+        + "                       \"and <u>click here<\\/u> to continue.\",\n"
+        + "            \"caption\": \"Communication problem\"\n"
+        + "        },\n"
+        + "        \"sessExpMsg\": {\n"
+        + "            \"message\": \"Take note of any unsaved data, \"+\n"
+        + "                       \"and <u>click here<\\/u> to continue.\",\n"
+        + "            \"caption\": \"Session Expired\"\n"
+        + "        }\n"
+        + "    });";
 
     /** The logger of this class. */
     private static final Logger LOG = Logger.getLogger(CmsVaadinUtils.class);
@@ -219,6 +248,35 @@ public final class CmsVaadinUtils {
             availableSites.addItem(currentSiteRoot).getItemProperty(captionPropertyName).setValue(currentSiteRoot);
         }
         return availableSites;
+    }
+
+    /**
+     * Returns the Javascript code to use for initializing a Vaadin UI.<p>
+     *
+     * @param cms the CMS context
+     * @param elementId the id of the DOM element in which to initialize the UI
+     * @param servicePath the UI servlet path
+     * @return the Javascript code to initialize Vaadin
+     *
+     * @throws Exception if something goes wrong
+     */
+    public static String getBootstrapScript(CmsObject cms, String elementId, String servicePath) throws Exception {
+
+        String script = BOOTSTRAP_SCRIPT;
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        String context = OpenCms.getSystemInfo().getContextPath();
+        String vaadinDir = CmsStringUtil.joinPaths(context, "VAADIN/");
+        String vaadinVersion = Version.getFullVersion();
+        String vaadinServlet = CmsStringUtil.joinPaths(context, servicePath);
+        String vaadinBootstrap = CmsStringUtil.joinPaths(context, "VAADIN/vaadinBootstrap.js");
+        resolver.addMacro("vaadinDir", vaadinDir);
+        resolver.addMacro("vaadinVersion", vaadinVersion);
+        resolver.addMacro("elementId", elementId);
+        resolver.addMacro("vaadinServlet", vaadinServlet);
+        resolver.addMacro("vaadinBootstrap", vaadinBootstrap);
+        script = resolver.resolveMacros(script);
+        return script;
+
     }
 
     /**
@@ -566,7 +624,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

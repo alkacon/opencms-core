@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.util;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * A class containing generic Javascript utility methods.<p>
@@ -41,6 +42,16 @@ public final class CmsJsUtil {
 
         // do nothing
     }
+
+    /**
+     * Calls a JS function with a string parameter.<p>
+     *
+     * @param func the Javascript function
+     * @param param the string parameter
+     */
+    public static native void callWithString(JavaScriptObject func, String param) /*-{
+                                                                                  func(param);
+                                                                                  }-*/;
 
     /**
      * Closes the browser window.
@@ -69,5 +80,39 @@ public final class CmsJsUtil {
                                                       var result = $wnd;
                                                       return result;
                                                       }-*/;
+
+    /**
+     * Sets an attribute of the given Javascript object to a new value
+     * @param jso the object to modify
+     * @param attr the attribute to set
+     * @param newValue the new attribute value
+     */
+    public static native void setAttribute(JavaScriptObject jso, String attr, JavaScriptObject newValue) /*-{
+                                                                                                         jso[attr] = newValue;
+                                                                                                         }-*/;
+
+    /**
+     * Wraps a native JavaScript callback taking a string argument into an AsyncCallback so that it can easily be called from GWT Java code.<p>
+     *
+     * @param func the function to wrap
+     * @return the AsyncCallback wrapper
+     */
+    public static AsyncCallback<String> wrapCallback(final JavaScriptObject func) {
+
+        return new AsyncCallback<String>() {
+
+            public void onFailure(Throwable caught) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void onSuccess(String result) {
+
+                callWithString(func, result);
+            }
+
+        };
+    }
 
 }

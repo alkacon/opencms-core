@@ -115,6 +115,27 @@
 		<description>
             The servlet that handles all workplace UI requests.  
         </description>
+		<servlet-name>CmsSitemapServlet</servlet-name>
+		<servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
+		<init-param>
+			<param-name>UI</param-name>
+			<param-value>org.opencms.ui.sitemap.CmsSitemapUI</param-value>
+		</init-param>
+		<init-param>
+			<description>Widget Set to Use</description>
+			<param-name>widgetset</param-name>
+			<param-value>org.opencms.ui.WidgetSet</param-value>
+		</init-param>
+		<init-param>
+			<param-name>heartbeatInterval</param-name>
+			<param-value>60</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet>
+		<description>
+            The servlet that handles all workplace UI requests.  
+        </description>
 		<servlet-name>CmsDialogServlet</servlet-name>
 		<servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
 		<init-param>
@@ -157,6 +178,17 @@
 		<servlet-name>CmsErrorServlet</servlet-name>
 		<url-pattern>/workplace/errorpage/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>CmsSitemapServlet</servlet-name>
+		<url-pattern>/workplace/sitemap/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>CmsErrorServlet</servlet-name>
+		<url-pattern>/workplace/errorpage/*</url-pattern>
+	</servlet-mapping>
+	
 	
 	<servlet-mapping>
 		<servlet-name>CmsDialogServlet</servlet-name>
