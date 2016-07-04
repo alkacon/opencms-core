@@ -56,6 +56,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -162,11 +163,17 @@ public class CmsWorkplaceAppManager {
     /** The additional info key for the user quick launch apps. */
     private static final String QUICK_LAUCH_APPS_KEY = "quick_launch_apps";
 
+    /** The main category id. */
+    public static final String MAIN_CATEGORY_ID = "Main";
+
+    /** The legacy category id. */
+    public static final String LEGACY_CATEGORY_ID = "Legacy";
+
     /** The admin cms context. */
     private CmsObject m_adminCms;
 
     /** The app categories. */
-    private List<CmsAppCategory> m_appCategories = Lists.newArrayList();
+    private Map<String, I_CmsAppCategory> m_appCategories;
 
     /** The configured apps. */
     private Map<String, I_CmsWorkplaceAppConfiguration> m_appsById = Maps.newHashMap();
@@ -265,9 +272,9 @@ public class CmsWorkplaceAppManager {
      *
      * @return the app categories
      */
-    public List<CmsAppCategory> getCategories() {
+    public Collection<I_CmsAppCategory> getCategories() {
 
-        return Collections.unmodifiableList(m_appCategories);
+        return Collections.unmodifiableCollection(m_appCategories.values());
     }
 
     /**
@@ -360,12 +367,7 @@ public class CmsWorkplaceAppManager {
     public void loadApps() {
 
         m_appsById.clear();
-        if (m_appCategories == null) {
-            m_appCategories = Lists.newArrayList();
-        }
-        m_appCategories.clear();
-        CmsAppCategory c1 = new CmsAppCategory("Main", null, 0, 0, null);
-        m_appCategories.addAll(Arrays.asList(c1, new CmsAppCategory("Legacy", null, 1, 0, null)));
+        m_appCategories = loadCategories();
         addAppConfigurations(loadDefaultApps());
         addAppConfigurations(loadAppsUsingServiceLoader());
         addAppConfigurations(loadLegacyApps());
@@ -481,12 +483,40 @@ public class CmsWorkplaceAppManager {
             I_CmsWorkplaceAppConfiguration.class).iterator();
         while (configs.hasNext()) {
             try {
-                appConfigurations.add(configs.next());
+                I_CmsWorkplaceAppConfiguration config = configs.next();
+                appConfigurations.add(config);
             } catch (Throwable t) {
                 LOG.error("Error loading workplace app configuration from classpath.", t);
             }
         }
         return appConfigurations;
+    }
+
+    /**
+     * Loads the app categories.<p>
+     *
+     * @return the app categories
+     */
+    private Map<String, I_CmsAppCategory> loadCategories() {
+
+        Map<String, I_CmsAppCategory> appCategories = new HashMap<String, I_CmsAppCategory>();
+        CmsAppCategory main = new CmsAppCategory(MAIN_CATEGORY_ID, null, 0, 0);
+        appCategories.put(main.getId(), main);
+        CmsAppCategory legacy = new CmsAppCategory(LEGACY_CATEGORY_ID, null, 1, 0);
+        appCategories.put(legacy.getId(), legacy);
+        Iterator<I_CmsAppCategory> categoryIt = ServiceLoader.load(I_CmsAppCategory.class).iterator();
+        while (categoryIt.hasNext()) {
+            try {
+                I_CmsAppCategory cat = categoryIt.next();
+                if (!appCategories.containsKey(cat.getId())
+                    || (appCategories.get(cat.getId()).getPriority() < cat.getPriority())) {
+                    appCategories.put(cat.getId(), cat);
+                }
+            } catch (Throwable t) {
+                LOG.error("Error loading workplace app category from classpath.", t);
+            }
+        }
+        return appCategories;
     }
 
     /**

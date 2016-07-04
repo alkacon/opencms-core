@@ -59,7 +59,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     @Override
     public String getAppCategory() {
 
-        return "Main";
+        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
     }
 
     /**

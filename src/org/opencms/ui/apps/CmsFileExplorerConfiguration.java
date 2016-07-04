@@ -48,7 +48,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public String getAppCategory() {
 
-        return "Main";
+        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
     }
 
     /**

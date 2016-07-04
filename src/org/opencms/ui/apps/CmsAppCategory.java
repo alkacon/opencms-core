@@ -32,8 +32,6 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.util.Locale;
 
-import com.vaadin.server.Resource;
-
 /**
  * Bean representing a category for workplace apps.<p>
  *
@@ -42,7 +40,7 @@ import com.vaadin.server.Resource;
  * category id is null will be displayed at the root level.
  *
  */
-public class CmsAppCategory {
+public class CmsAppCategory implements I_CmsAppCategory {
 
     /** Prefix for message bundle keys used to localize app categories. */
     private static final String MESSAGE_PREFIX = "appcategory.";
@@ -59,12 +57,6 @@ public class CmsAppCategory {
     /** Priority number; categories with higher priorities can override those with lower priorities. */
     private int m_priority;
 
-    /** The category icon. */
-    private Resource m_icon;
-
-    /** The category source. */
-    private String m_source;
-
     /**
      * Creates a new instance.<p>
      *
@@ -72,32 +64,18 @@ public class CmsAppCategory {
      * @param parentId the parent category id
      * @param order the order
      * @param priority the priority
-     * @param icon the icon
      */
-    public CmsAppCategory(String id, String parentId, int order, int priority, Resource icon) {
+    public CmsAppCategory(String id, String parentId, int order, int priority) {
 
         super();
         m_id = id;
         m_parentId = parentId;
         m_order = order;
         m_priority = priority;
-        m_icon = icon;
     }
 
     /**
-     * Returns the icon.<p>
-     *
-     * @return the icon
-     */
-    public Resource getIcon() {
-
-        return m_icon;
-    }
-
-    /**
-     * Returns the id.<p>
-     *
-     * @return the id
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getId()
      */
     public String getId() {
 
@@ -105,11 +83,7 @@ public class CmsAppCategory {
     }
 
     /**
-     * Gets the user readable name for the category for a given locale.<p>
-     *
-     * @param locale the locale for which to get the name
-     *
-     * @return the localized name
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getName(java.util.Locale)
      */
     public String getName(Locale locale) {
 
@@ -119,9 +93,7 @@ public class CmsAppCategory {
     }
 
     /**
-     * Returns the order.<p>
-     *
-     * @return the order
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getOrder()
      */
     public int getOrder() {
 
@@ -129,9 +101,7 @@ public class CmsAppCategory {
     }
 
     /**
-     * Returns the parentId.<p>
-     *
-     * @return the parentId
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getParentId()
      */
     public String getParentId() {
 
@@ -139,32 +109,10 @@ public class CmsAppCategory {
     }
 
     /**
-     * Returns the priority.<p>
-     *
-     * @return the priority
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getPriority()
      */
     public int getPriority() {
 
         return m_priority;
-    }
-
-    /**
-     * Gets the source string.<p>
-     *
-     * @return the source string
-     */
-    public String getSource() {
-
-        return m_source;
-    }
-
-    /**
-     * Sets the source string.<p>
-     *
-     * @param source the source string
-     */
-    public void setSource(String source) {
-
-        m_source = null;
     }
 }

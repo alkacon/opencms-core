@@ -44,7 +44,7 @@ import com.google.common.collect.Lists;
 public class CmsAppCategoryNode {
 
     /** The category data. */
-    private CmsAppCategory m_data;
+    private I_CmsAppCategory m_data;
 
     /** The child nodes. */
     private List<CmsAppCategoryNode> m_children = Lists.newArrayList();
@@ -60,7 +60,7 @@ public class CmsAppCategoryNode {
      */
     public CmsAppCategoryNode() {
 
-        m_data = new CmsAppCategory(null, null, 0, 0, null);
+        m_data = new CmsAppCategory(null, null, 0, 0);
     }
 
     /**
@@ -68,7 +68,7 @@ public class CmsAppCategoryNode {
      *
      * @param appCategory the category data
      */
-    public CmsAppCategoryNode(CmsAppCategory appCategory) {
+    public CmsAppCategoryNode(I_CmsAppCategory appCategory) {
 
         m_data = appCategory;
     }
@@ -109,7 +109,7 @@ public class CmsAppCategoryNode {
      *
      * @return the app category data
      */
-    public CmsAppCategory getCategory() {
+    public I_CmsAppCategory getCategory() {
 
         return m_data;
     }

@@ -32,6 +32,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
+import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
@@ -54,7 +55,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getAppCategory() {
 
-        return "Main";
+        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
     }
 
     /**

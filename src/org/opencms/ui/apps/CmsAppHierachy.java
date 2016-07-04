@@ -63,7 +63,7 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp, I_CmsCachableApp {
         for (I_CmsWorkplaceAppConfiguration app : visibleApps) {
             hierarchyBuilder.addAppConfiguration(app);
         }
-        for (CmsAppCategory category : OpenCms.getWorkplaceAppManager().getCategories()) {
+        for (I_CmsAppCategory category : OpenCms.getWorkplaceAppManager().getCategories()) {
             hierarchyBuilder.addCategory(category);
         }
 

@@ -52,7 +52,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getAppCategory() {
 
-        return "Main";
+        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
     }
 
     /**

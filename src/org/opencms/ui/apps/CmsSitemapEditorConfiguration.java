@@ -68,7 +68,7 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
     @Override
     public String getAppCategory() {
 
-        return "Main";
+        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
     }
 
     /**

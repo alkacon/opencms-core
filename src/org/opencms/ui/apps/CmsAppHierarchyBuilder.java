@@ -53,7 +53,7 @@ public class CmsAppHierarchyBuilder {
     private static final Log LOG = CmsLog.getLog(CmsAppHierarchyBuilder.class);
 
     /** The list of available categories. */
-    private List<CmsAppCategory> m_appCategoryList = Lists.newArrayList();
+    private List<I_CmsAppCategory> m_appCategoryList = Lists.newArrayList();
 
     /** The list of available app configurations. */
     private List<I_CmsWorkplaceAppConfiguration> m_appConfigs = Lists.newArrayList();
@@ -79,7 +79,7 @@ public class CmsAppHierarchyBuilder {
      *
      * @param category the app category to add
      */
-    public void addCategory(CmsAppCategory category) {
+    public void addCategory(I_CmsAppCategory category) {
 
         m_appCategoryList.add(category);
     }
@@ -96,9 +96,9 @@ public class CmsAppHierarchyBuilder {
 
         // STEP 0: Initialize everything and sort categories by priority
 
-        Collections.sort(m_appCategoryList, new Comparator<CmsAppCategory>() {
+        Collections.sort(m_appCategoryList, new Comparator<I_CmsAppCategory>() {
 
-            public int compare(CmsAppCategory cat1, CmsAppCategory cat2) {
+            public int compare(I_CmsAppCategory cat1, I_CmsAppCategory cat2) {
 
                 return ComparisonChain.start().compare(cat1.getPriority(), cat2.getPriority()).result();
             }
@@ -109,7 +109,7 @@ public class CmsAppHierarchyBuilder {
 
         // STEP 1: Create a node for each category
 
-        for (CmsAppCategory category : m_appCategoryList) {
+        for (I_CmsAppCategory category : m_appCategoryList) {
             m_nodes.put(category.getId(), new CmsAppCategoryNode(category));
         }
 
@@ -197,12 +197,7 @@ public class CmsAppHierarchyBuilder {
         CmsAppCategoryNode parentNode = m_nodes.get(parentId);
         if (parentNode == null) {
             LOG.error(
-                "Missing parent ["
-                    + node.getCategory().getParentId()
-                    + "] for ["
-                    + node.getCategory().getId()
-                    + "] in ["
-                    + node.getCategory().getSource());
+                "Missing parent [" + node.getCategory().getParentId() + "] for [" + node.getCategory().getId() + "]");
         } else {
             parentNode.addChild(node);
         }

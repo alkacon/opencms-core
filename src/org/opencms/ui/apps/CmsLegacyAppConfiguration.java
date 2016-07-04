@@ -61,7 +61,7 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
      */
     public String getAppCategory() {
 
-        return "Legacy";
+        return CmsWorkplaceAppManager.LEGACY_CATEGORY_ID;
     }
 
     /**

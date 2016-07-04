@@ -43,7 +43,7 @@ public abstract class A_CmsWorkplaceAppConfiguration implements I_CmsWorkplaceAp
      */
     public String getAppCategory() {
 
-        return "Main";
+        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
     }
 
     /**
