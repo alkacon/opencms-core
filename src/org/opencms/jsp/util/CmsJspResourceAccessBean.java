@@ -84,45 +84,8 @@ public class CmsJspResourceAccessBean {
                 result = CmsProperty.get(
                     String.valueOf(input),
                     getCmsObject().readHistoryPropertyObjects(m_res)).getValue();
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 // unable to read history property, return null
-                result = null;
-            }
-            return result;
-        }
-    }
-
-    /**
-     * Transformer that reads a resource property,
-     * the input is used as String for the property name to read.<p>
-     */
-    private class CmsPropertyLoaderTransformer implements Transformer {
-
-        /** The resource where the properties are read from. */
-        private CmsResource m_res;
-
-        /**
-         * Creates a new property loading Transformer.<p>
-         *
-         * @param resource the resource where the properties are read from
-         */
-        public CmsPropertyLoaderTransformer(CmsResource resource) {
-
-            m_res = resource;
-
-        }
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        public Object transform(Object input) {
-
-            String result;
-            try {
-                // read the requested property
-                result = getCmsObject().readPropertyObject(m_res, String.valueOf(input), false).getValue();
-            } catch (CmsException e) {
-                // unable to read property, return null
                 result = null;
             }
             return result;
@@ -140,6 +103,12 @@ public class CmsJspResourceAccessBean {
 
     /** The properties of the resource. */
     private Map<String, String> m_properties;
+
+    /**
+     * The properties of the resource according to the provided locale.
+     * The map goes from locale -> property -> value.
+     */
+    private Map<String, Map<String, String>> m_localeProperties;
 
     /** The resource that can be accessed. */
     private CmsResource m_resource;
@@ -282,6 +251,24 @@ public class CmsJspResourceAccessBean {
     }
 
     /**
+     * Short form for {@link #getReadPropertiesLocale()}.<p>
+     *
+     * Usage example on a JSP with the <code>&lt;cms:resourceaccess&gt;</code> tag:<pre>
+     * &lt;cms:resourceload ... &gt;
+     *     &lt;cms:resourceaccess var="res" /&gt;
+     *     "Title" property value of the resource: ${res.property['de']['Title']}
+     * &lt;/cms:resourceload&gt;</pre>
+     *
+     * @return a map that lazily reads properties of the resource and accesses them wrt. to the specified locale.
+     *
+     * @see #getReadPropertiesLocale()
+     */
+    public Map<String, Map<String, String>> getPropertyLocale() {
+
+        return getReadPropertiesLocale();
+    }
+
+    /**
      * Returns a map that lazily reads history properties of the resource.<p>
      *
      * This works only if the current resource is implementing {@link I_CmsHistoryResource}.<p>
@@ -323,9 +310,33 @@ public class CmsJspResourceAccessBean {
 
         if (m_properties == null) {
             // create lazy map only on demand
-            m_properties = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(m_resource));
+            m_properties = CmsCollectionsGenericWrapper.createLazyMap(
+                new CmsJspValueTransformers.CmsPropertyLoaderTransformer(m_cms, m_resource, false));
         }
         return m_properties;
+    }
+
+    /**
+     * Returns a map that lazily reads properties of the resource and makes the accessible according to the specified locale.<p>
+     *
+     * Usage example on a JSP with the <code>&lt;cms:resourceaccess&gt;</code> tag:<pre>
+     * &lt;cms:resourceload ... &gt;
+     *     &lt;cms:resourceaccess var="res" /&gt;
+     *     "Title" property value of the resource: ${res.readProperties['de']['Title']}
+     * &lt;/cms:resourceload&gt;</pre>
+     *
+     * @return a map that lazily reads properties of the resource and makes the accessible according to the specified locale.
+     *
+     * @see #getPropertyLocale() for a short form of this method
+     */
+    public Map<String, Map<String, String>> getReadPropertiesLocale() {
+
+        if (m_localeProperties == null) {
+            m_localeProperties = CmsCollectionsGenericWrapper.createLazyMap(
+                new CmsJspValueTransformers.CmsLocalePropertyLoaderTransformer(m_cms, m_resource, false));
+        }
+        return m_localeProperties;
+
     }
 
     /**

@@ -34,6 +34,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.jsp.util.CmsJspValueTransformers.CmsLocalePropertyLoaderTransformer;
+import org.opencms.jsp.util.CmsJspValueTransformers.CmsPropertyLoaderTransformer;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -106,7 +108,7 @@ public final class CmsJspVfsAccessBean {
             try {
                 // read the requested resource permissions
                 result = getCmsObject().getPermissions((String)input);
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 // unable to read resource, return null
                 result = null;
             }
@@ -147,47 +149,11 @@ public final class CmsJspVfsAccessBean {
             try {
                 // read the properties of the requested resource
                 result = getCmsObject().readPropertyObject(m_resource, String.valueOf(input), m_search).getValue();
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 // in case of any error we assume the property does not exist
                 result = null;
             }
             return result;
-        }
-    }
-
-    /**
-     * Transformer that loads properties of a resource from the OpenCms VFS with another lazy map,
-     * the input is used as String for the resource name to read.<p>
-     */
-    public class CmsPropertyLoaderTransformer implements Transformer {
-
-        /** Indicates if properties should be searched when loaded. */
-        private boolean m_search;
-
-        /**
-         * Creates a new property loading Transformer.<p>
-         *
-         * @param search indicates if properties should be searched when loaded
-         */
-        public CmsPropertyLoaderTransformer(boolean search) {
-
-            m_search = search;
-        }
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        public Object transform(Object input) {
-
-            Map<String, String> result = null;
-            // first read the resource using the lazy map
-            CmsResource resource = getReadResource().get(input);
-            if (resource != null) {
-                result = CmsCollectionsGenericWrapper.createLazyMap(
-                    new CmsPropertyLoaderSingleTransformer(resource, m_search));
-            }
-            // result may still be null
-            return (result == null) ? Collections.EMPTY_MAP : result;
         }
     }
 
@@ -206,11 +172,83 @@ public final class CmsJspVfsAccessBean {
             try {
                 // read the requested resource
                 result = CmsJspElFunctions.convertResource(getCmsObject(), input);
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 // unable to read resource, return null
                 result = null;
             }
             return result;
+        }
+    }
+
+    /**
+     * Transformer that loads properties of a resource from the OpenCms VFS with another lazy map,
+     * the input is used as String for the resource name to read.<p>
+     */
+    public class CmsResourceLocalePropertyLoaderTransformer implements Transformer {
+
+        /** Indicates if properties should be searched when loaded. */
+        private boolean m_search;
+
+        /**
+         * Creates a new property loading Transformer.<p>
+         *
+         * @param search indicates if properties should be searched when loaded
+         */
+        public CmsResourceLocalePropertyLoaderTransformer(boolean search) {
+
+            m_search = search;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            Map<String, String> result = null;
+            // first read the resource using the lazy map
+            CmsResource resource = getReadResource().get(input);
+            if (resource != null) {
+                result = CmsCollectionsGenericWrapper.createLazyMap(
+                    new CmsLocalePropertyLoaderTransformer(getCmsObject(), resource, m_search));
+            }
+            // result may still be null
+            return (result == null) ? Collections.EMPTY_MAP : result;
+        }
+    }
+
+    /**
+     * Transformer that loads properties of a resource from the OpenCms VFS with another lazy map,
+     * the input is used as String for the resource name to read.<p>
+     */
+    public class CmsResourcePropertyLoaderTransformer implements Transformer {
+
+        /** Indicates if properties should be searched when loaded. */
+        private boolean m_search;
+
+        /**
+         * Creates a new property loading Transformer.<p>
+         *
+         * @param search indicates if properties should be searched when loaded
+         */
+        public CmsResourcePropertyLoaderTransformer(boolean search) {
+
+            m_search = search;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            Map<String, String> result = null;
+            // first read the resource using the lazy map
+            CmsResource resource = getReadResource().get(input);
+            if (resource != null) {
+                result = CmsCollectionsGenericWrapper.createLazyMap(
+                    new CmsPropertyLoaderTransformer(getCmsObject(), resource, m_search));
+            }
+            // result may still be null
+            return (result == null) ? Collections.EMPTY_MAP : result;
         }
     }
 
@@ -277,8 +315,14 @@ public final class CmsJspVfsAccessBean {
     /** Properties loaded from the OpenCms VFS. */
     private Map<String, Map<String, String>> m_properties;
 
+    /** Properties loaded locale specific from the OpenCms VFS. */
+    private Map<String, Map<String, Map<String, String>>> m_propertiesLocale;
+
     /** Properties loaded from the OpenCms VFS with search. */
     private Map<String, Map<String, String>> m_propertiesSearch;
+
+    /** Properties loaded locale specific from the OpenCms VFS with search. */
+    private Map<String, Map<String, Map<String, String>>> m_propertiesSearchLocale;
 
     /** Resources loaded from the OpenCms VFS. */
     private Map<String, CmsResource> m_resources;
@@ -542,6 +586,22 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
+     * Short form for {@link #getReadPropertiesLocale()}.<p>
+     *
+     * Usage example on a JSP with the EL:<pre>
+     * Title property of the "/index.html" resource for locale "de": ${cms:vfs(pageContext).property['/index.html']['de']['Title']}
+     * </pre>
+     *
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, without search
+     *
+     * @see #getReadPropertiesLocale()
+     */
+    public Map<String, Map<String, Map<String, String>>> getPropertyLocale() {
+
+        return getReadPropertiesLocale();
+    }
+
+    /**
      * Short form for {@link #getReadPropertiesSearch()}.<p>
      *
      * Usage example on a JSP with the EL:<pre>
@@ -555,6 +615,22 @@ public final class CmsJspVfsAccessBean {
     public Map<String, Map<String, String>> getPropertySearch() {
 
         return getReadPropertiesSearch();
+    }
+
+    /**
+     * Short form for {@link #getReadPropertiesSearchLocale()}.<p>
+     *
+     * Usage example on a JSP with the EL:<pre>
+     * Title property of the "/index.html" resource (searched) for locale "de": ${cms:vfs(pageContext).propertySearch['/index.html']['de']['Title']}
+     * </pre>
+     *
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, with search
+     *
+     * @see #getReadPropertiesSearchLocale()
+     */
+    public Map<String, Map<String, Map<String, String>>> getPropertySearchLocale() {
+
+        return getReadPropertiesSearchLocale();
     }
 
     /**
@@ -604,9 +680,36 @@ public final class CmsJspVfsAccessBean {
 
         if (m_properties == null) {
             // create lazy map only on demand
-            m_properties = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(false));
+            m_properties = CmsCollectionsGenericWrapper.createLazyMap(new CmsResourcePropertyLoaderTransformer(false));
         }
         return m_properties;
+    }
+
+    /**
+     * Returns a map that lazily reads all resource properties from the OpenCms VFS, without search.<p>
+     *
+     * Usage example on a JSP with the EL:<pre>
+     * Title property of the "/index.html" resource for locale "de": ${cms:vfs(pageContext).readProperties['/index.html']['de']['Title']}
+     * </pre>
+     *
+     * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     Title property of the "/index.html" resource: ${content.vfs.readProperties['/index.html']['Title']}
+     * &lt;/cms:contentload&gt;</pre>
+     *
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, without search
+     *
+     * @see #getProperty() for a short form of this method
+     */
+    public Map<String, Map<String, Map<String, String>>> getReadPropertiesLocale() {
+
+        if (m_propertiesLocale == null) {
+            // create lazy map only on demand
+            m_propertiesLocale = CmsCollectionsGenericWrapper.createLazyMap(
+                new CmsResourceLocalePropertyLoaderTransformer(false));
+        }
+        return m_propertiesLocale;
     }
 
     /**
@@ -630,9 +733,37 @@ public final class CmsJspVfsAccessBean {
 
         if (m_propertiesSearch == null) {
             // create lazy map only on demand
-            m_propertiesSearch = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderTransformer(true));
+            m_propertiesSearch = CmsCollectionsGenericWrapper.createLazyMap(
+                new CmsResourcePropertyLoaderTransformer(true));
         }
         return m_propertiesSearch;
+    }
+
+    /**
+     * Returns a map that lazily reads all resource properties from the OpenCms VFS, with search and provides locale specific access to them.<p>
+     *
+     * Usage example on a JSP with the EL:<pre>
+     * Title property of the "/index.html" resource (searched): ${cms:vfs(pageContext).readPropertiesSearch['/index.html']['Title']}
+     * </pre>
+     *
+     * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     Title property of the "/index.html" resource (searched) for locale "de": ${content.vfs.readPropertiesSearchLocale['/index.html']['de']['Title']}
+     * &lt;/cms:contentload&gt;</pre>
+     *
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, with search
+     *
+     * @see #getPropertySearch() for a short form of this method
+     */
+    public Map<String, Map<String, Map<String, String>>> getReadPropertiesSearchLocale() {
+
+        if (m_propertiesSearchLocale == null) {
+            // create lazy map only on demand
+            m_propertiesSearchLocale = CmsCollectionsGenericWrapper.createLazyMap(
+                new CmsResourceLocalePropertyLoaderTransformer(true));
+        }
+        return m_propertiesSearchLocale;
     }
 
     /**

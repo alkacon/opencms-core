@@ -31,9 +31,17 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import junit.extensions.TestSetup;
@@ -73,6 +81,7 @@ public class TestCmsJspVfsAccessBean extends OpenCmsTestCase {
         suite.addTest(new TestCmsJspVfsAccessBean("testReadProperties"));
         suite.addTest(new TestCmsJspVfsAccessBean("testExistsXml"));
         suite.addTest(new TestCmsJspVfsAccessBean("testReadXml"));
+        suite.addTest(new TestCmsJspVfsAccessBean("testReadPropertyLocale"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -90,6 +99,113 @@ public class TestCmsJspVfsAccessBean extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests for the {@link CmsJspVfsAccessBean#getExistsXml()} method.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testExistsXml() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
+
+        Map readXml = bean.getExistsXml();
+        assertEquals(Boolean.TRUE, readXml.get("/xmlcontent/article_0001.html"));
+        assertEquals(Boolean.FALSE, readXml.get("/xmlcontent/article_0001_idontexist.html"));
+        assertEquals(Boolean.FALSE, readXml.get("/folder1/image1.gif"));
+    }
+
+    /**
+     * Tests for the {@link CmsJspVfsAccessBean#getReadProperties()} method.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testReadProperties() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
+
+        Map readProperties = bean.getReadProperties();
+        Map props = (Map)readProperties.get("/index.html");
+        assertNotNull(props);
+        String title = (String)props.get(CmsPropertyDefinition.PROPERTY_TITLE);
+        assertEquals("Index page", title);
+        CmsProperty titleProp = cms.readPropertyObject("/index.html", CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleProp.getValue(), title);
+    }
+
+    public void testReadPropertyLocale() throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
+
+        String folderPath = "/test_read_property_locale";
+        String resourcePath = "/test_read_property_locale/test.txt";
+        CmsResource folder = cms.createResource(
+            folderPath,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
+        CmsResource resource = cms.createResource(
+            resourcePath,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()));
+        List<CmsProperty> directProperties = new ArrayList<CmsProperty>();
+        List<CmsProperty> searchedProperties = new ArrayList<CmsProperty>();
+        String directPropertyName = "direct";
+        String searchedPropertyName = "searched";
+        List<String> localeSuffixes = Arrays.asList(new String[] {"", "_de", "_de_DE", "_en"});
+        Locale[] testLocales = new Locale[] {
+            null,
+            new Locale("de"),
+            new Locale("de", "DE"),
+            new Locale("en"),
+            new Locale("en", "GB"),
+            new Locale("it")};
+        String[] expectedPostfix = new String[] {"", "_de", "_de_DE", "_en", "_en", ""};
+
+        for (String suffix : localeSuffixes) {
+            directProperties.add(
+                new CmsProperty(directPropertyName + suffix, directPropertyName + suffix, directPropertyName + suffix));
+            searchedProperties.add(
+                new CmsProperty(
+                    searchedPropertyName + suffix,
+                    searchedPropertyName + suffix,
+                    searchedPropertyName + suffix));
+        }
+
+        cms.writePropertyObjects(resource, directProperties);
+        cms.writePropertyObjects(folder, searchedProperties);
+
+        for (int i = 0; i < testLocales.length; i++) {
+            assertEquals(
+                directPropertyName + expectedPostfix[i],
+                bean.getPropertyLocale().get(resource).get(
+                    null != testLocales[i] ? testLocales[i].toString() : null).get(directPropertyName));
+            assertEquals(
+                directPropertyName + expectedPostfix[i],
+                bean.getPropertyLocale().get(resource).get(testLocales[i]).get(directPropertyName));
+            assertEquals(
+                CmsProperty.getNullProperty().getValue(),
+                bean.getPropertyLocale().get(resource).get(
+                    null != testLocales[i] ? testLocales[i].toString() : null).get(searchedPropertyName));
+            assertEquals(
+                CmsProperty.getNullProperty().getValue(),
+                bean.getPropertyLocale().get(resource).get(testLocales[i]).get(searchedPropertyName));
+            assertEquals(
+                directPropertyName + expectedPostfix[i],
+                bean.getPropertySearchLocale().get(resource).get(
+                    null != testLocales[i] ? testLocales[i].toString() : null).get(directPropertyName));
+            assertEquals(
+                directPropertyName + expectedPostfix[i],
+                bean.getPropertySearchLocale().get(resource).get(testLocales[i]).get(directPropertyName));
+            assertEquals(
+                searchedPropertyName + expectedPostfix[i],
+                bean.getPropertySearchLocale().get(resource).get(
+                    null != testLocales[i] ? testLocales[i].toString() : null).get(searchedPropertyName));
+            assertEquals(
+                searchedPropertyName + expectedPostfix[i],
+                bean.getPropertySearchLocale().get(resource).get(testLocales[i]).get(searchedPropertyName));
+        }
     }
 
     /**
@@ -112,41 +228,6 @@ public class TestCmsJspVfsAccessBean extends OpenCmsTestCase {
 
         res = (CmsResource)readResource.get("/idontexist.html");
         assertNull(res);
-    }
-
-    /**
-     * Tests for the {@link CmsJspVfsAccessBean#getReadProperties()} method.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    public void testReadProperties() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
-
-        Map readProperties = bean.getReadProperties();
-        Map props = (Map)readProperties.get("/index.html");
-        assertNotNull(props);
-        String title = (String)props.get(CmsPropertyDefinition.PROPERTY_TITLE);
-        assertEquals("Index page", title);
-        CmsProperty titleProp = cms.readPropertyObject("/index.html", CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertEquals(titleProp.getValue(), title);
-    }
-
-    /**
-     * Tests for the {@link CmsJspVfsAccessBean#getExistsXml()} method.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    public void testExistsXml() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
-
-        Map readXml = bean.getExistsXml();
-        assertEquals(Boolean.TRUE, readXml.get("/xmlcontent/article_0001.html"));
-        assertEquals(Boolean.FALSE, readXml.get("/xmlcontent/article_0001_idontexist.html"));
-        assertEquals(Boolean.FALSE, readXml.get("/folder1/image1.gif"));
     }
 
     /**

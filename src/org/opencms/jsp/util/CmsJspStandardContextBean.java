@@ -79,6 +79,7 @@ import java.util.Map;
 import javax.servlet.ServletRequest;
 
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -718,6 +719,9 @@ public final class CmsJspStandardContextBean {
     /** Lazily initialized map from the root path of a resource to all categories assigned to the resource. */
     private Map<String, CmsJspCategoryAccessBean> m_resourceCategories;
 
+    /** Lazily initialized map from the locale to the localized title property. */
+    private Map<String, String> m_localeTitles;
+
     /**
      * Creates an empty instance.<p>
      */
@@ -1258,36 +1262,39 @@ public final class CmsJspStandardContextBean {
      */
     public String getTitle() {
 
-        String result = null;
-        try {
+        return getLocaleSpecificTitle(null);
 
-            if (isDetailRequest()) {
-                // this is a request to a detail page
-                CmsResource res = getDetailContent();
-                CmsFile file = m_cms.readFile(res);
-                CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
-                result = content.getHandler().getTitleMapping(m_cms, content, m_cms.getRequestContext().getLocale());
-                if (result == null) {
-                    // title not found, maybe no mapping OR not available in the current locale
-                    // read the title of the detail resource as fall back (may contain mapping from another locale)
-                    result = m_cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+    }
+
+    /**
+     * Get the title and read the Title property according the provided locale.
+     * @return The map from locales to the locale specific titles.
+     */
+    public Map<String, String> getTitleLocale() {
+
+        if (m_localeTitles == null) {
+            m_localeTitles = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                public Object transform(Object inputLocale) {
+
+                    Locale locale = null;
+                    if (null != inputLocale) {
+                        if (inputLocale instanceof Locale) {
+                            locale = (Locale)inputLocale;
+                        } else if (inputLocale instanceof String) {
+                            try {
+                                locale = LocaleUtils.toLocale((String)inputLocale);
+                            } catch (@SuppressWarnings("unused") IllegalArgumentException | NullPointerException e) {
+                                // do nothing, just go on without locale
+                            }
+                        }
+                    }
+                    return getLocaleSpecificTitle(locale);
                 }
-            }
-            if (result == null) {
-                // read the title of the requested resource as fall back
-                result = m_cms.readPropertyObject(
-                    m_cms.getRequestContext().getUri(),
-                    CmsPropertyDefinition.PROPERTY_TITLE,
-                    true).getValue();
-            }
-        } catch (CmsException e) {
-            LOG.debug(e.getLocalizedMessage(), e);
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
-            result = "";
-        }
 
-        return result;
+            });
+        }
+        return m_localeTitles;
     }
 
     /**
@@ -1551,6 +1558,51 @@ public final class CmsJspStandardContextBean {
             }
         }
         return formatter;
+    }
+
+    /**
+     * Returns the title according to the given locale.
+     * @param locale the locale for which the title should be read.
+     * @return the title according to the given locale
+     */
+    protected String getLocaleSpecificTitle(Locale locale) {
+
+        String result = null;
+
+        try {
+
+            if (isDetailRequest()) {
+                // this is a request to a detail page
+                CmsResource res = getDetailContent();
+                CmsFile file = m_cms.readFile(res);
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
+                result = content.getHandler().getTitleMapping(m_cms, content, m_cms.getRequestContext().getLocale());
+                if (result == null) {
+                    // title not found, maybe no mapping OR not available in the current locale
+                    // read the title of the detail resource as fall back (may contain mapping from another locale)
+                    result = m_cms.readPropertyObject(
+                        res,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false,
+                        locale).getValue();
+                }
+            }
+            if (result == null) {
+                // read the title of the requested resource as fall back
+                result = m_cms.readPropertyObject(
+                    m_cms.getRequestContext().getUri(),
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    true,
+                    locale).getValue();
+            }
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = "";
+        }
+
+        return result;
     }
 
     /**
