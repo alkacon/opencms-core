@@ -148,7 +148,7 @@ public final class CmsVaadinUtils {
         + "        \"theme\": \"opencms\",\n"
         + "        \"versionInfo\": {\"vaadinVersion\": \"%(vaadinVersion)\"},\n"
         + "        \"vaadinDir\": \"%(vaadinDir)\",\n"
-        + "        \"heartbeatInterval\": 300,\n"
+        + "        \"heartbeatInterval\": 30,\n"
         + "        \"debug\": false,\n"
         + "        \"standalone\": false,\n"
         + "        \"authErrMsg\": {\n"
@@ -624,7 +624,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
