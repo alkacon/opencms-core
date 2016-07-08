@@ -58,11 +58,12 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
     }
 
     /**
-     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#getRootPathForSite(java.lang.String, org.opencms.site.CmsSite, boolean)
+     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#getRootPathForSite(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
     @Override
-    protected String getRootPathForSite(String path, CmsSite site, boolean isRootPath) {
+    protected String getRootPathForSite(CmsObject cms, String path, String siteRoot, boolean isRootPath) {
 
+        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
         if ((site != null) && CmsSite.LocalizationMode.singleTree.equals(site.getLocalizationMode())) {
             // remove any locale prefix from the path
             if (isRootPath) {
@@ -76,9 +77,9 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
             if (locale != null) {
                 path = path.substring(locale.toString().length());
             }
-            return CmsStringUtil.joinPaths(site.getSiteRoot(), path);
+            return cms.getRequestContext().addSiteRoot(site.getSiteRoot(), path);
         } else {
-            return super.getRootPathForSite(path, site, isRootPath);
+            return super.getRootPathForSite(cms, path, siteRoot, isRootPath);
         }
     }
 }
