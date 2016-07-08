@@ -91,12 +91,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
      * Create a new instance.<p>
      */
     public CmsResourceTreeContainer() {
-        addContainerProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, String.class, null);
-        addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
-        addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
-        addContainerProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT, Boolean.class, Boolean.TRUE);
-        addContainerProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER, Boolean.class, Boolean.TRUE);
-        addContainerProperty(PROPERTY_RESOURCE, CmsResource.class, null);
+        defineProperties();
     }
 
     /**
@@ -124,20 +119,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
         if (resourceItem == null) {
             resourceItem = addItem(resource.getStructureId());
         }
-        resourceItem.getItemProperty(PROPERTY_RESOURCE).setValue(resource);
-        // use the root path as name in case of the root item
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
-            parentId == null ? resource.getRootPath() : resource.getName());
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(
-            new ExternalResource(
-                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable())));
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
-        resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER).setValue(
-            Boolean.valueOf(resource.isFolder()));
+        fillProperties(cms, resourceItem, resource, parentId);
         if (resource.isFile()) {
             setChildrenAllowed(resource.getStructureId(), false);
         }
@@ -225,10 +207,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
             CmsUUID parentId = parent.getStructureId();
             Item resourceItem = getItem(id);
             if (resourceItem != null) {
-                // use the root path as name in case of the root item
-                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
-                    parentId == null ? resource.getRootPath() : resource.getName());
-                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
+                fillProperties(cms, resourceItem, resource, parentId);
                 if (parentId != null) {
                     setParent(resource.getStructureId(), parentId);
                 }
@@ -239,6 +218,45 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
             removeItemRecursively(id);
             LOG.debug(e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * Defines the container properties.<p>
+     */
+    protected void defineProperties() {
+
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, String.class, null);
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT, Boolean.class, Boolean.TRUE);
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER, Boolean.class, Boolean.TRUE);
+        addContainerProperty(PROPERTY_RESOURCE, CmsResource.class, null);
+    }
+
+    /**
+     * Fills the properties of a tree item.<p>
+     *
+     * @param cms the CMS context
+     * @param resourceItem the empty item
+     * @param resource the resource for which the tree item is being created
+     * @param parentId the parent id
+     */
+    protected void fillProperties(CmsObject cms, Item resourceItem, CmsResource resource, CmsUUID parentId) {
+
+        resourceItem.getItemProperty(PROPERTY_RESOURCE).setValue(resource);
+        // use the root path as name in case of the root item
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
+            parentId == null ? resource.getRootPath() : resource.getName());
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(
+            new ExternalResource(
+                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable())));
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER).setValue(
+            Boolean.valueOf(resource.isFolder()));
     }
 
 }

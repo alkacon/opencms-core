@@ -49,26 +49,23 @@ import com.vaadin.ui.Tree;
  */
 public class CmsResourceTree extends Tree {
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTree.class);
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** The CMS context. */
     private CmsObject m_cms;
 
-    /** The root resource. */
-    private CmsResource m_root;
-
     /** The resource filter. */
     private CmsResourceFilter m_filter;
 
-    /** The data container for the tree. */
-    private CmsResourceTreeContainer m_container = new CmsResourceTreeContainer();
-
     /** The list of selection handlers. */
     private List<I_CmsSelectionHandler<CmsResource>> m_resourceSelectionHandlers = Lists.newArrayList();
+
+    /** The root resource. */
+    private CmsResource m_root;
 
     /**
      * Creates a new instance.<p>
@@ -78,12 +75,39 @@ public class CmsResourceTree extends Tree {
      * @param filter the resource filter
      */
     public CmsResourceTree(CmsObject cms, CmsResource root, CmsResourceFilter filter) {
+
+        this(
+            cms,
+            root,
+            filter,
+            new CmsResourceTreeContainer(),
+            CmsResourceTableProperty.PROPERTY_TYPE_ICON,
+            CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
+    }
+
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param cms the CMS context
+     * @param root the root resource
+     * @param filter the resource filter
+     * @param container the data container for the tree
+     * @param iconId the property id for the icon
+     * @param captionId the property id for the caption
+     */
+    public CmsResourceTree(
+        CmsObject cms,
+        CmsResource root,
+        CmsResourceFilter filter,
+        CmsResourceTreeContainer container,
+        Object iconId,
+        Object captionId) {
         m_cms = cms;
         m_root = root;
         m_filter = filter;
-        setContainerDataSource(m_container);
-        setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON);
-        setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
+        setContainerDataSource(container);
+        setItemIconPropertyId(iconId);
+        setItemCaptionPropertyId(captionId);
         addExpandListener(new ExpandListener() {
 
             private static final long serialVersionUID = 1L;
@@ -91,7 +115,7 @@ public class CmsResourceTree extends Tree {
             @SuppressWarnings("synthetic-access")
             public void nodeExpand(ExpandEvent event) {
 
-                m_container.readTreeLevel(m_cms, (CmsUUID)event.getItemId(), m_filter);
+                getTreeContainer().readTreeLevel(m_cms, (CmsUUID)event.getItemId(), m_filter);
                 markAsDirtyRecursive(); // required so open / close arrows on folders without contents are rendered correctly
             }
         });
@@ -103,7 +127,7 @@ public class CmsResourceTree extends Tree {
             @SuppressWarnings("synthetic-access")
             public void nodeCollapse(CollapseEvent event) {
 
-                m_container.removeChildren((CmsUUID)event.getItemId());
+                getTreeContainer().removeChildren((CmsUUID)event.getItemId());
             }
         });
 
@@ -128,7 +152,7 @@ public class CmsResourceTree extends Tree {
             }
         });
 
-        m_container.addTreeItem(cms, m_root, null);
+        getTreeContainer().addTreeItem(cms, m_root, null);
         try {
             expandItem(m_root.getStructureId());
             markAsDirtyRecursive();
@@ -155,7 +179,7 @@ public class CmsResourceTree extends Tree {
      */
     public CmsResourceTreeContainer getTreeContainer() {
 
-        return m_container;
+        return (CmsResourceTreeContainer)getContainerDataSource();
     }
 
     /**
