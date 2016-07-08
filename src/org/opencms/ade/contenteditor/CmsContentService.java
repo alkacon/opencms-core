@@ -184,6 +184,22 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * Returns the RDF annotations required for in line editing.<p>
      *
+     * @param value the XML content value
+     *
+     * @return the RDFA
+     */
+    public static String getRdfaAttributes(I_CmsXmlContentValue value) {
+
+        return "about=\""
+            + CmsContentService.getEntityId(value)
+            + "\" property=\""
+            + CmsContentService.getAttributeName(value)
+            + "\"";
+    }
+
+    /**
+     * Returns the RDF annotations required for in line editing.<p>
+     *
      * @param parentValue the parent XML content value
      * @param childNames the child attribute names separated by '|'
      *
@@ -827,7 +843,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         try {
             result = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
                 OpenCms.getSystemInfo().getDefaultEncoding());
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             result = OpenCms.getSystemInfo().getDefaultEncoding();
         }
         return CmsEncoder.lookupEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding());
@@ -1129,7 +1145,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         boolean performedAutoCorrection = false;
         try {
             content.validateXmlStructure(new CmsXmlEntityResolver(cms));
-        } catch (@SuppressWarnings("unused") CmsXmlException eXml) {
+        } catch (CmsXmlException eXml) {
             // validation failed
             content.setAutoCorrectionEnabled(true);
             content.correctXmlStructure(cms);
@@ -1767,6 +1783,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      *
      * @param file the file where the content is stored.
      * @param content the content.
+     * @param lastEditedEntity the last edited entity
      */
     private void writeCategories(CmsFile file, CmsXmlContent content, CmsEntity lastEditedEntity) {
 

@@ -36,6 +36,7 @@ import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             while (i.hasNext()) {
                 // must iterate values from XML content and create wrapper for each
                 I_CmsXmlContentValue value = i.next();
-                result.add(createWrapper(obtainCmsObject(), value));
+                result.add(createWrapper(obtainCmsObject(), value, getContentValue(), value.getName()));
             }
             return result;
         }
@@ -144,7 +145,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             while (i.hasNext()) {
                 // must iterate values from XML content and create wrapper for each
                 I_CmsXmlContentValue value = i.next();
-                result.add(createWrapper(obtainCmsObject(), value));
+                result.add(createWrapper(obtainCmsObject(), value, getContentValue(), (String)input));
             }
             return result;
         }
@@ -165,7 +166,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             I_CmsXmlContentValue value = getContentValue().getDocument().getValue(
                 createPath(input),
                 getContentValue().getLocale());
-            return createWrapper(obtainCmsObject(), value);
+            return createWrapper(obtainCmsObject(), value, getContentValue(), (String)input);
         }
     }
 
@@ -189,6 +190,87 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         }
     }
 
+    /**
+     * The null value info, used to generate RDFA and DND annotations for null values.<p>
+     */
+    protected static class NullValueInfo {
+
+        /** The content document. */
+        private I_CmsXmlDocument m_content;
+
+        /** The content locale. */
+        private Locale m_locale;
+
+        /** The parent value. */
+        private I_CmsXmlContentValue m_parentValue;
+
+        /** The value path name. */
+        private String m_valueName;
+
+        /**
+         * Constructor.<p>
+         *
+         * @param parentValue the parent value
+         * @param valueName the value path name
+         */
+        protected NullValueInfo(I_CmsXmlContentValue parentValue, String valueName) {
+            m_parentValue = parentValue;
+            m_valueName = valueName;
+        }
+
+        /**
+         * @param content the content document
+         * @param valueName the value path name
+         * @param locale the content locale
+         */
+        protected NullValueInfo(I_CmsXmlDocument content, String valueName, Locale locale) {
+            m_content = content;
+            m_valueName = valueName;
+            m_locale = locale;
+        }
+
+        /**
+         * Returns the content.<p>
+         *
+         * @return the content
+         */
+        public I_CmsXmlDocument getContent() {
+
+            return m_content;
+        }
+
+        /**
+         * Returns the locale.<p>
+         *
+         * @return the locale
+         */
+        public Locale getLocale() {
+
+            return m_locale;
+        }
+
+        /**
+         * Returns the parent value.<p>
+         *
+         * @return the parent value
+         */
+        public I_CmsXmlContentValue getParentValue() {
+
+            return m_parentValue;
+        }
+
+        /**
+         * Returns the value name.<p>
+         *
+         * @return the value name
+         */
+        public String getValueName() {
+
+            return m_valueName;
+        }
+
+    }
+
     /** Constant for the null (non existing) value. */
     protected static final CmsJspContentAccessValueWrapper NULL_VALUE_WRAPPER = new CmsJspContentAccessValueWrapper();
 
@@ -210,6 +292,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     /** The names of the sub elements. */
     private List<String> m_names;
 
+    /** The null value info, used to generate RDFA and DND annotations for null values. */
+    private NullValueInfo m_nullValueInfo;
+
     /** The lazy initialized map of RDFA for nested sub values. */
     private Map<String, String> m_rdfa;
 
@@ -228,7 +313,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     /**
      * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
      *
-     * @see #createWrapper(CmsObject, I_CmsXmlContentValue)
+     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
      */
     private CmsJspContentAccessValueWrapper() {
 
@@ -244,7 +329,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
      * @param base the wrapper base
      * @param macroResolver the macro resolver to use
      *
-     * @see #createWrapper(CmsObject, I_CmsXmlContentValue)
+     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
      */
     private CmsJspContentAccessValueWrapper(CmsJspContentAccessValueWrapper base, CmsMacroResolver macroResolver) {
 
@@ -263,7 +348,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
      * @param cms the current users OpenCms context
      * @param value the value to warp
      *
-     * @see #createWrapper(CmsObject, I_CmsXmlContentValue)
+     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
      */
     private CmsJspContentAccessValueWrapper(CmsObject cms, I_CmsXmlContentValue value) {
 
@@ -286,13 +371,58 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
      *
      * @param cms the current users OpenCms context
      * @param value the value to warp
+     * @param parentValue the parent value, required to set the null value info
+     * @param valueName the value path name
      *
      * @return a new content value wrapper instance, or <code>null</code> if any parameter is <code>null</code>
      */
-    public static CmsJspContentAccessValueWrapper createWrapper(CmsObject cms, I_CmsXmlContentValue value) {
+    public static CmsJspContentAccessValueWrapper createWrapper(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        I_CmsXmlContentValue parentValue,
+        String valueName) {
 
         if ((value != null) && (cms != null)) {
             return new CmsJspContentAccessValueWrapper(cms, value);
+        }
+        if ((parentValue != null) && (valueName != null) && (cms != null)) {
+            CmsJspContentAccessValueWrapper wrapper = new CmsJspContentAccessValueWrapper();
+            wrapper.m_nullValueInfo = new NullValueInfo(parentValue, valueName);
+            wrapper.m_cms = cms;
+            return wrapper;
+        }
+        // if no value is available,
+        return NULL_VALUE_WRAPPER;
+    }
+
+    /**
+     * Factory method to create a new XML content value wrapper.<p>
+     *
+     * In case either parameter is <code>null</code>, the {@link #NULL_VALUE_WRAPPER} is returned.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param value the value to warp
+     * @param content the content document, required to set the null value info
+     * @param valueName the value path name
+     * @param locale the selected locale
+     *
+     * @return a new content value wrapper instance, or <code>null</code> if any parameter is <code>null</code>
+     */
+    public static CmsJspContentAccessValueWrapper createWrapper(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        I_CmsXmlDocument content,
+        String valueName,
+        Locale locale) {
+
+        if ((value != null) && (cms != null)) {
+            return new CmsJspContentAccessValueWrapper(cms, value);
+        }
+        if ((content != null) && (valueName != null) && (locale != null) && (cms != null)) {
+            CmsJspContentAccessValueWrapper wrapper = new CmsJspContentAccessValueWrapper();
+            wrapper.m_nullValueInfo = new NullValueInfo(content, valueName, locale);
+            wrapper.m_cms = cms;
+            return wrapper;
         }
         // if no value is available,
         return NULL_VALUE_WRAPPER;
@@ -638,28 +768,27 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
 
         String result = "";
         CmsObject cms = obtainCmsObject();
-        //
-        //        This is the way I think the code should be reused:
-        //
-        //        if ((cms != null) && (m_contentValue != null)) {
-        //            if (isDirectEditEnabled(cms)) {
-        //                result = CmsContentService.getRdfaAttributes(
-        //                    m_contentValue.getDocument(),
-        //                    m_contentValue.getLocale(),
-        //                    m_contentValue.getPath());
-        //            }
-        //        }
-        //
-        if ((cms != null) && (m_contentValue != null)) {
+        if (cms != null) {
             if (isDirectEditEnabled(cms)) {
-                // within the offline project return the OpenCms specific entity id's and property names
-                result = "about=\"" + CmsContentService.getEntityId(m_contentValue) + "\" ";
-                result += "property=\"" + CmsContentService.getAttributeName(m_contentValue) + "\"";
+                if (m_contentValue != null) {
+                    // within the offline project return the OpenCms specific entity id's and property names
+                    result = CmsContentService.getRdfaAttributes(m_contentValue);
+                } else if ((m_nullValueInfo != null)) {
+                    if (m_nullValueInfo.getParentValue() != null) {
+                        result = CmsContentService.getRdfaAttributes(
+                            m_nullValueInfo.getParentValue(),
+                            m_nullValueInfo.getValueName());
+                    } else if (m_nullValueInfo.getContent() != null) {
+                        result = CmsContentService.getRdfaAttributes(
+                            m_nullValueInfo.getContent(),
+                            m_nullValueInfo.getLocale(),
+                            m_nullValueInfo.getValueName());
+                    }
+                }
             } else {
                 // TODO: return mapped property names etc. when online
             }
         }
-
         return result;
     }
 

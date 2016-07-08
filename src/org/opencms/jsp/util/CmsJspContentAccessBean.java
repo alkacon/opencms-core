@@ -335,7 +335,7 @@ public class CmsJspContentAccessBean {
             while (i.hasNext()) {
                 // XML content API offers List of values only as Objects, must iterate them and create Strings
                 I_CmsXmlContentValue value = i.next();
-                result.add(CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value));
+                result.add(CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value, null, null));
             }
             return result;
         }
@@ -371,7 +371,7 @@ public class CmsJspContentAccessBean {
             while (i.hasNext()) {
                 // XML content API offers List of values only as Objects, must iterate them and create Strings
                 I_CmsXmlContentValue value = i.next();
-                result.add(CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value));
+                result.add(CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value, null, null));
             }
             return result;
         }
@@ -402,7 +402,12 @@ public class CmsJspContentAccessBean {
         public Object transform(Object input) {
 
             I_CmsXmlContentValue value = getRawContent().getValue(String.valueOf(input), m_selectedLocale);
-            return CmsJspContentAccessValueWrapper.createWrapper(getCmsObject(), value);
+            return CmsJspContentAccessValueWrapper.createWrapper(
+                getCmsObject(),
+                value,
+                getRawContent(),
+                (String)input,
+                m_selectedLocale);
         }
     }
 
@@ -734,7 +739,7 @@ public class CmsJspContentAccessBean {
                     result = false;
                 }
             }
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             // should not happen, in case it does just assume not editable
         }
         return result;
