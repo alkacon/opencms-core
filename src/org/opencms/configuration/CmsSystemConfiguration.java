@@ -287,6 +287,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the default locale(s). */
     public static final String N_LOCALESDEFAULT = "localesdefault";
 
+    /** The attribute name for the localization mode. */
+    public static final String A_LOCALIZATION_MODE = "localizationMode";
+
     /** The node name for the log-interval node. */
     public static final String N_LOG_INTERVAL = "log-interval";
 
@@ -947,13 +950,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
         // add site configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 10);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 2, A_TITLE);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 3, A_POSITION);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 4, A_ERROR_PAGE);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 5, A_WEBSERVER);
+        String siteXpath = "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE;
+
+        digester.addCallMethod(siteXpath, "addSite", 10);
+        digester.addCallParam(siteXpath, 0, A_SERVER);
+        digester.addCallParam(siteXpath, 1, A_URI);
+        digester.addCallParam(siteXpath, 2, A_TITLE);
+        digester.addCallParam(siteXpath, 3, A_POSITION);
+        digester.addCallParam(siteXpath, 4, A_ERROR_PAGE);
+        digester.addCallParam(siteXpath, 5, A_WEBSERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_EXCLUSIVE);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_ERROR);
@@ -961,6 +966,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE,
             9,
             A_USE_PERMANENT_REDIRECTS);
+        digester.addCallMethod(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, "addParamToConfigSite", 2);
+        digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 0, A_NAME);
+        digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 1);
         // add an alias to the currently configured site
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS,
@@ -1402,6 +1410,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             siteElement.addAttribute(A_POSITION, Float.toString(site.getPosition()));
             siteElement.addAttribute(A_ERROR_PAGE, site.getErrorPage());
             siteElement.addAttribute(A_WEBSERVER, String.valueOf(site.isWebserver()));
+
             // create <secure server=""/> subnode
             if (site.hasSecureServer()) {
                 Element secureElem = siteElement.addElement(N_SECURE);
@@ -1411,6 +1420,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 secureElem.addAttribute(A_ERROR, String.valueOf(site.isExclusiveError()));
                 if (site.usesPermanentRedirects()) {
                     secureElem.addAttribute(A_USE_PERMANENT_REDIRECTS, Boolean.TRUE.toString());
+                }
+            }
+            if ((site.getParameters() != null) && !site.getParameters().isEmpty()) {
+                Element parametersElem = siteElement.addElement(N_PARAMETERS);
+                for (Map.Entry<String, String> entry : site.getParameters().entrySet()) {
+                    Element paramElem = parametersElem.addElement(N_PARAM);
+                    paramElem.addAttribute(A_NAME, entry.getKey());
+                    paramElem.addText(entry.getValue());
                 }
             }
             // create <alias server=""/> subnode(s)

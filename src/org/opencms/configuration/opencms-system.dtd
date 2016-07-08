@@ -282,7 +282,7 @@ Each job can have an optional list of parameters.
 <!ELEMENT workplace-server (#PCDATA)>
 <!ELEMENT default-uri (#PCDATA)>
 <!ELEMENT shared-folder (#PCDATA)>
-<!ELEMENT site (secure?, alias*)>
+<!ELEMENT site (secure?, parameters?, alias*)>
 <!ATTLIST site
 	server CDATA #REQUIRED
 	uri CDATA #REQUIRED

@@ -36,6 +36,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -45,6 +46,23 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0
  */
 public final class CmsSite implements Cloneable, Comparable<CmsSite> {
+
+    /**
+     * The site localization modes.<p>
+     */
+    public enum LocalizationMode {
+        /** The multi tree localization mode. */
+        multiTree,
+
+        /** The single tree localization mode. */
+        singleTree,
+
+        /** The default mode. */
+        standard
+    }
+
+    /** The localization mode parameter name. */
+    public static final String LOCALIZATION_MODE_PARAM = "localizationMode";
 
     /** Log instance. */
     private static final Log LOG = CmsLog.getLog(CmsSite.class);
@@ -60,6 +78,12 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /** If set to true, secure resources will only be available using the configured secure url. */
     private boolean m_exclusiveUrl;
+
+    /** The localization mode. */
+    private LocalizationMode m_localizationMode;
+
+    /** The site parameters. */
+    private Map<String, String> m_parameters;
 
     /** This value defines a relative sorting order. */
     private float m_position;
@@ -79,11 +103,11 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /** Display title of this site. */
     private String m_title;
 
-    /** Indicates whether this site should be considered when writing the web server configuration. */
-    private boolean m_webserver = true;
-
     /** True if permanent redirects should be used when redirecting to the secure URL of this site. */
     private boolean m_usesPermanentRedirects;
+
+    /** Indicates whether this site should be considered when writing the web server configuration. */
+    private boolean m_webserver = true;
 
     /**
      * Constructs a new site object without title and id information,
@@ -272,6 +296,33 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     public String getErrorPage() {
 
         return m_errorPage;
+    }
+
+    /**
+     * Returns the localization mode.<p>
+     *
+     * @return the localization mode
+     */
+    public LocalizationMode getLocalizationMode() {
+
+        if (m_localizationMode == null) {
+            try {
+                m_localizationMode = LocalizationMode.valueOf(m_parameters.get(LOCALIZATION_MODE_PARAM));
+            } catch (Exception e) {
+                m_localizationMode = LocalizationMode.standard;
+            }
+        }
+        return m_localizationMode;
+    }
+
+    /**
+     * Returns the parameters.<p>
+     *
+     * @return the parameters
+     */
+    public Map<String, String> getParameters() {
+
+        return m_parameters;
     }
 
     /**
@@ -526,6 +577,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     public void setExclusiveUrl(boolean exclusive) {
 
         m_exclusiveUrl = exclusive;
+    }
+
+    /**
+     * Sets the parameters.<p>
+     *
+     * @param parameters the parameters to set
+     */
+    public void setParameters(Map<String, String> parameters) {
+
+        m_parameters = parameters;
     }
 
     /**

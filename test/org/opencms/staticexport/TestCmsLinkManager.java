@@ -78,6 +78,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         TestSuite suite1 = new TestSuite();
         TestSuite suite2 = new TestSuite();
+        TestSuite suite3 = new TestSuite();
         suite1.setName(TestCmsLinkManager.class.getName());
 
         suite1.addTest(new TestCmsLinkManager("testToAbsolute"));
@@ -93,6 +94,11 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         suite2.addTest(new TestCmsLinkManager("testCustomLinkHandlerWithAdjustedVfsPrefix"));
         suite2.addTest(new TestCmsLinkManager("testRootPathAdjustmentWithAdjustedVfsPrefix"));
         suite2.addTest(new TestCmsLinkManager("testAbsolutePathAdjustmentWithAdjustedVfsPrefix"));
+
+        suite3.addTest(new TestCmsLinkManager("testSingleTreeLinkSubstitution"));
+        suite3.addTest(new TestCmsLinkManager("testSymmetricSubstitutionForSingleTree"));
+        suite3.addTest(new TestCmsLinkManager("testRootPathAdjustmentForSingleTree"));
+        suite3.addTest(new TestCmsLinkManager("testAbsolutePathAdjustmentForSingleTree"));
 
         TestSetup wrapper1 = new TestSetup(suite1) {
 
@@ -128,8 +134,25 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         };
 
+        TestSetup wrapper3 = new TestSetup(suite3) {
+
+            @Override
+            protected void setUp() {
+
+                setupOpenCms("simpletest", "/", "localizationConfig");
+            }
+
+            @Override
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+
+        };
+
         suite.addTest(wrapper1);
         suite.addTest(wrapper2);
+        suite.addTest(wrapper3);
         // Test adjustment when OpenCms context is empty
         suite.addTest(wrapTest("*", "/data", "", "testRootPathAdjustmentWithEmptyOpenCmsContext"));
 
@@ -216,6 +239,15 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         echo("Result: " + outputlink);
         assertEquals(link, outputlink);
 
+    }
+
+    /**
+     * @throws CmsException  from getCmsObject()
+     * @see #testAbsolutePathAdjustment()
+     */
+    public void testAbsolutePathAdjustmentForSingleTree() throws CmsException {
+
+        testAbsolutePathAdjustment();
     }
 
     /**
@@ -379,6 +411,15 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
      * @throws CmsException from getCmsObject()
      * @see #testRootPathAdjustment()
      */
+    public void testRootPathAdjustmentForSingleTree() throws CmsException {
+
+        testRootPathAdjustment();
+    }
+
+    /**
+     * @throws CmsException from getCmsObject()
+     * @see #testRootPathAdjustment()
+     */
     public void testRootPathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
 
         testRootPathAdjustment();
@@ -394,6 +435,59 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     public void testRootPathAdjustmentWithEmptyOpenCmsContext() throws CmsException {
 
         testRootPathAdjustment();
+    }
+
+    /**
+     * Tests the link substitution.<p>
+     *
+     * @throws Exception if test fails
+     */
+    public void testSingleTreeLinkSubstitution() throws Exception {
+
+        String test;
+        CmsObject cms = getCmsObject();
+        echo("Testing link substitution");
+        String localeInsert = "/" + cms.getRequestContext().getLocale().toString();
+        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+        CmsLinkManager linkManager = OpenCms.getLinkManager();
+
+        test = linkManager.substituteLink(cms, "/folder1/index.html?additionalParam", "/sites/default");
+        System.out.println(test);
+        assertEquals(getVfsPrefix() + localeInsert + "/folder1/index.html?additionalParam", test);
+
+        test = linkManager.substituteLink(
+            cms,
+            CmsLinkManager.getAbsoluteUri("/", "/folder1/index.html"),
+            "/sites/default");
+        System.out.println(test);
+        assertEquals(getVfsPrefix() + localeInsert + "/", test);
+
+        test = linkManager.substituteLink(
+            cms,
+            CmsLinkManager.getAbsoluteUri("./", "/folder1/index.html"),
+            "/sites/default");
+        System.out.println(test);
+        assertEquals(getVfsPrefix() + localeInsert + "/folder1/", test);
+
+        test = CmsLinkManager.getRelativeUri("/index.html", "/index.html");
+        System.out.println(test);
+        assertEquals("index.html", test);
+
+        test = CmsLinkManager.getRelativeUri("/folder1/index.html", "/folder1/");
+        System.out.println(test);
+        assertEquals("./", test);
+
+        test = CmsLinkManager.getRelativeUri("/index.html", "/");
+        System.out.println(test);
+        assertEquals("./", test);
+
+        test = CmsLinkManager.getRelativeUri("/index.html", "./");
+        System.out.println(test);
+        assertEquals("./", test);
+
+        test = CmsLinkManager.getRelativeUri("/", "/");
+        System.out.println(test);
+        assertEquals("./", test);
     }
 
     /**
@@ -419,6 +513,11 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         link = lm.getServerLink(cms, res.getRootPath());
         rootPath = lm.getRootPath(cms, link);
         assertEquals(res.getRootPath(), rootPath);
+    }
+
+    public void testSymmetricSubstitutionForSingleTree() throws Exception {
+
+        testSymmetricSubstitution();
     }
 
     /**

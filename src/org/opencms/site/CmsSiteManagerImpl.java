@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -115,6 +116,9 @@ public final class CmsSiteManagerImpl {
     /** The site matcher that matches the workplace site. */
     private CmsSiteMatcher m_workplaceSiteMatcher;
 
+    /** Temporary store for site parameter values. */
+    private Map<String, String> m_siteParams;
+
     /**
      * Creates a new CmsSiteManager.<p>
      *
@@ -124,6 +128,7 @@ public final class CmsSiteManagerImpl {
         m_siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>();
         m_siteRootSites = new HashMap<String, CmsSite>();
         m_aliases = new ArrayList<CmsSiteMatcher>();
+        m_siteParams = new LinkedHashMap<String, String>();
         m_additionalSiteRoots = new ArrayList<String>();
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -150,6 +155,17 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Adds a parameter to the currently configured site.<p>
+     *
+     * @param name the parameter name
+     * @param value the parameter value
+     */
+    public void addParamToConfigSite(String name, String value) {
+
+        m_siteParams.put(name, value);
+    }
+
+    /**
      * Adds a site.<p>
      *
      * @param cms the CMS object
@@ -168,8 +184,9 @@ public final class CmsSiteManagerImpl {
         // un-freeze
         m_frozen = false;
 
-        // set the aliases first
-        // NOT they are reseted by #addSite method after the site was added successful
+        // set aliases and parameters, they will be used in the addSite method
+        // this is necessary because of a digester workaround
+        m_siteParams = site.getParameters();
         m_aliases = site.getAliases();
 
         String secureUrl = null;
@@ -226,7 +243,8 @@ public final class CmsSiteManagerImpl {
         String secureServer,
         String exclusive,
         String error,
-        String usePermanentRedirects) throws CmsConfigurationException {
+        String usePermanentRedirects)
+    throws CmsConfigurationException {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
@@ -279,6 +297,8 @@ public final class CmsSiteManagerImpl {
             addServer(matcher, site);
         }
         m_aliases = new ArrayList<CmsSiteMatcher>();
+        site.setParameters(m_siteParams);
+        m_siteParams = new LinkedHashMap<String, String>();
         m_siteRootSites = new HashMap<String, CmsSite>(m_siteRootSites);
         m_siteRootSites.put(site.getSiteRoot(), site);
         if (CmsLog.INIT.isInfoEnabled()) {

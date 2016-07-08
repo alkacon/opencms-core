@@ -237,7 +237,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         uriBaseName = exportManager.getRfsName(cms, oriUri);
                     } else {
                         // base URI dosn't need to be exported
-                        uriBaseName = exportManager.getVfsPrefix() + oriUri;
+                        uriBaseName = addVfsPrefix(cms, oriUri, targetSite);
                     }
                     // cache export base URI
                     exportManager.cacheOnlineLink(cacheKey, uriBaseName);
@@ -271,7 +271,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         parameters = null;
                     } else {
                         // no export required for the target link
-                        resultLink = exportManager.getVfsPrefix().concat(vfsName);
+                        resultLink = addVfsPrefix(cms, originalVfsName, targetSite);
                         // add cut off parameters if required
                         if (parameters != null) {
                             resultLink = resultLink.concat(parameters);
@@ -366,7 +366,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // offline project, no export or secure handling required
             if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                 // in unit test this code would fail otherwise
-                resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+                resultLink = addVfsPrefix(cms, originalVfsName, targetSite);
             }
 
             // add cut off parameters and return the result
@@ -397,6 +397,40 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         }
         return result;
 
+    }
+
+    /**
+     * Adds the VFS prefix to the VFS name.<p>
+     * This method is required as a hook used in {@link CmsLocalePrefixLinkSubstitutionHandler}.<p>
+     *
+     * @param cms the cms context
+     * @param vfsName the VFS name
+     * @param targetSite the target site
+     *
+     * @return the path
+     */
+    protected String addVfsPrefix(CmsObject cms, String vfsName, CmsSite targetSite) {
+
+        return OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+    }
+
+    /**
+     * Returns the root path for given site.<p>
+     * This method is required as a hook used in {@link CmsLocalePrefixLinkSubstitutionHandler}.<p>
+     *
+     * @param path the path
+     * @param site the site, will be null in case of the root site
+     * @param isRootPath in case the path is already a root path
+     *
+     * @return the root path
+     */
+    protected String getRootPathForSite(String path, CmsSite site, boolean isRootPath) {
+
+        if (isRootPath || (site == null)) {
+            return CmsStringUtil.joinPaths("/", path);
+        } else {
+            return CmsStringUtil.joinPaths(site.getSiteRoot(), path);
+        }
     }
 
     /**
@@ -470,14 +504,19 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     || targetMatcher.equals(cms.getRequestContext().getRequestMatcher());
                 if (isWorkplaceServer) {
                     String selectedPath;
-                    if (OpenCms.getSiteManager().getSiteRoot(path) != null) {
-                        selectedPath = CmsStringUtil.joinPaths("/", path);
+                    CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(path);
+                    if (site != null) {
+                        selectedPath = getRootPathForSite(path, site, true);
                     } else {
                         // set selectedPath with the path for the current site
-                        selectedPath = cms.getRequestContext().addSiteRoot(path);
-                        String pathForMatchedSite = cms.getRequestContext().addSiteRoot(
-                            OpenCms.getSiteManager().matchSite(targetMatcher).getSiteRoot(),
-                            path);
+                        selectedPath = getRootPathForSite(
+                            path,
+                            OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot()),
+                            false);
+                        String pathForMatchedSite = getRootPathForSite(
+                            path,
+                            OpenCms.getSiteManager().matchSite(targetMatcher),
+                            false);
                         String originalSiteRoot = cms.getRequestContext().getSiteRoot();
                         try {
                             cms.getRequestContext().setSiteRoot("");
@@ -494,9 +533,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     return selectedPath + suffix;
                 } else {
                     // add the site root of the matching site
-                    return cms.getRequestContext().addSiteRoot(
-                        OpenCms.getSiteManager().matchSite(targetMatcher).getSiteRoot(),
-                        path + suffix);
+                    return getRootPathForSite(path + suffix, OpenCms.getSiteManager().matchSite(targetMatcher), false);
                 }
             } else {
                 return null;
@@ -512,27 +549,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // cut context from path
             path = CmsLinkManager.removeOpenCmsContext(path);
 
-            String siteRoot = null;
-            CmsSite explicitTargetSite = OpenCms.getSiteManager().getSiteForRootPath(path);
-            if (explicitTargetSite != null) {
-                siteRoot = explicitTargetSite.getSiteRoot();
-            } else if (basePath != null) {
-                siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
-            }
+            CmsSite targetSite = getTargetSite(cms, path, basePath);
 
-            if (siteRoot != null) {
-                // special case: relative path contains a site root, i.e. we are in the root site
-                if (!path.startsWith(siteRoot)) {
-                    // path does not already start with the site root, we have to add this path as site prefix
-                    return cms.getRequestContext().addSiteRoot(siteRoot, path + suffix);
-                } else {
-                    // since path already contains the site root, we just leave it unchanged
-                    return path + suffix;
-                }
-            } else {
-                // site root is added with standard mechanism
-                return cms.getRequestContext().addSiteRoot(path + suffix);
-            }
+            return getRootPathForSite(
+                path,
+                targetSite,
+                (targetSite != null) && path.startsWith(targetSite.getSiteRoot()));
         }
 
         // URI with relative path is relative to the given relativePath if available and in a site,
@@ -569,12 +591,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         }
 
         if (CmsStringUtil.isNotEmpty(path)) {
-            if (OpenCms.getSiteManager().getSiteRoot(path) != null) {
-                // path already seems to be a root path
-                return path + suffix;
-            }
-            // relative URI (= VFS path relative to currently selected site root)
-            return cms.getRequestContext().addSiteRoot(path) + suffix;
+            CmsSite targetSite = getTargetSite(cms, path, basePath);
+
+            return getRootPathForSite(
+                path,
+                targetSite,
+                (targetSite != null) && path.startsWith(targetSite.getSiteRoot()));
         }
 
         // URI without path (typically local link)
@@ -698,6 +720,27 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Returns the target site for the given path.<p>
+     *
+     * @param cms the cms context
+     * @param path the path
+     * @param basePath the base path
+     *
+     * @return the target site
+     */
+    private CmsSite getTargetSite(CmsObject cms, String path, String basePath) {
+
+        CmsSite explicitTargetSite = OpenCms.getSiteManager().getSiteForRootPath(path);
+        if ((explicitTargetSite == null) && (basePath != null)) {
+            explicitTargetSite = OpenCms.getSiteManager().getSiteForRootPath(basePath);
+        }
+        if (explicitTargetSite == null) {
+            explicitTargetSite = OpenCms.getSiteManager().getSiteForRootPath(cms.getRequestContext().getSiteRoot());
+        }
+        return explicitTargetSite;
     }
 
 }
