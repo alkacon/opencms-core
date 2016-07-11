@@ -186,5 +186,6 @@ public class CmsSingleTreeLocaleHandler extends CmsDefaultLocaleHandler {
     public void initHandler(CmsObject cms) {
 
         m_adminCmsObject = cms;
+        super.initHandler(cms);
     }
 }

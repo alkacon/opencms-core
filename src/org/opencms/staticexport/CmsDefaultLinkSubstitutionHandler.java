@@ -244,7 +244,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 }
                 // use relative links only on pages that get exported
                 useRelativeLinks = uriBaseName.startsWith(
-                    OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() + oriUri));
+                    exportManager.getRfsPrefix(cms.getRequestContext().getSiteRoot() + oriUri));
             }
 
             String detailPagePart = detailPage == null ? "" : detailPage + ":";
@@ -737,6 +737,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
      */
     private String getTargetSiteRoot(CmsObject cms, String path, String basePath) {
 
+        if (OpenCms.getSiteManager().startsWithShared(path) || path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+            return null;
+        }
         String targetSiteRoot = OpenCms.getSiteManager().getSiteRoot(path);
         if ((targetSiteRoot == null) && (basePath != null)) {
             targetSiteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
