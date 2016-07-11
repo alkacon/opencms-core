@@ -1808,7 +1808,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         if (formatter == null) {
-            formatter = formatters.getDefaultFormatter(containerType, containerWidth, true);
+            formatter = CmsElementUtil.getFormatterForContainer(
+                cms,
+                element,
+                container,
+                config,
+                true,
+                getSessionCache());
             if (formatter != null) {
                 formatterConfigId = formatter.isFromFormatterConfigFile()
                 ? formatter.getId()
