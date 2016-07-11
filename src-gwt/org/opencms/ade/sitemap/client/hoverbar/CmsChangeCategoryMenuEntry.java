@@ -116,7 +116,8 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
      */
     CmsXmlContentProperty createBasicStringProperty(String name, String niceName) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(name, //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            name, //name
             "string", // type
             "string", // widget
             "", // widgetconfig
@@ -162,10 +163,10 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
         dlg.setFormHandler(fh);
         fh.setDialog(dlg);
-        String nameLabel = Messages.get().key(Messages.GUI_CATEGORY_NAME_LABEL_0);
-        dlg.getForm().addField(CmsBasicFormField.createField(createBasicStringProperty("name", nameLabel)), name);
         String titleLabel = Messages.get().key(Messages.GUI_CATEGORY_TITLE_LABEL_0);
         dlg.getForm().addField(CmsBasicFormField.createField(createBasicStringProperty("title", titleLabel)), title);
+        String nameLabel = Messages.get().key(Messages.GUI_CATEGORY_NAME_LABEL_0);
+        dlg.getForm().addField(CmsBasicFormField.createField(createBasicStringProperty("name", nameLabel)), name);
         dlg.getForm().render();
         dlg.center();
 
