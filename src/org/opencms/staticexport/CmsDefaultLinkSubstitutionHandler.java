@@ -265,6 +265,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
                     // didn't find the link in the cache
                     if (exportManager.isExportLink(cms, vfsName)) {
+                        parameters = prepareExportParameters(cms, vfsName, parameters);
                         // export required, get export name for target link
                         resultLink = exportManager.getRfsName(cms, vfsName, parameters);
                         // now set the parameters to null, we do not need them anymore
@@ -655,6 +656,21 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     protected boolean isSecureLink(CmsObject cms, String vfsName, CmsSite targetSite, boolean secureRequest) {
 
         return OpenCms.getStaticExportManager().isSecureLink(cms, vfsName, targetSite.getSiteRoot(), secureRequest);
+    }
+
+    /**
+     * Prepares the request parameters for the given resource.<p>
+     * This method is required as a hook used in {@link CmsLocalePrefixLinkSubstitutionHandler}.<p>
+     *
+     * @param cms the cms context
+     * @param vfsName the vfs name
+     * @param parameters the parameters to prepare
+     *
+     * @return the root path
+     */
+    protected String prepareExportParameters(CmsObject cms, String vfsName, String parameters) {
+
+        return parameters;
     }
 
     /**

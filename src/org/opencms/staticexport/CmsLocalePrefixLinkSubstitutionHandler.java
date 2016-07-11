@@ -28,10 +28,12 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Locale;
 
@@ -65,7 +67,6 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
 
         CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
         if ((site != null) && CmsSite.LocalizationMode.singleTree.equals(site.getLocalizationMode())) {
-            // remove any locale prefix from the path
             if (isRootPath) {
                 path = path.substring(site.getSiteRoot().length());
             }
@@ -81,5 +82,26 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
         } else {
             return super.getRootPathForSite(cms, path, siteRoot, isRootPath);
         }
+    }
+
+    /**
+     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#prepareExportParameters(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    @Override
+    protected String prepareExportParameters(CmsObject cms, String vfsName, String parameters) {
+
+        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
+        if ((site != null) && CmsSite.LocalizationMode.singleTree.equals(site.getLocalizationMode())) {
+            if (!(OpenCms.getSiteManager().startsWithShared(vfsName)
+                || vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM))) {
+                if (parameters != null) {
+                    parameters += "&";
+                } else {
+                    parameters = "?";
+                }
+                parameters += CmsLocaleManager.PARAMETER_LOCALE + "=" + cms.getRequestContext().getLocale().toString();
+            }
+        }
+        return parameters;
     }
 }
