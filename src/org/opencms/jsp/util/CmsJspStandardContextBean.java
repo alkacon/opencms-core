@@ -1533,7 +1533,7 @@ public final class CmsJspStandardContextBean {
         }
         String containerName = container.getName();
         Map<String, String> settings = element.getSettings();
-        if (settings != null) {
+        if (!settings.isEmpty()) {
             String formatterConfigId = settings.get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
             if (CmsUUID.isValidUUID(formatterConfigId)) {
                 formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(

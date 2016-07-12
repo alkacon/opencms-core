@@ -1506,7 +1506,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
             LOG.error(e.getLocalizedMessage(), e);
         }
         Map<String, String> settings = element.getSettings();
-        if (settings == null) {
+        if (settings.isEmpty()) {
             return true;
         }
         String contextsAllowed = settings.get(CmsTemplateContextInfo.SETTING);
