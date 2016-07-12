@@ -87,7 +87,7 @@ public class CmsContainerElementBean implements Cloneable {
     private transient CmsResource m_resource;
 
     /** The settings of this element containing also default values. */
-    private transient Map<String, String> m_settings = new CmsNullIgnoringConcurrentMap<String, String>();
+    private transient Map<String, String> m_settings;
 
     /** The element site path, only set while rendering. */
     private String m_sitePath;
@@ -749,7 +749,7 @@ public class CmsContainerElementBean implements Cloneable {
     private void setSettings(Map<String, String> settings) {
 
         if (settings == null) {
-            m_settings = new CmsNullIgnoringConcurrentMap<String, String>();
+            m_settings = null;
         } else {
             m_settings = new CmsNullIgnoringConcurrentMap<String, String>(settings);
         }
