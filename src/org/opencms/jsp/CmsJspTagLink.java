@@ -29,11 +29,14 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
+
+import java.util.Locale;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -59,6 +62,9 @@ public class CmsJspTagLink extends BodyTagSupport {
 
     /** The optional base URI to create the link from. */
     private String m_baseUri;
+
+    /** The optional locale attribute. */
+    private Locale m_locale;
 
     /**
      * Returns a link to a file in the OpenCms VFS
@@ -108,15 +114,51 @@ public class CmsJspTagLink extends BodyTagSupport {
      */
     public static String linkTagAction(String target, ServletRequest req, String baseUri) {
 
+        return linkTagAction(target, req, baseUri, null);
+    }
+
+    /**
+     * Returns a link to a file in the OpenCms VFS
+     * that has been adjusted according to the web application path and the
+     * OpenCms static export rules.<p>
+     *
+     * <p>If the <code>baseUri</code> parameter is provided, this will be treated as the source of the link,
+     * if this is <code>null</code> then the current OpenCms user context URI will be used as source.</p>
+     *
+     * <p>If the <code>locale</code> parameter is provided, the locale in the request context will be switched
+     * to the provided locale. This influences only the behavior of the
+     * {@link org.opencms.staticexport.CmsLocalePrefixLinkSubstitutionHandler}.</p>
+     *
+     *
+     * Relative links are converted to absolute links, using the current element URI as base.<p>
+     *
+     * @param target the link that should be calculated, can be relative or absolute
+     * @param req the current request
+     * @param baseUri the base URI for the link source
+     * @param locale the locale for which the link should be created (see {@link org.opencms.staticexport.CmsLocalePrefixLinkSubstitutionHandler}
+     *
+     * @return the target link adjusted according to the web application path and the OpenCms static export rules
+     *
+     * @see #linkTagAction(String, ServletRequest)
+     *
+     * @since 8.0.3
+     */
+    public static String linkTagAction(String target, ServletRequest req, String baseUri, Locale locale) {
+
         CmsFlexController controller = CmsFlexController.getController(req);
         // be sure the link is absolute
         String uri = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
         CmsObject cms = controller.getCmsObject();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(baseUri)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(baseUri) || (null != locale)) {
             try {
                 cms = OpenCms.initCmsObject(cms);
-                cms.getRequestContext().setUri(baseUri);
-            } catch (CmsException e) {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(baseUri)) {
+                    cms.getRequestContext().setUri(baseUri);
+                }
+                if (null != locale) {
+                    cms.getRequestContext().setLocale(locale);
+                }
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 // should not happen, if it does we can't do anything useful and will just keep the original object
             }
         }
@@ -143,7 +185,7 @@ public class CmsJspTagLink extends BodyTagSupport {
                 String link = getBodyContent().getString();
                 getBodyContent().clear();
                 // Calculate the link substitution
-                String newlink = linkTagAction(link, req, getBaseUri());
+                String newlink = linkTagAction(link, req, getBaseUri(), m_locale);
                 // Write the result back to the page
                 getBodyContent().print(newlink);
                 getBodyContent().writeOut(pageContext.getOut());
@@ -186,4 +228,15 @@ public class CmsJspTagLink extends BodyTagSupport {
 
         m_baseUri = baseUri;
     }
+
+    /**
+     * Sets the locale for the link to create.
+     *
+     * @param localeName name of the locale, e.g. "en", "en_US", ...
+     */
+    public void setLocale(String localeName) {
+
+        m_locale = CmsLocaleManager.getLocale(localeName);
+    }
+
 }

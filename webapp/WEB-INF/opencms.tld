@@ -263,6 +263,17 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>          
+        <attribute>
+             <description><![CDATA[
+                The locale for which the link should be created. This has only influence, if you use the
+                CmsLocalePrefixLinkSubstitutionHandler.
+                The locale prefix will be added according to the given locale.
+                If no locale is given, the locale of the current request context is used.
+            ]]></description>
+            <name>locale</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>          
     </tag>
 
     <tag>
