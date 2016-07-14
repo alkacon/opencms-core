@@ -727,8 +727,13 @@ public class CmsFileTable extends CmsResourceTable {
                             CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
                             String link = OpenCms.getLinkManager().substituteLink(cms, res);
                             HttpServletRequest req = CmsVaadinUtils.getRequest();
+
                             CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-                            A_CmsUI.get().getPage().setLocation(link);
+                            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                                A_CmsUI.get().getPage().open(link, "_blank");
+                            } else {
+                                A_CmsUI.get().getPage().setLocation(link);
+                            }
                             return;
                         } catch (CmsVfsResourceNotFoundException e) {
                             LOG.info(e.getLocalizedMessage(), e);
