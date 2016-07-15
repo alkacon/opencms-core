@@ -455,6 +455,7 @@ public class CmsLoginController {
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
                         + userObj.getSimpleName(),
                     passwordDialog);
+                return;
             }
             currentCms.loginUser(realUser, password);
             OpenCms.getSessionManager().updateSessionInfo(

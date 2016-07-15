@@ -527,7 +527,7 @@ public class CmsLoginManager {
         String lastCheckStr = (String)user.getAdditionalInfo().get(
             CmsUserSettings.ADDITIONAL_INFO_LAST_USER_DATA_CHECK);
         if (lastCheckStr == null) {
-            return false;
+            return !CmsStringUtil.isEmptyOrWhitespaceOnly(getUserDataCheckIntervalStr());
         }
         long lastCheck = Long.parseLong(lastCheckStr);
         if ((System.currentTimeMillis() - lastCheck) > getUserDataCheckInterval()) {
