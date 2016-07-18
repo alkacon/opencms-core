@@ -289,6 +289,9 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     void submit() {
 
         try {
+            // Special user info attributes may have been set since the time the dialog was instantiated,
+            // and we don't want to overwrite them, so we read the user again.
+            m_user = m_context.getCms().readUser(m_user.getId());
             if (isValid()) {
                 m_binder.commit();
                 PropertyUtilsBean propUtils = new PropertyUtilsBean();
