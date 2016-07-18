@@ -29,15 +29,17 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsScriptCallbackHelper;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+
+import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Menu entry for the "copy page" command.<p>
@@ -70,22 +72,15 @@ public class CmsCopyPageMenuEntry extends A_CmsSitemapMenuEntry {
 
                 JsArrayString args = m_arguments.cast();
                 String ids = args.get(0);
-                CmsDebugLog.consoleLog("ids = " + ids);
                 if (ids.length() > 0) {
-                    CmsDebugLog.consoleLog("Finished");
+                    List<String> idList = CmsStringUtil.splitAsList(ids, "|");
+                    CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                    for (String idFromList : idList) {
 
-                    CmsSitemapView.getInstance().getController().refreshRoot(new AsyncCallback<Void>() {
-
-                        public void onFailure(Throwable caught) {
-                            // do nothing
+                        if (null != controller.getEntryById(new CmsUUID(idFromList))) {
+                            controller.updateEntry(new CmsUUID(idFromList));
                         }
-
-                        public void onSuccess(Void result) {
-                            // do nothing
-                        }
-                    });
-                } else {
-                    CmsDebugLog.consoleLog("Cancelled");
+                    }
                 }
             }
         };

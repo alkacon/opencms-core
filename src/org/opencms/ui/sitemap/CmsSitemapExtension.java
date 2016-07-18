@@ -37,15 +37,16 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
-import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
 import org.opencms.ui.shared.rpc.I_CmsSitemapClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsSitemapServerRpc;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -140,14 +141,6 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         public List<CmsUUID> getAllStructureIdsInView() {
 
             return Collections.emptyList();
-        }
-
-        /**
-         * @see org.opencms.ui.I_CmsDialogContext#getAppContext()
-         */
-        public I_CmsAppUIContext getAppContext() {
-
-            return null;
         }
 
         /**
@@ -281,7 +274,9 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
                 public void finish(java.util.Collection<CmsUUID> result) {
 
                     closeWindow();
-                    String response = result.isEmpty() ? "" : result.iterator().next().toString();
+                    String response = result.isEmpty()
+                    ? ""
+                    : CmsStringUtil.listAsString(new ArrayList<Object>(result), "|");
                     getRpcProxy(I_CmsSitemapClientRpc.class).finishPageCopyDialog(callId, response);
                 }
             };

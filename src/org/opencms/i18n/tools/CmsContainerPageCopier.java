@@ -91,8 +91,11 @@ public class CmsContainerPageCopier {
     /** The CMS context used by this object. */
     private CmsObject m_cms;
 
+    /** The copied resource. */
+    private CmsResource m_copiedFolderOrPage;
+
     /** The copy mode. */
-    private CopyMode m_copyMode = CopyMode.smartCopy;
+    private CopyMode m_copyMode = CopyMode.smartCopyAndChangeLocale;
 
     /** Maps structure ids of original container elements to structure ids of their copies/replacements. */
     private Map<CmsUUID, CmsUUID> m_elementReplacements = Maps.newHashMap();
@@ -145,6 +148,21 @@ public class CmsContainerPageCopier {
                     + content.getLocales());
         }
 
+    }
+
+    public CmsResource getCopiedFolderOrPage() {
+
+        return m_copiedFolderOrPage;
+    }
+
+    /**
+     * Returns the target folder.<p>
+     *
+     * @return the target folder
+     */
+    public CmsResource getTargetFolder() {
+
+        return m_targetFolder;
     }
 
     /**
@@ -294,7 +312,8 @@ public class CmsContainerPageCopier {
             }
             String pageCopyPath = CmsStringUtil.joinPaths(copiedFolder.getRootPath(), page.getName());
             m_originalPage = page;
-            m_targetFolder = copiedFolder;
+            m_targetFolder = target;
+            m_copiedFolderOrPage = copiedFolder;
             rootCms.copyResource(page.getRootPath(), pageCopyPath);
 
             CmsResource copiedPage = rootCms.readResource(pageCopyPath, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -329,6 +348,7 @@ public class CmsContainerPageCopier {
             CmsResource copiedPage = rootCms.readResource(copyPath);
             m_originalPage = page;
             m_targetFolder = target;
+            m_copiedFolderOrPage = copiedPage;
             replaceElements(copiedPage);
             tryUnlock(copiedPage);
 

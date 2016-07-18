@@ -35,7 +35,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.components.CmsBasicDialog;
 
 import org.apache.commons.logging.Log;
 
@@ -43,12 +42,12 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.CustomComponent;
 
 /**
  * Dialog with a site selector and file tree which can be used to select resources.<p>
  */
-public class CmsResourceSelectDialog extends CmsBasicDialog {
+public class CmsResourceSelectDialog extends CustomComponent {
 
     /**
      * Converts resource selection to path (string) selection - either as root paths or site paths.<p>
@@ -93,32 +92,32 @@ public class CmsResourceSelectDialog extends CmsBasicDialog {
         }
     }
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
+    /** The property used for the site caption. */
+    public static final String PROPERTY_SITE_CAPTION = "caption";
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceSelectDialog.class);
 
-    /** The property used for the site caption. */
-    public static final String PROPERTY_SITE_CAPTION = "caption";
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
-    /** The site selector. */
-    private ComboBox m_siteSelector;
+    /** The CMS context. */
+    protected CmsObject m_currentCms;
 
-    /** Contains the data for the tree. */
-    private CmsResourceTreeContainer m_treeData;
+    /** The resource filter. */
+    protected CmsResourceFilter m_filter;
+
+    /** The resource initially displayed at the root of the tree. */
+    protected CmsResource m_root;
+
+    /** The file tree (wrapped in an array, because Vaadin Declarative tries to bind it otherwise) .*/
+    private CmsResourceTree m_fileTree = null;
 
     /** The site root. */
     private String m_siteRoot;
 
-    /** Container for the tree component. */
-    private VerticalLayout m_treeContainer;
-
-    /** The file tree (wrapped in an array, because Vaadin Declarative tries to bind it otherwise) .*/
-    private CmsResourceTree[] m_fileTree = {null};
-
-    /** The resource filter. */
-    private CmsResourceFilter m_filter;
+    /** Contains the data for the tree. */
+    private CmsResourceTreeContainer m_treeData;
 
     /**
      * Creates a new instance.<p>
@@ -130,15 +129,16 @@ public class CmsResourceSelectDialog extends CmsBasicDialog {
     public CmsResourceSelectDialog(CmsResourceFilter filter)
     throws CmsException {
         m_filter = filter;
-        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
         CmsObject cms = A_CmsUI.getCmsObject();
-        m_siteSelector.setContainerDataSource(CmsVaadinUtils.getAvailableSitesContainer(cms, PROPERTY_SITE_CAPTION));
+        setCompositionRoot(new CmsResourceSelectDialogContents());
+        getSiteSelector().setContainerDataSource(CmsVaadinUtils.getAvailableSitesContainer(cms, PROPERTY_SITE_CAPTION));
         m_siteRoot = cms.getRequestContext().getSiteRoot();
-        m_siteSelector.setValue(m_siteRoot);
-        m_siteSelector.setNullSelectionAllowed(false);
-        m_siteSelector.setItemCaptionPropertyId(PROPERTY_SITE_CAPTION);
-        m_siteSelector.setFilteringMode(FilteringMode.CONTAINS);
-        m_siteSelector.addValueChangeListener(new ValueChangeListener() {
+        getSiteSelector().setValue(m_siteRoot);
+        getSiteSelector().setNullSelectionAllowed(false);
+        getSiteSelector().setItemCaptionPropertyId(PROPERTY_SITE_CAPTION);
+        getSiteSelector().setFilteringMode(FilteringMode.CONTAINS);
+        getSiteSelector().addValueChangeListener(new ValueChangeListener() {
 
             /** Serial version id. */
             private static final long serialVersionUID = 1L;
@@ -151,10 +151,11 @@ public class CmsResourceSelectDialog extends CmsBasicDialog {
         });
 
         CmsResource root = cms.readResource("/");
-        CmsResourceTree fileTree = new CmsResourceTree(cms, root, m_filter);
-        m_fileTree[0] = fileTree;
+        CmsResourceTree fileTree = createTree(cms, root);
+        updateRoot(cms, root);
+        m_fileTree = fileTree;
         m_treeData = fileTree.getTreeContainer();
-        m_treeContainer.addComponent(fileTree);
+        getContents().getTreeContainer().addComponent(fileTree);
         fileTree.setSizeFull();
     }
 
@@ -165,7 +166,29 @@ public class CmsResourceSelectDialog extends CmsBasicDialog {
      */
     public void addSelectionHandler(I_CmsSelectionHandler<CmsResource> handler) {
 
-        m_fileTree[0].addResourceSelectionHandler(handler);
+        m_fileTree.addResourceSelectionHandler(handler);
+    }
+
+    /**
+     * Creates the resource tree for the given root.<p>
+     *
+     * @param cms the CMS context
+     * @param root the root resource
+     * @return the resource tree
+     */
+    protected CmsResourceTree createTree(CmsObject cms, CmsResource root) {
+
+        return new CmsResourceTree(cms, root, m_filter);
+    }
+
+    /**
+     * Gets the file tree.<p>
+     *
+     * @return the file tree
+     */
+    protected CmsResourceTree getFileTree() {
+
+        return m_fileTree;
     }
 
     /**
@@ -180,12 +203,46 @@ public class CmsResourceSelectDialog extends CmsBasicDialog {
             CmsObject rootCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
             rootCms.getRequestContext().setSiteRoot("");
             CmsResource siteRootResource = rootCms.readResource(site);
+
             m_treeData.initRoot(rootCms, siteRootResource, m_filter);
-            m_fileTree[0].expandItem(siteRootResource.getStructureId());
+            m_fileTree.expandItem(siteRootResource.getStructureId());
             m_siteRoot = site;
+            updateRoot(rootCms, siteRootResource);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * Updates the current site root resource.<p>
+     *
+     * @param rootCms the CMS context
+     * @param siteRootResource the resource corresponding to a site root
+     */
+    protected void updateRoot(CmsObject rootCms, CmsResource siteRootResource) {
+
+        m_root = siteRootResource;
+        m_currentCms = rootCms;
+    }
+
+    /**
+     * Gets the content panel of this dialog.<p>
+     *
+     * @return content panel of this dialog
+     */
+    CmsResourceSelectDialogContents getContents() {
+
+        return ((CmsResourceSelectDialogContents)getCompositionRoot());
+    }
+
+    /**
+     * Gets the site selector.<p>
+     *
+     * @return the site selector
+     */
+    private ComboBox getSiteSelector() {
+
+        return getContents().getSiteSelector();
     }
 
 }

@@ -55,6 +55,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
@@ -115,16 +117,27 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
      */
     public void addTreeItem(CmsObject cms, CmsResource resource, CmsUUID parentId) {
 
-        Item resourceItem = getItem(resource.getStructureId());
-        if (resourceItem == null) {
-            resourceItem = addItem(resource.getStructureId());
-        }
-        fillProperties(cms, resourceItem, resource, parentId);
-        if (resource.isFile()) {
-            setChildrenAllowed(resource.getStructureId(), false);
-        }
-        if (parentId != null) {
-            setParent(resource.getStructureId(), parentId);
+        List<Container.Filter> filters = Lists.newArrayList(getContainerFilters());
+
+        // getItem only finds an existing item if it isn't filtered out by the container
+        // filters, so we temporarily remove the filters to access the complete data set
+        removeAllContainerFilters();
+        try {
+            Item resourceItem = getItem(resource.getStructureId());
+            if (resourceItem == null) {
+                resourceItem = addItem(resource.getStructureId());
+            }
+            fillProperties(cms, resourceItem, resource, parentId);
+            if (resource.isFile()) {
+                setChildrenAllowed(resource.getStructureId(), false);
+            }
+            if (parentId != null) {
+                setParent(resource.getStructureId(), parentId);
+            }
+        } finally {
+            for (Container.Filter filter : filters) {
+                addContainerFilter(filter);
+            }
         }
     }
 
@@ -153,8 +166,6 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
             CmsResource parent = cms.readResource(parentId, filter);
             List<CmsResource> children = cms.readResources(parent, filter, false);
 
-            // sort the resources before adding them to the container
-            // we are not using the container sort mechanism to avoid losing the scroll position after sort
             Collections.sort(children, FILE_COMPARATOR);
 
             // sets the parent to leaf mode, in case no child folders are present
@@ -245,18 +256,45 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
 
         resourceItem.getItemProperty(PROPERTY_RESOURCE).setValue(resource);
         // use the root path as name in case of the root item
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
-            parentId == null ? resource.getRootPath() : resource.getName());
+        String name = getName(cms, resource, parentId);
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(name);
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(
-            new ExternalResource(
-                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable())));
+        String icon = getIcon(cms, resource);
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(new ExternalResource(icon));
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER).setValue(
             Boolean.valueOf(resource.isFolder()));
+    }
+
+    /**
+     * Gets the icon for the given resource.<p>
+     *
+     * @param cms the CMS context
+     * @param resource a resource
+     *
+     * @return the icon for the given resource
+     */
+    protected String getIcon(CmsObject cms, CmsResource resource) {
+
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        String icon = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable());
+        return icon;
+    }
+
+    /**
+     * Gets the name to display for the given resource.<p>
+     *
+     * @param cms the CMS context
+     * @param resource a resource
+     * @param parentId the id of the parent of the resource
+     *
+     * @return the name for the given resoure
+     */
+    protected String getName(CmsObject cms, CmsResource resource, CmsUUID parentId) {
+
+        return parentId == null ? resource.getRootPath() : resource.getName();
     }
 
 }

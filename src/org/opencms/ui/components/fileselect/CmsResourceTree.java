@@ -124,7 +124,6 @@ public class CmsResourceTree extends Tree {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void nodeCollapse(CollapseEvent event) {
 
                 getTreeContainer().removeChildren((CmsUUID)event.getItemId());

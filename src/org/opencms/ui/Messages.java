@@ -93,6 +93,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_COPYPAGE_MODE_SMART_CHANGE_LOCALES_0 = "GUI_COPYPAGE_MODE_SMART_CHANGE_LOCALES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_SHOW_ALL_FOLDERS_0 = "GUI_COPYPAGE_SHOW_ALL_FOLDERS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOGTITLE_COPYMOVE_0 = "GUI_DIALOGTITLE_COPYMOVE_0";
 
     /** Message constant for key in the resource bundle. */

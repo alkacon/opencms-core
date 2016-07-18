@@ -71,7 +71,7 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     protected TextField m_textField;
 
     /** The file select dialog caption. */
-    private String m_fileSelectCaption;
+    protected String m_fileSelectCaption;
 
     /**
      * Creates a new instance.<p>

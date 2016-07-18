@@ -35,6 +35,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
+import org.opencms.ui.components.fileselect.CmsSitemapSelectField;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -75,10 +76,11 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsCopyPageDialog(I_CmsDialogContext context) {
+        m_context = context;
         displayResourceInfo(context.getResources());
         initButtons();
         setContent(initContent());
-        m_context = context;
+
     }
 
     /**
@@ -123,7 +125,10 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
             CmsContainerPageCopier.CopyMode mode = (CmsContainerPageCopier.CopyMode)(m_copyMode.getValue());
             copier.setCopyMode(mode);
             copier.run(m_context.getResources().get(0), m_targetSelect.getValue());
-            m_context.finish(Arrays.asList(m_context.getResources().get(0).getStructureId()));
+            m_context.finish(
+                Arrays.asList(
+                    copier.getTargetFolder().getStructureId(),
+                    copier.getCopiedFolderOrPage().getStructureId()));
         } catch (CmsException e) {
             m_context.error(e);
         }
@@ -138,24 +143,20 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
     private FormLayout initContent() {
 
         FormLayout form = new FormLayout();
-        CmsResourceSelectField field = new CmsResourceSelectField();
+        CmsResourceSelectField field = new CmsSitemapSelectField(m_context.getResources().get(0));
         field.setResourceFilter(CmsResourceFilter.IGNORE_EXPIRATION.addRequireFolder());
         field.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_TARGET_FOLDER_0));
         form.addComponent(field);
         m_targetSelect = field;
-        m_copyMode.addItem(CmsContainerPageCopier.CopyMode.smartCopy);
-        m_copyMode.setItemCaption(
-            CmsContainerPageCopier.CopyMode.smartCopy,
-            CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_MODE_SMART_0));
         m_copyMode.addItem(CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale);
         m_copyMode.setItemCaption(
             CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale,
-            CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_MODE_SMART_CHANGE_LOCALES_0));
+            CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_MODE_SMART_0));
         m_copyMode.addItem(CmsContainerPageCopier.CopyMode.reuse);
         m_copyMode.setItemCaption(
             CmsContainerPageCopier.CopyMode.reuse,
             CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_MODE_REUSE_0));
-        m_copyMode.setValue(CmsContainerPageCopier.CopyMode.smartCopy);
+        m_copyMode.setValue(CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale);
         form.addComponent(m_copyMode);
         m_copyMode.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_COPY_MODE_0));
         return form;
