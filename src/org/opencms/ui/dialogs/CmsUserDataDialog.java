@@ -30,6 +30,7 @@ package org.opencms.ui.dialogs;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -47,6 +48,8 @@ import org.opencms.workplace.CmsAccountInfo.Field;
 
 import java.util.Collections;
 import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
@@ -241,9 +244,7 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     public CmsUserDataDialog(I_CmsDialogContext context, boolean forcedCheck) {
         this(context);
         if (forcedCheck) {
-            ((VerticalLayout)m_userInfo.getParent()).addComponent(
-                new Label(CmsVaadinUtils.getMessageText(org.opencms.ui.dialogs.Messages.GUI_USER_DATA_CHECK_INFO_0)),
-                1);
+            ((VerticalLayout)m_userInfo.getParent()).addComponent(new Label(getUserDataCheckMessage()), 1);
 
             m_cancelButton.setVisible(false);
             m_changePassword.setVisible(false);
@@ -257,6 +258,22 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
 
         return org.opencms.ui.components.Messages.get().getBundle(locale).key(
             org.opencms.ui.components.Messages.GUI_USER_EDIT_0);
+    }
+
+    /**
+     * Returns the message to be displayed for the user data check dialog.<p>
+     *
+     * @return the message to display
+     */
+    protected String getUserDataCheckMessage() {
+
+        ResourceBundle bundle = null;
+        try {
+            bundle = CmsResourceBundleLoader.getBundle("org.opencms.userdatacheck.custom", A_CmsUI.get().getLocale());
+            return bundle.getString("userdatacheck.text");
+        } catch (MissingResourceException e) {
+            return CmsVaadinUtils.getMessageText(org.opencms.ui.dialogs.Messages.GUI_USER_DATA_CHECK_INFO_0);
+        }
     }
 
     /**
