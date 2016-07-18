@@ -143,6 +143,7 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
                 close();
             }
         });
+        m_cancelButton.setVisible(false);
         m_form.getOldPasswordField().setImmediate(true);
         m_form.getPassword1Field().setImmediate(true);
         m_form.getPassword2Field().setImmediate(true);
