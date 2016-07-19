@@ -131,6 +131,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "advanced hr" button. */
     public static final String OPTION_ADVHR = "advhr";
 
+    /** Allow scripts in source code editor. */
+    public static final String OPTION_ALLOWSCRIPTS = "allowscripts";
+
     /** Option for the "anchor" dialog. */
     public static final String OPTION_ANCHOR = "anchor";
 
@@ -341,6 +344,9 @@ public class CmsHtmlWidgetOption {
     /** The additional buttons list. */
     private List<String> m_additionalButtons;
 
+    /** Flag which controls whether scripts are allowed in the source code editor. */
+    private boolean m_allowScripts;
+
     /** The button bar items. */
     private List<String> m_buttonBar;
 
@@ -374,6 +380,9 @@ public class CmsHtmlWidgetOption {
     /** True if styles from stylesheet should be imported into the style selector. */
     private boolean m_importCss;
 
+    /**
+    private boolean m_allowScripts;
+    
     /** The path for custom styles. */
     private String m_stylesFormatPath;
 
@@ -853,6 +862,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Returns true if scripts should be allowed in the source code editor.<p>
+     *
+     * @return true if scripts should be allowed in the source code editor
+     */
+    public boolean isAllowScripts() {
+
+        return m_allowScripts;
+    }
+
+    /**
      * Returns if the button with the given name should be additionally shown.<p>
      *
      * @param buttonName the button name to check
@@ -1191,6 +1210,8 @@ public class CmsHtmlWidgetOption {
                     setButtonBarOptionString(option);
                 } else if (option.startsWith(OPTION_IMPORTCSS)) {
                     m_importCss = true;
+                } else if (option.startsWith(OPTION_ALLOWSCRIPTS)) {
+                    m_allowScripts = true;
                 } else {
                     // check if option describes an additional button
                     if (OPTIONAL_BUTTONS_LIST.contains(option)) {

@@ -337,6 +337,9 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             if (options.showElement("gallery.usethickbox", displayOptions)) {
                 result.put("cmsGalleryUseThickbox", true);
             }
+            if (widgetOptions.isAllowScripts()) {
+                result.put("allowscripts", Boolean.TRUE);
+            }
             result.put("fullpage", widgetOptions.isFullPage());
             List<String> toolbarItems = widgetOptions.getButtonBarShownItems();
             result.put("toolbar_items", toolbarItems);

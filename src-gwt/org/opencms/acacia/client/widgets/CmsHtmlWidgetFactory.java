@@ -194,6 +194,9 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                     lineNumbers : true
                 }
             };
+            if (config.allowscripts) {
+                options.extended_valid_elements = "script[type|src|defer|async|charset]";
+            }
 
             if (config.toolbar_items) {
                 toolbarGroup = @org.opencms.acacia.client.widgets.CmsHtmlWidgetFactory::createToolbar(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
