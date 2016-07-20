@@ -48,6 +48,9 @@ public class CmsPasswordForm extends VerticalLayout {
     /** The serial version id. */
     private static final long serialVersionUID = 773244283339376105L;
 
+    /** Label with additional text. */
+    private Label m_additionalText;
+
     /** Field for the old password. */
     private PasswordField m_oldPasswordField;
 
@@ -157,6 +160,21 @@ public class CmsPasswordForm extends VerticalLayout {
     public void hideOldPassword() {
 
         m_oldPasswordWrapper.setVisible(false);
+    }
+
+    /**
+     * Displays an additional message.<p>
+     *
+     * @param text the message
+     */
+    public void setAdditionalText(String text) {
+
+        if (CmsStringUtil.isEmpty(text)) {
+            m_additionalText.setVisible(false);
+        } else {
+            m_additionalText.setValue(text);
+            m_additionalText.setVisible(true);
+        }
     }
 
     /**

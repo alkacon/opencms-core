@@ -74,6 +74,9 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The password form. */
+    protected CmsPasswordForm m_form;
+
     /** The CMS context. */
     CmsObject m_cms;
 
@@ -91,9 +94,6 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
 
     /** The button to change the password. */
     private Button m_passwordChangeButton;
-
-    /** The password form. */
-    protected CmsPasswordForm m_form;
 
     /**
      * Creates a new instance.<p>
@@ -203,6 +203,16 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
                 submit();
             }
         });
+    }
+
+    /**
+     * Displays some additional text.<p>
+     *
+     * @param text the text to display
+     */
+    public void setAdditionalMessage(String text) {
+
+        m_form.setAdditionalText(text);
     }
 
     /**

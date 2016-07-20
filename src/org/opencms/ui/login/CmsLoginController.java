@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspLoginBean;
 import org.opencms.main.CmsException;
@@ -64,6 +65,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -204,14 +207,14 @@ public class CmsLoginController {
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLoginController.class);
 
+    /** The UI instance. */
+    CmsLoginUI m_ui;
+
     /** The administrator CMS context. */
     private CmsObject m_adminCms;
 
     /** The parameters collected when the login app was opened. */
     private LoginParameters m_params;
-
-    /** The UI instance. */
-    CmsLoginUI m_ui;
 
     /***
      * Creates a new instance.<p>
@@ -451,6 +454,7 @@ public class CmsLoginController {
                     currentCms,
                     userObj,
                     A_CmsUI.get().getLocale());
+                passwordDialog.setAdditionalMessage(getPasswordChangeMessage());
                 A_CmsUI.get().setContentToDialog(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
                         + userObj.getSimpleName(),
@@ -618,6 +622,22 @@ public class CmsLoginController {
     public void setUi(CmsLoginUI ui) {
 
         m_ui = ui;
+    }
+
+    /**
+     * Returns the message to be displayed for the user data check dialog.<p>
+     *
+     * @return the message to display
+     */
+    protected String getPasswordChangeMessage() {
+
+        ResourceBundle bundle = null;
+        try {
+            bundle = CmsResourceBundleLoader.getBundle("org.opencms.passwordchange.custom", A_CmsUI.get().getLocale());
+            return bundle.getString("passwordchange.text");
+        } catch (MissingResourceException e) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_INTERVAL_EXPIRED_0);
+        }
     }
 
     /**

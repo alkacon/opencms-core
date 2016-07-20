@@ -267,6 +267,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PWCHANGE_HEADER_0 = "GUI_PWCHANGE_HEADER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWCHANGE_INTERVAL_EXPIRED_0 = "GUI_PWCHANGE_INTERVAL_EXPIRED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_INVALID_EMAIL_0 = "GUI_PWCHANGE_INVALID_EMAIL_0";
 
     /** Message constant for key in the resource bundle. */
