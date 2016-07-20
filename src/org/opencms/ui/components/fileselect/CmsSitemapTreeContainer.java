@@ -27,9 +27,13 @@
 
 package org.opencms.ui.components.fileselect;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.jsp.CmsJspNavBuilder;
@@ -75,20 +79,37 @@ public class CmsSitemapTreeContainer extends CmsResourceTreeContainer {
         CmsResource defaultFile = null;
         List<CmsResource> resourcesForType = Lists.newArrayList();
         resourcesForType.add(resource);
-
-        try {
-
-            defaultFile = cms.readDefaultFile(resource, CmsResourceFilter.IGNORE_EXPIRATION);
-            if (defaultFile != null) {
-                resourcesForType.add(0, defaultFile);
+        if (resource.isFolder()) {
+            try {
+                defaultFile = cms.readDefaultFile(resource, CmsResourceFilter.IGNORE_EXPIRATION);
+                if (defaultFile != null) {
+                    resourcesForType.add(0, defaultFile);
+                }
+            } catch (Exception e) {
+                // Shouldn't normally happen - readDefaultFile returns null instead of throwing an exception when it doesn't find a default file
+                LOG.error(e.getLocalizedMessage(), e);
             }
-        } catch (Exception e) {
-            // Shouldn't normally happen - readDefaultFile returns null instead of throwing an exception when it doesn't find a default file
-            LOG.error(e.getLocalizedMessage(), e);
         }
         if (CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
             return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_BIG);
         }
+        CmsResource maybePage = resourcesForType.get(0);
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(maybePage)) {
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, maybePage.getRootPath());
+            for (DetailInfo info : config.getDetailInfos(cms)) {
+                CmsDetailPageInfo realInfo = info.getDetailPageInfo();
+                if (realInfo.getUri().equals(maybePage.getRootPath())
+                    || realInfo.getUri().equals(CmsResource.getParentFolder(maybePage.getRootPath()))) {
+                    CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                        realInfo.getIconType());
+                    if (settings != null) {
+                        return CmsWorkplace.getResourceUri(
+                            CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable());
+                    }
+                }
+            }
+        }
+
         String result = null;
         for (CmsResource res : resourcesForType) {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res);
