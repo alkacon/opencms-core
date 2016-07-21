@@ -577,7 +577,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     private void enableSetButton(boolean enabled) {
 
         if (enabled) {
-            if (m_addPermissionSetButton != null) {
+            if (m_addPermissionSetButton == null) {
                 m_addPermissionSetButton = new Button(FontAwesome.PLUS);
                 m_addPermissionSetButton.addStyleName("borderless");
                 m_addPermissionSetButton.addClickListener(new ClickListener() {
