@@ -227,6 +227,10 @@ public class CmsLink {
             return;
         }
 
+        if ("/system/modules/org.opencms.ade.containerpage/formatters/group-container.jsp".equals(m_target)) {
+            m_target = "/system/modules/org.opencms.ade.config/formatters/group-container.jsp";
+        }
+
         try {
             if (m_structureId == null) {
                 // try by path
