@@ -185,12 +185,6 @@
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>CmsErrorServlet</servlet-name>
-		<url-pattern>/workplace/errorpage/*</url-pattern>
-	</servlet-mapping>
-	
-	
-	<servlet-mapping>
 		<servlet-name>CmsDialogServlet</servlet-name>
 		<url-pattern>/workplace/dialogs/*</url-pattern>
 	</servlet-mapping>
