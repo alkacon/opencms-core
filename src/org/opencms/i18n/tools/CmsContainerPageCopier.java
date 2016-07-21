@@ -179,10 +179,17 @@ public class CmsContainerPageCopier {
         CmsContainerElementBean originalElement) throws CmsException {
         // if (m_elementReplacements.containsKey(originalElement.getId()
 
+        if ((originalElement.getFormatterId() == null) || (originalElement.getId() == null)) {
+            String rootPath = m_originalPage != null ? m_originalPage.getRootPath() : "???";
+            LOG.warn("Skipping container element because of missing id in page: " + rootPath);
+            return null;
+        }
+
         if (m_copyMode == CopyMode.reuse) {
             LOG.info("Reusing element " + originalElement.getId() + " because we are in reuse mode");
             return originalElement;
         }
+
         if (m_elementReplacements.containsKey(originalElement.getId())) {
             return new CmsContainerElementBean(
                 m_elementReplacements.get(originalElement.getId()),
