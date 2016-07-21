@@ -73,7 +73,7 @@ public class CmsXmlChangeExplorerTypeAccess extends A_CmsSetupXmlUpdate {
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         Node node = document.selectSingleNode(xpath);
-        if ((node == null) && getXPathsToUpdate().contains(xpath)) {
+        if ((node != null) && getXPathsToUpdate().contains(xpath)) {
             CmsSetupXmlHelper.setAttribute(
                 document,
                 xpath,
@@ -109,11 +109,11 @@ public class CmsXmlChangeExplorerTypeAccess extends A_CmsSetupXmlUpdate {
             StringBuffer xp = new StringBuffer(256);
             xp.append(getCommonPath());
             xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
-            xp.append("='JSP']");
+            xp.append("='jsp']");
             xp.append("/").append(CmsWorkplaceConfiguration.N_ACCESSCONTROL);
             xp.append("/").append(CmsWorkplaceConfiguration.N_ACCESSENTRY);
             xp.append("[@").append(CmsWorkplaceConfiguration.A_PRINCIPAL);
-            xp.append("='").append(CmsRole.DEVELOPER.getRoleName()).append("']");
+            xp.append("='ROLE.").append(CmsRole.DEVELOPER.getRoleName()).append("']");
             m_xpaths = Collections.singletonList(xp.toString());
         }
         return m_xpaths;
