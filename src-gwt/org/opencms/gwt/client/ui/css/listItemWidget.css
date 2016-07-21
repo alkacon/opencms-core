@@ -85,6 +85,12 @@ li div.itemContainer.cmsHovering{
     z-index: value("constants.css.zIndexInline");
 }
 
+@external sitemap;
+
+body.sitemap .itemContent div.lockIcon {
+	z-index: 5000;
+}
+
 .itemContent div.topRightIcon {
 	position: absolute;
 	left: 20px;
