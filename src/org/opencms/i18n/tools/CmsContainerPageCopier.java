@@ -35,6 +35,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.I_CmsFileNameGenerator;
@@ -308,7 +309,7 @@ public class CmsContainerPageCopier {
             boolean hasNavpos = maxNavPosObj != null;
             CmsResource copiedFolder = rootCms.createResource(
                 copyPath,
-                OpenCms.getResourceManager().getResourceType(source.getTypeId()),
+                OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME),
                 null,
                 properties);
             if (hasNavpos) {
