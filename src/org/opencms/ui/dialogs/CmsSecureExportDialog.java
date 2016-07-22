@@ -126,6 +126,7 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
 
         loadData();
         CmsSite site = OpenCms.getSiteManager().getCurrentSite(context.getCms());
+        m_noSecureServerLabel.setVisible(false);
         if ((site != null) && !site.hasSecureServer()) {
             m_secureField.setEnabled(false);
             m_secureField.setVisible(false);
