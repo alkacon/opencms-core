@@ -58,6 +58,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -299,7 +300,17 @@ public class CmsContainerPageCopier {
             if ((page == null) || !CmsResourceTypeXmlContainerPage.isContainerPage(page)) {
                 throw new CmsException(Messages.get().container(Messages.ERR_PAGECOPY_INVALID_PAGE_0));
             }
-            List<CmsProperty> properties = m_cms.readPropertyObjects(source, false);
+            List<CmsProperty> properties = Lists.newArrayList(m_cms.readPropertyObjects(source, false));
+            Iterator<CmsProperty> iterator = properties.iterator();
+            while (iterator.hasNext()) {
+                CmsProperty prop = iterator.next();
+                // copied folder may be root of a locale subtree, but since we may want to copy to a different locale,
+                // we don't want the locale property in the copy
+                if (prop.getName().equals(CmsPropertyDefinition.PROPERTY_LOCALE)) {
+                    iterator.remove();
+                }
+            }
+
             I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
             String copyPath = CmsFileUtil.removeTrailingSeparator(
                 CmsStringUtil.joinPaths(target.getRootPath(), source.getName()));
