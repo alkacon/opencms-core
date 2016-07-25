@@ -138,6 +138,7 @@ public class CmsDataViewPanel extends VerticalLayout {
     /** The current list of filters. */
     private List<CmsDataViewFilter> m_filters = Lists.newArrayList();
 
+    /** Map of check boxes. */
     private Map<Object, CheckBox> m_checkBoxes = Maps.newHashMap();
 
     /** The current map of filters, by id. */
@@ -146,12 +147,18 @@ public class CmsDataViewPanel extends VerticalLayout {
     /** The table with the search results. */
     private CmsComponentField<Table> m_table = CmsComponentField.newInstance();
 
+    /** True if we are currently in a recursive call of the value change event listener. */
+    private boolean m_recursiveValueChange;
+
+    /** The real selection (includes item. */
+    private Set<Object> m_realSelection = Sets.newHashSet();
+
     /**
-     * Creates a new instance.<p>
-     *
-     * @param viewInstance the data view instance
-     * @param multiselect true if multi-selection should be allowed
-     */
+    * Creates a new instance.<p>
+    *
+    * @param viewInstance the data view instance
+    * @param multiselect true if multi-selection should be allowed
+    */
     public CmsDataViewPanel(I_CmsDataView viewInstance, boolean multiselect) {
         m_dataView = viewInstance;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
@@ -176,6 +183,8 @@ public class CmsDataViewPanel extends VerticalLayout {
         });
         m_searchButton.addClickListener(new ClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
             public void buttonClick(ClickEvent event) {
 
                 refreshData(true, null);
@@ -198,11 +207,16 @@ public class CmsDataViewPanel extends VerticalLayout {
 
         table.addGeneratedColumn("checked", new ColumnGenerator() {
 
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
             public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 
                 CheckBox cb = getCheckBox(itemId);
                 cb.setValue(Boolean.valueOf(source.isSelected(itemId)));
                 cb.addValueChangeListener(new ValueChangeListener() {
+
+                    private static final long serialVersionUID = 1L;
 
                     public void valueChange(ValueChangeEvent event) {
 
@@ -255,26 +269,66 @@ public class CmsDataViewPanel extends VerticalLayout {
 
             private static final long serialVersionUID = 1L;
 
+            @SuppressWarnings("synthetic-access")
             public void valueChange(ValueChangeEvent event) {
+
+                if (table.isMultiSelect()) {
+                    if (m_recursiveValueChange) {
+                        updateCheckboxesWithSelectedIds(m_realSelection);
+                    } else {
+                        updateRealSelection(getIdsFromSelection(event));
+                        if (m_realSelection.equals(event.getProperty().getValue())) {
+                            updateCheckboxesWithSelectedIds(m_realSelection);
+                        } else {
+                            try {
+                                m_recursiveValueChange = true;
+                                m_table.get().setValue(m_realSelection);
+                            } finally {
+                                m_recursiveValueChange = false;
+                            }
+                        }
+                    }
+
+                } else {
+                    Set<Object> ids = getIdsFromSelection(event);
+                    updateCheckboxesWithSelectedIds(ids);
+
+                }
+
+            }
+
+            /**
+             * Gets the ids from the selection event.<p>
+             *
+             * @param event a selection event
+             *
+             * @return the set of ids from the selection event
+             */
+            protected Set<Object> getIdsFromSelection(ValueChangeEvent event) {
 
                 Set<Object> ids = Sets.newHashSet();
                 if (event != null) {
                     if (event.getProperty().getValue() instanceof Collection) {
-                        ids.addAll((Collection)event.getProperty().getValue());
+                        ids.addAll((Collection<?>)event.getProperty().getValue());
                     } else {
                         ids.add(event.getProperty().getValue());
                     }
                 }
+                return ids;
+            }
+
+            @SuppressWarnings("synthetic-access")
+            protected void updateCheckboxesWithSelectedIds(Set<Object> selectedIds) {
+
                 for (Map.Entry<Object, CheckBox> entry : m_checkBoxes.entrySet()) {
-                    if (!(ids.contains(entry.getKey()))) {
+                    if (!(selectedIds.contains(entry.getKey()))) {
                         entry.getValue().setValue(Boolean.FALSE);
                     }
                 }
 
-                for (Object id : ids) {
+                for (Object id : selectedIds) {
                     getCheckBox(id).setValue(Boolean.TRUE);
                 }
-
             }
         });
         List<CmsDataViewFilter> filters = new ArrayList<CmsDataViewFilter>(m_dataView.getFilters());
@@ -434,6 +488,27 @@ public class CmsDataViewPanel extends VerticalLayout {
         }
     }
 
+    /**
+     * Updates the real selection, given the item ids from the selection event.<p>
+     *
+     * @param selectionEventIds the item ids from the selection event
+     */
+    protected void updateRealSelection(Set<Object> selectionEventIds) {
+
+        Set<Object> pageItems = Sets.newHashSet(m_table.get().getContainerDataSource().getItemIds());
+        Set<Object> result = Sets.newHashSet(m_realSelection);
+        result.removeAll(pageItems);
+        result.addAll(selectionEventIds);
+        m_realSelection = result;
+
+    }
+
+    /**
+     * Gets the check box for the item with the given id.<p>
+     *
+     * @param id the item id
+     * @return the check box
+     */
     private CheckBox getCheckBox(Object id) {
 
         if (!m_checkBoxes.containsKey(id)) {
