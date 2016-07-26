@@ -399,7 +399,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         HttpSession session = req.getSession(false);
         if (session != null) {
             // if a session is available, check for a workplace configuration
-            return (null != session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS));
+            CmsWorkplaceSettings workplaceSettings = (CmsWorkplaceSettings)session.getAttribute(
+                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            return ((null != workplaceSettings) && !workplaceSettings.getUser().isGuestUser());
         }
         // no session means no workplace use
         return false;
