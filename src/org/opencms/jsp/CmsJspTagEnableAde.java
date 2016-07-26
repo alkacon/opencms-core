@@ -198,8 +198,10 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(disabledParam)) {
             return Boolean.parseBoolean(disabledParam);
         } else {
-            Boolean disabledAttr = (Boolean)((HttpServletRequest)request).getSession().getAttribute(
-                CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
+            HttpSession session = ((HttpServletRequest)request).getSession(false);
+            Boolean disabledAttr = null == session
+            ? null
+            : (Boolean)session.getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
             return (disabledAttr != null) && disabledAttr.booleanValue();
         }
     }
