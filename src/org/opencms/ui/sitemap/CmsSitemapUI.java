@@ -31,8 +31,17 @@ import org.opencms.ui.A_CmsUI;
 
 import com.vaadin.server.VaadinRequest;
 
+/**
+ * UI class for Vaadin dialogs in the sitemap editor.<p>
+ */
 public class CmsSitemapUI extends A_CmsUI {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * @see org.opencms.ui.A_CmsUI#init(com.vaadin.server.VaadinRequest)
+     */
     @Override
     protected void init(VaadinRequest request) {
 
