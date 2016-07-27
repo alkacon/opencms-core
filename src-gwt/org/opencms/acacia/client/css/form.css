@@ -515,15 +515,15 @@ div.helpBubble{
 	opacity: 0.8;
 }
 
-.dragPlaceholder > div *{
-	visibility:hidden !important;
+.formParent .dragPlaceholder > div * {
+	visibility: hidden !important;
 }
 
 .dragElement {
 	display: none;
 }
 
-.dragPlaceholder {
+.formParent .dragPlaceholder {
     opacity: 0.5;
 }
 
