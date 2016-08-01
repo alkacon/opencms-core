@@ -35,6 +35,7 @@ import org.opencms.ui.actions.CmsChangeTypeDialogAction;
 import org.opencms.ui.actions.CmsClassicWorkplaceAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.CmsCopyMoveDialogAction;
+import org.opencms.ui.actions.CmsCopyPageDialogAction;
 import org.opencms.ui.actions.CmsCopyToProjectDialogAction;
 import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsDirectPublishDialogAction;
@@ -138,7 +139,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsPermissionDialogAction(), null, 2400, 0),
 
             advanced,
-
+            new CmsContextMenuActionItem(new CmsCopyPageDialogAction(), advanced.getId(), 150, 0),
             new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),

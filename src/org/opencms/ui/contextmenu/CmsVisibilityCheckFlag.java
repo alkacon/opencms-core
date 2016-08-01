@@ -85,6 +85,9 @@ public enum CmsVisibilityCheckFlag {
     /** Check editor rule. */
     roleeditor,
 
+    /** Folder with container page default file. */
+    pagefolder,
+
     /** Check workplace user role. */
     rolewpuser,
 

@@ -43,6 +43,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notunchangedfile;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.otherlock;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.pagefolder;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.pointer;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermission;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.replacable;
@@ -58,6 +59,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
@@ -104,6 +106,13 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notdeleted,
         writepermisssion,
         inproject);
+
+    /** Default visibility check for 'edit-like' operations on folders. */
+    public static final CmsStandardVisibilityCheck COPY_PAGE = new CmsStandardVisibilityCheck(
+        roleeditor,
+        notonline,
+        notdeleted,
+        pagefolder);
 
     /** Like DEFAULT, but only active for files. */
     public static final CmsStandardVisibilityCheck EDIT = new CmsStandardVisibilityCheck(
@@ -290,6 +299,22 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
             if (flag(folder) && resource.isFile()) {
                 return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(pagefolder)) {
+                if (!resource.isFolder()) {
+                    return VISIBILITY_INVISIBLE;
+                }
+                try {
+                    CmsResource defaultFile;
+                    defaultFile = cms.readDefaultFile("" + resource.getStructureId());
+                    if ((defaultFile == null) || !CmsResourceTypeXmlContainerPage.isContainerPage(defaultFile)) {
+                        return VISIBILITY_INVISIBLE;
+                    }
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    return VISIBILITY_INVISIBLE;
+                }
             }
 
             if (flag(pointer)
