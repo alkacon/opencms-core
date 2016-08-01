@@ -53,6 +53,9 @@ public class CmsSitemapSelectField extends CmsResourceSelectField {
     /** The resource to initially show in the target selection tree. */
     private CmsResource m_startResource;
 
+    /** Selector popup window. */ 
+    private Window m_window;
+
     /**
      * Creates a new instance.<p>
      *
@@ -70,22 +73,26 @@ public class CmsSitemapSelectField extends CmsResourceSelectField {
     @Override
     protected void openFileSelector() {
 
+        if (m_window == null) {
+            m_window = CmsBasicDialog.prepareWindow();
+        }
+        m_window.close();
         try {
-            final Window window = CmsBasicDialog.prepareWindow();
-            window.setCaption(
+            m_window.setCaption(
                 m_fileSelectCaption != null
                 ? m_fileSelectCaption
                 : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
-            A_CmsUI.get().addWindow(window);
+            A_CmsUI.get().addWindow(m_window);
             CmsSitemapFolderSelectDialog fileSelect = new CmsSitemapFolderSelectDialog();
             fileSelect.showStartResource(m_startResource);
-            window.setContent(fileSelect);
+            m_window.setContent(fileSelect);
             fileSelect.addSelectionHandler(new I_CmsSelectionHandler<CmsResource>() {
 
+                @SuppressWarnings("synthetic-access")
                 public void onSelection(CmsResource selected) {
 
                     setResourceValue(selected);
-                    window.close();
+                    m_window.close();
                 }
             });
         } catch (CmsException e) {
