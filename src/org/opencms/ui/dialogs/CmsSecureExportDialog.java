@@ -198,9 +198,15 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
 
         try {
             List<CmsProperty> propList = m_context.getCms().readPropertyObjects(m_resource, false);
+            List<CmsProperty> inheritedPropList = m_context.getCms().readPropertyObjects(m_resource, true);
             Map<String, CmsProperty> propMap = CmsProperty.toObjectMap(propList);
+            Map<String, CmsProperty> inheritedPropMap = CmsProperty.toObjectMap(inheritedPropList);
             String secureValue = convertPropertyToFieldValue(propMap.get(CmsPropertyDefinition.PROPERTY_SECURE));
+            String inheritedSecureValue = convertPropertyToFieldValue(
+                inheritedPropMap.get(CmsPropertyDefinition.PROPERTY_SECURE));
+
             String exportValue = convertPropertyToFieldValue(propMap.get(CmsPropertyDefinition.PROPERTY_EXPORT));
+
             CmsProperty exportnameProp = propMap.get(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
             String exportnameValue = "";
             if (exportnameProp != null) {
@@ -208,6 +214,16 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
             }
             m_exportField.setValue(exportValue);
             m_secureField.setValue(secureValue);
+            if ("".equals(secureValue) && !"".equals(inheritedSecureValue)) {
+                String origin = m_context.getCms().getRequestContext().removeSiteRoot(
+                    inheritedPropMap.get(CmsPropertyDefinition.PROPERTY_SECURE).getOrigin());
+                String inheritedValueCaption = CmsVaadinUtils.getMessageText(
+                    org.opencms.workplace.commons.Messages.GUI_SECURE_INHERIT_FROM_2,
+                    inheritedSecureValue,
+                    origin);
+                m_secureField.setItemCaption("", inheritedValueCaption);
+            }
+
             m_exportNameField.setValue(exportnameValue);
             m_internalField.setValue(Boolean.valueOf(m_resource.isInternal()));
         } catch (CmsException e) {
