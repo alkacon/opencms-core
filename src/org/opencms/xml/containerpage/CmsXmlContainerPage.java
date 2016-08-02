@@ -291,8 +291,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             return;
         }
         // lock the file
-        cms.lockResourceTemporary(cms.getSitePath(file));
-
+        cms.lockResourceTemporary(file);
         file.setContents(data);
         cms.writeFile(file);
     }
