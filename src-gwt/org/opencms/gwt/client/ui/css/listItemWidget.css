@@ -87,7 +87,7 @@ li div.itemContainer.cmsHovering{
 
 @external sitemap;
 
-body.sitemap .itemContent div.lockIcon {
+body.sitemap .itemContent div.lockIcon, body.sitemap .itemContent div.stateIcon, body.sitemap .itemContent div.topRightIcon {
 	z-index: 5000;
 }
 
