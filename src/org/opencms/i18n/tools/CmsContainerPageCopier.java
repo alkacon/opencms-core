@@ -45,6 +45,7 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.Messages;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -181,6 +182,13 @@ public class CmsContainerPageCopier {
         CmsContainerElementBean originalElement) throws CmsException {
         // if (m_elementReplacements.containsKey(originalElement.getId()
 
+        CmsObject targetCms = OpenCms.initCmsObject(m_cms);
+
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(m_targetFolder.getRootPath());
+        if (site != null) {
+            targetCms.getRequestContext().setSiteRoot(site.getSiteRoot());
+        }
+
         if ((originalElement.getFormatterId() == null) || (originalElement.getId() == null)) {
             String rootPath = m_originalPage != null ? m_originalPage.getRootPath() : "???";
             LOG.warn("Skipping container element because of missing id in page: " + rootPath);
@@ -216,7 +224,7 @@ public class CmsContainerPageCopier {
             }
             if (shouldCopyElement) {
                 CmsResource resourceCopy = typeConfig.createNewElement(
-                    m_cms,
+                    targetCms,
                     originalResource,
                     targetPage.getRootPath());
                 CmsContainerElementBean copy = new CmsContainerElementBean(
@@ -252,6 +260,8 @@ public class CmsContainerPageCopier {
      */
     public void replaceElements(CmsResource containerPage) throws CmsException {
 
+        CmsObject rootCms = OpenCms.initCmsObject(m_cms);
+        rootCms.getRequestContext().setSiteRoot("");
         CmsXmlContainerPage pageXml = CmsXmlContainerPageFactory.unmarshal(m_cms, containerPage);
         CmsContainerPageBean page = pageXml.getContainerPage(m_cms);
         List<CmsContainerBean> newContainers = Lists.newArrayList();
@@ -271,7 +281,7 @@ public class CmsContainerPageCopier {
             newContainers.add(newContainer);
         }
         CmsContainerPageBean newPageBean = new CmsContainerPageBean(newContainers);
-        pageXml.save(m_cms, newPageBean);
+        pageXml.save(rootCms, newPageBean);
     }
 
     /**
