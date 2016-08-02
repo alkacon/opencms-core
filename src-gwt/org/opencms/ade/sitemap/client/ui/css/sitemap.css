@@ -5,7 +5,6 @@ body div.pageCenter {
 .root {
 	background: value("constants.css.backgroundColorMenu");
 	font-family: value("constants.css.fontFamily");
-	position: relative;
 	margin: 0;
 	overflow: auto;
 	height: 100%;
