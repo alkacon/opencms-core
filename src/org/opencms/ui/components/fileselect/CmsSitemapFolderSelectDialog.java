@@ -33,7 +33,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsStringUtil;
@@ -48,7 +47,8 @@ import com.google.common.collect.Lists;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.filter.UnsupportedFilterException;
-import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Folder select dialog for the siteamp 'copy page' feature.<p>
@@ -81,22 +81,32 @@ public class CmsSitemapFolderSelectDialog extends CmsResourceSelectDialog {
     public CmsSitemapFolderSelectDialog()
     throws CmsException {
         super(CmsResourceFilter.IGNORE_EXPIRATION.addRequireFolder());
-        CheckBox checkBox = new CheckBox();
-        checkBox.setValue(Boolean.valueOf(!m_filtered));
-        checkBox.addValueChangeListener(new ValueChangeListener() {
 
-            private static final long serialVersionUID = 1L;
+        OptionGroup showAll = new OptionGroup();
+        showAll.addItem(Boolean.FALSE);
+        showAll.addItem(Boolean.TRUE);
+        showAll.setItemCaption(
+            Boolean.TRUE,
+            CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_COPYPAGE_SHOWALL_0));
+        showAll.setItemCaption(
+            Boolean.FALSE,
+            CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_COPYPAGE_SHOWSITEMAP_0));
+        showAll.setValue(Boolean.FALSE);
+        showAll.addValueChangeListener(new ValueChangeListener() {
 
             public void valueChange(ValueChangeEvent event) {
 
                 Boolean checked = (Boolean)(event.getProperty().getValue());
                 m_filtered = !checked.booleanValue();
                 updateFilter();
+
             }
         });
+
         getContents().getAdditionalWidgets().setVisible(true);
-        getContents().getAdditionalWidgets().addComponent(checkBox);
-        checkBox.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_SHOW_ALL_FOLDERS_0));
+        getContents().getAdditionalWidgets().addComponent(showAll);
+        showAll.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+
         updateFilter();
     }
 

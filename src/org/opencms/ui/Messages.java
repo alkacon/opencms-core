@@ -427,6 +427,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     public static final String GUI_COPY_PAGE_0 = "GUI_COPY_PAGE_0";
 
+    public static final String GUI_COPYPAGE_SHOWALL_0 = "GUI_COPYPAGE_SHOWALL_0";
+
+    public static final String GUI_COPYPAGE_SHOWSITEMAP_0 = "GUI_COPYPAGE_SHOWSITEMAP_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */
