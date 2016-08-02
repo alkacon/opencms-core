@@ -27,8 +27,11 @@
 
 package org.opencms.ade.sitemap.client.ui.css;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.Import;
 
 /**
  * Resource bundle to access CSS and image resources.<p>
@@ -105,6 +108,7 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
      * @return the root CSS
      */
     @Source("sitemap.css")
+    @Import(value = I_CmsLayoutBundle.I_CmsToolbarCss.class)
     I_CmsSitemapCss sitemapCss();
 
     /**

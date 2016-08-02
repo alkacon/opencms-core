@@ -9,7 +9,10 @@ body div.pageCenter {
 	margin: 0;
 	overflow: auto;
 	height: 100%;
-	padding-top: 72px;
+}
+
+.toolbar-toolbar + div {
+	margin-top: 72px;
 }
 
 /** joined vendor prefix style, for better fall back behavior */
