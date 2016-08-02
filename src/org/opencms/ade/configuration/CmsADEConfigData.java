@@ -421,7 +421,8 @@ public class CmsADEConfigData {
         }
         for (CmsResourceTypeConfig typeConfig : getResourceTypes()) {
             String typeName = typeConfig.getTypeName();
-            if (!typeConfig.getFolderOrName().isPageRelative() && primaryDetailPageMapByType.containsKey(typeName)) {
+            if (((typeConfig.getFolderOrName() == null) || !typeConfig.getFolderOrName().isPageRelative())
+                && primaryDetailPageMapByType.containsKey(typeName)) {
                 String folderPath = typeConfig.getFolderPath(cms, null);
                 CmsDetailPageInfo pageInfo = primaryDetailPageMapByType.get(typeName);
                 result.add(new DetailInfo(folderPath, pageInfo, typeName, getBasePath()));
