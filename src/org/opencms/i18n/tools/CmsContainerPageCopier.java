@@ -447,7 +447,8 @@ public class CmsContainerPageCopier {
                 CmsProperty prop = iterator.next();
                 // copied folder may be root of a locale subtree, but since we may want to copy to a different locale,
                 // we don't want the locale property in the copy
-                if (prop.getName().equals(CmsPropertyDefinition.PROPERTY_LOCALE)) {
+                if (prop.getName().equals(CmsPropertyDefinition.PROPERTY_LOCALE)
+                    || prop.getName().equals(CmsPropertyDefinition.PROPERTY_ELEMENT_REPLACEMENTS)) {
                     iterator.remove();
                 }
             }
