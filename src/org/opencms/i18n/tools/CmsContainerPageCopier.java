@@ -38,6 +38,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.I_CmsFileNameGenerator;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
@@ -48,6 +49,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.Messages;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
@@ -59,15 +61,21 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Helper class for copying container pages including some of their elements.<p>
@@ -88,6 +96,39 @@ public class CmsContainerPageCopier {
         smartCopyAndChangeLocale;
     }
 
+    /**
+     * Exception indicating that no custom replacement element was found
+     * for a type which requires replacement.<p>
+     */
+    public static class NoCustomReplacementException extends Exception {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /** The resource for which no exception was found. */
+        private CmsResource m_resource;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param resource the resource for which no replacement was found
+         */
+        public NoCustomReplacementException(CmsResource resource) {
+            super();
+            m_resource = resource;
+        }
+
+        /**
+         * Gets the resource for which no replacement was found.<p>
+         *
+         * @return the resource
+         */
+        public CmsResource getResource() {
+
+            return m_resource;
+        }
+    }
+
     /** The log instance used for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContainerPageCopier.class);
 
@@ -100,6 +141,12 @@ public class CmsContainerPageCopier {
     /** The copy mode. */
     private CopyMode m_copyMode = CopyMode.smartCopyAndChangeLocale;
 
+    /** List of created resources. */
+    private List<CmsResource> m_createdResources = Lists.newArrayList();
+
+    /** Map of custom replacements. */
+    private Map<CmsUUID, CmsUUID> m_customReplacements;
+
     /** Maps structure ids of original container elements to structure ids of their copies/replacements. */
     private Map<CmsUUID, CmsUUID> m_elementReplacements = Maps.newHashMap();
 
@@ -108,6 +155,9 @@ public class CmsContainerPageCopier {
 
     /** The target folder. */
     private CmsResource m_targetFolder;
+
+    /** Resource types which require custom replacements. */
+    private Set<String> m_typesWithRequiredReplacements;
 
     /**
      * Creates a new instance.<p>
@@ -153,6 +203,11 @@ public class CmsContainerPageCopier {
 
     }
 
+    /**
+     * Gets the copied folder or page.<p>
+     *
+     * @return the copied folder or page
+     */
     public CmsResource getCopiedFolderOrPage() {
 
         return m_copiedFolderOrPage;
@@ -176,10 +231,11 @@ public class CmsContainerPageCopier {
      * @return the replacement element for the copied page
      *
      * @throws CmsException if something goes wrong
+     * @throws NoCustomReplacementException if a custom replacement is not found for a type which requires it
      */
     public CmsContainerElementBean replaceContainerElement(
         CmsResource targetPage,
-        CmsContainerElementBean originalElement) throws CmsException {
+        CmsContainerElementBean originalElement) throws CmsException, NoCustomReplacementException {
         // if (m_elementReplacements.containsKey(originalElement.getId()
 
         CmsObject targetCms = OpenCms.initCmsObject(m_cms);
@@ -193,11 +249,6 @@ public class CmsContainerPageCopier {
             String rootPath = m_originalPage != null ? m_originalPage.getRootPath() : "???";
             LOG.warn("Skipping container element because of missing id in page: " + rootPath);
             return null;
-        }
-
-        if (m_copyMode == CopyMode.reuse) {
-            LOG.info("Reusing element " + originalElement.getId() + " because we are in reuse mode");
-            return originalElement;
         }
 
         if (m_elementReplacements.containsKey(originalElement.getId())) {
@@ -214,7 +265,9 @@ public class CmsContainerPageCopier {
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(m_cms, targetPage.getRootPath());
             CmsResourceTypeConfig typeConfig = config.getResourceType(type.getTypeName());
             boolean shouldCopyElement;
-            if (typeConfig == null) {
+            if (m_copyMode == CopyMode.reuse) {
+                shouldCopyElement = false;
+            } else if (typeConfig == null) {
                 LOG.warn(
                     "Type configuration for type " + type.getTypeName() + " not found at " + targetPage.getRootPath());
                 shouldCopyElement = false;
@@ -245,9 +298,28 @@ public class CmsContainerPageCopier {
                     }
                 }
                 return copy;
+            } else if (m_customReplacements != null) {
+                CmsUUID replacementId = m_customReplacements.get(originalElement.getId());
+                if (replacementId != null) {
+
+                    return new CmsContainerElementBean(
+                        replacementId,
+                        originalElement.getFormatterId(),
+                        originalElement.getIndividualSettings(),
+                        originalElement.isCreateNew());
+                } else {
+                    if ((m_typesWithRequiredReplacements != null)
+                        && m_typesWithRequiredReplacements.contains(type.getTypeName())) {
+                        throw new NoCustomReplacementException(originalResource);
+                    } else {
+                        return originalElement;
+                    }
+
+                }
             } else {
                 LOG.info("Reusing container element: " + originalResource.getRootPath());
                 return originalElement;
+
             }
         }
     }
@@ -256,12 +328,70 @@ public class CmsContainerPageCopier {
      * Replaces the elements in the copied container page with copies, if appropriate based on the current copy mode.<p>
      *
      * @param containerPage the container page copy whose elements should be replaced with copies
+     *
      * @throws CmsException if something goes wrong
+     * @throws NoCustomReplacementException if a custom replacement element was not found for a type which requires it
      */
-    public void replaceElements(CmsResource containerPage) throws CmsException {
+    public void replaceElements(CmsResource containerPage) throws CmsException, NoCustomReplacementException {
 
         CmsObject rootCms = OpenCms.initCmsObject(m_cms);
         rootCms.getRequestContext().setSiteRoot("");
+        CmsObject targetCms = OpenCms.initCmsObject(m_cms);
+        targetCms.getRequestContext().setSiteRoot("");
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(m_targetFolder.getRootPath());
+        if (site != null) {
+            targetCms.getRequestContext().setSiteRoot(site.getSiteRoot());
+        } else if (OpenCms.getSiteManager().startsWithShared(m_targetFolder.getRootPath())) {
+            targetCms.getRequestContext().setSiteRoot(OpenCms.getSiteManager().getSharedFolder());
+        }
+
+        CmsProperty elementReplacementProp = rootCms.readPropertyObject(
+            m_targetFolder,
+            CmsPropertyDefinition.PROPERTY_ELEMENT_REPLACEMENTS,
+            true);
+        if ((elementReplacementProp != null) && (elementReplacementProp.getValue() != null)) {
+            try {
+                CmsResource elementReplacementMap = targetCms.readResource(
+                    elementReplacementProp.getValue(),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                OpenCms.getLocaleManager();
+                String encoding = CmsLocaleManager.getResourceEncoding(targetCms, elementReplacementMap);
+                CmsFile elementReplacementFile = targetCms.readFile(elementReplacementMap);
+                Properties props = new Properties();
+                props.load(
+                    new InputStreamReader(new ByteArrayInputStream(elementReplacementFile.getContents()), encoding));
+                CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.addMacro("sourcesite", m_cms.getRequestContext().getSiteRoot().replaceAll("/+$", ""));
+                resolver.addMacro("targetsite", targetCms.getRequestContext().getSiteRoot().replaceAll("/+$", ""));
+                Map<CmsUUID, CmsUUID> customReplacements = Maps.newHashMap();
+                for (Map.Entry<Object, Object> entry : props.entrySet()) {
+                    if ((entry.getKey() instanceof String) && (entry.getValue() instanceof String)) {
+                        try {
+                            String key = (String)entry.getKey();
+                            if ("required".equals(key)) {
+                                m_typesWithRequiredReplacements = Sets.newHashSet(
+                                    ((String)entry.getValue()).split(" *, *"));
+                                continue;
+                            }
+                            key = resolver.resolveMacros(key);
+                            String value = (String)entry.getValue();
+                            value = resolver.resolveMacros(value);
+                            CmsResource keyRes = rootCms.readResource(key, CmsResourceFilter.IGNORE_EXPIRATION);
+                            CmsResource valRes = rootCms.readResource(value, CmsResourceFilter.IGNORE_EXPIRATION);
+                            customReplacements.put(keyRes.getStructureId(), valRes.getStructureId());
+                        } catch (Exception e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                        m_customReplacements = customReplacements;
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            } catch (IOException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+
         CmsXmlContainerPage pageXml = CmsXmlContainerPageFactory.unmarshal(m_cms, containerPage);
         CmsContainerPageBean page = pageXml.getContainerPage(m_cms);
         List<CmsContainerBean> newContainers = Lists.newArrayList();
@@ -291,8 +421,9 @@ public class CmsContainerPageCopier {
      * @param target the target folder
      *
      * @throws CmsException if soemthing goes wrong
+     * @throws NoCustomReplacementException if a custom replacement element was not found
      */
-    public void run(CmsResource source, CmsResource target) throws CmsException {
+    public void run(CmsResource source, CmsResource target) throws CmsException, NoCustomReplacementException {
 
         LOG.info(
             "Starting page copy process: page='"
@@ -333,6 +464,7 @@ public class CmsContainerPageCopier {
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME),
                 null,
                 properties);
+            m_createdResources.add(copiedFolder);
             if (hasNavpos) {
                 String newNavPosStr = "" + (maxNavpos + 10);
                 rootCms.writePropertyObject(
@@ -346,6 +478,7 @@ public class CmsContainerPageCopier {
             rootCms.copyResource(page.getRootPath(), pageCopyPath);
 
             CmsResource copiedPage = rootCms.readResource(pageCopyPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            m_createdResources.add(copiedPage);
             replaceElements(copiedPage);
             tryUnlock(copiedFolder);
         } else {
@@ -375,6 +508,7 @@ public class CmsContainerPageCopier {
                     new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, newNavPosStr, null));
             }
             CmsResource copiedPage = rootCms.readResource(copyPath);
+            m_createdResources.add(copiedPage);
             m_originalPage = page;
             m_targetFolder = target;
             m_copiedFolderOrPage = copiedPage;

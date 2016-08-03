@@ -29,11 +29,13 @@ package org.opencms.ui.sitemap;
 
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.tools.CmsContainerPageCopier;
+import org.opencms.i18n.tools.CmsContainerPageCopier.NoCustomReplacementException;
 import org.opencms.main.CmsException;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
 import org.opencms.ui.components.fileselect.CmsSitemapSelectField;
 import org.opencms.util.CmsUUID;
@@ -131,6 +133,11 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
                     copier.getCopiedFolderOrPage().getStructureId()));
         } catch (CmsException e) {
             m_context.error(e);
+        } catch (NoCustomReplacementException e) {
+            String errorMessage = CmsVaadinUtils.getMessageText(
+                Messages.GUI_COPYPAGE_NO_REPLACEMENT_FOUND_1,
+                e.getResource().getRootPath());
+            CmsErrorDialog.showErrorDialog(errorMessage, e);
         }
 
     }

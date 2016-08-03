@@ -78,6 +78,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CHILD_DIALOG_GO_BACK_0 = "GUI_CHILD_DIALOG_GO_BACK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_PAGE_0 = "GUI_COPY_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYPAGE_COPY_MODE_0 = "GUI_COPYPAGE_COPY_MODE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -93,7 +96,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_COPYPAGE_MODE_SMART_CHANGE_LOCALES_0 = "GUI_COPYPAGE_MODE_SMART_CHANGE_LOCALES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_NO_REPLACEMENT_FOUND_1 = "GUI_COPYPAGE_NO_REPLACEMENT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYPAGE_SHOW_ALL_FOLDERS_0 = "GUI_COPYPAGE_SHOW_ALL_FOLDERS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_SHOWALL_0 = "GUI_COPYPAGE_SHOWALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_SHOWSITEMAP_0 = "GUI_COPYPAGE_SHOWSITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOGTITLE_COPYMOVE_0 = "GUI_DIALOGTITLE_COPYMOVE_0";
@@ -424,12 +436,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    public static final String GUI_COPY_PAGE_0 = "GUI_COPY_PAGE_0";
-
-    public static final String GUI_COPYPAGE_SHOWALL_0 = "GUI_COPYPAGE_SHOWALL_0";
-
-    public static final String GUI_COPYPAGE_SHOWSITEMAP_0 = "GUI_COPYPAGE_SHOWSITEMAP_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
