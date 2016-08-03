@@ -115,6 +115,7 @@ public class CmsResourceSelectField extends A_CmsFileSelectField<CmsResource> {
         } else {
             path = m_value.getRootPath();
         }
+        fireValueChange(true);
         CmsVaadinUtils.setReadonlyValue(m_textField, path);
     }
 

@@ -43,6 +43,8 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -82,6 +84,14 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
         displayResourceInfo(context.getResources());
         initButtons();
         setContent(initContent());
+        m_okButton.setEnabled(false);
+        m_targetSelect.addValueChangeListener(new ValueChangeListener() {
+
+            public void valueChange(ValueChangeEvent event) {
+
+                m_okButton.setEnabled(true);
+            }
+        });
 
     }
 
