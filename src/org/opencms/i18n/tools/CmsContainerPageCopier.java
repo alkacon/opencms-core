@@ -65,6 +65,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -254,8 +255,8 @@ public class CmsContainerPageCopier {
         if (m_elementReplacements.containsKey(originalElement.getId())) {
             return new CmsContainerElementBean(
                 m_elementReplacements.get(originalElement.getId()),
-                originalElement.getFormatterId(),
-                originalElement.getIndividualSettings(),
+                maybeReplaceFormatter(originalElement.getFormatterId()),
+                maybeReplaceFormatterInSettings(originalElement.getIndividualSettings()),
                 originalElement.isCreateNew());
         } else {
             CmsResource originalResource = m_cms.readResource(
@@ -282,8 +283,8 @@ public class CmsContainerPageCopier {
                     targetPage.getRootPath());
                 CmsContainerElementBean copy = new CmsContainerElementBean(
                     resourceCopy.getStructureId(),
-                    originalElement.getFormatterId(),
-                    originalElement.getIndividualSettings(),
+                    maybeReplaceFormatter(originalElement.getFormatterId()),
+                    maybeReplaceFormatterInSettings(originalElement.getIndividualSettings()),
                     originalElement.isCreateNew());
                 m_elementReplacements.put(originalElement.getId(), resourceCopy.getStructureId());
                 LOG.info(
@@ -304,8 +305,8 @@ public class CmsContainerPageCopier {
 
                     return new CmsContainerElementBean(
                         replacementId,
-                        originalElement.getFormatterId(),
-                        originalElement.getIndividualSettings(),
+                        maybeReplaceFormatter(originalElement.getFormatterId()),
+                        maybeReplaceFormatterInSettings(originalElement.getIndividualSettings()),
                         originalElement.isCreateNew());
                 } else {
                     if ((m_typesWithRequiredReplacements != null)
@@ -565,6 +566,52 @@ public class CmsContainerPageCopier {
             return Double.valueOf(maxNavpos);
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Uses the custom translation table to translate formatter id.<p>
+     *
+     * @param formatterId the formatter id
+     * @return the formatter replacement
+     */
+    private CmsUUID maybeReplaceFormatter(CmsUUID formatterId) {
+
+        if (m_customReplacements != null) {
+            CmsUUID replacement = m_customReplacements.get(formatterId);
+            if (replacement != null) {
+                return replacement;
+            }
+        }
+        return formatterId;
+    }
+
+    /**
+     * Replaces formatter id in element settings.<p>
+     *
+     * @param individualSettings the settings in which to replace the formatter id
+     *
+     * @return the map with the possible replaced ids
+     */
+    private Map<String, String> maybeReplaceFormatterInSettings(Map<String, String> individualSettings) {
+
+        if (individualSettings == null) {
+            return null;
+        } else if (m_customReplacements == null) {
+            return individualSettings;
+        } else {
+            LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
+            for (Map.Entry<String, String> entry : individualSettings.entrySet()) {
+                String value = entry.getValue();
+                if (CmsUUID.isValidUUID(value)) {
+                    CmsUUID valueId = new CmsUUID(value);
+                    if (m_customReplacements.containsKey(valueId)) {
+                        value = "" + m_customReplacements.get(valueId);
+                    }
+                }
+                result.put(entry.getKey(), value);
+            }
+            return result;
         }
     }
 
