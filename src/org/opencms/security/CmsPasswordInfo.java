@@ -160,6 +160,9 @@ public class CmsPasswordInfo {
 
         // leave password unchanged, if the new password is empty
         if (CmsStringUtil.isEmpty(newPwd)) {
+            // m_newPwd has to be initialised here. 
+        	// The password will be still unchanged if the user leave it empty on the user edit page.
+            m_newPwd = "";
             return;
         }
         try {
@@ -174,6 +177,10 @@ public class CmsPasswordInfo {
      * Validates that the confirmation matches the new password.<p>
      */
     public void validate() {
+    	
+        if (CmsStringUtil.isEmpty(getNewPwd())) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_NEWPWD_0));
+        }
 
         if (CmsStringUtil.isEmpty(getNewPwd())) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_NEWPWD_0));
