@@ -709,6 +709,11 @@ public class CmsPreferences extends CmsTabDialog {
                     projectName = projectName + " - " + project.getOuFqn();
                 }
             }
+            if (projectName.equalsIgnoreCase("online")) {
+                projectName = key(org.opencms.workplace.commons.Messages.GUI_PROJECT_ONLINE_0);
+            } else if (projectName.equalsIgnoreCase("offline")) {
+                projectName = key(org.opencms.workplace.commons.Messages.GUI_PROJECT_OFFLINE_0);
+            }
             options.add(projectName);
             values.add(project.getName());
             if (startProject.equals(project.getName())) {
