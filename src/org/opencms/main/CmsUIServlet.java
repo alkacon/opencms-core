@@ -61,7 +61,9 @@ import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
 import com.vaadin.server.CustomizedSystemMessages;
+import com.vaadin.server.DeploymentConfiguration;
 import com.vaadin.server.RequestHandler;
+import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.SystemMessages;
@@ -73,6 +75,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
@@ -239,6 +242,18 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
             m_perThreadCmsObject = new ThreadLocal<CmsObject>();
         }
         m_perThreadCmsObject.set(cms);
+    }
+
+    /**
+     * @see com.vaadin.server.VaadinServlet#createServletService(com.vaadin.server.DeploymentConfiguration)
+     */
+    @Override
+    protected VaadinServletService createServletService(DeploymentConfiguration deploymentConfiguration)
+    throws ServiceException {
+
+        CmsVaadinServletService service = new CmsVaadinServletService(this, deploymentConfiguration);
+        service.init();
+        return service;
     }
 
     /**
