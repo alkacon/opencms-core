@@ -408,13 +408,16 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         List<CmsResource> parentResources = new ArrayList<CmsResource>();
         String resourceSitePath = cms.getRequestContext().removeSiteRoot(rootPath);
         // get all parent folders of the current file
-        parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+        try {
+            parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
 
         for (CmsResource resource : parentResources) {
             String storedSiteRoot = cms.getRequestContext().getSiteRoot();
             String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
             try {
-
                 cms.getRequestContext().setSiteRoot("/");
                 List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
                 for (CmsAccessControlEntry ace : entries) {
@@ -437,6 +440,13 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                         }
                     }
                 }
+            } catch (CmsException e) {
+                LOG.info(
+                    "Problem with reading responsible users for "
+                        + resource.getName()
+                        + " : "
+                        + e.getLocalizedMessage(),
+                    e);
             } finally {
                 cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
@@ -476,8 +486,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         boolean resetReleased,
         Date expired,
         boolean resetExpired,
-        boolean modifySubresources)
-    throws CmsException {
+        boolean modifySubresources) throws CmsException {
 
         CmsObject cms = m_dialogContext.getCms();
         CmsLockActionRecord lockActionRecord = CmsLockUtil.ensureLock(cms, resource);
@@ -545,8 +554,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         String resName,
         boolean enableNotification,
         int notificationInterval,
-        boolean modifySiblings)
-    throws CmsException {
+        boolean modifySiblings) throws CmsException {
 
         List<CmsResource> resources = new ArrayList<CmsResource>();
         if (modifySiblings) {
