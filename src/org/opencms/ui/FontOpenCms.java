@@ -161,7 +161,13 @@ public enum FontOpenCms implements FontIcon {
     WAND(0xe610),
 
     /** The warning icon. */
-    WARNING(0xed50);
+    WARNING(0xed50),
+
+    /** 'plus' state icon for tree opener. */ 
+    TREE_PLUS(0xe918),
+
+    /** 'minus' state icon for tree opener. */ 
+    TREE_MINUS(0xe919);
 
     /** The icon code point. */
     private int m_codepoint;
