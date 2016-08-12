@@ -42,11 +42,16 @@ public interface I_CmsButton {
     public enum ButtonColor {
 
         /** Button color. */
-        BLACK(I_CmsLayoutBundle.INSTANCE.buttonCss().black()), /** Button color. */
-        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()), /** Button color. */
-        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()), /** Button color. */
-        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()), /** Button color. */
-        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()), /** Button color. */
+        BLACK(I_CmsLayoutBundle.INSTANCE.buttonCss().black()),
+        /** Button color. */
+        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
+        /** Button color. */
+        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
+        /** Button color. */
+        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()),
+        /** Button color. */
+        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()),
+        /** Button color. */
         YELLOW(I_CmsLayoutBundle.INSTANCE.buttonCss().yellow());
 
         /** The list of additional style class names for this button style. */
@@ -149,7 +154,10 @@ public interface I_CmsButton {
         SITEMAP(BUTTON_CSS.toolbarSitemap(), Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
 
         /** Toolbar button. */
-        TOGGLE_HELP(BUTTON_CSS.toolbarToggleHelp(), Messages.get().key(Messages.GUI_TOOLBAR_TOGGLE_HELP_0));
+        TOGGLE_HELP(BUTTON_CSS.toolbarToggleHelp(), Messages.get().key(Messages.GUI_TOOLBAR_TOGGLE_HELP_0)),
+
+        /** Toolbar button. */
+        RESOURCE_HELP(BUTTON_CSS.toolbarResourceHelp(), Messages.get().key(Messages.GUI_RESOURCE_HELP_0));
 
         /** The icon class name. */
         private String m_iconClass;
@@ -194,20 +202,16 @@ public interface I_CmsButton {
     public enum ButtonStyle {
 
         /** Menu button. */
-        IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
+        IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
         /** Menu button. */
-        MENU(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMenuButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
+        MENU(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMenuButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
         /** Default button. */
-        TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()),
+        TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(), I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()),
 
         /** Transparent button. */
-        TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton(),
-        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
         /** The list of additional style class names for this button style. */
         private String[] m_additionalClasses;

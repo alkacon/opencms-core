@@ -30,9 +30,11 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarCommonHelpButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarElementInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarHelpButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
@@ -61,6 +63,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsResourceHelpDialogType;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
@@ -92,6 +95,36 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** The Z index manager. */
     private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
 
+    /**
+     * Returns the Z index manager for the container page editor.<p>
+     *
+     * @return the Z index manager
+     **/
+    public static I_CmsContainerZIndexManager getZIndexManager() {
+
+        return Z_INDEX_MANAGER;
+    }
+
+    /**
+     * Opens a message dialog with the given content.<p>
+     *
+     * @param title the dialog title
+     * @param displayHtmlContent the dialog content
+     */
+    private static void openMessageDialog(String title, String displayHtmlContent) {
+
+        HTMLPanel content = new HTMLPanel(displayHtmlContent);
+        content.getElement().getStyle().setOverflow(Overflow.AUTO);
+        content.getElement().getStyle().setPosition(Position.RELATIVE);
+        CmsPopup dialog = new CmsPopup(title, content);
+        content.getElement().getStyle().setProperty("maxHeight", dialog.getAvailableHeight(100), Unit.PX);
+        dialog.setWidth(-1);
+        dialog.addDialogClose(null);
+        dialog.setModal(true);
+        dialog.setGlassEnabled(true);
+        dialog.centerHorizontally(100);
+    }
+
     /** Style to toggle toolbar visibility. */
     protected CmsStyleVariable m_toolbarVisibility;
 
@@ -119,8 +152,14 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** Button for the elements information. */
     private CmsToolbarElementInfoButton m_elementsInfo;
 
+    /** Button for the common help. */
+    private CmsToolbarCommonHelpButton m_commonHelp;
+
     /** Info button. */
     private CmsToolbarInfoButton m_info;
+
+    /** Help button. */
+    private CmsToolbarHelpButton m_help;
 
     /** Move button. */
     private CmsToolbarMoveButton m_move;
@@ -154,36 +193,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
-
-    /**
-     * Returns the Z index manager for the container page editor.<p>
-     *
-     * @return the Z index manager
-     **/
-    public static I_CmsContainerZIndexManager getZIndexManager() {
-
-        return Z_INDEX_MANAGER;
-    }
-
-    /**
-     * Opens a message dialog with the given content.<p>
-     *
-     * @param title the dialog title
-     * @param displayHtmlContent the dialog content
-     */
-    private static void openMessageDialog(String title, String displayHtmlContent) {
-
-        HTMLPanel content = new HTMLPanel(displayHtmlContent);
-        content.getElement().getStyle().setOverflow(Overflow.AUTO);
-        content.getElement().getStyle().setPosition(Position.RELATIVE);
-        CmsPopup dialog = new CmsPopup(title, content);
-        content.getElement().getStyle().setProperty("maxHeight", dialog.getAvailableHeight(100), Unit.PX);
-        dialog.setWidth(-1);
-        dialog.addDialogClose(null);
-        dialog.setModal(true);
-        dialog.setGlassEnabled(true);
-        dialog.centerHorizontally(100);
-    }
 
     /**
      * Disables the edit functionality.<p>
@@ -235,6 +244,24 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar.setVisible(true);
         m_toggleToolbarButton.setVisible(true);
     }
+
+    /**
+     * Exports the openMessageDialog method to the page context.<p>
+     */
+    private native void exportStacktraceDialogMethod() /*-{
+                                                       $wnd.__openStacktraceDialog = function(event) {
+                                                       event = (event) ? event : ((window.event) ? window.event : "");
+                                                       var elem = (event.target) ? event.target : event.srcElement;
+                                                       if (elem != null) {
+                                                       var children = elem.getElementsByTagName("span");
+                                                       if (children.length > 0) {
+                                                       var title = children[0].getAttribute("title");
+                                                       var content = children[0].innerHTML;
+                                                       @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                                                       }
+                                                       }
+                                                       }
+                                                       }-*/;
 
     /**
      * Returns the add gallery menu.<p>
@@ -425,6 +452,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         m_properties = new CmsToolbarSettingsButton(containerpageHandler);
         m_info = new CmsToolbarInfoButton(containerpageHandler);
+        m_help = new CmsToolbarHelpButton(containerpageHandler);
 
         m_clipboard = new CmsToolbarClipboardMenu(containerpageHandler);
         m_clipboard.addClickHandler(clickHandler);
@@ -458,6 +486,12 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
                 m_sitemap.setEnabled(false);
             }
         }
+        if (CmsCoreProvider.get().isResourceHelpDialogActive(CmsResourceHelpDialogType.COMMON)) {
+            m_commonHelp = new CmsToolbarCommonHelpButton(containerpageHandler);
+            m_commonHelp.addClickHandler(clickHandler);
+            m_toolbar.addRight(m_commonHelp);
+        }
+
         Window.addCloseHandler(new CloseHandler<Window>() {
 
             public void onClose(CloseEvent<Window> event) {
@@ -483,12 +517,17 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             showToolbar(true);
             containerpageHandler.activateSelection();
         }
+        if (CmsCoreProvider.get().isStartHelpDialogActive()) {
+            showToolbar(true);
+            containerpageHandler.openHelpDialog(null, CmsResourceHelpDialogType.START);
+        }
 
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
             controller,
             m_edit,
             m_move,
             m_info,
+            m_help,
             m_properties,
             m_addToFavorites,
             m_remove);
@@ -507,23 +546,5 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
     }
-
-    /**
-     * Exports the openMessageDialog method to the page context.<p>
-     */
-    private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
-            }
-        }
-    }-*/;
 
 }

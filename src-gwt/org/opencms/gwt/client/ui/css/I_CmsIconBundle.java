@@ -156,6 +156,22 @@ public interface I_CmsIconBundle extends ClientBundle {
     /**
      * Access method.<p>
      *
+     * @return an image resource
+     */
+    @Source("images/icons/resourceHelpIconActive.png")
+    ImageResource resourceHelpIconActive();
+
+    /**
+     * Access method.<p>
+     *
+     * @return an image resource
+     */
+    @Source("images/icons/resourceHelpIconDeactivated.png")
+    ImageResource resourceHelpIconDeactivated();
+    
+    /**
+     * Access method.<p>
+     *
      * @return the image resource
      */
     @Source("images/icons/favoriteIconActive.png")

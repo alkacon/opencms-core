@@ -1,0 +1,31 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="msg" type="org.opencms.gwt.client.ui.resourcehelp.CmsResourceHelpMessages" />
+	<ui:style>
+		
+		.center {
+			margin: 0 auto;
+		}
+		
+		.right {
+			float: right
+		}
+				
+	</ui:style>
+	<g:FlowPanel>
+		<g:FlowPanel ui:field="m_infoBoxContainer"></g:FlowPanel>
+		<g:FlowPanel addStyleNames="{style.center}">
+			<cms:CmsSimplePanel>
+				<cmsi:CmsCheckBox ui:field="m_checkboxNotShowOnStart" text="{msg.messageDoNotShow}"></cmsi:CmsCheckBox>
+			</cms:CmsSimplePanel>
+			<cms:CmsPushButton ui:field="m_nextButton" text="{msg.messageNext}" useMinWidth="true" />
+			<cms:CmsPushButton ui:field="m_prevButton"  text="{msg.messagePrev}" useMinWidth="true" />
+			<cms:CmsPushButton ui:field="m_closeButton"  text="{msg.messageClose}" useMinWidth="true" />
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 

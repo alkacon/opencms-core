@@ -111,6 +111,13 @@
     gwt-image: "addBigIconActive";
 }
 
+@sprite .cmsState-up-disabled .toolbarResourceHelp, .cmsState-down-disabled .toolbarResourceHelp{
+	gwt-image: "resourceHelpBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarResourceHelp, .cmsState-up-hovering .toolbarResourceHelp, .cmsState-down-hovering .toolbarResourceHelp, .cmsState-down .toolbarResourceHelp{
+    gwt-image: "resourceHelpBigIconActive";
+}
+
 @sprite .cmsState-up-disabled .toolbarProperties, .cmsState-down-disabled .toolbarProperties{
 	gwt-image: "propertyBigIconDeactivated";
 }

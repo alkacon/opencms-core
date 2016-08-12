@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<XmlVfsBundles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd">
+  <Bundle language="en">
+    <Message>
+      <Key><![CDATA[fileicon.adehelp]]></Key>
+      <Value><![CDATA[ADE Help]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[title.adehelp]]></Key>
+      <Value><![CDATA[ADE Help]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[desc.adehelp]]></Key>
+      <Value><![CDATA[The ADE Help documents]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdeHelp.Title]]></Key>
+      <Value><![CDATA[Title]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdeHelp.Text]]></Key>
+      <Value><![CDATA[Text]]></Value>
+    </Message>
+  </Bundle>
+  <Bundle language="ru">
+    <Message>
+      <Key><![CDATA[title.adehelp]]></Key>
+      <Value><![CDATA[Помощь ADE]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[fileicon.adehelp]]></Key>
+      <Value><![CDATA[Помощь ADE]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[desc.adehelp]]></Key>
+      <Value><![CDATA[Структурированный документ содержащий контексткную помощь по ADE]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdeHelp.Title]]></Key>
+      <Value><![CDATA[Заголовок]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdeHelp.Text]]></Key>
+      <Value><![CDATA[Описание]]></Value>
+    </Message>
+  </Bundle>
+</XmlVfsBundles>

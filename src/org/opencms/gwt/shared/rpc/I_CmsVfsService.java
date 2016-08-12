@@ -39,7 +39,9 @@ import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
+import org.opencms.gwt.shared.CmsResourceHelpDialogType;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
+import org.opencms.gwt.shared.CmsResourceTypeHelpBean;
 import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -315,7 +317,20 @@ public interface I_CmsVfsService extends RemoteService {
         CmsUUID structureId,
         String locale,
         boolean includeTargets,
-        List<CmsUUID> additionalTargetIds) throws CmsRpcException;
+        List<CmsUUID> additionalTargetIds)
+    throws CmsRpcException;
+
+    /**
+     * Gets the help information about resource type.<p>
+     *
+     * @param structureId the structure id of the resource
+     * @param dialogType the dialog type
+     * @return the help information for the resource
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    List<CmsResourceTypeHelpBean> getResourceTypeHelp(CmsUUID structureId, final CmsResourceHelpDialogType dialogType)
+    throws CmsRpcException;
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>
@@ -346,6 +361,14 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     String getSitePath(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * @param structureId the structure id
+     * @return isHelpDialogAvailable
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    boolean isHelpDialogAvailable(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Loads the external link info.<p>

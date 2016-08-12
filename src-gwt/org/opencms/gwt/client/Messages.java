@@ -829,6 +829,21 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEXT_HELP_0 = "GUI_NEXT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREV_HELP_0 = "GUI_PREV_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OF_0 = "GUI_OF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DO_NOT_SHOW_HELP_0 = "GUI_DO_NOT_SHOW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_HELP_0 = "GUI_RESOURCE_HELP_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
 

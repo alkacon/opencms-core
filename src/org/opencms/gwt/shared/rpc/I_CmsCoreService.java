@@ -37,6 +37,7 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
+import org.opencms.gwt.shared.CmsResourceHelpDialogType;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
@@ -187,6 +188,23 @@ public interface I_CmsCoreService extends RemoteService {
     String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Returns True if a common help dialog active for current user
+     * @param dialogType the dialog type
+     * @return callback the asynchronous callback
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    Boolean isResourceHelpDialogActive(final CmsResourceHelpDialogType dialogType) throws CmsRpcException;
+
+    /**
+     * Returns True if start help dialog active for current user
+     * @return callback the asynchronous callback
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    Boolean isStartHelpActive() throws CmsRpcException;
+
+    /**
      * Loads the user settings for the current user.<p>
      *
      * @return the user settings for the current user
@@ -295,6 +313,15 @@ public interface I_CmsCoreService extends RemoteService {
     void setShowEditorHelp(boolean showHelp) throws CmsRpcException;
 
     /**
+     * Writes the start help dialog visibility into the user additional info.<p>
+     *
+     * @param startHelpActive <code>true</code> if the start help dialog is active
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    void setStartHelpActive(boolean startHelpActive) throws CmsRpcException;
+
+    /**
      * Writes the tool-bar visibility into the session cache.<p>
      *
      * @param visible <code>true</code> if the tool-bar is visible
@@ -352,6 +379,7 @@ public interface I_CmsCoreService extends RemoteService {
         String formValidatorClass,
         Map<String, CmsValidationQuery> validationQueries,
         Map<String, String> values,
-        String config) throws CmsRpcException;
+        String config)
+    throws CmsRpcException;
 
 }
