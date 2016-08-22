@@ -30,6 +30,8 @@ package org.opencms.util;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.I_CmsMessageBundle;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -1211,6 +1213,25 @@ public final class CmsStringUtil {
             }
         }
         return string.toString();
+    }
+
+    /**
+     * Encodes a map with string keys and values as a JSON string with the same keys/values.<p>
+     *
+     * @param map the input map
+     * @return the JSON data containing the map entries
+     */
+    public static String mapAsJson(Map<String, String> map) {
+
+        JSONObject obj = new JSONObject();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            try {
+                obj.put(entry.getKey(), entry.getValue());
+            } catch (JSONException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return obj.toString();
     }
 
     /**

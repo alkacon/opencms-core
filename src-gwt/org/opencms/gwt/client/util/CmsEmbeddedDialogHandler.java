@@ -37,6 +37,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -133,20 +134,45 @@ public class CmsEmbeddedDialogHandler {
      */
     public void openDialog(String dialogId, String contextType, List<CmsUUID> resources) {
 
+        openDialog(dialogId, contextType, resources, null);
+    }
+
+    /**
+     * Opens the dialog with the given id.<p>
+     *
+     * @param dialogId the dialog id
+     * @param contextType the context type, used to check the action visibility
+     * @param resources the resource to handle
+     * @param rawParams additional set of parameters to append to the query string (will not be escaped, therefore 'raw')
+     */
+
+    public void openDialog(
+        String dialogId,
+        String contextType,
+        List<CmsUUID> resources,
+        Map<String, String> rawParams) {
+
         String resourceIds = "";
         if (resources != null) {
             for (CmsUUID id : resources) {
                 resourceIds += id.toString() + ";";
             }
         }
-        m_frame = new CmsIFrame(
-            "embeddedDialogFrame",
-            CmsCoreProvider.get().getEmbeddedDialogsUrl()
-                + dialogId
-                + "?resources="
-                + resourceIds
-                + "&contextType="
-                + contextType);
+        String url = CmsCoreProvider.get().getEmbeddedDialogsUrl()
+            + dialogId
+            + "?resources="
+            + resourceIds
+            + "&contextType="
+            + contextType;
+
+        if ((rawParams != null) && !rawParams.isEmpty()) {
+            List<String> params = new ArrayList<String>();
+            for (Map.Entry<String, String> entry : rawParams.entrySet()) {
+                params.add(entry.getKey() + "=" + entry.getValue());
+            }
+            url = url + "&" + CmsStringUtil.listAsString(params, "&");
+        }
+        m_frame = new CmsIFrame("embeddedDialogFrame", url);
         m_frame.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().embeddedDialogFrame());
         RootPanel.get().add(m_frame);
         initIFrame();

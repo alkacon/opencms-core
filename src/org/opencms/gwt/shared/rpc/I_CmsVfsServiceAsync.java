@@ -145,6 +145,15 @@ public interface I_CmsVfsServiceAsync {
     void getChildren(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
 
     /**
+     * Loads a thumbnail for the given dataview configuration and id.<p>
+     *
+     * @param config the dataview configuration
+     * @param id the data id
+     * @param imageCallback the callback to be called with the result URL
+     */
+    void getDataViewThumbnail(String config, String id, AsyncCallback<String> imageCallback);
+
+    /**
      * Gets the default property configurations for a list of structure ids.<p>
      *
      * @param structureIds the structure ids for which to fetch the default property configurations

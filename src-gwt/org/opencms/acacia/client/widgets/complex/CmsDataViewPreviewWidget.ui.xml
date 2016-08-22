@@ -1,0 +1,53 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.container {
+			display: flex;
+		}
+		
+		.imageContainer {
+	
+		} 
+		
+		
+		.imageContainer > img {
+			width: auto;
+			height: auto;
+			max-width: 200px;
+			max-height: 133px;
+			display: block; 
+		} 
+		
+		.labelContainer {
+			-ms-flex: 1;
+			flex: 1;
+			margin-left: 5px;
+			padding: 7px;
+			height: 133px; 
+			overflow: auto; 
+			border: 1px solid #c9c9c9; 
+			border-radius: 4px;
+		}
+		
+		.title {
+			font-weight:bold;
+			font-size: 130%;
+		}
+		
+		.description {
+			margin-top: 5px;
+		}
+		
+			
+	</ui:style>
+	<g:FlowPanel styleName="{style.container}">
+		<g:FlowPanel ui:field="m_imageContainer" styleName="{style.imageContainer}">
+			<g:Image ui:field="m_image"></g:Image>
+		</g:FlowPanel>
+		<g:FlowPanel styleName="{style.labelContainer}">
+			<g:Label styleName="{style.title}" ui:field="m_label"></g:Label>
+			<g:HTML styleName="{style.description}" ui:field="m_descriptionLabel"></g:HTML>
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder>

@@ -314,7 +314,7 @@
 			background-image: url(img/overlay-changed.svg);
 			top: 0;
 			right: 0;
-		} 
+		}
 	}
 	.o-app-info{
 		display: block;
@@ -663,7 +663,7 @@
 	.diffTypeDeleted { 
 		color: red; 
 	}
-	
+
 	.v-formlayout .o-form-row div.v-caption{
 		position: absolute;
 		top: 0;
@@ -697,4 +697,25 @@
 			left: -($v-font-size + 2);
 		}
 	}
+
+	.o-wrap-table .v-table-cell-wrapper {
+		white-space: normal !important; 
+	}
+	
+	.o-wrap-table .v-table-body-wrapper {
+		overflow-y: auto !important;
+	}
+	
+	.o-table-image { 
+		max-width: 200px; 
+		max-height: 200px;
+		width: auto;
+		height: auto;
+		display: block; 
+	}
+	
+	.o-table-cell-padding .v-table-cell-wrapper { 
+		padding: 10px 10px; 
+	}
+	 
 }

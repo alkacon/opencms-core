@@ -10,6 +10,7 @@
 	<inherits name="org.tepi.filtertable.gwt.FilterTableWidgetset" />
 	<stylesheet src="../../../resources/css/toolbar.css"/>
 	<entry-point class="org.opencms.ui.client.CmsWidgetSetEntryPoint" />
+	<set-property name="vaadin.profiler" value="true" />
 
 	<source path="client" />
 	<source path="shared" />

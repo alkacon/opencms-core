@@ -33,7 +33,9 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.util.CmsHtml2TextConverter;
@@ -56,6 +58,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Maps;
 
 /**
  * Provides utility methods to be used as functions from a JSP with the EL.<p>
@@ -65,6 +70,8 @@ import org.apache.commons.beanutils.PropertyUtils;
  * @see CmsJspContentAccessBean
  */
 public final class CmsJspElFunctions {
+
+    private static final Log LOG = CmsLog.getLog(CmsJspElFunctions.class);
 
     /**
      * Hide the public constructor.<p>
@@ -432,6 +439,58 @@ public final class CmsJspElFunctions {
     public static CmsJspVfsAccessBean getVfsAccessBean(Object input) {
 
         return CmsJspVfsAccessBean.create(CmsJspElFunctions.convertCmsObject(input));
+    }
+
+    /**
+     * Converts a string (which is assumed to contain a JSON object whose values are strings only) to a map, for use in JSPs.<p>
+     *
+     * @param maybeJsonString the JSON string
+     * @param key the key
+     * @return the json value string
+     */
+    public static String jsonGetString(Object maybeJsonString, Object key) {
+
+        try {
+            if (maybeJsonString == null) {
+                return null;
+            }
+            String jsonString = (String)maybeJsonString;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(jsonString)) {
+                return null;
+            }
+            JSONObject json = new JSONObject(jsonString);
+            String keyString = (String)key;
+            return json.optString(keyString);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Converts a string (which is assumed to contain a JSON object whose values are strings only) to a map, for use in JSPs.<p>
+     *
+     * If the input can't be interpreted as JSON, an empty map is returned.
+     *
+     * @param jsonString the JSON string
+     * @return the map with the keys/values from the JSON
+     */
+    public static Map<String, String> jsonToMap(String jsonString) {
+
+        Map<String, String> result = Maps.newHashMap();
+        if (jsonString != null) {
+            try {
+                JSONObject json = new JSONObject(jsonString);
+                for (String key : json.keySet()) {
+                    String value = json.optString(key);
+                    if (value != null) {
+                        result.put(key, value);
+                    }
+                }
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
     }
 
     /**

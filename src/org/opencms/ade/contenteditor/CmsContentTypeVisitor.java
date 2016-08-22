@@ -36,9 +36,11 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.CmsWidgetConfigurationException;
 import org.opencms.widgets.I_CmsADEWidget;
 import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
@@ -59,6 +61,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Visitor to read all types and attribute configurations within a content definition.<p>
@@ -215,6 +219,9 @@ public class CmsContentTypeVisitor {
         optional, /** Root level rule. */
         rootLevel
     }
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsContentTypeVisitor.class);
 
     /** The attribute configurations. */
     private Map<String, CmsAttributeConfiguration> m_attributeConfigurations;
@@ -639,10 +646,13 @@ public class CmsContentTypeVisitor {
                 }
                 m_complexWidgets.put(CmsContentService.getAttributeName(schemaType), widgetData);
             }
+        } catch (CmsWidgetConfigurationException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         } catch (Exception e) {
             // may happen if no widget was set for the value
             CmsContentService.LOG.debug(e.getMessage(), e);
         }
+
         // remove the leading slash from element path to check visibility
         boolean visible = !m_contentHandler.hasVisibilityHandlers()
             || m_contentHandler.isVisible(cms, schemaType, path.substring(1), m_file, m_locale);

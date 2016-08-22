@@ -156,6 +156,17 @@ public interface I_CmsVfsService extends RemoteService {
     List<CmsVfsEntryBean> getChildren(String path) throws CmsRpcException;
 
     /**
+     * Loads a thumbnail for a dataview record.<p>
+     *
+     * @param config the dataview configuration string
+     * @param id the record id
+     *
+     * @return the URL of the thumbnail
+     * @throws CmsRpcException if something goes wrong
+     */
+    String getDataViewThumbnail(String config, String id) throws CmsRpcException;
+
+    /**
      * Gets the default property configurations for the given structure ids.<p>
      *
      * @param structureIds the structure ids for which the property configurations should be fetched

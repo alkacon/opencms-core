@@ -36,6 +36,7 @@ import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.extensions.CmsWindowExtension;
 import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.ui.util.CmsDisplayType;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -45,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
 
+import com.google.common.collect.Multimap;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
@@ -163,6 +165,17 @@ public abstract class A_CmsUI extends UI {
 
         return ((WrappedHttpSession)getSession().getSession()).getHttpSession();
     }
+
+    /**
+     * Gets the request parameters with which the application was loaded.<p>
+     *
+     * @return the request parameters
+     */
+    public Multimap<String, String> getParameters() {
+
+        return CmsRequestUtil.getParameters(getPage().getLocation());
+    }
+
 
     /**
      * Returns the workplace settings.<p>

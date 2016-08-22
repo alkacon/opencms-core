@@ -49,6 +49,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientDateBean;
+import org.opencms.gwt.shared.CmsDataViewConstants;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -74,6 +75,7 @@ import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
@@ -91,6 +93,8 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.widgets.dataview.I_CmsDataView;
+import org.opencms.widgets.dataview.I_CmsDataViewItem;
 import org.opencms.workplace.comparison.CmsHistoryListUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -497,6 +501,29 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getDataViewThumbnail(java.lang.String, java.lang.String)
+     */
+    public String getDataViewThumbnail(String config, String id) throws CmsRpcException {
+
+        try {
+            JSONObject obj = new JSONObject(config);
+            String className = obj.optString(CmsDataViewConstants.CONFIG_VIEW_CLASS);
+            String classArg = obj.optString(CmsDataViewConstants.CONFIG_VIEW_ARG);
+            I_CmsDataView data = (I_CmsDataView)(Class.forName(className).newInstance());
+            data.initialize(getCmsObject(), classArg, OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
+            I_CmsDataViewItem item = data.getItemById(id);
+            if (item == null) {
+                LOG.warn("no dataview item found for id: " + id + " (config=" + config + ")");
+                return null;
+            }
+            return item.getImage();
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getDefaultProperties(java.util.List)
      */
     public Map<CmsUUID, Map<String, CmsXmlContentProperty>> getDefaultProperties(List<CmsUUID> structureIds)
@@ -754,8 +781,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        CmsUUID detailContentId)
-    throws CmsRpcException {
+        CmsUUID detailContentId) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -1263,8 +1289,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsObject cms,
         CmsResource historyRes,
         boolean offline,
-        int maxVersion)
-    throws CmsException {
+        int maxVersion) throws CmsException {
 
         CmsHistoryResourceBean result = new CmsHistoryResourceBean();
 

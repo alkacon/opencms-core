@@ -286,6 +286,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String contentEditor();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String dataViewItem();
     }
 
     /** The context menu CSS classes. */
