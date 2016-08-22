@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlPageLoader;
@@ -127,6 +128,31 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
             result = resource.getTypeId() == m_staticTypeId;
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
+     */
+    @Override
+    public CmsResource createResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        String resourcename,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException {
+
+        if (content == null) {
+            try {
+                CmsResource defaultBody = cms.readResource(
+                    "/system/modules/org.opencms.workplace/default_bodies/default",
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsFile defaultBodyFile = cms.readFile(defaultBody);
+                content = defaultBodyFile.getContents();
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return super.createResource(cms, securityManager, resourcename, content, properties);
     }
 
     /**
