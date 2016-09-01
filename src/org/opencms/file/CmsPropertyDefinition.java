@@ -155,6 +155,8 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE = "locale";
 
+    public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
+
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
 
@@ -187,6 +189,8 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property to boost certain search results. */
     public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";
+
+    public static final String PROPERTY_SECONDARY_LOCALES = "locale.secondary";
 
     /** Property for the secure transmission of resources. */
     public static final String PROPERTY_SECURE = "secure";
@@ -235,10 +239,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
         CmsUUID.getNullUUID(),
         "",
         TYPE_NORMAL);
-
-    public static final String PROPERTY_SECONDARY_LOCALES = "locale.secondary";
-
-    public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
 
     /** The id of this property definition. */
     private CmsUUID m_id;

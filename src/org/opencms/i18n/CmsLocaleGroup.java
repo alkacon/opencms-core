@@ -63,20 +63,20 @@ public class CmsLocaleGroup {
     /** The CMS context to use. */
     private CmsObject m_cms;
 
-    /** The primary resource. */
-    private CmsResource m_primaryResource;
-
-    /** The secondary resources. */
-    private Set<CmsResource> m_secondaryResources;
-
     /** The locale cache. */
     private Map<CmsResource, Locale> m_localeCache = Maps.newHashMap();
+
+    /** The 'no translation' setting for this locale group. */
+    private String m_noTranslation;
+
+    /** The primary resource. */
+    private CmsResource m_primaryResource;
 
     /** Map of resources by locale. */
     private Multimap<Locale, CmsResource> m_resourcesByLocale = ArrayListMultimap.create();
 
-    /** The 'no translation' setting for this locale group. */
-    private String m_noTranslation;
+    /** The secondary resources. */
+    private Set<CmsResource> m_secondaryResources;
 
     /**
      * Creates a new instance.<p>

@@ -53,15 +53,15 @@ import org.apache.commons.logging.Log;
  */
 public class CmsLinkLocaleVariantAction extends A_CmsWorkplaceAction {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLinkLocaleVariantAction.class);
-
     /** The action id. */
     public static final String ACTION_ID = "linklocale";
 
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
         CmsStandardVisibilityCheck.DEFAULT_DEFAULTFILE);
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLinkLocaleVariantAction.class);
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)

@@ -300,11 +300,11 @@ public final class CmsJspVfsAccessBean {
         }
     }
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsJspVfsAccessBean.class);
-
     /** Request context attribute for indicating the model file for a create resource operation. */
     public static final String ATTRIBUTE_VFS_ACCESS_BEAN = CmsJspVfsAccessBean.class.getName() + ".VFS_ACCESS_BEAN";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspVfsAccessBean.class);
 
     /** The OpenCms context of the current user. */
     protected CmsObject m_cms;

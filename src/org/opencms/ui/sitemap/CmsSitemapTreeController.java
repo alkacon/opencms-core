@@ -98,11 +98,11 @@ public class CmsSitemapTreeController {
      */
     public class DialogContext implements I_CmsDialogContext {
 
-        /** The resource. */
-        private CmsResource m_resource;
-
         /** The tree node. */
         private CmsSitemapTreeNode m_node;
+
+        /** The resource. */
+        private CmsResource m_resource;
 
         /**
          * Creates a new instance.<p>
@@ -252,22 +252,22 @@ public class CmsSitemapTreeController {
     /** The log isntance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapTreeController.class);
 
-    /** The currently opened window. */
-    private Window m_window;
+    /** The context menu. */
+    CmsContextMenu m_menu = new CmsContextMenu();
 
     /** Map of already loaded nodes. */
     private IdentityHashMap<CmsSitemapTreeNode, Void> m_alreadyLoaded = new IdentityHashMap<>();
 
-    /** The tree data provider. */
-    private CmsSitemapTreeDataProvider m_treeDataProvider;
-
-    /** The context menu. */
-    CmsContextMenu m_menu = new CmsContextMenu();
+    private CmsSitemapTreeNode m_currentRootNode;
 
     /** The locale context. */
     private I_CmsLocaleCompareContext m_localeContext;
 
-    private CmsSitemapTreeNode m_currentRootNode;
+    /** The tree data provider. */
+    private CmsSitemapTreeDataProvider m_treeDataProvider;
+
+    /** The currently opened window. */
+    private Window m_window;
 
     /**
      * Creates a new instance.<p>

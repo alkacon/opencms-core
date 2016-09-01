@@ -50,9 +50,9 @@ public final class CmsJsUtil {
      * @param param the function parameter
      */
     public static native void callNamedFunctionWithString(String name, String param) /*-{
-        var w = $wnd;
-        w[name](param);
-    }-*/;
+                                                                                     var w = $wnd;
+                                                                                     w[name](param);
+                                                                                     }-*/;
 
     /**
      * Calls a JS function with a string parameter.<p>
@@ -61,15 +61,15 @@ public final class CmsJsUtil {
      * @param param the string parameter
      */
     public static native void callWithString(JavaScriptObject func, String param) /*-{
-        func(param);
-    }-*/;
+                                                                                  func(param);
+                                                                                  }-*/;
 
     /**
      * Closes the browser window.
      */
     public static native void closeWindow() /*-{
-        $wnd.close();
-    }-*/;
+                                            $wnd.close();
+                                            }-*/;
 
     /**
      * Reads an attribute from a Javascript object.<p>
@@ -79,8 +79,8 @@ public final class CmsJsUtil {
      * @return the value of the attribute
      */
     public static native JavaScriptObject getAttribute(JavaScriptObject jso, String attr) /*-{
-        return jso[attr];
-    }-*/;
+                                                                                          return jso[attr];
+                                                                                          }-*/;
 
     /**
      * Gets the current window as a Javascript object.<p>
@@ -88,9 +88,9 @@ public final class CmsJsUtil {
      * @return the current window
      */
     public static native JavaScriptObject getWindow() /*-{
-        var result = $wnd;
-        return result;
-    }-*/;
+                                                      var result = $wnd;
+                                                      return result;
+                                                      }-*/;
 
     /**
      * Sets an attribute of the given Javascript object to a new value.<p>
@@ -100,8 +100,8 @@ public final class CmsJsUtil {
      * @param newValue the new attribute value
      */
     public static native void setAttribute(JavaScriptObject jso, String attr, JavaScriptObject newValue) /*-{
-        jso[attr] = newValue;
-    }-*/;
+                                                                                                         jso[attr] = newValue;
+                                                                                                         }-*/;
 
     /**
      * Wraps a native JavaScript callback taking a string argument into an AsyncCallback so that it can easily be called from GWT Java code.<p>

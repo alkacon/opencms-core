@@ -57,12 +57,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BUTTON_CLOSE_DIALOG_0 = "GUI_BUTTON_CLOSE_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATAVIEW_QUERY_0 = "GUI_DATAVIEW_QUERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATAVIEW_FILTERS_0 = "GUI_DATAVIEW_FILTERS_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0 = "GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -70,9 +64,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGE_PW_FIELD1_0 = "GUI_CHANGE_PW_FIELD1_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_CONFIRM_UNLINK_0 = "GUI_LOCALECOMPARE_CONFIRM_UNLINK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGE_PW_FIELD2_0 = "GUI_CHANGE_PW_FIELD2_0";
@@ -115,6 +106,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYPAGE_SHOWSITEMAP_0 = "GUI_COPYPAGE_SHOWSITEMAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATAVIEW_FILTERS_0 = "GUI_DATAVIEW_FILTERS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATAVIEW_HEADER_0 = "GUI_DATAVIEW_HEADER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATAVIEW_QUERY_0 = "GUI_DATAVIEW_QUERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATAVIEW_RESULTS_3 = "GUI_DATAVIEW_RESULTS_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATAVIEW_SEARCH_0 = "GUI_DATAVIEW_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOGTITLE_COPYMOVE_0 = "GUI_DIALOGTITLE_COPYMOVE_0";
@@ -232,6 +238,45 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INVALID_DATE_FORMAT_0 = "GUI_INVALID_DATE_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_ADD_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_ADD_DONT_TRANSLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_CANNOT_SWITCH_COMPARISON_LOCALE_0 = "GUI_LOCALECOMPARE_CANNOT_SWITCH_COMPARISON_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_COMPARISON_LOCALE_0 = "GUI_LOCALECOMPARE_COMPARISON_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_CONFIRM_UNLINK_0 = "GUI_LOCALECOMPARE_CONFIRM_UNLINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_DONT_TRANSLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0 = "GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_MAIN_LOCALE_0 = "GUI_LOCALECOMPARE_MAIN_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_MODE_LOCALES_0 = "GUI_LOCALECOMPARE_MODE_LOCALES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_MODE_SITES_0 = "GUI_LOCALECOMPARE_MODE_SITES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_SHOW_LOCALE_0 = "GUI_LOCALECOMPARE_SHOW_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_SHOW_WRONGSITE_1 = "GUI_LOCALECOMPARE_SHOW_WRONGSITE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0 = "GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_DIALOG_TITLE_0 = "GUI_LOCK_DIALOG_TITLE_0";
@@ -440,56 +485,11 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ALL_0 = "GUI_VIEW_ALL_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_ADD_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_ADD_DONT_TRANSLATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_COMPARISON_LOCALE_0 = "GUI_LOCALECOMPARE_COMPARISON_LOCALE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_DONT_TRANSLATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0 = "GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0 = "GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_MAIN_LOCALE_0 = "GUI_LOCALECOMPARE_MAIN_LOCALE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_MODE_LOCALES_0 = "GUI_LOCALECOMPARE_MODE_LOCALES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_MODE_SITES_0 = "GUI_LOCALECOMPARE_MODE_SITES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_SHOW_LOCALE_0 = "GUI_LOCALECOMPARE_SHOW_LOCALE_0";
-
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATAVIEW_HEADER_0 = "GUI_DATAVIEW_HEADER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATAVIEW_RESULTS_3 = "GUI_DATAVIEW_RESULTS_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATAVIEW_SEARCH_0 = "GUI_DATAVIEW_SEARCH_0";
-    
-    /** Message constant for key in the resource bundle. */ 
-    public static final String GUI_LOCALECOMPARE_CANNOT_SWITCH_COMPARISON_LOCALE_0 = "GUI_LOCALECOMPARE_CANNOT_SWITCH_COMPARISON_LOCALE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCALECOMPARE_SHOW_WRONGSITE_1 = "GUI_LOCALECOMPARE_SHOW_WRONGSITE_1";
 
     /**
      * Hides the public constructor for this utility class.<p>

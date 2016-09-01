@@ -50,18 +50,18 @@ public class CmsSitemapData implements IsSerializable {
     public enum EditorMode {
         /** The categories mode. */
         categories,
+        /** Locale comparison mode. */
+        compareLocales,
         /** The galleries mode. */
         galleries,
         /** The model page mode. */
         modelpages,
+
         /** The navigation mode. */
         navigation,
 
         /** The VFS mode. */
-        vfs,
-
-        /** Locale comparison mode. */
-        compareLocales;
+        vfs;
     }
 
     /** Name of the used js variable. */
@@ -115,6 +115,9 @@ public class CmsSitemapData implements IsSerializable {
     /** A flag which indicates whether the site which contains the sitemap is a secure site. */
     private boolean m_isSecure;
 
+    /** Flag which controls if the 'locale compare mode' should be available. */
+    private boolean m_localeComparisonEnabled;
+
     /** The maximum sitemap depth. */
     private int m_maxDepth;
 
@@ -151,6 +154,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap root. */
     private CmsClientSitemapEntry m_root;
 
+    /** The show model edit confirm dialog flag. */
+    private boolean m_showModelEditConfirm;
+
     /** The list info beans for possible sitemap folder types. */
     private List<CmsListInfoBean> m_sitemapFolderTypeInfos;
 
@@ -162,12 +168,6 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
-
-    /** The show model edit confirm dialog flag. */
-    private boolean m_showModelEditConfirm;
-
-    /** Flag which controls if the 'locale compare mode' should be available. */
-    private boolean m_localeComparisonEnabled;
 
     /**
      * Constructor.<p>

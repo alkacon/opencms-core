@@ -67,6 +67,8 @@ public class CmsSiteBean {
     /** The original site. */
     private CmsSite m_originalSite;
 
+    private Map<String, String> m_parameters = new LinkedHashMap<String, String>();
+
     /** The port (e.g. 8080) which is required to access this site. */
     private int m_port;
 
@@ -96,8 +98,6 @@ public class CmsSiteBean {
 
     /** The title of this site. */
     private String m_title;
-
-    private Map<String, String> m_parameters = new LinkedHashMap<String, String>();
 
     /** Indicates whether this site should be considered when writing the web server configuration. */
     private boolean m_webserver = true;

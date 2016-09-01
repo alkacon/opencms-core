@@ -184,8 +184,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** Text metrics key. */
     private static final String TM_SITEMAP = "Sitemap";
 
-    private FlowPanel m_headerContainer;
-
     /** The displayed sitemap tree. */
     protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
 
@@ -207,8 +205,14 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** The gallery type items by type name. */
     private Map<String, CmsGalleryTreeItem> m_galleryTypeItems;
 
+    private CmsInfoHeader m_header;
+
+    private FlowPanel m_headerContainer;
+
     /** Style variable which keeps track of whether we are in VFS mode or navigation mode. */
     private CmsStyleVariable m_inNavigationStyle;
+
+    private FlowPanel m_localeComparison = new FlowPanel();
 
     /** The model group pages root entry. */
     private CmsModelPageTreeItem m_modelGroupRoot;
@@ -231,10 +235,10 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** The tree open handler. */
     private TreeOpenHandler m_openHandler;
 
+    private FlowPanel m_page;
+
     /** The parent model page root. */
     private CmsModelPageTreeItem m_parentModelPageRoot;
-
-    private FlowPanel m_localeComparison = new FlowPanel();
 
     /** The parent model page entries. */
     private Map<CmsUUID, CmsModelPageTreeItem> m_parentModelPageTreeItems = new HashMap<CmsUUID, CmsModelPageTreeItem>();
@@ -244,10 +248,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
     /** The registered tree items. */
     private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
-
-    private CmsInfoHeader m_header;
-
-    private FlowPanel m_page;
 
     /**
      * Returns the instance.<p>
@@ -1658,8 +1658,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      * Initializes the Vaadin part of the sitemap editor.<p>
      */
     private native void initVaadin() /*-{
-        $wnd.initVaadin();
-    }-*/;
+                                     $wnd.initVaadin();
+                                     }-*/;
 
     /**
      * Checks if the given entry represents the last opened page.<p>

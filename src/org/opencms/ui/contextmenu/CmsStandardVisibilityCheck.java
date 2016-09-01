@@ -91,6 +91,13 @@ import com.google.common.collect.Sets;
  */
 public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck {
 
+    /** Default visibility check for 'edit-like' operations on folders. */
+    public static final CmsStandardVisibilityCheck COPY_PAGE = new CmsStandardVisibilityCheck(
+        roleeditor,
+        notonline,
+        notdeleted,
+        pagefolder);
+
     /** Default visibility check for 'edit-like' operations on resources. */
     public static final CmsStandardVisibilityCheck DEFAULT = new CmsStandardVisibilityCheck(
         roleeditor,
@@ -98,6 +105,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notdeleted,
         writepermisssion,
         inproject);
+
+    public static final I_CmsHasMenuItemVisibility DEFAULT_DEFAULTFILE = new CmsStandardVisibilityCheck(
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        inproject,
+        defaultfile);
 
     /** Default visibility check for 'edit-like' operations on folders. */
     public static final CmsStandardVisibilityCheck DEFAULT_FOLDERS = new CmsStandardVisibilityCheck(
@@ -107,13 +122,6 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notdeleted,
         writepermisssion,
         inproject);
-
-    /** Default visibility check for 'edit-like' operations on folders. */
-    public static final CmsStandardVisibilityCheck COPY_PAGE = new CmsStandardVisibilityCheck(
-        roleeditor,
-        notonline,
-        notdeleted,
-        pagefolder);
 
     /** Like DEFAULT, but only active for files. */
     public static final CmsStandardVisibilityCheck EDIT = new CmsStandardVisibilityCheck(
@@ -230,14 +238,6 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStandardVisibilityCheck.class);
-
-    public static final I_CmsHasMenuItemVisibility DEFAULT_DEFAULTFILE = new CmsStandardVisibilityCheck(
-        roleeditor,
-        notonline,
-        notdeleted,
-        writepermisssion,
-        inproject,
-        defaultfile);
 
     /** The set of flags. */
     private Set<CmsVisibilityCheckFlag> m_flags = Sets.newHashSet();

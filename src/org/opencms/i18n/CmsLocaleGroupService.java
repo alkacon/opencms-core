@@ -81,17 +81,17 @@ public class CmsLocaleGroupService {
      * Enum representing whether two resources can be linked together in a locale group.<p>
      */
     public enum Status {
-        /** Resource linkable to locale group.*/
-        linkable,
-
         /** Resource already linked. */
         alreadyLinked,
 
-        /** Other reason that resource can't be linked to locale group. */
-        other,
+        /** Resource linkable to locale group.*/
+        linkable,
 
         /** Resource to link has a locale which is marked as 'do not translate' on the locale group. */
-        notranslation
+        notranslation,
+
+        /** Other reason that resource can't be linked to locale group. */
+        other
     }
 
     /** The logger instance for this class. */

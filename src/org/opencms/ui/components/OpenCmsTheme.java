@@ -184,6 +184,10 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String RESOURCE_INFO = "o-resource-info";
 
+    public static final String RESOURCE_INFO_DIRECTLINK = "o-resourceinfo-directlink";
+
+    public static final String RESOURCE_INFO_WEAK = "o-resourceinfo-weak";
+
     /** CSS style name. */
     public static final String RESPONSIVE = "o-responsive";
 
@@ -204,6 +208,8 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String SIMPLE_DRAG = "o-simple-drag";
+
+    public static final String SITEMAP_LOCALE_BAR = "o-sitemap-locale-bar";
 
     /** CSS style name. */
     public static final String STATE_CHANGED = "o-state-changed";
@@ -252,12 +258,6 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     protected static final String QUICK_LAUNCH = "o-quicklaunch";
-
-    public static final String RESOURCE_INFO_WEAK = "o-resourceinfo-weak";
-
-    public static final String RESOURCE_INFO_DIRECTLINK = "o-resourceinfo-directlink";
-
-    public static final String SITEMAP_LOCALE_BAR = "o-sitemap-locale-bar";
 
     /**
      * Hidden default constructor.

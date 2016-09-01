@@ -31,6 +31,11 @@ package org.opencms.ui.contextmenu;
  * Flag to control which visibility checks should be performed by CmsStandardVisibilityCheck.<p>
  */
 public enum CmsVisibilityCheckFlag {
+    /** Check that we have control permission. */
+    controlpermission,
+
+    defaultfile,
+
     /** Checks if resource is deleted. */
     deleted,
 
@@ -43,10 +48,11 @@ public enum CmsVisibilityCheckFlag {
     /** Checks if an editor is available. */
     haseditor,
 
+    /** Checks if a sourcecode editor is available. */
+    hassourcecodeeditor,
+
     /** Check that the resource is in the current project. */
     inproject,
-
-    defaultfile,
 
     /** Checks if resource is locked by current user. */
     mylock,
@@ -75,6 +81,9 @@ public enum CmsVisibilityCheckFlag {
     /** Checks if resource is locked by different user. */
     otherlock,
 
+    /** Folder with container page default file. */
+    pagefolder,
+
     /** Checks if resource is a pointer. */
     pointer,
 
@@ -87,9 +96,6 @@ public enum CmsVisibilityCheckFlag {
     /** Check editor rule. */
     roleeditor,
 
-    /** Folder with container page default file. */
-    pagefolder,
-
     /** Check workplace user role. */
     rolewpuser,
 
@@ -99,12 +105,6 @@ public enum CmsVisibilityCheckFlag {
     /** Check that we have write permission. */
     writepermisssion,
 
-    /** Check that we have control permission. */
-    controlpermission,
-
     /** Checks if resource is xml content. */
-    xml,
-
-    /** Checks if a sourcecode editor is available. */
-    hassourcecodeeditor;
+    xml;
 }

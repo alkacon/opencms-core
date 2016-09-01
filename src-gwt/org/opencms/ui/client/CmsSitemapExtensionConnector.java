@@ -96,11 +96,11 @@ public class CmsSitemapExtensionConnector extends AbstractExtensionConnector imp
      * Installs the native JavaScript functions used to access Vaadin functionality from the sitemap editor's GWT module.<p>
      */
     public native void installNativeFunctions() /*-{
-        var self = this;
-        $wnd.cmsOpenPageCopyDialog = function(id, callback) {
-            self.@org.opencms.ui.client.CmsSitemapExtensionConnector::openPageCopyDialog(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(id , callback);
-        }
-    }-*/;
+                                                var self = this;
+                                                $wnd.cmsOpenPageCopyDialog = function(id, callback) {
+                                                self.@org.opencms.ui.client.CmsSitemapExtensionConnector::openPageCopyDialog(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(id , callback);
+                                                }
+                                                }-*/;
 
     /**
      * Opens the page copy dialog.<p>

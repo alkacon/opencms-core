@@ -253,11 +253,11 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The UI instance. */
-    private CmsSitemapUI m_ui;
-
     /** The container for the locale comparison view. */
     private VerticalLayout m_localeCompareContainer;
+
+    /** The UI instance. */
+    private CmsSitemapUI m_ui;
 
     /**
      * Creates a new instance.<p>

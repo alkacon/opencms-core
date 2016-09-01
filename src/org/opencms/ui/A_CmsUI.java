@@ -69,14 +69,14 @@ public abstract class A_CmsUI extends UI {
     /** Serial version id. */
     private static final long serialVersionUID = 989182479322461838L;
 
+    /** UI attribute storage. */
+    private Map<String, Serializable> m_attributes;
+
     /** The display type at the time the UI was initialized. */
     private CmsDisplayType m_displayType;
 
     /** Extension used for opening new browser windows. */
     private CmsWindowExtension m_windowExtension;
-
-    /** UI attribute storage. */
-    private Map<String, Serializable> m_attributes;
 
     /**
      * Constructor.<p>
@@ -176,7 +176,6 @@ public abstract class A_CmsUI extends UI {
 
         return CmsRequestUtil.getParameters(getPage().getLocation());
     }
-
 
     /**
      * Returns the workplace settings.<p>

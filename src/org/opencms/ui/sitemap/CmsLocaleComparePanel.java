@@ -64,29 +64,29 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocaleCompareContext {
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLocaleComparePanel.class);
 
-    /** The current root of the tree. */
-    private CmsResource m_currentRoot;
+    /** The serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** The parent layout of the tree. */
     protected CssLayout m_treeContainer = new CssLayout();
-
-    /** Flag which is set while the user switches one of the locales. */
-    private boolean m_handlingLocaleChange;
-
-    /** The root locale (locale of the root resource). */
-    private Locale m_rootLocale;
 
     /** The selected comparison locale. */
     private Locale m_comparisonLocale;
 
     /** The comparison locale selector. */
     private ComboBox m_comparisonLocaleSelector;
+
+    /** The current root of the tree. */
+    private CmsResource m_currentRoot;
+
+    /** Flag which is set while the user switches one of the locales. */
+    private boolean m_handlingLocaleChange;
+
+    /** The root locale (locale of the root resource). */
+    private Locale m_rootLocale;
 
     /** The root locale selector. */
     private ComboBox m_rootLocaleSelector;

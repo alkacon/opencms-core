@@ -55,23 +55,23 @@ public class CmsSitemapTreeNodeData {
     /** The client sitemap entry. */
     private CmsClientSitemapEntry m_entry;
 
+    /** Indicates whether we have definitely no children. */
+    private boolean m_hasNoChildren = false;
+
+    /** Flag indicating whether the linked resource is directly linked. */
+    private boolean m_isDirectLink;
+
     /** The linked resource. */
     private CmsResource m_linkedResource;
+
+    /** String containing locales for which no translations should be provided, read from locale.notranslation property. */
+    private String m_noTranslation;
 
     /** The other locale. */
     private Locale m_otherLocale;
 
     /** The entry resource. */
     private CmsResource m_resource;
-
-    /** String containing locales for which no translations should be provided, read from locale.notranslation property. */
-    private String m_noTranslation;
-
-    /** Flag indicating whether the linked resource is directly linked. */
-    private boolean m_isDirectLink;
-
-    /** Indicates whether we have definitely no children. */
-    private boolean m_hasNoChildren = false;
 
     /**
      * Creates a new instance.<p>

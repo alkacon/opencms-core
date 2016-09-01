@@ -63,8 +63,6 @@ public final class CmsGwtConstants {
 
     }
 
-    public static final String ID_LOCALE_HEADER_CONTAINER = "locale-header-container";
-
     /** Context menu action id. */
     public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
 
@@ -76,6 +74,8 @@ public final class CmsGwtConstants {
 
     /** Context menu action id. */
     public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
+
+    public static final String CALLBACK_REFRESH_LOCALE_COMPARISON = "cmsRefreshLocaleComparison";
 
     /** CSS class name used for the DOM elements containing collector information. */
     public static final String CLASS_COLLECTOR_INFO = "cms-collector-info";
@@ -97,6 +97,10 @@ public final class CmsGwtConstants {
 
     /** A HTML comment that will cause the container page editor to reload the page if it is contained in HTML which is reloaded after the element or its settings have been edited. */
     public static final String FORMATTER_RELOAD_MARKER = "<!--FORMATTER_RELOAD_g3jf9o0n-->";
+
+    public static final String ID_LOCALE_COMPARISON = "cmsLocaleComparison";
+
+    public static final String ID_LOCALE_HEADER_CONTAINER = "locale-header-container";
 
     /** Parameter for the button left position. */
     public static final String PARAM_BUTTON_LEFT = "__buttonLeft";
@@ -136,10 +140,6 @@ public final class CmsGwtConstants {
 
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
-
-    public static final String ID_LOCALE_COMPARISON = "cmsLocaleComparison";
-
-    public static final String CALLBACK_REFRESH_LOCALE_COMPARISON = "cmsRefreshLocaleComparison";
 
     /**
      * Hide constructor.<p>

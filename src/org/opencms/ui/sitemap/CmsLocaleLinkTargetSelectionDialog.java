@@ -117,37 +117,37 @@ public class CmsLocaleLinkTargetSelectionDialog extends CmsSitemapFolderSelectDi
 
     }
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLocaleLinkTargetSelectionDialog.class);
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** The dialog context. */
     private I_CmsDialogContext m_context;
 
-    /** Button to switch to 'sites' mode. */
-    private Button m_siteModeButton = new Button(
-        CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_MODE_SITES_0));
-
-    /** Site selector data for 'sites' mode. */
-    private Container m_siteData;
-
-    /** Site selector data for 'locales' mode. */
-    private Container m_localeData = new IndexedContainer();
+    /** Last site/locale selection choices by mode. */
+    private Map<Mode, String> m_lastValue = Maps.newHashMap();
 
     /** The locale compare context. */
     private I_CmsLocaleCompareContext m_localeContext;
+
+    /** Site selector data for 'locales' mode. */
+    private Container m_localeData = new IndexedContainer();
 
     /** Button to switch to 'locales' mode. */
     private Button m_localeModeButton = new Button(
         CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_MODE_LOCALES_0));
 
-    /** Last site/locale selection choices by mode. */
-    private Map<Mode, String> m_lastValue = Maps.newHashMap();
-
     /** The current mode. */
     private Mode m_mode;
+
+    /** Site selector data for 'sites' mode. */
+    private Container m_siteData;
+
+    /** Button to switch to 'sites' mode. */
+    private Button m_siteModeButton = new Button(
+        CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_MODE_SITES_0));
 
     /**
      * Creates a new instance.<p>

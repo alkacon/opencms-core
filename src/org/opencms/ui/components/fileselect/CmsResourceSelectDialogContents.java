@@ -42,11 +42,11 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
     /** Panel for additional widgets to be displayed. */
     protected FormLayout m_additionalWidgets;
 
-    /** The site selector. */
-    private ComboBox m_siteSelector;
-
     /** The whole content. */
     private VerticalLayout m_container;
+
+    /** The site selector. */
+    private ComboBox m_siteSelector;
 
     /** Container for the tree component. */
     private VerticalLayout m_treeContainer;

@@ -58,11 +58,14 @@ import com.vaadin.ui.Label;
  */
 public class CmsUnlinkDialog extends CmsBasicDialog {
 
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUnlinkDialog.class);
+
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUnlinkDialog.class);
+    /** The cancel button. */
+    protected Button m_cancelButton;
 
     /** The dialog context. */
     protected I_CmsDialogContext m_context;
@@ -70,20 +73,17 @@ public class CmsUnlinkDialog extends CmsBasicDialog {
     /** The locale comparison context. */
     protected I_CmsLocaleCompareContext m_localeContext;
 
-    /** The other resource.*/
-    protected CmsResource m_otherResource;
+    /** The label with the confirmation message. */
+    protected Label m_messageLabel;
 
     /** The OK button. */
     protected Button m_okButton;
 
+    /** The other resource.*/
+    protected CmsResource m_otherResource;
+
     /** The container for the resource boxes. */
     protected HorizontalLayout m_resourceBoxContainer;
-
-    /** The label with the confirmation message. */
-    protected Label m_messageLabel;
-
-    /** The cancel button. */
-    protected Button m_cancelButton;
 
     /**
      * Creates a new instance.<p>

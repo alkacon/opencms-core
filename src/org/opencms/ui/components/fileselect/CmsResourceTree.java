@@ -58,12 +58,6 @@ public class CmsResourceTree extends Tree {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Predicate which can be used to prevent selection of a node (this means the select handler will not be called
-     * if this returns false, but the Vaadin selection mechanism will still mark it as selected.
-     */
-    private Predicate<Item> m_selectionFilter = Predicates.alwaysTrue();
-
     /** The CMS context. */
     private CmsObject m_cms;
 
@@ -75,6 +69,12 @@ public class CmsResourceTree extends Tree {
 
     /** The root resource. */
     private CmsResource m_root;
+
+    /**
+     * Predicate which can be used to prevent selection of a node (this means the select handler will not be called
+     * if this returns false, but the Vaadin selection mechanism will still mark it as selected.
+     */
+    private Predicate<Item> m_selectionFilter = Predicates.alwaysTrue();
 
     /**
      * Creates a new instance.<p>

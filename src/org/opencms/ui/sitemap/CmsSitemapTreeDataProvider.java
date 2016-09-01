@@ -62,13 +62,13 @@ public class CmsSitemapTreeDataProvider {
     /** The CMS context. */
     private CmsObject m_cms;
 
-    /** The resource at the root of the tree. */
-    private CmsResource m_root;
+    private Set<CmsUUID> m_foldersWithNoChildFolders;
 
     /** The locale context. */
     private I_CmsLocaleCompareContext m_localeContext;
 
-    private Set<CmsUUID> m_foldersWithNoChildFolders;
+    /** The resource at the root of the tree. */
+    private CmsResource m_root;
 
     /**
      * Creates a new instance.<p>

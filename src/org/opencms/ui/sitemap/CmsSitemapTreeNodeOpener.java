@@ -38,14 +38,14 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsSitemapTreeNodeOpener extends Button {
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** 'Minus' icon for the open state. */
     public static final String MINUS = new String(new int[] {FontOpenCms.TREE_MINUS.getCodepoint()}, 0, 1);
 
     /** 'Plus' icon for the closed state. */
     public static final String PLUS = new String(new int[] {FontOpenCms.TREE_PLUS.getCodepoint()}, 0, 1);
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a new instance.<p<

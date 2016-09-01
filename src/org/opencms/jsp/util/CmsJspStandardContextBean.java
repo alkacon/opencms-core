@@ -664,6 +664,9 @@ public final class CmsJspStandardContextBean {
     /** OpenCms user context. */
     protected CmsObject m_cms;
 
+    /** Lazily initialized map from a category path to the path's category object. */
+    private Map<String, CmsCategory> m_categories;
+
     /** The container the currently rendered element is part of. */
     private CmsContainerBean m_container;
 
@@ -694,6 +697,9 @@ public final class CmsJspStandardContextBean {
     /** Stores the edit mode info. */
     private Boolean m_isEditMode;
 
+    /** Lazily initialized map from the locale to the localized title property. */
+    private Map<String, String> m_localeTitles;
+
     /** The currently displayed container page. */
     private CmsContainerPageBean m_page;
 
@@ -703,29 +709,23 @@ public final class CmsJspStandardContextBean {
     /** The parent containers to the given element instance ids. */
     private Map<String, CmsContainerBean> m_parentContainers;
 
+    /** Lazily initialized map from a category path to all categories on that path. */
+    private Map<String, List<CmsCategory>> m_pathCategories;
+
     /** The current request. */
     private ServletRequest m_request;
+
+    /** Lazily initialized map from the root path of a resource to all categories assigned to the resource. */
+    private Map<String, CmsJspCategoryAccessBean> m_resourceCategories;
+
+    /** The resource wrapper for the current page. */
+    private CmsJspResourceWrapper m_resourceWrapper;
 
     /** The lazy initialized map for the detail pages. */
     private Map<String, String> m_typeDetailPage;
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
-
-    /** Lazily initialized map from a category path to the path's category object. */
-    private Map<String, CmsCategory> m_categories;
-
-    /** Lazily initialized map from a category path to all categories on that path. */
-    private Map<String, List<CmsCategory>> m_pathCategories;
-
-    /** Lazily initialized map from the root path of a resource to all categories assigned to the resource. */
-    private Map<String, CmsJspCategoryAccessBean> m_resourceCategories;
-
-    /** Lazily initialized map from the locale to the localized title property. */
-    private Map<String, String> m_localeTitles;
-
-    /** The resource wrapper for the current page. */
-    private CmsJspResourceWrapper m_resourceWrapper;
 
     /**
      * Creates an empty instance.<p>
