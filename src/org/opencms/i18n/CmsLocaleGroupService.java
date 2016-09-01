@@ -448,6 +448,14 @@ public class CmsLocaleGroupService {
         return site.getMainTranslationLocale(null);
     }
 
+    /**
+     * Reads the locale group of a default file.<p>
+     *
+     * @param resource a resource which might be a folder or a file
+     * @return the locale group corresponding to the default file
+     *
+     * @throws CmsException if something goes wrong
+     */
     public CmsLocaleGroup readDefaultFileLocaleGroup(CmsResource resource) throws CmsException {
 
         if (resource.isFolder()) {

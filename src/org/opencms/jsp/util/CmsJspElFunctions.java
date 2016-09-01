@@ -72,6 +72,7 @@ import com.google.common.collect.Maps;
  */
 public final class CmsJspElFunctions {
 
+    /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspElFunctions.class);
 
     /**
@@ -119,7 +120,8 @@ public final class CmsJspElFunctions {
                     result.getRequestContext().setSiteRoot(
                         OpenCms.getSiteManager().matchRequest((HttpServletRequest)req).getSiteRoot());
                 }
-            } catch (@SuppressWarnings("unused") CmsException e) {
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
                 result = null;
             }
         }
@@ -132,7 +134,7 @@ public final class CmsJspElFunctions {
                     result.getRequestContext().setSiteRoot(
                         OpenCms.getSiteManager().matchRequest((HttpServletRequest)req).getSiteRoot());
                 }
-            } catch (@SuppressWarnings("unused") CmsException e1) {
+            } catch (CmsException e1) {
                 // this should never fail since we can always create a "Guest" user
             }
         }
@@ -169,11 +171,11 @@ public final class CmsJspElFunctions {
                 // treat the input as a String
                 long l = Long.parseLong(str);
                 result = new Date(l);
-            } catch (@SuppressWarnings("unused") NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 try {
                     // try to parse String as a Date
                     result = DateFormat.getDateInstance().parse(str);
-                } catch (@SuppressWarnings("unused") ParseException e1) {
+                } catch (ParseException e1) {
                     result = null;
                 }
                 if (result == null) {
@@ -199,7 +201,7 @@ public final class CmsJspElFunctions {
         for (Object item : input) {
             try {
                 result.add(PropertyUtils.getProperty(item, attributeName));
-            } catch (@SuppressWarnings("unused") Exception e) {
+            } catch (Exception e) {
                 // specified attribute is not implemented, return empty list
                 return Collections.emptyList();
             }

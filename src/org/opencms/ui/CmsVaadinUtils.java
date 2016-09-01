@@ -178,6 +178,13 @@ public final class CmsVaadinUtils {
 
     }
 
+    /**
+     * Builds a container for use in combo boxes from a map of key/value pairs, where the keys are options and the values are captions.<p>
+     *
+     * @param captionProperty the property name to use for captions
+     * @param map the map
+     * @return the new container
+     */
     public static IndexedContainer buildContainerFromMap(String captionProperty, Map<String, String> map) {
 
         IndexedContainer container = new IndexedContainer();
@@ -633,7 +640,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

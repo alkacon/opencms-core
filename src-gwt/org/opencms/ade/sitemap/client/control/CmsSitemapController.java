@@ -1267,6 +1267,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
         return m_hiddenProperties.contains(propertyName);
     }
 
+    /**
+     * Returns true if the locale comparison mode is enabled.<p>
+     *
+     * @return true if the locale comparison mode is enabled
+     */
     public boolean isLocaleComparisonEnabled() {
 
         return m_data.isLocaleComparisonEnabled();

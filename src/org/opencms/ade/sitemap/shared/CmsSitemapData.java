@@ -611,6 +611,11 @@ public class CmsSitemapData implements IsSerializable {
         return m_galleryManager;
     }
 
+    /**
+     * Returns true if the locale compare mode is enabled.<p>
+     *
+     * @return true if the locale compare mode is enabled
+     */
     public boolean isLocaleComparisonEnabled() {
 
         return m_localeComparisonEnabled;

@@ -143,6 +143,7 @@ public class CmsResourceTree extends Tree {
 
             private static final long serialVersionUID = 1L;
 
+            @SuppressWarnings("synthetic-access")
             public void itemClick(ItemClickEvent event) {
 
                 boolean canSelect = m_selectionFilter.apply(event.getItem());
@@ -203,6 +204,11 @@ public class CmsResourceTree extends Tree {
         m_resourceSelectionHandlers.remove(handler);
     }
 
+    /**
+     * Sets the selection filter, a predicate that, by returning false for an item, can veto a tree entry selection.<p>
+     *
+     * @param selectionFilter the selection filter
+     */
     public void setSelectionFilter(Predicate<Item> selectionFilter) {
 
         m_selectionFilter = selectionFilter;

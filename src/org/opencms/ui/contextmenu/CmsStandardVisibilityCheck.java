@@ -106,6 +106,9 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         writepermisssion,
         inproject);
 
+    /**
+     * Check for operations which need a default file.<p>
+     */
     public static final I_CmsHasMenuItemVisibility DEFAULT_DEFAULTFILE = new CmsStandardVisibilityCheck(
         roleeditor,
         notonline,
@@ -312,8 +315,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 }
                 try {
                     CmsResource parentFolder = cms.readParentFolder(resource.getStructureId());
-                    CmsResource defaultfile = cms.readDefaultFile(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
-                    if ((defaultfile == null) || !(defaultfile.getStructureId().equals(resource.getStructureId()))) {
+                    CmsResource defaultFile = cms.readDefaultFile(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    if ((defaultFile == null) || !(defaultFile.getStructureId().equals(resource.getStructureId()))) {
                         return VISIBILITY_INVISIBLE;
                     }
                 } catch (CmsException e) {

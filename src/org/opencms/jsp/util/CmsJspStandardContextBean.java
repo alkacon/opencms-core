@@ -1321,7 +1321,7 @@ public final class CmsJspStandardContextBean {
                         } else if (inputLocale instanceof String) {
                             try {
                                 locale = LocaleUtils.toLocale((String)inputLocale);
-                            } catch (@SuppressWarnings("unused") IllegalArgumentException | NullPointerException e) {
+                            } catch (IllegalArgumentException | NullPointerException e) {
                                 // do nothing, just go on without locale
                             }
                         }

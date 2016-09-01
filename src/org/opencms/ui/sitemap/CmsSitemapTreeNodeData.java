@@ -50,13 +50,14 @@ import org.apache.commons.logging.Log;
 public class CmsSitemapTreeNodeData {
 
     /** The log instance for this class. */
+    @SuppressWarnings("unused")
     private static final Log LOG = CmsLog.getLog(CmsSitemapTreeNodeData.class);
 
     /** The client sitemap entry. */
     private CmsClientSitemapEntry m_entry;
 
     /** Indicates whether we have definitely no children. */
-    private boolean m_hasNoChildren = false;
+    private boolean m_hasNoChildren;
 
     /** Flag indicating whether the linked resource is directly linked. */
     private boolean m_isDirectLink;
@@ -128,6 +129,8 @@ public class CmsSitemapTreeNodeData {
      * Initializes the bean.<p>
      *
      * @param cms the CMS context to use
+     *
+     * @throws CmsException if something goes wrong
      */
     public void initialize(CmsObject cms) throws CmsException {
 

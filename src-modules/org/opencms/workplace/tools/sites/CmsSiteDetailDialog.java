@@ -191,7 +191,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 // take the existing site and do not perform any OU related actions
                 siteRootResource = cms.readResource(siteRoot);
                 sitePath = cms.getSitePath(siteRootResource);
-            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+            } catch (CmsVfsResourceNotFoundException e) {
                 // not create a new site folder and the according OU if option is checked checked
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(
                     CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP);
@@ -506,7 +506,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                             + OpenCms.getLinkManager().getOnlineLink(clone, m_site.getFavicon())
                             + "' border='0' width='16' height='16' />");
                     addWidget(new CmsWidgetDialogParameter(m_site, "favicon", PAGES[0], dis));
-                } catch (@SuppressWarnings("unused") Exception e) {
+                } catch (Exception e) {
                     // noop
                 }
             }
@@ -548,7 +548,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                             + OpenCms.getLinkManager().getOnlineLink(clone, m_site.getFavicon())
                             + "' border='0' width='16' height='16' />");
                     addWidget(new CmsWidgetDialogParameter(m_site, "favicon", PAGES[0], dis));
-                } catch (@SuppressWarnings("unused") Exception e) {
+                } catch (Exception e) {
                     // noop
                 }
             }
@@ -622,7 +622,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         if (sites.size() > 0) {
             try {
                 maxValue = sites.get(0).getPosition();
-            } catch (@SuppressWarnings("unused") Exception e) {
+            } catch (Exception e) {
                 // should usually never happen
             }
         }
@@ -813,7 +813,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         } else {
             try {
                 getToolManager().jspForwardTool(this, "/sites", new HashMap<String, String[]>());
-            } catch (@SuppressWarnings("unused") Exception e) {
+            } catch (Exception e) {
                 // noop
             }
         }
@@ -828,7 +828,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             if (clone.existsResource(iconPath)) {
                 m_site.setFavicon(iconPath);
             }
-        } catch (@SuppressWarnings("unused") Throwable t) {
+        } catch (Throwable t) {
             // noop
         }
 

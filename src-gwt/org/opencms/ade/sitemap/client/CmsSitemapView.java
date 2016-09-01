@@ -205,13 +205,16 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** The gallery type items by type name. */
     private Map<String, CmsGalleryTreeItem> m_galleryTypeItems;
 
+    /** The header. */
     private CmsInfoHeader m_header;
 
+    /** The header container. */
     private FlowPanel m_headerContainer;
 
     /** Style variable which keeps track of whether we are in VFS mode or navigation mode. */
     private CmsStyleVariable m_inNavigationStyle;
 
+    /** The locale comparison view. */
     private FlowPanel m_localeComparison = new FlowPanel();
 
     /** The model group pages root entry. */
@@ -235,6 +238,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** The tree open handler. */
     private TreeOpenHandler m_openHandler;
 
+    /** The page. */
     private FlowPanel m_page;
 
     /** The parent model page root. */
@@ -1184,7 +1188,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         if (editorMode != m_editorMode) {
             m_editorMode = editorMode;
             m_controller.setEditorModeInSession(m_editorMode);
-            int i = 0;
             switch (m_editorMode) {
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
@@ -1274,6 +1277,11 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         }
     }
 
+    /**
+     * Sets the visibility of the normal siteamp header (the header can be hidden so that the Vaadin code can display its own header).<p>
+     *
+     * @param visible true if the normal header should be visible
+     */
     public void setHeaderVisible(boolean visible) {
 
         String style = I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().headerContainerVaadinMode();
@@ -1658,8 +1666,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      * Initializes the Vaadin part of the sitemap editor.<p>
      */
     private native void initVaadin() /*-{
-                                     $wnd.initVaadin();
-                                     }-*/;
+        $wnd.initVaadin();
+    }-*/;
 
     /**
      * Checks if the given entry represents the last opened page.<p>

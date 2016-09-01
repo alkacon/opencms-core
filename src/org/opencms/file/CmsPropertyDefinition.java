@@ -155,6 +155,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE = "locale";
 
+    /** Property for the 'do not translate' marking in the sitemap editor. */
     public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
 
     /** Property for the login form. */
@@ -190,6 +191,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property to boost certain search results. */
     public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";
 
+    /** Property for secondary locales for use in the locale compare view in the sitemap editor. */
     public static final String PROPERTY_SECONDARY_LOCALES = "locale.secondary";
 
     /** Property for the secure transmission of resources. */

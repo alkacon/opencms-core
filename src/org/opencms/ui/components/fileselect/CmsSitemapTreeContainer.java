@@ -70,6 +70,13 @@ public class CmsSitemapTreeContainer extends CmsResourceTreeContainer {
         super();
     }
 
+    /**
+     * Gets the resource icon for a resource for use in a CmsResourceInfo widget when used in a sitemap context.<p>
+     *
+     * @param cms the CMS context
+     * @param resource a resource
+     * @return the path for the resource icon
+     */
     public static String getSitemapResourceIcon(CmsObject cms, CmsResource resource) {
 
         CmsResource defaultFile = null;

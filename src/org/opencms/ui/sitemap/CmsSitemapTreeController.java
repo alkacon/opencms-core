@@ -147,6 +147,7 @@ public class CmsSitemapTreeController {
         /**
          * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.Collection)
          */
+        @SuppressWarnings("synthetic-access")
         public void finish(Collection<CmsUUID> result) {
 
             closeWindow();
@@ -219,7 +220,7 @@ public class CmsSitemapTreeController {
          */
         public void reload() {
 
-            // TODO Auto-generated method stub
+            // do nothing
 
         }
 
@@ -258,6 +259,7 @@ public class CmsSitemapTreeController {
     /** Map of already loaded nodes. */
     private IdentityHashMap<CmsSitemapTreeNode, Void> m_alreadyLoaded = new IdentityHashMap<>();
 
+    /** Current root node widget. */
     private CmsSitemapTreeNode m_currentRootNode;
 
     /** The locale context. */
@@ -571,6 +573,11 @@ public class CmsSitemapTreeController {
         }
     }
 
+    /**
+     * Gets the logger for the tree controller.<p>
+     *
+     * @return the logger
+     */
     Log getTreeControllerLog() {
 
         return LOG;
@@ -804,6 +811,7 @@ public class CmsSitemapTreeController {
      * Opens the page corresponding to a sitemap entry.<p>
      *
      * @param nodeData the node bean
+     * @param second true if the user has clicked on the second resource box in a tree node
      */
     private void openTargetPage(CmsSitemapTreeNodeData nodeData, boolean second) {
 
@@ -827,7 +835,6 @@ public class CmsSitemapTreeController {
             final boolean sameSite = mySiteRoot.equals(OpenCms.getSiteManager().getSiteRoot(resource.getRootPath()));
 
             if (sameSite) {
-                CmsObject cms = A_CmsUI.getCmsObject();
                 A_CmsUI.get().getPage().setLocation(link);
             } else {
                 String message = CmsVaadinUtils.getMessageText(

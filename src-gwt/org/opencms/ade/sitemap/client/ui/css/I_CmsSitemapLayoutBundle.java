@@ -65,10 +65,22 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
     /** Root CSS. */
     interface I_CmsSitemapCss extends CssResource {
 
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
         String headerContainer();
 
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
         String headerContainerVaadinMode();
 
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
         String hiddenHeader();
 
         /** Access method.<p>

@@ -33,7 +33,7 @@ import org.opencms.util.CmsStringUtil;
 /**
  * Contains the CSS style name constants used within the theme.<p>
  */
-public class OpenCmsTheme {
+public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String APP_BUTTON = "o-app-button";
@@ -47,6 +47,7 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String APP_INFO = "o-app-info";
 
+    /** CSS style name. */
     public static final String BUTTON_BLUE = "o-button-blue";
 
     /** CSS style name. */
@@ -184,8 +185,10 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String RESOURCE_INFO = "o-resource-info";
 
+    /** CSS style name. */
     public static final String RESOURCE_INFO_DIRECTLINK = "o-resourceinfo-directlink";
 
+    /** CSS style name. */
     public static final String RESOURCE_INFO_WEAK = "o-resourceinfo-weak";
 
     /** CSS style name. */
@@ -209,6 +212,7 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String SIMPLE_DRAG = "o-simple-drag";
 
+    /** CSS style name. */
     public static final String SITEMAP_LOCALE_BAR = "o-sitemap-locale-bar";
 
     /** CSS style name. */

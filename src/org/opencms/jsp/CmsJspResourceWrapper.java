@@ -42,16 +42,33 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
 
+/**
+ * Wrapper subclass of CmsResource with some convenience methods.<p>
+ */
 public class CmsJspResourceWrapper extends CmsResource {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** Logger instance for this class. */
+    @SuppressWarnings("unused")
     private static final Log LOG = CmsLog.getLog(CmsJspResourceWrapper.class);
 
+    /** The CMS context. */
     private CmsObject m_cms;
 
+    /** The set of locale variants. */
     private Map<String, CmsJspResourceWrapper> m_localeResources;
 
+    /** The main locale. */
     private Locale m_mainLocale;
 
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param cms the current CMS context
+     * @param res the resource to wrap
+     */
     public CmsJspResourceWrapper(CmsObject cms, CmsResource res) {
         super(
             res.getStructureId(),
@@ -75,6 +92,11 @@ public class CmsJspResourceWrapper extends CmsResource {
         m_cms = cms;
     }
 
+    /**
+     * Gets a link to the resource.<p>
+     *
+     * @return the link
+     */
     public String getLink() {
 
         return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
@@ -82,6 +104,11 @@ public class CmsJspResourceWrapper extends CmsResource {
             m_cms.getRequestContext().getSitePath(this));
     }
 
+    /**
+     * Gets a map of the locale group for the current resource, with locale strings as keys.<p>
+     *
+     * @return a map with locale strings as keys and resource wrappers for the corresponding locale variants
+     */
     public Map<String, CmsJspResourceWrapper> getLocaleResource() {
 
         if (m_localeResources != null) {
@@ -101,6 +128,11 @@ public class CmsJspResourceWrapper extends CmsResource {
         }
     }
 
+    /**
+     * Gets the main locale for this resource.<p>
+     *
+     * @return the main locale for this resource
+     */
     public Locale getMainLocale() {
 
         if (m_mainLocale != null) {

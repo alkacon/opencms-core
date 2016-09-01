@@ -100,6 +100,7 @@ public class CmsResourceInfo extends CustomLayout {
      * Constructor.<p>
      *
      * @param resource the resource
+     * @param useState true if the resource state should be displayed
      */
     public CmsResourceInfo(CmsResource resource, boolean useState) {
         this();
@@ -134,14 +135,20 @@ public class CmsResourceInfo extends CustomLayout {
 
     }
 
+    /**
+     * Creates a resource info widget for a resource that looks like the sitemap entry for that resource.<p>
+     *
+     * @param resource the resource
+     * @param baseSite the base site
+     *
+     * @return the resource info widget
+     */
     public static CmsResourceInfo createSitemapResourceInfo(CmsResource resource, CmsSite baseSite) {
 
         CmsResourceInfo info = new CmsResourceInfo();
         Locale locale = A_CmsUI.get().getLocale();
         CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
         resUtil.setAbbrevLength(100);
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         info.getTopLine().setValue(resUtil.getGalleryTitle(locale));
         String path = resource.getRootPath();
         if (baseSite != null) {
@@ -157,6 +164,11 @@ public class CmsResourceInfo extends CustomLayout {
         return info;
     }
 
+    /**
+     * Gets the bottom label.<p>
+     *
+     * @return the bottom label
+     */
     public Label getBottomLine() {
 
         return m_bottomText;
@@ -172,11 +184,21 @@ public class CmsResourceInfo extends CustomLayout {
         return m_buttonLabel;
     }
 
+    /**
+     * Gets the resource icon.<p>
+     *
+     * @return the resource icon
+     */
     public CmsResourceIcon getResourceIcon() {
 
         return m_icon;
     }
 
+    /**
+     * Gets the top label.<p>
+     *
+     * @return the top label
+     */
     public Label getTopLine() {
 
         return m_topText;
@@ -191,10 +213,6 @@ public class CmsResourceInfo extends CustomLayout {
 
         Component oldComponent = getComponent("buttonContainer");
         replaceComponent(oldComponent, button);
-    }
-
-    public void setIconClickHandler(Runnable handler) {
-
     }
 
 }

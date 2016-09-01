@@ -67,6 +67,7 @@ public class CmsSiteBean {
     /** The original site. */
     private CmsSite m_originalSite;
 
+    /** The parameters. */
     private Map<String, String> m_parameters = new LinkedHashMap<String, String>();
 
     /** The port (e.g. 8080) which is required to access this site. */
@@ -225,6 +226,11 @@ public class CmsSiteBean {
         return m_originalSite;
     }
 
+    /**
+     * Gets the parameters.<p>
+     *
+     * @return the site parameters
+     */
     public Map<String, String> getParameters() {
 
         return m_parameters;
@@ -434,6 +440,11 @@ public class CmsSiteBean {
         m_favicon = favicon;
     }
 
+    /**
+     * Sets the parameters.<p>
+     *
+     * @param params the parameters
+     */
     public void setParameters(Map<String, String> params) {
 
         m_parameters = params;

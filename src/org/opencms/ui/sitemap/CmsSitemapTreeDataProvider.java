@@ -62,6 +62,7 @@ public class CmsSitemapTreeDataProvider {
     /** The CMS context. */
     private CmsObject m_cms;
 
+    /** Cached set of ids of folders without child folders, used for rendering the tree. */
     private Set<CmsUUID> m_foldersWithNoChildFolders;
 
     /** The locale context. */
@@ -96,7 +97,6 @@ public class CmsSitemapTreeDataProvider {
             CmsResource lastFolder = null;
             Set<CmsUUID> foldersWithNoChildFolders = Sets.newHashSet();
             for (CmsResource folder : folders) {
-                String currentPath = folder.getRootPath();
                 if ((lastFolder != null)
                     && !(CmsStringUtil.isPrefixPath(lastFolder.getRootPath(), folder.getRootPath()))) {
                     foldersWithNoChildFolders.add(lastFolder.getStructureId());
@@ -212,6 +212,8 @@ public class CmsSitemapTreeDataProvider {
      * Gets the sitemap service.<p>
      *
      * @return the sitemap service
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsVfsSitemapService getSitemapService() throws CmsException {
 

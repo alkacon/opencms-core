@@ -39,6 +39,9 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsResourceSelectDialogContents extends CmsBasicDialog {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
     /** Panel for additional widgets to be displayed. */
     protected FormLayout m_additionalWidgets;
 
@@ -51,6 +54,9 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
     /** Container for the tree component. */
     private VerticalLayout m_treeContainer;
 
+    /**
+     * Creates a new widget instance.<p>
+     */
     public CmsResourceSelectDialogContents() {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 

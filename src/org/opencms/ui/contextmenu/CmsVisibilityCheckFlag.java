@@ -34,6 +34,7 @@ public enum CmsVisibilityCheckFlag {
     /** Check that we have control permission. */
     controlpermission,
 
+    /** Check that resource is a defaultfile. */
     defaultfile,
 
     /** Checks if resource is deleted. */
