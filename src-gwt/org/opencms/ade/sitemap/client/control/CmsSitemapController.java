@@ -1267,6 +1267,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
         return m_hiddenProperties.contains(propertyName);
     }
 
+    public boolean isLocaleComparisonEnabled() {
+
+        return m_data.isLocaleComparisonEnabled();
+    }
+
     /**
      * Checks if the given site path is the sitemap root.<p>
      *

@@ -34,6 +34,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -289,7 +290,7 @@ public final class CmsJspElFunctions {
             // input seems not really to make sense, try to use it like a String
             result = cms.readResource(String.valueOf(input));
         }
-        return result;
+        return new CmsJspResourceWrapper(cms, result);
     }
 
     /**

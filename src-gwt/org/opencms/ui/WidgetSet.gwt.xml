@@ -2,7 +2,7 @@
 	<!-- Inherit the default widget set -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 	<inherits name="com.google.gwt.logging.Logging"/>
-	<set-property name="gwt.logging.logLevel" value="WARNING"/>   
+	<set-property name="gwt.logging.logLevel" value="INFO"/>   
 
 	<inherits name="org.opencms.GwtBaseCommon" />
 	<inherits name="org.opencms.ade.publish.PublishDialogCommon" />
@@ -11,7 +11,6 @@
 	<stylesheet src="../../../resources/css/toolbar.css"/>
 	<entry-point class="org.opencms.ui.client.CmsWidgetSetEntryPoint" />
 	<set-property name="vaadin.profiler" value="true" />
-
 	<source path="client" />
 	<source path="shared" />
 	<super-source path="client/super_src/" /> 
@@ -28,5 +27,9 @@
     </replace-with>
     <replace-with class="org.opencms.ui.client.CmsVPopupView">
     	<when-type-is class="com.vaadin.client.ui.VPopupView" />
+    </replace-with>
+    
+    <replace-with class="org.opencms.ui.client.CmsRpcManager">
+    	<when-type-is class="com.vaadin.client.communication.RpcManager" />
     </replace-with>
 </module>

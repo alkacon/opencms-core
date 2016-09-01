@@ -368,6 +368,10 @@
 	}
 	
 	
+	.o-resourceinfo-directlink .o-resinfo2 {
+		 @include linear-gradient(to bottom, $v-app-background-color 0%, $v-app-background-color 48%, #acd 70%, #adf 100%);
+	}
+		
 	
 	.o-resinfo2 {
 		 border: 1px solid #ccc; 
@@ -402,6 +406,19 @@
 		  font-size: 12px;
 		}
 		
+		.o-resourceinfo-toolbar {
+			visibility: hidden; 
+			color: $v-font-color; 
+		}
+		
+		.o-resourceinfo-toolbar * {
+			font-size: 24px !important;
+		}
+		
+		&:hover .o-resourceinfo-toolbar { 
+			visibility: visible !important; 
+		}
+		
 		.o-resinfo-lines {
 			overflow: hidden;
 			flex: 1;
@@ -413,6 +430,12 @@
 			margin-top: 8px;
 			margin-right: 10px;
 		}
+		
+	 }
+	 
+	 .o-resourceinfo-weak .o-resinfo2 {
+	 	opacity: 0.4;
+	  
 	 } 
 	 		
 	.o-resinfo2:hover .o-resinfo-hidden-icon {
@@ -423,6 +446,41 @@
     	cursor:pointer;
     }
     
+    .v-menubar-menuitem-o-sitemap-notranslation {
+      &, & * { 
+      	visibility: visible !important;
+      	color: orange !important; 
+      }
+    }
+    
+    
+    .o-sitemap-tree-node-content .v-menubar-menuitem {
+    	min-width: 24px !important;
+    	padding-left: 0px !important;
+    	padding-right: 0px !important;  
+    	&, & * { 
+    		font-size: 20px !important; 
+    	}
+    }
+    
+    .o-sitemap-tree-node-content .v-menubar {
+    	margin-right: 4px !important; 
+    }
+    
+    .o-sitemap-locale-bar { 
+    	.v-filterselect { 
+    		margin-right: 30px; 
+    	} 
+    	
+    	.v-caption {
+    		.v-captiontext {  
+    			vertical-align: middle;
+    		}
+    		margin-right: 10px; 
+    	}
+    }
+     
+    	
     
 	  
 	/* explorer bread crumb path input styles */
@@ -601,7 +659,66 @@
 	
 	.o-quicklaunch > .v-slot {
 		margin-bottom: 10px; 
-	}	
+	}
+	
+	
+	.o-sitemap-tree-node { 
+		display: flex;
+		margin-top: 2px;
+		
+		.o-sitemap-tree-node-right {
+			-ms-flex: 1; 
+			flex: 1; 
+		}
+		
+		.o-sitemap-tree-node-children { 
+			display: block;
+			padding-left: 4px;
+		}
+		
+		.v-button:focus:after { 
+			box-shadow: none;
+		}
+	
+		.o-sitemap-tree-opener {
+			margin-top: 10px;
+			color: #888888 !important;
+			&:hover { 
+				color: #474747 !important; 
+			} 
+		}
+	}
+	
+	.v-button.o-button-invisible { 
+		visibility: hidden; 
+	}
+	
+	
+	.v-tree-node-caption-o-locale-link-target-alredy-linked { 
+		font-weight: 100;
+		color: #afafaf;
+	}
+	
+	.v-tree-node-caption-o-locale-link-notranslation { 
+		font-weight: 100;
+		color: orange;
+	}
+	
+	
+	.v-tree-node-caption-o-locale-link-target-other { 
+		font-weight: 100;
+		color: #afafaf; 
+	}
+	
+	.o-show-locale-disabled {
+		color: #afafaf !important;
+	} 
+		
+	
+	
+	
+	
+		
 	
 	/* history compare dialog styles */
 	

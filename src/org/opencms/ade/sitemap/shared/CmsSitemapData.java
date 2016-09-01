@@ -58,7 +58,10 @@ public class CmsSitemapData implements IsSerializable {
         navigation,
 
         /** The VFS mode. */
-        vfs
+        vfs,
+
+        /** Locale comparison mode. */
+        compareLocales;
     }
 
     /** Name of the used js variable. */
@@ -162,6 +165,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The show model edit confirm dialog flag. */
     private boolean m_showModelEditConfirm;
+
+    /** Flag which controls if the 'locale compare mode' should be available. */
+    private boolean m_localeComparisonEnabled;
 
     /**
      * Constructor.<p>
@@ -605,6 +611,11 @@ public class CmsSitemapData implements IsSerializable {
         return m_galleryManager;
     }
 
+    public boolean isLocaleComparisonEnabled() {
+
+        return m_localeComparisonEnabled;
+    }
+
     /**
      * Returns true if there is a secure server configured for the site which contains the sitemap.<p>
      *
@@ -623,6 +634,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean isShowModelEditConfirm() {
 
         return m_showModelEditConfirm;
+    }
+
+    /**
+     * Sets the 'locale comparison mode enabled' flag.<p>
+     *
+     * @param enabled the new flag value
+     */
+    public void setLocaleComparisonEnabled(boolean enabled) {
+
+        m_localeComparisonEnabled = enabled;
     }
 
     /**

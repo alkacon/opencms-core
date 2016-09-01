@@ -25,29 +25,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
+package org.opencms.ui.client;
 
-import com.vaadin.shared.communication.ServerRpc;
+import org.opencms.gwt.client.util.CmsDebugLog;
+
+import com.vaadin.client.ServerConnector;
+import com.vaadin.client.communication.RpcManager;
+import com.vaadin.shared.communication.MethodInvocation;
 
 /**
- * Interface for the client-to-server rpc calls used by the sitemap extension.<p>
- *
+ * RPC manager subclass.<p>
  */
-public interface I_CmsSitemapServerRpc extends ServerRpc {
+public class CmsRpcManager extends RpcManager {
 
     /**
-     * Opens the page copy dialog for a resource.<p>
-     *
-     * @param callId a unique (per client) id representing the RPC call
-     * @param structureId the structure id of the resource for which to open the dialog
+     * @see com.vaadin.client.communication.RpcManager#applyInvocation(com.vaadin.shared.communication.MethodInvocation, com.vaadin.client.ServerConnector)
      */
-    void openPageCopyDialog(String callId, String structureId);
+    @Override
+    public void applyInvocation(MethodInvocation invocation, ServerConnector connector) {
 
-    /**
-     * Displays the locale comparison view.<p>
-     *
-     * @param id the locale comparison view
-     */
-    void showLocaleComparison(String id);
+        if (connector.getRpcImplementations(invocation.getInterfaceName()).isEmpty()) {
+            CmsDebugLog.consoleLog("Warning: no registered RPC implementation for " + invocation.getInterfaceName());
+        }
+        super.applyInvocation(invocation, connector);
+    }
 
 }

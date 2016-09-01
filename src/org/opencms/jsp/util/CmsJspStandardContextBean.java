@@ -44,7 +44,9 @@ import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.jsp.CmsJspBean;
+import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
@@ -722,6 +724,9 @@ public final class CmsJspStandardContextBean {
     /** Lazily initialized map from the locale to the localized title property. */
     private Map<String, String> m_localeTitles;
 
+    /** The resource wrapper for the current page. */
+    private CmsJspResourceWrapper m_resourceWrapper;
+
     /**
      * Creates an empty instance.<p>
      */
@@ -1034,6 +1039,38 @@ public final class CmsJspStandardContextBean {
     public Locale getLocale() {
 
         return getRequestContext().getLocale();
+    }
+
+    /**
+     * Gets a map providing access to the locale variants of the current page.<p>
+     *
+     * Note that all available locales for the site / subsite are used as keys, not just the ones for which a locale
+     * variant actually exists.
+     *
+     * Usage in JSPs: ${cms.localeResource['de']]
+     *
+     * @return the map from locale strings to locale variant resources
+     */
+    public Map<String, CmsJspResourceWrapper> getLocaleResource() {
+
+        Map<String, CmsJspResourceWrapper> result = getResourceWrapperForPage().getLocaleResource();
+        List<Locale> locales = CmsLocaleGroupService.getPossibleLocales(m_cms, getContainerPage());
+        for (Locale locale : locales) {
+            if (!result.containsKey(locale.toString())) {
+                result.put(locale.toString(), null);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the main locale for the current page's locale group.<p>
+     *
+     * @return the main locale for the current page's locale group
+     */
+    public Locale getMainLocale() {
+
+        return getResourceWrapperForPage().getMainLocale();
     }
 
     /**
@@ -1690,6 +1727,20 @@ public final class CmsJspStandardContextBean {
         Object attribute = m_request.getAttribute(name);
 
         return attribute != null ? (A)attribute : null;
+    }
+
+    /**
+     * Gets the resource wrapper for the current page, initializing it if necessary.<p>
+     *
+     * @return the resource wrapper for the current page
+     */
+    private CmsJspResourceWrapper getResourceWrapperForPage() {
+
+        if (m_resourceWrapper != null) {
+            return m_resourceWrapper;
+        }
+        m_resourceWrapper = new CmsJspResourceWrapper(m_cms, getContainerPage());
+        return m_resourceWrapper;
     }
 
     /**

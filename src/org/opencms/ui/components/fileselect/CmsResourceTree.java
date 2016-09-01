@@ -39,7 +39,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
+import com.vaadin.data.Item;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Tree;
@@ -54,6 +57,12 @@ public class CmsResourceTree extends Tree {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Predicate which can be used to prevent selection of a node (this means the select handler will not be called
+     * if this returns false, but the Vaadin selection mechanism will still mark it as selected.
+     */
+    private Predicate<Item> m_selectionFilter = Predicates.alwaysTrue();
 
     /** The CMS context. */
     private CmsObject m_cms;
@@ -136,8 +145,11 @@ public class CmsResourceTree extends Tree {
 
             public void itemClick(ItemClickEvent event) {
 
-                CmsResource resource = CmsResourceTreeContainer.getResource(event.getItem());
-                handleSelection(resource);
+                boolean canSelect = m_selectionFilter.apply(event.getItem());
+                if (canSelect) {
+                    CmsResource resource = CmsResourceTreeContainer.getResource(event.getItem());
+                    handleSelection(resource);
+                }
             }
         });
 
@@ -189,6 +201,11 @@ public class CmsResourceTree extends Tree {
     public void removeResourceSelectionHandler(I_CmsSelectionHandler<CmsResource> handler) {
 
         m_resourceSelectionHandlers.remove(handler);
+    }
+
+    public void setSelectionFilter(Predicate<Item> selectionFilter) {
+
+        m_selectionFilter = selectionFilter;
     }
 
     /**

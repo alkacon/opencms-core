@@ -45,6 +45,9 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
     /** The site selector. */
     private ComboBox m_siteSelector;
 
+    /** The whole content. */
+    private VerticalLayout m_container;
+
     /** Container for the tree component. */
     private VerticalLayout m_treeContainer;
 
@@ -61,6 +64,16 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
     public FormLayout getAdditionalWidgets() {
 
         return m_additionalWidgets;
+    }
+
+    /**
+     * Returns the content container.<p>
+     *
+     * @return the content container
+     */
+    public VerticalLayout getContainer() {
+
+        return m_container;
     }
 
     /**

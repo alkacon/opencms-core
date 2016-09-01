@@ -108,7 +108,7 @@ public final class CmsRelationType implements Serializable {
     public static final CmsRelationType XML_WEAK = new CmsRelationType(4, PREFIX_XML + VALUE_WEAK, false, true);
 
     /** Constant for the type of relations between resources which are locale variants. */
-    public static final CmsRelationType LOCALE_VARIANT = new CmsRelationType(11, "LOCALE_VARIANT", false, false);
+    public static final CmsRelationType LOCALE_VARIANT = new CmsRelationType(11, "LOCALE_VARIANT", true, false);
 
     /** Constant for the weak links from xmlcontent to the used xsd. */
     public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", true, true);

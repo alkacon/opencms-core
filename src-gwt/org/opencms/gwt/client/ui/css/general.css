@@ -95,6 +95,11 @@ div.header div.headerButtons > div{
 	float: right;
 }
 
+/** Override some Vaadin CSS rules. */ 
+div.header h2 { 
+	margin-top: 0px !important; 
+}
+
 .textSmall, div.textSmall{
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");

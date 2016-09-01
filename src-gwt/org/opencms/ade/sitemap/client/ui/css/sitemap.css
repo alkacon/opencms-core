@@ -14,6 +14,16 @@ body div.pageCenter {
 	margin-top: 72px;
 }
 
+
+.hiddenHeader.hiddenHeader { 
+	display: none; 
+}
+
+.hiddenHeader.hiddenHeader + .page { 
+	margin-top:  72px !important; 
+}
+
+
 /** joined vendor prefix style, for better fall back behavior */
 div.page{
 	background-color: value("constants.css.gradientFormDialogColor");
@@ -27,3 +37,21 @@ div.page{
 	width: value("constants.css.toolbarWidth");
 	margin: 0px auto;
 }
+
+
+.headerContainer #locale-header-container { 
+	display: none; 
+}
+
+.headerContainer.headerContainerVaadinMode #locale-header-container { 
+	display: block; 
+}
+
+.headerContainer.headerContainerVaadinMode > *:first-child { 
+	display: none; 
+}
+
+.headerContainer > *:first-child, #locale-header-container > *:first-child {
+	padding: 10px; 
+}
+ 

@@ -78,7 +78,9 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -182,6 +184,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** Text metrics key. */
     private static final String TM_SITEMAP = "Sitemap";
 
+    private FlowPanel m_headerContainer;
+
     /** The displayed sitemap tree. */
     protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
 
@@ -230,6 +234,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** The parent model page root. */
     private CmsModelPageTreeItem m_parentModelPageRoot;
 
+    private FlowPanel m_localeComparison = new FlowPanel();
+
     /** The parent model page entries. */
     private Map<CmsUUID, CmsModelPageTreeItem> m_parentModelPageTreeItems = new HashMap<CmsUUID, CmsModelPageTreeItem>();
 
@@ -238,6 +244,10 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
     /** The registered tree items. */
     private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
+
+    private CmsInfoHeader m_header;
+
+    private FlowPanel m_page;
 
     /**
      * Returns the instance.<p>
@@ -1061,7 +1071,15 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             info.getSiteHost(),
             info.getSiteLocale(),
             CmsIconUtil.getResourceIconClasses(m_controller.getData().getRoot().getResourceTypeName(), false));
-        header.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().pageCenter());
+
+        FlowPanel headerContainer = new FlowPanel();
+        m_headerContainer = headerContainer;
+        m_header = header;
+        FlowPanel localeHeaderContainer = new FlowPanel();
+        headerContainer.add(m_header);
+        headerContainer.add(localeHeaderContainer);
+        localeHeaderContainer.getElement().setId(CmsGwtConstants.ID_LOCALE_HEADER_CONTAINER);
+        headerContainer.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().headerContainer());
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_controller.getData().getParentSitemap())) {
             CmsPushButton goToParentButton = new CmsPushButton();
@@ -1081,8 +1099,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             header.addButtonTopRight(goToParentButton);
         }
 
-        rootPanel.add(header);
+        rootPanel.add(headerContainer);
         final FlowPanel page = new FlowPanel();
+        m_page = page;
         page.setStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().page());
         page.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.generalCss().cornerAll());
         rootPanel.add(page);
@@ -1121,6 +1140,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         page.add(m_galleryTree);
         page.add(m_modelPageTree);
         page.add(m_categoryTree);
+        page.add(m_localeComparison);
+        m_localeComparison.setVisible(false);
+        m_localeComparison.getElement().setId(CmsGwtConstants.ID_LOCALE_COMPARISON);
         m_noGalleriesLabel = new Label();
         m_noGalleriesLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         m_noGalleriesLabel.getElement().setInnerHTML(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
@@ -1157,9 +1179,12 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      */
     public void setEditorMode(EditorMode editorMode) {
 
+        CmsDebugLog.consoleLog("setEditorMode: " + editorMode);
+
         if (editorMode != m_editorMode) {
             m_editorMode = editorMode;
             m_controller.setEditorModeInSession(m_editorMode);
+            int i = 0;
             switch (m_editorMode) {
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
@@ -1169,6 +1194,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                         Messages.get().key(Messages.GUI_GALLERY_MANAGER_ROLE_REQUIRED_0));
                     setCategoriesVisible(false);
                     setModelPagesVisible(false);
+                    setHeaderVisible(true);
+                    m_localeComparison.setVisible(false);
                     m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
                     getController().loadGalleries();
                     break;
@@ -1177,14 +1204,22 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     setGalleriesVisible(false);
                     setModelPagesVisible(false);
                     setCategoriesVisible(false);
+                    setHeaderVisible(true);
+                    m_localeComparison.setVisible(false);
                     m_toolbar.setNewEnabled(true, null);
 
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
                     break;
                 case vfs:
+
                     m_tree.getElement().getStyle().clearDisplay();
+
                     setGalleriesVisible(false);
+
                     setCategoriesVisible(false);
+                    setHeaderVisible(true);
+
+                    m_localeComparison.setVisible(false);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_toolbar.setClipboardEnabled(true, null);
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
@@ -1195,6 +1230,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     setGalleriesVisible(false);
                     setCategoriesVisible(false);
                     setModelPagesVisible(true);
+                    setHeaderVisible(true);
+                    m_localeComparison.setVisible(false);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
                     getController().loadModelPages();
@@ -1205,10 +1242,27 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     setGalleriesVisible(false);
                     setModelPagesVisible(false);
                     setCategoriesVisible(true);
+                    setHeaderVisible(true);
+                    m_localeComparison.setVisible(false);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
                     getController().loadCategories(false);
                     break;
+                case compareLocales:
+                    m_tree.getElement().getStyle().setDisplay(Display.NONE);
+                    setGalleriesVisible(false);
+                    setModelPagesVisible(false);
+                    setCategoriesVisible(false);
+                    setHeaderVisible(false);
+                    m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
+                    m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
+                    m_localeComparison.setVisible(true);
+                    m_controller.getData().getRoot().getId();
+                    CmsJsUtil.callNamedFunctionWithString(
+                        CmsGwtConstants.CALLBACK_REFRESH_LOCALE_COMPARISON,
+                        "" + m_controller.getData().getRoot().getId());
+                    break;
+
                 default:
 
             }
@@ -1217,6 +1271,16 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                 getRootItem().updateEditorMode();
             }
             m_toolbar.setMode(editorMode);
+        }
+    }
+
+    public void setHeaderVisible(boolean visible) {
+
+        String style = I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().headerContainerVaadinMode();
+        if (visible) {
+            m_headerContainer.removeStyleName(style);
+        } else {
+            m_headerContainer.addStyleName(style);
         }
     }
 
@@ -1594,8 +1658,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      * Initializes the Vaadin part of the sitemap editor.<p>
      */
     private native void initVaadin() /*-{
-                                     $wnd.initVaadin();
-                                     }-*/;
+        $wnd.initVaadin();
+    }-*/;
 
     /**
      * Checks if the given entry represents the last opened page.<p>

@@ -47,6 +47,7 @@ import org.opencms.ui.actions.CmsEditPropertyAction;
 import org.opencms.ui.actions.CmsFormEditDialogAction;
 import org.opencms.ui.actions.CmsGalleryDialogAction;
 import org.opencms.ui.actions.CmsHistoryDialogAction;
+import org.opencms.ui.actions.CmsLinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsLockAction;
 import org.opencms.ui.actions.CmsLockedResourcesAction;
 import org.opencms.ui.actions.CmsPermissionDialogAction;
@@ -147,6 +148,8 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsFormEditDialogAction(), advanced.getId(), 800, 0),
             new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 900, 0),
             new CmsContextMenuActionItem(new CmsRestoreDeletedAction(), advanced.getId(), 1000, 0),
+
+            new CmsContextMenuActionItem(new CmsLinkLocaleVariantAction(), advanced.getId(), 1100, 0),
 
             new CmsContextMenuActionItem(new CmsHistoryDialogAction(), null, 2450, 0),
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),

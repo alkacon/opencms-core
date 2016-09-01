@@ -40,6 +40,7 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
@@ -182,6 +183,16 @@ public class CmsResourceSelectDialog extends CustomComponent {
     }
 
     /**
+     * Gets the content panel of this dialog.<p>
+     *
+     * @return content panel of this dialog
+     */
+    protected CmsResourceSelectDialogContents getContents() {
+
+        return ((CmsResourceSelectDialogContents)getCompositionRoot());
+    }
+
+    /**
      * Gets the file tree.<p>
      *
      * @return the file tree
@@ -225,14 +236,13 @@ public class CmsResourceSelectDialog extends CustomComponent {
         m_currentCms = rootCms;
     }
 
-    /**
-     * Gets the content panel of this dialog.<p>
-     *
-     * @return content panel of this dialog
-     */
-    CmsResourceSelectDialogContents getContents() {
+    protected void updateSiteSelector(String caption, IndexedContainer container) {
 
-        return ((CmsResourceSelectDialogContents)getCompositionRoot());
+        if (caption != null) {
+            getSiteSelector().setCaption(caption);
+        }
+        getSiteSelector().setContainerDataSource(container);
+
     }
 
     /**

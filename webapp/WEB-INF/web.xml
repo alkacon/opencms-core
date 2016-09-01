@@ -113,7 +113,7 @@
 	
 	<servlet>
 		<description>
-            The servlet that handles all workplace UI requests.  
+            The servlet that handles sitemap UI requests.  
         </description>
 		<servlet-name>CmsSitemapServlet</servlet-name>
 		<servlet-class>org.opencms.main.CmsUIServlet</servlet-class>

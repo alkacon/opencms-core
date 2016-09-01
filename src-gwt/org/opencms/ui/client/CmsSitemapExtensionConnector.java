@@ -27,7 +27,11 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.gwt.client.ui.CmsInfoHeader;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsJsUtil;
+import org.opencms.gwt.client.util.CmsScriptCallbackHelper;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.shared.rpc.I_CmsSitemapClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsSitemapServerRpc;
 
@@ -35,7 +39,9 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
@@ -52,7 +58,7 @@ public class CmsSitemapExtensionConnector extends AbstractExtensionConnector imp
     /** The singleton instance of this class. */
     static CmsSitemapExtensionConnector INSTANCE;
 
-    @SuppressWarnings("javadoc")
+    /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
     /** Map of callbacks for RPC responses. */
@@ -63,6 +69,7 @@ public class CmsSitemapExtensionConnector extends AbstractExtensionConnector imp
      */
     public CmsSitemapExtensionConnector() {
         super();
+        registerRpc(I_CmsSitemapClientRpc.class, this);
         INSTANCE = this;
     }
 
@@ -121,13 +128,41 @@ public class CmsSitemapExtensionConnector extends AbstractExtensionConnector imp
     }
 
     /**
+     * @see org.opencms.ui.shared.rpc.I_CmsSitemapClientRpc#showInfoHeader(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void showInfoHeader(String title, String description, String path, String locale, String typeIcon) {
+
+        CmsInfoHeader header = new CmsInfoHeader(title, description, path, locale, typeIcon);
+        RootPanel panel = RootPanel.get(CmsGwtConstants.ID_LOCALE_HEADER_CONTAINER);
+        if (panel == null) {
+            CmsDebugLog.consoleLog("no element #locale-header-container found");
+        } else {
+            if (panel.getWidgetCount() > 0) {
+                panel.remove(0);
+            }
+            panel.add(header);
+        }
+    }
+
+    /**
      * @see com.vaadin.client.extensions.AbstractExtensionConnector#extend(com.vaadin.client.ServerConnector)
      */
     @Override
     protected void extend(ServerConnector target) {
 
         installNativeFunctions();
-        registerRpc(I_CmsSitemapClientRpc.class, this);
+        CmsScriptCallbackHelper callbackHelper = new CmsScriptCallbackHelper() {
+
+            @Override
+            @SuppressWarnings("synthetic-access")
+            public void run() {
+
+                JsArrayString arguments = m_arguments.cast();
+                getRpcProxy(I_CmsSitemapServerRpc.class).showLocaleComparison(arguments.get(0));
+
+            }
+        };
+        callbackHelper.installCallbackOnWindow(CmsGwtConstants.CALLBACK_REFRESH_LOCALE_COMPARISON);
     }
 
 }

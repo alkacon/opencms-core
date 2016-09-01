@@ -29,6 +29,7 @@ package org.opencms.site;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -36,9 +37,13 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * Describes a configured site in OpenCms.<p>
@@ -62,11 +67,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /** The localization mode parameter name. */
-    public static final String LOCALIZATION_MODE_PARAM = "localizationMode";
+    public static final String PARAM_LOCALIZATION_MODE = "localizationMode";
+
+    /** Parameter name for the main locale. */
+    public static final String PARAM_MAIN_LOCALE = "locale.main";
+
+    /** Parameter name for the secondary locales. */
+    public static final String PARAM_SECONDARY_LOCALES = "locale.secondary";
 
     /** Log instance. */
     private static final Log LOG = CmsLog.getLog(CmsSite.class);
-
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
 
@@ -307,12 +317,29 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
         if (m_localizationMode == null) {
             try {
-                m_localizationMode = LocalizationMode.valueOf(m_parameters.get(LOCALIZATION_MODE_PARAM));
+                m_localizationMode = LocalizationMode.valueOf(m_parameters.get(PARAM_LOCALIZATION_MODE));
             } catch (Exception e) {
                 m_localizationMode = LocalizationMode.standard;
             }
         }
         return m_localizationMode;
+    }
+
+    /**
+     * Gets the main translation locale for this site.<p>
+     *
+     * @param defaultValue the value to return as a default when no main translation locale is set
+     * @return the main translation locale
+     */
+    public Locale getMainTranslationLocale(Locale defaultValue) {
+
+        Map<String, String> params = getParameters();
+        String value = params.get(PARAM_MAIN_LOCALE);
+        if (!CmsStringUtil.isEmpty(value)) {
+            return CmsLocaleManager.getLocale(value);
+        } else {
+            return defaultValue;
+        }
     }
 
     /**
@@ -333,6 +360,28 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     public float getPosition() {
 
         return m_position;
+    }
+
+    /**
+     * Gets the list of secondary translation locales.<p>
+     *
+     * @return the list of secondary translation locales
+     */
+    public List<Locale> getSecondaryTranslationLocales() {
+
+        List<Locale> result = Lists.newArrayList();
+        Map<String, String> params = getParameters();
+        String value = params.get(PARAM_SECONDARY_LOCALES);
+        if (!CmsStringUtil.isEmpty(value)) {
+            String[] tokens = value.trim().split(" *, *");
+            for (String token : tokens) {
+                Locale locale = CmsLocaleManager.getLocale(token);
+                if (!result.contains(locale)) {
+                    result.add(locale);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -586,7 +635,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      */
     public void setParameters(Map<String, String> parameters) {
 
-        m_parameters = parameters;
+        m_parameters = new TreeMap<String, String>(parameters);
     }
 
     /**

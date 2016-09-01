@@ -50,7 +50,8 @@ public final class CmsJsUtil {
      * @param param the function parameter
      */
     public static native void callNamedFunctionWithString(String name, String param) /*-{
-        $wnd[name](param);
+        var w = $wnd;
+        w[name](param);
     }-*/;
 
     /**

@@ -411,7 +411,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         : Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(Messages.GUI_SITES_NEW_SITE_TITLE_0);
 
         // only show the position if editing a site or creating a new site
-        int count = getParamEditaction() == null ? 4 : 5;
+        int count = getParamEditaction() == null ? 5 : 6;
         // +1 if favicon present
         count = m_site.getFavicon() != null ? ++count : count;
         // +2 for OU check box and template property when creating a new site
@@ -490,6 +490,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             addWidget(
                 new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(createNavOpts(m_site))));
             addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "parameters", PAGES[0], new CmsInputWidget()));
             if (DIALOG_NEW.equals(getParamEditaction())) {
                 addWidget(new CmsWidgetDialogParameter(this, "createou", PAGES[0], new CmsCheckboxWidget()));
                 addWidget(new CmsWidgetDialogParameter(this, "template", PAGES[0], createTemplateSelect()));
@@ -573,6 +574,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 count++;
             }
             addWidget(new CmsWidgetDialogParameter(m_site, "aliases", PAGES[0], new CmsDisplayWidget()));
+
         }
     }
 

@@ -28,6 +28,7 @@
 package org.opencms.ui.contextmenu;
 
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.controlpermission;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.defaultfile;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.folder;
@@ -230,6 +231,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStandardVisibilityCheck.class);
 
+    public static final I_CmsHasMenuItemVisibility DEFAULT_DEFAULTFILE = new CmsStandardVisibilityCheck(
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        inproject,
+        defaultfile);
+
     /** The set of flags. */
     private Set<CmsVisibilityCheckFlag> m_flags = Sets.newHashSet();
 
@@ -295,6 +304,22 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
             if (flag(file) && !resource.isFile()) {
                 return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(defaultfile)) {
+                if (!resource.isFile()) {
+                    return VISIBILITY_INVISIBLE;
+                }
+                try {
+                    CmsResource parentFolder = cms.readParentFolder(resource.getStructureId());
+                    CmsResource defaultfile = cms.readDefaultFile(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    if ((defaultfile == null) || !(defaultfile.getStructureId().equals(resource.getStructureId()))) {
+                        return VISIBILITY_INVISIBLE;
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    return VISIBILITY_INVISIBLE;
+                }
             }
 
             if (flag(folder) && resource.isFile()) {

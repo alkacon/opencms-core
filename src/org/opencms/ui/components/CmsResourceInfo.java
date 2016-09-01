@@ -31,8 +31,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -41,6 +44,7 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 
@@ -69,12 +73,36 @@ public class CmsResourceInfo extends CustomLayout {
 
     /**
      * Constructor.<p>
+     */
+    public CmsResourceInfo() {
+        super();
+        try {
+            initTemplateContentsFromInputStream(CmsVaadinUtils.readCustomLayout(getClass(), "resourceinfo.html"));
+            addComponent(m_topText, "topLabel");
+            addComponent(m_bottomText, "bottomLabel");
+            addComponent(m_icon, "icon");
+            addComponent(m_buttonLabel, "buttonContainer");
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Constructor.<p>
      *
      * @param resource the resource
      */
     public CmsResourceInfo(CmsResource resource) {
-        this();
+        this(resource, true);
+    }
 
+    /**
+     * Constructor.<p>
+     *
+     * @param resource the resource
+     */
+    public CmsResourceInfo(CmsResource resource, boolean useState) {
+        this();
         Locale locale = A_CmsUI.get().getLocale();
         CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
         resUtil.setAbbrevLength(100);
@@ -82,11 +110,12 @@ public class CmsResourceInfo extends CustomLayout {
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         m_topText.setValue(resUtil.getGalleryTitle(locale));
         m_bottomText.setValue(resUtil.getPath());
+
         m_icon.initContent(
             resUtil,
             CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
-            resource.getState());
-        //        m_buttonLabel.setVisible(false);
+            useState ? resource.getState() : null);
+
     }
 
     /**
@@ -105,20 +134,32 @@ public class CmsResourceInfo extends CustomLayout {
 
     }
 
-    /**
-     * Constructor.<p>
-     */
-    private CmsResourceInfo() {
-        super();
-        try {
-            initTemplateContentsFromInputStream(CmsVaadinUtils.readCustomLayout(getClass(), "resourceinfo.html"));
-            addComponent(m_topText, "topLabel");
-            addComponent(m_bottomText, "bottomLabel");
-            addComponent(m_icon, "icon");
-            addComponent(m_buttonLabel, "buttonContainer");
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+    public static CmsResourceInfo createSitemapResourceInfo(CmsResource resource, CmsSite baseSite) {
+
+        CmsResourceInfo info = new CmsResourceInfo();
+        Locale locale = A_CmsUI.get().getLocale();
+        CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
+        resUtil.setAbbrevLength(100);
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        info.getTopLine().setValue(resUtil.getGalleryTitle(locale));
+        String path = resource.getRootPath();
+        if (baseSite != null) {
+            String siteRoot = baseSite.getSiteRoot();
+            if (path.startsWith(siteRoot)) {
+                path = path.substring(siteRoot.length());
+                path = CmsStringUtil.joinPaths("/", path);
+            }
         }
+        info.getBottomLine().setValue(path);
+        String icon = CmsSitemapTreeContainer.getSitemapResourceIcon(A_CmsUI.getCmsObject(), resUtil.getResource());
+        info.getResourceIcon().initContent(resUtil, icon, null);
+        return info;
+    }
+
+    public Label getBottomLine() {
+
+        return m_bottomText;
     }
 
     /**
@@ -129,6 +170,31 @@ public class CmsResourceInfo extends CustomLayout {
     public Label getButtonLabel() {
 
         return m_buttonLabel;
+    }
+
+    public CmsResourceIcon getResourceIcon() {
+
+        return m_icon;
+    }
+
+    public Label getTopLine() {
+
+        return m_topText;
+    }
+
+    /**
+     * Replaces the button component.<p>
+     *
+     * @param button the new button component
+     */
+    public void setButton(Component button) {
+
+        Component oldComponent = getComponent("buttonContainer");
+        replaceComponent(oldComponent, button);
+    }
+
+    public void setIconClickHandler(Runnable handler) {
+
     }
 
 }

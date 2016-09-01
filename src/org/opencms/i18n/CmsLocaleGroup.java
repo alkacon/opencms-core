@@ -28,16 +28,23 @@
 package org.opencms.i18n;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
@@ -49,6 +56,9 @@ import com.google.common.collect.Sets;
  * Represents a group of resources which are locale variants of each other.<p>
  */
 public class CmsLocaleGroup {
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLocaleGroup.class);
 
     /** The CMS context to use. */
     private CmsObject m_cms;
@@ -65,6 +75,9 @@ public class CmsLocaleGroup {
     /** Map of resources by locale. */
     private Multimap<Locale, CmsResource> m_resourcesByLocale = ArrayListMultimap.create();
 
+    /** The 'no translation' setting for this locale group. */
+    private String m_noTranslation;
+
     /**
      * Creates a new instance.<p>
      *
@@ -80,6 +93,31 @@ public class CmsLocaleGroup {
     }
 
     /**
+     * Gets the list of all resources of this group (primary and secondary).<p>
+     *
+     * @return the list of all resources of this group
+     */
+    public List<CmsResource> getAllResources() {
+
+        List<CmsResource> result = Lists.newArrayList();
+        result.add(m_primaryResource);
+        for (CmsResource res : getSecondaryResources()) {
+            result.add(res);
+        }
+        return result;
+    }
+
+    /**
+     * Gets the main locale (i.e. the locale of the primary resource of this group).<p>
+     *
+     * @return the main locale
+     */
+    public Locale getMainLocale() {
+
+        return m_localeCache.get(m_primaryResource);
+    }
+
+    /**
      * Gets the primary resource.<p>
      *
      * @return the primary resource
@@ -87,6 +125,36 @@ public class CmsLocaleGroup {
     public CmsResource getPrimaryResource() {
 
         return m_primaryResource;
+    }
+
+    /**
+     * Gets a map which contains the resources of the locale group as keys, indexed by their locale.<p>
+     *
+     * If the locale group contains more than one resource from the same locale,, which one is used a map value is undefined.
+     *
+     * @return the map of resources by locale
+     */
+    public Map<Locale, CmsResource> getResourcesByLocale() {
+
+        List<CmsResource> resources = Lists.newArrayList();
+        resources.add(m_primaryResource);
+        resources.addAll(m_secondaryResources);
+        Collections.sort(resources, new Comparator<CmsResource>() {
+
+            public int compare(CmsResource arg0, CmsResource arg1) {
+
+                String path1 = arg0.getRootPath();
+                String path2 = arg1.getRootPath();
+                return path2.compareTo(path1);
+            }
+
+        });
+        Map<Locale, CmsResource> result = Maps.newHashMap();
+        for (CmsResource resource : resources) {
+            result.put(m_localeCache.get(resource), resource);
+        }
+        return result;
+
     }
 
     /**
@@ -115,11 +183,63 @@ public class CmsLocaleGroup {
      *
      * @param locale the locale
      * @return true  if the group has a resource with the locale
-     * @throws CmsException if something goes wrong
      */
-    public boolean hasLocale(Locale locale) throws CmsException {
+    public boolean hasLocale(Locale locale) {
 
         return m_resourcesByLocale.containsKey(locale);
+    }
+
+    /**
+     * Checks if the locale group is marked as not translatable for the given locale.<p>
+     *
+     * @param locale a locale
+     *
+     * @return true if the locale group is marked as not translatable for the given locale
+     */
+    public boolean isMarkedNoTranslation(Locale locale) {
+
+        return (m_noTranslation != null) && CmsLocaleManager.getLocales(m_noTranslation).contains(locale);
+    }
+
+    /**
+     * Checks if the locale group is marked as not translatable for any of the given locales.<p>
+     *
+     * @param locales a set of locales
+     * @return true if the locale group is marked as not translatable for any of the  given resources
+     */
+    public boolean isMarkedNoTranslation(Set<Locale> locales) {
+
+        if (m_noTranslation == null) {
+            return false;
+        }
+        List<Locale> noTranslationLocales = CmsLocaleManager.getLocales(m_noTranslation);
+        for (Locale locale : noTranslationLocales) {
+            if (locales.contains(locale)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if this is a potential group head, i.e. the locale of the primary resource is the main translation locale configured for the site
+     * in which it is located.<p>
+     *
+     * @return true if this is a potential group head
+     */
+    public boolean isPotentialGroupHead() {
+
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(m_primaryResource.getRootPath());
+        if (site == null) {
+            return false;
+        }
+        Locale mainLocale = site.getMainTranslationLocale(null);
+        if (mainLocale == null) {
+            return false;
+        }
+        Locale myLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, m_primaryResource);
+        return mainLocale.equals(myLocale);
+
     }
 
     /**
@@ -133,9 +253,28 @@ public class CmsLocaleGroup {
     }
 
     /**
+     * Checks if this is either a real group or a potential group head (i.e. a potential primary resource).<p>
+     *
+     * @return true if this is a real group or a potential group head
+     */
+    public boolean isRealGroupOrPotentialGroupHead() {
+
+        return isRealGroup() || isPotentialGroupHead();
+    }
+
+    /**
+     * Gets the locales of the resources from  this locale group.<p>
+     *
+     * @return the locales of this locale group
+     */
+    Set<Locale> getLocales() {
+
+        return Sets.newHashSet(getResourcesByLocale().keySet());
+    }
+
+    /**
      * Initializes the locales.<p>
      *
-     * @throws CmsException if something goes wrong
      */
     private void initLocales() {
 
@@ -150,6 +289,16 @@ public class CmsLocaleGroup {
             CmsResource key = entry.getKey();
             Locale value = entry.getValue();
             m_resourcesByLocale.put(value, key);
+        }
+        try {
+            CmsProperty noTranslationProp = m_cms.readPropertyObject(
+                m_primaryResource,
+                CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
+                false);
+            m_noTranslation = noTranslationProp.getValue();
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+
         }
     }
 

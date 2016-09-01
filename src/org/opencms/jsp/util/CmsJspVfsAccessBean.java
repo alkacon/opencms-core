@@ -34,18 +34,24 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsLocaleGroup;
+import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.jsp.util.CmsJspValueTransformers.CmsLocalePropertyLoaderTransformer;
 import org.opencms.jsp.util.CmsJspValueTransformers.CmsPropertyLoaderTransformer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides utility methods that allow convenient access to the OpenCms VFS,
@@ -108,7 +114,7 @@ public final class CmsJspVfsAccessBean {
             try {
                 // read the requested resource permissions
                 result = getCmsObject().getPermissions((String)input);
-            } catch (@SuppressWarnings("unused") CmsException e) {
+            } catch (CmsException e) {
                 // unable to read resource, return null
                 result = null;
             }
@@ -149,7 +155,7 @@ public final class CmsJspVfsAccessBean {
             try {
                 // read the properties of the requested resource
                 result = getCmsObject().readPropertyObject(m_resource, String.valueOf(input), m_search).getValue();
-            } catch (@SuppressWarnings("unused") CmsException e) {
+            } catch (CmsException e) {
                 // in case of any error we assume the property does not exist
                 result = null;
             }
@@ -172,7 +178,7 @@ public final class CmsJspVfsAccessBean {
             try {
                 // read the requested resource
                 result = CmsJspElFunctions.convertResource(getCmsObject(), input);
-            } catch (@SuppressWarnings("unused") CmsException e) {
+            } catch (CmsException e) {
                 // unable to read resource, return null
                 result = null;
             }
@@ -294,11 +300,14 @@ public final class CmsJspVfsAccessBean {
         }
     }
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspVfsAccessBean.class);
+
     /** Request context attribute for indicating the model file for a create resource operation. */
     public static final String ATTRIBUTE_VFS_ACCESS_BEAN = CmsJspVfsAccessBean.class.getName() + ".VFS_ACCESS_BEAN";
 
     /** The OpenCms context of the current user. */
-    private CmsObject m_cms;
+    protected CmsObject m_cms;
 
     /** Contains booleans that indicate if a resource exists in the VFS. */
     private Map<String, Boolean> m_existsResource;
@@ -545,6 +554,67 @@ public final class CmsJspVfsAccessBean {
             m_links = CmsCollectionsGenericWrapper.createLazyMap(new CmsVfsLinkTransformer());
         }
         return m_links;
+    }
+
+    /**
+     * Gets a lazy loading map used to access locale variants of a resource with a given path.<p>
+     *
+     * Usage in JSP: ${myvfsaccessbeaninstance.localeResource['/foo/bar/index.html']['de']}
+     *
+     * @return the lazy loading map
+     */
+    public Map<String, Map<String, CmsJspResourceWrapper>> getLocaleResource() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+            @SuppressWarnings("synthetic-access")
+            public Object transform(Object arg) {
+
+                if (!(arg instanceof String)) {
+                    return new HashMap<String, CmsJspResourceWrapper>();
+                }
+                String path = (String)arg;
+                try {
+                    CmsResource res = m_cms.readResource(path);
+                    CmsJspResourceWrapper wrapper = new CmsJspResourceWrapper(m_cms, res);
+                    return wrapper.getLocaleResource();
+                } catch (Exception e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    return new HashMap<String, CmsJspResourceWrapper>();
+                }
+            }
+
+        });
+    }
+
+    /**
+     * Returns a lazy loading map used to detect the main locale of a resource which is part of a locale group.<p>
+     *
+     * Usage in JSPs: ${myvfsaccessbeaninstance.mainLocale['/foo/index.html']}
+     *
+     * @return the lazy loading map
+     */
+    public Map<String, Locale> getMainLocale() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+            @SuppressWarnings("synthetic-access")
+            public Object transform(Object arg) {
+
+                if (!(arg instanceof String)) {
+                    return null;
+                }
+                String path = (String)arg;
+                try {
+                    CmsResource res = m_cms.readResource(path);
+                    CmsLocaleGroup localeGroup = m_cms.getLocaleGroupService().readLocaleGroup(res);
+                    return localeGroup.getMainLocale();
+                } catch (Exception e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    return null;
+                }
+            }
+        });
     }
 
     /**

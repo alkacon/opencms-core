@@ -38,7 +38,9 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Dialog object for a single site.<p>
@@ -95,6 +97,8 @@ public class CmsSiteBean {
     /** The title of this site. */
     private String m_title;
 
+    private Map<String, String> m_parameters = new LinkedHashMap<String, String>();
+
     /** Indicates whether this site should be considered when writing the web server configuration. */
     private boolean m_webserver = true;
 
@@ -137,6 +141,7 @@ public class CmsSiteBean {
             m_position = site.getPosition();
             m_errorPage = site.getErrorPage();
             m_webserver = site.isWebserver();
+            m_parameters = site.getParameters();
         }
     }
 
@@ -218,6 +223,11 @@ public class CmsSiteBean {
     public CmsSite getOriginalSite() {
 
         return m_originalSite;
+    }
+
+    public Map<String, String> getParameters() {
+
+        return m_parameters;
     }
 
     /**
@@ -424,6 +434,11 @@ public class CmsSiteBean {
         m_favicon = favicon;
     }
 
+    public void setParameters(Map<String, String> params) {
+
+        m_parameters = params;
+    }
+
     /**
      * Sets the port.<p>
      *
@@ -553,7 +568,7 @@ public class CmsSiteBean {
         for (String alias : m_aliases) {
             aliases.add(new CmsSiteMatcher(alias));
         }
-        return new CmsSite(
+        CmsSite result = new CmsSite(
             m_siteRoot,
             uuid,
             m_title,
@@ -565,6 +580,9 @@ public class CmsSiteBean {
             m_exclusiveError,
             m_webserver,
             aliases);
+        result.setParameters(m_parameters);
+        return result;
+
     }
 
     /**

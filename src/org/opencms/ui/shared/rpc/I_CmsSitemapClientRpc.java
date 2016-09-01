@@ -43,4 +43,15 @@ public interface I_CmsSitemapClientRpc extends ClientRpc {
      */
     void finishPageCopyDialog(String callId, String response);
 
+    /**
+     * Displays the header for a sub-sitemap in the locale comparison view.<p>
+     *
+     * @param title the title
+     * @param description the description
+     * @param path the path
+     * @param locale the locale
+     * @param icon the CSS classes for the icon
+     */
+    void showInfoHeader(String title, String description, String path, String locale, String icon);
+
 }

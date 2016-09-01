@@ -151,22 +151,26 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
     public CmsContextMenu createContextMenu() {
 
         m_entries = new ArrayList<I_CmsContextMenuEntry>();
-        m_entries.add(new EditorModeEntry(
-            Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0),
-            EditorMode.navigation));
-        m_entries.add(new EditorModeEntry(
-            Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0),
-            EditorMode.vfs));
-        m_entries.add(new EditorModeEntry(
-            Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0),
-            EditorMode.galleries));
+        m_entries.add(
+            new EditorModeEntry(
+                Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0),
+                EditorMode.navigation));
+        m_entries.add(
+            new EditorModeEntry(Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0), EditorMode.vfs));
+        m_entries.add(
+            new EditorModeEntry(Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0), EditorMode.galleries));
         if (CmsCoreProvider.get().getUserInfo().isCategoryManager()) {
-            m_entries.add(new EditorModeEntry(
-                Messages.get().key(Messages.GUI_CONTEXTMENU_CATEGORY_MODE_0),
-                EditorMode.categories));
+            m_entries.add(
+                new EditorModeEntry(
+                    Messages.get().key(Messages.GUI_CONTEXTMENU_CATEGORY_MODE_0),
+                    EditorMode.categories));
         }
         if (m_canEditModelPages) {
             m_entries.add(new EditorModeEntry(Messages.get().key(Messages.GUI_MODEL_PAGES_0), EditorMode.modelpages));
+        }
+        if (CmsSitemapView.getInstance().getController().isLocaleComparisonEnabled()) {
+            m_entries.add(
+                new EditorModeEntry(Messages.get().key(Messages.GUI_LOCALECOMPARE_MODE_0), EditorMode.compareLocales));
         }
 
         CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());

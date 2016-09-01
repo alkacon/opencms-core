@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
@@ -53,10 +54,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.server.AbstractClientConnector;
+import org.vaadin.risto.externallayout.ExternalLayout;
+
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
@@ -250,13 +253,20 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The UI instance. */
+    private CmsSitemapUI m_ui;
+
+    /** The container for the locale comparison view. */
+    private VerticalLayout m_localeCompareContainer;
+
     /**
      * Creates a new instance.<p>
      *
-     * @param component the component to attach to
+     * @param ui the component to attach to
      */
-    public CmsSitemapExtension(AbstractClientConnector component) {
-        extend(component);
+    public CmsSitemapExtension(CmsSitemapUI ui) {
+        extend(ui);
+        m_ui = ui;
         registerRpc(this, I_CmsSitemapServerRpc.class);
     }
 
@@ -284,8 +294,38 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
             String title = CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_DIALOG_TITLE_0);
             context.start(title, dialog);
         } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
             CmsErrorDialog.showErrorDialog(e);
         }
+    }
+
+    /**
+     * Shows an info header in the locale-header-container element.<p>
+     *
+     * @param title the title
+     * @param description the description
+     * @param path the path
+     * @param locale the locale
+     * @param iconClass the icon class
+     */
+    public void showInfoHeader(String title, String description, String path, String locale, String iconClass) {
+
+        getRpcProxy(I_CmsSitemapClientRpc.class).showInfoHeader(title, description, path, locale, iconClass);
+    }
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsSitemapServerRpc#showLocaleComparison(java.lang.String)
+     */
+    public void showLocaleComparison(String id) {
+
+        if (m_localeCompareContainer == null) {
+            m_localeCompareContainer = new VerticalLayout();
+            ExternalLayout layout = new ExternalLayout(CmsGwtConstants.ID_LOCALE_COMPARISON, m_localeCompareContainer);
+            m_ui.getContent().addComponent(layout);
+        }
+        m_localeCompareContainer.removeAllComponents();
+        m_localeCompareContainer.addComponent(new CmsLocaleComparePanel(id));
+
     }
 
 }

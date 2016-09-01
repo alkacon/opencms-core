@@ -47,8 +47,13 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String APP_INFO = "o-app-info";
 
+    public static final String BUTTON_BLUE = "o-button-blue";
+
     /** CSS style name. */
     public static final String BUTTON_ICON_SMALL = "o-button-icon-small";
+
+    /** CSS style name. */
+    public static final String BUTTON_INVISIBLE = "o-button-invisible";
 
     /** CSS style name. */
     public static final String BUTTON_TABLE_ICON = "o-button-table-icon";
@@ -118,7 +123,6 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String HIDDEN = "hidden";
-
     /** CSS style name. */
     public static final String HIDDEN_TOOLBAR = "o-hidden-toolbar";
 
@@ -126,6 +130,7 @@ public class OpenCmsTheme {
     public static final String HOVER_COLUMN = "o-hover-column";
     /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
+
     /** CSS style name. */
     public static final String LABEL_ERROR = "o-label-error";
     /** CSS style name. */
@@ -247,6 +252,12 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     protected static final String QUICK_LAUNCH = "o-quicklaunch";
+
+    public static final String RESOURCE_INFO_WEAK = "o-resourceinfo-weak";
+
+    public static final String RESOURCE_INFO_DIRECTLINK = "o-resourceinfo-directlink";
+
+    public static final String SITEMAP_LOCALE_BAR = "o-sitemap-locale-bar";
 
     /**
      * Hidden default constructor.

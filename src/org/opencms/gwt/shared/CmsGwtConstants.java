@@ -63,6 +63,8 @@ public final class CmsGwtConstants {
 
     }
 
+    public static final String ID_LOCALE_HEADER_CONTAINER = "locale-header-container";
+
     /** Context menu action id. */
     public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
 
@@ -134,6 +136,10 @@ public final class CmsGwtConstants {
 
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
+
+    public static final String ID_LOCALE_COMPARISON = "cmsLocaleComparison";
+
+    public static final String CALLBACK_REFRESH_LOCALE_COMPARISON = "cmsRefreshLocaleComparison";
 
     /**
      * Hide constructor.<p>

@@ -253,6 +253,9 @@ public final class Messages {
     public static final String GUI_DISABLED_SAVE_0 = "GUI_DISABLED_SAVE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_MODE_0 = "GUI_LOCALECOMPARE_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DISABLED_UNDO_0 = "GUI_DISABLED_UNDO_0";
 
     /** Message constant for key in the resource bundle. */

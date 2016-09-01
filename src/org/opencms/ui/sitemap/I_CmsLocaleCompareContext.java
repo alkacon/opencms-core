@@ -25,29 +25,49 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
+package org.opencms.ui.sitemap;
 
-import com.vaadin.shared.communication.ServerRpc;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleGroup;
+
+import java.util.Locale;
 
 /**
- * Interface for the client-to-server rpc calls used by the sitemap extension.<p>
- *
+ * Provides information about the current state of the locale comparison editor.<p>
  */
-public interface I_CmsSitemapServerRpc extends ServerRpc {
+public interface I_CmsLocaleCompareContext {
 
     /**
-     * Opens the page copy dialog for a resource.<p>
+     * Gets the comparison locale.<p>
      *
-     * @param callId a unique (per client) id representing the RPC call
-     * @param structureId the structure id of the resource for which to open the dialog
+     * @return the comparison locale
      */
-    void openPageCopyDialog(String callId, String structureId);
+    Locale getComparisonLocale();
 
     /**
-     * Displays the locale comparison view.<p>
+     * Gets the locale group of the root resource.
      *
-     * @param id the locale comparison view
+     * @return the locale group of the root resource
      */
-    void showLocaleComparison(String id);
+    CmsLocaleGroup getLocaleGroup();
+
+    /**
+     * Gets the root resource.<p>
+     *
+     * @return the root resource
+     */
+    CmsResource getRoot();
+
+    /**
+     * Gets the root locale.<p>
+     *
+     * @return the root locale
+     */
+    Locale getRootLocale();
+
+    /**
+     * Refreshes everything.
+     */
+    void refreshAll();
 
 }

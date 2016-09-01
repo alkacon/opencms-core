@@ -147,7 +147,7 @@ class CmsContextMenuOverlay extends VOverlay {
     public void openNextTo(CmsContextMenuItemWidget parentMenuItem) {
 
         int left = parentMenuItem.getAbsoluteLeft() + parentMenuItem.getOffsetWidth();
-        int top = parentMenuItem.getAbsoluteTop();
+        int top = parentMenuItem.getAbsoluteTop() - Window.getScrollTop();
 
         showAt(left, top);
     }
@@ -205,6 +205,16 @@ class CmsContextMenuOverlay extends VOverlay {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#setPopupPositionAndShow(com.google.gwt.user.client.ui.PopupPanel.PositionCallback)
+     */
+    @Override
+    public void setPopupPositionAndShow(PositionCallback callback) {
+
+        super.setPopupPositionAndShow(callback);
+        normalizeItemWidths();
+    }
+
+    /**
      * Shows the overlay at the given position.<p>
      *
      * @param x the client x position
@@ -239,8 +249,6 @@ class CmsContextMenuOverlay extends VOverlay {
                 setPopupPosition(left, top);
             }
         });
-
-        normalizeItemWidths();
     }
 
     /**
@@ -273,7 +281,6 @@ class CmsContextMenuOverlay extends VOverlay {
     protected void normalizeItemWidths() {
 
         int widestItemWidth = getWidthOfWidestItem();
-
         for (CmsContextMenuItemWidget item : m_menuItems) {
             if (item.getOffsetWidth() <= widestItemWidth) {
                 item.setWidth(widestItemWidth + "px");

@@ -70,11 +70,7 @@ public class CmsSitemapTreeContainer extends CmsResourceTreeContainer {
         super();
     }
 
-    /**
-     * @see org.opencms.ui.components.fileselect.CmsResourceTreeContainer#getIcon(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
-     */
-    @Override
-    public String getIcon(CmsObject cms, CmsResource resource) {
+    public static String getSitemapResourceIcon(CmsObject cms, CmsResource resource) {
 
         CmsResource defaultFile = null;
         List<CmsResource> resourcesForType = Lists.newArrayList();
@@ -120,6 +116,15 @@ public class CmsSitemapTreeContainer extends CmsResourceTreeContainer {
             }
         }
         return CmsWorkplace.getResourceUri(result);
+    }
+
+    /**
+     * @see org.opencms.ui.components.fileselect.CmsResourceTreeContainer#getIcon(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     */
+    @Override
+    public String getIcon(CmsObject cms, CmsResource resource) {
+
+        return getSitemapResourceIcon(cms, resource);
     }
 
     /**

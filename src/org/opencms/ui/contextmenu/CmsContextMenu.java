@@ -1057,6 +1057,15 @@ public class CmsContextMenu extends AbstractExtension {
     }
 
     /**
+     * @see com.vaadin.server.AbstractExtension#extend(com.vaadin.server.AbstractClientConnector)
+     */
+    @Override
+    public void extend(AbstractClientConnector target) {
+
+        super.extend(target);
+    }
+
+    /**
      * Closes the context menu from server side.<p>
      */
     public void hide() {

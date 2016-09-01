@@ -27,54 +27,45 @@
 
 package org.opencms.ui.sitemap;
 
-import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.components.OpenCmsTheme;
 
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * UI class for Vaadin dialogs in the sitemap editor.<p>
+ * Button used for opening / closing tree levels.<p>
  */
-public class CmsSitemapUI extends A_CmsUI {
+public class CmsSitemapTreeNodeOpener extends Button {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The content. */
-    private CssLayout m_content = new CssLayout();
+    /** 'Minus' icon for the open state. */
+    public static final String MINUS = new String(new int[] {FontOpenCms.TREE_MINUS.getCodepoint()}, 0, 1);
 
-    /** The sitemap extension installed on this UI instance. */
-    private CmsSitemapExtension m_sitemapExtension;
+    /** 'Plus' icon for the closed state. */
+    public static final String PLUS = new String(new int[] {FontOpenCms.TREE_PLUS.getCodepoint()}, 0, 1);
 
     /**
-     * @see com.vaadin.ui.AbstractSingleComponentContainer#getContent()
+     * Creates a new instance.<p<
      */
-    @Override
-    public CssLayout getContent() {
-
-        return (CssLayout)super.getContent();
+    public CmsSitemapTreeNodeOpener() {
+        super();
+        addStyleName("opencms-font-icon");
+        addStyleName("o-sitemap-tree-opener");
+        addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        addStyleName(OpenCmsTheme.BUTTON_UNPADDED);
+        setStyleOpen(false);
     }
 
     /**
-     * @see org.opencms.ui.A_CmsUI#init(com.vaadin.server.VaadinRequest)
-     */
-    @Override
-    protected void init(VaadinRequest request) {
-
-        super.init(request);
-        m_sitemapExtension = new CmsSitemapExtension(this);
-        setContent(m_content);
-
-    }
-
-    /**
-     * Gets the sitemap extension instance.<p>
+     * Sets the style of the button.<p>
      *
-     * @return the sitemap extension instance
+     * @param open true if the button should be set to 'open' state, false for the 'closed' state
      */
-    CmsSitemapExtension getSitemapExtension() {
+    public void setStyleOpen(boolean open) {
 
-        return m_sitemapExtension;
+        setCaption(open ? MINUS : PLUS);
     }
-
 }

@@ -236,6 +236,10 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
         "",
         TYPE_NORMAL);
 
+    public static final String PROPERTY_SECONDARY_LOCALES = "locale.secondary";
+
+    public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
+
     /** The id of this property definition. */
     private CmsUUID m_id;
 

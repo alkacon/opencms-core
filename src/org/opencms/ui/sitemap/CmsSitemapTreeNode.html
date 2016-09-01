@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	  	<meta name="package-mapping" content="s:org.opencms.ui.sitemap" />
+  </head>
+  <body>
+  	<v-css-layout style-name="o-sitemap-tree-node" width="100%"> 
+  		<s-cms-sitemap-tree-node-opener _id="m_opener"></s-cms-sitemap-tree-node-opener>
+  		<v-css-layout style-name="o-sitemap-tree-node-right">
+  			<v-css-layout _id="m_contentContainer" style-name="o-sitemap-tree-node-content" width="100%"></v-css-layout>
+  			<v-css-layout _id="m_children" style-name="o-sitemap-tree-node-children" width="100%"></v-css-layout>
+  		</v-css-layout>
+  	</v-css-layout>
+  </body>
+</html>

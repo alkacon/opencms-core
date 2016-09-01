@@ -178,6 +178,15 @@ public final class CmsVaadinUtils {
 
     }
 
+    public static IndexedContainer buildContainerFromMap(String captionProperty, Map<String, String> map) {
+
+        IndexedContainer container = new IndexedContainer();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            container.addItem(entry.getKey()).getItemProperty(captionProperty).setValue(entry.getValue());
+        }
+        return container;
+    }
+
     /**
      * Creates a click listener which calls a Runnable when activated.<p>
      *
