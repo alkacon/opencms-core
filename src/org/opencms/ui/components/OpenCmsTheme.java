@@ -124,19 +124,19 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String HIDDEN = "hidden";
+
     /** CSS style name. */
     public static final String HIDDEN_TOOLBAR = "o-hidden-toolbar";
-
     /** CSS style name. */
     public static final String HOVER_COLUMN = "o-hover-column";
+
     /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
-
     /** CSS style name. */
     public static final String LABEL_ERROR = "o-label-error";
+
     /** CSS style name. */
     public static final String LOCK_OTHER = "o-lock-other";
-
     /** CSS style name. */
     public static final String LOCK_PUBLISH = "o-lock-publish";
 
@@ -154,6 +154,9 @@ public final class OpenCmsTheme {
 
     /** Path to the OpenCms logo theme resource. */
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
+
+    /** CSS style name. */
+    public static final String POINTER = "o-pointer";
 
     /** Path to the project current theme resource. */
     public static final String PROJECT_CURRENT_PATH = "img/project_current.png";

@@ -337,6 +337,7 @@ public class CmsSitemapTreeController {
         info = CmsResourceInfo.createSitemapResourceInfo(
             entry.getResource(),
             OpenCms.getSiteManager().getSiteForRootPath(m_localeContext.getRoot().getRootPath()));
+        info.getResourceIcon().addStyleName(OpenCmsTheme.POINTER);
 
         if (entry.getClientEntry().isHiddenNavigationEntry()) {
             info.addStyleName(OpenCmsTheme.RESOURCE_INFO_WEAK);
@@ -479,6 +480,7 @@ public class CmsSitemapTreeController {
             row.setWidth("100%");
             node.setContent(row);
             linkedInfo.setData("linked");
+            linkedInfo.getResourceIcon().addStyleName(OpenCmsTheme.POINTER);
         } else {
             node.setContent(info);
         }

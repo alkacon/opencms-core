@@ -408,7 +408,15 @@
 		
 		.o-resourceinfo-toolbar {
 			visibility: hidden; 
-			color: $v-font-color; 
+			color: #888888; 
+		}
+		
+		.o-resourceinfo-toolbar:hover, .o-resourceinfo-toolbar:hover * { 
+			color: $v-font-color !important; 
+		}
+		
+		.o-resourceinfo-toolbar:hover .v-menubar.v-menubar-o-toolbar-button > .v-menubar-menuitem:hover { 
+			color: inherit; 
 		}
 		
 		.o-resourceinfo-toolbar * {
@@ -453,6 +461,10 @@
       }
     }
     
+    .o-pointer { 
+    	cursor: pointer; 
+    }
+    
     
     .o-sitemap-tree-node-content .v-menubar-menuitem {
     	min-width: 24px !important;
@@ -463,18 +475,30 @@
     	}
     }
     
+    .o-locale-linkmode-bar { 
+    	.v-button::after { 
+    		display:none !important;
+    	}
+    }
+    
     .o-sitemap-tree-node-content .v-menubar {
     	margin-right: 4px !important; 
     }
     
-    .o-sitemap-locale-bar { 
+    .o-sitemap-locale-bar {
+    
+    	padding-left: 42px;
+    	 
     	.v-filterselect { 
-    		margin-right: 30px; 
+    		margin-right: 30px;
+    		vertical-align: middle;
     	} 
     	
     	.v-caption {
     		.v-captiontext {  
     			vertical-align: middle;
+				font-size: 16px;  
+				line-height: normal; 
     		}
     		margin-right: 10px; 
     	}

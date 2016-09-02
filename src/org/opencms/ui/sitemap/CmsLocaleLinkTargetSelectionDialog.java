@@ -177,6 +177,7 @@ public class CmsLocaleLinkTargetSelectionDialog extends CmsSitemapFolderSelectDi
             null);
         m_siteData = getContents().getSiteSelector().getContainerDataSource();
         HorizontalLayout modeChangeButtons = new HorizontalLayout(m_localeModeButton, m_siteModeButton);
+        modeChangeButtons.addStyleName("o-locale-linkmode-bar");
 
         getContents().getContainer().addComponent(modeChangeButtons, 0);
         String buttonWidth = "100px";
