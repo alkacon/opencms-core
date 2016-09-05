@@ -369,7 +369,11 @@
 	
 	
 	.o-resourceinfo-directlink .o-resinfo2 {
-		 @include linear-gradient(to bottom, $v-app-background-color 0%, $v-app-background-color 48%, #acd 70%, #adf 100%);
+		 @include linear-gradient(to bottom,#fffae8 0%,#fffae8 48%,#fbdaac 52%,#fbdaac 100%);
+	}
+	
+	*[location="buttonContainer"] > * > * > .o-resinfo2 {
+		margin-top: -1px; 
 	}
 		
 	
@@ -461,6 +465,12 @@
       }
     }
     
+    .o-sitemap-notranslation { 
+    	color: orange !important;  
+    	font-size: 20px !important; 
+    	margin-top: 9px; 
+    }
+    
     .o-pointer { 
     	cursor: pointer; 
     }
@@ -481,8 +491,9 @@
     	}
     }
     
-    .o-sitemap-tree-node-content .v-menubar {
-    	margin-right: 4px !important; 
+    .o-sitemap-tree-node-content .v-menubar.v-menubar-o-toolbar-button {
+    	padding-left: 6px;
+    	padding-right: 6px;
     }
     
     .o-sitemap-locale-bar {
@@ -501,8 +512,12 @@
 				line-height: normal; 
     		}
     		margin-right: 10px; 
+    		position: relative;
+    		margin-top: -1px;
     	}
     }
+    
+    
      
     	
     
@@ -719,13 +734,12 @@
 	
 	
 	.v-tree-node-caption-o-locale-link-target-alredy-linked { 
-		font-weight: 100;
-		color: #afafaf;
+		color: orange;
 	}
 	
 	.v-tree-node-caption-o-locale-link-notranslation { 
 		font-weight: 100;
-		color: orange;
+		color: #afafaf;
 	}
 	
 	

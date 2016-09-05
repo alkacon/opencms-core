@@ -47,7 +47,6 @@ import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
-import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsPropertyDialogExtension;
 import org.opencms.ui.util.CmsNewResourceBuilder;
 import org.opencms.ui.util.CmsNewResourceBuilder.I_Callback;
@@ -77,7 +76,6 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinService;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button;
@@ -292,10 +290,10 @@ public class CmsNewDialog extends CmsBasicDialog {
                 CmsWorkplace.getResourceUri("filetypes/" + iconUri));
             info.setData(type);
             m_typeContainer.addComponent(info);
-            info.getButtonLabel().setContentMode(ContentMode.HTML);
-            String labelClass = getLabelClass();
-            info.getButtonLabel().setValue("<span class='" + labelClass + "'>");
-            info.getButtonLabel().addStyleName(OpenCmsTheme.RESINFO_HIDDEN_ICON);
+            //            info.getButtonLabel().setContentMode(ContentMode.HTML);
+            //            String labelClass = getLabelClass();
+            //            info.getButtonLabel().setValue("<span class='" + labelClass + "'>");
+            //            info.getButtonLabel().addStyleName(OpenCmsTheme.RESINFO_HIDDEN_ICON);
         }
     }
 

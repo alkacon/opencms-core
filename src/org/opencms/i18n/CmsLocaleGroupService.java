@@ -280,7 +280,7 @@ public class CmsLocaleGroupService {
             CmsLocaleGroup group2 = groupService.readLocaleGroup(secondResourceCorrected);
             Set<Locale> locales2 = group2.getLocales();
             if (!(Sets.intersection(locales1, locales2).isEmpty())) {
-                return Status.other;
+                return Status.alreadyLinked;
             }
 
             List<CmsResource> secondaryResources = Lists.newArrayList();

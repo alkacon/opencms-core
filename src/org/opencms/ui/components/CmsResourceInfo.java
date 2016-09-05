@@ -53,6 +53,8 @@ import com.vaadin.ui.Label;
  */
 public class CmsResourceInfo extends CustomLayout {
 
+    private static final String BUTTON_CONTAINER = "buttonContainer";
+
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceInfo.class);
 
@@ -179,9 +181,9 @@ public class CmsResourceInfo extends CustomLayout {
      *
      * @return the button label
      */
-    public Label getButtonLabel() {
+    public Component getButtonWidget() {
 
-        return m_buttonLabel;
+        return getComponent("buttonContainer");
     }
 
     /**
@@ -209,10 +211,9 @@ public class CmsResourceInfo extends CustomLayout {
      *
      * @param button the new button component
      */
-    public void setButton(Component button) {
+    public void setButtonWidget(Component button) {
 
-        Component oldComponent = getComponent("buttonContainer");
-        replaceComponent(oldComponent, button);
+        addComponent(button, BUTTON_CONTAINER);
     }
 
 }

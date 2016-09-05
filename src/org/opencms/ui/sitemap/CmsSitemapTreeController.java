@@ -79,7 +79,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
@@ -250,6 +251,9 @@ public class CmsSitemapTreeController {
         }
     }
 
+    /** Default width for linked items displayed on the right side of tree items. */
+    public static final int RHS_WIDTH = 420;
+
     /** The log isntance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapTreeController.class);
 
@@ -314,7 +318,6 @@ public class CmsSitemapTreeController {
                         if ((currentComponent != null)
                             && "linked".equals(((AbstractComponent)currentComponent).getData())) {
                             linked = true;
-                            System.out.println("linked -> true");
                         }
                         if (event.getClickedComponent() instanceof CmsResourceIcon) {
                             if (currentComponent == node) {
@@ -338,20 +341,20 @@ public class CmsSitemapTreeController {
             entry.getResource(),
             OpenCms.getSiteManager().getSiteForRootPath(m_localeContext.getRoot().getRootPath()));
         info.getResourceIcon().addStyleName(OpenCmsTheme.POINTER);
+        info.getResourceIcon().setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_OPEN_PAGE_0));
 
         if (entry.getClientEntry().isHiddenNavigationEntry()) {
             info.addStyleName(OpenCmsTheme.RESOURCE_INFO_WEAK);
         }
         final MenuBar menu = new MenuBar();
-        if (entry.isMarkedNoTranslation(m_localeContext.getComparisonLocale())) {
-            final MenuItem mark = menu.addItem("", null);
-            mark.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_DONT_TRANSLATE_0));
-            mark.setIcon(FontAwesome.BAN);
-            mark.setStyleName("o-sitemap-notranslation");
-        }
+        boolean noTranslation = false;
+        noTranslation = entry.isMarkedNoTranslation(m_localeContext.getComparisonLocale());
+
         final MenuItem main = menu.addItem("", null);
         main.setIcon(FontOpenCms.CONTEXT_MENU);
-        info.setButton(menu);
+        CssLayout rightSide = new CssLayout();
+        info.setButtonWidget(rightSide);
+        rightSide.addComponent(menu);
         main.setCommand(new Command() {
 
             /** Serial version id. */
@@ -472,16 +475,18 @@ public class CmsSitemapTreeController {
             if (entry.isDirectLink()) {
                 linkedInfo.addStyleName(OpenCmsTheme.RESOURCE_INFO_DIRECTLINK);
             }
-            HorizontalLayout row = new HorizontalLayout();
-            row.addComponent(info);
-            row.addComponent(linkedInfo);
-            row.setExpandRatio(info, 1.0f);
-            row.setExpandRatio(linkedInfo, 1.0f);
-            row.setWidth("100%");
-            node.setContent(row);
+            rightSide.addComponent(linkedInfo, 0);
+            linkedInfo.setWidth(RHS_WIDTH + "px");
+            node.setContent(info);
             linkedInfo.setData("linked");
+            linkedInfo.getResourceIcon().setDescription(
+                CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_OPEN_PAGE_0));
             linkedInfo.getResourceIcon().addStyleName(OpenCmsTheme.POINTER);
         } else {
+            if (noTranslation) {
+                Label noTranslationLabel = createNoTranslationLabel();
+                rightSide.addComponent(noTranslationLabel, 0);
+            }
             node.setContent(info);
         }
 
@@ -635,73 +640,75 @@ public class CmsSitemapTreeController {
         final CmsResource fileToModify) {
 
         if (!entry.isMarkedNoTranslation(m_localeContext.getComparisonLocale())) {
-            ContextMenuItem markPage = m_menu.addItem(
-                CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_ADD_DONT_TRANSLATE_0));
-            markPage.addItemClickListener(new ContextMenuItemClickListener() {
+            if (!entry.isLinked()) {
+                ContextMenuItem markPage = m_menu.addItem(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_ADD_DONT_TRANSLATE_0));
+                markPage.addItemClickListener(new ContextMenuItemClickListener() {
 
-                @SuppressWarnings("synthetic-access")
-                public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+                    @SuppressWarnings("synthetic-access")
+                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
 
-                    CmsResource fileToModify2 = fileToModify;
-                    if (fileToModify2.isFolder()) {
-                        try {
-                            fileToModify2 = A_CmsUI.getCmsObject().readDefaultFile(
-                                fileToModify2,
-                                CmsResourceFilter.IGNORE_EXPIRATION);
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    }
-
-                    CmsObject cms = A_CmsUI.getCmsObject();
-                    CmsLockActionRecord actionRecord = null;
-                    try {
-                        actionRecord = CmsLockUtil.ensureLock(cms, fileToModify2);
-                        m_localeContext.getComparisonLocale().toString();
-                        CmsProperty prop = cms.readPropertyObject(
-                            fileToModify2,
-                            CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
-                            false);
-                        String propValue = prop.getValue();
-                        if (propValue == null) {
-                            propValue = ""; // make getLocales not return null
-                        }
-                        List<Locale> currentLocales = CmsLocaleManager.getLocales(propValue);
-                        if (!currentLocales.contains(m_localeContext.getComparisonLocale())) {
-                            currentLocales.add(m_localeContext.getComparisonLocale());
-                            String newPropValue = Joiner.on(",").join(currentLocales);
-                            CmsProperty newProp = new CmsProperty(
-                                CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
-                                newPropValue,
-                                null);
-                            cms.writePropertyObjects(fileToModify2, Arrays.asList(newProp));
-                            DialogContext dialogContext = new DialogContext(
-                                A_CmsUI.getCmsObject().readResource(
-                                    entry.getClientEntry().getId(),
-                                    CmsResourceFilter.IGNORE_EXPIRATION),
-                                node);
-                            dialogContext.finish(Arrays.asList(fileToModify2.getStructureId()));
-
-                        }
-
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                        CmsErrorDialog.showErrorDialog(e);
-
-                    } finally {
-                        if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
+                        CmsResource fileToModify2 = fileToModify;
+                        if (fileToModify2.isFolder()) {
                             try {
-                                cms.unlockResource(fileToModify2);
+                                fileToModify2 = A_CmsUI.getCmsObject().readDefaultFile(
+                                    fileToModify2,
+                                    CmsResourceFilter.IGNORE_EXPIRATION);
                             } catch (CmsException e) {
                                 LOG.error(e.getLocalizedMessage(), e);
-                                CmsErrorDialog.showErrorDialog(e);
                             }
                         }
+
+                        CmsObject cms = A_CmsUI.getCmsObject();
+                        CmsLockActionRecord actionRecord = null;
+                        try {
+                            actionRecord = CmsLockUtil.ensureLock(cms, fileToModify2);
+                            m_localeContext.getComparisonLocale().toString();
+                            CmsProperty prop = cms.readPropertyObject(
+                                fileToModify2,
+                                CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
+                                false);
+                            String propValue = prop.getValue();
+                            if (propValue == null) {
+                                propValue = ""; // make getLocales not return null
+                            }
+                            List<Locale> currentLocales = CmsLocaleManager.getLocales(propValue);
+                            if (!currentLocales.contains(m_localeContext.getComparisonLocale())) {
+                                currentLocales.add(m_localeContext.getComparisonLocale());
+                                String newPropValue = Joiner.on(",").join(currentLocales);
+                                CmsProperty newProp = new CmsProperty(
+                                    CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
+                                    newPropValue,
+                                    null);
+                                cms.writePropertyObjects(fileToModify2, Arrays.asList(newProp));
+                                DialogContext dialogContext = new DialogContext(
+                                    A_CmsUI.getCmsObject().readResource(
+                                        entry.getClientEntry().getId(),
+                                        CmsResourceFilter.IGNORE_EXPIRATION),
+                                    node);
+                                dialogContext.finish(Arrays.asList(fileToModify2.getStructureId()));
+
+                            }
+
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                            CmsErrorDialog.showErrorDialog(e);
+
+                        } finally {
+                            if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
+                                try {
+                                    cms.unlockResource(fileToModify2);
+                                } catch (CmsException e) {
+                                    LOG.error(e.getLocalizedMessage(), e);
+                                    CmsErrorDialog.showErrorDialog(e);
+                                }
+                            }
+                        }
+
                     }
 
-                }
-
-            });
+                });
+            }
         } else {
             ContextMenuItem unmarkPage = m_menu.addItem(
                 CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0));
@@ -807,6 +814,22 @@ public class CmsSitemapTreeController {
             }
 
         });
+    }
+
+    /**
+     * Creates the widget for the 'no translation' sign.<p>
+     *
+     * @return the widget for the 'no translation' sign
+     */
+    private Label createNoTranslationLabel() {
+
+        Label result = new Label();
+        result.addStyleName("o-sitemap-notranslation");
+        result.addStyleName("FontAwesome");
+        result.setValue(new String(new int[] {FontAwesome.BAN.getCodepoint()}, 0, 1));
+        result.setWidth(RHS_WIDTH + "px");
+        result.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_DONT_TRANSLATE_0));
+        return result;
     }
 
     /**

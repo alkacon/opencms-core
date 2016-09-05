@@ -187,9 +187,13 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
         m_rootLocaleSelector.setNullSelectionAllowed(false);
         for (Locale selectableLocale : possibleLocaleSelections) {
             m_rootLocaleSelector.addItem(selectableLocale);
+            String localeOptionSuffix = "";
+            if (selectableLocale.equals(mainLocale)) {
+                localeOptionSuffix = " [*]";
+            }
             m_rootLocaleSelector.setItemCaption(
                 selectableLocale,
-                selectableLocale.getDisplayLanguage(A_CmsUI.get().getLocale()));
+                selectableLocale.getDisplayLanguage(A_CmsUI.get().getLocale()) + localeOptionSuffix);
         }
         m_rootLocaleSelector.setValue(m_rootLocale);
         m_rootLocaleSelector.addValueChangeListener(new ValueChangeListener() {
@@ -221,9 +225,14 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
         Locale firstComparisonLocale = null;
         for (Locale comparisonLocale : comparisonLocales) {
             m_comparisonLocaleSelector.addItem(comparisonLocale);
+            String localeOptionSuffix = "";
+            if (comparisonLocale.equals(mainLocale)) {
+                localeOptionSuffix = " [*]";
+            }
+
             m_comparisonLocaleSelector.setItemCaption(
                 comparisonLocale,
-                comparisonLocale.getDisplayLanguage(A_CmsUI.get().getLocale()));
+                comparisonLocale.getDisplayLanguage(A_CmsUI.get().getLocale()) + localeOptionSuffix);
             if ((firstComparisonLocale == null) && !comparisonLocale.equals(m_rootLocale)) {
                 firstComparisonLocale = comparisonLocale;
             }

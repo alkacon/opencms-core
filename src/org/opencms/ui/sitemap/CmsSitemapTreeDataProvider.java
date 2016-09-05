@@ -96,9 +96,12 @@ public class CmsSitemapTreeDataProvider {
             });
             CmsResource lastFolder = null;
             Set<CmsUUID> foldersWithNoChildFolders = Sets.newHashSet();
+
+            folders.add(null); // add null as a dummy value so that in the loop below, lastFolder takes all real folders as values
             for (CmsResource folder : folders) {
-                if ((lastFolder != null)
-                    && !(CmsStringUtil.isPrefixPath(lastFolder.getRootPath(), folder.getRootPath()))) {
+                if ((folder == null)
+                    || ((lastFolder != null)
+                        && !(CmsStringUtil.isPrefixPath(lastFolder.getRootPath(), folder.getRootPath())))) {
                     foldersWithNoChildFolders.add(lastFolder.getStructureId());
 
                 }
@@ -126,7 +129,8 @@ public class CmsSitemapTreeDataProvider {
             CmsVfsSitemapService svc = getSitemapService();
             CmsClientSitemapEntry ent = svc.getChildren(m_root.getRootPath(), entry.getId(), 1);
             for (CmsClientSitemapEntry subEnt : ent.getSubEntries()) {
-                if (subEnt.isInNavigation() && (subEnt.getDefaultFileId() != null)) {
+                if (subEnt.isInNavigation()
+                    && ((subEnt.getDefaultFileId() != null) || subEnt.isNavigationLevelType())) {
                     try {
                         CmsUUID idToRead = subEnt.getId();
                         if (subEnt.getDefaultFileId() != null) {

@@ -266,6 +266,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALECOMPARE_MODE_SITES_0 = "GUI_LOCALECOMPARE_MODE_SITES_0";
 
+    public static final String GUI_LOCALECOMPARE_OPEN_PAGE_0 = "GUI_LOCALECOMPARE_OPEN_PAGE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0";
 
