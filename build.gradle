@@ -200,6 +200,7 @@ jar {
     archiveName 'opencms.jar'
     
     include 'org/opencms/**'
+    include 'org/vaadin/risto/**'
     include 'com/**'
     include 'META-INF/**'
     exclude '**/package.html'
