@@ -540,7 +540,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             && (m_contentValue != null)
             && isDirectEditEnabled(cms)
             && (m_contentValue.getDocument().getFile() != null)) {
-            CmsJspContentAccessBean.createImageDndAttr(
+            result = CmsJspContentAccessBean.createImageDndAttr(
                 m_contentValue.getDocument().getFile().getStructureId(),
                 m_contentValue.getPath(),
                 String.valueOf(m_contentValue.getLocale()));
