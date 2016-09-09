@@ -8,6 +8,7 @@
 	<module>
 		<name>org.opencms.jsp.search</name>
 		<nicename><![CDATA[Solr search form support for JSPs]]></nicename>
+		<group>OpenCms Frontend</group>
 		<class/>
 		<export-mode name="reduced"/>
 		<description><![CDATA[Exposes a configuration content that can be used to configure search forms]]></description>

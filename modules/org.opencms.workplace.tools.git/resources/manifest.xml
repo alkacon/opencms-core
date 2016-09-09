@@ -8,6 +8,7 @@
 	<module>
 		<name>org.opencms.workplace.tools.git</name>
 		<nicename><![CDATA[OpenCms Git Support]]></nicename>
+		<group>OpenCms Workplace</group>
 		<class/>
 		<export-mode name="reduced"/>
 		<description><![CDATA[The module adds a git repository binding to the workplace tools.<br>

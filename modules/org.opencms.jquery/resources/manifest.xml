@@ -8,7 +8,7 @@
 	<module>
 		<name>org.opencms.jquery</name>
 		<nicename><![CDATA[OpenCms jQuery library]]></nicename>
-		<group>OpenCms frontend</group>
+		<group>OpenCms Frontend</group>
 		<class/>
 		<export-mode name="reduced"/>
 		<description><![CDATA[This modules includes the jQuery javascript libraries as well as several plugins used by OpenCms]]></description>
