@@ -82,8 +82,10 @@ public final class CmsMessageBundleEditorTypes {
     /** Types of bundles editable by the Editor. */
     public enum BundleType {
         /** A bundle of type propertyvfsbundle. */
-        PROPERTY, /** A bundle of type xmlvfsbundle. */
-        XML, /** A bundle descriptor. */
+        PROPERTY,
+        /** A bundle of type xmlvfsbundle. */
+        XML,
+        /** A bundle descriptor. */
         DESCRIPTOR;
 
         /**
@@ -149,17 +151,22 @@ public final class CmsMessageBundleEditorTypes {
     /** The propertyIds of the table columns. */
     public enum TableProperty {
         /** Table column with the message key. */
-        KEY, /** Table column with the message description. */
-        DESCRIPTION, /** Table column with the message's default value. */
-        DEFAULT, /** Table column with the current (language specific) translation of the message. */
-        TRANSLATION, /** Table column with the options (add, delete). */
+        KEY,
+        /** Table column with the message description. */
+        DESCRIPTION,
+        /** Table column with the message's default value. */
+        DEFAULT,
+        /** Table column with the current (language specific) translation of the message. */
+        TRANSLATION,
+        /** Table column with the options (add, delete). */
         OPTIONS
     }
 
     /** The different edit modes. */
     enum EditMode {
         /** Editing the messages and the descriptor. */
-        MASTER, /** Only editing messages. */
+        MASTER,
+        /** Only editing messages. */
         DEFAULT
     }
 
@@ -267,7 +274,8 @@ public final class CmsMessageBundleEditorTypes {
     /** The different ways the key set is shown. */
     enum KeySetMode {
         /** All keys used in any of the available languages. */
-        ALL, /** Only keys used for the current language. */
+        ALL,
+        /** Only keys used for the current language. */
         USED_ONLY;
     }
 
@@ -674,13 +682,11 @@ public final class CmsMessageBundleEditorTypes {
         query.add("fl", "path");
         CmsSolrResultList results;
         try {
-            results = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE).search(
-                cms,
-                query,
-                true,
-                null,
-                true,
-                null);
+            boolean isOnlineProject = cms.getRequestContext().getCurrentProject().isOnlineProject();
+            String indexName = isOnlineProject
+            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
+            results = OpenCms.getSearchManager().getIndexSolr(indexName).search(cms, query, true, null, true, null);
         } catch (CmsSearchException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_BUNDLE_DESCRIPTOR_SEARCH_ERROR_0), e);
             return null;
