@@ -47,6 +47,7 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +64,7 @@ import com.vaadin.ui.Component;
 /**
  * Class whose instances contain the static data needed for a table column.<p>
  */
-public class CmsResourceTableProperty {
+public class CmsResourceTableProperty implements Serializable {
 
     /**
      * Converter for dates represented by their time stamp.<p>
@@ -109,6 +110,9 @@ public class CmsResourceTableProperty {
             return String.class;
         }
     }
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -8006568789417647500L;
 
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_CREATED = new CmsResourceTableProperty(
