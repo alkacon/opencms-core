@@ -243,7 +243,7 @@ public class CmsLoginUI extends A_CmsUI {
         if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
             String target = request.getParameter("requestedResource");
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(target)) {
-                target = CmsLoginController.getLoginTarget(cms, getWorkplaceSettings(request.getSession()), null);
+                target = CmsLoginController.getLoginTarget(cms, getWorkplaceSettings(cms, request.getSession()), null);
             }
             response.sendRedirect(target);
             return null;
@@ -344,16 +344,17 @@ public class CmsLoginUI extends A_CmsUI {
     /**
      * Returns the current users workplace settings.<p>
      *
+     * @param cms the CMS context
      * @param session the session
      *
      * @return the settings
      */
-    private static CmsWorkplaceSettings getWorkplaceSettings(HttpSession session) {
+    private static CmsWorkplaceSettings getWorkplaceSettings(CmsObject cms, HttpSession session) {
 
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(
             CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
-            settings = CmsLoginHelper.initSiteAndProject(getCmsObject());
+            settings = CmsLoginHelper.initSiteAndProject(cms);
             VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
                 CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
                 settings);
