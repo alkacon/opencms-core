@@ -48,8 +48,8 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.OptionGroup;
 
 /**
  * Dialog used to copy container pages including their elements.<p>
@@ -66,7 +66,7 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
     private I_CmsDialogContext m_context;
 
     /** The copy mode selection field. */
-    private OptionGroup m_copyMode = new OptionGroup();
+    private ComboBox m_copyMode = new ComboBox();
 
     /** The OK button. */
     private Button m_okButton;
@@ -83,10 +83,14 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
         m_context = context;
         displayResourceInfo(context.getResources());
         initButtons();
+        m_copyMode.setNullSelectionAllowed(false);
         setContent(initContent());
         m_okButton.setEnabled(false);
         m_targetSelect.addValueChangeListener(new ValueChangeListener() {
 
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
             public void valueChange(ValueChangeEvent event) {
 
                 m_okButton.setEnabled(true);
@@ -165,6 +169,11 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
         field.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_TARGET_FOLDER_0));
         form.addComponent(field);
         m_targetSelect = field;
+        m_copyMode.addItem(CmsContainerPageCopier.CopyMode.automatic);
+        m_copyMode.setItemCaption(
+            CmsContainerPageCopier.CopyMode.automatic,
+            CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_MODE_AUTO_0));
+
         m_copyMode.addItem(CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale);
         m_copyMode.setItemCaption(
             CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale,
@@ -173,7 +182,7 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
         m_copyMode.setItemCaption(
             CmsContainerPageCopier.CopyMode.reuse,
             CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_MODE_REUSE_0));
-        m_copyMode.setValue(CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale);
+        m_copyMode.setValue(CmsContainerPageCopier.CopyMode.automatic);
         form.addComponent(m_copyMode);
         m_copyMode.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_COPY_MODE_0));
         return form;

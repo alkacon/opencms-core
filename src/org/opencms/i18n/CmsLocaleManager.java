@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
 import com.cybozu.labs.langdetect.DetectorFactory;
@@ -84,13 +85,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
     /** The default locale, this is the first configured locale. */
     private static Locale m_defaultLocale = Locale.ENGLISH;
 
-    /**
-     * Required for setting the default locale on the first possible time.<p>
-     */
-    static {
-        setDefaultLocale();
-    }
-
     /** The set of available locale names. */
     private List<Locale> m_availableLocales;
 
@@ -102,6 +96,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
     /** The configured locale handler. */
     private I_CmsLocaleHandler m_localeHandler;
+
+    /** The string value of the 'reuse-elements' option. */
+    private String m_reuseElementsStr;
 
     /** The OpenCms default time zone. */
     private TimeZone m_timeZone;
@@ -141,6 +138,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_defaultLocale = defaultLocale;
         m_defaultLocales.add(defaultLocale);
         m_availableLocales.add(defaultLocale);
+    }
+
+    /**
+     * Required for setting the default locale on the first possible time.<p>
+     */
+    static {
+        setDefaultLocale();
     }
 
     /**
@@ -1025,6 +1029,16 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
+     * Gets the string value of the 'reuse-elements' option.<p>
+     *
+     * @return the string value of the 'reuse-elements' option
+     */
+    public String getReuseElementsStr() {
+
+        return m_reuseElementsStr;
+    }
+
+    /**
      * Returns the OpenCms default the time zone.<p>
      *
      * @return the OpenCms default the time zone
@@ -1086,6 +1100,16 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
+     * Sets the 'reuse-elemnts option value.<p>
+     *
+     * @param reuseElements the option value
+     */
+    public void setReuseElements(String reuseElements) {
+
+        m_reuseElementsStr = reuseElements;
+    }
+
+    /**
      * Sets OpenCms default the time zone.<p>
      *
      * If the name can not be resolved as time zone ID, then "GMT" is used.<p>
@@ -1096,6 +1120,17 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         // according to JavaDoc, "GMT" is the default time zone if the name can not be resolved
         m_timeZone = TimeZone.getTimeZone(timeZoneName);
+    }
+
+    /**
+     * Returns true if the 'copy page' dialog should reuse elements in auto mode when copying to a different locale.<p>
+     *
+     * @return true if auto mode of the 'copy page' dialog should reuse elements
+     */
+    public boolean shouldReuseElements() {
+
+        boolean isFalseInConfig = Boolean.FALSE.toString().equalsIgnoreCase(StringUtils.trim(m_reuseElementsStr));
+        return !isFalseInConfig;
     }
 
     /**

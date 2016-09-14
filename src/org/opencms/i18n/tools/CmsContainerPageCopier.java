@@ -87,6 +87,9 @@ public class CmsContainerPageCopier {
      * Enum representing the element copy mode.<p>
      */
     public enum CopyMode {
+        /** Choose between reuse / copy automatically depending on source / target locale and the configuration .*/
+        automatic,
+
         /** Do not copy elements. */
         reuse,
 
@@ -95,6 +98,7 @@ public class CmsContainerPageCopier {
 
         /** Like smartCopy, but also converts locales of copied elements. */
         smartCopyAndChangeLocale;
+
     }
 
     /**
@@ -434,6 +438,29 @@ public class CmsContainerPageCopier {
                 + "'");
         CmsObject rootCms = OpenCms.initCmsObject(m_cms);
         rootCms.getRequestContext().setSiteRoot("");
+        if (m_copyMode == CopyMode.automatic) {
+            Locale sourceLocale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, source);
+            Locale targetLocale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, target);
+            // if same locale, copy elements, otherwise use configured setting
+            LOG.debug(
+                "copy mode automatic: source="
+                    + sourceLocale
+                    + " target="
+                    + targetLocale
+                    + " reuseConfig="
+                    + OpenCms.getLocaleManager().shouldReuseElements()
+                    + "");
+            if (sourceLocale.equals(targetLocale)) {
+                m_copyMode = CopyMode.smartCopyAndChangeLocale;
+            } else {
+                if (OpenCms.getLocaleManager().shouldReuseElements()) {
+                    m_copyMode = CopyMode.reuse;
+                } else {
+                    m_copyMode = CopyMode.smartCopyAndChangeLocale;
+                }
+            }
+        }
+
         if (source.isFolder()) {
             if (source.equals(target)) {
                 throw new CmsException(Messages.get().container(Messages.ERR_PAGECOPY_SOURCE_IS_TARGET_0));
@@ -493,7 +520,7 @@ public class CmsContainerPageCopier {
                 CmsStringUtil.joinPaths(target.getRootPath(), source.getName()));
             int lastDot = copyPath.lastIndexOf(".");
             int lastSlash = copyPath.lastIndexOf("/");
-            if (lastDot > lastSlash) {
+            if (lastDot > lastSlash) { // path has an extension
                 String macroPath = copyPath.substring(0, lastDot) + "%(number)" + copyPath.substring(lastDot);
                 copyPath = nameGen.getNewFileName(rootCms, macroPath, 4, true);
             } else {

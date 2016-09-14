@@ -110,6 +110,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "exclusive" attribute. */
     public static final String A_EXCLUSIVE = "exclusive";
 
+    /** The attribute name for the localization mode. */
+    public static final String A_LOCALIZATION_MODE = "localizationMode";
+
     /** The "maxvisited" attribute. */
     public static final String A_MAXVISITED = "maxvisited";
 
@@ -286,9 +289,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the default locale(s). */
     public static final String N_LOCALESDEFAULT = "localesdefault";
-
-    /** The attribute name for the localization mode. */
-    public static final String A_LOCALIZATION_MODE = "localizationMode";
 
     /** The node name for the log-interval node. */
     public static final String N_LOG_INTERVAL = "log-interval";
@@ -547,6 +547,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** Node name for the user max inactive time. */
     private static final String N_MAX_INACTIVE_TIME = "maxInactiveTime";
+
+    /** Node name for the element reuse mode. */
+    private static final String N_REUSE_ELEMENTS = "reuse-elements";
 
     /** Node name for the user session mode. */
     private static final String N_USER_SESSION_MODE = "user-session-mode";
@@ -820,6 +823,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             0);
         // add time zone rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_I18N + "/" + N_TIMEZONE, "setTimeZone", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_I18N + "/" + N_REUSE_ELEMENTS, "setReuseElements", 0);
 
         // add version history rules
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_VERSIONHISTORY, "setHistorySettings", 3);
@@ -1262,6 +1266,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             localesElement.addElement(N_LOCALE).setText(loc.next().toString());
         }
         i18nElement.addElement(N_TIMEZONE).setText(m_localeManager.getTimeZone().getID());
+        if (null != m_localeManager.getReuseElementsStr()) {
+            i18nElement.addElement(N_REUSE_ELEMENTS).setText(m_localeManager.getReuseElementsStr());
+        }
 
         // mail nodes
         Element mailElement = systemElement.addElement(N_MAIL);

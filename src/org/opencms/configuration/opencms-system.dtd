@@ -69,7 +69,7 @@
 <!--
 # Internationalization settings.
 -->
-<!ELEMENT internationalization (localehandler, localesconfigured, localesdefault, timezone?)>
+<!ELEMENT internationalization (localehandler, localesconfigured, localesdefault, timezone?, reuse-elements?)>
 
 <!ELEMENT localehandler EMPTY>
 <!ATTLIST localehandler class CDATA #REQUIRED>
@@ -80,6 +80,8 @@
 <!ELEMENT locale (#PCDATA)>
 
 <!ELEMENT timezone (#PCDATA)>
+
+<!ELEMENT reuse-elements (#PCDATA)>
 
 <!--
 # Mail settings.
