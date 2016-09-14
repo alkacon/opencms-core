@@ -62,6 +62,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCE_OUT_OF_TIME_RANGE_1 = "GUI_RESOURCE_OUT_OF_TIME_RANGE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESULT_LABEL_COPYRIGHT_0 = "GUI_RESULT_LABEL_COPYRIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_LABEL_DATE_0 = "GUI_RESULT_LABEL_DATE_0";
 
     /** Message constant for key in the resource bundle. */

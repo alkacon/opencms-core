@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components;
 
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_COPYRIGHT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_CREATED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_EXPIRED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
@@ -50,9 +51,12 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_M
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
@@ -311,8 +315,6 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         if (resourceItem.getItemProperty(PROPERTY_TYPE_ICON) != null) {
             resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
                 new CmsResourceIcon(resUtil, resUtil.getBigIconPath(), resource.getState()));
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_TYPE_ICON.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_PROJECT) != null) {
@@ -336,90 +338,71 @@ public class CmsResourceTable extends A_CmsCustomComponent {
                 default:
             }
             resourceItem.getItemProperty(PROPERTY_PROJECT).setValue(projectFlag);
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_PROJECT.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT) != null) {
             resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_INSIDE_PROJECT.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED) != null) {
             resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).setValue(
                 Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_RELEASED_NOT_EXPIRED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME) != null) {
             resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_RESOURCE_NAME.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_TITLE) != null) {
             resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_TITLE.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT) != null) {
             resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_NAVIGATION_TEXT.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_COPYRIGHT) != null) {
+            try {
+                CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_COPYRIGHT, false);
+                resourceItem.getItemProperty(PROPERTY_COPYRIGHT).setValue(prop.getValue(""));
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         if (resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE) != null) {
             resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE).setValue(
                 CmsWorkplaceMessages.getResourceTypeName(locale, type.getTypeName()));
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_RESOURCE_TYPE.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_IS_FOLDER) != null) {
             resourceItem.getItemProperty(PROPERTY_IS_FOLDER).setValue(Boolean.valueOf(resource.isFolder()));
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_IS_FOLDER.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_SIZE) != null) {
             if (resource.isFile()) {
                 resourceItem.getItemProperty(PROPERTY_SIZE).setValue(Integer.valueOf(resource.getLength()));
             }
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_SIZE.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_PERMISSIONS) != null) {
             resourceItem.getItemProperty(PROPERTY_PERMISSIONS).setValue(resUtil.getPermissionString());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_PERMISSIONS.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED) != null) {
             resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED).setValue(Long.valueOf(resource.getDateLastModified()));
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_DATE_MODIFIED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_USER_MODIFIED) != null) {
             resourceItem.getItemProperty(PROPERTY_USER_MODIFIED).setValue(resUtil.getUserLastModified());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_USER_MODIFIED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_DATE_CREATED) != null) {
             resourceItem.getItemProperty(PROPERTY_DATE_CREATED).setValue(Long.valueOf(resource.getDateCreated()));
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_DATE_CREATED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_USER_CREATED) != null) {
             resourceItem.getItemProperty(PROPERTY_USER_CREATED).setValue(resUtil.getUserCreated());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_USER_CREATED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_DATE_RELEASED) != null) {
@@ -427,8 +410,6 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             if (release != CmsResource.DATE_RELEASED_DEFAULT) {
                 resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(Long.valueOf(release));
             }
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_DATE_RELEASED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED) != null) {
@@ -436,28 +417,19 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             if (expire != CmsResource.DATE_EXPIRED_DEFAULT) {
                 resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(Long.valueOf(expire));
             }
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_DATE_EXPIRED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_STATE_NAME) != null) {
             resourceItem.getItemProperty(PROPERTY_STATE_NAME).setValue(resUtil.getStateName());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_STATE_NAME.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_STATE) != null) {
             resourceItem.getItemProperty(PROPERTY_STATE).setValue(resource.getState());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_STATE.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_USER_LOCKED) != null) {
             resourceItem.getItemProperty(PROPERTY_USER_LOCKED).setValue(resUtil.getLockedByName());
-        } else {
-            LOG.error("Error redering item, property " + PROPERTY_USER_LOCKED.getId() + " is null");
         }
-
     }
 
     /**

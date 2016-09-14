@@ -1168,7 +1168,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         String title,
         boolean isRoot,
         boolean isEditable,
-        List<CmsVfsEntryBean> children) throws CmsException {
+        List<CmsVfsEntryBean> children)
+    throws CmsException {
 
         String rootPath = resource.getRootPath();
         CmsUUID structureId = resource.getStructureId();
@@ -1369,7 +1370,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private CmsResultItemBean buildSingleSearchResultItem(
         CmsObject cms,
         CmsGallerySearchResult sResult,
-        CmsGallerySearchResult presetResult) throws CmsException, ParseException {
+        CmsGallerySearchResult presetResult)
+    throws CmsException, ParseException {
 
         Locale wpLocale = getWorkplaceLocale();
         CmsResultItemBean bean = new CmsResultItemBean();
@@ -1435,6 +1437,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsListInfoBean.CSS_CLASS_MULTI_LINE);
         }
         if (type instanceof CmsResourceTypeImage) {
+            CmsProperty copyrightProp = cms.readPropertyObject(
+                resultResource,
+                CmsPropertyDefinition.PROPERTY_COPYRIGHT,
+                false);
+            if (!copyrightProp.isNullProperty()) {
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_COPYRIGHT_0),
+                    copyrightProp.getValue());
+            }
             CmsProperty imageDimensionProp = cms.readPropertyObject(
                 resultResource,
                 CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
@@ -1488,8 +1499,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsDateUtil.getDate(sResult.getDateExpired(), DateFormat.SHORT, getWorkplaceLocale()));
         }
 
-        bean.setNoEditReson(new CmsResourceUtil(cms, resultResource).getNoEditReason(
-            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)));
+        bean.setNoEditReson(
+            new CmsResourceUtil(cms, resultResource).getNoEditReason(
+                OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)));
         bean.setMarkChangedState(true);
         return bean;
     }
@@ -2038,10 +2050,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                 } catch (Exception e) {
                     logError(
-                        new CmsException(Messages.get().container(
-                            Messages.ERR_INSTANCING_PREVIEW_PROVIDER_2,
-                            providerClass,
-                            type.getTypeName()), e));
+                        new CmsException(
+                            Messages.get().container(
+                                Messages.ERR_INSTANCING_PREVIEW_PROVIDER_2,
+                                providerClass,
+                                type.getTypeName()),
+                            e));
                 }
             }
         }
@@ -2077,7 +2091,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         GalleryMode galleryMode,
         String referenceSitePath,
         List<String> resourceTypesList,
-        final List<String> typesForTypeTab) throws CmsRpcException {
+        final List<String> typesForTypeTab)
+    throws CmsRpcException {
 
         List<I_CmsResourceType> resourceTypes = null;
         Set<String> creatableTypes = null;

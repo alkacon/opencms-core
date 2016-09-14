@@ -83,6 +83,9 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
 
+    /** The advanced menu id. */
+    public static final String ADVANCED_MENU_ID = "advanced";
+
     /**
      * Creates a new instance.<p>
      */
@@ -95,7 +98,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
      */
     public List<I_CmsContextMenuItem> getMenuItems() {
 
-        CmsSubmenu advanced = new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 2400, 0);
+        CmsSubmenu advanced = new CmsSubmenu(ADVANCED_MENU_ID, null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 2400, 0);
 
         // the entries in this list will be sorted by there order property
         // for better readability please place additional entries  according to this sort order

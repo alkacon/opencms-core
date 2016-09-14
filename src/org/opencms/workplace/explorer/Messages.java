@@ -291,6 +291,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_INPUT_ADRESS_0 = "GUI_INPUT_ADRESS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_COPYRIGHT_0 = "GUI_INPUT_COPYRIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_DATECREATED_0 = "GUI_INPUT_DATECREATED_0";
 
     /** Message constant for key in the resource bundle. */
