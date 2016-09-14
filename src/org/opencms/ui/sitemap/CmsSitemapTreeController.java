@@ -155,12 +155,13 @@ public class CmsSitemapTreeController {
             if (result.isEmpty()) {
                 return;
             }
-            if (m_node == m_currentRootNode) {
-                m_localeContext.refreshAll();
-            } else {
-                updateNode(m_node);
+            if (m_node != null) {
+                if (m_node == m_currentRootNode) {
+                    m_localeContext.refreshAll();
+                } else {
+                    updateNode(m_node);
+                }
             }
-
         }
 
         /**
@@ -390,6 +391,18 @@ public class CmsSitemapTreeController {
 
                 }
 
+                if (entry.isCopyable()) {
+                    ContextMenuItem copyItem = m_menu.addItem(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_COPY_PAGE_0));
+                    copyItem.addItemClickListener(new ContextMenuItemClickListener() {
+
+                        public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                            openPageCopyDialog(entry);
+                        }
+                    });
+                }
+
                 if (entry.isLinked()) {
                     try {
 
@@ -478,7 +491,7 @@ public class CmsSitemapTreeController {
             rightSide.addComponent(linkedInfo, 0);
             linkedInfo.setWidth(RHS_WIDTH + "px");
             node.setContent(info);
-            linkedInfo.setData("linked");
+            linkedInfo.setData("linked"); // Data used by click handler to distinguish clicked resource icons
             linkedInfo.getResourceIcon().setDescription(
                 CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_OPEN_PAGE_0));
             linkedInfo.getResourceIcon().addStyleName(OpenCmsTheme.POINTER);
@@ -555,6 +568,28 @@ public class CmsSitemapTreeController {
                 }
             }
             node.setOpen(true);
+        }
+    }
+
+    /**
+     * Opens the page copy dialog for a tree entry.<p>
+     *
+     * @param entry the tree entry
+     */
+    public void openPageCopyDialog(CmsSitemapTreeNodeData entry) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            CmsResource resource = cms.readResource(
+                entry.getClientEntry().getId(),
+                CmsResourceFilter.IGNORE_EXPIRATION);
+            DialogContext context = new DialogContext(resource, null);
+            CmsCopyPageDialog dialog = new CmsCopyPageDialog(context);
+            String title = CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_DIALOG_TITLE_0);
+            context.start(title, dialog);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            CmsErrorDialog.showErrorDialog(e);
         }
     }
 

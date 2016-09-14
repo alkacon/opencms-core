@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -58,6 +59,9 @@ public class CmsSitemapTreeNodeData {
 
     /** Indicates whether we have definitely no children. */
     private boolean m_hasNoChildren;
+
+    /** Sitmap entry is copyable (ie has the 'Copy page' option). */
+    private boolean m_isCopyable;
 
     /** Flag indicating whether the linked resource is directly linked. */
     private boolean m_isDirectLink;
@@ -143,13 +147,13 @@ public class CmsSitemapTreeNodeData {
         }
         CmsLocaleGroup localeGroup = cms.getLocaleGroupService().readLocaleGroup(defaultFile);
         CmsResource primary = localeGroup.getPrimaryResource();
-
         CmsProperty noTranslationProp = cms.readPropertyObject(
             primary,
             CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
             false);
         m_noTranslation = noTranslationProp.getValue();
         CmsUUID defaultFileId = (defaultFile != null) ? defaultFile.getStructureId() : null;
+        m_isCopyable = (defaultFile != null) && CmsResourceTypeXmlContainerPage.isContainerPage(defaultFile);
         Collection<CmsResource> resourcesForTargetLocale = localeGroup.getResourcesForLocale(m_otherLocale);
         if (!resourcesForTargetLocale.isEmpty()) {
             m_linkedResource = resourcesForTargetLocale.iterator().next();
@@ -159,6 +163,16 @@ public class CmsSitemapTreeNodeData {
                 m_isDirectLink = true;
             }
         }
+    }
+
+    /**
+     * Returns true if the 'Copy page' function should be offered for this entry.<p>
+     *
+     * @return true if the 'copy pgae' function should be available
+     */
+    public boolean isCopyable() {
+
+        return m_isCopyable;
     }
 
     /**
