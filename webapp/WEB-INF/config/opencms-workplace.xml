@@ -153,7 +153,7 @@
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction"
 							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
@@ -313,7 +313,7 @@
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction"
 							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
@@ -436,7 +436,7 @@
 							rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction"
 							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
@@ -672,7 +672,7 @@
 							rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction"
 							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
@@ -1150,7 +1150,7 @@
 							
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction"
 							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
