@@ -70,6 +70,11 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
         + "=false\"); "
         + "} else { "
+        + "var anchor=\"\"; "
+        + "if (target.indexOf(\"#\")>0) { "
+        + "anchor=target.substring(target.indexOf(\"#\")); "
+        + "target=target.substring(0,target.indexOf(\"#\")); "
+        + "} "
         + "if (target.indexOf(\"?\")>0) { "
         + "target+=\"&\"; "
         + "} else { "
@@ -78,6 +83,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         + "target+=\""
         + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
         + "=false\"; "
+        + "target+=anchor; "
         + "} "
         + "window.location.href=target; "
         + "} "
