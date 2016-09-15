@@ -165,6 +165,9 @@ public class CmsDetailPageConfigurationWriter {
 
         int i = 0;
         for (CmsDetailPageInfo info : infos) {
+            if (info.isInherited()) {
+                continue;
+            }
             CmsUUID id = info.getId();
             if (id == null) {
                 id = newId;

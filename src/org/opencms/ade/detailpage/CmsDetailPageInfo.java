@@ -48,6 +48,9 @@ public class CmsDetailPageInfo implements Serializable {
     /** The id of the detail page. */
     private CmsUUID m_id;
 
+    /** Flag used to distinguish inherited detail pages from ones defined in the current sitemap config. */
+    private boolean m_inherited;
+
     /** The resource type which the detail page should display. */
     private String m_type;
 
@@ -86,6 +89,18 @@ public class CmsDetailPageInfo implements Serializable {
     public static String removeFunctionPrefix(String name) {
 
         return name.replaceFirst("^" + FUNCTION_PREFIX, "");
+    }
+
+    /**
+     * Creates a copy of this entry, but sets the 'inherited' flag to true in the copy.<p>
+     *
+     * @return the copy of this entry
+     */
+    public CmsDetailPageInfo copyAsInherited() {
+
+        CmsDetailPageInfo result = new CmsDetailPageInfo(m_id, m_uri, m_type);
+        result.m_inherited = true;
+        return result;
     }
 
     /**
@@ -163,6 +178,16 @@ public class CmsDetailPageInfo implements Serializable {
     public int hashCode() {
 
         return toString().hashCode();
+    }
+
+    /**
+     * Returns true if the detail page entry is inherited from a parent sitemap.<p>
+     *
+     * @return true if the detail page entry is inherited from a parent sitemap
+     */
+    public boolean isInherited() {
+
+        return m_inherited;
     }
 
     /**

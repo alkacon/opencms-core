@@ -1089,9 +1089,14 @@ public class CmsADEConfigData {
         List<CmsDetailPageInfo> parentDetailPages,
         List<CmsDetailPageInfo> ownDetailPages) {
 
+        List<CmsDetailPageInfo> parentDetailPageCopies = Lists.newArrayList();
+        for (CmsDetailPageInfo info : parentDetailPages) {
+            parentDetailPageCopies.add(info.copyAsInherited());
+        }
+
         List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
         Map<String, List<CmsDetailPageInfo>> resultDetailPageMap = Maps.newHashMap();
-        resultDetailPageMap.putAll(getDetailPagesMap(parentDetailPages));
+        resultDetailPageMap.putAll(getDetailPagesMap(parentDetailPageCopies));
         resultDetailPageMap.putAll(getDetailPagesMap(ownDetailPages));
         result = new ArrayList<CmsDetailPageInfo>();
         for (List<CmsDetailPageInfo> pages : resultDetailPageMap.values()) {
@@ -1117,7 +1122,7 @@ public class CmsADEConfigData {
                     structureId,
                     getCms().getRequestContext().getCurrentProject().isOnlineProject());
                 CmsDetailPageInfo correctedPage = new CmsDetailPageInfo(structureId, rootPath, page.getType());
-                result.add(correctedPage);
+                result.add(page.isInherited() ? correctedPage.copyAsInherited() : correctedPage);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
