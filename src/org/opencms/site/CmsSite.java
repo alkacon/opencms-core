@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
@@ -93,7 +94,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     private LocalizationMode m_localizationMode;
 
     /** The site parameters. */
-    private Map<String, String> m_parameters;
+    private SortedMap<String, String> m_parameters;
 
     /** This value defines a relative sorting order. */
     private float m_position;
@@ -347,7 +348,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      *
      * @return the parameters
      */
-    public Map<String, String> getParameters() {
+    public SortedMap<String, String> getParameters() {
 
         return m_parameters;
     }
@@ -633,7 +634,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      *
      * @param parameters the parameters to set
      */
-    public void setParameters(Map<String, String> parameters) {
+    public void setParameters(SortedMap<String, String> parameters) {
 
         m_parameters = new TreeMap<String, String>(parameters);
     }

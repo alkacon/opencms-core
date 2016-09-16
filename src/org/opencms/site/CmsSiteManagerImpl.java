@@ -48,10 +48,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -117,7 +118,7 @@ public final class CmsSiteManagerImpl {
     private CmsSiteMatcher m_workplaceSiteMatcher;
 
     /** Temporary store for site parameter values. */
-    private Map<String, String> m_siteParams;
+    private SortedMap<String, String> m_siteParams;
 
     /**
      * Creates a new CmsSiteManager.<p>
@@ -128,7 +129,7 @@ public final class CmsSiteManagerImpl {
         m_siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>();
         m_siteRootSites = new HashMap<String, CmsSite>();
         m_aliases = new ArrayList<CmsSiteMatcher>();
-        m_siteParams = new LinkedHashMap<String, String>();
+        m_siteParams = new TreeMap<String, String>();
         m_additionalSiteRoots = new ArrayList<String>();
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -298,7 +299,7 @@ public final class CmsSiteManagerImpl {
         }
         m_aliases = new ArrayList<CmsSiteMatcher>();
         site.setParameters(m_siteParams);
-        m_siteParams = new LinkedHashMap<String, String>();
+        m_siteParams = new TreeMap<String, String>();
         m_siteRootSites = new HashMap<String, CmsSite>(m_siteRootSites);
         m_siteRootSites.put(site.getSiteRoot(), site);
         if (CmsLog.INIT.isInfoEnabled()) {

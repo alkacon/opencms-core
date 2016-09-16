@@ -38,9 +38,9 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Dialog object for a single site.<p>
@@ -68,7 +68,7 @@ public class CmsSiteBean {
     private CmsSite m_originalSite;
 
     /** The parameters. */
-    private Map<String, String> m_parameters = new LinkedHashMap<String, String>();
+    private SortedMap<String, String> m_parameters = new TreeMap<String, String>();
 
     /** The port (e.g. 8080) which is required to access this site. */
     private int m_port;
@@ -231,7 +231,7 @@ public class CmsSiteBean {
      *
      * @return the site parameters
      */
-    public Map<String, String> getParameters() {
+    public SortedMap<String, String> getParameters() {
 
         return m_parameters;
     }
@@ -445,7 +445,7 @@ public class CmsSiteBean {
      *
      * @param params the parameters
      */
-    public void setParameters(Map<String, String> params) {
+    public void setParameters(SortedMap<String, String> params) {
 
         m_parameters = params;
     }

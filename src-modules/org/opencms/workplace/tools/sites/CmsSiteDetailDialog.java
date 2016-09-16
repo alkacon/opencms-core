@@ -411,13 +411,9 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         : Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(Messages.GUI_SITES_NEW_SITE_TITLE_0);
 
         // only show the position if editing a site or creating a new site
-        int count = getParamEditaction() == null ? 5 : 6;
+        int count = getParamEditaction() == null ? 4 : 5;
         // +1 if favicon present
         count = m_site.getFavicon() != null ? ++count : count;
-        // +2 for OU check box and template property when creating a new site
-        if (DIALOG_NEW.equals(getParamEditaction())) {
-            count = count + 2;
-        }
 
         // site info
         result.append(
@@ -427,6 +423,21 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                     title)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, count));
+
+        // site parameters
+        if (DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction())) {
+            result.append(createDialogRowsHtml(++count, count));
+        } else if (!m_site.getParameters().isEmpty()) {
+            result.append(createDialogRowsHtml(++count, (count + m_site.getParameters().size()) - 1));
+            count += m_site.getParameters().size() - 1;
+        }
+
+        // +2 for OU check box and template property when creating a new site
+        if (DIALOG_NEW.equals(getParamEditaction())) {
+            result.append(createDialogRowsHtml(++count, count + 1));
+            count += 1;
+        }
+
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         if ((getParamEditaction() != null) || CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_site.getSecureUrl())) {
@@ -537,7 +548,22 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             }
             addWidget(errorPage);
             addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsDisplayWidget()));
-
+            int count = 5;
+            for (String parameter : m_site.getParameters().keySet()) {
+                String output = parameter + "=" + m_site.getParameters().get(parameter);
+                CmsWidgetDialogParameter widget = new CmsWidgetDialogParameter(
+                    output,
+                    output,
+                    Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                        Messages.GUI_SITES_DETAIL_PARAMETERS_0) + " [" + (count - 4) + "]",
+                    new CmsDisplayWidget(),
+                    PAGES[0],
+                    1,
+                    1,
+                    count);
+                addWidget(widget);
+                count++;
+            }
             if (m_site.getFavicon() != null) {
                 try {
                     CmsObject clone = OpenCms.initCmsObject(getCms());
@@ -558,7 +584,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveUrl", PAGES[0], new CmsDisplayWidget()));
                 addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsDisplayWidget()));
             }
-            int count = 0;
+            count = 0;
             for (String aliasUrl : m_site.getAliases()) {
                 CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
                     aliasUrl,
@@ -573,7 +599,6 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 addWidget(alias);
                 count++;
             }
-            addWidget(new CmsWidgetDialogParameter(m_site, "aliases", PAGES[0], new CmsDisplayWidget()));
 
         }
     }
