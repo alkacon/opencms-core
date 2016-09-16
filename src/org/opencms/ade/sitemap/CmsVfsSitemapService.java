@@ -152,6 +152,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 
 /**
@@ -1953,8 +1954,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         List<CmsProperty> result = new ArrayList<CmsProperty>();
         Map<String, CmsClientProperty> clientProps = change.getOwnInternalProperties();
+        boolean hasTitle = false;
         if (clientProps != null) {
             for (CmsClientProperty clientProp : clientProps.values()) {
+                if (CmsPropertyDefinition.PROPERTY_TITLE.equals(clientProp.getName())) {
+                    hasTitle = true;
+                }
                 CmsProperty prop = new CmsProperty(
                     clientProp.getName(),
                     clientProp.getStructureValue(),
@@ -1962,7 +1967,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 result.add(prop);
             }
         }
-        result.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, change.getName(), null));
+        if (!hasTitle) {
+            result.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, change.getName(), null));
+        }
         return result;
     }
 
@@ -1978,8 +1985,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         List<CmsProperty> result = new ArrayList<CmsProperty>();
 
         Map<String, CmsClientProperty> clientProps = change.getDefaultFileProperties();
+        boolean hasTitle = false;
         if (clientProps != null) {
             for (CmsClientProperty clientProp : clientProps.values()) {
+                if (CmsPropertyDefinition.PROPERTY_TITLE.equals(clientProp.getName())) {
+                    hasTitle = true;
+                }
                 CmsProperty prop = new CmsProperty(
                     clientProp.getName(),
                     clientProp.getStructureValue(),
@@ -1987,7 +1998,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 result.add(prop);
             }
         }
-        result.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, change.getName(), null));
+        if (!hasTitle) {
+            result.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, change.getName(), null));
+        }
         return result;
     }
 
@@ -3096,7 +3109,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         boolean changeOwnTitle = shouldChangeTitle(ownProps);
 
         boolean changeDefaultFileTitle = false;
-        Map<String, CmsProperty> defaultFileProps = Collections.emptyMap();
+        Map<String, CmsProperty> defaultFileProps = Maps.newHashMap();
         if (defaultFileRes != null) {
             defaultFileProps = getPropertiesByName(cms.readPropertyObjects(defaultFileRes, false));
             // determine if the title property of the default file should be changed

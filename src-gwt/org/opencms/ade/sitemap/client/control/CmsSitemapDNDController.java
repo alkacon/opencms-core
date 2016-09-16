@@ -51,7 +51,9 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -278,7 +280,8 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         entry.setVfsPath(null);
         entry.setPosition(m_insertIndex);
         entry.setInNavigation(true);
-        entry.setDefaultFileProperties(Collections.<String, CmsClientProperty> emptyMap());
+        Map<String, CmsClientProperty> defaultFileProps = Maps.newHashMap();
+        entry.setDefaultFileProperties(defaultFileProps);
         String uniqueName = null;
         switch (createItem.getNewEntryType()) {
             case detailpage:
@@ -288,6 +291,20 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                 entry.setName(uniqueName);
                 entry.setSitePath(m_insertPath + uniqueName + "/");
                 entry.setDetailpageTypeName(typeInfo.getTypeName());
+                if (typeInfo.isFunction()) {
+
+                    CmsClientProperty titleProp = new CmsClientProperty(
+                        CmsClientProperty.PROPERTY_TITLE,
+                        typeInfo.getTitle(),
+                        null);
+                    CmsClientProperty navtextProp = new CmsClientProperty(
+                        CmsClientProperty.PROPERTY_NAVTEXT,
+                        typeInfo.getTitle(),
+                        null);
+                    entry.getOwnProperties().put(titleProp.getName(), titleProp);
+                    entry.getDefaultFileProperties().put(titleProp.getName(), titleProp);
+                    entry.getOwnProperties().put(navtextProp.getName(), navtextProp);
+                }
                 entry.setResourceTypeName("folder");
                 break;
             case redirect:
