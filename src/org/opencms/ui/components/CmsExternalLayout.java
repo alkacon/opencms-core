@@ -1,10 +1,10 @@
 
-package org.vaadin.risto.externallayout;
+package org.opencms.ui.components;
+
+import org.opencms.ui.shared.components.CmsExternalLayoutState;
 
 import java.util.Collections;
 import java.util.Iterator;
-
-import org.vaadin.risto.externallayout.shared.ExternalLayoutState;
 
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
@@ -12,15 +12,17 @@ import com.vaadin.ui.HasComponents;
 
 /**
  * Single component container that can render the given component in any HTML
- * element.
+ * element.<p>
  *
  * @author Risto Yrjänä / Vaadin Ltd.
  */
-public class ExternalLayout extends AbstractComponent implements HasComponents {
+public class CmsExternalLayout extends AbstractComponent implements HasComponents {
 
+    /** The serial version id. */
     private static final long serialVersionUID = 4970339558483506331L;
 
-    private final Component childComponent;
+    /** The child component. */
+    private final Component m_childComponent;
 
     /**
      * Create a layout that renders the given component to an external HTML element that
@@ -31,25 +33,31 @@ public class ExternalLayout extends AbstractComponent implements HasComponents {
      * @param component
      *            component to be rendered, cannot be null
      */
-    public ExternalLayout(String divId, Component component) {
+    public CmsExternalLayout(String divId, Component component) {
         if ((divId == null) || (component == null)) {
             throw new IllegalArgumentException("The div id or the child component cannot be null.");
         }
 
-        getState().externalComponentId = divId;
-        childComponent = component;
-        childComponent.setParent(this);
+        getState().m_externalComponentId = divId;
+        m_childComponent = component;
+        m_childComponent.setParent(this);
     }
 
+    /**
+     * @see com.vaadin.ui.AbstractComponent#getState()
+     */
     @Override
-    public ExternalLayoutState getState() {
+    public CmsExternalLayoutState getState() {
 
-        return (ExternalLayoutState)super.getState();
+        return (CmsExternalLayoutState)super.getState();
     }
 
+    /**
+     * @see com.vaadin.ui.HasComponents#iterator()
+     */
     @Override
     public Iterator<Component> iterator() {
 
-        return Collections.singleton(childComponent).iterator();
+        return Collections.singleton(m_childComponent).iterator();
     }
 }

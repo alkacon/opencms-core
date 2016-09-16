@@ -41,6 +41,7 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsExternalLayout;
 import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
 import org.opencms.ui.shared.rpc.I_CmsSitemapClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsSitemapServerRpc;
@@ -53,8 +54,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-
-import org.vaadin.risto.externallayout.ExternalLayout;
 
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
@@ -320,7 +319,7 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
 
         if (m_localeCompareContainer == null) {
             m_localeCompareContainer = new VerticalLayout();
-            ExternalLayout layout = new ExternalLayout(CmsGwtConstants.ID_LOCALE_COMPARISON, m_localeCompareContainer);
+            CmsExternalLayout layout = new CmsExternalLayout(CmsGwtConstants.ID_LOCALE_COMPARISON, m_localeCompareContainer);
             m_ui.getContent().addComponent(layout);
         }
         m_localeCompareContainer.removeAllComponents();
