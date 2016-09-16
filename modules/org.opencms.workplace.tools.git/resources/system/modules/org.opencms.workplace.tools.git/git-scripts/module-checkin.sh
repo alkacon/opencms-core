@@ -260,13 +260,13 @@ else
 		if [[ ! ($DEFAULT_MODULES_TO_EXPORT =~ (^| )$module($| ) ) ]]; then
 			newModules="${newModules}${module} "
 		fi
-		if [[ $newModules != "" ]]; then
-			sed -i "/^DEFAULT_MODULES_TO_EXPORT/s/=\"/=\"$newModules/" $configfile
-			echo
-			echo " * Added new modules \"$newModules\" to the config file."
-			echo
-		fi
 	done
+	if [[ $newModules != "" ]]; then
+		sed -i "/^DEFAULT_MODULES_TO_EXPORT/s/=\"/=\"$newModules/" $configfile
+		echo
+		echo " * Added new modules \"$newModules\" to the config file."
+		echo
+	fi
 fi
 echo " * Set modules to export: \"$modulesToExport\"."
 
