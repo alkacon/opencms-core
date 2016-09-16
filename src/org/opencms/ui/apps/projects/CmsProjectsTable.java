@@ -30,12 +30,14 @@ package org.opencms.ui.apps.projects;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -47,6 +49,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -78,8 +82,8 @@ public class CmsProjectsTable extends Table {
                     A_CmsUI.getCmsObject().deleteProject(projectId);
                     CmsAppWorkplaceUi.get().reload();
                 } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Error deleting project " + projectId, e);
+                    displayException(e);
                 }
             }
         }
@@ -152,8 +156,8 @@ public class CmsProjectsTable extends Table {
             try {
                 extension.openPublishDialog(A_CmsUI.getCmsObject().readProject(projectId));
             } catch (CmsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error("Error reading project " + projectId, e);
+                displayException(e);
             }
         }
 
@@ -177,8 +181,7 @@ public class CmsProjectsTable extends Table {
                     ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
                     : CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
                 } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Error reading locked resources on project " + projectId, e);
                 }
             }
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
@@ -234,8 +237,8 @@ public class CmsProjectsTable extends Table {
                 try {
                     A_CmsUI.getCmsObject().unlockProject(projectId);
                 } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Error unlocking project " + projectId, e);
+                    displayException(e);
                 }
             }
         }
@@ -260,13 +263,15 @@ public class CmsProjectsTable extends Table {
                         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
                     }
                 } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Error reading locked resources on project " + projectId, e);
                 }
             }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
     }
+
+    /** The logger for this class. */
+    protected static Log LOG = CmsLog.getLog(CmsProjectsTable.class.getName());
 
     /** The serial version id. */
     private static final long serialVersionUID = 1540265836332964510L;
@@ -406,15 +411,18 @@ public class CmsProjectsTable extends Table {
                         cms.readGroup(project.getManagerGroupId()).getSimpleName());
                     item.getItemProperty(PROP_USER).setValue(cms.readGroup(project.getGroupId()).getSimpleName());
                 } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Error reading project properties for " + project.getSimpleName());
                 }
                 item.getItemProperty(PROP_DATE_CREATED).setValue(new Date(project.getDateCreated()));
 
                 StringBuffer html = new StringBuffer(512);
-                for (String resource : cms.readProjectResources(project)) {
-                    html.append(resource);
-                    html.append("<br />");
+                try {
+                    for (String resource : cms.readProjectResources(project)) {
+                        html.append(resource);
+                        html.append("<br />");
+                    }
+                } catch (CmsException e) {
+                    LOG.error("Error reading project resources for " + project.getSimpleName());
                 }
                 Label resLabel = new Label();
                 resLabel.setContentMode(ContentMode.HTML);
@@ -423,9 +431,25 @@ public class CmsProjectsTable extends Table {
 
             }
         } catch (CmsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Error reading manageable projects", e);
+            CmsErrorDialog.showErrorDialog(e);
         }
+    }
+
+    /**
+     * Displays the given exception in the error dialog and reloads the UI on close.<p>
+     *
+     * @param e the exception
+     */
+    protected void displayException(Throwable e) {
+
+        CmsErrorDialog.showErrorDialog(e, new Runnable() {
+
+            public void run() {
+
+                CmsAppWorkplaceUi.get().reload();
+            }
+        });
     }
 
     /**

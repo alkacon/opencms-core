@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.projects;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
@@ -41,6 +42,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Component;
@@ -67,6 +70,9 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
 
     /** The project history icon path. */
     private static final String ICON_HISTORY = "apps/project_history.png";
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsProjectManager.class.getName());
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -100,8 +106,7 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
                             Messages.GUI_PROJECTS_EDIT_1,
                             A_CmsUI.getCmsObject().readProject(projectId).getName()));
                 } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Error reading project for bread crumb.", e);
                 }
             }
         } else if (state.startsWith(PATH_NAME_FILES)) {
@@ -117,8 +122,7 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
                             Messages.GUI_PROJECTS_FILES_1,
                             A_CmsUI.getCmsObject().readProject(projectId).getName()));
                 } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Error reading project for bread crumb.", e);
                 }
             }
         }
