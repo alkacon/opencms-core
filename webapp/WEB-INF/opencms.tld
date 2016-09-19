@@ -1700,6 +1700,238 @@
         </attribute>                         
     </tag>
 
+    <!-- scaleImage -->
+    <tag>
+        <description><![CDATA[
+			This tag allows using the OpenCms native image scaling mechanism.
+			It generates a ScaledImage bean that can be used to include the selected image, adding the
+			required image scaling parameters.<br/><br/>
+			The following image formats are supported: BMP, GIF, JPEG, PNG, PNM, TIFF.
+			<em>
+			  Note: Picture scaling is by default only enabled for target size with width and height &lt;=1500.
+			  The size can be changed in the image scaler configuration in the file <code>opencms-vfs.xml</code> in the body of the tag <code>&lt;loader&gt;</code>.
+			  Also other options for the image scaler are set there.
+			  <br/><br/>
+			  This tag is an alternative to the OpenCms standard tag cms:img, providing more felxibility by not
+			  generating any output but providing a bean that may be used to generate any output needed. This way you
+			  can use scaled images for
+			  <ul>
+				<li>The standard img-Tag</li>
+				<li>The more modern picture-Tag with multiple sources for responsive design</li>
+				<li>Background-Image integration</li>
+			  </ul>
+			</em>
+		]]></description>
+        <name>scaleImage</name>
+        <tag-class>org.opencms.jsp.CmsJspTagScaleImage</tag-class>
+        <body-content>JSP</body-content>
+        <variable>
+            <description>Bean containing the scaled image.</description>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>org.opencms.jsp.util.CmsJspScaledImageBean</variable-class>
+            <declare>true</declare>
+            <scope>AT_BEGIN</scope>
+        </variable>
+        <!-- These attributes are used to control the image scaling process: -->
+        <attribute>
+            <description><![CDATA[
+			  Uri of the image's source file.</P>
+			  <em>Note: The uri will be adjusted by OpenCms automatically, so do not use <code>&lt;cms:link&gt;</code>.</em>
+			]]></description>
+            <name>src</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  A natural number specifying the target width
+			]]></description>
+            <name>width</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  A natural number specifying the target height
+			]]></description>
+            <name>height</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  <em>Deprecated</em></P>
+			  A natural number specifying the maximal width of an image scaled with <code>scaleType="5"</code>.<BR>
+			  For other scale types the attribute is ignored.
+			]]></description>
+            <name>maxWidth</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  <em>Deprecated</em></P>
+			  A natural number specifying the maximal height of an image scaled with <code>scaleType="5"</code>.<BR>
+			  For other scale types the attribute is ignored.
+			]]></description>
+            <name>maxHeight</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+				Set the scale type used for the image.<BR>
+				Possible values are:<dl>
+
+				<dt>0 (default): Scale to exact target size with background padding</dt><dd><ul>
+				<li>enlarge image to fit in target size (if required)
+				<li>reduce image to fit in target size (if required)
+				<li>keep image aspect ratio / proportions intact
+				<li>fill up with bgcolor to reach exact target size
+				<li>fit full image inside target size (only applies if reduced)</ul></dd>
+
+				<dt>1: Thumbnail generation mode (like 0 but no image enlargement)</dt><dd><ul>
+				<li>don't enlarge image
+				<li>reduce image to fit in target size (if required)
+				<li>keep image aspect ratio / proportions intact
+				<li>fill up with bgcolor to reach exact target size
+				<li>fit full image inside target size (only applies if reduced)</ul></dd>
+
+				<dt>2: Scale to exact target size, crop what does not fit</dt><dd><ul>
+				<li>enlarge image to fit in target size (if required)
+				<li>reduce image to fit in target size (if required)
+				<li>keep image aspect ratio / proportions intact
+				<li>fit full image inside target size (crop what does not fit)</ul></dd>
+
+				<dt>3: Scale and keep image proportions, target size variable</dt><dd><ul>
+				<li>enlarge image to fit in target size (if required)
+				<li>reduce image to fit in target size (if required)
+				<li>keep image aspect ratio / proportions intact
+				<li>scaled image will not be padded or cropped, so target size is likely not the exact requested size</ul></dd>
+
+				<dt>4: Don't keep image proportions, use exact target size</dt><dd><ul>
+				<li>enlarge image to fit in target size (if required)
+				<li>reduce image to fit in target size (if required)
+				<li>don't keep image aspect ratio / proportions intact
+				<li>the image will be scaled exactly to the given target size and likely will be loose proportions</ul></dd>
+				</dl>
+				<dt>5: Scale and keep image proportions without enlargement, target size variable with optional max width and height</dt><dd><ul>
+				<li>dont't enlarge image
+				<li>reduce image to fit in target size (if required)
+				<li>keep image aspect ratio / proportions intact
+				<li>best fit into target width / height _OR_ width / maxHeight _OR_ maxWidth / height
+				<li>scaled image will not be padded or cropped, so target size is likely not the exact requested size</ul></dd>
+			]]></description>
+            <name>scaleType</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  Specify how the original image is placed if cropped or padded.
+			  The following values are supported:
+			  <DL>
+				<DT><b>0</b> (default)</DT>
+				<DD>center</DD>
+				<DT><b>1</b></DT>
+				<DD>lower left</DD>
+				<DT><b>2</b></DT>
+				<DD>lower right</DD>
+				<DT><b>3</b></DT>
+				<DD>lower middle</DD>
+				<DT><b>4</b></DT>
+				<DD>center left</DD>
+				<DT><b>5</b></DT>
+				<DD>center right</DD>
+				<DT><b>6</b></DT>
+				<DD>upper middle</DD>
+				<DT><b>7</b></DT>
+				<DD>upper left</DD>
+				<DT><b>8</b></DT>
+				<DD>upper right</DD>
+			  </DL>
+			]]></description>
+            <name>scalePosition</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  Specify filters applied to the image (and also to a possibly present padding).<BR>
+			  The following values can be given as colon (":") separated list:
+			  <DL>
+				<DT><b>shadow</b></DT>
+				<DD>Adds a shadow effect to the image.</DD>
+				<DT><b>grayscale</b></DT>
+				<DD>Renders the image in grayscale.</DD>
+			  </DL>
+			]]></description>
+            <name>scaleFilter</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  An non-negative integer specifying the scale quality in percent.<BR>
+			  Allowed are values between 0 and 100, where 0 is a special value to use the default quality.
+			  The value has only influence on image formats that support a quality setting, e.g. JPEG.</P>
+			  Default: 0.
+			]]></description>
+            <name>scaleQuality</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  The color used as backgroud if padding is neccessary.
+			  The following values are supported:
+			  <DL>
+				<DT><b>transparent</b> (default)</DT>
+				<DD>
+				  Transparent background, if supported by the image type, e.g. for PNG.
+				  If transparent background is not supported, e.g. by JPEG, the value defaults to white (FFFFFF).
+				</DD>
+				<DT><b>000000 - FFFFFF</b></DT>
+				<DD>Hexadecimal RGB color code.</DD>
+			  </DT>
+			]]></description>
+            <name>scaleColor</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  Set the image processing mode.<BR>
+			  The following values are supported:
+			  <DL>
+				<DT><b>0</b> (default)</DT>
+				<DD>
+				  <em>Quality.</em>
+				  Best possible image processing. Might be slow.
+				</DD>
+				<DT><b>1</b></DT>
+				<DD>
+				  <em>Medium.</em>
+				  Use default JVM settings. Almost as slow as quality mode. Not recommended.
+				</DD>
+				<DT><b>2</b></DT>
+				<DD>
+				  <em>Speed.</em>
+				  Fast image processing. But quality might be not as good as in quality mode.<BR>
+				  The setting is recommended for thumbnail generation.
+				</DD>
+			]]></description>
+            <name>scaleRendermode</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+			  Optional comma separated list of hi DPI veariants to produce, e.g. "1.3x,1.5x,2x,3x". If you only
+			  need the "retina" variant, use "2x". Hi DPI variants may be found in the resulting ScaledImageBean in
+			  the map "hiDpiImages".
+			]]></description>
+            <name>hiDpiVariants</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+				The name of the variable used to store the resulting ScaledImage bean
+			]]></description>
+            <name>var</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
     <tag>
         <description><![CDATA[
             This tag can be used to write JSP code from a JSP to files in the static export.</P>
