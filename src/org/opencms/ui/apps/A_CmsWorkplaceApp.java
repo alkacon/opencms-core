@@ -30,6 +30,7 @@ package org.opencms.ui.apps;
 import org.opencms.ui.components.CmsToolLayout;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -237,7 +238,7 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
      *
      * @return bread crumb entry name by state, in case the state is empty, the entry will be disabled
      */
-    protected abstract Map<String, String> getBreadCrumbForState(String state);
+    protected abstract LinkedHashMap<String, String> getBreadCrumbForState(String state);
 
     /**
      * Returns the app component for the given state

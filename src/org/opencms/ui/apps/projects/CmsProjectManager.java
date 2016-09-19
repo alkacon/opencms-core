@@ -41,7 +41,6 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -78,9 +77,9 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
      */
     @Override
-    protected Map<String, String> getBreadCrumbForState(String state) {
+    protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
 
-        Map<String, String> crumbs = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
         } else if (state.equals(PATH_NAME_ADD)) {
