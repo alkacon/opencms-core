@@ -62,6 +62,7 @@ div.uploadButton input.uploadFileInput {
 .loadingText {
 	text-align: center;
 }
-.loadingAnimation {
+.loadingPanel .loadingAnimation {
 	margin-top: 20px;
+	position:absolute;
 }

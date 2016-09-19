@@ -621,6 +621,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     protected void createLoadingAnimation(String msg) {
 
         m_clientLoading = true;
+        if (m_loadingPanel != null) {
+            m_loadingPanel.removeFromParent();
+        }
         m_loadingPanel = new FlowPanel();
         m_loadingPanel.addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingPanel());
