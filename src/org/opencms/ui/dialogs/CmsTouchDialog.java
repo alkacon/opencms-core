@@ -49,9 +49,11 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -160,6 +162,7 @@ public class CmsTouchDialog extends CmsBasicDialog {
         long touchTime = touchDate != null ? touchDate.getTime() : 0;
         boolean recursive = m_modifySubresourcesField.getValue().booleanValue();
         boolean rewriteContent = m_rewriteContentField.getValue().booleanValue();
+        List<CmsUUID> changedIds = Lists.newArrayList();
         for (CmsResource resource : m_context.getResources()) {
             CmsLockActionRecord actionRecord = null;
             try {
@@ -170,6 +173,7 @@ public class CmsTouchDialog extends CmsBasicDialog {
                     recursive,
                     validDate,
                     rewriteContent);
+                changedIds.add(resource.getStructureId());
             } finally {
                 if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
                     try {
@@ -182,6 +186,7 @@ public class CmsTouchDialog extends CmsBasicDialog {
             }
 
         }
+        m_context.finish(changedIds);
 
     }
 
@@ -200,7 +205,6 @@ public class CmsTouchDialog extends CmsBasicDialog {
 
         try {
             touchFiles();
-            m_context.finish(null);
         } catch (Exception e) {
             m_context.error(e);
         }
