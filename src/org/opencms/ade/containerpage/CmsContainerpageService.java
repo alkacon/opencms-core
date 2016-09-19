@@ -1121,9 +1121,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveDetailContainers(java.lang.String, java.util.List)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveDetailContainers(org.opencms.util.CmsUUID, java.lang.String, java.util.List)
      */
-    public void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers)
+    public void saveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
     throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
@@ -1155,6 +1155,22 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
             }
             ensureLock(containerpage);
+            try {
+                CmsResource detailResource = cms.readResource(detailId, CmsResourceFilter.IGNORE_EXPIRATION);
+                String title = cms.readPropertyObject(
+                    detailResource,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    true).getValue();
+                if (title != null) {
+                    title = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                        Messages.GUI_DETAIL_CONTENT_PAGE_TITLE_1,
+                        title);
+                    CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
+                    cms.writePropertyObjects(containerpage, Arrays.asList(titleProp));
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             saveContainers(rootCms, containerpage, detailContainerResource, containers);
         } catch (Throwable e) {
             error(e);
@@ -1465,12 +1481,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveDetailContainers(java.lang.String, java.util.List)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveDetailContainers(org.opencms.util.CmsUUID, java.lang.String, java.util.List)
      */
-    public void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers)
-    throws CmsRpcException {
+    public void syncSaveDetailContainers(
+        CmsUUID detailId,
+        String detailContainerResource,
+        List<CmsContainer> containers) throws CmsRpcException {
 
-        saveDetailContainers(detailContainerResource, containers);
+        saveDetailContainers(detailId, detailContainerResource, containers);
     }
 
     /**

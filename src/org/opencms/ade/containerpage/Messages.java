@@ -44,6 +44,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0 = "GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DETAIL_CONTENT_PAGE_TITLE_1 = "GUI_DETAIL_CONTENT_PAGE_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0 = "GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0";
 
     /** Message constant for key in the resource bundle. */

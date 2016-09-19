@@ -342,11 +342,13 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Saves the detail containers.<p>
      *
+     * @param detailId the detail content id
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
      * @param callback the call-back executed on response
      */
     void saveDetailContainers(
+        CmsUUID detailId,
         String detailContainerResource,
         List<CmsContainer> containers,
 
@@ -475,12 +477,14 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Saves the detail containers.<p>
      *
+     * @param detailId the detail content id
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
      * @param callback the call-back executed on response
      */
     @SynchronizedRpcRequest
     void syncSaveDetailContainers(
+        CmsUUID detailId,
         String detailContainerResource,
         List<CmsContainer> containers,
         AsyncCallback<Void> callback);

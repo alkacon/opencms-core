@@ -567,13 +567,13 @@ public final class CmsContainerpageController {
      */
     private class SingleElementAction extends CmsRpcAction<Map<String, CmsContainerElementData>> {
 
-        /** Call-back executed on response. */
-        private I_CmsSimpleCallback<CmsContainerElementData> m_callback;
-
-        /** The requested client id. */
-        private String m_clientId;
         /** Always copy createNew elements in case reading data for a clipboard element used as a copy group. */
         private boolean m_alwaysCopy;
+
+        /** Call-back executed on response. */
+        private I_CmsSimpleCallback<CmsContainerElementData> m_callback;
+        /** The requested client id. */
+        private String m_clientId;
 
         /** If this action was triggered by drag and drop from a container, this should contain the id of the origin container. */
         private String m_dndContainer;
@@ -747,6 +747,9 @@ public final class CmsContainerpageController {
     /** The core RPC service instance. */
     private I_CmsCoreServiceAsync m_coreSvc;
 
+    /** The current edit container level. */
+    private int m_currentEditLevel = -1;
+
     /** The prefetched data. */
     private CmsCntPageData m_data;
 
@@ -774,6 +777,9 @@ public final class CmsContainerpageController {
     /** The current lock status for the page. */
     private LockStatus m_lockStatus = LockStatus.unknown;
 
+    /** The max container level. */
+    private int m_maxContainerLevel;
+
     /** The browser location at the time the containerpage controller was initialized. */
     private String m_originalUrl;
 
@@ -785,12 +791,6 @@ public final class CmsContainerpageController {
 
     /** Handler for small elements. */
     private CmsSmallElementsHandler m_smallElementsHandler;
-
-    /** The current edit container level. */
-    private int m_currentEditLevel = -1;
-
-    /** The max container level. */
-    private int m_maxContainerLevel;
 
     /**
      * Constructor.<p>
@@ -1837,51 +1837,51 @@ public final class CmsContainerpageController {
                     showDeleteCheckbox,
                     new AsyncCallback<Boolean>() {
 
-                        public void onFailure(Throwable caught) {
+                    public void onFailure(Throwable caught) {
 
-                            element.removeHighlighting();
+                        element.removeHighlighting();
+                    }
+
+                    public void onSuccess(Boolean shouldDeleteResource) {
+
+                        Runnable[] nextActions = new Runnable[] {};
+
+                        if (shouldDeleteResource.booleanValue()) {
+                            final CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
+
+                                @Override
+                                public void execute() {
+
+                                    start(200, true);
+
+                                    CmsUUID id = new CmsUUID(getServerId(element.getId()));
+                                    CmsCoreProvider.getVfsService().deleteResource(id, this);
+                                }
+
+                                @Override
+                                public void onResponse(Void result) {
+
+                                    stop(true);
+                                }
+                            };
+                            nextActions = new Runnable[] {null};
+                            nextActions[0] = new Runnable() {
+
+                                public void run() {
+
+                                    deleteAction.execute();
+                                }
+                            };
                         }
-
-                        public void onSuccess(Boolean shouldDeleteResource) {
-
-                            Runnable[] nextActions = new Runnable[] {};
-
-                            if (shouldDeleteResource.booleanValue()) {
-                                final CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
-
-                                    @Override
-                                    public void execute() {
-
-                                        start(200, true);
-
-                                        CmsUUID id = new CmsUUID(getServerId(element.getId()));
-                                        CmsCoreProvider.getVfsService().deleteResource(id, this);
-                                    }
-
-                                    @Override
-                                    public void onResponse(Void result) {
-
-                                        stop(true);
-                                    }
-                                };
-                                nextActions = new Runnable[] {null};
-                                nextActions[0] = new Runnable() {
-
-                                    public void run() {
-
-                                        deleteAction.execute();
-                                    }
-                                };
-                            }
-                            I_CmsDropContainer container = element.getParentTarget();
-                            element.removeFromParent();
-                            if (container instanceof CmsContainerPageContainer) {
-                                ((CmsContainerPageContainer)container).checkEmptyContainers();
-                            }
-                            cleanUpContainers();
-                            setPageChanged(nextActions);
+                        I_CmsDropContainer container = element.getParentTarget();
+                        element.removeFromParent();
+                        if (container instanceof CmsContainerPageContainer) {
+                            ((CmsContainerPageContainer)container).checkEmptyContainers();
                         }
-                    });
+                        cleanUpContainers();
+                        setPageChanged(nextActions);
+                    }
+                });
                 removeDialog.center();
             }
 
@@ -2555,8 +2555,7 @@ public final class CmsContainerpageController {
      */
     public CmsContainerPageElementPanel replaceContainerElement(
         CmsContainerPageElementPanel containerElement,
-        CmsContainerElementData elementData)
-    throws Exception {
+        CmsContainerElementData elementData) throws Exception {
 
         I_CmsDropContainer parentContainer = containerElement.getParentTarget();
         String containerId = parentContainer.getContainerId();
@@ -2660,6 +2659,7 @@ public final class CmsContainerpageController {
 
                     if (getData().getDetailContainerPage() != null) {
                         getContainerpageService().saveDetailContainers(
+                            getData().getDetailId(),
                             getData().getDetailContainerPage(),
                             getPageContent(),
                             this);
@@ -2705,6 +2705,7 @@ public final class CmsContainerpageController {
 
                     if (getData().getDetailContainerPage() != null) {
                         getContainerpageService().saveDetailContainers(
+                            getData().getDetailId(),
                             getData().getDetailContainerPage(),
                             getPageContent(),
                             this);
@@ -2775,6 +2776,7 @@ public final class CmsContainerpageController {
 
                     if (getData().getDetailContainerPage() != null) {
                         getContainerpageService().saveDetailContainers(
+                            getData().getDetailId(),
                             getData().getDetailContainerPage(),
                             getPageContent(),
                             this);
@@ -3467,6 +3469,7 @@ public final class CmsContainerpageController {
 
                     if (getData().getDetailContainerPage() != null) {
                         getContainerpageService().syncSaveDetailContainers(
+                            getData().getDetailId(),
                             getData().getDetailContainerPage(),
                             getPageContent(),
                             this);

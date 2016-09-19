@@ -105,8 +105,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String clientId,
         String resourceType,
         CmsContainer container,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Checks whether the Acacia widgets are available for all fields of the content.<p>
@@ -147,8 +146,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String clientId,
         String resourceType,
         CmsUUID modelResourceStructureId,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * This method is used for serialization purposes only.<p>
@@ -190,8 +188,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         boolean allowNested,
         boolean alwaysCopy,
         String dndSource,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Returns container element settings config data.<p>
@@ -213,8 +210,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String containerId,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Gets the element data for an id and a map of settings.<p>
@@ -240,8 +236,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         Map<String, String> settings,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Returns the container element data of the favorite list.<p>
@@ -261,8 +256,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Returns the gallery configuration data according to the current page containers and the selected element view.<p>
@@ -280,8 +274,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         List<CmsContainer> containers,
         CmsUUID elementView,
         String uri,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Returns new container element data for the given resource type name.<p>
@@ -305,8 +298,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String resourceType,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Returns the container element data of the recent list.<p>
@@ -326,8 +318,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Gets the status of a removed element.<p>
@@ -377,12 +368,14 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Saves the detail containers.<p>
      *
+     * @param detailId the detail content id
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
      *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers) throws CmsRpcException;
+    void saveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
+    throws CmsRpcException;
 
     /**
      * Saves the settings for the given element to the container page and returns the updated element data.<p>
@@ -407,8 +400,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         Map<String, String> settings,
         List<CmsContainer> containers,
         boolean allowNested,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Saves the favorite list.<p>
@@ -440,8 +432,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String reqParams,
         CmsGroupContainer groupContainer,
         Collection<CmsContainer> containers,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Saves an inheritance container.<p>
@@ -461,8 +452,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID detailContentId,
         CmsInheritanceContainer inheritanceContainer,
         Collection<CmsContainer> containers,
-        String locale)
-    throws CmsRpcException;
+        String locale) throws CmsRpcException;
 
     /**
      * Saves the recent list.<p>
@@ -515,11 +505,13 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Saves the detail containers.<p>
      *
+     * @param detailId the detail content id
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
      *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers) throws CmsRpcException;
+    void syncSaveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
+    throws CmsRpcException;
 
 }
