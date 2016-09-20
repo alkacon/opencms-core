@@ -63,6 +63,7 @@ function buttonAction(para) {
         case 2:
         {
             _form.action.value = actionSaveExit;
+            setContentDirty(false);
             if (isWp) {
                 _form.target="_self";
                 _form.submit();
@@ -77,6 +78,7 @@ function buttonAction(para) {
         }
         case 3:
         {
+        	setContentDirty(false);
             _form.action.value = actionSave;
             _form.submit();
             break;

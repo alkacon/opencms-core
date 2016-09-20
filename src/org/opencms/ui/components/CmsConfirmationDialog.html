@@ -6,8 +6,11 @@
 	<body>
 		<o-cms-basic-dialog>
   			<content>
-  				<v-vertical-layout size-full>
-  					<v-label _id="m_label" />
+  				<v-vertical-layout size-full style-name="o-error-dialog">
+  					<v-horizontal-layout height="70px" width="100%">
+						<v-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
+						<v-label _id="m_label" :expand style-name="o-error-message" :middle />
+					</v-horizontal-layout>
 		  		</v-vertical-layout>
 			</content>
 			<buttons>

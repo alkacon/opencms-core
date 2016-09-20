@@ -27,52 +27,47 @@
 
 package org.opencms.ui.editors;
 
-import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeBinary;
-import org.opencms.file.types.CmsResourceTypeImage;
-import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.main.OpenCms;
+import org.opencms.ui.shared.rpc.I_CmsEditorStateRPC;
+
+import com.vaadin.server.AbstractExtension;
+import com.vaadin.ui.AbstractComponent;
 
 /**
- * The source and plain text editor.<p>
+ * Extension for iFrame embedded editors storing the changed state of the edited content.<p>
  */
-public class CmsSourceEditor extends A_CmsFrameEditor {
+public class CmsEditorStateExtension extends AbstractExtension implements I_CmsEditorStateRPC {
 
     /** The serial version id. */
-    private static final long serialVersionUID = 596110315130247401L;
+    private static final long serialVersionUID = -7159723321228453105L;
+
+    /** The changed flag. */
+    private boolean m_hasChanges;
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#getPriority()
+     * Constructor.<p>
+     *
+     * @param component the component to extend
      */
-    public int getPriority() {
-
-        return 10;
+    public CmsEditorStateExtension(AbstractComponent component) {
+        extend(component);
+        registerRpc(this);
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
+     * Returns whether the editor has content changes.<p>
+     *
+     * @return <code>true</code> in case the editor has content changes
      */
-    public boolean matchesResource(CmsResource resource, boolean plainText) {
+    public boolean hasChanges() {
 
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-
-        return !((type instanceof CmsResourceTypeBinary) || (type instanceof CmsResourceTypeImage));
+        return m_hasChanges;
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#newInstance()
+     * @see org.opencms.ui.shared.rpc.I_CmsEditorStateRPC#setHasChanges(boolean)
      */
-    public I_CmsEditor newInstance() {
+    public void setHasChanges(boolean hasChanges) {
 
-        return new CmsSourceEditor();
-    }
-
-    /**
-     * @see org.opencms.ui.editors.A_CmsFrameEditor#getEditorUri()
-     */
-    @Override
-    protected String getEditorUri() {
-
-        return "/system/workplace/editors/codemirror/editor.jsp";
+        m_hasChanges = hasChanges;
     }
 }

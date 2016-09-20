@@ -182,6 +182,9 @@ if (modeName.equals("text/html")) {
 	var contentDirty = false;
 	function setContentDirty(newVal) {
 		contentDirty = newVal;
+		if (typeof cmsSetEditorChangedState === 'function') {
+			cmsSetEditorChangedState(newVal);
+		} 
 	}
 
 	// ask if user really wants to leave the editor without saving
@@ -189,6 +192,7 @@ if (modeName.equals("text/html")) {
 		if (contentDirty) {
 			// only ask if the content has been modified
 			if (confirm ("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
+				setContentDirty(false);
 				buttonAction(1);
 			}
 		} else {

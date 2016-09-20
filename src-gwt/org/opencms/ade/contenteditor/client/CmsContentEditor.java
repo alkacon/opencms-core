@@ -504,17 +504,17 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changeScope the change scope
      */
     static native void addNativeListener(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
-        var instance = changeListener;
-        var nat = {
-            onChange : function(entity) {
-                var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
-                instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
-            }
-        }
-        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-        if (typeof method == 'function') {
-            method(nat, changeScope);
-        }
+		var instance = changeListener;
+		var nat = {
+			onChange : function(entity) {
+				var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
+				instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
+			}
+		}
+		var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+		if (typeof method == 'function') {
+			method(nat, changeScope);
+		}
     }-*/;
 
     /**
@@ -523,12 +523,12 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return <code>true</code> if the add entity change listener method has been exported
      */
     private static native boolean isObserverExported()/*-{
-        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-        if (typeof method == 'function') {
-            return true;
-        } else {
-            return false;
-        }
+		var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+		if (typeof method == 'function') {
+			return true;
+		} else {
+			return false;
+		}
     }-*/;
 
     /**
@@ -537,8 +537,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-                ();
+		return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+				();
     }-*/;
 
     /**
@@ -628,12 +628,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                     result.getExternalWidgetConfigurations(),
                     new Command() {
 
-                    public void execute() {
+                        public void execute() {
 
-                        stop(false);
-                        callback.execute(result);
-                    }
-                });
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
             }
         };
         action.execute();
@@ -685,12 +685,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                         result.getExternalWidgetConfigurations(),
                         new Command() {
 
-                        public void execute() {
+                            public void execute() {
 
-                            stop(false);
-                            callback.execute(result);
-                        }
-                    });
+                                stop(false);
+                                callback.execute(result);
+                            }
+                        });
                 }
             }
         };
@@ -726,12 +726,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                     result.getExternalWidgetConfigurations(),
                     new Command() {
 
-                    public void execute() {
+                        public void execute() {
 
-                        stop(false);
-                        callback.execute(result);
-                    }
-                });
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
             }
         };
         action.execute();
@@ -1187,6 +1187,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         // store the scroll position
         int scrollTop = RootPanel.getBodyElement().getOwnerDocument().getScrollTop();
+        setEditorState(false);
         unlockResource();
         if (m_onClose != null) {
             m_onClose.execute();
@@ -1681,6 +1682,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_changedEntityIds.add(m_entityId);
         m_deletedEntities.remove(m_entityId);
         updateOverlayPosition();
+        setEditorState(true);
     }
 
     /**
@@ -1721,6 +1723,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     void setSaved() {
 
+        setEditorState(false);
         m_deleteOnCancel = false;
     }
 
@@ -1941,14 +1944,14 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Closes the editor.<p>
      */
     private native void closeEditorWidow() /*-{
-        if ($wnd.top.cms_ade_closeEditorDialog) {
-            $wnd.top.cms_ade_closeEditorDialog();
-        } else {
-            var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
-            if (backlink) {
-                $wnd.top.location.href = backlink;
-            }
-        }
+		if ($wnd.top.cms_ade_closeEditorDialog) {
+			$wnd.top.cms_ade_closeEditorDialog();
+		} else {
+			var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
+			if (backlink) {
+				$wnd.top.location.href = backlink;
+			}
+		}
     }-*/;
 
     /**
@@ -1982,18 +1985,18 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Exports the add entity change listener method.<p>
      */
     private native void exportObserver()/*-{
-        var self = this;
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-                listener, scope) {
-            var wrapper = {
-                onChange : listener.onChange
-            }
-            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
-        }
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
-            return new $wnd.acacia.CmsEntityWrapper(
-                    self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
-        }
+		var self = this;
+		$wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+				listener, scope) {
+			var wrapper = {
+				onChange : listener.onChange
+			}
+			self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
+		}
+		$wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
+			return new $wnd.acacia.CmsEntityWrapper(
+					self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
+		}
     }-*/;
 
     /**
@@ -2281,14 +2284,25 @@ public final class CmsContentEditor extends CmsEditorBase {
     }
 
     /**
+     * Sets the editor state.<p>
+     *
+     * @param changed if the content has been changed
+     */
+    private native void setEditorState(boolean changed)/*-{
+		if (typeof $wnd.cmsSetEditorChangedState === 'function') {
+			$wnd.cmsSetEditorChangedState(changed);
+		}
+    }-*/;
+
+    /**
      * Sets the resource info to native window context variables.<p>
      *
      * @param sitePath the site path
      * @param locale the content locale
      */
     private native void setNativeResourceInfo(String sitePath, String locale)/*-{
-        $wnd._editResource = sitePath;
-        $wnd._editLanguage = locale;
+		$wnd._editResource = sitePath;
+		$wnd._editLanguage = locale;
     }-*/;
 
     /**

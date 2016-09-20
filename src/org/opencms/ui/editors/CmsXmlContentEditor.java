@@ -37,6 +37,9 @@ import org.opencms.main.OpenCms;
  */
 public class CmsXmlContentEditor extends A_CmsFrameEditor {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -3021048483774673579L;
+
     /**
      * @see org.opencms.ui.editors.I_CmsEditor#getPriority()
      */

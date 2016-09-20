@@ -43,6 +43,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsAcaciaEditor extends A_CmsFrameEditor {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -5498365579090634771L;
+
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAcaciaEditor.class);
 
@@ -89,5 +92,4 @@ public class CmsAcaciaEditor extends A_CmsFrameEditor {
 
         return "/system/workplace/editors/acacia/editor.jsp";
     }
-
 }

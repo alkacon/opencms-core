@@ -28,7 +28,9 @@
 package org.opencms.ui.components;
 
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -53,11 +55,14 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
     /** Label to display text. */
     private Label m_label;
 
+    /** Warning icon. */
+    private Label m_icon;
+
     /** Action to execute when confirmed. */
-    private Runnable m_okAction;
+    Runnable m_okAction;
 
     /** Action to execute when cancelled. */
-    private Runnable m_cancelAction;
+    Runnable m_cancelAction;
 
     /**
      * Creates a new instance.<p>
@@ -72,24 +77,28 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
         m_cancelAction = cancelAction;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_label.setValue(message);
+        m_icon.setContentMode(ContentMode.HTML);
+        m_icon.setValue(FontOpenCms.WARNING.getHtml());
         m_okButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                m_okAction.run();
+                if (m_okAction != null) {
+                    m_okAction.run();
+                }
             }
         });
         m_cancelButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                m_cancelAction.run();
+                if (m_cancelAction != null) {
+                    m_cancelAction.run();
+                }
 
             }
         });
