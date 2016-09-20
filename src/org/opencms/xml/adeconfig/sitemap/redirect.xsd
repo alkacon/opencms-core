@@ -20,6 +20,7 @@
 	
 	<xsd:annotation>
 		<xsd:appinfo>
+		    <handler class="org.opencms.xml.containerpage.CmsHtmlRedirectHandler"/>
 			<resourcebundle name="org.opencms.ade.config.workplace" />
 			<layouts>
 					<layout element="Type" widget="SelectorWidget" configuration="value='301' option='${key.redirect.type.permanent}'|value='307' option='${key.redirect.type.temporary}'|value='sublevel' option='${key.redirect.type.sublevel}'" />
