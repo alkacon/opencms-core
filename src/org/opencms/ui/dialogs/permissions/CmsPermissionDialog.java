@@ -133,6 +133,9 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     /** The resource permissions panel. */
     private VerticalLayout m_resourcePermissions;
 
+    /** The tab for setting permissions. */ 
+    private VerticalLayout m_setPermissionTab;
+
     /** The user permission panel. */
     private VerticalLayout m_userPermissions;
 
@@ -191,6 +194,9 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
                 // nothing to do
             }
         });
+        m_accordion.setSelectedTab(m_setPermissionTab);
+        m_principalSelect.setPrincipalType(I_CmsPrincipal.PRINCIPAL_GROUP);
+
     }
 
     /**
@@ -466,7 +472,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
             I_CmsPrincipal p;
             try {
                 p = CmsPrincipal.readPrincipalIncludingHistory(m_cms, id);
-            } catch (@SuppressWarnings("unused") CmsException e) {
+            } catch (CmsException e) {
                 p = null;
             }
             if ((p != null) && p.isGroup()) {

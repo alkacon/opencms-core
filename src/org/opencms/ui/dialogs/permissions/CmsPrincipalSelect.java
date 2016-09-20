@@ -390,6 +390,17 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
+     * Sets the principal type and clears the name.<p>
+     *
+     * @param type the principal type
+     */
+    public void setPrincipalType(String type) {
+
+        m_principalName.setValue("");
+        m_principalTypeSelect.setValue(type);
+    }
+
+    /**
      * @see com.vaadin.data.Property.Viewer#setPropertyDataSource(com.vaadin.data.Property)
      */
     public void setPropertyDataSource(Property newDataSource) {
