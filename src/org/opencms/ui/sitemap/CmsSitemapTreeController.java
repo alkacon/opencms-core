@@ -484,7 +484,9 @@ public class CmsSitemapTreeController {
         menu.addStyleName("borderless o-toolbar-button o-resourceinfo-toolbar");
         if (entry.isLinked()) {
             CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(m_localeContext.getRoot().getRootPath());
-            CmsResourceInfo linkedInfo = CmsResourceInfo.createSitemapResourceInfo(entry.getLinkedResource(), site);
+            CmsResourceInfo linkedInfo = CmsResourceInfo.createSitemapResourceInfo(
+                readSitemapEntryFolderIfPossible(entry.getLinkedResource()),
+                site);
             if (entry.isDirectLink()) {
                 linkedInfo.addStyleName(OpenCmsTheme.RESOURCE_INFO_DIRECTLINK);
             }
@@ -612,6 +614,32 @@ public class CmsSitemapTreeController {
             parent.replaceComponent(node, changedNode);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * If the given resource is the default file of a sitmeap entry folder, then returns that
+     * folder, else the original file.<p>
+     *
+     * @param resource a resource
+     * @return the resource or its parent folder
+     */
+    protected CmsResource readSitemapEntryFolderIfPossible(CmsResource resource) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            if (resource.isFolder()) {
+                return resource;
+            }
+            CmsResource parent = cms.readParentFolder(resource.getStructureId());
+            CmsResource defaultFile = cms.readDefaultFile(parent, CmsResourceFilter.IGNORE_EXPIRATION);
+            if ((defaultFile != null) && defaultFile.equals(resource)) {
+                return parent;
+            }
+            return resource;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return resource;
         }
     }
 

@@ -27,6 +27,9 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
@@ -41,6 +44,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -53,6 +57,7 @@ import com.vaadin.ui.Label;
  */
 public class CmsResourceInfo extends CustomLayout {
 
+    /** Button container location id. */
     private static final String BUTTON_CONTAINER = "buttonContainer";
 
     /** Logger instance for this class. */
@@ -147,12 +152,27 @@ public class CmsResourceInfo extends CustomLayout {
      */
     public static CmsResourceInfo createSitemapResourceInfo(CmsResource resource, CmsSite baseSite) {
 
-        CmsResourceInfo info = new CmsResourceInfo();
-        Locale locale = A_CmsUI.get().getLocale();
-        CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
-        resUtil.setAbbrevLength(100);
-        info.getTopLine().setValue(resUtil.getGalleryTitle(locale));
+        String title = resource.getName();
         String path = resource.getRootPath();
+
+        CmsResourceInfo info = new CmsResourceInfo();
+        CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            Map<String, CmsProperty> props = CmsProperty.toObjectMap(cms.readPropertyObjects(resource, false));
+            CmsProperty navtextProp = props.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+            CmsProperty titleProp = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
+
+            if ((navtextProp != null) && (navtextProp.getValue() != null)) {
+                title = navtextProp.getValue();
+            } else if ((titleProp != null) && (titleProp.getValue() != null)) {
+                title = titleProp.getValue();
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        info.getTopLine().setValue(title);
         if (baseSite != null) {
             String siteRoot = baseSite.getSiteRoot();
             if (path.startsWith(siteRoot)) {
