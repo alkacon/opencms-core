@@ -55,6 +55,7 @@ import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer;
+import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer.IconMode;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItem;
 import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickEvent;
@@ -333,7 +334,10 @@ public class CmsSitemapTreeController {
             }
 
         });
-        String icon = CmsSitemapTreeContainer.getSitemapResourceIcon(A_CmsUI.getCmsObject(), entry.getResource());
+        String icon = CmsSitemapTreeContainer.getSitemapResourceIcon(
+            A_CmsUI.getCmsObject(),
+            entry.getResource(),
+            IconMode.localeCompare);
         CmsResourceInfo info = new CmsResourceInfo(
             entry.getClientEntry().getTitle(),
             entry.getClientEntry().getSitePath(),

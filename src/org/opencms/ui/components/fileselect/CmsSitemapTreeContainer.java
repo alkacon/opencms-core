@@ -28,11 +28,11 @@
 package org.opencms.ui.components.fileselect;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
@@ -57,6 +57,15 @@ import com.vaadin.data.Item;
  */
 public class CmsSitemapTreeContainer extends CmsResourceTreeContainer {
 
+    /** Enum used to control icon display style. */
+    public enum IconMode {
+        /** locale compare mode. */
+        localeCompare,
+
+        /** sitemap selection mode. */
+        sitemapSelect;
+    }
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapTreeContainer.class);
 
@@ -75,14 +84,20 @@ public class CmsSitemapTreeContainer extends CmsResourceTreeContainer {
      *
      * @param cms the CMS context
      * @param resource a resource
+     * @param iconMode the icon mode
      * @return the path for the resource icon
      */
-    public static String getSitemapResourceIcon(CmsObject cms, CmsResource resource) {
+    public static String getSitemapResourceIcon(CmsObject cms, CmsResource resource, IconMode iconMode) {
 
         CmsResource defaultFile = null;
         List<CmsResource> resourcesForType = Lists.newArrayList();
         resourcesForType.add(resource);
-        if (resource.isFolder()) {
+        boolean skipDefaultFile = (iconMode == IconMode.sitemapSelect)
+            && OpenCms.getResourceManager().matchResourceType(
+                CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP,
+                resource.getTypeId());
+        if (resource.isFolder() && !skipDefaultFile) {
+
             try {
                 defaultFile = cms.readDefaultFile(resource, CmsResourceFilter.IGNORE_EXPIRATION);
                 if (defaultFile != null) {
@@ -99,8 +114,7 @@ public class CmsSitemapTreeContainer extends CmsResourceTreeContainer {
         CmsResource maybePage = resourcesForType.get(0);
         if (CmsResourceTypeXmlContainerPage.isContainerPage(maybePage)) {
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, maybePage.getRootPath());
-            for (DetailInfo info : config.getDetailInfos(cms)) {
-                CmsDetailPageInfo realInfo = info.getDetailPageInfo();
+            for (CmsDetailPageInfo realInfo : config.getAllDetailPages(true)) {
                 if (realInfo.getUri().equals(maybePage.getRootPath())
                     || realInfo.getUri().equals(CmsResource.getParentFolder(maybePage.getRootPath()))) {
                     CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
@@ -131,7 +145,7 @@ public class CmsSitemapTreeContainer extends CmsResourceTreeContainer {
     @Override
     public String getIcon(CmsObject cms, CmsResource resource) {
 
-        return getSitemapResourceIcon(cms, resource);
+        return getSitemapResourceIcon(cms, resource, IconMode.sitemapSelect);
     }
 
     /**
