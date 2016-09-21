@@ -1145,7 +1145,11 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         m_searchField.clear();
         CmsResource folder = cms.readResource(folderId, FOLDERS);
         m_currentFolder = folderId;
-        setPathInfo(cms.getSitePath(folder));
+        String folderPath = cms.getSitePath(folder);
+        if (OpenCms.getSiteManager().isSharedFolder(cms.getRequestContext().getSiteRoot())) {
+            folderPath = folderPath.substring(cms.getRequestContext().getSiteRoot().length());
+        }
+        setPathInfo(folderPath);
         List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
         m_fileTable.fillTable(cms, childResources);
         boolean hasFolderChild = false;
@@ -1156,9 +1160,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             }
         }
         m_treeContainer.setChildrenAllowed(folderId, hasFolderChild);
-        String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/")
-        ? ""
-        : cms.getSitePath(folder);
+        String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/") ? "" : folderPath;
 
         String state = new StateBean(
             cms.getRequestContext().getSiteRoot(),
