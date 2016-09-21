@@ -248,7 +248,6 @@ public class CmsLocaleGroupService {
      *  This is the case if exactly one of the resources represents a locale group, the locale of the other resource
      *  is not already present in the locale group, and if some other permission / validity checks are passed.
      *
-     * @param cms the CMS context
      * @param firstResource a resource
      * @param secondResource a resource
      *
@@ -297,7 +296,8 @@ public class CmsLocaleGroupService {
                     return Status.other;
                 }
                 CmsLock lock = m_cms.getLock(secondaryRes);
-                if (!lock.isUnlocked() && lock.getUserId().equals(m_cms.getRequestContext().getCurrentUser().getId())) {
+                if (!lock.isUnlocked()
+                    && !lock.getUserId().equals(m_cms.getRequestContext().getCurrentUser().getId())) {
                     return Status.other;
                 }
             }
