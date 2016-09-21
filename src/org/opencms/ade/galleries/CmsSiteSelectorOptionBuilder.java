@@ -42,6 +42,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -151,7 +152,8 @@ public class CmsSiteSelectorOptionBuilder {
                     }
                     if (siteRoot.equals("")) {
                         type = Type.root;
-                        message = "/";
+                        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+                        message = Messages.get().getBundle(locale).key(Messages.GUI_ROOT_SITE_0);
                         if (!includeRoot) {
                             continue;
                         }
@@ -208,7 +210,19 @@ public class CmsSiteSelectorOptionBuilder {
             return;
         }
         CmsSiteSelectorOption option = new CmsSiteSelectorOption(type, siteRoot, m_siteRoot.equals(siteRoot), message);
-        m_options.add(option);
+
+        // make sure to insert the root site is first and the shared site as second entry
+        if (Type.root.equals(type)) {
+            m_options.add(0, option);
+        } else if (Type.shared.equals(type)) {
+            if (!m_options.isEmpty() && Type.root.equals(m_options.get(0).getType())) {
+                m_options.add(1, option);
+            } else {
+                m_options.add(0, option);
+            }
+        } else {
+            m_options.add(option);
+        }
         m_usedSiteRoots.add(CmsStringUtil.joinPaths(siteRoot, "/"));
     }
 }
