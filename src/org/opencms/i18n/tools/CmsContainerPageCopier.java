@@ -38,6 +38,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleGroupService;
+import org.opencms.i18n.CmsLocaleGroupService.Status;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.I_CmsFileNameGenerator;
 import org.opencms.lock.CmsLockActionRecord;
@@ -136,6 +138,9 @@ public class CmsContainerPageCopier {
 
     /** The log instance used for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContainerPageCopier.class);
+
+    /** Original copy mode. */
+    private CopyMode m_originalMode;
 
     /** The CMS context used by this object. */
     private CmsObject m_cms;
@@ -507,8 +512,18 @@ public class CmsContainerPageCopier {
             rootCms.copyResource(page.getRootPath(), pageCopyPath);
 
             CmsResource copiedPage = rootCms.readResource(pageCopyPath, CmsResourceFilter.IGNORE_EXPIRATION);
+
             m_createdResources.add(copiedPage);
             replaceElements(copiedPage);
+            CmsLocaleGroupService localeGroupService = rootCms.getLocaleGroupService();
+            if ((m_originalMode == CopyMode.automatic)
+                && (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage))) {
+                try {
+                    localeGroupService.attachLocaleGroupIndirect(m_originalPage, copiedPage);
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
             tryUnlock(copiedFolder);
         } else {
             CmsResource page = source;
@@ -542,6 +557,15 @@ public class CmsContainerPageCopier {
             m_targetFolder = target;
             m_copiedFolderOrPage = copiedPage;
             replaceElements(copiedPage);
+            CmsLocaleGroupService localeGroupService = rootCms.getLocaleGroupService();
+            if ((m_originalMode == CopyMode.automatic)
+                && (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage))) {
+                try {
+                    localeGroupService.attachLocaleGroupIndirect(m_originalPage, copiedPage);
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
             tryUnlock(copiedPage);
 
         }
@@ -554,6 +578,7 @@ public class CmsContainerPageCopier {
      */
     public void setCopyMode(CopyMode copyMode) {
 
+        m_originalMode = copyMode;
         m_copyMode = copyMode;
     }
 

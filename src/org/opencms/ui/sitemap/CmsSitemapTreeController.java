@@ -402,7 +402,7 @@ public class CmsSitemapTreeController {
 
                         public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
 
-                            openPageCopyDialog(entry);
+                            openPageCopyDialog(node, entry);
                         }
                     });
                 }
@@ -580,16 +580,17 @@ public class CmsSitemapTreeController {
     /**
      * Opens the page copy dialog for a tree entry.<p>
      *
+     * @param node the tree node widget
      * @param entry the tree entry
      */
-    public void openPageCopyDialog(CmsSitemapTreeNodeData entry) {
+    public void openPageCopyDialog(CmsSitemapTreeNode node, CmsSitemapTreeNodeData entry) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             CmsResource resource = cms.readResource(
                 entry.getClientEntry().getId(),
                 CmsResourceFilter.IGNORE_EXPIRATION);
-            DialogContext context = new DialogContext(resource, null);
+            DialogContext context = new DialogContext(resource, node);
             CmsCopyPageDialog dialog = new CmsCopyPageDialog(context);
             String title = CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_DIALOG_TITLE_0);
             context.start(title, dialog);
