@@ -149,9 +149,9 @@ public class CmsContentTypeVisitor {
                     if ((successor != null) && successor.equals(DisplayType.column)) {
                         successor = DisplayType.singleline;
                     }
-                    boolean strong = (m_rule.equals(EvaluationRule.none)
-                        || (m_rule.equals(EvaluationRule.optional) && m_default.equals(DisplayType.singleline)))
-                        || (m_rule.equals(EvaluationRule.optional) && m_default.equals(DisplayType.singleline));
+                    boolean strong = m_rule.equals(EvaluationRule.none)
+                        || (m_rule.equals(EvaluationRule.optional) && m_default.equals(DisplayType.singleline))
+                        || (m_rule.equals(EvaluationRule.labelLength) && m_default.equals(DisplayType.wide));
                     if (((predecessor == null) || (successor == null)) && strong) {
                         resultingType = m_default;
                     } else if ((predecessor != null) || (successor != null)) {
@@ -214,9 +214,12 @@ public class CmsContentTypeVisitor {
     /** Widget display type evaluation rules. */
     protected enum EvaluationRule {
         /** Label length rule. */
-        labelLength, /** No rule applied. */
-        none, /** Optional field rule. */
-        optional, /** Root level rule. */
+        labelLength,
+        /** No rule applied. */
+        none,
+        /** Optional field rule. */
+        optional,
+        /** Root level rule. */
         rootLevel
     }
 
@@ -393,8 +396,9 @@ public class CmsContentTypeVisitor {
             if (messages != null) {
                 m_messages.addMessages(messages);
             }
-        } catch (@SuppressWarnings("unused") Exception e) {
-            //ignore
+        } catch (Exception e) {
+            // may happen during start up
+            LOG.debug(e.getMessage(), e);
         }
         // generate a new multi messages object and add the messages from the workplace
 
