@@ -51,6 +51,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ACTION_OPEN_PAGE_0 = "GUI_ACTION_OPEN_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ACTION_SWITCH_PROJECT_AND_SITE_0 = "GUI_ACTION_SWITCH_PROJECT_AND_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ACTION_SWITCH_SITE_0 = "GUI_ACTION_SWITCH_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_APP_NOT_AVAILABLE_0 = "GUI_APP_NOT_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */

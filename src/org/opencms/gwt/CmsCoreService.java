@@ -263,6 +263,26 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * Returns the file explorer link prefix. Append resource site path for complete link.<p>
+     *
+     * @param cms the cms context
+     * @param siteRoot the site root
+     *
+     * @return the file explorer link prefix
+     */
+    public static String getFileExplorerLink(CmsObject cms, String siteRoot) {
+
+        return CmsVaadinUtils.getWorkplaceLink()
+            + "#!"
+            + CmsFileExplorerConfiguration.APP_ID
+            + "/"
+            + cms.getRequestContext().getCurrentProject().getUuid()
+            + "!!"
+            + siteRoot
+            + "!!";
+    }
+
+    /**
      * Returns the workplace link.<p>
      *
      * @param cms the cms context
@@ -541,26 +561,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         return null;
-    }
-
-    /**
-     * Returns the file explorer link prefix. Append resource site path for complete link.<p>
-     *
-     * @param cms the cms context
-     * @param siteRoot the site root
-     *
-     * @return the file explorer link prefix
-     */
-    private static String getFileExplorerLink(CmsObject cms, String siteRoot) {
-
-        return CmsVaadinUtils.getWorkplaceLink()
-            + "#!"
-            + CmsFileExplorerConfiguration.APP_ID
-            + "/"
-            + cms.getRequestContext().getCurrentProject().getUuid()
-            + "!!"
-            + siteRoot
-            + "!!";
     }
 
     /**

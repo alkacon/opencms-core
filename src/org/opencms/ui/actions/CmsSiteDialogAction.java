@@ -28,23 +28,25 @@
 package org.opencms.ui.actions;
 
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.Messages;
-import org.opencms.ui.dialogs.CmsProjectSelectDialog;
+import org.opencms.ui.dialogs.CmsSiteSelectDialog;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 /**
- * The set project dialog action.<p>
+ * The switch site dialog action.<p>
  */
-public class CmsProjectDialogAction extends A_CmsToolbarAction {
+public class CmsSiteDialogAction extends A_CmsToolbarAction {
 
     /** The action id. */
-    public static final String ACTION_ID = "setproject";
+    public static final String ACTION_ID = "setsite";
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        openDialog(new CmsProjectSelectDialog(context), context);
+        openDialog(new CmsSiteSelectDialog(context), context);
     }
 
     /**
@@ -60,6 +62,18 @@ public class CmsProjectDialogAction extends A_CmsToolbarAction {
      */
     public String getTitle() {
 
-        return getWorkplaceMessage(Messages.GUI_ACTION_SWITCH_PROJECT_AND_SITE_0);
+        return getWorkplaceMessage(Messages.GUI_ACTION_SWITCH_SITE_0);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsToolbarAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        return ContextType.containerpageToolbar.equals(context.getContextType())
+            || ContextType.sitemapToolbar.equals(context.getContextType())
+            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
+            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 }
