@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components;
 
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_CACHE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_COPYRIGHT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_CREATED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_EXPIRED;
@@ -278,6 +279,7 @@ public class CmsFileTable extends CmsResourceTable {
                 column(PROPERTY_TITLE);
                 column(PROPERTY_NAVIGATION_TEXT, COLLAPSED);
                 column(PROPERTY_COPYRIGHT, COLLAPSED);
+                column(PROPERTY_CACHE, COLLAPSED);
                 column(PROPERTY_RESOURCE_TYPE);
                 column(PROPERTY_SIZE);
                 column(PROPERTY_PERMISSIONS, COLLAPSED);

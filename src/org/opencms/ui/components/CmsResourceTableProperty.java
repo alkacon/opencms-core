@@ -28,6 +28,7 @@
 package org.opencms.ui.components;
 
 import static org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0;
+import static org.opencms.workplace.explorer.Messages.GUI_INPUT_CACHE_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_COPYRIGHT_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATECREATED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0;
@@ -114,6 +115,16 @@ public class CmsResourceTableProperty implements Serializable {
 
     /** The serial version id. */
     private static final long serialVersionUID = -8006568789417647500L;
+
+    /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_CACHE = new CmsResourceTableProperty(
+        "PROPERTY_CACHE",
+        String.class,
+        null,
+        GUI_INPUT_CACHE_0,
+        true,
+        2,
+        0);
 
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_COPYRIGHT = new CmsResourceTableProperty(
@@ -455,6 +466,7 @@ public class CmsResourceTableProperty implements Serializable {
             PROPERTY_IS_FOLDER,
             PROPERTY_NAVIGATION_TEXT,
             PROPERTY_COPYRIGHT,
+            PROPERTY_CACHE,
             PROPERTY_PERMISSIONS,
             PROPERTY_RESOURCE_NAME,
             PROPERTY_RESOURCE_TYPE,

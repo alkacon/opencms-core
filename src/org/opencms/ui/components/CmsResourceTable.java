@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components;
 
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_CACHE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_COPYRIGHT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_CREATED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_EXPIRED;
@@ -365,6 +366,15 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             try {
                 CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_COPYRIGHT, false);
                 resourceItem.getItemProperty(PROPERTY_COPYRIGHT).setValue(prop.getValue(""));
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_CACHE) != null) {
+            try {
+                CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CACHE, false);
+                resourceItem.getItemProperty(PROPERTY_CACHE).setValue(prop.getValue(""));
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
