@@ -254,7 +254,7 @@ public class CmsLocaleGroupService {
      *
      * @return the result of the linkability check
      */
-    public Status checkLinkable(CmsObject cms, CmsResource firstResource, CmsResource secondResource) {
+    public Status checkLinkable(CmsResource firstResource, CmsResource secondResource) {
 
         try {
             CmsResource firstResourceCorrected = getDefaultFileOrSelf(firstResource);
@@ -274,10 +274,9 @@ public class CmsLocaleGroupService {
                 return Status.other;
             }
 
-            CmsLocaleGroupService groupService = cms.getLocaleGroupService();
-            CmsLocaleGroup group1 = groupService.readLocaleGroup(firstResourceCorrected);
+            CmsLocaleGroup group1 = readLocaleGroup(firstResourceCorrected);
             Set<Locale> locales1 = group1.getLocales();
-            CmsLocaleGroup group2 = groupService.readLocaleGroup(secondResourceCorrected);
+            CmsLocaleGroup group2 = readLocaleGroup(secondResourceCorrected);
             Set<Locale> locales2 = group2.getLocales();
             if (!(Sets.intersection(locales1, locales2).isEmpty())) {
                 return Status.alreadyLinked;
@@ -290,15 +289,15 @@ public class CmsLocaleGroupService {
             secondaryResources.add(group2.getPrimaryResource());
             for (CmsResource secondaryRes : secondaryResources) {
 
-                if (!cms.hasPermissions(
+                if (!m_cms.hasPermissions(
                     secondaryRes,
                     CmsPermissionSet.ACCESS_WRITE,
                     false,
                     CmsResourceFilter.IGNORE_EXPIRATION)) {
                     return Status.other;
                 }
-                CmsLock lock = cms.getLock(secondaryRes);
-                if (!lock.isUnlocked() && lock.getUserId().equals(cms.getRequestContext().getCurrentUser().getId())) {
+                CmsLock lock = m_cms.getLock(secondaryRes);
+                if (!lock.isUnlocked() && lock.getUserId().equals(m_cms.getRequestContext().getCurrentUser().getId())) {
                     return Status.other;
                 }
             }

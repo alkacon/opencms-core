@@ -102,7 +102,7 @@ public class CmsLocaleLinkTargetSelectionDialog extends CmsSitemapFolderSelectDi
             Item item = source.getContainerDataSource().getItem(itemId);
             CmsResource resource = (CmsResource)(item.getItemProperty("resource").getValue());
             CmsResource srcResource = m_context.getResources().get(0);
-            switch (m_groupService.checkLinkable(m_currentCms, srcResource, resource)) {
+            switch (m_groupService.checkLinkable(srcResource, resource)) {
                 case linkable:
                     return "";
                 case alreadyLinked:
@@ -235,10 +235,7 @@ public class CmsLocaleLinkTargetSelectionDialog extends CmsSitemapFolderSelectDi
 
                 CmsResource resource = (CmsResource)(item.getItemProperty("resource").getValue());
                 CmsResource srcResource = m_context.getResources().get(0);
-                switch (A_CmsUI.getCmsObject().getLocaleGroupService().checkLinkable(
-                    m_currentCms,
-                    srcResource,
-                    resource)) {
+                switch (A_CmsUI.getCmsObject().getLocaleGroupService().checkLinkable(srcResource, resource)) {
                     case linkable:
                         return true;
                     default:
