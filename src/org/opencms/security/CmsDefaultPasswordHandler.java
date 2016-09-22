@@ -37,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Locale;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
@@ -49,16 +50,19 @@ import com.lambdaworks.crypto.SCryptUtil;
  *
  * @since 6.0.0
  */
-public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
-
-    /** Parameter for SCrypt settings. */
-    public static String PARAM_SCRYPT_SETTINGS = "scrypt.settings";
+public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler, I_CmsPasswordSecurityEvaluator {
 
     /** Parameter for SCrypt fall back. */
     public static String PARAM_SCRYPT_FALLBACK = "scrypt.fallback";
 
+    /** Parameter for SCrypt settings. */
+    public static String PARAM_SCRYPT_SETTINGS = "scrypt.settings";
+
     /**  The minimum length of a password. */
     public static final int PASSWORD_MIN_LENGTH = 4;
+
+    /** The password length that is considered to be secure. */
+    public static final int PASSWORD_SECURE_LENGTH = 8;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultPasswordHandler.class);
@@ -75,17 +79,17 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /** The encoding the encoding used for translating the input string to bytes. */
     private String m_inputEncoding = CmsEncoder.ENCODING_UTF_8;
 
+    /** SCrypt fall back algorithm. */
+    private String m_scryptFallback;
+
     /** SCrypt parameter: CPU cost, must be a power of 2. */
     private int m_scryptN;
-
-    /** SCrypt parameter: Memory cost. */
-    private int m_scryptR;
 
     /** SCrypt parameter: Parallelization parameter. */
     private int m_scryptP;
 
-    /** SCrypt fall back algorithm. */
-    private String m_scryptFallback;
+    /** SCrypt parameter: Memory cost. */
+    private int m_scryptR;
 
     /**
      * The constructor does not perform any operation.<p>
@@ -212,6 +216,22 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     }
 
     /**
+     * @see org.opencms.security.I_CmsPasswordSecurityEvaluator#evaluatePasswordSecurity(java.lang.String)
+     */
+    public SecurityLevel evaluatePasswordSecurity(String password) {
+
+        SecurityLevel result;
+        if (password.length() < PASSWORD_MIN_LENGTH) {
+            result = SecurityLevel.invalid;
+        } else if (password.length() < PASSWORD_SECURE_LENGTH) {
+            result = SecurityLevel.weak;
+        } else {
+            result = SecurityLevel.strong;
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public CmsParameterConfiguration getConfiguration() {
@@ -237,6 +257,16 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     public String getInputEncoding() {
 
         return m_inputEncoding;
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsPasswordSecurityEvaluator#getPasswordSecurityHint(java.util.Locale)
+     */
+    public String getPasswordSecurityHint(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(
+            Messages.GUI_PASSWORD_SECURITY_HINT_1,
+            Integer.valueOf(PASSWORD_SECURE_LENGTH));
     }
 
     /**
