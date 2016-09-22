@@ -62,33 +62,46 @@ public class CmsHtmlRedirectHandler extends CmsDefaultXmlContentHandler {
 
         CmsFile result = super.prepareForWrite(cms, content, file);
         try {
-            I_CmsXmlContentValue linkVal = content.getValue("Link", Locale.ENGLISH);
-            if (linkVal != null) {
-                String linkStr = linkVal.getStringValue(cms);
-                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(linkStr)) {
-                    boolean hasScheme = false;
-                    try {
-                        URI uri = new URI(linkStr);
-                        hasScheme = uri.getScheme() != null;
-                    } catch (URISyntaxException e) {
-                        LOG.debug(e.getLocalizedMessage(), e);
-                    }
-                    if (!hasScheme) {
-                        linkStr = cms.getRequestContext().removeSiteRoot(linkStr);
-                    }
-                    Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, file);
-                    String title = org.opencms.xml.containerpage.Messages.get().getBundle(locale).key(
-                        org.opencms.xml.containerpage.Messages.GUI_REDIRECT_TITLE_1,
-                        linkStr);
+            String linkStr = getStringValue(cms, content, "Link");
+            String typeStr = getStringValue(cms, content, "Type");
 
-                    CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
-                    cms.writePropertyObjects(file, Arrays.asList(titleProp));
+            if ("sublevel".equals(typeStr)) {
+                Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, file);
+                String title = org.opencms.xml.containerpage.Messages.get().getBundle(locale).key(
+                    org.opencms.xml.containerpage.Messages.GUI_REDIRECT_SUBLEVEL_TITLE_0);
+                CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
+                cms.writePropertyObjects(file, Arrays.asList(titleProp));
+            } else if (!CmsStringUtil.isEmptyOrWhitespaceOnly(linkStr)) {
+                boolean hasScheme = false;
+                try {
+                    URI uri = new URI(linkStr);
+                    hasScheme = uri.getScheme() != null;
+                } catch (URISyntaxException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
                 }
+                if (!hasScheme) {
+                    linkStr = cms.getRequestContext().removeSiteRoot(linkStr);
+                }
+                Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, file);
+                String title = org.opencms.xml.containerpage.Messages.get().getBundle(locale).key(
+                    org.opencms.xml.containerpage.Messages.GUI_REDIRECT_TITLE_1,
+                    linkStr);
+                CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
+                cms.writePropertyObjects(file, Arrays.asList(titleProp));
             }
         } catch (CmsException e) {
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return result;
+    }
+
+    private String getStringValue(CmsObject cms, CmsXmlContent content, String node) {
+
+        I_CmsXmlContentValue val = content.getValue(node, Locale.ENGLISH);
+        if (val == null) {
+            return null;
+        }
+        return val.getStringValue(cms);
     }
 
 }

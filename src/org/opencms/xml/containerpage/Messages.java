@@ -121,6 +121,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle .*/
     public static final String GUI_REDIRECT_TITLE_1 = "GUI_REDIRECT_TITLE_1";
 
+    /** Message constant for key in the resource bundle .*/
+    public static final String GUI_REDIRECT_SUBLEVEL_TITLE_0 = "GUI_REDIRECT_SUBLEVEL_TITLE_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */
