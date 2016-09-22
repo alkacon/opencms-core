@@ -1800,7 +1800,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                 public void onSuccess(CmsClientSitemapEntry result) {
 
-                    callback.onSuccess(null);
+                    if (callback != null) {
+                        callback.onSuccess(null);
+                    }
                 }
             });
     }

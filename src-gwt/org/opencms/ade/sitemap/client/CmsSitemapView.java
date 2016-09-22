@@ -78,7 +78,6 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
@@ -231,6 +230,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
     /** The tree items for the model page mode, indexed by structure id. */
     private Map<CmsUUID, CmsModelPageTreeItem> m_modelPageTreeItems = new HashMap<CmsUUID, CmsModelPageTreeItem>();
+
+    /** Flag to indicate that the tree needs to be refreshed. */
+    private boolean m_needTreeRefresh;
 
     /** Label to display to no galleries in this sub site message. */
     private Label m_noGalleriesLabel;
@@ -1183,11 +1185,15 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      */
     public void setEditorMode(EditorMode editorMode) {
 
-        CmsDebugLog.consoleLog("setEditorMode: " + editorMode);
-
         if (editorMode != m_editorMode) {
+            EditorMode oldEditorMode = m_editorMode;
             m_editorMode = editorMode;
             m_controller.setEditorModeInSession(m_editorMode);
+            if (oldEditorMode == EditorMode.compareLocales) {
+                // we may not switch directly from compareLocales to navigation/vfs, so we need to remember
+                // to refresh the tree later when we do
+                m_needTreeRefresh = true;
+            }
             switch (m_editorMode) {
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
@@ -1203,7 +1209,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     getController().loadGalleries();
                     break;
                 case navigation:
-                    m_tree.getElement().getStyle().clearDisplay();
+                    if (!m_needTreeRefresh) {
+                        m_tree.getElement().getStyle().clearDisplay();
+                    }
                     setGalleriesVisible(false);
                     setModelPagesVisible(false);
                     setCategoriesVisible(false);
@@ -1212,10 +1220,27 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     m_toolbar.setNewEnabled(true, null);
 
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
+                    if (m_needTreeRefresh) {
+                        m_needTreeRefresh = false;
+                        m_controller.refreshRoot(new AsyncCallback<Void>() {
+
+                            public void onFailure(Throwable caught) {
+
+                                // TODO Auto-generated method stub
+
+                            }
+
+                            public void onSuccess(Void result) {
+
+                                m_tree.getElement().getStyle().clearDisplay();
+                            }
+                        });
+                    }
                     break;
                 case vfs:
-
-                    m_tree.getElement().getStyle().clearDisplay();
+                    if (!m_needTreeRefresh) {
+                        m_tree.getElement().getStyle().clearDisplay();
+                    }
 
                     setGalleriesVisible(false);
 
@@ -1227,6 +1252,22 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     m_toolbar.setClipboardEnabled(true, null);
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
                     setModelPagesVisible(false);
+                    if (m_needTreeRefresh) {
+                        m_needTreeRefresh = false;
+                        m_controller.refreshRoot(new AsyncCallback<Void>() {
+
+                            public void onFailure(Throwable caught) {
+
+                                // TODO Auto-generated method stub
+
+                            }
+
+                            public void onSuccess(Void result) {
+
+                                m_tree.getElement().getStyle().clearDisplay();
+                            }
+                        });
+                    }
                     break;
                 case modelpages:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
