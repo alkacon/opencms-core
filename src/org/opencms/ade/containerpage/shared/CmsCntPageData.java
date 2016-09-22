@@ -120,6 +120,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The lock information, if the page is locked by another user. */
     private String m_lockInfo;
 
+    /** The main locale to this page in case it is part of a locale group. */
+    private String m_mainLocale;
+
     /** The reason why the user is not able to edit the current container page. */
     private String m_noEditReason;
 
@@ -164,6 +167,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param reuseMode the element reuse mode
      * @param isModelPage true if this is a model page
      * @param isModelGroup true if the page is used for model groups
+     * @param mainLocale the main locale to this page in case it is part of a locale group
      */
     public CmsCntPageData(
         String noEditReason,
@@ -182,7 +186,8 @@ public final class CmsCntPageData implements IsSerializable {
         CmsElementViewInfo elementView,
         ElementReuseMode reuseMode,
         boolean isModelPage,
-        boolean isModelGroup) {
+        boolean isModelGroup,
+        String mainLocale) {
 
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
@@ -201,6 +206,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_reuseMode = reuseMode;
         m_isModelPage = isModelPage;
         m_isModelGroup = isModelGroup;
+        m_mainLocale = mainLocale;
     }
 
     /**
@@ -309,6 +315,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getLockInfo() {
 
         return m_lockInfo;
+    }
+
+    /**
+     * Returns the main locale to this page in case it is part of a locale group.<p>
+     *
+     * @return the main locale to this page in case it is part of a locale group
+     */
+    public String getMainLocale() {
+
+        return m_mainLocale;
     }
 
     /**

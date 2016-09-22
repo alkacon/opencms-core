@@ -319,7 +319,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         handler.handleChange(cms, content, locale, changedScopes);
                     }
                 }
-                result = readContentDefinition(file, content, entityId, locale, false, editedLocaleEntity);
+                result = readContentDefinition(file, content, entityId, locale, false, null, editedLocaleEntity);
             } catch (Exception e) {
                 error(e);
             }
@@ -418,6 +418,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
                 contentLocale,
                 false,
+                null,
                 editedLocaleEntity);
         } catch (Exception e) {
             error(e);
@@ -426,13 +427,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     public CmsContentDefinition loadInitialDefinition(
         String entityId,
         String newLink,
         CmsUUID modelFileId,
         String editContext,
+        String mainLocale,
         String mode,
         String postCreateHandler)
     throws CmsRpcException {
@@ -461,6 +463,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
                     contentLocale,
                     false,
+                    mainLocale != null ? CmsLocaleManager.getLocale(mainLocale) : null,
                     null);
             }
         } catch (Throwable t) {
@@ -492,6 +495,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
                 contentLocale,
                 true,
+                null,
                 editedLocaleEntity);
         } catch (Exception e) {
             error(e);
@@ -560,7 +564,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                 resource,
                                 content);
                         }
-                        result = readContentDefinition(file, content, null, locale, false, null);
+                        result = readContentDefinition(file, content, null, locale, false, null, null);
                     }
                     result.setDirectEdit(isDirectEdit);
                     return result;
@@ -1429,6 +1433,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param entityId the entity id
      * @param locale the content locale
      * @param newLocale if the locale content should be created as new
+     * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param editedLocaleEntity the edited locale entity
      *
      * @return the content definition
@@ -1441,6 +1446,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String entityId,
         Locale locale,
         boolean newLocale,
+        Locale mainLocale,
         CmsEntity editedLocaleEntity)
     throws CmsException {
 
@@ -1502,7 +1508,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             content.removeLocale(locale);
         }
         if (!content.hasLocale(locale)) {
-            content.addLocale(cms, locale);
+            if ((mainLocale != null) && content.hasLocale(mainLocale)) {
+                content.copyLocale(mainLocale, locale);
+            } else {
+                content.addLocale(cms, locale);
+            }
             // sync the locale values
             if (!visitor.getLocaleSynchronizations().isEmpty() && (content.getLocales().size() > 1)) {
                 for (Locale contentLocale : content.getLocales()) {
@@ -1648,7 +1658,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsResource resource = getCmsObject().readResource(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsFile file = getCmsObject().readFile(resource);
         CmsXmlContent content = getContentDocument(file, false);
-        CmsContentDefinition contentDefinition = readContentDefinition(file, content, null, locale, false, null);
+        CmsContentDefinition contentDefinition = readContentDefinition(file, content, null, locale, false, null, null);
         contentDefinition.setDeleteOnCancel(true);
         return contentDefinition;
     }
@@ -1835,6 +1845,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                     "dummy",
                                     locale,
                                     false,
+                                    null,
                                     null);
                                 entity = definition.getEntity();
                             } catch (CmsException e) {

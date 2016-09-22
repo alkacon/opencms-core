@@ -63,7 +63,8 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         String entityId,
         CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
-        Collection<String> changedScopes) throws CmsRpcException;
+        Collection<String> changedScopes)
+    throws CmsRpcException;
 
     /**
      * Cancels the editing session.<p>
@@ -107,6 +108,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
+     * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name
      *
@@ -119,8 +121,10 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         String newLink,
         CmsUUID modelFileId,
         String editContext,
+        String mainLocale,
         String mode,
-        String postCreateHandler) throws CmsRpcException;
+        String postCreateHandler)
+    throws CmsRpcException;
 
     /**
      * Loads new entity definition.<p>
@@ -164,7 +168,8 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,
-        boolean clearOnSuccess) throws CmsRpcException;
+        boolean clearOnSuccess)
+    throws CmsRpcException;
 
     /**
      * Saves a value in an existing XML content.<p>

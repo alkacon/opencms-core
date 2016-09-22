@@ -48,6 +48,9 @@ public class CmsEditableData implements I_CmsEditableData {
     /** The element name. */
     private String m_elementName;
 
+    /** The main language to copy in case the element language node does not exist yet. */
+    private String m_mainLanguage;
+
     /** The new link. */
     private String m_newLink;
 
@@ -107,6 +110,16 @@ public class CmsEditableData implements I_CmsEditableData {
     public String getElementName() {
 
         return m_elementName;
+    }
+
+    /**
+     * Returns the main language to copy in case the element language node does not exist yet.<p>
+     *
+     * @return the main language to copy in case the element language node does not exist yet
+     */
+    public String getMainLanguage() {
+
+        return m_mainLanguage;
     }
 
     /**
@@ -204,6 +217,16 @@ public class CmsEditableData implements I_CmsEditableData {
     public void setElementName(String elementName) {
 
         m_elementName = elementName;
+    }
+
+    /**
+     * Sets the main language to copy in case the element language node does not exist yet.<p>
+     *
+     * @param mainLanguage the main language to copy in case the element language node does not exist yet
+     */
+    public void setMainLanguage(String mainLanguage) {
+
+        m_mainLanguage = mainLanguage;
     }
 
     /**

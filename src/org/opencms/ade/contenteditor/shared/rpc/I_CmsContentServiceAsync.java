@@ -100,6 +100,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
+     * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name
      * @param callback the asynchronous callback
@@ -109,6 +110,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
         String newLink,
         CmsUUID modelFileId,
         String editContext,
+        String mainLocale,
         String mode,
         String postCreateHandler,
         AsyncCallback<CmsContentDefinition> callback);

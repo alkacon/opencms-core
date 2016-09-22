@@ -66,7 +66,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     private String m_dependingElementId;
 
     /** The container-page handler. */
-    private CmsContainerpageHandler m_handler;
+    CmsContainerpageHandler m_handler;
 
     /** Flag indicating the content editor is currently opened. */
     private boolean m_editorOpened;
@@ -137,6 +137,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
                     editableData.setStructureId(new CmsUUID(serverId));
                     editableData.setSitePath(element.getSitePath());
+                    editableData.setMainLanguage(m_handler.m_controller.getData().getMainLocale());
                     CmsContentEditorDialog.get().openEditDialog(
                         editableData,
                         false,
@@ -182,6 +183,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         null,
                         null,
                         null,
+                        m_handler.m_controller.getData().getMainLocale(),
                         onClose);
                 }
             }
@@ -233,6 +235,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     null,
                     editableData.getPostCreateHandler(),
                     mode,
+                    m_handler.m_controller.getData().getMainLocale(),
                     new Command() {
 
                         public void execute() {
@@ -284,6 +287,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     null,
                     null,
                     null,
+                    m_handler.m_controller.getData().getMainLocale(),
                     onClose);
             }
         } else {

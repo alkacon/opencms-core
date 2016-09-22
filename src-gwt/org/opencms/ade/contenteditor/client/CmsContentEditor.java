@@ -645,8 +645,9 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param entityId the entity id
      * @param newLink the new link
      * @param modelFileId  the model file id
-     * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name (optional)
+     * @param mode the content creation mode
+     * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param callback the callback
      */
     public void loadInitialDefinition(
@@ -655,6 +656,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         final CmsUUID modelFileId,
         final String postCreateHandler,
         final String mode,
+        final String mainLocale,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -668,6 +670,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     newLink,
                     modelFileId,
                     CmsCoreProvider.get().getUri(),
+                    mainLocale,
                     postCreateHandler,
                     mode,
                     this);
@@ -747,6 +750,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param modelFileId the model file id
      * @param postCreateHandler the post-create handler class (optional)
      * @param mode the content creation mode
+     * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param onClose the command executed on dialog close
      */
     public void openFormEditor(
@@ -757,6 +761,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         CmsUUID modelFileId,
         String postCreateHandler,
         String mode,
+        String mainLocale,
         Command onClose) {
 
         m_onClose = onClose;
@@ -770,6 +775,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                 modelFileId,
                 mode,
                 postCreateHandler,
+                mainLocale,
                 new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                     public void execute(CmsContentDefinition contentDefinition) {
@@ -809,13 +815,20 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_locale = locale;
         m_onClose = onClose;
         if (CmsCoreProvider.get().lock(elementId)) {
-            loadInitialDefinition(entityId, null, null, null, null, new I_CmsSimpleCallback<CmsContentDefinition>() {
+            loadInitialDefinition(
+                entityId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                new I_CmsSimpleCallback<CmsContentDefinition>() {
 
-                public void execute(CmsContentDefinition contentDefinition) {
+                    public void execute(CmsContentDefinition contentDefinition) {
 
-                    initEditor(context, contentDefinition, panel, true);
-                }
-            });
+                        initEditor(context, contentDefinition, panel, true);
+                    }
+                });
         } else {
             showLockedResourceMessage();
         }
@@ -1562,6 +1575,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     definition.getReferenceResourceId().toString(),
                     definition.getNewLink(),
                     modelStructureId,
+                    null,
                     null,
                     null,
                     m_onClose);
