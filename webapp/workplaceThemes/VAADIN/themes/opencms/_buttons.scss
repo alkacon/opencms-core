@@ -156,8 +156,13 @@
 	  &.o-color-gray  > span.v-button-wrap:before{
 	  	background: $gray-dark;
 	  }
-	  &.o-color-transparent > span.v-button-wrap:before{
-	  	display: none;
+	  &.o-color-transparent > span.v-button-wrap{
+	  	.v-icon{
+	  		color: inherit;
+	  	}
+	  	&:before{
+	  		display: none;
+	  	}
 	  }
   }
   
