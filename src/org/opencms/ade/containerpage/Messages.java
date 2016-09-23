@@ -68,6 +68,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SETTING_TEMPLATE_CONTEXTS_NAME_0 = "GUI_SETTING_TEMPLATE_CONTEXTS_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOWLOCALE_WRONG_SITE_0 = "GUI_SHOWLOCALE_WRONG_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0 = "GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0";
 
     /** Name of the used resource bundle. */

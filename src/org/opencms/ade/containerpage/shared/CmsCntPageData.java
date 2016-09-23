@@ -31,6 +31,7 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -147,6 +148,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** The locale link beans. */
+    private Map<String, CmsLocaleLinkBean> m_localeLinkBeans;
+
     /**
      * Constructor.<p>
      *
@@ -168,6 +172,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param isModelPage true if this is a model page
      * @param isModelGroup true if the page is used for model groups
      * @param mainLocale the main locale to this page in case it is part of a locale group
+     * @param localeLinkBeans beans for links to other pages in the locale group
      */
     public CmsCntPageData(
         String noEditReason,
@@ -187,7 +192,8 @@ public final class CmsCntPageData implements IsSerializable {
         ElementReuseMode reuseMode,
         boolean isModelPage,
         boolean isModelGroup,
-        String mainLocale) {
+        String mainLocale,
+        Map<String, CmsLocaleLinkBean> localeLinkBeans) {
 
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
@@ -207,6 +213,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_isModelPage = isModelPage;
         m_isModelGroup = isModelGroup;
         m_mainLocale = mainLocale;
+        m_localeLinkBeans = localeLinkBeans;
     }
 
     /**
@@ -305,6 +312,18 @@ public final class CmsCntPageData implements IsSerializable {
     public String getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Gets the locale link beans, with localized language names as keys.<p>
+     *
+     * The beans represent links to different locale variants of this page.
+     *
+     * @return the locale link bean map for this
+     */
+    public Map<String, CmsLocaleLinkBean> getLocaleLinkBeans() {
+
+        return m_localeLinkBeans;
     }
 
     /**

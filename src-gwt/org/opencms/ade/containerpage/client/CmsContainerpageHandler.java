@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
+import org.opencms.ade.containerpage.shared.CmsLocaleLinkBean;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -48,6 +49,7 @@ import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsLockReportDialog;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
@@ -86,6 +88,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
@@ -1040,6 +1043,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             return createToggleEditSmallElementsMenuEntry();
         } else if (name.equals(CmsGwtConstants.ACTION_SELECTELEMENTVIEW)) {
             return createElementViewSelectionMenuEntry();
+
+        } else if (name.equals(CmsGwtConstants.ACTION_SHOWLOCALE)) {
+            return createShowLocaleMenuEntry();
         } else if (name.equals(CmsPreview.class.getName())) {
             return null;
         } else {
@@ -1522,6 +1528,97 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         menuEntry.setBean(bean);
         return menuEntry;
 
+    }
+
+    /**
+     * Creates the real entries for the  "Show locale" option.<p>
+     *
+     * @return the real entry
+     */
+    private I_CmsContextMenuEntry createShowLocaleMenuEntry() {
+
+        Map<String, CmsLocaleLinkBean> localeLinkBeans = CmsContainerpageController.get().getData().getLocaleLinkBeans();
+        if ((localeLinkBeans == null) || localeLinkBeans.isEmpty()) {
+            return null;
+        }
+
+        CmsContextMenuEntry parentEntry = new CmsContextMenuEntry(this, null, new I_CmsContextMenuCommand() {
+
+            public void execute(
+                CmsUUID innerStructureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
+
+                // do nothing
+            }
+
+            public A_CmsContextMenuItem getItemWidget(
+                CmsUUID innerStructureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
+
+                return null;
+            }
+
+            public boolean hasItemWidget() {
+
+                return false;
+            }
+
+        });
+        CmsContextMenuEntryBean parentBean = new CmsContextMenuEntryBean();
+
+        parentBean.setLabel(
+            org.opencms.ade.containerpage.client.Messages.get().key(
+                org.opencms.ade.containerpage.client.Messages.GUI_SHOW_LOCALE_0));
+        parentBean.setActive(true);
+        parentBean.setVisible(true);
+        parentEntry.setBean(parentBean);
+        List<I_CmsContextMenuEntry> subEntries = Lists.newArrayList();
+
+        for (Map.Entry<String, CmsLocaleLinkBean> entry : localeLinkBeans.entrySet()) {
+            String label = entry.getKey();
+            final CmsLocaleLinkBean linkBean = entry.getValue();
+            CmsContextMenuEntry childEntry = new CmsContextMenuEntry(this, null, new I_CmsContextMenuCommand() {
+
+                public void execute(
+                    CmsUUID structureId,
+                    I_CmsContextMenuHandler handler,
+                    CmsContextMenuEntryBean bean) {
+
+                    if (linkBean.getError() != null) {
+                        CmsNotification.get().sendAlert(Type.WARNING, linkBean.getError());
+                    } else if (linkBean.getLink() != null) {
+                        Window.Location.assign(linkBean.getLink());
+                    }
+                }
+
+                public A_CmsContextMenuItem getItemWidget(
+                    CmsUUID structureId,
+                    I_CmsContextMenuHandler handler,
+                    CmsContextMenuEntryBean bean) {
+
+                    return null;
+                }
+
+                public boolean hasItemWidget() {
+
+                    return false;
+                }
+            });
+            CmsContextMenuEntryBean childBean = new CmsContextMenuEntryBean();
+            childBean.setLabel(label);
+            childBean.setActive(true);
+            childBean.setVisible(true);
+            childEntry.setBean(childBean);
+            subEntries.add(childEntry);
+        }
+        parentEntry.setSubMenu(subEntries);
+        if (subEntries.isEmpty()) {
+            return null;
+        } else {
+            return parentEntry;
+        }
     }
 
     /**
