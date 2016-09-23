@@ -16,6 +16,33 @@ Legend:
 - General comment
 
 OpenCms 10.5.0 Beta - September 26, 2016
+! Localization: Compare localized subsites side-by-side.
+! Localization: Copy pages from one language to another, including content.
+! Localization: Connect the same page in different languages using locale relations.
+! Localization: Message bundle translator.
+! Localization: Support for localized properties.
+! Asset Connection: Data view widget API allows to natively integrate external assets in the content editor.
+! Asset Connection: Support for using external assets in templates through EL functions.
+! Enhanced online preview in the page editor hides all OpenCms added markup for HTML debugging.
+! The Apollo Template has been greatly enhanced with new options and functionality.
+! Security: Added password expiration option.
+! Security: Added password strength indicator in password dialog.
+! Security: Added dialog "Edit user" so users can update their personal information.
+! Security: Added optional "Confirm personal information" dialog after user login.
+! Unified toolbar appearance and context menus for editors and workplace.
+! Improved behaviour when switching between workplace and editor views.
+! Support for high resolution retina screens by using font icons.
+! Keyboard shortcuts: Added "step through element views" to page editor (Ctrl-E).
+! Keyboard shortcuts: Added "step through overlapping edit points" to page editor (Ctrl-Shift-E).
+! Keyboard shortcuts: Added "save" and "save and exit" to content editor (Ctrl-S, Ctrl-Shift-S).
+! Keyboard shortcuts: Added option to show "copy or reuse" dialog after drag & drop (Ctrl + mouse up).
+! Page editor now "remembers" the last formatter set for a content type as default.
+! Added optional "Copyright" and "Cache" columns to the Explorer.
+! Categories attached to contents are now by default stored in the relation engine, not the XML.
+! Added JSP EL functions to read categories from a resource.
+! Added JSP EL functions to read locale relations for a page.
+- Transferred edit JSP permission from "Template developer" role to "VFS manager" role.
+- Extended macro formatters for better handling of new contents.
 
 OpenCms 10.0.1 - June 14, 2016
 - Improved drag and drop performance in container page editor for pages with many containers
