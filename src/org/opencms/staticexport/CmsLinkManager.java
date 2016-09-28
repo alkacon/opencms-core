@@ -45,6 +45,7 @@ import org.opencms.util.CmsUUID;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
@@ -239,6 +240,31 @@ public class CmsLinkManager {
     public static boolean isStaticResourceUri(URI uri) {
 
         return (uri != null) && uri.getPath().startsWith(OpenCms.getSystemInfo().getStaticResourceContext());
+    }
+
+    /**
+     * Returns if the given link points to the OpenCms workplace UI.<p>
+     *
+     * @param link the link to test
+     *
+     * @return <code>true</code> in case the given URI points to the OpenCms workplace UI
+     */
+    public static boolean isWorkplaceLink(String link) {
+
+        boolean result = false;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {
+            result = link.startsWith(OpenCms.getSystemInfo().getWorkplaceContext());
+            if (!result) {
+                try {
+                    URI uri = new URI(link);
+                    result = isWorkplaceUri(uri);
+                } catch (URISyntaxException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -618,7 +644,7 @@ public class CmsLinkManager {
      *
      * @param cms the current OpenCms user context
      * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
-    
+
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> in the current site
      */
