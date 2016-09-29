@@ -713,6 +713,7 @@
 		.o-sitemap-tree-node-right {
 			-ms-flex: 1; 
 			flex: 1; 
+			min-width: 0px;
 		}
 		
 		.o-sitemap-tree-node-children { 
