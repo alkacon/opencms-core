@@ -869,7 +869,7 @@ public class CmsSitemapTreeController {
                             entry.getClientEntry().getId(),
                             CmsResourceFilter.IGNORE_EXPIRATION),
                         node);
-                    CmsUnlinkDialog dialog = new CmsUnlinkDialog(dialogContext, secondary, m_localeContext);
+                    CmsUnlinkDialog dialog = new CmsUnlinkDialog(dialogContext, secondary);
                     dialogContext.start(
                         CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0),
                         dialog,

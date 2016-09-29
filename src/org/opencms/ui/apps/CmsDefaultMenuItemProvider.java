@@ -64,6 +64,7 @@ import org.opencms.ui.actions.CmsStealLockAction;
 import org.opencms.ui.actions.CmsTouchDialogAction;
 import org.opencms.ui.actions.CmsUndeleteDialogAction;
 import org.opencms.ui.actions.CmsUndoDialogAction;
+import org.opencms.ui.actions.CmsUnlinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsUnlockAction;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.contextmenu.CmsSubmenu;
@@ -80,11 +81,11 @@ import org.apache.commons.logging.Log;
  */
 public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider {
 
-    /** Logger instance for this class. */
-    static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
-
     /** The advanced menu id. */
     public static final String ADVANCED_MENU_ID = "advanced";
+
+    /** Logger instance for this class. */
+    static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
 
     /**
      * Creates a new instance.<p>
@@ -153,6 +154,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsRestoreDeletedAction(), advanced.getId(), 1000, 0),
 
             new CmsContextMenuActionItem(new CmsLinkLocaleVariantAction(), advanced.getId(), 1100, 0),
+            new CmsContextMenuActionItem(new CmsUnlinkLocaleVariantAction(), advanced.getId(), 1150, 0),
 
             new CmsContextMenuActionItem(new CmsHistoryDialogAction(), null, 2450, 0),
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),
