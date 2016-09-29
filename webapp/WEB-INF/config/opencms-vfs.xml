@@ -372,6 +372,13 @@
                 <mimetype extension=".ots" type="application/vnd.oasis.opendocument.spreadsheet-template" />
                 <mimetype extension=".otp" type="application/vnd.oasis.opendocument.presentation-template" />
                 <mimetype extension=".otg" type="application/vnd.oasis.opendocument.graphics-template" />
+				
+                <!--
+                # RFC5545 - Internet Calendaring and Scheduling Core Object Specification
+                # (iCalendar)
+                  -->    
+                <mimetype extension=".ics" type="text/calendar" />
+
          
 			</mimetypes>
             
