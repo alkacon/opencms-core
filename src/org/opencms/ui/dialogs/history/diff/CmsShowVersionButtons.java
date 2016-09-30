@@ -79,7 +79,7 @@ public class CmsShowVersionButtons implements I_CmsDiffProvider {
                 : "" + CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION;
                 String link = CmsHistoryListUtil.getHistoryLink(cms, version.getStructureId(), v1Param);
                 link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, link);
-                A_CmsUI.get().getPage().open(link, "_blank");
+                A_CmsUI.get().openPageOrWarn(link, "_blank");
             }
 
         });

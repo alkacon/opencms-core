@@ -60,7 +60,7 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
             initPath = CmsFileUtil.addTrailingSeparator(cms.getRequestContext().getSiteRoot());
         }
         String link = CmsWorkplace.getWorkplaceExplorerLink(cms, initPath);
-        A_CmsUI.get().getPage().open(link, "_blank");
+        A_CmsUI.get().openPageOrWarn(link, "_blank");
     }
 
     /**

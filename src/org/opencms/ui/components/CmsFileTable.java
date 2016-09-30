@@ -734,7 +734,7 @@ public class CmsFileTable extends CmsResourceTable {
 
                             CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
                             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                                A_CmsUI.get().getPage().open(link, "_blank");
+                                A_CmsUI.get().openPageOrWarn(link, "_blank");
                             } else {
                                 A_CmsUI.get().getPage().setLocation(link);
                             }
