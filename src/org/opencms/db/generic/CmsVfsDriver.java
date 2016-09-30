@@ -589,6 +589,38 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
+
+        if (relation.getType().getId() == CmsRelationType.LOCALE_VARIANT.getId()) {
+            try {
+
+                // Normalizes locale relations after creating a relation.
+                // After creating a locale variant relation from A to B, this statment
+                // removes all locale variant relations which are either
+                //       - from A to somewhere else than B,
+                //       - from B to some other resource
+                //       - to A from some other resources
+                conn = m_sqlManager.getConnection(dbc);
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RELATIONS_NORMALIZE_LOCALE_RELATIONS");
+                stmt.setString(1, relation.getSourceId().toString());
+                stmt.setString(2, relation.getTargetId().toString());
+                stmt.setString(3, relation.getSourceId().toString());
+                stmt.setString(4, relation.getTargetId().toString());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_CREATE_RELATION_2,
+                            String.valueOf(projectId),
+                            relation));
+                }
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(
+                    Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                    e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
+        }
     }
 
     /**
@@ -4644,19 +4676,44 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         PreparedStatement stmt = null;
         Connection conn = null;
-
         try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RELATIONS_UPDATE_BROKEN");
-            stmt.setString(1, rootPath);
-            stmt.executeUpdate();
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RELATIONS_UPDATE_BROKEN");
+                stmt.setString(1, rootPath);
+                stmt.executeUpdate();
+
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RELATIONS_DELETE_BROKEN_LOCALE_RELATIONS");
+                stmt.setString(1, rootPath);
+                stmt.executeUpdate();
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
+
+            PreparedStatement stmt2 = null;
+            Connection conn2 = null;
+
+            try {
+                conn2 = m_sqlManager.getConnection(dbc);
+                stmt2 = m_sqlManager.getPreparedStatement(conn2, projectId, "C_RELATIONS_UPDATE_BROKEN");
+                stmt2.setString(1, rootPath);
+                stmt2.executeUpdate();
+
+                stmt2 = m_sqlManager.getPreparedStatement(
+                    conn2,
+                    projectId,
+                    "C_RELATIONS_DELETE_BROKEN_LOCALE_RELATIONS");
+                stmt2.setString(1, rootPath);
+                stmt2.executeUpdate();
+            } finally {
+                m_sqlManager.closeAll(dbc, conn2, stmt2, null);
+            }
         } catch (SQLException e) {
             throw new CmsDbSqlException(
                 Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
                 e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
+
     }
 
     /**
