@@ -272,7 +272,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
     private void checkLinkWithParameters(CmsObject cms, String vfsName, String expected) {
 
         // check JSP WITH parameters
-        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, "?a=b&c=d");
+        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, "?a=b&c=d", null);
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         String extension = expected.substring(expected.lastIndexOf('.'));
         Pattern pattern = Pattern.compile(

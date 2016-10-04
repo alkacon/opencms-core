@@ -274,6 +274,14 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>          
+        <attribute>
+             <description><![CDATA[
+                Set this attribute to link to a specific detail page.
+            ]]></description>
+            <name>detailPage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>   
     </tag>
 
     <tag>

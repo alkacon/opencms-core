@@ -112,6 +112,14 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
      */
     public String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
 
+        return getLink(cms, link, siteRoot, null, forceSecure);
+    }
+
+    /**
+     * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#getLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, boolean)
+     */
+    public String getLink(CmsObject cms, String link, String siteRoot, String targetDetailPage, boolean forceSecure) {
+
         if (CmsStringUtil.isEmpty(link)) {
             // not a valid link parameter, return an empty String
             return "";
@@ -175,7 +183,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             if (!rootVfsName.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
                 // never use the ADE manager for workplace links, to be sure the workplace stays usable in case of configuration errors
                 I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
-                detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
+                detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri(), targetDetailPage);
             }
             if (detailPage != null) {
                 CmsSite detailPageSite = OpenCms.getSiteManager().getSiteForRootPath(detailPage);
@@ -267,7 +275,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     if (exportManager.isExportLink(cms, vfsName)) {
                         parameters = prepareExportParameters(cms, vfsName, parameters);
                         // export required, get export name for target link
-                        resultLink = exportManager.getRfsName(cms, vfsName, parameters);
+                        resultLink = exportManager.getRfsName(cms, vfsName, parameters, targetDetailPage);
                         // now set the parameters to null, we do not need them anymore
                         parameters = null;
                     } else {

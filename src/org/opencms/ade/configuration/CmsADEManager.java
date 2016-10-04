@@ -372,11 +372,30 @@ public class CmsADEManager {
      */
     public String getDetailPage(CmsObject cms, String pageRootPath, String originPath) {
 
+        return getDetailPage(cms, pageRootPath, originPath, null);
+    }
+
+    /**
+     * Gets the detail page for a content element.<p>
+     *
+     * @param cms the CMS context
+     * @param pageRootPath the element's root path
+     * @param originPath the path in which the the detail page is being requested
+     * @param targetDetailPage the target detail page to use
+     *
+     * @return the detail page for the content element
+     */
+    public String getDetailPage(CmsObject cms, String pageRootPath, String originPath, String targetDetailPage) {
+
         boolean online = isOnline(cms);
         String resType = getCacheState(online).getParentFolderType(pageRootPath);
         if (resType == null) {
             return null;
         }
+        if ((targetDetailPage != null) && getDetailPages(cms, resType).contains(targetDetailPage)) {
+            return targetDetailPage;
+        }
+
         String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
         CmsADEConfigData configData = lookupConfiguration(cms, originRootPath);
         CmsADEConfigData targetConfigData = lookupConfiguration(cms, pageRootPath);
@@ -776,7 +795,8 @@ public class CmsADEManager {
         CmsObject userCms,
         HttpServletRequest request,
         HttpServletResponse response,
-        String htmlRedirect) throws CmsException {
+        String htmlRedirect)
+    throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(m_offlineCms);
         CmsRequestContext userContext = userCms.getRequestContext();
@@ -1011,7 +1031,8 @@ public class CmsADEManager {
         CmsResource pageResource,
         String name,
         boolean newOrder,
-        List<CmsContainerElementBean> elements) throws CmsException {
+        List<CmsContainerElementBean> elements)
+    throws CmsException {
 
         CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
         writer.save(cms, name, newOrder, pageResource, elements);
@@ -1033,7 +1054,8 @@ public class CmsADEManager {
         String sitePath,
         String name,
         boolean newOrder,
-        List<CmsContainerElementBean> elements) throws CmsException {
+        List<CmsContainerElementBean> elements)
+    throws CmsException {
 
         saveInheritedContainer(cms, cms.readResource(sitePath), name, newOrder, elements);
     }
