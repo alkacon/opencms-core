@@ -28,7 +28,7 @@
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 		        <layouts>
-		           	<layout element="Widget" widget="ComboWidget" configuration="string:%(key.label.string)|select:%(key.label.select)|multicheck:%(key.label.multicheck)|checkbox:%(key.label.checkbox)|combo:%(key.label.combo)|selectcombo:%(key.label.selectcombo)|datebox:%(key.label.datebox)|vfslink:%(key.label.link)|multiselectbox:%(key.label.multiselectbox)|radio:%(key.label.radio)|groupselection:%(key.label.groupselection)" />
+		           	<layout element="Widget" widget="ComboWidget" configuration="string:%(key.label.string)|select:%(key.label.select)|multicheck:%(key.label.multicheck)|checkbox:%(key.label.checkbox)|combo:%(key.label.combo)|selectcombo:%(key.label.selectcombo)|datebox:%(key.label.datebox)|vfslink:%(key.label.link)|multiselectbox:%(key.label.multiselectbox)|radio:%(key.label.radio)|groupselection:%(key.label.groupselection)|hidden:%(key.label.hidden)" />
 		           	<layout element="RuleType" widget="SelectorWidget" configuration="error:%(key.label.error)|warning:%(key.label.warning)" />
 		        </layouts>
         </xsd:appinfo>

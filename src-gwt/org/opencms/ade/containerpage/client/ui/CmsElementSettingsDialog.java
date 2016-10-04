@@ -110,6 +110,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         }
     }
 
+    /** The hidden field widget name. */
+    private static final String HIDDEN_FIELD_WIDGET = "hidden";
+
     /** The template context changed flag. */
     private boolean m_changedContext;
 
@@ -343,13 +346,18 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         getForm().removeGroup("");
         Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(settingsConfig.values());
         for (I_CmsFormField field : formFields.values()) {
+
             String fieldId = field.getId();
-            String initialValue = m_settings.get(fieldId);
-            if (initialValue == null) {
-                CmsXmlContentProperty propDef = settingsConfig.get(fieldId);
-                initialValue = propDef.getDefault();
+            CmsXmlContentProperty propDef = settingsConfig.get(fieldId);
+            // skip hidden fields
+            if (!HIDDEN_FIELD_WIDGET.equals(propDef.getWidget())) {
+                String initialValue = m_settings.get(fieldId);
+                if (initialValue == null) {
+
+                    initialValue = propDef.getDefault();
+                }
+                getForm().addField(field, initialValue);
             }
-            getForm().addField(field, initialValue);
         }
         getForm().render();
         A_CmsFormFieldPanel formWidget = getForm().getWidget();
