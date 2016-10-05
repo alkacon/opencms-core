@@ -55,12 +55,17 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.contextmenu.CmsContextMenu;
@@ -69,6 +74,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -729,6 +735,21 @@ public class CmsFileTable extends CmsResourceTable {
                         try {
                             CmsObject cms = A_CmsUI.getCmsObject();
                             CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
+                            if (((CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
+                                || (CmsResourceTypeXmlContent.isXmlContent(res)
+                                    && !CmsResourceTypeXmlContainerPage.isContainerPage(res)))
+                                && !res.getName().endsWith(".html")
+                                && !res.getName().endsWith(".htm")) {
+                                m_currentResources = Collections.singletonList(res);
+                                CmsEditDialogAction action = new CmsEditDialogAction();
+                                I_CmsDialogContext context = m_contextProvider.getDialogContext();
+                                if (action.getVisibility(context).isActive()) {
+                                    action.executeAction(context);
+                                    return;
+                                }
+
+                            }
+
                             String link = OpenCms.getLinkManager().substituteLink(cms, res);
                             HttpServletRequest req = CmsVaadinUtils.getRequest();
 
@@ -738,6 +759,7 @@ public class CmsFileTable extends CmsResourceTable {
                             } else {
                                 A_CmsUI.get().getPage().setLocation(link);
                             }
+
                             return;
                         } catch (CmsVfsResourceNotFoundException e) {
                             LOG.info(e.getLocalizedMessage(), e);
