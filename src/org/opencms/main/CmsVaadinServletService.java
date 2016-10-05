@@ -27,6 +27,7 @@
 
 package org.opencms.main;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.vaadin.server.Constants;
@@ -62,7 +63,7 @@ public class CmsVaadinServletService extends VaadinServletService {
      * @see com.vaadin.server.VaadinServletService#getThemeResourceAsStream(com.vaadin.ui.UI, java.lang.String, java.lang.String)
      */
     @Override
-    public InputStream getThemeResourceAsStream(UI uI, String themeName, String resource) {
+    public InputStream getThemeResourceAsStream(UI uI, String themeName, String resource) throws IOException {
 
         String resourcePath = Constants.THEME_DIR_PATH + '/' + themeName + "/" + resource;
         InputStream result = getClass().getClassLoader().getResourceAsStream(resourcePath);

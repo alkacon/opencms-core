@@ -365,7 +365,7 @@ public class CmsFileTable extends CmsResourceTable {
 
         String result = "";
         if (resourceItem != null) {
-            if ((resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).getValue() == null)
+            if ((resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT) == null)
                 || ((Boolean)resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).getValue()).booleanValue()) {
 
                 CmsResourceState state = (CmsResourceState)resourceItem.getItemProperty(
@@ -374,11 +374,11 @@ public class CmsFileTable extends CmsResourceTable {
             } else {
                 result = OpenCmsTheme.PROJECT_OTHER;
             }
-            if ((resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).getValue() != null)
+            if ((resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED) != null)
                 && !((Boolean)resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).getValue()).booleanValue()) {
                 result += " " + OpenCmsTheme.EXPIRED;
             }
-            if ((resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).getValue() != null)
+            if ((resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED) != null)
                 && ((Boolean)resourceItem.getItemProperty(
                     CmsResourceTableProperty.PROPERTY_DISABLED).getValue()).booleanValue()) {
                 result += " " + OpenCmsTheme.DISABLED;

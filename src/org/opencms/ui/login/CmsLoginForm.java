@@ -103,7 +103,6 @@ public class CmsLoginForm extends VerticalLayout {
      * @param controller the login controller
      * @param locale the locale to use
      */
-    @SuppressWarnings("serial")
     public CmsLoginForm(CmsLoginController controller, Locale locale) {
 
         m_controller = controller;
@@ -128,12 +127,16 @@ public class CmsLoginForm extends VerticalLayout {
         m_loginButton.setClickShortcut(KeyCode.ENTER);
         m_loginButton.addClickListener(new ClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
             public void buttonClick(ClickEvent event) {
 
                 m_controller.onClickLogin();
             }
         });
         addAttachListener(new AttachListener() {
+
+            private static final long serialVersionUID = 1L;
 
             @SuppressWarnings("synthetic-access")
             public void attach(AttachEvent event) {
@@ -143,6 +146,8 @@ public class CmsLoginForm extends VerticalLayout {
         });
 
         ClickListener forgotPasswordListener = new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
 
             public void buttonClick(ClickEvent event) {
 
@@ -155,6 +160,8 @@ public class CmsLoginForm extends VerticalLayout {
         m_optionsButton.addClickListener(
 
             new ClickListener() {
+
+                private static final long serialVersionUID = 1L;
 
                 public void buttonClick(ClickEvent event) {
 
