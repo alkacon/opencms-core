@@ -87,7 +87,7 @@ Alkacon OpenCms Setup Wizard - Apache OpenJPA compatible database setup
 	<tr>
 		<td>OpenCms Connection</td>
 		<td><input type="text" name="dbWorkUser" size="8" style="width:150px;" value='<%= Bean.getDbWorkUser() %>'></td>
-		<td style="text-align: right;"><input type="text" name="dbWorkPwd" size="8" style="width:150px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+		<td style="text-align: right;"><input type="password" name="dbWorkPwd" size="8" style="width:150px;" value='<%= Bean.getDbWorkPwd() %>'></td>
 		<td><%= Bean.getHtmlHelpIcon("2", "../../") %></td>
 	</tr>
 	<tr>
