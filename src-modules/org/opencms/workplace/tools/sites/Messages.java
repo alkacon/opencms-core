@@ -110,7 +110,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_DETAIL_ALIASES_1 = "GUI_SITES_DETAIL_ALIASES_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_DETAIL_PARAMETERS_0 = "label.sites.parameters";
+    public static final String GUI_SITES_DETAIL_PARAMETERS_0 = "GUI_SITES_DETAIL_PARAMETERS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_HIDE_ALIASES_HELP_0 = "GUI_SITES_DETAIL_HIDE_ALIASES_HELP_0";
