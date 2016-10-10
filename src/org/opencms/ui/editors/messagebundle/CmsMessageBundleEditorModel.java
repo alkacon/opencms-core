@@ -1337,7 +1337,7 @@ public class CmsMessageBundleEditorModel {
                 m_descContent.getValue(messagePrefix + Descriptor.N_KEY, Descriptor.LOCALE).setStringValue(m_cms, key);
 
                 descProp = item.getItemProperty(TableProperty.DESCRIPTION);
-                if (null != descProp.getValue()) {
+                if ((null != descProp) && (null != descProp.getValue())) {
                     desc = descProp.getValue().toString();
                     m_descContent.getValue(messagePrefix + Descriptor.N_DESCRIPTION, Descriptor.LOCALE).setStringValue(
                         m_cms,
@@ -1345,7 +1345,7 @@ public class CmsMessageBundleEditorModel {
                 }
 
                 defaultValueProp = item.getItemProperty(TableProperty.DEFAULT);
-                if (null != defaultValueProp.getValue()) {
+                if ((null != defaultValueProp) && (null != defaultValueProp.getValue())) {
                     defaultValue = defaultValueProp.getValue().toString();
                     m_descContent.getValue(messagePrefix + Descriptor.N_DEFAULT, Descriptor.LOCALE).setStringValue(
                         m_cms,
