@@ -354,23 +354,9 @@ public final class CmsMessageBundleEditorTypes {
                 }
             });
 
-            Button add = new Button();
-            add.setDescription(messages.key(Messages.GUI_ADD_ROW_BELOW_0));
-            add.setIcon(FontOpenCms.CIRCLE_PLUS, messages.key(Messages.GUI_ADD_ROW_BELOW_0));
-            add.addStyleName("icon-only");
-            add.addStyleName("borderless-colored");
-            add.addClickListener(new ClickListener() {
-
-                public void buttonClick(ClickEvent event) {
-
-                    m_table.addItemAfter(itemId);
-                }
-            });
             options.addComponent(delete);
-            options.addComponent(add);
 
-            Collection<Component> buttons = new ArrayList<Component>(2);
-            buttons.add(add);
+            Collection<Component> buttons = new ArrayList<Component>(1);
             buttons.add(delete);
             m_buttons.put(itemId, buttons);
 

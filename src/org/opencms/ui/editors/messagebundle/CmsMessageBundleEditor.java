@@ -754,7 +754,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (m_model.isShowOptionsColumn(m_model.getEditMode())) {
             table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
         }
-        table.setColumnWidth(TableProperty.OPTIONS, 72);
+        table.setColumnWidth(TableProperty.OPTIONS, 40);
         table.setColumnExpandRatio(TableProperty.KEY, 1f);
         table.setColumnExpandRatio(TableProperty.DESCRIPTION, 1f);
         table.setColumnExpandRatio(TableProperty.DEFAULT, 1f);
