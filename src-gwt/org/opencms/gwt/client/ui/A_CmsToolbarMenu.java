@@ -41,9 +41,6 @@ implements I_CmsToolbarButton {
     /** The handler instance. */
     private HANDLER m_handler;
 
-    /** The CSS class responsible for displaying the proper icon. */
-    private String m_iconClass;
-
     /**
      * Constructor.<p>
      *
@@ -57,15 +54,6 @@ implements I_CmsToolbarButton {
         setOpenRight(true);
         m_handler = handler;
         setTitle(buttonData.getTitle());
-        m_iconClass = buttonData.getIconClass();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#getIconClass()
-     */
-    public String getIconClass() {
-
-        return m_iconClass;
     }
 
     /**
@@ -135,5 +123,15 @@ implements I_CmsToolbarButton {
     protected HANDLER getHandler() {
 
         return m_handler;
+    }
+
+    /**
+     * Sets the button handler.<p>
+     *
+     * @param handler the button handler
+     */
+    protected void setHandler(HANDLER handler) {
+
+        m_handler = handler;
     }
 }

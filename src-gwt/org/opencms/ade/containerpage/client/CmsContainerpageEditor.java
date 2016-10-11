@@ -324,6 +324,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         //        m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
         m_toolbar = new CmsToolbar();
         m_toolbar.setQuickLaunchHandler(new PageEditorQuickLaunchHandler());
+        m_toolbar.getUserInfo().setHandler(containerpageHandler);
+        m_toolbar.getQuickLauncher().setHandler(containerpageHandler);
         m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0));
 
         m_publish = new CmsToolbarPublishButton(containerpageHandler);

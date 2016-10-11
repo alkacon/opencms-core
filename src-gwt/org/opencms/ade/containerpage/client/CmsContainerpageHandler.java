@@ -918,6 +918,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void setActiveButton(I_CmsToolbarButton button) {
 
         m_activeButton = button;
+        setEditButtonsVisible((button == null) || m_editor.getSelection().equals(button));
     }
 
     /**
