@@ -268,6 +268,16 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         CmsEditor.openBackLink(m_backLink);
     }
 
+    Map<Object, Object> getFilters() {
+
+        Map<Object, Object> result = new HashMap<Object, Object>(4);
+        result.put(TableProperty.KEY, m_table.getFilterFieldValue(TableProperty.KEY));
+        result.put(TableProperty.DEFAULT, m_table.getFilterFieldValue(TableProperty.DEFAULT));
+        result.put(TableProperty.DESCRIPTION, m_table.getFilterFieldValue(TableProperty.DESCRIPTION));
+        result.put(TableProperty.TRANSLATION, m_table.getFilterFieldValue(TableProperty.TRANSLATION));
+        return result;
+    }
+
     /**
      * Save the changes.
      */
@@ -327,6 +337,16 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         }
         return success;
 
+    }
+
+    void setFilters(Map<Object, Object> filters) {
+
+        for (Object column : filters.keySet()) {
+            Object filterValue = filters.get(column);
+            if ((filterValue != null) && !filterValue.toString().isEmpty() && !m_table.isColumnCollapsed(column)) {
+                m_table.setFilterFieldValue(column, filterValue);
+            }
+        }
     }
 
     /**
@@ -573,10 +593,12 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
                 Object sortProperty = m_table.getSortContainerPropertyId();
                 boolean isAcending = m_table.isSortAscending();
+                Map<Object, Object> filters = getFilters();
                 m_table.clearFilters();
                 m_model.setKeySetMode((CmsMessageBundleEditorTypes.KeySetMode)event.getProperty().getValue());
                 m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
                 m_table.select(m_table.getCurrentPageFirstItemId());
+                setFilters(filters);
             }
 
         });
@@ -622,6 +644,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                     try {
                         Object sortProperty = m_table.getSortContainerPropertyId();
                         boolean isAcending = m_table.isSortAscending();
+                        Map<Object, Object> filters = getFilters();
                         m_table.clearFilters();
                         m_model.setLocale((Locale)event.getProperty().getValue());
                         m_fileName.setReadOnly(false);
@@ -629,6 +652,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                         m_fileName.setReadOnly(true);
                         m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
                         m_table.select(m_table.getCurrentPageFirstItemId());
+                        setFilters(filters);
                     } catch (IOException | CmsException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -754,7 +778,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (m_model.isShowOptionsColumn(m_model.getEditMode())) {
             table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
         }
-        table.setColumnWidth(TableProperty.OPTIONS, 40);
+        table.setColumnWidth(TableProperty.OPTIONS, 42);
         table.setColumnExpandRatio(TableProperty.KEY, 1f);
         table.setColumnExpandRatio(TableProperty.DESCRIPTION, 1f);
         table.setColumnExpandRatio(TableProperty.DEFAULT, 1f);
@@ -823,11 +847,13 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
                 Object sortProperty = m_table.getSortContainerPropertyId();
                 boolean isAcending = m_table.isSortAscending();
+                Map<Object, Object> filters = getFilters();
                 if (!setEditMode((CmsMessageBundleEditorTypes.EditMode)event.getProperty().getValue())) {
                     viewSelect.setValue(m_model.getEditMode());
                 } else {
                     m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
                     m_table.select(m_table.getCurrentPageFirstItemId());
+                    setFilters(filters);
                 }
             }
         });
