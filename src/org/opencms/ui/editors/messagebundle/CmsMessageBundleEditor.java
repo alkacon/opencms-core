@@ -423,15 +423,24 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptio
      */
     private void adjustFocus() {
 
-        Map<Integer, AbstractTextField> firstEditableCol = m_fieldFactories.get(
-            m_model.getEditMode()).getValueFields().get(Integer.valueOf(1));
-        if (null != firstEditableCol) {
-            AbstractTextField firstTextField = firstEditableCol.get(Integer.valueOf(1));
-            if (null != firstTextField) {
-                firstTextField.focus();
+        if (m_addEntry.isVisible()) {
+            ((AddEntryTableFieldFactory)m_addEntry.getTableFieldFactory()).getValueFields().get(
+                TableProperty.KEY).focus();
+        } else {
+            // NOTE: A collection is returned, but actually it's a linked list.
+            // It's a hack, but actually I don't know how to do better here.
+            List<Integer> visibleItemIds = (List<Integer>)m_table.getVisibleItemIds();
+            if (!visibleItemIds.isEmpty()) {
+                Map<Integer, AbstractTextField> firstEditableCol = m_fieldFactories.get(
+                    m_model.getEditMode()).getValueFields().get(Integer.valueOf(1));
+                if (null != firstEditableCol) {
+                    AbstractTextField firstTextField = firstEditableCol.get(visibleItemIds.get(0));
+                    if (null != firstTextField) {
+                        firstTextField.focus();
+                    }
+                }
             }
         }
-
     }
 
     /**
