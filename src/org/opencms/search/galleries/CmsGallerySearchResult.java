@@ -204,7 +204,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         m_description = doc.getFieldValueAsString(effFieldName);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_description)) {
             m_description = doc.getFieldValueAsString(
-                CmsPropertyDefinition.PROPERTY_DESCRIPTION + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT);
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION + CmsSearchField.FIELD_DYNAMIC_PROPERTIES);
         }
 
         m_resourceType = doc.getFieldValueAsString(CmsSearchField.FIELD_TYPE);
