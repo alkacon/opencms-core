@@ -43,21 +43,28 @@ import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddEntryTableCellStyleGenerator;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddEntryTableFieldFactory;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddOptionColumnGenerator;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleType;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.ExtendedFilterTable;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_AddOptionClickHandler;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TranslateTableFieldFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-import org.tepi.filtertable.FilterTable;
-
 import com.vaadin.annotations.Theme;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
@@ -77,20 +84,28 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnCollapseEvent;
+import com.vaadin.ui.Table.ColumnHeaderMode;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Controller for the VAADIN UI of the Message Bundle Editor.
  */
 @Theme("opencms")
-public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener {
+public class CmsMessageBundleEditor
+implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptionClickHandler {
 
     /** Used to implement {@link java.io.Serializable}. */
     private static final long serialVersionUID = 5366955716462191580L;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditor.class);
+
+    /** The id of the row in the "Add entry" table. */
+    private static final String ADDROW = "addrow";
 
     /** Messages used by the GUI. */
     static CmsMessages m_messages;
@@ -104,6 +119,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** The cell style generators for the different modes. */
     private final Map<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator> m_styleGenerators = new HashMap<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator>(
         2);
+
+    /** The context of the UI. */
+    I_CmsAppUIContext m_context;
     /** The model behind the UI. */
     CmsMessageBundleEditorModel m_model;
     /** CmsObject for read / write actions. */
@@ -111,7 +129,11 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** The resource that was opened with the editor. */
     CmsResource m_resource;
     /** The table component that is shown. */
-    FilterTable m_table;
+    ExtendedFilterTable m_table;
+    /** The row for entering new entries. */
+    Table m_addEntry;
+    /** The components in the row for adding new entries. */
+    Map<Object, Component> m_addEntryComponents;
 
     /** The options column, optionally shown in the table. */
     CmsMessageBundleEditorTypes.OptionColumnGenerator m_optionsColumn;
@@ -121,9 +143,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
     /** The place where to go when the editor is closed. */
     private String m_backLink;
-
-    /** Add key button - created in the beginning, but only shown in special settings. */
-    private Component m_addKeyButton;
 
     /** The app's info component. */
     private HorizontalLayout m_appInfo;
@@ -161,6 +180,33 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
+     * Copies the entry from the "Add entry" table as new entry to the main table.
+     *
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_AddOptionClickHandler#handleAddOptionClick()
+     */
+    public void handleAddOptionClick() {
+
+        Item newEntry = m_addEntry.getItem(ADDROW);
+        Object copyEntryId;
+        Map<Object, Object> filters = getFilters();
+        m_table.clearFilters();
+        copyEntryId = m_table.addItem();
+        Item copyEntry = m_table.getItem(copyEntryId);
+        for (TableProperty col : TableProperty.values()) {
+            if (col != TableProperty.OPTIONS) {
+                Object newValue = newEntry.getItemProperty(col).getValue();
+                Property<Object> prop = copyEntry.getItemProperty(col);
+                if (prop != null) {
+                    prop.setValue(newValue);
+                }
+                newEntry.getItemProperty(col).setValue("");
+            }
+        }
+        setFilters(filters);
+        ((AddEntryTableFieldFactory)m_addEntry.getTableFieldFactory()).getValueFields().get(TableProperty.KEY).focus();
+    }
+
+    /**
      * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String)
      */
     public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink) {
@@ -169,6 +215,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         m_resource = resource;
         m_backLink = backLink;
+        m_context = context;
 
         try {
             m_model = new CmsMessageBundleEditorModel(m_cms, m_resource);
@@ -268,6 +315,11 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         CmsEditor.openBackLink(m_backLink);
     }
 
+    /**
+     * Returns the currently set filters in a map column -> filter.
+     *
+     * @return the currently set filters in a map column -> filter.
+     */
     Map<Object, Object> getFilters() {
 
         Map<Object, Object> result = new HashMap<Object, Object>(4);
@@ -276,6 +328,26 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         result.put(TableProperty.DESCRIPTION, m_table.getFilterFieldValue(TableProperty.DESCRIPTION));
         result.put(TableProperty.TRANSLATION, m_table.getFilterFieldValue(TableProperty.TRANSLATION));
         return result;
+    }
+
+    /**
+     * Refreshes the "Add entry" table.
+     */
+    void refreshAddEntryTable() {
+
+        List<Object> visibleColumns = Arrays.asList(m_table.getVisibleColumns());
+        if (visibleColumns.contains(TableProperty.OPTIONS)) {
+            m_addEntry.setVisible(true);
+            for (Object c : m_addEntry.getVisibleColumns()) {
+                if (visibleColumns.contains(c) && !m_table.isColumnCollapsed(c)) {
+                    m_addEntry.setColumnCollapsed(c, false);
+                } else {
+                    m_addEntry.setColumnCollapsed(c, true);
+                }
+            }
+        } else {
+            m_addEntry.setVisible(false);
+        }
     }
 
     /**
@@ -320,14 +392,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                 m_table.setTableFieldFactory(m_fieldFactories.get(newMode));
                 m_table.setCellStyleGenerator(m_styleGenerators.get(newMode));
                 adjustOptionsColumn(oldMode, newMode);
-                if (newMode.equals(CmsMessageBundleEditorTypes.EditMode.MASTER)) {
-                    addAddKeyButton();
-                    if (m_table.getItemIds().isEmpty()) {
-                        m_table.addItem();
-                    }
-                } else {
-                    removeAddKeyButton();
-                }
+                refreshAddEntryTable();
                 success = true;
             } else {
                 Notification.show(m_messages.key(Messages.ERR_MODE_CHANGE_NOT_POSSIBLE_0), Type.ERROR_MESSAGE);
@@ -339,6 +404,10 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
     }
 
+    /**
+     * Sets the provided filters.
+     * @param filters a map "column id -> filter".
+     */
     void setFilters(Map<Object, Object> filters) {
 
         for (Object column : filters.keySet()) {
@@ -347,19 +416,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                 m_table.setFilterFieldValue(column, filterValue);
             }
         }
-    }
-
-    /**
-     * Add the "Add key" button to the app info section.
-     */
-    private void addAddKeyButton() {
-
-        if (null == m_addKeyButton) {
-            m_addKeyButton = createAddKeyButton();
-        }
-        m_rightAppInfo.addComponent(m_addKeyButton);
-        m_rightAppInfo.setComponentAlignment(m_addKeyButton, Alignment.MIDDLE_RIGHT);
-
     }
 
     /**
@@ -390,6 +446,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (m_model.isShowOptionsColumn(oldMode) != m_model.isShowOptionsColumn(newMode)) {
             m_table.removeGeneratedColumn(TableProperty.OPTIONS);
             if (m_model.isShowOptionsColumn(newMode)) {
+                m_table.setFilterFieldVisible(TableProperty.OPTIONS, false);
                 m_table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
             }
         }
@@ -486,7 +543,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                     setEditMode(EditMode.MASTER);
                     m_table.setColumnCollapsingAllowed(true);
                     adjustVisibleColumns();
-                    // fillAppInfo(m_context);
+                    fillAppInfo(m_context);
                     // m_context.removeToolbarButton(event.getComponent());
                 }
             }
@@ -495,27 +552,73 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
-     * Returns a button component. On click, it triggers adding a new line to the table.
-     * @return a button for adding new lines to the table.
+     * Creates the table with the "Add entry" row.
+     * @return the table with the "Add entry" row.
      */
-    @SuppressWarnings("serial")
-    private Component createAddKeyButton() {
+    private Table createAddEntryTable() {
 
-        Button add = new Button();
-        add.setDescription(m_messages.key(Messages.GUI_ADD_ROW_0));
-        add.setIcon(FontOpenCms.CIRCLE_PLUS, m_messages.key(Messages.GUI_ADD_ROW_0));
-        add.addStyleName("icon-only");
-        add.addStyleName("borderless-colored");
-        add.addStyleName("friendly");
-        add.addClickListener(new ClickListener() {
+        final Table table = new Table();
+        table.setWidth("100%");
 
-            public void buttonClick(ClickEvent event) {
+        table.setEditable(true);
+        table.setSelectable(true);
+        table.setMultiSelect(false);
+        table.setImmediate(true);
+        table.setColumnCollapsingAllowed(true);
+        table.setColumnReorderingAllowed(false);
 
-                m_table.addItem();
+        table.setColumnCollapsible(TableProperty.KEY, true);
+        table.setColumnCollapsible(TableProperty.DESCRIPTION, true);
+        table.setColumnCollapsible(TableProperty.DEFAULT, true);
+        table.setColumnCollapsible(TableProperty.TRANSLATION, true);
+        table.setColumnCollapsible(TableProperty.OPTIONS, true);
 
+        table.setPageLength(1);
+        table.setCacheRate(1);
+
+        table.addContainerProperty(TableProperty.KEY, String.class, "");
+        table.addContainerProperty(TableProperty.DESCRIPTION, String.class, "");
+        table.addContainerProperty(TableProperty.DEFAULT, String.class, "");
+        table.addContainerProperty(TableProperty.TRANSLATION, String.class, "");
+        AddOptionColumnGenerator addOptionsColumn = generateAddOptionColumn();
+        table.addGeneratedColumn(TableProperty.OPTIONS, addOptionsColumn);
+
+        table.setColumnWidth(TableProperty.OPTIONS, 42);
+        table.setColumnExpandRatio(TableProperty.KEY, 1f);
+        table.setColumnExpandRatio(TableProperty.DESCRIPTION, 1f);
+        table.setColumnExpandRatio(TableProperty.DEFAULT, 1f);
+        table.setColumnExpandRatio(TableProperty.TRANSLATION, 1f);
+
+        table.setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
+        List<TableProperty> editableColumns = Arrays.asList(
+            new TableProperty[] {
+                TableProperty.KEY,
+                TableProperty.DESCRIPTION,
+                TableProperty.DEFAULT,
+                TableProperty.TRANSLATION});
+        final AddEntryTableFieldFactory fieldFactory = new AddEntryTableFieldFactory(
+            table,
+            editableColumns,
+            m_configurableMessages);
+        table.setTableFieldFactory(fieldFactory);
+        table.setCellStyleGenerator(new AddEntryTableCellStyleGenerator(editableColumns));
+        table.addItemClickListener(new ItemClickListener() {
+
+            private static final long serialVersionUID = 5418404788437252894L;
+
+            public void itemClick(ItemClickEvent event) {
+
+                Object propertyId = event.getPropertyId();
+                AbstractTextField newTF = ((AddEntryTableFieldFactory)table.getTableFieldFactory()).getValueFields().get(
+                    propertyId);
+                if (newTF != null) {
+                    newTF.focus();
+                }
             }
         });
-        return add;
+        table.addItem(ADDROW);
+        table.select(ADDROW);
+        return table;
     }
 
     /**
@@ -675,14 +778,27 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     private Component createMainComponent() throws IOException, CmsException {
 
+        VerticalLayout mainComponent = new VerticalLayout();
+        mainComponent.setSizeFull();
+        mainComponent.addStyleName("o-message-bundle-editor");
         m_table = createTable();
+        m_addEntry = createAddEntryTable();
         m_navigator = new Panel();
         m_navigator.setSizeFull();
         m_navigator.setContent(m_table);
         m_navigator.addActionHandler(new CmsMessageBundleEditorTypes.TableKeyboardHandler(m_table));
-        m_navigator.addStyleName("o-message-bundle-editor");
+        m_navigator.addStyleName("v-panel-borderless");
 
-        return m_navigator;
+        //        Panel p = new Panel();
+        //        p.setWidth("100%");
+        //        p.setHeight("52px");
+        //        p.setContent(m_addEntry);
+        //        mainComponent.addComponent(p);
+        mainComponent.addComponent(m_addEntry);
+        mainComponent.addComponent(m_navigator);
+        mainComponent.setExpandRatio(m_navigator, 1f);
+        refreshAddEntryTable();
+        return mainComponent;
     }
 
     /** Creates the save button UI Component.
@@ -729,9 +845,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      * @throws IOException thrown if reading the properties file fails.
      * @throws CmsException thrown if some read action for getting the table contentFilter fails.
      */
-    private FilterTable createTable() throws IOException, CmsException {
+    private ExtendedFilterTable createTable() throws IOException, CmsException {
 
-        final FilterTable table = new FilterTable();
+        final ExtendedFilterTable table = new ExtendedFilterTable();
         table.setSizeFull();
 
         table.setContainerDataSource(m_model.getContainerForCurrentLocale());
@@ -759,7 +875,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         table.setFilterDecorator(new CmsMessageBundleEditorFilterDecorator());
 
         table.setFilterBarVisible(true);
-        table.setFilterFieldVisible(TableProperty.OPTIONS, false);
         table.setColumnCollapsible(TableProperty.OPTIONS, false);
 
         table.setSortEnabled(true);
@@ -776,6 +891,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_optionsColumn = generateOptionsColumn(table);
 
         if (m_model.isShowOptionsColumn(m_model.getEditMode())) {
+            table.setFilterFieldVisible(TableProperty.OPTIONS, false);
             table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
         }
         table.setColumnWidth(TableProperty.OPTIONS, 42);
@@ -803,6 +919,16 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                         newTF.focus();
                     }
                 }
+
+            }
+        });
+        table.addColumnCollapseListener(new Table.ColumnCollapseListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void columnCollapseStateChange(ColumnCollapseEvent event) {
+
+                refreshAddEntryTable();
 
             }
         });
@@ -900,9 +1026,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_rightAppInfo.addComponent(fileNameDisplay);
         m_rightAppInfo.setExpandRatio(fileNameDisplay, 2f);
 
-        if (!m_model.hasDescriptor()) {
-            addAddKeyButton();
-        }
         context.setAppInfo(m_appInfo);
     }
 
@@ -931,19 +1054,19 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /** Generates the options column for the table.
+     * @return the options column
+     */
+    private CmsMessageBundleEditorTypes.AddOptionColumnGenerator generateAddOptionColumn() {
+
+        return new CmsMessageBundleEditorTypes.AddOptionColumnGenerator(this);
+    }
+
+    /** Generates the options column for the table.
      * @param table table instance passed to the option column generator
      * @return the options column
      */
     private CmsMessageBundleEditorTypes.OptionColumnGenerator generateOptionsColumn(CustomTable table) {
 
         return new CmsMessageBundleEditorTypes.OptionColumnGenerator(table);
-    }
-
-    /**
-     * Removes the "Add key" button from the app info section.
-     */
-    private void removeAddKeyButton() {
-
-        m_rightAppInfo.removeComponent(m_addKeyButton);
     }
 }
