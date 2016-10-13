@@ -35,6 +35,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
@@ -81,6 +82,7 @@ public class CmsProjectFiles extends CmsFileTable implements I_CmsContextProvide
     public I_CmsDialogContext getDialogContext() {
 
         CmsFileTableDialogContext context = new CmsFileTableDialogContext(
+            CmsProjectManagerConfiguration.APP_ID,
             ContextType.fileTable,
             this,
             m_currentResources);

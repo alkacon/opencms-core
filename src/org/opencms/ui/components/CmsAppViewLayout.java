@@ -56,6 +56,9 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     /** The app area. */
     private CssLayout m_appArea;
 
+    /** The app id. */
+    private String m_appId;
+
     /** The info area grid. */
     private CssLayout m_infoArea;
 
@@ -64,13 +67,17 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
 
     /**
      * Constructor.<p>
+     *
+     * @param appId the app id
      */
-    public CmsAppViewLayout() {
+    public CmsAppViewLayout(String appId) {
 
+        m_appId = appId;
         Design.read("CmsAppView.html", this);
         Responsive.makeResponsive(this);
         // setting the width to 100% within the java code is required by the responsive resize listeners
         setWidth("100%");
+        m_toolbar.init(m_appId);
     }
 
     /**
@@ -141,6 +148,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     public void enableDefaultToolbarButtons(boolean enabled) {
 
         m_toolbar.enableDefaultButtons(enabled);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#getAppId()
+     */
+    public String getAppId() {
+
+        return m_appId;
     }
 
     /**

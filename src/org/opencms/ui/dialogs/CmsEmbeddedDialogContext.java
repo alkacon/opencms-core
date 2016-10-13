@@ -76,14 +76,19 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     /** The window used to display the dialog. */
     private Window m_window;
 
+    /** The app id. */
+    private String m_appId;
+
     /**
      * Constructor.<p>
      *
+     * @param appId the app id
      * @param contextType the context type
      * @param resources the resources
      */
-    public CmsEmbeddedDialogContext(ContextType contextType, List<CmsResource> resources) {
+    public CmsEmbeddedDialogContext(String appId, ContextType contextType, List<CmsResource> resources) {
         extend(UI.getCurrent());
+        m_appId = appId;
         m_contextType = contextType;
         m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
     }
@@ -173,6 +178,14 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     public List<CmsUUID> getAllStructureIdsInView() {
 
         return Collections.emptyList();
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#getAppId()
+     */
+    public String getAppId() {
+
+        return m_appId;
     }
 
     /**

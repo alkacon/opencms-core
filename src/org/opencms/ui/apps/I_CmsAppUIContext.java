@@ -41,16 +41,6 @@ import com.vaadin.ui.Component;
 public interface I_CmsAppUIContext extends Serializable {
 
     /**
-     * Hides the the toolbar.<p>
-     */
-    public void hideToolbar();
-
-    /**
-     * Shows the formerly hidden toolbar.<p>
-     */
-    public void showToolbar();
-
-    /**
      * Adds the publish button to the toolbar.<p>
      *
      * @param updateListener the update listener, called after publishing
@@ -86,6 +76,18 @@ public interface I_CmsAppUIContext extends Serializable {
      * @param enabled <code>true</code> to enable the buttons
      */
     void enableDefaultToolbarButtons(boolean enabled);
+
+    /**
+     * Returns the app id.<p>
+     *
+     * @return the app id
+     */
+    String getAppId();
+
+    /**
+     * Hides the the toolbar.<p>
+     */
+    void hideToolbar();
 
     /**
      * Removes the given button from the toolbar.<p>
@@ -128,6 +130,11 @@ public interface I_CmsAppUIContext extends Serializable {
      * @param show <code>true</code> to show the info
      */
     void showInfoArea(boolean show);
+
+    /**
+     * Shows the formerly hidden toolbar.<p>
+     */
+    void showToolbar();
 
     /**
      * Updates the ui context on site or project changes.<p>

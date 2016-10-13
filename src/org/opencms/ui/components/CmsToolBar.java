@@ -86,9 +86,11 @@ public class CmsToolBar extends CssLayout {
 
         /**
          * Constructor.<p>
+         *
+         * @param appId the app id
          */
-        protected ToolbarContext() {
-            super(ContextType.appToolbar, Collections.<CmsResource> emptyList());
+        protected ToolbarContext(String appId) {
+            super(appId, ContextType.appToolbar, Collections.<CmsResource> emptyList());
         }
 
         /**
@@ -142,10 +144,6 @@ public class CmsToolBar extends CssLayout {
         m_quickLaunchDropDown = createQuickLaunchDropDown();
         m_userDropDown = createUserInfoDropDown();
         Design.read("CmsToolBar.html", this);
-        m_dialogContext = new ToolbarContext();
-        initContextMenu();
-        m_itemsRight.addComponent(m_quickLaunchDropDown);
-        m_itemsRight.addComponent(m_userDropDown);
     }
 
     /**
@@ -382,6 +380,19 @@ public class CmsToolBar extends CssLayout {
                 Messages.GUI_TOOLBAR_PROJECT_SITE_INFO_2,
                 A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName(),
                 siteName));
+    }
+
+    /**
+     * Initializes the toolbar.<p>
+     *
+     * @param appId the app id
+     */
+    protected void init(String appId) {
+
+        m_dialogContext = new ToolbarContext(appId);
+        initContextMenu();
+        m_itemsRight.addComponent(m_quickLaunchDropDown);
+        m_itemsRight.addComponent(m_userDropDown);
     }
 
     /**

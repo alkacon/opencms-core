@@ -63,7 +63,7 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         CmsFileTable fileTable,
         CmsFileExplorer explorer,
         List<CmsResource> resources) {
-        super(contextType, fileTable, resources);
+        super(CmsFileExplorerConfiguration.APP_ID, contextType, fileTable, resources);
         m_explorer = explorer;
     }
 

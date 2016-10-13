@@ -39,6 +39,8 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
+import org.opencms.ui.apps.CmsPageEditorConfiguration;
+import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.util.CmsStringUtil;
@@ -121,13 +123,20 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
                 String typeParam = request.getParameter("contextType");
 
                 ContextType type;
+                String appId = "";
                 try {
                     type = ContextType.valueOf(typeParam);
+                    if (ContextType.containerpageToolbar.equals(type)) {
+                        appId = CmsPageEditorConfiguration.APP_ID;
+                    } else if (ContextType.sitemapToolbar.equals(type)) {
+                        appId = CmsSitemapEditorConfiguration.APP_ID;
+                    }
                 } catch (Exception e) {
                     type = ContextType.appToolbar;
                     LOG.error("Could not parse context type parameter " + typeParam);
                 }
-                I_CmsDialogContext context = new CmsEmbeddedDialogContext(type, resourceList);
+
+                I_CmsDialogContext context = new CmsEmbeddedDialogContext(appId, type, resourceList);
                 I_CmsWorkplaceAction action = getAction(request);
                 if (action.isActive(context)) {
                     action.executeAction(context);
@@ -149,7 +158,7 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
 
                 public void run() {
 
-                    new CmsEmbeddedDialogContext(null, Collections.<CmsResource> emptyList()).finish(null);
+                    new CmsEmbeddedDialogContext("", null, Collections.<CmsResource> emptyList()).finish(null);
                 }
             });
         }

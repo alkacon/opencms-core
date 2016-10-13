@@ -38,6 +38,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
@@ -143,6 +144,14 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         public List<CmsUUID> getAllStructureIdsInView() {
 
             return Collections.emptyList();
+        }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#getAppId()
+         */
+        public String getAppId() {
+
+            return CmsSitemapEditorConfiguration.APP_ID;
         }
 
         /**
@@ -319,7 +328,9 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
 
         if (m_localeCompareContainer == null) {
             m_localeCompareContainer = new VerticalLayout();
-            CmsExternalLayout layout = new CmsExternalLayout(CmsGwtConstants.ID_LOCALE_COMPARISON, m_localeCompareContainer);
+            CmsExternalLayout layout = new CmsExternalLayout(
+                CmsGwtConstants.ID_LOCALE_COMPARISON,
+                m_localeCompareContainer);
             m_ui.getContent().addComponent(layout);
         }
         m_localeCompareContainer.removeAllComponents();

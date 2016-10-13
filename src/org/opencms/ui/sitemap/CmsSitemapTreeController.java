@@ -48,6 +48,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
@@ -178,6 +179,14 @@ public class CmsSitemapTreeController {
         public List<CmsUUID> getAllStructureIdsInView() {
 
             return null;
+        }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#getAppId()
+         */
+        public String getAppId() {
+
+            return CmsSitemapEditorConfiguration.APP_ID;
         }
 
         /**
@@ -372,8 +381,9 @@ public class CmsSitemapTreeController {
                 if (!entry.isLinked()) {
                     addLinkItem(entry, node);
                 }
-                if (m_localeContext.getRootLocale().equals(A_CmsUI.getCmsObject().getLocaleGroupService().getMainLocale(
-                    m_localeContext.getRoot().getRootPath()))) {
+                if (m_localeContext.getRootLocale().equals(
+                    A_CmsUI.getCmsObject().getLocaleGroupService().getMainLocale(
+                        m_localeContext.getRoot().getRootPath()))) {
                     try {
                         CmsResource primary = A_CmsUI.getCmsObject().readResource(
                             entry.getClientEntry().getId(),

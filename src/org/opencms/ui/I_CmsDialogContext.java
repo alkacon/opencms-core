@@ -47,14 +47,14 @@ public interface I_CmsDialogContext {
      * The available context types.<p>
      */
     enum ContextType {
-        /** The file table context. */
-        fileTable,
-
         /** The app toolbar context. */
         appToolbar,
 
         /** The container page toolbar context. */
         containerpageToolbar,
+
+        /** The file table context. */
+        fileTable,
 
         /** The sitemap toolbar context. */
         sitemapToolbar
@@ -96,6 +96,13 @@ public interface I_CmsDialogContext {
      * @return the structure ids of all the resources in the current view
      */
     List<CmsUUID> getAllStructureIdsInView();
+
+    /**
+     * Returns the app id.<p>
+     *
+     * @return the app id
+     */
+    String getAppId();
 
     /**
      * Gets the CMS context to be used for dialog operations.<p>
