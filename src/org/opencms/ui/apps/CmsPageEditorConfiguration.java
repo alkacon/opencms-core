@@ -40,6 +40,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
@@ -165,20 +166,23 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
      */
     void openPageEditor() {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        HttpServletRequest req = CmsVaadinUtils.getRequest();
-        if (req == null) {
-            // called from outside the VAADIN UI, not allowed
-            throw new RuntimeException("Wrong usage, this can not be called from outside a VAADIN UI.");
-        }
-        CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-        String page = getPath(cms, req.getSession());
-        if (page != null) {
-            A_CmsUI.get().getPage().setLocation(OpenCms.getLinkManager().substituteLink(cms, page));
+        CmsAppWorkplaceUi ui = CmsAppWorkplaceUi.get();
+        if (ui.beforeViewChange(new ViewChangeEvent(ui.getNavigator(), ui.getCurrentView(), null, APP_ID, null))) {
+            CmsObject cms = A_CmsUI.getCmsObject();
+            HttpServletRequest req = CmsVaadinUtils.getRequest();
+            if (req == null) {
+                // called from outside the VAADIN UI, not allowed
+                throw new RuntimeException("Wrong usage, this can not be called from outside a VAADIN UI.");
+            }
+            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
+            String page = getPath(cms, req.getSession());
+            if (page != null) {
+                A_CmsUI.get().getPage().setLocation(OpenCms.getLinkManager().substituteLink(cms, page));
 
-        } else {
-            String message = CmsVaadinUtils.getMessageText(Messages.GUI_PAGE_EDITOR_NOT_AVAILABLE_0);
-            Notification.show(message, Type.WARNING_MESSAGE);
+            } else {
+                String message = CmsVaadinUtils.getMessageText(Messages.GUI_PAGE_EDITOR_NOT_AVAILABLE_0);
+                Notification.show(message, Type.WARNING_MESSAGE);
+            }
         }
     }
 

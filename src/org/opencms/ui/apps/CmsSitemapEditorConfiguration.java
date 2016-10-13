@@ -46,6 +46,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
@@ -190,9 +191,13 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
             String path = getPath(cms, A_CmsUI.get().getHttpSession());
             if (path != null) {
                 try {
-                    CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
-                    String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                    A_CmsUI.get().getPage().setLocation(link + "?path=" + path);
+                    CmsAppWorkplaceUi ui = CmsAppWorkplaceUi.get();
+                    if (ui.beforeViewChange(
+                        new ViewChangeEvent(ui.getNavigator(), ui.getCurrentView(), null, APP_ID, null))) {
+                        CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
+                        String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                        A_CmsUI.get().getPage().setLocation(link + "?path=" + path);
+                    }
                     return;
                 } catch (CmsException e) {
                     LOG.debug("Unable to open sitemap editor.", e);
