@@ -905,7 +905,8 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
-     * Initializes the key set for property bundles. That requires to load all localizations, i.e., all the files making up the bundle.
+     * Initializes the key set for property bundles. We do not regard localizations for locales not available.
+     * Initialization requires to load all localizations for available locales, i.e., all the files making up the bundle.
      *
      * @throws CmsLoaderException thrown if loading a bundle file fails.
      * @throws CmsException thrown if loading a bundle file fails.
@@ -913,20 +914,11 @@ public class CmsMessageBundleEditorModel {
      */
     private void initKeySetForPropertyBundle() throws CmsLoaderException, CmsException, IOException {
 
-        Collection<CmsResource> translations = m_cms.readResources(
-            m_sitepath,
-            CmsResourceFilter.DEFAULT.addRequireType(
-                OpenCms.getResourceManager().getResourceType(
-                    CmsMessageBundleEditorTypes.BundleType.PROPERTY.toString())));
-        for (CmsResource resource : translations) {
-            String baseName = resource.getName();
-            String localeSuffix = CmsStringUtil.getLocaleSuffixForName(baseName);
-            if ((null != localeSuffix) && !localeSuffix.isEmpty()) {
-                baseName = baseName.substring(
-                    0,
-                    baseName.lastIndexOf(localeSuffix) - (1 /* cut off trailing underscore, too*/));
-            }
-            if (baseName.equals(m_basename)) {
+        for (Locale l : m_locales) {
+            String filePath = m_sitepath + m_basename + "_" + l.toString();
+            CmsResource resource = null;
+            if (m_cms.existsResource(filePath, CmsResourceFilter.DEFAULT_FILES)) {
+                resource = m_cms.readResource(filePath);
                 Properties props = new Properties();
                 props.load(new ByteArrayInputStream(m_cms.readFile(resource).getContents()));
                 m_keyset.updateKeySet(null, propertiesToMap(props).keySet());
@@ -935,17 +927,20 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
-     * Initialization required for editing an xml bundle.
+     * Initialize the key set for an xml bundle.
      */
     private void initKeySetForXmlBundle() {
 
-        for (Locale l : m_xmlBundle.getLocales()) {
-            Set<String> keys = new HashSet<String>();
-            for (I_CmsXmlContentValue msg : m_xmlBundle.getValueSequence("Message", l).getValues()) {
-                String msgpath = msg.getPath();
-                keys.add(m_xmlBundle.getStringValue(m_cms, msgpath + "/Key", l));
+        // consider only available locales
+        for (Locale l : m_locales) {
+            if (m_xmlBundle.hasLocale(l)) {
+                Set<String> keys = new HashSet<String>();
+                for (I_CmsXmlContentValue msg : m_xmlBundle.getValueSequence("Message", l).getValues()) {
+                    String msgpath = msg.getPath();
+                    keys.add(m_xmlBundle.getStringValue(m_cms, msgpath + "/Key", l));
+                }
+                m_keyset.updateKeySet(null, keys);
             }
-            m_keyset.updateKeySet(null, keys);
         }
 
     }
