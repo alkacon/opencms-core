@@ -99,9 +99,9 @@ public class CmsSitemapTreeDataProvider {
 
             folders.add(null); // add null as a dummy value so that in the loop below, lastFolder takes all real folders as values
             for (CmsResource folder : folders) {
-                if ((folder == null)
-                    || ((lastFolder != null)
-                        && !(CmsStringUtil.isPrefixPath(lastFolder.getRootPath(), folder.getRootPath())))) {
+                if ((lastFolder != null)
+                    && ((folder == null)
+                        || !(CmsStringUtil.isPrefixPath(lastFolder.getRootPath(), folder.getRootPath())))) {
                     foldersWithNoChildFolders.add(lastFolder.getStructureId());
 
                 }
