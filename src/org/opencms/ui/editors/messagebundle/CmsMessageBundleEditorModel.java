@@ -47,7 +47,6 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleTy
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditorState;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.KeySetMode;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
@@ -218,8 +217,6 @@ public class CmsMessageBundleEditorModel {
     private CmsMessageBundleEditorTypes.BundleType m_bundleType;
     /** Messages used by the GUI. */
     CmsMessages m_messages;
-    /** The currently used key set mode. */
-    CmsMessageBundleEditorTypes.KeySetMode m_keysetMode;
     /** The complete key set as map from keys to the number of occurrences. */
     CmsMessageBundleEditorTypes.KeySet m_keyset;
 
@@ -273,7 +270,6 @@ public class CmsMessageBundleEditorModel {
         m_cms = cms;
         m_resource = resource;
         m_editMode = CmsMessageBundleEditorTypes.EditMode.DEFAULT;
-        m_keysetMode = CmsMessageBundleEditorTypes.KeySetMode.ALL;
 
         m_bundleFiles = new HashMap<Locale, LockedFile>();
         m_localizations = new HashMap<Locale, Map<String, String>>();
@@ -329,9 +325,7 @@ public class CmsMessageBundleEditorModel {
 
         saveLocalization();
         IndexedContainer oldContainer = m_container;
-        KeySetMode oldKeySetMode = getKeySetMode();
         try {
-            setKeySetMode(KeySetMode.ALL);
             createAndLockDescriptorFile();
             unmarshalDescriptor();
             updateBundleDescriptorContent();
@@ -357,7 +351,6 @@ public class CmsMessageBundleEditorModel {
             }
             m_hasMasterMode = false;
             m_container = oldContainer;
-            setKeySetMode(oldKeySetMode);
             return false;
         }
         m_removeDescriptorOnCancel = true;
@@ -465,14 +458,6 @@ public class CmsMessageBundleEditorModel {
     public CmsMessageBundleEditorTypes.EditMode getEditMode() {
 
         return m_editMode;
-    }
-
-    /** Returns the current key set mode.
-     * @return the current key set mode.
-     */
-    public CmsMessageBundleEditorTypes.KeySetMode getKeySetMode() {
-
-        return m_keysetMode;
     }
 
     /**
@@ -599,23 +584,6 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
-     * Sets the currently used key set mode.
-     * @param mode the key set mode to set.
-     */
-    public void setKeySetMode(CmsMessageBundleEditorTypes.KeySetMode mode) {
-
-        if (!m_keyset.equals(mode)) {
-            try {
-                adjustExistingContainer(m_locale, mode);
-            } catch (IOException | CmsException e) {
-                // Should never happen
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-            m_keysetMode = mode;
-        }
-    }
-
-    /**
      * Set the currently edited locale.
      *
      * @param locale the currently edited locale.
@@ -624,7 +592,7 @@ public class CmsMessageBundleEditorModel {
      */
     public void setLocale(Locale locale) throws IOException, CmsException {
 
-        adjustExistingContainer(locale, m_keysetMode);
+        adjustExistingContainer(locale);
         m_locale = locale;
     }
 
@@ -648,15 +616,13 @@ public class CmsMessageBundleEditorModel {
      * Adjusts the locale for an already existing container by first saving the translation for the current locale and the loading the values of the new locale.
      *
      * @param locale the locale for which the container should be adjusted.
-     * @param mode the key set mode for which the container should be adjusted.
      * @throws IOException thrown if a bundle resource must be read and reading fails.
      * @throws CmsException thrown if a bundle resource must be read and reading fails.
      */
-    private void adjustExistingContainer(Locale locale, CmsMessageBundleEditorTypes.KeySetMode mode)
-    throws IOException, CmsException {
+    private void adjustExistingContainer(Locale locale) throws IOException, CmsException {
 
         saveLocalization();
-        replaceValues(locale, mode);
+        replaceValues(locale);
 
     }
 
@@ -762,16 +728,7 @@ public class CmsMessageBundleEditorModel {
 
         // add entries
         Map<String, String> localization = getLocalization(m_locale);
-        Set<String> keySet = null;
-        switch (m_keysetMode) {
-            case ALL:
-                keySet = m_keyset.getKeySet();
-                break;
-            case USED_ONLY:
-            default:
-                keySet = localization.keySet();
-                break;
-        }
+        Set<String> keySet = m_keyset.getKeySet();
         for (String key : keySet) {
 
             Object itemId = container.addItem();
@@ -1106,12 +1063,10 @@ public class CmsMessageBundleEditorModel {
     /**
      * Replaces the translations in an existing container with the translations for the provided locale.
      * @param locale the locale for which translations should be loaded.
-     * @param mode the key set mode used.
      * @throws IOException thrown if loading the localization from a bundle resource fails.
      * @throws CmsException thrown if loading the localization from a bundle resource fails.
      */
-    private void replaceValues(Locale locale, CmsMessageBundleEditorTypes.KeySetMode mode)
-    throws IOException, CmsException {
+    private void replaceValues(Locale locale) throws IOException, CmsException {
 
         Map<String, String> localization = getLocalization(locale);
         if (hasDescriptor()) {
@@ -1123,9 +1078,7 @@ public class CmsMessageBundleEditorModel {
             }
         } else {
             m_container.removeAllItems();
-            Set<String> keyset = mode.equals(CmsMessageBundleEditorTypes.KeySetMode.ALL)
-            ? m_keyset.getKeySet()
-            : localization.keySet();
+            Set<String> keyset = m_keyset.getKeySet();
             for (String key : keyset) {
                 Object itemId = m_container.addItem();
                 Item item = m_container.getItem(itemId);

@@ -497,14 +497,6 @@ public final class CmsMessageBundleEditorTypes {
 
     }
 
-    /** The different ways the key set is shown. */
-    enum KeySetMode {
-        /** All keys used in any of the available languages. */
-        ALL,
-        /** Only keys used for the current language. */
-        USED_ONLY;
-    }
-
     /** Validates keys. */
     @SuppressWarnings("serial")
     static class KeyValidator extends AbstractStringValidator {

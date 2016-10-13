@@ -672,53 +672,6 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptio
     }
 
     /**
-     * Creates the switcher component for the key sets.
-     *
-     * @return the switcher component.
-     */
-    @SuppressWarnings("serial")
-    private Component createKeysetSwitcher() {
-
-        FormLayout allkeys = new FormLayout();
-        allkeys.setHeight("100%");
-        allkeys.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        allkeys.setSpacing(true);
-        ComboBox allkeysSelect = new ComboBox();
-        allkeysSelect.setCaption(m_messages.key(Messages.GUI_KEYSET_SWITCHER_LABEL_0));
-        allkeysSelect.setNullSelectionAllowed(false);
-
-        allkeysSelect.addItem(CmsMessageBundleEditorTypes.KeySetMode.ALL);
-        allkeysSelect.setItemCaption(
-            CmsMessageBundleEditorTypes.KeySetMode.ALL,
-            m_messages.key(Messages.GUI_KEYSET_SWITCHER_MODE_ALL_0));
-        allkeysSelect.addItem(CmsMessageBundleEditorTypes.KeySetMode.USED_ONLY);
-        allkeysSelect.setItemCaption(
-            CmsMessageBundleEditorTypes.KeySetMode.USED_ONLY,
-            m_messages.key(Messages.GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0));
-        allkeysSelect.setValue(m_model.getKeySetMode());
-        allkeysSelect.setNewItemsAllowed(false);
-        allkeysSelect.setTextInputAllowed(false);
-
-        allkeysSelect.addValueChangeListener(new ValueChangeListener() {
-
-            public void valueChange(ValueChangeEvent event) {
-
-                Object sortProperty = m_table.getSortContainerPropertyId();
-                boolean isAcending = m_table.isSortAscending();
-                Map<Object, Object> filters = getFilters();
-                m_table.clearFilters();
-                m_model.setKeySetMode((CmsMessageBundleEditorTypes.KeySetMode)event.getProperty().getValue());
-                m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
-                m_table.select(m_table.getCurrentPageFirstItemId());
-                setFilters(filters);
-            }
-
-        });
-        allkeys.addComponent(allkeysSelect);
-        return allkeys;
-    }
-
-    /**
      * Creates the language switcher UI Component.
      * @return the language switcher.
      */
@@ -1021,11 +974,6 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptio
 
         Component languages = createLanguageSwitcher();
         left.addComponent(languages);
-        if (!(m_model.hasDescriptor()
-            || m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR))) {
-            Component keysetSwitcher = createKeysetSwitcher();
-            left.addComponent(keysetSwitcher);
-        }
         if (m_model.hasMasterMode()) {
             Component viewSwitcher = createViewSwitcher();
             left.addComponent(viewSwitcher);
