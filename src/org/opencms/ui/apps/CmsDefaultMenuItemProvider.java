@@ -34,8 +34,7 @@ import org.opencms.ui.actions.CmsCategoriesDialogAction;
 import org.opencms.ui.actions.CmsChangeTypeDialogAction;
 import org.opencms.ui.actions.CmsClassicWorkplaceAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
-import org.opencms.ui.actions.CmsCopyMoveDialogAction;
-import org.opencms.ui.actions.CmsCopyPageDialogAction;
+import org.opencms.ui.actions.CmsCopyDialogAction;
 import org.opencms.ui.actions.CmsCopyToProjectDialogAction;
 import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsDirectPublishDialogAction;
@@ -50,6 +49,7 @@ import org.opencms.ui.actions.CmsHistoryDialogAction;
 import org.opencms.ui.actions.CmsLinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsLockAction;
 import org.opencms.ui.actions.CmsLockedResourcesAction;
+import org.opencms.ui.actions.CmsMoveDialogAction;
 import org.opencms.ui.actions.CmsPermissionDialogAction;
 import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
@@ -115,7 +115,8 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsCopyToProjectDialogAction(), null, 150, 0),
             new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 300, 0),
             new CmsContextMenuActionItem(new CmsPublishScheduledDialogAction(), null, 400, 0),
-            new CmsContextMenuActionItem(new CmsCopyMoveDialogAction(), null, 900, 0),
+            new CmsContextMenuActionItem(new CmsCopyDialogAction(), null, 900, 0),
+            new CmsContextMenuActionItem(new CmsMoveDialogAction(), null, 1000, 0),
             new CmsContextMenuActionItem(
                 new CmsEditPropertyAction(
                     CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
@@ -144,7 +145,6 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsPermissionDialogAction(), null, 2400, 0),
 
             advanced,
-            new CmsContextMenuActionItem(new CmsCopyPageDialogAction(), advanced.getId(), 150, 0),
             new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),

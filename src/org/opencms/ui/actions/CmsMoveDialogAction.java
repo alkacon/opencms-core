@@ -44,13 +44,13 @@ import org.apache.commons.logging.Log;
 /**
  * The copy move dialog action.<p>
  */
-public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
+public class CmsMoveDialogAction extends A_CmsWorkplaceAction {
 
     /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsCopyMoveDialogAction.class);
+    private static final Log LOG = CmsLog.getLog(CmsMoveDialogAction.class);
 
     /** The action id. */
-    public static final String ACTION_ID = "copymove";
+    public static final String ACTION_ID = "move";
 
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.DEFAULT;
@@ -61,7 +61,7 @@ public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
     public void executeAction(I_CmsDialogContext context) {
 
         if (!hasBlockingLocks(context)) {
-            CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context);
+            CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context, CmsCopyMoveDialog.DialogMode.move);
             if (!context.getResources().isEmpty()) {
                 CmsResource res = context.getResources().get(0);
                 CmsResource parent;
@@ -83,7 +83,7 @@ public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
     @Override
     public String getDialogTitle() {
 
-        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_DIALOGTITLE_COPYMOVE_0);
+        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_DIALOGTITLE_MOVE_0);
     }
 
     /**
@@ -99,7 +99,7 @@ public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
      */
     public String getTitle() {
 
-        return getWorkplaceMessage(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_COPY_MOVE_0);
+        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_DIALOGTITLE_MOVE_0);
     }
 
     /**

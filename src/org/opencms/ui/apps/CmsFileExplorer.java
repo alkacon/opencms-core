@@ -42,7 +42,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
-import org.opencms.ui.actions.CmsCopyMoveDialogAction;
+import org.opencms.ui.actions.CmsCopyDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.components.A_CmsFocusShortcutListener;
@@ -135,7 +135,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         private static final long serialVersionUID = 5392136127699472654L;
 
         /** The copy move action. */
-        final I_CmsWorkplaceAction m_copyMoveAction = new CmsCopyMoveDialogAction();
+        final I_CmsWorkplaceAction m_copyMoveAction = new CmsCopyDialogAction();
 
         /**
          * @see com.vaadin.event.dd.DropHandler#drop(com.vaadin.event.dd.DragAndDropEvent)
@@ -145,9 +145,13 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             try {
                 CmsExplorerDialogContext context = getContext(dragEvent);
                 if (m_copyMoveAction.isActive(context)) {
-                    CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context);
+                    CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(
+                        context,
+                        CmsCopyMoveDialog.DialogMode.copy_and_move);
                     dialog.setTargetFolder(getTargetId(dragEvent));
-                    context.start(m_copyMoveAction.getTitle(), dialog);
+                    context.start(
+                        CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_DIALOGTITLE_COPYMOVE_0),
+                        dialog);
                 }
             } catch (Exception e) {
                 LOG.error("Moving resource failed", e);
