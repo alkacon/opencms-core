@@ -119,6 +119,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_CAPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_CAPTION_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_DESCRIPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_DESCRIPTION_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_CAPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_CAPTION_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_DESCRIPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_DESCRIPTION_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

@@ -60,6 +60,7 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Translat
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -183,20 +184,29 @@ I_ItemDeletionListener {
     public void handleAddOptionClick() {
 
         Item newEntry = m_addEntry.getItem(ADDROW);
+        String newKey = (String)newEntry.getItemProperty(TableProperty.KEY).getValue();
         Object copyEntryId;
         Map<Object, Object> filters = getFilters();
         m_table.clearFilters();
-        copyEntryId = m_table.addItem();
-        Item copyEntry = m_table.getItem(copyEntryId);
-        for (TableProperty col : TableProperty.values()) {
-            if (col != TableProperty.OPTIONS) {
-                Object newValue = newEntry.getItemProperty(col).getValue();
-                Property<Object> prop = copyEntry.getItemProperty(col);
-                if (prop != null) {
-                    prop.setValue(newValue);
+        // check if key already exists
+        if (!keyAlreadyExists(newKey)) {
+            m_table.clearFilters();
+            copyEntryId = m_table.addItem();
+            Item copyEntry = m_table.getItem(copyEntryId);
+            for (TableProperty col : TableProperty.values()) {
+                if (col != TableProperty.OPTIONS) {
+                    Object newValue = newEntry.getItemProperty(col).getValue();
+                    Property<Object> prop = copyEntry.getItemProperty(col);
+                    if (prop != null) {
+                        prop.setValue(newValue);
+                    }
+                    newEntry.getItemProperty(col).setValue("");
                 }
-                newEntry.getItemProperty(col).setValue("");
             }
+        } else {
+            showWarning(
+                Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_CAPTION_0,
+                Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_DESCRIPTION_0);
         }
         setFilters(filters);
         ((AddEntryTableFieldFactory)m_addEntry.getTableFieldFactory()).getValueFields().get(TableProperty.KEY).focus();
@@ -1070,6 +1080,22 @@ I_ItemDeletionListener {
             new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
                 m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
 
+    }
+
+    /**
+     * Checks if a key already exists.
+     * @param newKey the key to check for.
+     * @return <code>true</code> if the key already exists, <code>false</code> otherwise.
+     */
+    private boolean keyAlreadyExists(String newKey) {
+
+        Collection<?> itemIds = m_table.getItemIds();
+        for (Object itemId : itemIds) {
+            if (m_table.getItem(itemId).getItemProperty(TableProperty.KEY).getValue().equals(newKey)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
