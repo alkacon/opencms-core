@@ -51,6 +51,7 @@ import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
+import org.opencms.ui.components.fileselect.CmsSitemapSelectField;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -81,7 +82,14 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** The copy/move actions. */
     public static enum Action {
 
-        automatic, container_page_copy, container_page_reuse, container_page_automatic,
+        /** Automatic action selection. */
+        automatic,
+        /** Copy container page automatic mode. */
+        container_page_automatic,
+        /** Copy container page including referenced elements. */
+        container_page_copy,
+        /** Copy container page reuse referenced elements. */
+        container_page_reuse,
         /** Copy resources as new. */
         copy_all,
         /** Create siblings. */
@@ -89,11 +97,19 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         /** Copy and preserve siblings. */
         copy_sibling_mixed,
         /** Move resources. */
-        move, sub_sitemap;
+        move,
+        /** Copy sub sitemap, adjust internal links. */
+        sub_sitemap;
     }
 
+    /** The dialog mode. */
     public static enum DialogMode {
-        copy, copy_and_move, move
+        /** Allow copy only. */
+        copy,
+        /** Allow copy and move. */
+        copy_and_move,
+        /** Allow move only. */
+        move
     }
 
     /** Logger instance for this class. */
@@ -105,9 +121,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** The action radio buttons. */
     private ComboBox m_actionCombo;
 
-    /** Flag indicating the move option is allowed. */
-    private DialogMode m_dialogMode;
-
     /** The cancel button. */
     private Button m_cancelButton;
 
@@ -116,6 +129,12 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
     /** The dialog context. */
     private I_CmsDialogContext m_context;
+
+    /** Flag indicating the move option is allowed. */
+    private DialogMode m_dialogMode;
+
+    /** Indicates the copy folder has a default file of the type container page. */
+    private boolean m_hasContainerPageDefaultFile;
 
     /** The OK button. */
     private Button m_okButton;
@@ -132,13 +151,11 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** The resources to update after dialog close. */
     private Set<CmsUUID> m_updateResources;
 
-    private boolean m_hasContainerPageDefaultFile;
-
     /**
      * Constructor.<p>
      *
      * @param context the dialog context
-     * @param allowMove if the move option is allowed
+     * @param mode the dialog mode
      */
     public CmsCopyMoveDialog(final I_CmsDialogContext context, DialogMode mode) {
         m_dialogMode = mode;
@@ -451,6 +468,13 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         return m_rootCms;
     }
 
+    /**
+     * Checks whether the folder has a default file of the type container page.<p>
+     *
+     * @param folder the folder to check
+     *
+     * @return <code>true</code> if the folder has a default file of the type container page
+     */
     private boolean hasContainerPageDefaultFile(CmsResource folder) {
 
         try {
@@ -472,7 +496,8 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
         FormLayout form = new FormLayout();
         form.setWidth("100%");
-        m_targetFolder = new CmsResourceSelectField();
+        m_targetFolder = new CmsSitemapSelectField(
+            m_context.getResources().size() > 0 ? m_context.getResources().get(0) : null);
         m_targetFolder.setCaption(
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_TARGET_FOLDER_0));
         m_targetFolder.setFileSelectCaption(
@@ -482,11 +507,14 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         form.addComponent(m_targetFolder);
         if (m_dialogMode != DialogMode.move) {
             m_actionCombo = new ComboBox();
+            m_actionCombo.setCaption(CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_COPYPAGE_COPY_MODE_0));
             m_actionCombo.setNullSelectionAllowed(false);
             m_actionCombo.setNewItemsAllowed(false);
             m_actionCombo.setWidth("100%");
             m_actionCombo.addItem(Action.automatic);
-            m_actionCombo.setItemCaption(Action.automatic, "Automatic");
+            m_actionCombo.setItemCaption(
+                Action.automatic,
+                CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_AUTOMATIC_0));
             m_actionCombo.setValue(Action.automatic);
             if (m_context.getResources().size() == 1) {
                 if (m_context.getResources().get(0).isFile()) {
@@ -512,16 +540,18 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                         m_actionCombo.addItem(Action.container_page_copy);
                         m_actionCombo.setItemCaption(
                             Action.container_page_copy,
-                            "Copy container page and copy elements");
+                            CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONTAINERPAGE_COPY_0));
 
                         m_actionCombo.addItem(Action.container_page_reuse);
                         m_actionCombo.setItemCaption(
                             Action.container_page_reuse,
-                            "Copy container page and reuse elements");
+                            CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0));
                     }
                     if (CmsResourceTypeFolderSubSitemap.isSubSitemap(folder)) {
                         m_actionCombo.addItem(Action.sub_sitemap);
-                        m_actionCombo.setItemCaption(Action.sub_sitemap, "Copy files, adjust all internal links");
+                        m_actionCombo.setItemCaption(
+                            Action.sub_sitemap,
+                            CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SUBSITEMAP_0));
                     }
                     m_actionCombo.addItem(Action.copy_all);
                     m_actionCombo.setItemCaption(

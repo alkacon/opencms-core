@@ -94,6 +94,8 @@ public class CmsSitemapFolderSelectDialog extends CmsResourceSelectDialog {
         showAll.setValue(Boolean.FALSE);
         showAll.addValueChangeListener(new ValueChangeListener() {
 
+            private static final long serialVersionUID = 1L;
+
             public void valueChange(ValueChangeEvent event) {
 
                 Boolean checked = (Boolean)(event.getProperty().getValue());
@@ -118,7 +120,8 @@ public class CmsSitemapFolderSelectDialog extends CmsResourceSelectDialog {
     public void showStartResource(CmsResource startResource) {
 
         CmsObject cms = m_currentCms;
-        if (CmsStringUtil.isPrefixPath(m_root.getRootPath(), startResource.getRootPath())) {
+        if (!m_root.equals(startResource)
+            && CmsStringUtil.isPrefixPath(m_root.getRootPath(), startResource.getRootPath())) {
             String oldSiteRoot = cms.getRequestContext().getSiteRoot();
             List<CmsUUID> idsToOpen = Lists.newArrayList();
             try {

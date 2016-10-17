@@ -36,6 +36,18 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_AUTOMATIC_0 = "GUI_COPY_MOVE_AUTOMATIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_CONTAINERPAGE_COPY_0 = "GUI_COPY_MOVE_CONTAINERPAGE_COPY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0 = "GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_SUBSITEMAP_0 = "GUI_COPY_MOVE_SUBSITEMAP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DAILOG_INSTANTIATION_FAILED_1 = "ERR_DAILOG_INSTANTIATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
