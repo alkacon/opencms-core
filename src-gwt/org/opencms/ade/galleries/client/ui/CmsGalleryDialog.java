@@ -52,6 +52,7 @@ import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsNotificationWidget;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -163,6 +164,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
     /** Flag indicating if the resource preview is visible. */
     private boolean m_previewVisible;
 
+    /** The preview visible style. */
+    private CmsStyleVariable m_previewVisibility;
+
     /**
      * The constructor.<p>
      *
@@ -188,6 +192,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         // parent widget
         m_parentPanel = new FlowPanel();
         m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().parentPanel());
+        m_previewVisibility = new CmsStyleVariable(m_parentPanel);
+        m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
         m_dialogElementId = HTMLPanel.createUniqueId();
         m_parentPanel.getElement().setId(m_dialogElementId);
         // set the default height of the dialog
@@ -662,12 +668,14 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
     public void setPreviewVisible(boolean visible) {
 
         m_previewVisible = visible;
-        m_tabbedPanel.setVisible(!m_previewVisible);
         if (m_previewVisible) {
             useMaxDimensions();
-            m_parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+            m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewVisible());
+            if (m_galleryHandler instanceof CmsGalleryPopup) {
+                ((CmsGalleryPopup)m_galleryHandler).center();
+            }
         } else {
-            m_parentPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+            m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
             updateSizes();
         }
     }

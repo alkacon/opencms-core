@@ -1,4 +1,6 @@
-@external hidePreview;
+@external hidePreview, previewVisible;
+
+.previewVisible{}
 
 /* The height and width are set as inline style. */
 div.previewDialog {
