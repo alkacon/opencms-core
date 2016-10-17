@@ -639,13 +639,15 @@ public class CmsMessageBundleEditorModel {
      * Set the currently edited locale.
      *
      * @param locale the currently edited locale.
-     * @throws CmsException  thrown if reading a bundle resource fails.
-     * @throws IOException thrown if reading a bundle resource fails.
+     * @return <code>true</code> if the locale could be set, <code>false</code> otherwise.
      */
-    public void setLocale(Locale locale) throws IOException, CmsException {
+    public boolean setLocale(Locale locale) {
 
-        adjustExistingContainer(locale);
-        m_locale = locale;
+        if (adjustExistingContainer(locale)) {
+            m_locale = locale;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -668,13 +670,12 @@ public class CmsMessageBundleEditorModel {
      * Adjusts the locale for an already existing container by first saving the translation for the current locale and the loading the values of the new locale.
      *
      * @param locale the locale for which the container should be adjusted.
-     * @throws IOException thrown if a bundle resource must be read and reading fails.
-     * @throws CmsException thrown if a bundle resource must be read and reading fails.
+     * @return <code>true</code> if the locale could be switched, <code>false</code> otherwise.
      */
-    private void adjustExistingContainer(Locale locale) throws IOException, CmsException {
+    private boolean adjustExistingContainer(Locale locale) {
 
         saveLocalization();
-        replaceValues(locale);
+        return replaceValues(locale);
 
     }
 
@@ -1217,32 +1218,38 @@ public class CmsMessageBundleEditorModel {
     /**
      * Replaces the translations in an existing container with the translations for the provided locale.
      * @param locale the locale for which translations should be loaded.
-     * @throws IOException thrown if loading the localization from a bundle resource fails.
-     * @throws CmsException thrown if loading the localization from a bundle resource fails.
+     * @return <code>true</code> if replacing succeeded, <code>false</code> otherwise.
      */
-    private void replaceValues(Locale locale) throws IOException, CmsException {
+    private boolean replaceValues(Locale locale) {
 
-        Map<String, String> localization = getLocalization(locale);
-        if (hasDescriptor()) {
-            for (Object itemId : m_container.getItemIds()) {
-                Item item = m_container.getItem(itemId);
-                String key = item.getItemProperty(TableProperty.KEY).getValue().toString();
-                String value = localization.get(key);
-                item.getItemProperty(TableProperty.TRANSLATION).setValue(null == value ? "" : value);
+        try {
+            Map<String, String> localization = getLocalization(locale);
+            if (hasDescriptor()) {
+                for (Object itemId : m_container.getItemIds()) {
+                    Item item = m_container.getItem(itemId);
+                    String key = item.getItemProperty(TableProperty.KEY).getValue().toString();
+                    String value = localization.get(key);
+                    item.getItemProperty(TableProperty.TRANSLATION).setValue(null == value ? "" : value);
+                }
+            } else {
+                m_container.removeAllItems();
+                Set<String> keyset = m_keyset.getKeySet();
+                for (String key : keyset) {
+                    Object itemId = m_container.addItem();
+                    Item item = m_container.getItem(itemId);
+                    item.getItemProperty(TableProperty.KEY).setValue(key);
+                    String value = localization.get(key);
+                    item.getItemProperty(TableProperty.TRANSLATION).setValue(null == value ? "" : value);
+                }
+                if (m_container.getItemIds().isEmpty()) {
+                    m_container.addItem();
+                }
             }
-        } else {
-            m_container.removeAllItems();
-            Set<String> keyset = m_keyset.getKeySet();
-            for (String key : keyset) {
-                Object itemId = m_container.addItem();
-                Item item = m_container.getItem(itemId);
-                item.getItemProperty(TableProperty.KEY).setValue(key);
-                String value = localization.get(key);
-                item.getItemProperty(TableProperty.TRANSLATION).setValue(null == value ? "" : value);
-            }
-            if (m_container.getItemIds().isEmpty()) {
-                m_container.addItem();
-            }
+            return true;
+        } catch (@SuppressWarnings("unused") IOException | CmsException e) {
+            // The problem should typically be a problem with locking or reading the file containing the translation.
+            // This should be reported in the editor, if false is returned here.
+            return false;
         }
     }
 

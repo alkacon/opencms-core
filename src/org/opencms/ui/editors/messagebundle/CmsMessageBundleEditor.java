@@ -72,6 +72,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.ViewChangeListener;
@@ -223,6 +224,12 @@ I_ItemDeletionListener {
         if (m_model.handleKeyDeletion(key)) {
             return true;
         }
+        String caption = m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_CAPTION_0);
+        String description = m_messages.key(
+            Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_DESCRIPTION_0);
+        Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+        warning.setDelayMsec(-1);
+        warning.show(UI.getCurrent().getPage());
         return false;
 
     }
@@ -580,35 +587,36 @@ I_ItemDeletionListener {
                         m_messages.key(Messages.ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_DESCRIPTION_0),
                         null);
                 } else {
+                    IndexedContainer newContainer = null;
                     try {
-                        m_table.setContainerDataSource(m_model.getContainerForCurrentLocale());
+                        newContainer = m_model.getContainerForCurrentLocale();
+                        m_table.setContainerDataSource(newContainer);
+                        m_fieldFactories.put(
+                            CmsMessageBundleEditorTypes.EditMode.DEFAULT,
+                            new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+                                m_table,
+                                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+                        m_styleGenerators.put(
+                            CmsMessageBundleEditorTypes.EditMode.DEFAULT,
+                            new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+                        m_fieldFactories.put(
+                            CmsMessageBundleEditorTypes.EditMode.MASTER,
+                            new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+                                m_table,
+                                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+                        m_styleGenerators.put(
+                            CmsMessageBundleEditorTypes.EditMode.MASTER,
+                            new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+                        setEditMode(EditMode.MASTER);
+                        m_table.setColumnCollapsingAllowed(true);
+                        adjustVisibleColumns();
+                        fillAppInfo(m_context);
                     } catch (IOException | CmsException e) {
                         // Can never appear here, since container is created by addDescriptor already.
                         LOG.error(e.getLocalizedMessage(), e);
                     }
-                    m_fieldFactories.put(
-                        CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                        new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                            m_table,
-                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
-                    m_styleGenerators.put(
-                        CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                        new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
-                    m_fieldFactories.put(
-                        CmsMessageBundleEditorTypes.EditMode.MASTER,
-                        new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                            m_table,
-                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
-                    m_styleGenerators.put(
-                        CmsMessageBundleEditorTypes.EditMode.MASTER,
-                        new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
-                    setEditMode(EditMode.MASTER);
-                    m_table.setColumnCollapsingAllowed(true);
-                    adjustVisibleColumns();
-                    fillAppInfo(m_context);
-                    // m_context.removeToolbarButton(event.getComponent());
                 }
             }
         });
@@ -761,22 +769,27 @@ I_ItemDeletionListener {
                 @SuppressWarnings("synthetic-access")
                 public void valueChange(ValueChangeEvent event) {
 
-                    try {
-                        Object sortProperty = m_table.getSortContainerPropertyId();
-                        boolean isAcending = m_table.isSortAscending();
-                        Map<Object, Object> filters = getFilters();
-                        m_table.clearFilters();
-                        m_model.setLocale((Locale)event.getProperty().getValue());
+                    Object sortProperty = m_table.getSortContainerPropertyId();
+                    boolean isAcending = m_table.isSortAscending();
+                    Map<Object, Object> filters = getFilters();
+                    m_table.clearFilters();
+                    if (m_model.setLocale((Locale)event.getProperty().getValue())) {
                         m_fileName.setReadOnly(false);
                         m_fileName.setValue(m_model.getEditedFilePath());
                         m_fileName.setReadOnly(true);
                         m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
-                        m_table.select(m_table.getCurrentPageFirstItemId());
-                        setFilters(filters);
-                    } catch (IOException | CmsException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    } else {
+                        String caption = m_messages.key(
+                            Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_LOCALE_SWITCHING_FAILED_CAPTION_0);
+                        String description = m_messages.key(
+                            Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_LOCALE_SWITCHING_FAILED_DESCRIPTION_0);
+                        Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+                        warning.setDelayMsec(-1);
+                        warning.show(UI.getCurrent().getPage());
+                        event.getProperty().setValue(m_model.getLocale());
                     }
+                    setFilters(filters);
+                    m_table.select(m_table.getCurrentPageFirstItemId());
                 }
             });
 
