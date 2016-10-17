@@ -139,23 +139,12 @@ I_ItemDeletionListener {
     ExtendedFilterTable m_table;
     /** The row for entering new entries. */
     Table m_addEntry;
-    /** The components in the row for adding new entries. */
-    Map<Object, Component> m_addEntryComponents;
 
     /** The options column, optionally shown in the table. */
     CmsMessageBundleEditorTypes.OptionColumnGenerator m_optionsColumn;
 
-    /** Panel that where the tables short cut handler is attached. */
-    private Panel m_navigator;
-
     /** The place where to go when the editor is closed. */
     private String m_backLink;
-
-    /** The app's info component. */
-    private HorizontalLayout m_appInfo;
-
-    /** The right half of the app info component. */
-    private HorizontalLayout m_rightAppInfo;
 
     /** The text field displaying the name of the currently edited file. */
     private TextField m_fileName;
@@ -224,12 +213,9 @@ I_ItemDeletionListener {
         if (m_model.handleKeyDeletion(key)) {
             return true;
         }
-        String caption = m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_CAPTION_0);
-        String description = m_messages.key(
+        showWarning(
+            Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_CAPTION_0,
             Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_DESCRIPTION_0);
-        Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
-        warning.setDelayMsec(-1);
-        warning.show(UI.getCurrent().getPage());
         return false;
 
     }
@@ -239,31 +225,24 @@ I_ItemDeletionListener {
      */
     public void handleKeyChange(KeyChangeEvent event) {
 
-        // key already exists
         KeyChangeResult result = m_model.handleKeyChange(event, true);
-        String caption = null;
-        String description = null;
-        Notification warning = null;
+        String captionKey = null;
+        String descriptionKey = null;
         switch (result) {
             case SUCCESS:
                 return;
             case FAILED_DUPLICATED_KEY:
-                caption = m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_CAPTION_0);
-                description = m_messages.key(
-                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_DESCRIPTION_0);
-                warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+                captionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_CAPTION_0;
+                descriptionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_DESCRIPTION_0;
                 break;
             case FAILED_FOR_OTHER_LANGUAGE:
-                caption = m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_CAPTION_0);
-                description = m_messages.key(
-                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_DESCRIPTION_0);
-                warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+                captionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_CAPTION_0;
+                descriptionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_DESCRIPTION_0;
                 break;
             default:
                 throw new IllegalArgumentException();
         }
-        warning.setDelayMsec(-1);
-        warning.show(UI.getCurrent().getPage());
+        showWarning(captionKey, descriptionKey);
         event.getSource().focus();
     }
 
@@ -287,29 +266,12 @@ I_ItemDeletionListener {
 
             Component main = createMainComponent();
 
-            if (m_model.hasMasterMode()) {
-                TranslateTableFieldFactory masterFieldFactory = new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                    m_table,
-                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER));
-                masterFieldFactory.registerKeyChangeListener(this);
-                m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.MASTER, masterFieldFactory);
-                m_styleGenerators.put(
-                    CmsMessageBundleEditorTypes.EditMode.MASTER,
-                    new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                        m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
-            }
-            TranslateTableFieldFactory defaultFieldFactory = new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                m_table,
-                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT));
-            defaultFieldFactory.registerKeyChangeListener(this);
-            m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, defaultFieldFactory);
-            m_styleGenerators.put(
-                CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+            initFieldFactories();
+            initStyleGenerators();
 
             m_table.setTableFieldFactory(m_fieldFactories.get(m_model.getEditMode()));
             m_table.setCellStyleGenerator(m_styleGenerators.get(m_model.getEditMode()));
+
             m_optionsColumn.registerItemDeletionListener(this);
 
             adjustVisibleColumns();
@@ -319,13 +281,9 @@ I_ItemDeletionListener {
             adjustFocus();
 
             if (m_model.getSwitchedLocaleOnOpening()) {
-                String caption = m_messages.key(
-                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0);
-                String description = m_messages.key(
+                showWarning(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0,
                     Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_DESCRIPTION_0);
-                Notification warningSwitchedLocale = new Notification(caption, description, Type.WARNING_MESSAGE, true);
-                warningSwitchedLocale.setDelayMsec(-1);
-                warningSwitchedLocale.show(UI.getCurrent().getPage());
             }
 
         } catch (IOException | CmsException e) {
@@ -419,19 +377,12 @@ I_ItemDeletionListener {
 
         try {
 
-            Map<TableProperty, Object> filters = new HashMap<TableProperty, Object>(4);
-            filters.put(TableProperty.DEFAULT, m_table.getFilterFieldValue(TableProperty.DEFAULT));
-            filters.put(TableProperty.DESCRIPTION, m_table.getFilterFieldValue(TableProperty.DESCRIPTION));
-            filters.put(TableProperty.KEY, m_table.getFilterFieldValue(TableProperty.KEY));
-            filters.put(TableProperty.TRANSLATION, m_table.getFilterFieldValue(TableProperty.TRANSLATION));
-
+            Map<Object, Object> filters = getFilters();
             m_table.clearFilters();
 
             m_model.save();
 
-            for (TableProperty propertyId : filters.keySet()) {
-                m_table.setFilterFieldValue(propertyId, filters.get(propertyId));
-            }
+            setFilters(filters);
 
         } catch (CmsException e) {
             LOG.error(m_messages.key(Messages.ERR_SAVING_CHANGES_0), e);
@@ -449,6 +400,7 @@ I_ItemDeletionListener {
         CmsMessageBundleEditorTypes.EditMode oldMode = m_model.getEditMode();
         boolean success = false;
         if (!newMode.equals(oldMode)) {
+            Map<Object, Object> filters = getFilters();
             m_table.clearFilters();
             if (m_model.setEditMode(newMode)) {
                 m_table.setTableFieldFactory(m_fieldFactories.get(newMode));
@@ -460,6 +412,7 @@ I_ItemDeletionListener {
                 Notification.show(m_messages.key(Messages.ERR_MODE_CHANGE_NOT_POSSIBLE_0), Type.ERROR_MESSAGE);
 
             }
+            setFilters(filters);
             adjustFocus();
         }
         return success;
@@ -482,6 +435,7 @@ I_ItemDeletionListener {
 
     /**
      * Sets the focus to the first editable field of the table.
+     * If entries can be added, it is set to the first field of the "Add entries" row.
      */
     private void adjustFocus() {
 
@@ -517,6 +471,9 @@ I_ItemDeletionListener {
         if (m_model.isShowOptionsColumn(oldMode) != m_model.isShowOptionsColumn(newMode)) {
             m_table.removeGeneratedColumn(TableProperty.OPTIONS);
             if (m_model.isShowOptionsColumn(newMode)) {
+                // Don't know why exactly setting the filter field invisible is necessary here,
+                // it should be already set invisible - but apparently not setting it invisible again
+                // will result in the field being visible.
                 m_table.setFilterFieldVisible(TableProperty.OPTIONS, false);
                 m_table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
             }
@@ -591,24 +548,8 @@ I_ItemDeletionListener {
                     try {
                         newContainer = m_model.getContainerForCurrentLocale();
                         m_table.setContainerDataSource(newContainer);
-                        m_fieldFactories.put(
-                            CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                            new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                                m_table,
-                                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
-                        m_styleGenerators.put(
-                            CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                            new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
-                        m_fieldFactories.put(
-                            CmsMessageBundleEditorTypes.EditMode.MASTER,
-                            new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                                m_table,
-                                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
-                        m_styleGenerators.put(
-                            CmsMessageBundleEditorTypes.EditMode.MASTER,
-                            new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+                        initFieldFactories();
+                        initStyleGenerators();
                         setEditMode(EditMode.MASTER);
                         m_table.setColumnCollapsingAllowed(true);
                         adjustVisibleColumns();
@@ -634,6 +575,7 @@ I_ItemDeletionListener {
 
         table.setEditable(true);
         table.setSelectable(true);
+        table.setNullSelectionAllowed(false);
         table.setMultiSelect(false);
         table.setImmediate(true);
         table.setColumnCollapsingAllowed(true);
@@ -662,6 +604,7 @@ I_ItemDeletionListener {
         table.setColumnExpandRatio(TableProperty.TRANSLATION, 1f);
 
         table.setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
+
         List<TableProperty> editableColumns = Arrays.asList(
             new TableProperty[] {
                 TableProperty.KEY,
@@ -673,7 +616,9 @@ I_ItemDeletionListener {
             editableColumns,
             m_configurableMessages);
         table.setTableFieldFactory(fieldFactory);
+
         table.setCellStyleGenerator(new AddEntryTableCellStyleGenerator(editableColumns));
+
         table.addItemClickListener(new ItemClickListener() {
 
             private static final long serialVersionUID = 5418404788437252894L;
@@ -688,8 +633,10 @@ I_ItemDeletionListener {
                 }
             }
         });
+
         table.addItem(ADDROW);
         table.select(ADDROW);
+
         return table;
     }
 
@@ -813,20 +760,15 @@ I_ItemDeletionListener {
         mainComponent.addStyleName("o-message-bundle-editor");
         m_table = createTable();
         m_addEntry = createAddEntryTable();
-        m_navigator = new Panel();
-        m_navigator.setSizeFull();
-        m_navigator.setContent(m_table);
-        m_navigator.addActionHandler(new CmsMessageBundleEditorTypes.TableKeyboardHandler(m_table));
-        m_navigator.addStyleName("v-panel-borderless");
+        Panel navigator = new Panel();
+        navigator.setSizeFull();
+        navigator.setContent(m_table);
+        navigator.addActionHandler(new CmsMessageBundleEditorTypes.TableKeyboardHandler(m_table));
+        navigator.addStyleName("v-panel-borderless");
 
-        //        Panel p = new Panel();
-        //        p.setWidth("100%");
-        //        p.setHeight("52px");
-        //        p.setContent(m_addEntry);
-        //        mainComponent.addComponent(p);
         mainComponent.addComponent(m_addEntry);
-        mainComponent.addComponent(m_navigator);
-        mainComponent.setExpandRatio(m_navigator, 1f);
+        mainComponent.addComponent(navigator);
+        mainComponent.setExpandRatio(navigator, 1f);
         refreshAddEntryTable();
         return mainComponent;
     }
@@ -881,9 +823,6 @@ I_ItemDeletionListener {
         table.setSizeFull();
 
         table.setContainerDataSource(m_model.getContainerForCurrentLocale());
-        if (table.getItemIds().isEmpty() && !m_model.hasDescriptor()) {
-            table.addItem();
-        }
 
         table.setColumnHeader(TableProperty.KEY, m_configurableMessages.getColumnHeader(TableProperty.KEY));
         table.setColumnCollapsible(TableProperty.KEY, false);
@@ -1018,27 +957,27 @@ I_ItemDeletionListener {
     }
 
     /**
-     * Adds the compontents to the app info bar.
+     * Adds the components to the app info bar.
      * @param context the app UI context.
      */
     private void fillAppInfo(I_CmsAppUIContext context) {
 
-        m_appInfo = new HorizontalLayout();
-        m_appInfo.setSizeFull();
-        m_appInfo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        m_appInfo.setSpacing(true);
+        HorizontalLayout appInfo = new HorizontalLayout();
+        appInfo.setSizeFull();
+        appInfo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
+        appInfo.setSpacing(true);
 
         HorizontalLayout left = new HorizontalLayout();
         left.setHeight("100%");
         left.setSpacing(true);
 
-        m_rightAppInfo = new HorizontalLayout();
-        m_rightAppInfo.setSizeFull();
-        m_rightAppInfo.setSpacing(true);
+        HorizontalLayout rightAppInfo = new HorizontalLayout();
+        rightAppInfo.setSizeFull();
+        rightAppInfo.setSpacing(true);
 
-        m_appInfo.addComponent(left);
-        m_appInfo.addComponent(m_rightAppInfo);
-        m_appInfo.setExpandRatio(m_rightAppInfo, 1f);
+        appInfo.addComponent(left);
+        appInfo.addComponent(rightAppInfo);
+        appInfo.setExpandRatio(rightAppInfo, 1f);
 
         Component languages = createLanguageSwitcher();
         left.addComponent(languages);
@@ -1048,10 +987,10 @@ I_ItemDeletionListener {
         }
 
         Component fileNameDisplay = createFilePathDisplay();
-        m_rightAppInfo.addComponent(fileNameDisplay);
-        m_rightAppInfo.setExpandRatio(fileNameDisplay, 2f);
+        rightAppInfo.addComponent(fileNameDisplay);
+        rightAppInfo.setExpandRatio(fileNameDisplay, 2f);
 
-        context.setAppInfo(m_appInfo);
+        context.setAppInfo(appInfo);
     }
 
     /** Adds Editor specific UI components to the toolbar.
@@ -1093,5 +1032,58 @@ I_ItemDeletionListener {
     private CmsMessageBundleEditorTypes.OptionColumnGenerator generateOptionsColumn(CustomTable table) {
 
         return new CmsMessageBundleEditorTypes.OptionColumnGenerator(table);
+    }
+
+    /**
+     * Initialize the field factories for the messages table.
+     */
+    private void initFieldFactories() {
+
+        if (m_model.hasMasterMode()) {
+            TranslateTableFieldFactory masterFieldFactory = new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+                m_table,
+                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER));
+            masterFieldFactory.registerKeyChangeListener(this);
+            m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.MASTER, masterFieldFactory);
+        }
+        TranslateTableFieldFactory defaultFieldFactory = new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+            m_table,
+            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT));
+        defaultFieldFactory.registerKeyChangeListener(this);
+        m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, defaultFieldFactory);
+
+    }
+
+    /**
+     * Initialize the style generators for the messages table.
+     */
+    private void initStyleGenerators() {
+
+        if (m_model.hasMasterMode()) {
+            m_styleGenerators.put(
+                CmsMessageBundleEditorTypes.EditMode.MASTER,
+                new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+        }
+        m_styleGenerators.put(
+            CmsMessageBundleEditorTypes.EditMode.DEFAULT,
+            new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+
+    }
+
+    /**
+     * Displays a localized warning.
+     * @param captionKey the key for the caption of the warning.
+     * @param descriptionKey the key for the description of the warning.
+     */
+    private void showWarning(final String captionKey, final String descriptionKey) {
+
+        String caption = m_messages.key(captionKey);
+        String description = m_messages.key(descriptionKey);
+        Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+        warning.setDelayMsec(-1);
+        warning.show(UI.getCurrent().getPage());
+
     }
 }
