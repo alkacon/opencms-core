@@ -43,6 +43,7 @@ import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.KeyChangeResult;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddEntryTableCellStyleGenerator;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddEntryTableFieldFactory;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddOptionColumnGenerator;
@@ -50,6 +51,10 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleTy
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.ExtendedFilterTable;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_AddOptionClickHandler;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_ItemDeletionListener;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_KeyChangeListener;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.ItemDeletionEvent;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.KeyChangeEvent;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TranslateTableFieldFactory;
 
@@ -96,7 +101,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 @Theme("opencms")
 public class CmsMessageBundleEditor
-implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptionClickHandler {
+implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptionClickHandler, I_KeyChangeListener,
+I_ItemDeletionListener {
 
     /** Used to implement {@link java.io.Serializable}. */
     private static final long serialVersionUID = 5366955716462191580L;
@@ -207,6 +213,54 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptio
     }
 
     /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_ItemDeletionListener#handleItemDeletion(org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.ItemDeletionEvent)
+     */
+    public boolean handleItemDeletion(ItemDeletionEvent e) {
+
+        Item it = m_table.getItem(e.getItemId());
+        Property<?> keyProp = it.getItemProperty(TableProperty.KEY);
+        String key = (String)keyProp.getValue();
+        if (m_model.handleKeyDeletion(key)) {
+            return true;
+        }
+        return false;
+
+    }
+
+    /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_KeyChangeListener#handleKeyChange(org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.KeyChangeEvent)
+     */
+    public void handleKeyChange(KeyChangeEvent event) {
+
+        // key already exists
+        KeyChangeResult result = m_model.handleKeyChange(event, true);
+        String caption = null;
+        String description = null;
+        Notification warning = null;
+        switch (result) {
+            case SUCCESS:
+                return;
+            case FAILED_DUPLICATED_KEY:
+                caption = m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_CAPTION_0);
+                description = m_messages.key(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_DESCRIPTION_0);
+                warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+                break;
+            case FAILED_FOR_OTHER_LANGUAGE:
+                caption = m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_CAPTION_0);
+                description = m_messages.key(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_DESCRIPTION_0);
+                warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        warning.setDelayMsec(-1);
+        warning.show(UI.getCurrent().getPage());
+        event.getSource().focus();
+    }
+
+    /**
      * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String)
      */
     public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink) {
@@ -227,21 +281,21 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptio
             Component main = createMainComponent();
 
             if (m_model.hasMasterMode()) {
-                m_fieldFactories.put(
-                    CmsMessageBundleEditorTypes.EditMode.MASTER,
-                    new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                        m_table,
-                        m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+                TranslateTableFieldFactory masterFieldFactory = new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+                    m_table,
+                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER));
+                masterFieldFactory.registerKeyChangeListener(this);
+                m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.MASTER, masterFieldFactory);
                 m_styleGenerators.put(
                     CmsMessageBundleEditorTypes.EditMode.MASTER,
                     new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
                         m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
             }
-            m_fieldFactories.put(
-                CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                    m_table,
-                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+            TranslateTableFieldFactory defaultFieldFactory = new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+                m_table,
+                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT));
+            defaultFieldFactory.registerKeyChangeListener(this);
+            m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, defaultFieldFactory);
             m_styleGenerators.put(
                 CmsMessageBundleEditorTypes.EditMode.DEFAULT,
                 new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
@@ -249,6 +303,7 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptio
 
             m_table.setTableFieldFactory(m_fieldFactories.get(m_model.getEditMode()));
             m_table.setCellStyleGenerator(m_styleGenerators.get(m_model.getEditMode()));
+            m_optionsColumn.registerItemDeletionListener(this);
 
             adjustVisibleColumns();
 

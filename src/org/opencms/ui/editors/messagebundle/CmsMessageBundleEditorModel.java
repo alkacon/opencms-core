@@ -47,6 +47,7 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleTy
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditorState;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.KeyChangeEvent;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
@@ -188,6 +189,16 @@ public class CmsMessageBundleEditorModel {
         }
     }
 
+    /** The result of a key change. */
+    enum KeyChangeResult {
+        /** Key change was successful. */
+        SUCCESS,
+        /** Key change failed, because the new key already exists. */
+        FAILED_DUPLICATED_KEY,
+        /** Key change failed, because the key could not be changed for one or more languages. */
+        FAILED_FOR_OTHER_LANGUAGE
+    }
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorModel.class);
 
@@ -195,8 +206,10 @@ public class CmsMessageBundleEditorModel {
     public static final String PROPERTY_BUNDLE_DESCRIPTOR_LOCALIZATION = "bundle.descriptor.messages";
     /** CmsObject for read / write operations. */
     private CmsObject m_cms;
-    /** The file currently edited. */
-    private Map<Locale, LockedFile> m_bundleFiles;
+    /** The files currently edited. */
+    private Map<Locale, LockedFile> m_lockedBundleFiles;
+    /** The files of the bundle. */
+    private Map<Locale, CmsResource> m_bundleFiles;
     /** The resource that was opened with the editor. */
     private CmsResource m_resource;
     /** The bundle descriptor resource. */
@@ -271,7 +284,8 @@ public class CmsMessageBundleEditorModel {
         m_resource = resource;
         m_editMode = CmsMessageBundleEditorTypes.EditMode.DEFAULT;
 
-        m_bundleFiles = new HashMap<Locale, LockedFile>();
+        m_bundleFiles = new HashMap<Locale, CmsResource>();
+        m_lockedBundleFiles = new HashMap<Locale, LockedFile>();
         m_localizations = new HashMap<Locale, Map<String, String>>();
         m_keyset = new CmsMessageBundleEditorTypes.KeySet();
 
@@ -442,8 +456,8 @@ public class CmsMessageBundleEditorModel {
             case DESCRIPTOR:
                 return m_cms.getSitePath(m_desc);
             case PROPERTY:
-                return null != m_bundleFiles.get(getLocale())
-                ? m_cms.getSitePath(m_bundleFiles.get(getLocale()).getFile())
+                return null != m_lockedBundleFiles.get(getLocale())
+                ? m_cms.getSitePath(m_lockedBundleFiles.get(getLocale()).getFile())
                 : m_cms.getSitePath(m_resource);
             case XML:
                 return m_cms.getSitePath(m_resource);
@@ -487,6 +501,44 @@ public class CmsMessageBundleEditorModel {
     public boolean getSwitchedLocaleOnOpening() {
 
         return m_switchedLocaleOnOpening;
+    }
+
+    /**
+     * Handles a key change.
+     *
+     * @param event the key change event.
+     * @param allLanguages <code>true</code> for changing the key for all languages, <code>false</code> if the key should be changed only for the current language.
+     * @return result, indicating if the key change was successful.
+     */
+    public KeyChangeResult handleKeyChange(KeyChangeEvent event, boolean allLanguages) {
+
+        if (m_keyset.getKeySet().contains(event.getNewKey())) {
+            m_container.getItem(event.getItemId()).getItemProperty(TableProperty.KEY).setValue(event.getOldKey());
+            return KeyChangeResult.FAILED_DUPLICATED_KEY;
+        }
+        if (allLanguages && !renameKeyForAllLanguages(event.getOldKey(), event.getNewKey())) {
+            m_container.getItem(event.getItemId()).getItemProperty(TableProperty.KEY).setValue(event.getOldKey());
+            return KeyChangeResult.FAILED_FOR_OTHER_LANGUAGE;
+        }
+        return KeyChangeResult.SUCCESS;
+    }
+
+    /**
+     * Handles the deletion of a key.
+     * @param key the deleted key.
+     * @return <code>true</code> if the deletion was successful, <code>false</code> otherwise.
+     */
+    public boolean handleKeyDeletion(final String key) {
+
+        if (m_keyset.getKeySet().contains(key)) {
+            if (removeKeyForAllLanguages(key)) {
+                m_keyset.removeKey(key);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -603,8 +655,8 @@ public class CmsMessageBundleEditorModel {
      */
     public void unlock() throws CmsException {
 
-        for (Locale l : m_bundleFiles.keySet()) {
-            LockedFile f = m_bundleFiles.get(l);
+        for (Locale l : m_lockedBundleFiles.keySet()) {
+            LockedFile f = m_lockedBundleFiles.get(l);
             f.unlock();
         }
         if (null != m_descFile) {
@@ -905,28 +957,6 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
-     * Initializes the key set for property bundles. We do not regard localizations for locales not available.
-     * Initialization requires to load all localizations for available locales, i.e., all the files making up the bundle.
-     *
-     * @throws CmsLoaderException thrown if loading a bundle file fails.
-     * @throws CmsException thrown if loading a bundle file fails.
-     * @throws IOException thrown if loading a bundle file fails.
-     */
-    private void initKeySetForPropertyBundle() throws CmsLoaderException, CmsException, IOException {
-
-        for (Locale l : m_locales) {
-            String filePath = m_sitepath + m_basename + "_" + l.toString();
-            CmsResource resource = null;
-            if (m_cms.existsResource(filePath, CmsResourceFilter.DEFAULT_FILES)) {
-                resource = m_cms.readResource(filePath);
-                Properties props = new Properties();
-                props.load(new ByteArrayInputStream(m_cms.readFile(resource).getContents()));
-                m_keyset.updateKeySet(null, propertiesToMap(props).keySet());
-            }
-        }
-    }
-
-    /**
      * Initialize the key set for an xml bundle.
      */
     private void initKeySetForXmlBundle() {
@@ -977,7 +1007,20 @@ public class CmsMessageBundleEditorModel {
      */
     private void initPropertyBundle() throws CmsLoaderException, CmsException, IOException {
 
-        initKeySetForPropertyBundle();
+        for (Locale l : m_locales) {
+            String filePath = m_sitepath + m_basename + "_" + l.toString();
+            CmsResource resource = null;
+            if (m_cms.existsResource(
+                filePath,
+                CmsResourceFilter.requireType(
+                    OpenCms.getResourceManager().getResourceType(BundleType.PROPERTY.toString())))) {
+                resource = m_cms.readResource(filePath);
+                Properties props = new Properties();
+                props.load(new ByteArrayInputStream(m_cms.readFile(resource).getContents()));
+                m_keyset.updateKeySet(null, propertiesToMap(props).keySet());
+                m_bundleFiles.put(l, resource);
+            }
+        }
 
     }
 
@@ -988,10 +1031,48 @@ public class CmsMessageBundleEditorModel {
     private void initXmlBundle() throws CmsException {
 
         LockedFile bundleFile = LockedFile.lockResource(m_cms, m_resource);
-        m_bundleFiles.put(null, bundleFile);
+        m_bundleFiles.put(null, m_resource);
+        m_lockedBundleFiles.put(null, bundleFile);
         m_xmlBundle = CmsXmlContentFactory.unmarshal(m_cms, bundleFile.getFile());
         initKeySetForXmlBundle();
 
+    }
+
+    /**
+     * Loads all localizations not already loaded.
+     * @throws CmsException thrown if locking a file fails.
+     * @throws UnsupportedEncodingException thrown if reading  a file fails.
+     * @throws IOException thrown if reading  a file fails.
+     */
+    private void loadAllRemainingLocalizations() throws CmsException, UnsupportedEncodingException, IOException {
+
+        // is only necessary for property bundles
+        if (m_bundleType.equals(BundleType.PROPERTY)) {
+            //TODO: IMPROVE!
+            for (Locale l : m_locales) {
+                if (null == m_localizations.get(l)) {
+                    CmsResource resource = m_bundleFiles.get(l);
+                    if (resource != null) {
+                        LockedFile file = LockedFile.lockResource(m_cms, resource);
+                        m_lockedBundleFiles.put(l, file);
+                        Properties props = new Properties();
+                        props.load(
+                            new InputStreamReader(
+                                new ByteArrayInputStream(file.getFile().getContents()),
+                                file.getEncoding()));
+                        Map<String, String> properties = propertiesToMap(props);
+                        m_localizations.put(l, properties);
+                    }
+                }
+            }
+        }
+        if (m_bundleType.equals(BundleType.XML)) {
+            for (Locale l : m_locales) {
+                if (null == m_localizations.get(l)) {
+                    loadLocalizationFromXmlBundle(l);
+                }
+            }
+        }
     }
 
     /**
@@ -1027,7 +1108,7 @@ public class CmsMessageBundleEditorModel {
             file = LockedFile.lockResource(m_cms, res);
             file.setCreated(true);
         }
-        m_bundleFiles.put(locale, file);
+        m_lockedBundleFiles.put(locale, file);
         Properties props = new Properties();
         props.load(new InputStreamReader(new ByteArrayInputStream(file.getFile().getContents()), file.getEncoding()));
         Map<String, String> properties = propertiesToMap(props);
@@ -1053,6 +1134,84 @@ public class CmsMessageBundleEditorModel {
             }
         }
         m_localizations.put(locale, props);
+    }
+
+    /**
+     * Remove a key for all language versions. If a descriptor is present, the key is only removed in the descriptor.
+     *
+     * @param key the key to remove.
+     * @return <code>true</code> if removing was successful, <code>false</code> otherwise.
+     */
+    private boolean removeKeyForAllLanguages(String key) {
+
+        if (hasDescriptor()) {
+            CmsXmlContentValueSequence messages = m_descContent.getValueSequence(
+                Descriptor.N_MESSAGE,
+                Descriptor.LOCALE);
+            for (int i = 0; i < messages.getElementCount(); i++) {
+
+                String prefix = messages.getValue(i).getPath() + "/";
+                String k = m_descContent.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(m_cms);
+                if (k == key) {
+                    m_descContent.removeValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE, 0);
+                    break;
+                }
+            }
+        } else {
+            try {
+                loadAllRemainingLocalizations();
+            } catch (CmsException | IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return false;
+            }
+            for (Map<String, String> localization : m_localizations.values()) {
+                if (localization.containsKey(key)) {
+                    localization.remove(key);
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Rename a key for all languages.
+     * @param oldKey the key to rename
+     * @param newKey the new key name
+     * @return <code>true</code> if renaming was successful, <code>false</code> otherwise.
+     */
+    private boolean renameKeyForAllLanguages(String oldKey, String newKey) {
+
+        try {
+            loadAllRemainingLocalizations();
+        } catch (CmsException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+        for (Map<String, String> localization : m_localizations.values()) {
+            if (localization.containsKey(oldKey)) {
+                String value = localization.get(oldKey);
+                localization.remove(oldKey);
+                localization.put(newKey, value);
+            }
+        }
+        if (hasDescriptor()) {
+            CmsXmlContentValueSequence messages = m_descContent.getValueSequence(
+                Descriptor.N_MESSAGE,
+                Descriptor.LOCALE);
+            for (int i = 0; i < messages.getElementCount(); i++) {
+
+                String prefix = messages.getValue(i).getPath() + "/";
+                String key = m_descContent.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(m_cms);
+                if (key == oldKey) {
+                    m_descContent.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).setStringValue(m_cms, newKey);
+                    break;
+                }
+            }
+        }
+        m_keyset.renameKey(oldKey, newKey);
+        return true;
     }
 
     /**
@@ -1138,7 +1297,7 @@ public class CmsMessageBundleEditorModel {
                         }
                     }
                 }
-                LockedFile f = m_bundleFiles.get(l);
+                LockedFile f = m_lockedBundleFiles.get(l);
                 byte[] contentBytes;
                 try {
                     contentBytes = content.toString().getBytes(f.getEncoding());
@@ -1185,7 +1344,7 @@ public class CmsMessageBundleEditorModel {
                     }
                 }
             }
-            CmsFile bundleFile = m_bundleFiles.get(null).getFile();
+            CmsFile bundleFile = m_lockedBundleFiles.get(null).getFile();
             bundleFile.setContents(m_xmlBundle.marshal());
             m_cms.writeFile(bundleFile);
         }

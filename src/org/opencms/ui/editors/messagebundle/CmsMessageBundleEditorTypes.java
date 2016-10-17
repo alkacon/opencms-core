@@ -40,6 +40,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.extensions.CmsAutoGrowingTextArea;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,6 +60,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.validator.AbstractStringValidator;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.ShortcutAction;
@@ -377,6 +380,71 @@ public final class CmsMessageBundleEditorTypes {
 
     }
 
+    /**
+     * Data stored for each editable field in the message table.
+     */
+    static class ComponentData implements Serializable {
+
+        /** Serialization id. */
+        private static final long serialVersionUID = 1L;
+
+        /** Id of the editable column. */
+        private int m_editableId;
+        /** Id of the table row. */
+        private Object m_itemId;
+        /** The value in the field when it gets the focus, i.e., before a current edit operation. */
+        private String m_lastValue;
+
+        /**
+         * Default constructor.
+         *
+         * @param editableId id of the editable column.
+         * @param itemId id of the table row.
+         * @param lastValue the value in the field when it gets the focus, i.e., before a current edit operation.
+         */
+        public ComponentData(int editableId, Object itemId, String lastValue) {
+            m_editableId = editableId;
+            m_itemId = itemId;
+            m_lastValue = lastValue;
+        }
+
+        /**
+         * Returns the editable column id.
+         * @return the editable column id.
+         */
+        public int getEditableColumnId() {
+
+            return m_editableId;
+        }
+
+        /**
+         * Returns the id of the table row.
+         * @return the id of the table row.
+         */
+        public Object getItemId() {
+
+            return m_itemId;
+        }
+
+        /**
+         * Returns the last value in the field (before the current edit operation).
+         * @return the last value in the field (before the current edit operation).
+         */
+        public String getLastValue() {
+
+            return m_lastValue;
+        }
+
+        /**
+         * Set the last value in the field. Do this when the field is focused.
+         * @param lastValue the last value in the field.
+         */
+        public void setLastValue(String lastValue) {
+
+            m_lastValue = lastValue;
+        }
+    }
+
     /** The different edit modes. */
     enum EditMode {
         /** Editing the messages and the descriptor. */
@@ -434,6 +502,116 @@ public final class CmsMessageBundleEditorTypes {
         void handleAddOptionClick();
     }
 
+    /** Interface for a item deletion listener. */
+    static interface I_ItemDeletionListener {
+
+        /**
+         * Called when an item deletion event is fired.
+         * @param e the event
+         * @return <code>true</code> if deletion handling was successful, <code>false</code> otherwise.
+         */
+        boolean handleItemDeletion(ItemDeletionEvent e);
+    }
+
+    /** Interface for a key change handler. */
+    static interface I_KeyChangeListener {
+
+        /**
+         * Called when a key change event is fired.
+         * @param event the key change event.
+         */
+        void handleKeyChange(KeyChangeEvent event);
+    }
+
+    /** Item deletion event. */
+    static class ItemDeletionEvent {
+
+        /** The id of the deleted item. */
+        private Object m_itemId;
+
+        /** Default constructor.
+         * @param itemId the id of the deleted item.
+         */
+        public ItemDeletionEvent(Object itemId) {
+            m_itemId = itemId;
+        }
+
+        /**
+         * Returns the id of the deleted item.
+         * @return the id of the deleted item.
+         */
+        public Object getItemId() {
+
+            return m_itemId;
+        }
+
+    }
+
+    /** Key change event. */
+    static class KeyChangeEvent {
+
+        /** The field via which the key was edited. */
+        private AbstractTextField m_source;
+        /** The item id of the table row in which the key was edited. */
+        private Object m_itemId;
+        /** The key before it was edited. */
+        private String m_oldKey;
+        /** The key after it was edited. */
+        private String m_newKey;
+
+        /** Default constructor
+         * @param source the field via which the key was edited.
+         * @param itemId the item id of the table row in which the key was edited.
+         * @param oldKey the key before it was edited.
+         * @param newKey the key after it was edited.
+         */
+        public KeyChangeEvent(AbstractTextField source, Object itemId, String oldKey, String newKey) {
+            m_source = source;
+            m_itemId = itemId;
+            m_oldKey = oldKey;
+            m_newKey = newKey;
+        }
+
+        /**
+         * Returns the item id of the table row in which the key was edited.
+         * @return the item id of the table row in which the key was edited.
+         */
+        public Object getItemId() {
+
+            return m_itemId;
+        }
+
+        /**
+         * Returns the key after it was edited.
+         * @return the key after it was edited.
+         */
+
+        public String getNewKey() {
+
+            return m_newKey;
+        }
+
+        /**
+         * Returns the key before it was edited.
+         * @return the key before it was edited.
+         */
+
+        public String getOldKey() {
+
+            return m_oldKey;
+        }
+
+        /**
+         * Returns the field via which the key was edited.
+         * @return the field via which the key was edited.
+         */
+
+        public AbstractTextField getSource() {
+
+            return m_source;
+        }
+    }
+
     /** Manages the keys used in at least one locale. */
     static final class KeySet {
 
@@ -452,6 +630,32 @@ public final class CmsMessageBundleEditorTypes {
         public Set<String> getKeySet() {
 
             return new HashSet<String>(m_keyset.keySet());
+        }
+
+        /**
+         * Removes the given key.
+         * @param key the key to be removed.
+         */
+        public void removeKey(final String key) {
+
+            m_keyset.remove(key);
+        }
+
+        /**
+         * Rename a key.
+         * @param oldKey the current key name.
+         * @param newKey the substitution for the key name.
+         */
+        public void renameKey(String oldKey, String newKey) {
+
+            if (m_keyset.containsKey(oldKey) && !m_keyset.containsKey(newKey)) {
+                Integer count = m_keyset.get(oldKey);
+                m_keyset.remove(oldKey);
+                m_keyset.put(newKey, count);
+            } else {
+                //TODO: should never be the case, but handle it anyway?
+            }
+
         }
 
         /**
@@ -533,6 +737,8 @@ public final class CmsMessageBundleEditorTypes {
         Object m_selectedItem;
         /** The table, the column is generated for. */
         CustomTable m_table;
+        /** The key deletion listeners. */
+        I_ItemDeletionListener m_listener;
 
         /**
          * Default constructor.
@@ -568,7 +774,10 @@ public final class CmsMessageBundleEditorTypes {
 
                 public void buttonClick(ClickEvent event) {
 
-                    m_table.removeItem(itemId);
+                    ItemDeletionEvent e = new ItemDeletionEvent(itemId);
+                    if ((null == m_listener) || m_listener.handleItemDeletion(e)) {
+                        m_table.removeItem(itemId);
+                    }
                 }
             });
 
@@ -583,6 +792,17 @@ public final class CmsMessageBundleEditorTypes {
             }
 
             return options;
+        }
+
+        /**
+         * Registers an item deletion listener. Only one listener can be registered.
+         * Registering a new listener will automatically unregister the previous one.
+         *
+         * @param listener the listener to register.
+         */
+        void registerItemDeletionListener(final I_ItemDeletionListener listener) {
+
+            m_listener = listener;
         }
 
         /**
@@ -658,14 +878,15 @@ public final class CmsMessageBundleEditorTypes {
 
             if (target instanceof AbstractTextField) {
                 // Move according to keypress
-                String data = (String)(((AbstractTextField)target).getData());
+                ComponentData data = (ComponentData)(((AbstractTextField)target).getData());
                 // Abort if no data attribute found
                 if (null == data) {
                     return;
                 }
-                String[] dataItems = data.split(":");
-                int colId = Integer.parseInt(dataItems[0]);
-                int rowId = Integer.parseInt(dataItems[1]);
+                int colId = data.getEditableColumnId();
+                Integer rowIdInteger = (Integer)data.getItemId();
+                @SuppressWarnings("boxing") // rowIdInteger should never be null
+                int rowId = Integer.valueOf(rowIdInteger);
 
                 // NOTE: A collection is returned, but actually it's a linked list.
                 // It's a hack, but actually I don't know how to do better here.
@@ -782,6 +1003,8 @@ public final class CmsMessageBundleEditorTypes {
         private final List<TableProperty> m_editableColumns;
         /** Reference to the table, the factory is used for. */
         final CustomTable m_table;
+        /** Registered key change listeners. */
+        private final Set<I_KeyChangeListener> m_keyChangeListeners = new HashSet<I_KeyChangeListener>();
 
         /**
          * Default constructor.
@@ -804,7 +1027,7 @@ public final class CmsMessageBundleEditorTypes {
             final Object propertyId,
             Component uiContext) {
 
-            TableProperty pid = (TableProperty)propertyId;
+            final TableProperty pid = (TableProperty)propertyId;
 
             for (int i = 1; i <= m_editableColumns.size(); i++) {
                 if (pid.equals(m_editableColumns.get(i - 1))) {
@@ -823,7 +1046,7 @@ public final class CmsMessageBundleEditorTypes {
                     tf.setResponsive(true);
 
                     tf.setInputPrompt(CmsMessageBundleEditor.m_messages.key(Messages.GUI_PLEASE_ADD_VALUE_0));
-                    tf.setData(i + ":" + itemId);
+                    tf.setData(new ComponentData(i, itemId, ""));
                     if (!m_valueFields.containsKey(Integer.valueOf(i))) {
                         m_valueFields.put(Integer.valueOf(i), new HashMap<Integer, AbstractTextField>());
                     }
@@ -835,9 +1058,34 @@ public final class CmsMessageBundleEditorTypes {
                             if (!m_table.isSelected(itemId)) {
                                 m_table.select(itemId);
                             }
+                            if (pid == TableProperty.KEY) {
+                                AbstractTextField field = (AbstractTextField)event.getComponent();
+                                // Update last value
+                                ComponentData data = (ComponentData)field.getData();
+                                data.setLastValue(field.getValue());
+                                field.setData(data);
+                            }
                         }
 
                     });
+                    if (pid == TableProperty.KEY) {
+                        tf.addBlurListener(new BlurListener() {
+
+                            public void blur(BlurEvent event) {
+
+                                AbstractTextField field = (AbstractTextField)event.getComponent();
+                                ComponentData data = (ComponentData)field.getData();
+                                if (!data.getLastValue().equals(field.getValue())) {
+                                    KeyChangeEvent ev = new KeyChangeEvent(
+                                        field,
+                                        data.getItemId(),
+                                        data.getLastValue(),
+                                        field.getValue());
+                                    fireKeyChangeEvent(ev);
+                                }
+                            }
+                        });
+                    }
                     return tf;
                 }
             }
@@ -861,6 +1109,26 @@ public final class CmsMessageBundleEditorTypes {
         public Map<Integer, Map<Integer, AbstractTextField>> getValueFields() {
 
             return m_valueFields;
+        }
+
+        /**
+         * Register a key change listener.
+         * @param listener the listener to register.
+         */
+        public void registerKeyChangeListener(final I_KeyChangeListener listener) {
+
+            m_keyChangeListeners.add(listener);
+        }
+
+        /**
+         * Called to fire a key change event.
+         * @param ev the event to fire.
+         */
+        void fireKeyChangeEvent(final KeyChangeEvent ev) {
+
+            for (I_KeyChangeListener listener : m_keyChangeListeners) {
+                listener.handleKeyChange(ev);
+            }
         }
     }
 
