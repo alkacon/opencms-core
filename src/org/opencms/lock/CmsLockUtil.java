@@ -130,7 +130,7 @@ public final class CmsLockUtil {
 
         public boolean unlock() throws CmsException {
 
-            if (!m_lockRecord.getChange().equals(LockChange.unchanged)) {
+            if (!m_lockRecord.getChange().equals(LockChange.unchanged) || m_new) {
                 m_cms.unlockResource(m_file);
                 return true;
             } else {
