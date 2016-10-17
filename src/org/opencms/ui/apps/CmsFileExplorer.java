@@ -48,6 +48,7 @@ import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.components.A_CmsFocusShortcutListener;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.CmsUploadButton;
@@ -96,7 +97,6 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.combobox.FilteringMode;
@@ -585,7 +585,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         addTreeContainerProperties(
             CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
             CmsResourceTableProperty.PROPERTY_STATE,
-            CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE,
+            CmsResourceTableProperty.PROPERTY_TREE_CAPTION,
             CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT,
             CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED,
             CmsResourceTableProperty.PROPERTY_DISABLED);
@@ -594,8 +594,10 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         m_fileTree.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         m_fileTree.setWidth("100%");
         m_fileTree.setContainerDataSource(m_treeContainer);
-        m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE);
-        m_fileTree.setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
+        //    m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE);
+        m_fileTree.setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_TREE_CAPTION);
+        //        m_fileTree.setCaptionAsHtml(true);
+        m_fileTree.setHtmlContentAllowed(true);
         m_expandListener = new TreeExpandListener();
         m_fileTree.addExpandListener(m_expandListener);
         m_fileTree.addCollapseListener(new CollapseListener() {
@@ -1505,21 +1507,27 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         boolean disabled,
         HierarchicalContainer container) {
 
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         Item resourceItem = container.getItem(resource.getStructureId());
         if (resourceItem == null) {
             resourceItem = container.addItem(resource.getStructureId());
         }
+
         // use the root path as name in case of the root item
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
-            parentId == null ? resource.getRootPath() : resource.getName());
+        String resName = parentId == null ? resource.getRootPath() : resource.getName();
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(resName);
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT).setValue(
             Boolean.valueOf(resUtil.isInsideProject()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).setValue(
             Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE).setValue(
-            new ExternalResource(resUtil.getBigIconPath()));
+        String iconHTML = CmsResourceIcon.getIconHTML(resUtil, resUtil.getBigIconPath(), null, false)
+            + "<span class=\"o-tree-caption\">"
+            + resName
+            + "</span>";
+
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(iconHTML);
         if (disabled) {
             resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).setValue(Boolean.TRUE);
         }

@@ -10,24 +10,42 @@
   	opacity: 1;
   }
   
-  div.v-tree-node-caption:hover span, div.v-tree-node-caption-drag-center span{
+  div.v-tree-node-caption span.o-resource-icon{
+  	margin: 0 2px 0 -6px;
+  }
+  
+  div.v-tree-node-caption > div > span{
+  	position: relative;
+  	&:before{
+	  	content:"";
+	  	position: absolute;
+	  	top:0;
+	  	left: 0;
+	  	right: 0;
+	  	bottom: 0;
+	  	opacity: 0;
+	  	z-index: 10;
+  	}
+  }
+  
+  div.v-tree-node-caption:hover span.o-tree-caption, div.v-tree-node-caption-drag-center span.o-tree-caption{
   	color: #ffffff;
   	position: relative;
   	z-index: 1;
   	&:before{
   		content: "";
   		position: absolute;
-  		top: 4px;
+  		top: 5px;
   		left: -3px;
   		right: 95px;
-  		bottom: 3px;
+  		bottom: 2px;
   		z-index: -1;
   		background: $v-selection-color;
   		border-radius: $v-border-radius;
   	}
   }
   
-  div.v-tree-node-selected.v-tree-node-caption:hover span:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span:before{
+  div.v-tree-node-selected.v-tree-node-caption:hover span.o-tree-caption:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span.o-tree-caption:before{
   	background: lighten($v-selection-color,10%);
   }
   

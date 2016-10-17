@@ -28,7 +28,13 @@
 package org.opencms.ui.components;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolderExtended;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.Messages;
 
@@ -59,53 +65,105 @@ public class CmsResourceIcon extends Label {
      * @param resUtil the resource util
      * @param iconPath the resource icon
      * @param state the resource state
+     * @param showLocks <code>true</code> to show the resource locks
      */
-    public CmsResourceIcon(CmsResourceUtil resUtil, String iconPath, CmsResourceState state) {
+    public CmsResourceIcon(CmsResourceUtil resUtil, String iconPath, CmsResourceState state, boolean showLocks) {
         this();
-        initContent(resUtil, iconPath, state);
+        initContent(resUtil, iconPath, state, showLocks);
     }
 
     /**
-     * Initializes the content.<p>
+     * Returns the icon HTML.<p>
      *
-     * @param resUtil the resource util
-     * @param iconPath the resource icon
+     * @param resUtil the resource util for the resource
+     * @param iconPath the icon path
      * @param state the resource state
+     * @param showLocks <code>true</code> to show lock state overlay
+     *
+     * @return the icon HTML
      */
-    public void initContent(CmsResourceUtil resUtil, String iconPath, CmsResourceState state) {
+    public static String getIconHTML(
+        CmsResourceUtil resUtil,
+        String iconPath,
+        CmsResourceState state,
+        boolean showLocks) {
+
+        return "<span class=\""
+            + OpenCmsTheme.RESOURCE_ICON
+            + "\">"
+            + getIconInnerHTML(resUtil, iconPath, state, showLocks)
+            + "</span>";
+    }
+
+    /**
+     * Returns the icon inner HTML.<p>
+     *
+     * @param resUtil the resource util for the resource
+     * @param iconPath the icon path
+     * @param state the resource state
+     * @param showLocks <code>true</code> to show lock state overlay
+     *
+     * @return the icon inner HTML
+     */
+    private static String getIconInnerHTML(
+        CmsResourceUtil resUtil,
+        String iconPath,
+        CmsResourceState state,
+        boolean showLocks) {
 
         String content = "<img src=\"" + iconPath + "\" />";
 
         if (resUtil != null) {
-            String lockIcon;
-            String message = null;
-            if (resUtil.getLock().getSystemLock().isPublish()) {
-                lockIcon = OpenCmsTheme.LOCK_PUBLISH;
-                message = CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_PUBLISH_TOOLTIP_0);
-            } else {
-                switch (resUtil.getLockState()) {
-                    case 1:
-                        lockIcon = OpenCmsTheme.LOCK_OTHER;
-                        break;
+            if (resUtil.getResource().isFolder()
+                && !(OpenCms.getResourceManager().getResourceType(
+                    resUtil.getResource()) instanceof CmsResourceTypeFolderExtended)) {
+                try {
+                    CmsResource defaultFile = resUtil.getCms().readDefaultFile(
+                        resUtil.getResource(),
+                        CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                    if (defaultFile != null) {
+                        content += "<img src=\""
+                            + CmsWorkplace.getResourceUri(
+                                (new CmsResourceUtil(resUtil.getCms(), defaultFile)).getIconPathResourceType())
+                            + "\" class=\"o-icon-overlay\" />";
 
-                    case 2:
-                        lockIcon = OpenCmsTheme.LOCK_SHARED;
-                        break;
-                    case 3:
-                        lockIcon = OpenCmsTheme.LOCK_USER;
-                        break;
-                    default:
-                        lockIcon = null;
-                }
-                if (lockIcon != null) {
-                    message = CmsVaadinUtils.getMessageText(
-                        Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
-                        resUtil.getLockedByName(),
-                        resUtil.getLockedInProjectName());
+                    }
+                } catch (CmsSecurityException e) {
+                    // ignore
                 }
             }
-            if (lockIcon != null) {
-                content += getOverlaySpan(lockIcon, message);
+            if (showLocks) {
+                String lockIcon;
+                String message = null;
+                if (resUtil.getLock().getSystemLock().isPublish()) {
+                    lockIcon = OpenCmsTheme.LOCK_PUBLISH;
+                    message = CmsVaadinUtils.getMessageText(
+                        org.opencms.workplace.explorer.Messages.GUI_PUBLISH_TOOLTIP_0);
+                } else {
+                    switch (resUtil.getLockState()) {
+                        case 1:
+                            lockIcon = OpenCmsTheme.LOCK_OTHER;
+                            break;
+
+                        case 2:
+                            lockIcon = OpenCmsTheme.LOCK_SHARED;
+                            break;
+                        case 3:
+                            lockIcon = OpenCmsTheme.LOCK_USER;
+                            break;
+                        default:
+                            lockIcon = null;
+                    }
+                    if (lockIcon != null) {
+                        message = CmsVaadinUtils.getMessageText(
+                            Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
+                            resUtil.getLockedByName(),
+                            resUtil.getLockedInProjectName());
+                    }
+                }
+                if (lockIcon != null) {
+                    content += getOverlaySpan(lockIcon, message);
+                }
             }
         }
         if (state != null) {
@@ -124,7 +182,7 @@ public class CmsResourceIcon extends Label {
         if ((resUtil != null) && (resUtil.getLinkType() == 1)) {
             content += getOverlaySpan(OpenCmsTheme.SIBLING, null);
         }
-        setValue(content);
+        return content;
     }
 
     /**
@@ -135,7 +193,7 @@ public class CmsResourceIcon extends Label {
      *
      * @return the span element string
      */
-    private String getOverlaySpan(String cssClass, String title) {
+    private static String getOverlaySpan(String cssClass, String title) {
 
         StringBuffer result = new StringBuffer();
         result.append("<span class=\"").append(cssClass).append("\"");
@@ -144,5 +202,18 @@ public class CmsResourceIcon extends Label {
         }
         result.append("></span>");
         return result.toString();
+    }
+
+    /**
+     * Initializes the content.<p>
+     *
+     * @param resUtil the resource util
+     * @param iconPath the resource icon
+     * @param state the resource state
+     * @param showLocks <code>true</code> to show the resource locks
+     */
+    public void initContent(CmsResourceUtil resUtil, String iconPath, CmsResourceState state, boolean showLocks) {
+
+        setValue(getIconInnerHTML(resUtil, iconPath, state, showLocks));
     }
 }

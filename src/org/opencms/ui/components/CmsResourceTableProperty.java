@@ -60,7 +60,6 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.google.common.collect.Maps;
 import com.vaadin.data.util.converter.Converter;
-import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
 /**
@@ -331,9 +330,9 @@ public class CmsResourceTableProperty implements Serializable {
         40);
 
     /** Resource table property. */
-    public static final CmsResourceTableProperty PROPERTY_TYPE_ICON_RESOURCE = new CmsResourceTableProperty(
-        "PROPERTY_TYPE_ICON_RESOURCE",
-        Resource.class,
+    public static final CmsResourceTableProperty PROPERTY_TREE_CAPTION = new CmsResourceTableProperty(
+        "PROPERTY_TREE_CAPTION",
+        String.class,
         null,
         "",
         false,
