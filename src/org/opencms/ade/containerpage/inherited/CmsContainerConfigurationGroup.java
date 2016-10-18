@@ -31,7 +31,9 @@
 
 package org.opencms.ade.containerpage.inherited;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.util.CmsUUID;
 
 import java.util.Locale;
 import java.util.Map;
@@ -45,6 +47,12 @@ public class CmsContainerConfigurationGroup {
 
     /** The configurations grouped by locales. */
     private Map<Locale, Map<String, CmsContainerConfiguration>> m_configurations;
+
+    /** Root path of the file from which this configuration was read. */
+    private String m_rootPath;
+
+    /** Structure id of the file from which this configuration was read. */
+    private CmsUUID m_structureId;
 
     /**
      * Creates a new instance.<p>
@@ -74,5 +82,37 @@ public class CmsContainerConfigurationGroup {
             return null;
         }
         return configurationsForLocale.get(name);
+    }
+
+    /**
+     * Gets the root path of the file from which this configuration was read.<p>
+     *
+     * @return the root path of the configuration resource
+     */
+    public String getRootPath() {
+
+        return m_rootPath;
+
+    }
+
+    /**
+     * Gets the structure id of the file from which this configuration was read.<p>
+     *
+     * @return the structure id of the configuration file
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
+    }
+
+    /**
+     * Initializes the information about the resource from which this configuration was read.<p>
+     *
+     * @param configResource the configuration file
+     */
+    public void setResource(CmsResource configResource) {
+
+        m_structureId = configResource.getStructureId();
+        m_rootPath = configResource.getRootPath();
     }
 }

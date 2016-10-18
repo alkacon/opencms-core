@@ -71,16 +71,15 @@ public class CmsInheritedContainerState {
 
         String currentPath = rootPath;
         List<CmsContainerConfiguration> configurations = new ArrayList<CmsContainerConfiguration>();
-        synchronized (cache) {
-            while (currentPath != null) {
-                CmsContainerConfiguration configuration = cache.getContainerConfiguration(currentPath, name);
-                if (configuration == null) {
-                    configuration = CmsContainerConfiguration.emptyConfiguration();
-                }
-                configuration.setPath(currentPath);
-                configurations.add(configuration);
-                currentPath = CmsResource.getParentFolder(currentPath);
+        CmsContainerConfigurationCacheState state = cache.getState();
+        while (currentPath != null) {
+            CmsContainerConfiguration configuration = state.getContainerConfiguration(currentPath, name);
+            if (configuration == null) {
+                configuration = CmsContainerConfiguration.emptyConfiguration();
             }
+            configuration.setPath(currentPath);
+            configurations.add(configuration);
+            currentPath = CmsResource.getParentFolder(currentPath);
         }
         Collections.reverse(configurations);
         for (CmsContainerConfiguration configuration : configurations) {
