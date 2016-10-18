@@ -363,8 +363,6 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         try {
             OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
-            CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
-            OpenCmsTestLogAppender.setHandler(logHandler);
             writeConfiguration(1, "a");
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");
@@ -372,56 +370,34 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             String level3 = "/system/level1/level2/level3";
             // OFFLINE: a, b, c       ONLINE: a, b, c
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
-            assertEquals(3, logHandler.getOfflineLoads());
-            assertEquals(0, logHandler.getOnlineLoads());
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
-            assertEquals(3, logHandler.getOfflineLoads());
-            assertEquals(3, logHandler.getOnlineLoads());
 
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
-            assertEquals(3, logHandler.getOfflineLoads());
-            assertEquals(3, logHandler.getOnlineLoads());
 
-            logHandler.clear();
             writeConfiguration(2, "d");
             // OFFLINE: a, d, c       ONLINE: a, b, c
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
-            assertEquals(0, logHandler.getOnlineLoads());
-            assertEquals(1, logHandler.getOfflineLoads());
 
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
-            assertEquals(0, logHandler.getOnlineLoads());
-            assertEquals(1, logHandler.getOfflineLoads());
             publish();
 
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
-            assertEquals(1, logHandler.getOnlineLoads());
-            assertEquals(1, logHandler.getOfflineLoads());
             // OFFLINE: a, d, c       ONLINE: a, d, c
 
             deleteConfiguration(3);
             writeConfiguration(1, "b");
             // OFFLINE: b, d, -      ONLINE: a,d,c
-            logHandler.clear();
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=d", "key=b");
-            assertEquals(2, logHandler.getOfflineLoads());
-            assertEquals(0, logHandler.getOnlineLoads());
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=d", "key=b");
-            assertEquals(2, logHandler.getOfflineLoads());
-            assertEquals(0, logHandler.getOnlineLoads());
 
             publish();
-            logHandler.clear();
+
             // OFFLINE: b, d, -    ONLINE: b, d, -
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=d", "key=b");
-            assertEquals(0, logHandler.getOfflineLoads());
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=d", "key=b");
-            // publishing throws a resource_and_properties_modified event for some reason, so this still loads the resource offline
-            assertEquals(1, logHandler.getOfflineLoads());
-            assertEquals(1, logHandler.getOnlineLoads());
         } finally {
             publish();
             OpenCmsTestLogAppender.setHandler(null);
@@ -456,21 +432,15 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         try {
             OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
-            CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
-            OpenCmsTestLogAppender.setHandler(logHandler);
             writeConfiguration(1, "a");
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");
             publish();
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
-            assertEquals(3, logHandler.getOfflineLoads());
-            assertEquals(3, logHandler.getOnlineLoads());
             OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
-            assertEquals(6, logHandler.getOfflineLoads());
-            assertEquals(6, logHandler.getOnlineLoads());
 
         } finally {
             OpenCmsTestLogAppender.setHandler(null);
@@ -532,13 +502,17 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             writeConfiguration(1, "a");
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");
+            OpenCms.getADEManager().flushInheritanceGroupChanges();
             checkConfigurationForPath("/system/level1/level2/level3", "beta", OFFLINE);
             checkConfigurationForPath("/system/level1/level2/level3", "beta", ONLINE);
+
             deleteConfiguration(1);
             deleteConfiguration(2);
             deleteConfiguration(3);
+            OpenCms.getADEManager().flushInheritanceGroupChanges();
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE);
             publish();
+            OpenCms.getADEManager().flushInheritanceGroupChanges();
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE);
         } finally {
             publish();
@@ -552,22 +526,18 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     public void testOnlyReadProperlyNamedFiles() throws Exception {
 
-        CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
         try {
             OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
             OpenCmsTestLogAppender.setBreakOnError(false);
-            OpenCmsTestLogAppender.setHandler(logHandler);
             writeConfiguration(1, "a");
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");
             writeConfiguration("/system/dummy.config", "d");
             publish();
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
-            assertEquals(3, logHandler.getOfflineLoads());
             deleteConfiguration(2);
             writeConfiguration("/system/level1/level2/baz.config", "b");
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
-            assertEquals(3, logHandler.getOfflineLoads());
         } finally {
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCmsTestLogAppender.setHandler(null);
@@ -964,24 +934,17 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     public void testUpdateAndRemove() throws Exception {
 
-        CacheLoadLogHandler logHandler = new CacheLoadLogHandler();
         try {
             OpenCmsTestLogAppender.setBreakOnError(false);
-            OpenCmsTestLogAppender.setHandler(logHandler);
             publish();
             writeConfiguration(1, "a");
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");
             publish();
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
-            assertEquals(3, logHandler.getOfflineLoads());
-            logHandler.clear();
             writeConfiguration(2, "d");
             deleteConfiguration(2);
-            assertEquals(0, logHandler.getOfflineReadResource());
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
-            assertEquals(0, logHandler.getOfflineLoads());
-            assertEquals(0, logHandler.getOfflineReadResource());
         } finally {
             publish();
             OpenCmsTestLogAppender.setBreakOnError(false);
@@ -1157,6 +1120,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             dirPath,
             CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         deleteConfiguration(configPath);
+        OpenCms.getADEManager().flushInheritanceGroupChanges();
     }
 
     /**
@@ -1328,6 +1292,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         CmsPublishManager publishManager = OpenCms.getPublishManager();
         publishManager.publishProject(cms);
         publishManager.waitWhileRunning();
+        OpenCms.getADEManager().flushInheritanceGroupChanges();
     }
 
     /**
@@ -1358,9 +1323,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     protected void saveConfiguration(String path, CmsContainerConfiguration config, String name) throws Exception {
 
         CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
-        CmsXmlContent content = writer.saveInContentObject(getCmsObject(), null, new Locale("en"), name, config);
+        CmsXmlContent content = writer.saveInContentObject(getCmsObject(), null, Locale.ENGLISH, name, config);
         byte[] data = content.marshal();
         writeConfiguration(path, data);
+        OpenCms.getADEManager().flushInheritanceGroupChanges();
+
     }
 
     /**
@@ -1374,11 +1341,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     protected void writeConfiguration(int level, String name) throws CmsException, UnsupportedEncodingException {
 
+        OpenCms.getADEManager();
         String dirPath = getLevelPath(level);
         String configPath = CmsStringUtil.joinPaths(
             dirPath,
             CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         writeConfiguration(configPath, name);
+        OpenCms.getADEManager().flushInheritanceGroupChanges();
     }
 
     /**

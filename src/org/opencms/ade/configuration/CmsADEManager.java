@@ -275,6 +275,17 @@ public class CmsADEManager {
     }
 
     /**
+     * Flushes inheritance group changes so the cache is updated.<p>
+     *
+     * This is useful for test cases.
+     */
+    public void flushInheritanceGroupChanges() {
+
+        m_offlineContainerConfigurationCache.flushUpdates();
+        m_onlineContainerConfigurationCache.flushUpdates();
+    }
+
+    /**
      * Gets the complete list of beans for the currently configured detail pages.<p>
      *
      * @param cms the CMS context to use
@@ -795,8 +806,7 @@ public class CmsADEManager {
         CmsObject userCms,
         HttpServletRequest request,
         HttpServletResponse response,
-        String htmlRedirect)
-    throws CmsException {
+        String htmlRedirect) throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(m_offlineCms);
         CmsRequestContext userContext = userCms.getRequestContext();
@@ -880,8 +890,14 @@ public class CmsADEManager {
                     m_elementViewType);
                 m_onlineCache.initialize();
                 m_offlineCache.initialize();
-                m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_onlineCms, "online");
-                m_offlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_offlineCms, "offline");
+                m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(
+                    m_onlineCms,
+                    "online inheritance groups");
+                m_offlineContainerConfigurationCache = new CmsContainerConfigurationCache(
+                    m_offlineCms,
+                    "offline inheritance groups");
+                m_onlineContainerConfigurationCache.initialize();
+                m_offlineContainerConfigurationCache.initialize();
                 m_offlineFormatterCache = new CmsFormatterConfigurationCache(m_offlineCms, "offline formatters");
                 m_onlineFormatterCache = new CmsFormatterConfigurationCache(m_onlineCms, "online formatters");
                 m_offlineFormatterCache.reload();
@@ -1031,11 +1047,14 @@ public class CmsADEManager {
         CmsResource pageResource,
         String name,
         boolean newOrder,
-        List<CmsContainerElementBean> elements)
-    throws CmsException {
+        List<CmsContainerElementBean> elements) throws CmsException {
 
         CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
         writer.save(cms, name, newOrder, pageResource, elements);
+
+        // Inheritance groups are usually reloaded directly after saving them,
+        // so the cache needs to be up to date after this method is called
+        m_offlineContainerConfigurationCache.flushUpdates();
     }
 
     /**
@@ -1054,8 +1073,7 @@ public class CmsADEManager {
         String sitePath,
         String name,
         boolean newOrder,
-        List<CmsContainerElementBean> elements)
-    throws CmsException {
+        List<CmsContainerElementBean> elements) throws CmsException {
 
         saveInheritedContainer(cms, cms.readResource(sitePath), name, newOrder, elements);
     }
