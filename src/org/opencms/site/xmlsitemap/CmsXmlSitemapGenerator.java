@@ -599,6 +599,16 @@ public class CmsXmlSitemapGenerator {
 
         List<CmsResource> result = new ArrayList<CmsResource>();
         CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(m_siteGuestCms);
+        try {
+            CmsResource rootDefaultFile = m_siteGuestCms.readDefaultFile(
+                m_siteGuestCms.getRequestContext().removeSiteRoot(m_baseFolderRootPath),
+                CmsResourceFilter.DEFAULT);
+            if (rootDefaultFile != null) {
+                result.add(rootDefaultFile);
+            }
+        } catch (Exception e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        }
         List<CmsJspNavElement> navElements = navBuilder.getSiteNavigation(m_baseFolderSitePath, -1);
         for (CmsJspNavElement navElement : navElements) {
             CmsResource navResource = navElement.getResource();
