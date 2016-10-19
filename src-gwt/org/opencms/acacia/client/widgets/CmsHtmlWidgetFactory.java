@@ -154,7 +154,7 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
             }
             options.importcss_append = true;
             if (config.importCss) {
-                options.importcss_selector_filter = ""; // always matches 
+                options.importcss_selector_filter = ""; // always matches
             } else {
                 options.importcss_selector_filter = new $wnd.RegExp("$.^"); // never matches
             }
@@ -195,7 +195,8 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                 }
             };
             if (config.allowscripts) {
-                options.extended_valid_elements = "script[type|src|defer|async|charset]";
+                options.valid_elements = "*[*]";
+                options.allow_script_urls = true;
             }
 
             if (config.toolbar_items) {
