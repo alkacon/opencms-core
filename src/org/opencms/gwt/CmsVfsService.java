@@ -136,6 +136,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
+
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -147,9 +150,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
-
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -781,7 +781,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        CmsUUID detailContentId) throws CmsRpcException {
+        CmsUUID detailContentId)
+    throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -1289,7 +1290,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsObject cms,
         CmsResource historyRes,
         boolean offline,
-        int maxVersion) throws CmsException {
+        int maxVersion)
+    throws CmsException {
 
         CmsHistoryResourceBean result = new CmsHistoryResourceBean();
 
@@ -1619,6 +1621,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             previewContent = "<img src=\"" + imageLink + "\" title=\"" + title + "\" style=\"display:block\" />";
             height = scaler.getHeight();
             width = scaler.getWidth();
+        } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)
+            || CmsResourceTypeXmlPage.isXmlPage(resource)) {
+            String link = "";
+            if (resource instanceof I_CmsHistoryResource) {
+                int version = ((I_CmsHistoryResource)resource).getVersion();
+                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                    cms,
+                    CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+            } else {
+                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+            }
+            return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
         } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             if (!locales.containsKey(locale.toString())) {
                 locale = CmsLocaleManager.getMainLocale(cms, resource);
