@@ -85,13 +85,7 @@ public class CmsResourceTree extends Tree {
      */
     public CmsResourceTree(CmsObject cms, CmsResource root, CmsResourceFilter filter) {
 
-        this(
-            cms,
-            root,
-            filter,
-            new CmsResourceTreeContainer(),
-            CmsResourceTableProperty.PROPERTY_TYPE_ICON,
-            CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
+        this(cms, root, filter, new CmsResourceTreeContainer());
     }
 
     /**
@@ -101,22 +95,18 @@ public class CmsResourceTree extends Tree {
      * @param root the root resource
      * @param filter the resource filter
      * @param container the data container for the tree
-     * @param iconId the property id for the icon
-     * @param captionId the property id for the caption
      */
     public CmsResourceTree(
         CmsObject cms,
         CmsResource root,
         CmsResourceFilter filter,
-        CmsResourceTreeContainer container,
-        Object iconId,
-        Object captionId) {
+        CmsResourceTreeContainer container) {
         m_cms = cms;
         m_root = root;
         m_filter = filter;
         setContainerDataSource(container);
-        setItemIconPropertyId(iconId);
-        setItemCaptionPropertyId(captionId);
+        setHtmlContentAllowed(true);
+        setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_TREE_CAPTION);
         addExpandListener(new ExpandListener() {
 
             private static final long serialVersionUID = 1L;

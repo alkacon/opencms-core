@@ -34,7 +34,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -162,13 +161,7 @@ public class CmsSitemapFolderSelectDialog extends CmsResourceSelectDialog {
 
         CmsSitemapTreeContainer container = new CmsSitemapTreeContainer();
         m_sitemapTreeContainer = container;
-        m_tree = new CmsResourceTree(
-            cms,
-            root,
-            m_filter,
-            container,
-            CmsResourceTableProperty.PROPERTY_TYPE_ICON,
-            CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
+        m_tree = new CmsResourceTree(cms, root, m_filter, container);
         return m_tree;
     }
 

@@ -96,6 +96,30 @@ public class CmsResourceIcon extends Label {
     }
 
     /**
+     * Returns the tree caption HTML including the resource icon.<p>
+     *
+     * @param resourceName the resource name to display
+     * @param resUtil the resource util for the resource
+     * @param iconPath the icon path
+     * @param state the resource state
+     * @param showLocks <code>true</code> to show lock state overlay
+     *
+     * @return the icon HTML
+     */
+    public static String getTreeCaptionHTML(
+        String resourceName,
+        CmsResourceUtil resUtil,
+        String iconPath,
+        CmsResourceState state,
+        boolean showLocks) {
+
+        return CmsResourceIcon.getIconHTML(resUtil, resUtil.getBigIconPath(), null, false)
+            + "<span class=\"o-tree-caption\">"
+            + resourceName
+            + "</span>";
+    }
+
+    /**
      * Returns the icon inner HTML.<p>
      *
      * @param resUtil the resource util for the resource

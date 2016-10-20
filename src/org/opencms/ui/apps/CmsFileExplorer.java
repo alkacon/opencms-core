@@ -1522,10 +1522,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             Boolean.valueOf(resUtil.isInsideProject()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).setValue(
             Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
-        String iconHTML = CmsResourceIcon.getIconHTML(resUtil, resUtil.getBigIconPath(), null, false)
-            + "<span class=\"o-tree-caption\">"
-            + resName
-            + "</span>";
+        String iconHTML = CmsResourceIcon.getTreeCaptionHTML(resName, resUtil, resUtil.getBigIconPath(), null, false);
 
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(iconHTML);
         if (disabled) {
