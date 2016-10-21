@@ -241,6 +241,40 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Returns the available projects.<p>
+     *
+     * @param cms the CMS context
+     *
+     * @return the available projects
+     */
+    public static List<CmsProject> getAvailableProjects(CmsObject cms) {
+
+        // get all project information
+        List<CmsProject> allProjects;
+        try {
+            String ouFqn = "";
+            CmsUserSettings settings = new CmsUserSettings(cms);
+            if (!settings.getListAllProjects()) {
+                ouFqn = cms.getRequestContext().getCurrentUser().getOuFqn();
+            }
+            allProjects = new ArrayList<CmsProject>(
+                OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, ouFqn, settings.getListAllProjects()));
+            Iterator<CmsProject> itProjects = allProjects.iterator();
+            while (itProjects.hasNext()) {
+                CmsProject prj = itProjects.next();
+                if (prj.isHiddenFromSelector()) {
+                    itProjects.remove();
+                }
+            }
+        } catch (CmsException e) {
+            // should usually never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            allProjects = Collections.emptyList();
+        }
+        return allProjects;
+    }
+
+    /**
      * Builds an IndexedContainer containing the sites selectable by the current user.<p>
      *
      * @param cms the CMS context
@@ -640,7 +674,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
@@ -687,40 +721,6 @@ public final class CmsVaadinUtils {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
-    }
-
-    /**
-     * Returns the available projects.<p>
-     *
-     * @param cms the CMS context
-     *
-     * @return the available projects
-     */
-    private static List<CmsProject> getAvailableProjects(CmsObject cms) {
-
-        // get all project information
-        List<CmsProject> allProjects;
-        try {
-            String ouFqn = "";
-            CmsUserSettings settings = new CmsUserSettings(cms);
-            if (!settings.getListAllProjects()) {
-                ouFqn = cms.getRequestContext().getCurrentUser().getOuFqn();
-            }
-            allProjects = new ArrayList<CmsProject>(
-                OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, ouFqn, settings.getListAllProjects()));
-            Iterator<CmsProject> itProjects = allProjects.iterator();
-            while (itProjects.hasNext()) {
-                CmsProject prj = itProjects.next();
-                if (prj.isHiddenFromSelector()) {
-                    itProjects.remove();
-                }
-            }
-        } catch (CmsException e) {
-            // should usually never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            allProjects = Collections.emptyList();
-        }
-        return allProjects;
     }
 
     /**

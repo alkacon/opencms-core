@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -436,6 +437,12 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         ShortcutAction.KeyCode.A,
         new int[] {ShortcutAction.ModifierKey.CTRL});
 
+    /** The switch online shortcut. */
+    private static final Action ACTION_SWITCH_ONLINE = new ShortcutAction(
+        "Ctrl+O",
+        ShortcutAction.KeyCode.O,
+        new int[] {ShortcutAction.ModifierKey.CTRL});
+
     /** The files and folder resource filter. */
     private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
 
@@ -566,6 +573,14 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             public void run() {
 
                 m_fileTable.selectAll();
+            }
+        });
+
+        m_shortcutActions.put(ACTION_SWITCH_ONLINE, new Runnable() {
+
+            public void run() {
+
+                toggleOnlineOffline();
             }
         });
 
@@ -1476,6 +1491,47 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
+        }
+    }
+
+    /**
+     * Toggles between the online and the offline project.<p>
+     */
+    void toggleOnlineOffline() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        CmsProject targetProject = null;
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            CmsUserSettings userSettings = new CmsUserSettings(cms);
+            try {
+                CmsProject project = cms.readProject(userSettings.getStartProject());
+                if (!project.isOnlineProject()
+                    && OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(
+                        project)) {
+                    targetProject = project;
+                }
+            } catch (CmsException e) {
+                LOG.debug("Error reading user start project.", e);
+            }
+            if (targetProject == null) {
+                List<CmsProject> availableProjects = CmsVaadinUtils.getAvailableProjects(cms);
+                for (CmsProject project : availableProjects) {
+                    if (!project.isOnlineProject()) {
+                        targetProject = project;
+                        break;
+                    }
+                }
+            }
+        } else {
+            try {
+                targetProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+            } catch (CmsException e) {
+                LOG.debug("Error reading online project.", e);
+            }
+        }
+        if (targetProject != null) {
+            A_CmsUI.get().changeProject(targetProject);
+            onSiteOrProjectChange(targetProject, null);
         }
     }
 
