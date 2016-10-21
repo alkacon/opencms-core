@@ -1044,9 +1044,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             return createToggleEditSmallElementsMenuEntry();
         } else if (name.equals(CmsGwtConstants.ACTION_SELECTELEMENTVIEW)) {
             return createElementViewSelectionMenuEntry();
-
         } else if (name.equals(CmsGwtConstants.ACTION_SHOWLOCALE)) {
             return createShowLocaleMenuEntry();
+        } else if (name.equals(CmsGwtConstants.ACTION_VIEW_ONLINE)) {
+            return createViewOnlineEntry();
         } else if (name.equals(CmsPreview.class.getName())) {
             return null;
         } else {
@@ -1324,6 +1325,49 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         };
         CmsContextMenuEntry entry = new CmsContextMenuEntry(this, null, command);
         entry.setBean(entryBean);
+        return entry;
+    }
+
+    /**
+     * Creates the view online entry, if an online link is available.<p>
+     *
+     * @return the menu entry or null, if not available
+     */
+    protected I_CmsContextMenuEntry createViewOnlineEntry() {
+
+        final String onlineLink = m_controller.getData().getOnlineLink();
+        CmsContextMenuEntry entry = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(onlineLink)) {
+            I_CmsContextMenuCommand command = new I_CmsContextMenuCommand() {
+
+                public void execute(
+                    CmsUUID structureId,
+                    I_CmsContextMenuHandler handler,
+                    CmsContextMenuEntryBean bean) {
+
+                    Window.open(onlineLink, "opencms-online", null);
+                }
+
+                public A_CmsContextMenuItem getItemWidget(
+                    CmsUUID structureId,
+                    I_CmsContextMenuHandler handler,
+                    CmsContextMenuEntryBean bean) {
+
+                    return null;
+                }
+
+                public boolean hasItemWidget() {
+
+                    return false;
+                }
+            };
+            entry = new CmsContextMenuEntry(this, null, command);
+            CmsContextMenuEntryBean entryBean = new CmsContextMenuEntryBean();
+            entryBean.setLabel(Messages.get().key(Messages.GUI_VIEW_ONLINE_0));
+            entryBean.setActive(true);
+            entryBean.setVisible(true);
+            entry.setBean(entryBean);
+        }
         return entry;
     }
 

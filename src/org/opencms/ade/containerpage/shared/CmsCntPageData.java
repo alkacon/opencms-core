@@ -118,6 +118,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The content locale. */
     private String m_locale;
 
+    /** The locale link beans. */
+    private Map<String, CmsLocaleLinkBean> m_localeLinkBeans;
+
     /** The lock information, if the page is locked by another user. */
     private String m_lockInfo;
 
@@ -126,6 +129,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The reason why the user is not able to edit the current container page. */
     private String m_noEditReason;
+
+    /** The online link to the current page. */
+    private String m_onlineLink;
 
     /** The original request parameters. */
     private String m_requestParams;
@@ -148,12 +154,10 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
-    /** The locale link beans. */
-    private Map<String, CmsLocaleLinkBean> m_localeLinkBeans;
-
     /**
      * Constructor.<p>
      *
+     * @param onlineLink the online link to the current page
      * @param noEditReason the reason why the current user is not allowed to edit the current container page
      * @param requestParams the original request parameters
      * @param sitemapUri the current sitemap URI
@@ -175,6 +179,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param localeLinkBeans beans for links to other pages in the locale group
      */
     public CmsCntPageData(
+        String onlineLink,
         String noEditReason,
         String requestParams,
         String sitemapUri,
@@ -194,7 +199,7 @@ public final class CmsCntPageData implements IsSerializable {
         boolean isModelGroup,
         String mainLocale,
         Map<String, CmsLocaleLinkBean> localeLinkBeans) {
-
+        m_onlineLink = onlineLink;
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
         m_sitemapUri = sitemapUri;
@@ -354,6 +359,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getNoEditReason() {
 
         return m_noEditReason;
+    }
+
+    /**
+     * Returns the online link to the current page.<p>
+     *
+     * @return the online link to the current page
+     */
+    public String getOnlineLink() {
+
+        return m_onlineLink;
     }
 
     /**

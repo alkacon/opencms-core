@@ -250,6 +250,9 @@ public final class Messages {
     public static final String GUI_SELECT_ELEMENT_VIEW_0 = "GUI_SELECT_ELEMENT_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_ONLINE_0 = "GUI_VIEW_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_FORMATTER_LABEL_0 = "GUI_SELECT_FORMATTER_LABEL_0";
 
     /** Message constant for key in the resource bundle. */

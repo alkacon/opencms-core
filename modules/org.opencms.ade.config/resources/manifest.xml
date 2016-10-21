@@ -403,6 +403,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage"/>
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage"/>
+						<entry key="VIEWONLINE" name="viewonline" rule="containerpage"/>
 						<entry key="SELECTELEMENTVIEW" name="selectelementview" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges"/>
 						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted"/>

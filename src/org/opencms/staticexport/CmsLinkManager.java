@@ -365,6 +365,49 @@ public class CmsLinkManager {
     }
 
     /**
+     * Returns the online link for the given resource, with full server prefix.<p>
+     *
+     * Like <code>http://site.enterprise.com:8080/index.html</code>.<p>
+     *
+     * In case the resource name is a full root path, the site from the root path will be used.
+     * Otherwise the resource is assumed to be in the current site set be the OpenCms user context.<p>
+     *
+     * Please note that this method will always return the link as it will appear in the "Online"
+     * project, that is after the resource has been published. In case you need a method that
+     * just returns the link with the full server prefix, use {@link #getServerLink(CmsObject, String)}.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param resourceName the resource to generate the online link for
+     * @param targetDetailPage the target detail page, in case of linking to a specific detail page
+     * @param forceSecure forces the secure server prefix if the target is secure
+     *
+     * @return the online link for the given resource, with full server prefix
+     *
+     * @see #getServerLink(CmsObject, String)
+     */
+    public String getOnlineLink(CmsObject cms, String resourceName, String targetDetailPage, boolean forceSecure) {
+
+        String result = "";
+        try {
+            CmsProject currentProject = cms.getRequestContext().getCurrentProject();
+            try {
+                cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                result = substituteLinkForUnknownTarget(cms, resourceName, targetDetailPage, forceSecure);
+                result = appendServerPrefix(cms, result, resourceName, false);
+            } finally {
+                cms.getRequestContext().setCurrentProject(currentProject);
+            }
+        } catch (CmsException e) {
+            // should never happen
+            result = e.getLocalizedMessage();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the perma link for the given resource.<p>
      *
      * Like
@@ -644,7 +687,7 @@ public class CmsLinkManager {
      *
      * @param cms the current OpenCms user context
      * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
-
+    
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> in the current site
      */

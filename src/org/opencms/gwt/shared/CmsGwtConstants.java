@@ -78,6 +78,9 @@ public final class CmsGwtConstants {
     /** Context menu action id. */
     public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
 
+    /** Context menu action id. */
+    public static final String ACTION_VIEW_ONLINE = "viewonline";
+
     /** Javascript function name for showing the locale compare view. */
     public static final String CALLBACK_REFRESH_LOCALE_COMPARISON = "cmsRefreshLocaleComparison";
 
