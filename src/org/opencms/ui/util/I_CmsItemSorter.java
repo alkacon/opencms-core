@@ -25,29 +25,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
+package org.opencms.ui.util;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.CmsUIServlet;
+import java.util.Collection;
 
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.CustomComponent;
+import com.vaadin.data.Container;
+import com.vaadin.data.util.ItemSorter;
 
 /**
- * Abstract component class providing access to the OpenCms context.<p>
+ * Interface for item sorters that evaluate the sortable container properties.<p>
  */
-public abstract class A_CmsCustomComponent extends CustomComponent {
-
-    /** Serail version id. */
-    private static final long serialVersionUID = -3826368197794953978L;
+public interface I_CmsItemSorter extends ItemSorter {
 
     /**
-     * Returns the current cms context.<p>
+     * Returns the sortable container property ids.<p>
      *
-     * @return the current cms context
+     * @param container the container to be sorted
+     *
+     * @return the sortable container property ids
      */
-    public CmsObject getCmsObject() {
-
-        return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
-    }
+    Collection<?> getSortableContainerPropertyIds(Container container);
 }

@@ -35,6 +35,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_M
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PROJECT;
@@ -70,11 +71,14 @@ import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuBuilder;
+import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -180,11 +184,31 @@ public class CmsFileTable extends CmsResourceTable {
 
     /**
      * Extends the default sorting to differentiate between files and folder when sorting by name.<p>
+     * Also allows sorting by navPos property for the Resource icon column.<p>
      */
-    public static class FileSorter extends DefaultItemSorter {
+    public static class FileSorter extends DefaultItemSorter implements I_CmsItemSorter {
 
         /** The serial version id. */
         private static final long serialVersionUID = 1L;
+
+        /**
+         * @see org.opencms.ui.util.I_CmsItemSorter#getSortableContainerPropertyIds(com.vaadin.data.Container)
+         */
+        public Collection<?> getSortableContainerPropertyIds(Container container) {
+
+            Set<Object> result = new HashSet<Object>();
+            for (Object propId : container.getContainerPropertyIds()) {
+                Class<?> propertyType = container.getType(propId);
+                if (Comparable.class.isAssignableFrom(propertyType)
+                    || propertyType.isPrimitive()
+                    || (propId.equals(CmsResourceTableProperty.PROPERTY_TYPE_ICON)
+                        && container.getContainerPropertyIds().contains(
+                            CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION))) {
+                    result.add(propId);
+                }
+            }
+            return result;
+        }
 
         /**
          * @see com.vaadin.data.util.DefaultItemSorter#compareProperty(java.lang.Object, boolean, com.vaadin.data.Item, com.vaadin.data.Item)
@@ -204,6 +228,24 @@ public class CmsFileTable extends CmsResourceTable {
                     }
                     return result;
                 }
+            } else if (CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
+                && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
+                int result;
+                Float pos1 = (Float)item1.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                Float pos2 = (Float)item2.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                if (pos1 == null) {
+                    result = pos2 == null
+                    ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
+                    : 1;
+                } else {
+                    result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
+                }
+                if (!sortDirection) {
+                    result = result * (-1);
+                }
+                return result;
             }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
         }
@@ -284,6 +326,7 @@ public class CmsFileTable extends CmsResourceTable {
                 column(PROPERTY_RESOURCE_NAME);
                 column(PROPERTY_TITLE);
                 column(PROPERTY_NAVIGATION_TEXT, COLLAPSED);
+                column(PROPERTY_NAVIGATION_POSITION, INVISIBLE);
                 column(PROPERTY_COPYRIGHT, COLLAPSED);
                 column(PROPERTY_CACHE, COLLAPSED);
                 column(PROPERTY_RESOURCE_TYPE);

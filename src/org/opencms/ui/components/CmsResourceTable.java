@@ -35,6 +35,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_M
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PROJECT;
@@ -60,15 +61,16 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsCustomComponent;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -82,6 +84,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
@@ -90,7 +93,7 @@ import com.vaadin.ui.Table.TableDragMode;
 /**
  * Generic table for displaying lists of resources.<p>
  */
-public class CmsResourceTable extends A_CmsCustomComponent {
+public class CmsResourceTable extends CustomComponent {
 
     /**
      * Helper class for easily configuring a set of columns to display, together with their visibility / collapsed status.<p>
@@ -244,6 +247,19 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         private static final long serialVersionUID = -2033722658471550506L;
 
         /**
+         * @see com.vaadin.data.util.IndexedContainer#getSortableContainerPropertyIds()
+         */
+        @Override
+        public Collection<?> getSortableContainerPropertyIds() {
+
+            if (getItemSorter() instanceof I_CmsItemSorter) {
+                return ((I_CmsItemSorter)getItemSorter()).getSortableContainerPropertyIds(this);
+            } else {
+                return super.getSortableContainerPropertyIds();
+            }
+        }
+
+        /**
          * Returns the number of items in the container, not considering any filters.<p>
          *
          * @return the number of items
@@ -360,6 +376,18 @@ public class CmsResourceTable extends A_CmsCustomComponent {
 
         if (resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT) != null) {
             resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_NAVIGATION_POSITION) != null) {
+            try {
+                CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_NAVPOS, false);
+                if (!prop.isNullProperty()) {
+                    Float navPos = Float.valueOf(prop.getValue());
+                    resourceItem.getItemProperty(PROPERTY_NAVIGATION_POSITION).setValue(navPos);
+                }
+            } catch (Exception e) {
+                LOG.debug("Error evaluating navPos property", e);
+            }
         }
 
         if (resourceItem.getItemProperty(PROPERTY_COPYRIGHT) != null) {
