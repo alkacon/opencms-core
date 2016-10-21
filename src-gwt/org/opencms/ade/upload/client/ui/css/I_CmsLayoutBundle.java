@@ -83,6 +83,27 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String unzipButton();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String unzipButtonDownFace();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String unzipButtonUpFace();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String uploadDialogButton();
     }
 
