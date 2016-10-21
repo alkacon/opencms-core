@@ -109,6 +109,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TextField;
@@ -1502,23 +1503,28 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         CmsObject cms = A_CmsUI.getCmsObject();
         CmsProject targetProject = null;
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-            CmsUserSettings userSettings = new CmsUserSettings(cms);
-            try {
-                CmsProject project = cms.readProject(userSettings.getStartProject());
-                if (!project.isOnlineProject()
-                    && OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(
-                        project)) {
-                    targetProject = project;
-                }
-            } catch (CmsException e) {
-                LOG.debug("Error reading user start project.", e);
-            }
+            targetProject = A_CmsUI.get().getLastOfflineProject();
             if (targetProject == null) {
-                List<CmsProject> availableProjects = CmsVaadinUtils.getAvailableProjects(cms);
-                for (CmsProject project : availableProjects) {
-                    if (!project.isOnlineProject()) {
+                CmsUserSettings userSettings = new CmsUserSettings(cms);
+                try {
+                    CmsProject project = cms.readProject(userSettings.getStartProject());
+                    if (!project.isOnlineProject()
+                        && OpenCms.getOrgUnitManager().getAllAccessibleProjects(
+                            cms,
+                            project.getOuFqn(),
+                            false).contains(project)) {
                         targetProject = project;
-                        break;
+                    }
+                } catch (CmsException e) {
+                    LOG.debug("Error reading user start project.", e);
+                }
+                if (targetProject == null) {
+                    List<CmsProject> availableProjects = CmsVaadinUtils.getAvailableProjects(cms);
+                    for (CmsProject project : availableProjects) {
+                        if (!project.isOnlineProject()) {
+                            targetProject = project;
+                            break;
+                        }
                     }
                 }
             }
@@ -1532,6 +1538,8 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         if (targetProject != null) {
             A_CmsUI.get().changeProject(targetProject);
             onSiteOrProjectChange(targetProject, null);
+            Notification.show(
+                CmsVaadinUtils.getMessageText(Messages.GUI_SWITCHED_TO_PROJECT_1, targetProject.getName()));
         }
     }
 

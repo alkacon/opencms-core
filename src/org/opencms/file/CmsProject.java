@@ -33,6 +33,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ import java.util.List;
  *
  * @since 6.0.0
  */
-public class CmsProject implements Cloneable, Comparable<CmsProject> {
+public class CmsProject implements Cloneable, Comparable<CmsProject>, Serializable {
 
     /**
      *  Enumeration class for project types.<p>
@@ -104,6 +105,9 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
             return PROJECT_FLAG_NONE;
         }
     }
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -4552095577282894706L;
 
     /** The name of the online project. */
     public static final String ONLINE_PROJECT_NAME = "Online";

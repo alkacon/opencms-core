@@ -65,6 +65,9 @@ import com.vaadin.ui.Window;
  */
 public abstract class A_CmsUI extends UI {
 
+    /** The last offline project attribute key. */
+    public static final String LAST_OFFLINE_PROJECT = "lastOfflineProject";
+
     /** Serial version id. */
     private static final long serialVersionUID = 989182479322461838L;
 
@@ -117,6 +120,9 @@ public abstract class A_CmsUI extends UI {
             getCmsObject().getRequestContext().setCurrentProject(project);
             getWorkplaceSettings().setProject(project.getUuid());
             OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
+            if (!project.isOnlineProject()) {
+                setAttribute(LAST_OFFLINE_PROJECT, project);
+            }
         }
     }
 
@@ -164,6 +170,16 @@ public abstract class A_CmsUI extends UI {
     public HttpSession getHttpSession() {
 
         return ((WrappedHttpSession)getSession().getSession()).getHttpSession();
+    }
+
+    /**
+     * Returns the last used offline project.<p>
+     *
+     * @return the last used offline project
+     */
+    public CmsProject getLastOfflineProject() {
+
+        return (CmsProject)getAttribute(LAST_OFFLINE_PROJECT);
     }
 
     /**
