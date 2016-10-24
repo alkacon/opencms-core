@@ -508,9 +508,7 @@ public class CmsSitemapTreeController {
             CmsResourceInfo linkedInfo = CmsResourceInfo.createSitemapResourceInfo(
                 readSitemapEntryFolderIfPossible(entry.getLinkedResource()),
                 site);
-            if (entry.isDirectLink()) {
-                linkedInfo.addStyleName(OpenCmsTheme.RESOURCE_INFO_DIRECTLINK);
-            }
+            linkedInfo.addStyleName(OpenCmsTheme.RESOURCE_INFO_DIRECTLINK);
             rightSide.addComponent(linkedInfo, 0);
             linkedInfo.setWidth(RHS_WIDTH + "px");
             node.setContent(info);
