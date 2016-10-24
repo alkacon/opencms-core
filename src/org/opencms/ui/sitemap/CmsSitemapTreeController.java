@@ -535,8 +535,6 @@ public class CmsSitemapTreeController {
                 noTranslationInfo.addStyleName(OpenCmsTheme.RESOURCE_INFO_DIRECTLINK);
                 noTranslationInfo.setWidth(RHS_WIDTH + "px");
                 rightSide.addComponent(noTranslationInfo, 0);
-                //                Label noTranslationLabel = createNoTranslationLabel();
-                //                rightSide.addComponent(noTranslationLabel, 0);
             }
             node.setContent(info);
         }
