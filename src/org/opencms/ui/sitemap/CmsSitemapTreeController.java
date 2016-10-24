@@ -48,6 +48,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
+import org.opencms.ui.actions.CmsResourceInfoAction;
 import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -423,6 +424,15 @@ public class CmsSitemapTreeController {
                         }
                     });
                 }
+                ContextMenuItem infoItem = m_menu.addItem(CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCE_INFO_0));
+                infoItem.addItemClickListener(new ContextMenuItemClickListener() {
+
+                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                        CmsResourceInfoAction infoAction = new CmsResourceInfoAction();
+                        infoAction.executeAction(new DialogContext(entry.getResource(), node));
+                    }
+                });
 
                 if (entry.isLinked()) {
                     try {
