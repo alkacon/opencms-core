@@ -127,4 +127,13 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
             CmsErrorDialog.showErrorDialog(e);
         }
     }
+
+    /**
+     * @see org.opencms.ui.components.CmsFileTableDialogContext#updateUserInfo()
+     */
+    @Override
+    public void updateUserInfo() {
+
+        m_explorer.m_appContext.updateUserInfo();
+    }
 }

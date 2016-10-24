@@ -138,4 +138,12 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
 
         m_editableProperties = editableProperties;
     }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+     */
+    public void updateUserInfo() {
+
+        // not supported
+    }
 }

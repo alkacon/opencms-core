@@ -82,7 +82,7 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsToolBar extends CssLayout {
 
     /** Toolbar dialog context. */
-    protected static class ToolbarContext extends A_CmsDialogContext {
+    protected class ToolbarContext extends A_CmsDialogContext {
 
         /**
          * Constructor.<p>
@@ -107,6 +107,14 @@ public class CmsToolBar extends CssLayout {
         public List<CmsUUID> getAllStructureIdsInView() {
 
             return Lists.newArrayList();
+        }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+         */
+        public void updateUserInfo() {
+
+            refreshUserInfoDropDown();
         }
     }
 
@@ -315,6 +323,16 @@ public class CmsToolBar extends CssLayout {
             m_itemsRight.removeComponent(m_contextMenu);
             m_itemsRight.removeComponent(m_quickLaunchDropDown);
         }
+    }
+
+    /**
+     * Refreshes the user drop down.<p>
+     */
+    public void refreshUserInfoDropDown() {
+
+        Component oldVersion = m_userDropDown;
+        m_userDropDown = createUserInfoDropDown();
+        m_itemsRight.replaceComponent(oldVersion, m_userDropDown);
     }
 
     /**
@@ -580,15 +598,5 @@ public class CmsToolBar extends CssLayout {
         for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
             createMenuEntry(main, node, treeBuilder);
         }
-    }
-
-    /**
-     * Refreshes the user drop down.<p>
-     */
-    private void refreshUserInfoDropDown() {
-
-        Component oldVersion = m_userDropDown;
-        m_userDropDown = createUserInfoDropDown();
-        m_itemsRight.replaceComponent(oldVersion, m_userDropDown);
     }
 }

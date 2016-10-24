@@ -238,4 +238,12 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
 
         m_toolbar.updateAppIndicator();
     }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#updateUserInfo()
+     */
+    public void updateUserInfo() {
+
+        m_toolbar.refreshUserInfoDropDown();
+    }
 }

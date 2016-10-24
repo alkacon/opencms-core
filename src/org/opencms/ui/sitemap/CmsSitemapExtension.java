@@ -236,6 +236,14 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         }
 
         /**
+         * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+         */
+        public void updateUserInfo() {
+
+            // not supported
+        }
+
+        /**
          * Returns the client RPC.<p>
          *
          * @return the client RPC

@@ -36,22 +36,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MOVE_AUTOMATIC_0 = "GUI_COPY_MOVE_AUTOMATIC_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MOVE_CONTAINERPAGE_COPY_0 = "GUI_COPY_MOVE_CONTAINERPAGE_COPY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0 = "GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MOVE_SUBSITEMAP_0 = "GUI_COPY_MOVE_SUBSITEMAP_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_DAILOG_INSTANTIATION_FAILED_1 = "ERR_DAILOG_INSTANTIATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DIALOG_NOT_AVAILABLE_1 = "ERR_DIALOG_NOT_AVAILABLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_AUTOMATIC_0 = "GUI_COPY_MOVE_AUTOMATIC_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MOVE_CONFIRM_OVERWRITE_MESSAGE_0 = "GUI_COPY_MOVE_CONFIRM_OVERWRITE_MESSAGE_0";
@@ -60,7 +51,16 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_COPY_MOVE_CONFIRM_OVERWRITE_TITLE_0 = "GUI_COPY_MOVE_CONFIRM_OVERWRITE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_CONTAINERPAGE_COPY_0 = "GUI_COPY_MOVE_CONTAINERPAGE_COPY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0 = "GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0 = "GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_SUBSITEMAP_0 = "GUI_COPY_MOVE_SUBSITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_0 = "GUI_DIALOG_0";
@@ -76,6 +76,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_DATA_COUNTRY_0 = "GUI_USER_DATA_COUNTRY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_DELETE_IMAGE_0 = "GUI_USER_DATA_DELETE_IMAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_DATA_EMAIL_0 = "GUI_USER_DATA_EMAIL_0";

@@ -160,4 +160,9 @@ public interface I_CmsDialogContext {
      */
     void start(String title, Component dialog, DialogWidth width);
 
+    /**
+     * Called when the user info was changed.<p>
+     */
+    void updateUserInfo();
+
 }

@@ -275,6 +275,14 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+     */
+    public void updateUserInfo() {
+
+        getClientRPC().reloadParent();
+    }
+
+    /**
      * Returns the client RPC.<p>
      *
      * @return the client RPC

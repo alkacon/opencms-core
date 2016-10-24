@@ -531,6 +531,11 @@ public class CmsLoginController {
                             }
                         }
                     }
+
+                    public void updateUserInfo() {
+
+                        // not supported
+                    }
                 };
                 CmsUser u = currentCms.readUser(userObj.getId());
                 u.setAdditionalInfo(

@@ -260,6 +260,14 @@ public class CmsSitemapTreeController {
                 }
             }
         }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+         */
+        public void updateUserInfo() {
+
+            // not supported
+        }
     }
 
     /** Default width for linked items displayed on the right side of tree items. */

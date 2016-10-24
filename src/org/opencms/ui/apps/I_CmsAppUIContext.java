@@ -140,4 +140,9 @@ public interface I_CmsAppUIContext extends Serializable {
      * Updates the ui context on site or project changes.<p>
      */
     void updateOnChange();
+
+    /**
+     * Updates the displayed user info.<p>
+     */
+    void updateUserInfo();
 }

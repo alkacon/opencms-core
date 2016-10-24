@@ -31,7 +31,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsResourceBundleLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
@@ -52,6 +54,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.logging.Log;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.ObjectProperty;
@@ -134,6 +137,9 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** The serial version id. */
     private static final long serialVersionUID = 8907786853232656944L;
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUserDataDialog.class);
+
     /** The field binder. */
     private FieldGroup m_binder;
 
@@ -161,6 +167,9 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** Displays the user icon and name. */
     private Label m_userInfo;
 
+    /** The user image delete button. */
+    private Button m_deleteImage;
+
     /**
      * Creates a new instance.<p>
      *
@@ -174,6 +183,7 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
             throw new CmsRuntimeException(
                 Messages.get().container(Messages.ERR_USER_NOT_SELF_MANAGED_1, m_user.getName()));
         }
+
         CmsVaadinUtils.readAndLocalizeDesign(
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
@@ -186,6 +196,18 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
                 + m_user.getName());
 
         initFields();
+
+        m_deleteImage.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                OpenCms.getWorkplaceAppManager().getUserIconHelper().deleteUserImage(A_CmsUI.getCmsObject());
+                updateUserInfo();
+
+            }
+        });
 
         m_cancelButton.addClickListener(new ClickListener() {
 
@@ -282,6 +304,7 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     void cancel() {
 
         m_context.finish(Collections.<CmsUUID> emptyList());
+        m_context.updateUserInfo();
     }
 
     /**
@@ -326,9 +349,27 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
                 }
                 m_context.getCms().writeUser(m_user);
                 m_context.finish(Collections.<CmsUUID> emptyList());
+                m_context.updateUserInfo();
             }
         } catch (Exception e) {
             m_context.error(e);
+        }
+    }
+
+    /**
+     * Updates the user info.<p>
+     */
+    void updateUserInfo() {
+
+        try {
+            m_user = m_context.getCms().readUser(m_user.getId());
+            m_userInfo.setValue(
+                "<img src=\""
+                    + OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(m_context.getCms(), m_user)
+                    + "\" style=\"vertical-align:middle; margin: -4px 10px 0 0;\" />"
+                    + m_user.getName());
+        } catch (CmsException e) {
+            LOG.error("Error updating user info.", e);
         }
     }
 
