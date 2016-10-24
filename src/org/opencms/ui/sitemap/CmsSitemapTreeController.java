@@ -82,7 +82,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
@@ -521,8 +520,25 @@ public class CmsSitemapTreeController {
             linkedInfo.getResourceIcon().addStyleName(OpenCmsTheme.POINTER);
         } else {
             if (noTranslation) {
-                Label noTranslationLabel = createNoTranslationLabel();
-                rightSide.addComponent(noTranslationLabel, 0);
+                CmsResourceInfo noTranslationInfo = new CmsResourceInfo();
+                String topMessage = CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_NO_TRANSLATION_TOP_0);
+                String bottomMessage = CmsVaadinUtils.getMessageText(
+                    Messages.GUI_LOCALECOMPARE_NO_TRANSLATION_BOTTOM_0);
+                noTranslationInfo.getTopLine().setValue(topMessage);
+                noTranslationInfo.getBottomLine().setValue(bottomMessage);
+                noTranslationInfo.getResourceIcon().setValue(
+                    "<span class=\""
+                        + OpenCmsTheme.RESOURCE_ICON
+                        + " "
+                        + OpenCmsTheme.NO_TRANSLATION_ICON
+                        + "\">"
+                        + FontAwesome.BAN.getHtml()
+                        + "</span>");
+                noTranslationInfo.addStyleName(OpenCmsTheme.RESOURCE_INFO_DIRECTLINK);
+                noTranslationInfo.setWidth(RHS_WIDTH + "px");
+                rightSide.addComponent(noTranslationInfo, 0);
+                //                Label noTranslationLabel = createNoTranslationLabel();
+                //                rightSide.addComponent(noTranslationLabel, 0);
             }
             node.setContent(info);
         }
@@ -900,22 +916,6 @@ public class CmsSitemapTreeController {
             }
 
         });
-    }
-
-    /**
-     * Creates the widget for the 'no translation' sign.<p>
-     *
-     * @return the widget for the 'no translation' sign
-     */
-    private Label createNoTranslationLabel() {
-
-        Label result = new Label();
-        result.addStyleName("o-sitemap-notranslation");
-        result.addStyleName("FontAwesome");
-        result.setValue(new String(new int[] {FontAwesome.BAN.getCodepoint()}, 0, 1));
-        result.setWidth(RHS_WIDTH + "px");
-        result.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_DONT_TRANSLATE_0));
-        return result;
     }
 
     /**

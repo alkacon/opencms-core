@@ -387,7 +387,7 @@
 	*[location="buttonContainer"] > * > * > .o-resinfo2 {
 		margin-top: -1px; 
 	}
-		
+	
 	
 	.o-resinfo2 {
 		 border: 1px solid #ccc; 
@@ -411,6 +411,12 @@
 		
 		.o-resource-icon {
 			margin-top: 2px;
+		}
+		
+		.o-resource-icon.o-notranslation {
+			color: $alkacon-red; 
+			font-size: 24px;
+			margin-top: -10px; 
 		}
 	
 		.o-resinfo-top {
