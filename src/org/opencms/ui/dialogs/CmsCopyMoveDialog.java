@@ -51,7 +51,6 @@ import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
-import org.opencms.ui.components.fileselect.CmsSitemapSelectField;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -496,8 +495,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
         FormLayout form = new FormLayout();
         form.setWidth("100%");
-        m_targetFolder = new CmsSitemapSelectField(
-            m_context.getResources().size() > 0 ? m_context.getResources().get(0) : null);
+        m_targetFolder = new CmsResourceSelectField();
         m_targetFolder.setCaption(
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_TARGET_FOLDER_0));
         m_targetFolder.setFileSelectCaption(
