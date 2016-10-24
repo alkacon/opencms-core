@@ -18,7 +18,7 @@
         <xsd:appinfo>
         <resourcebundle name="org.opencms.xml.containerpage.messages"/>
         <layouts>
-        	<layout element="AddFormatter" widget="org.opencms.widgets.CmsAddFormatterWidget" configuration="" display="singleline"/>
+        	<layout element="AddFormatter" widget="org.opencms.widgets.CmsAddFormatterWidget" configuration="RemoveAllFormatters" display="singleline"/>
         </layouts>
         </xsd:appinfo> 
     </xsd:annotation>    

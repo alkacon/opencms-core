@@ -134,20 +134,10 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
         CmsResource resource,
         Locale contentLocale) {
 
-        String result = "";
         CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(messages.getLocale(), messages);
         widgetDialog.setResource(resource);
         List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, schemaType);
-        Iterator<CmsSelectWidgetOption> it = options.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            CmsSelectWidgetOption option = it.next();
-            if (i > 0) {
-                result += "|";
-            }
-            result += option.toString();
-            i++;
-        }
+        String result = optionsToConfigurationString(options);
         return result;
     }
 
@@ -374,6 +364,27 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
         m_selectOptions = new ArrayList<CmsSelectWidgetOption>();
         m_selectOptions.addAll(selectOptions);
+    }
+
+    /**
+     * Converts a list of select widget options to the configuration string as expected on the client side of the widget.
+     * @param options the options to convert
+     * @return the configuration String as expected on the client side of the widget.
+     */
+    String optionsToConfigurationString(final List<CmsSelectWidgetOption> options) {
+
+        String result = "";
+        Iterator<CmsSelectWidgetOption> it = options.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            CmsSelectWidgetOption option = it.next();
+            if (i > 0) {
+                result += "|";
+            }
+            result += option.toString();
+            i++;
+        }
+        return result;
     }
 
 }

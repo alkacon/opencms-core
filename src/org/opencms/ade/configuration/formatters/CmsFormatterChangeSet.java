@@ -57,6 +57,9 @@ public class CmsFormatterChangeSet {
     /** A map which indicates whether a formatter (whose id is the key) should be added (value=true) or removed (value= false). */
     private Map<CmsUUID, Boolean> m_updateSet = new HashMap<CmsUUID, Boolean>();
 
+    /** A flag, indicating if all formatters that are not explicitly added should be removed. */
+    private boolean m_removeAllNonExplicitlyAdded;
+
     /**
      * Creates an empty formatter change set.<p>
      */
@@ -71,11 +74,16 @@ public class CmsFormatterChangeSet {
      * @param toRemove the formatter keys to remove
      * @param toAdd the formatter keys to add
      * @param siteRoot the site root of the current config
+     * @param removeAllNonExplicitlyAdded flag, indicating if all formatters that are not explicitly added should be removed
      */
-    public CmsFormatterChangeSet(Collection<String> toRemove, Collection<String> toAdd, String siteRoot) {
+    public CmsFormatterChangeSet(
+        Collection<String> toRemove,
+        Collection<String> toAdd,
+        String siteRoot,
+        boolean removeAllNonExplicitlyAdded) {
 
         this();
-        initialize(toRemove, toAdd, siteRoot);
+        initialize(toRemove, toAdd, siteRoot, removeAllNonExplicitlyAdded);
     }
 
     /**
@@ -99,6 +107,9 @@ public class CmsFormatterChangeSet {
         Map<CmsUUID, I_CmsFormatterBean> formatters,
         CmsFormatterConfigurationCacheState externalFormatters) {
 
+        if (m_removeAllNonExplicitlyAdded) {
+            formatters.clear();
+        }
         for (Map.Entry<CmsUUID, Boolean> updateEntry : m_updateSet.entrySet()) {
             CmsUUID key = updateEntry.getKey();
             Boolean value = updateEntry.getValue();
@@ -133,6 +144,9 @@ public class CmsFormatterChangeSet {
      */
     public void applyToTypes(Set<String> types) {
 
+        if (m_removeAllNonExplicitlyAdded) {
+            types.clear();
+        }
         for (Map.Entry<String, Boolean> typeUpdateEntry : m_typeUpdateSet.entrySet()) {
             String typeName = typeUpdateEntry.getKey();
             Boolean add = typeUpdateEntry.getValue();
@@ -150,8 +164,15 @@ public class CmsFormatterChangeSet {
      * @param toRemove the keys for the formatters to remove
      * @param toAdd the keys for the formatters to add
      * @param siteRoot the site root of the current config
+     * @param removeAllNonExplicitlyAdded flag, indicating if all formatters that are not explicitly added should be removed
      */
-    private void initialize(Collection<String> toRemove, Collection<String> toAdd, String siteRoot) {
+    private void initialize(
+        Collection<String> toRemove,
+        Collection<String> toAdd,
+        String siteRoot,
+        boolean removeAllNonExplicitlyAdded) {
+
+        m_removeAllNonExplicitlyAdded = removeAllNonExplicitlyAdded;
 
         for (String removeKey : toRemove) {
             if (CmsUUID.isValidUUID(removeKey)) {
