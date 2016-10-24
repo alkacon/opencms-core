@@ -1094,7 +1094,16 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>512</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<source>system/workplace/commons/import-aliases.jsp</source>
