@@ -408,6 +408,9 @@ public interface I_CmsEventListener {
     /** Key name for passing a user name. */
     String KEY_USER_NAME = "userName";
 
+    /** Key name for skipping searchindexing. */
+    String KEY_SKIPINDEX = "skipindex";
+
     /** Marker for "all events". */
     Integer LISTENERS_FOR_ALL_EVENTS = new Integer(-1);
 

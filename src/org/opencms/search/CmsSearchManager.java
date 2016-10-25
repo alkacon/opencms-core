@@ -188,6 +188,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         // skip lock & unlock
                         return;
                     }
+                    // skip indexing if flag is set in event
+                    Object skip = event.getData().get(I_CmsEventListener.KEY_SKIPINDEX);
+                    if (skip != null) {
+                        return;
+                    }
+
                     // a resource has been modified - offline indexes require (re)indexing
                     List<CmsResource> resources = Collections.singletonList(
                         (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE));
