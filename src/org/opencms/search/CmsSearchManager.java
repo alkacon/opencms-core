@@ -435,24 +435,26 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             List<CmsPublishedResource> resourcesToIndex = m_handler.getResourcesToIndex();
             List<CmsPublishedResource> result = new ArrayList<CmsPublishedResource>(resourcesToIndex.size());
 
+            // Reverse to always keep the last list entries
+            Collections.reverse(resourcesToIndex);
             for (CmsPublishedResource pubRes : resourcesToIndex) {
-                int pos = result.indexOf(pubRes);
-
-                // do not index temporary files
-                if (pos < 0) {
-                    // resource not already contained in the update list
-                    result.add(pubRes);
-                } else {
-                    CmsPublishedResource curRes = result.get(pos);
-                    if ((pubRes.getState() != curRes.getState())
-                        || (pubRes.getMovedState() != curRes.getMovedState())
-                        || !pubRes.getRootPath().equals(curRes.getRootPath())) {
-                        // resource already in the update list but new state is different, so also add this
-                        result.add(pubRes);
+                boolean addResource = true;
+                for (CmsPublishedResource resRes : result) {
+                    if (pubRes.equals(resRes)
+                        && (pubRes.getState() == resRes.getState())
+                        && (pubRes.getMovedState() == resRes.getMovedState())
+                        && pubRes.getRootPath().equals(resRes.getRootPath())) {
+                        // resource already in the update list
+                        addResource = false;
+                        break;
                     }
+                }
+                if (addResource) {
+                    result.add(pubRes);
                 }
 
             }
+            Collections.reverse(result);
             return changeStateOfMoveOriginsToDeleted(result);
         }
 
@@ -1819,7 +1821,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public boolean removeSearchFieldConfigurationField(
         CmsSearchFieldConfiguration fieldConfiguration,
-        CmsSearchField field) throws CmsIllegalStateException {
+        CmsSearchField field)
+    throws CmsIllegalStateException {
 
         if (fieldConfiguration.getFields().size() < 2) {
             throw new CmsIllegalStateException(
@@ -2614,7 +2617,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     protected synchronized void updateIndex(
         CmsSearchIndex index,
         I_CmsReport report,
-        List<CmsPublishedResource> resourcesToIndex) throws CmsException {
+        List<CmsPublishedResource> resourcesToIndex)
+    throws CmsException {
 
         // copy the stored admin context for the indexing
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
@@ -2777,7 +2781,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsObject cms,
         CmsSearchIndex index,
         I_CmsReport report,
-        List<CmsPublishedResource> resourcesToIndex) throws CmsException {
+        List<CmsPublishedResource> resourcesToIndex)
+    throws CmsException {
 
         // update the existing index
         List<CmsSearchIndexUpdateData> updateCollections = new ArrayList<CmsSearchIndexUpdateData>();
