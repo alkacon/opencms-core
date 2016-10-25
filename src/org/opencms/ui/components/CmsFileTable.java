@@ -106,6 +106,7 @@ import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
@@ -793,17 +794,20 @@ public class CmsFileTable extends CmsResourceTable {
                                     && !res.getName().endsWith(".html")
                                     && !res.getName().endsWith(".htm")) {
                                     m_currentResources = Collections.singletonList(res);
+                                    context = m_contextProvider.getDialogContext();
                                     CmsEditDialogAction action = new CmsEditDialogAction();
-
-                                    if (action.getVisibility(context).isActive()) {
+                                    if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
+                                        && action.getVisibility(context).isActive()) {
                                         action.executeAction(context);
-                                        return;
+                                    } else {
+                                        Notification.show(
+                                            CmsVaadinUtils.getMessageText(Messages.GUI_NOT_EDITABLE_ONLINE_0));
                                     }
+                                    return;
                                 }
 
                                 String link = OpenCms.getLinkManager().substituteLink(cms, res);
                                 HttpServletRequest req = CmsVaadinUtils.getRequest();
-
                                 CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
                                 if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                                     A_CmsUI.get().openPageOrWarn(link, "_blank");
