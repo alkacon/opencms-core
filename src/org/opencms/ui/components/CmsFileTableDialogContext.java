@@ -75,7 +75,8 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
         new CmsContextMenuEditHandler(
             getResources().get(0).getStructureId(),
             (CmsResourceTableProperty)propertyId,
-            m_fileTable).start();
+            m_fileTable,
+            this).start();
     }
 
     /**

@@ -66,6 +66,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsEditPropertyContext;
 import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.ui.apps.I_CmsContextProvider;
@@ -766,52 +767,59 @@ public class CmsFileTable extends CmsResourceTable {
                 if ((event.getPropertyId() == null)
                     || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
                     openContextMenu(event);
-                } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
-                    Boolean isFolder = (Boolean)event.getItem().getItemProperty(
-                        CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
-                    if ((isFolder != null) && isFolder.booleanValue()) {
-                        if (m_folderSelectHandler != null) {
-                            m_folderSelectHandler.onFolderSelect(itemId);
-                        }
-                        openedFolder = true;
-                    } else {
-                        try {
-                            CmsObject cms = A_CmsUI.getCmsObject();
-                            CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
-                            if (((CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
-                                || (CmsResourceTypeXmlContent.isXmlContent(res)
-                                    && !CmsResourceTypeXmlContainerPage.isContainerPage(res)))
-                                && !res.getName().endsWith(".html")
-                                && !res.getName().endsWith(".htm")) {
-                                m_currentResources = Collections.singletonList(res);
-                                CmsEditDialogAction action = new CmsEditDialogAction();
-                                I_CmsDialogContext context = m_contextProvider.getDialogContext();
-                                if (action.getVisibility(context).isActive()) {
-                                    action.executeAction(context);
-                                    return;
+                } else {
+                    I_CmsDialogContext context = m_contextProvider.getDialogContext();
+                    if ((m_currentResources.size() == 1)
+                        && m_currentResources.get(0).getStructureId().equals(itemId)
+                        && (context instanceof I_CmsEditPropertyContext)
+                        && ((I_CmsEditPropertyContext)context).isPropertyEditable(event.getPropertyId())) {
+
+                        ((I_CmsEditPropertyContext)context).editProperty(event.getPropertyId());
+                    } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
+                        Boolean isFolder = (Boolean)event.getItem().getItemProperty(
+                            CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
+                        if ((isFolder != null) && isFolder.booleanValue()) {
+                            if (m_folderSelectHandler != null) {
+                                m_folderSelectHandler.onFolderSelect(itemId);
+                            }
+                            openedFolder = true;
+                        } else {
+                            try {
+                                CmsObject cms = A_CmsUI.getCmsObject();
+                                CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
+                                if (((CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
+                                    || (CmsResourceTypeXmlContent.isXmlContent(res)
+                                        && !CmsResourceTypeXmlContainerPage.isContainerPage(res)))
+                                    && !res.getName().endsWith(".html")
+                                    && !res.getName().endsWith(".htm")) {
+                                    m_currentResources = Collections.singletonList(res);
+                                    CmsEditDialogAction action = new CmsEditDialogAction();
+
+                                    if (action.getVisibility(context).isActive()) {
+                                        action.executeAction(context);
+                                        return;
+                                    }
                                 }
 
+                                String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                                HttpServletRequest req = CmsVaadinUtils.getRequest();
+
+                                CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
+                                if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                                    A_CmsUI.get().openPageOrWarn(link, "_blank");
+                                } else {
+                                    A_CmsUI.get().getPage().setLocation(link);
+                                }
+
+                                return;
+                            } catch (CmsVfsResourceNotFoundException e) {
+                                LOG.info(e.getLocalizedMessage(), e);
+                            } catch (CmsException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
                             }
-
-                            String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                            HttpServletRequest req = CmsVaadinUtils.getRequest();
-
-                            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-                            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                                A_CmsUI.get().openPageOrWarn(link, "_blank");
-                            } else {
-                                A_CmsUI.get().getPage().setLocation(link);
-                            }
-
-                            return;
-                        } catch (CmsVfsResourceNotFoundException e) {
-                            LOG.info(e.getLocalizedMessage(), e);
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
                 }
-
             }
             // update the item on click to show any available changes
             if (!openedFolder) {

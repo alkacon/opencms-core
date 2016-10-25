@@ -397,7 +397,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     public static final Collection<CmsResourceTableProperty> INLINE_EDIT_PROPERTIES = Arrays.asList(
         CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
         CmsResourceTableProperty.PROPERTY_TITLE,
-        CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT);
+        CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
+        CmsResourceTableProperty.PROPERTY_COPYRIGHT,
+        CmsResourceTableProperty.PROPERTY_CACHE);
 
     /** The opened paths session attribute name. */
     public static final String OPENED_PATHS = "explorer-opened-paths";
@@ -1106,8 +1108,16 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             Item resourceItem = m_treeContainer.getItem(id);
             if (resourceItem != null) {
                 // use the root path as name in case of the root item
-                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
-                    parentId == null ? resource.getRootPath() : resource.getName());
+                String resName = parentId == null ? resource.getRootPath() : resource.getName();
+                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(resName);
+                CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+                String iconHTML = CmsResourceIcon.getTreeCaptionHTML(
+                    resName,
+                    resUtil,
+                    resUtil.getBigIconPath(),
+                    null,
+                    false);
+                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(iconHTML);
                 resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
                 if (parentId != null) {
                     m_treeContainer.setParent(resource.getStructureId(), parentId);
@@ -1115,6 +1125,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             } else {
                 addTreeItem(cms, resource, parentId, false, m_treeContainer);
             }
+            m_fileTree.markAsDirty();
         } catch (CmsVfsResourceNotFoundException e) {
             m_treeContainer.removeItemRecursively(id);
             LOG.debug(e.getLocalizedMessage(), e);
