@@ -28,6 +28,10 @@
   	}
   }
   
+  .v-tree-node div.v-tree-node-caption span, div.v-tree-node-caption-drag-center span{
+  	width: 100%;
+  }
+  
   div.v-tree-node-caption:hover span.o-tree-caption, div.v-tree-node-caption-drag-center span.o-tree-caption{
   	color: #ffffff;
   	position: relative;
