@@ -27,16 +27,21 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.Messages;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
+
+import java.util.List;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
@@ -139,6 +144,7 @@ public class CmsResourceIcon extends Label {
 
         if (resUtil != null) {
             if (resUtil.getResource().isFolder()
+                && !iconPath.endsWith(CmsIconUtil.ICON_NAV_LEVEL_BIG)
                 && !(OpenCms.getResourceManager().getResourceType(
                     resUtil.getResource()) instanceof CmsResourceTypeFolderExtended)) {
                 try {
@@ -146,10 +152,30 @@ public class CmsResourceIcon extends Label {
                         resUtil.getResource(),
                         CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                     if (defaultFile != null) {
-                        content += "<img src=\""
-                            + CmsWorkplace.getResourceUri(
-                                (new CmsResourceUtil(resUtil.getCms(), defaultFile)).getIconPathResourceType())
-                            + "\" class=\"o-icon-overlay\" />";
+                        String defaultFileIcon = null;
+                        // in case of detail or function pages use the detail type icon
+                        if (OpenCms.getADEManager().isDetailPage(resUtil.getCms(), defaultFile)) {
+                            List<CmsDetailPageInfo> detailPages = OpenCms.getADEManager().getAllDetailPages(
+                                resUtil.getCms());
+                            for (CmsDetailPageInfo info : detailPages) {
+                                if (info.getId().equals(defaultFile.getStructureId())
+                                    || info.getId().equals(resUtil.getResource().getStructureId())) {
+                                    String type = info.getType();
+                                    if (type.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
+                                        type = CmsXmlDynamicFunctionHandler.TYPE_FUNCTION;
+                                    }
+                                    defaultFileIcon = CmsWorkplace.getResourceUri(
+                                        CmsWorkplace.RES_PATH_FILETYPES
+                                            + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type).getIcon());
+                                    break;
+                                }
+                            }
+                        }
+                        if (defaultFileIcon == null) {
+                            defaultFileIcon = CmsWorkplace.getResourceUri(
+                                (new CmsResourceUtil(resUtil.getCms(), defaultFile)).getIconPathResourceType());
+                        }
+                        content += "<img src=\"" + defaultFileIcon + "\" class=\"o-icon-overlay\" />";
 
                     }
                 } catch (CmsSecurityException e) {
