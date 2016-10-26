@@ -272,6 +272,9 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
     /** The container for the locale comparison view. */
     private VerticalLayout m_localeCompareContainer;
 
+    /** The currently active sitemap tree controller. */
+    private CmsSitemapTreeController m_sitemapTreeController;
+
     /** The UI instance. */
     private CmsSitemapUI m_ui;
 
@@ -284,6 +287,16 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         extend(ui);
         m_ui = ui;
         registerRpc(this, I_CmsSitemapServerRpc.class);
+    }
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsSitemapServerRpc#handleChangedProperties(java.lang.String)
+     */
+    public void handleChangedProperties(String id) {
+
+        if (m_sitemapTreeController != null) {
+            m_sitemapTreeController.updateNodeForId(new CmsUUID(id));
+        }
     }
 
     /**
@@ -313,6 +326,27 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
             LOG.error(e.getLocalizedMessage(), e);
             CmsErrorDialog.showErrorDialog(e);
         }
+    }
+
+    /**
+     * Opens the property dialog for the locale comparison view.<p>
+     *
+     * @param sitemapEntryId the structure id for the sitemap entry to edit
+     * @param rootId the structure id of the current tree's root
+     */
+    public void openPropertyDialog(CmsUUID sitemapEntryId, CmsUUID rootId) {
+
+        getRpcProxy(I_CmsSitemapClientRpc.class).openPropertyDialog("" + sitemapEntryId, "" + rootId);
+    }
+
+    /**
+     * Sets the currently active sitemap tree controller.<p>
+     *
+     * @param controller the controller to set
+     */
+    public void setSitemapTreeController(CmsSitemapTreeController controller) {
+
+        m_sitemapTreeController = controller;
     }
 
     /**

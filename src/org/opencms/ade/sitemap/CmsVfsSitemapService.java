@@ -39,6 +39,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsLocaleComparePropertyData;
 import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
@@ -99,6 +100,7 @@ import org.opencms.jsp.CmsJspNavBuilder.Visibility;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -113,6 +115,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -133,6 +136,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.io.Closeable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -152,6 +156,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 
@@ -309,6 +314,25 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Converts a sequence of properties to a map of client-side property beans.<p>
+     *
+     * @param props the sequence of properties
+     * @param preserveOrigin if true, the origin of the properties should be copied to the client properties
+     *
+     * @return the map of client properties
+     *
+     */
+    static Map<String, CmsClientProperty> createClientProperties(Iterable<CmsProperty> props, boolean preserveOrigin) {
+
+        Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
+        for (CmsProperty prop : props) {
+            CmsClientProperty clientProp = createClientProperty(prop, preserveOrigin);
+            result.put(prop.getName(), clientProp);
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#changeCategory(java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String)
      */
     public void changeCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException {
@@ -426,7 +450,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String title,
         String description,
         CmsUUID copyId,
-        boolean isModelGroup) throws CmsRpcException {
+        boolean isModelGroup)
+    throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -659,6 +684,49 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<CmsNewResourceInfo> result = getNewResourceInfos(cms, config, locale);
             return result;
         } catch (Throwable e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#loadPropertyDataForLocaleCompareView(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public CmsLocaleComparePropertyData loadPropertyDataForLocaleCompareView(CmsUUID id, CmsUUID rootId)
+    throws CmsRpcException {
+
+        try {
+            CmsLocaleComparePropertyData result = new CmsLocaleComparePropertyData();
+            CmsObject cms = getCmsObject();
+            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
+            CmsResource resource = cms.readResource(id, filter);
+            CmsResource defaultFile = cms.readDefaultFile(id.toString());
+            result.setDefaultFileId(defaultFile != null ? defaultFile.getStructureId() : null);
+            result.setId(id);
+            result.setFolder(resource.isFolder());
+            List<CmsProperty> props = cms.readPropertyObjects(resource, false);
+            List<CmsProperty> defaultFileProps = cms.readPropertyObjects(defaultFile, false);
+            Map<String, CmsClientProperty> clientProps = createClientProperties(props, true);
+            Map<String, CmsClientProperty> clientDefaultFileProps = createClientProperties(defaultFileProps, true);
+
+            result.setOwnProperties(clientProps);
+            result.setDefaultFileProperties(clientDefaultFileProps);
+
+            CmsResource parent = cms.readParentFolder(resource.getStructureId());
+            List<CmsResource> resourcesInSameFolder = cms.readResources(parent, CmsResourceFilter.ALL, false);
+            List<String> forbiddenUrlNames = Lists.newArrayList();
+            for (CmsResource resourceInSameFolder : resourcesInSameFolder) {
+                String otherName = CmsResource.getName(resourceInSameFolder.getRootPath());
+                forbiddenUrlNames.add(otherName);
+            }
+            result.setForbiddenUrlNames(forbiddenUrlNames);
+            result.setInheritedProperties(createClientProperties(cms.readPropertyObjects(parent, true), true));
+            result.setPath(resource.getRootPath());
+            String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(resource.getRootPath()));
+            result.setName(name);
+            result.setHasEditableName(!CmsStringUtil.isEmptyOrWhitespaceOnly(name));
+            return result;
+        } catch (Exception e) {
             error(e);
             return null;
         }
@@ -942,6 +1010,38 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#savePropertiesForLocaleCompareMode(org.opencms.util.CmsUUID, java.lang.String, java.util.List, boolean)
+     */
+    public void savePropertiesForLocaleCompareMode(
+        CmsUUID id,
+        String newUrlName,
+        List<CmsPropertyModification> propertyChanges,
+        boolean editedName)
+    throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource ownRes = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource defaultFileRes = cms.readDefaultFile("" + id);
+            try (Closeable c = CmsLockUtil.withLockedResources(cms, ownRes)) {
+                updateProperties(cms, ownRes, defaultFileRes, propertyChanges);
+                if (editedName) {
+                    String parent = CmsResource.getParentFolder(ownRes.getRootPath());
+                    newUrlName = CmsFileUtil.removeTrailingSeparator(newUrlName);
+                    String newPath = CmsStringUtil.joinPaths(parent, newUrlName);
+                    CmsObject rootCms = OpenCms.initCmsObject(cms);
+                    rootCms.getRequestContext().setSiteRoot("");
+                    rootCms.moveResource(ownRes.getRootPath(), newPath);
+                }
+
+            }
+
+        } catch (Exception e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
      */
     public CmsSitemapChange saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
@@ -1106,25 +1206,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Converts a sequence of properties to a map of client-side property beans.<p>
-     *
-     * @param props the sequence of properties
-     * @param preserveOrigin if true, the origin of the properties should be copied to the client properties
-     *
-     * @return the map of client properties
-     *
-     */
-    Map<String, CmsClientProperty> createClientProperties(Iterable<CmsProperty> props, boolean preserveOrigin) {
-
-        Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
-        for (CmsProperty prop : props) {
-            CmsClientProperty clientProp = createClientProperty(prop, preserveOrigin);
-            result.put(prop.getName(), clientProp);
-        }
-        return result;
-    }
-
-    /**
      * Removes unnecessary locales from a container page.<p>
      *
      * @param containerPage the container page which should be changed
@@ -1187,7 +1268,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsXmlContainerPage page,
         String containerName,
         CmsUUID elementId,
-        CmsUUID formatterId) throws CmsException {
+        CmsUUID formatterId)
+    throws CmsException {
 
         CmsContainerPageBean bean = page.getContainerPage(cms);
         List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
@@ -1667,10 +1749,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     0);
                 List<CmsProperty> folderProperties = generateInheritProperties(change, entryFolder);
                 if (isNavigationLevel) {
-                    folderProperties.add(new CmsProperty(
-                        CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                        CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER,
-                        null));
+                    folderProperties.add(
+                        new CmsProperty(
+                            CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                            CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER,
+                            null));
                 }
                 entryFolder = cms.createResource(entryFolderPath, folderTypeId, null, folderProperties);
                 if (createSitemapFolderType != null) {
@@ -2173,7 +2256,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private List<CmsGalleryFolderEntry> getGalleriesForType(
         String entryPointUri,
         CmsGalleryType galleryType,
-        List<String> subSitePaths) throws CmsException {
+        List<String> subSitePaths)
+    throws CmsException {
 
         List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
         @SuppressWarnings("deprecation")
@@ -2845,7 +2929,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         List<CmsDetailPageInfo> detailPages,
         CmsResource resource,
         CmsUUID newId,
-        CmsClientSitemapEntry updateEntry) throws CmsException {
+        CmsClientSitemapEntry updateEntry)
+    throws CmsException {
 
         CmsObject cms = getCmsObject();
         if (updateEntry != null) {
@@ -3102,7 +3187,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms,
         CmsResource ownRes,
         CmsResource defaultFileRes,
-        List<CmsPropertyModification> propertyModifications) throws CmsException {
+        List<CmsPropertyModification> propertyModifications)
+    throws CmsException {
 
         Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(ownRes, false));
         // determine if the title property should be changed in case of a 'NavText' change

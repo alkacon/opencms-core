@@ -258,8 +258,9 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
                                 switchToLocale(oldComparisonLocale);
                                 updateLocaleWidgets();
                             } else {
-                                Notification.show(CmsVaadinUtils.getMessageText(
-                                    Messages.GUI_LOCALECOMPARE_CANNOT_SWITCH_COMPARISON_LOCALE_0));
+                                Notification.show(
+                                    CmsVaadinUtils.getMessageText(
+                                        Messages.GUI_LOCALECOMPARE_CANNOT_SWITCH_COMPARISON_LOCALE_0));
                                 m_comparisonLocaleSelector.setValue(oldComparisonLocale);
                             }
                         } else {
@@ -361,6 +362,8 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
             rootRes,
             this,
             m_treeContainer);
+        CmsSitemapUI ui = (CmsSitemapUI)(A_CmsUI.get());
+        ui.getSitemapExtension().setSitemapTreeController(controller);
         CmsSitemapTreeNode root1 = controller.createRootNode();
         controller.initEventHandlers(root1);
         m_treeContainer.addComponent(root1);

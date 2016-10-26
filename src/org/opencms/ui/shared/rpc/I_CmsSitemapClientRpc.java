@@ -44,6 +44,14 @@ public interface I_CmsSitemapClientRpc extends ClientRpc {
     void finishPageCopyDialog(String callId, String response);
 
     /**
+     * Opens the property dialog in the locale comparison view.<p>
+     *
+     * @param structureId the structure id of the resource for which to open the property dialog
+     * @param rootId the root structure id of the locale comparison tree
+     */
+    void openPropertyDialog(String structureId, String rootId);
+
+    /**
      * Displays the header for a sub-sitemap in the locale comparison view.<p>
      *
      * @param title the title

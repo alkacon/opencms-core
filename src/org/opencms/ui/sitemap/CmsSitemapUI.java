@@ -64,7 +64,6 @@ public class CmsSitemapUI extends A_CmsUI {
         super.init(request);
         m_sitemapExtension = new CmsSitemapExtension(this);
         setContent(m_content);
-
     }
 
     /**

@@ -74,6 +74,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.FontAwesome;
@@ -288,6 +290,9 @@ public class CmsSitemapTreeController {
     /** The locale context. */
     private I_CmsLocaleCompareContext m_localeContext;
 
+    /** The resource corresponding to the tree's root. */
+    private CmsResource m_root;
+
     /** The tree data provider. */
     private CmsSitemapTreeDataProvider m_treeDataProvider;
 
@@ -309,6 +314,7 @@ public class CmsSitemapTreeController {
         Component parent) {
         m_treeDataProvider = new CmsSitemapTreeDataProvider(cms, root, context);
         m_localeContext = context;
+        m_root = root;
         m_menu.extend((AbstractComponent)parent);
 
     }
@@ -322,6 +328,7 @@ public class CmsSitemapTreeController {
     public CmsSitemapTreeNode createNode(final CmsSitemapTreeNodeData entry) {
 
         final CmsSitemapTreeNode node = new CmsSitemapTreeNode();
+
         node.addLayoutClickListener(new LayoutClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -431,6 +438,18 @@ public class CmsSitemapTreeController {
 
                         CmsResourceInfoAction infoAction = new CmsResourceInfoAction();
                         infoAction.executeAction(new DialogContext(entry.getResource(), node));
+                    }
+                });
+
+                ContextMenuItem propertiesItem = m_menu.addItem("Properties");
+                propertiesItem.addItemClickListener(new ContextMenuItemClickListener() {
+
+                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                        ((CmsSitemapUI)A_CmsUI.get()).getSitemapExtension().openPropertyDialog(
+                            entry.getResource().getStructureId(),
+                            m_root.getStructureId());
+
                     }
                 });
 
@@ -570,6 +589,16 @@ public class CmsSitemapTreeController {
     }
 
     /**
+     * Gets the resource corresponding to the tree's root.<p>
+     *
+     * @return the resource for the root node
+     */
+    public CmsResource getRoot() {
+
+        return m_root;
+    }
+
+    /**
      * Initializes the event handlers for a tree node widget.<p>
      *
      * @param node the node for which to initialize the event handlers
@@ -660,6 +689,36 @@ public class CmsSitemapTreeController {
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * Updates the tree node for the resource with the given structure id, if it exists.<p>
+     *
+     * @param id the structure id of a resource
+     */
+    public void updateNodeForId(final CmsUUID id) {
+
+        final List<CmsSitemapTreeNode> nodes = Lists.newArrayList();
+        CmsVaadinUtils.visitDescendants(m_currentRootNode, new Predicate<Component>() {
+
+            public boolean apply(Component input) {
+
+                if (input instanceof CmsSitemapTreeNode) {
+                    CmsSitemapTreeNode node = (CmsSitemapTreeNode)input;
+                    CmsSitemapTreeNodeData data = (CmsSitemapTreeNodeData)node.getData();
+                    if (data.getResource().getStructureId().equals(id)) {
+                        nodes.add(node);
+                        return false;
+                    }
+                }
+                return true;
+            }
+        });
+        if (nodes.size() == 1) {
+            System.out.println("Processing changes");
+            updateNode(nodes.get(0));
+        }
+
     }
 
     /**

@@ -80,6 +80,7 @@ import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsJsUtil;
+import org.opencms.gwt.client.util.CmsScriptCallbackHelper;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -105,6 +106,7 @@ import java.util.Set;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
@@ -367,15 +369,15 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                             !(id.isNullUUID()),
                             new I_CmsContextMenuItemProvider() {
 
-                            public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
+                                public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
 
-                                List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
+                                    List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
 
-                                result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
-                                result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
-                                return result;
-                            }
-                        });
+                                    result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
+                                    result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
+                                    return result;
+                                }
+                            });
                         if (input == localRoot) {
                             hoverbar.setAlwaysVisible();
                         }
@@ -398,16 +400,16 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                                     hoverbarId,
                                     new AsyncCallback<CmsCategoryTitleAndName>() {
 
-                                    public void onFailure(Throwable caught) {
+                                        public void onFailure(Throwable caught) {
 
-                                        // do nothing
-                                    }
+                                            // do nothing
+                                        }
 
-                                    public void onSuccess(CmsCategoryTitleAndName result) {
+                                        public void onSuccess(CmsCategoryTitleAndName result) {
 
-                                        controller.createCategory(hoverbarId, result.getTitle(), result.getName());
-                                    }
-                                });
+                                            controller.createCategory(hoverbarId, result.getTitle(), result.getName());
+                                        }
+                                    });
                             }
                         });
                     }
@@ -1163,6 +1165,21 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             }
         });
         setEditorMode(m_controller.getData().getEditorMode());
+        CmsScriptCallbackHelper localeComparePropertyEditorCallback = new CmsScriptCallbackHelper() {
+
+            @Override
+            public void run() {
+
+                JsArrayString args = m_arguments.cast();
+                String id = args.get(0);
+                String rootId = args.get(1);
+                CmsSitemapView.getInstance().getController().openPropertyDialogForVaadin(
+                    new CmsUUID(id),
+                    new CmsUUID(rootId));
+            }
+        };
+        localeComparePropertyEditorCallback.installCallbackOnWindow(CmsGwtConstants.LOCALECOMPARE_EDIT_PROPERTIES);
+
     }
 
     /**
