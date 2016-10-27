@@ -52,7 +52,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.report.CmsLogReport;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -207,11 +206,6 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                     getTemplate());
                 cms.writePropertyObject(siteRoot, prop);
             }
-            OpenCms.getPublishManager().publishResource(
-                cms,
-                siteRoot,
-                false,
-                new CmsLogReport(cms.getRequestContext().getLocale(), getClass()));
 
             // create OU
             if (m_createou) {
