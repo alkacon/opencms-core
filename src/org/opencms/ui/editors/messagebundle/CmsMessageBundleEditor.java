@@ -29,7 +29,6 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -44,22 +43,17 @@ import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.KeyChangeResult;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddEntryTableCellStyleGenerator;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddEntryTableFieldFactory;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.AddOptionColumnGenerator;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleType;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.ExtendedFilterTable;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_AddOptionClickHandler;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_ItemDeletionListener;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_KeyChangeListener;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_OptionListener;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.ItemDeletionEvent;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.KeyChangeEvent;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TranslateTableFieldFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -68,33 +62,25 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import org.tepi.filtertable.FilterTable;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.AbstractTextField;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomTable;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnCollapseEvent;
-import com.vaadin.ui.Table.ColumnHeaderMode;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -103,17 +89,14 @@ import com.vaadin.ui.VerticalLayout;
  */
 @Theme("opencms")
 public class CmsMessageBundleEditor
-implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_AddOptionClickHandler, I_KeyChangeListener,
-I_ItemDeletionListener {
+implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_KeyChangeListener, I_ItemDeletionListener,
+I_OptionListener {
 
     /** Used to implement {@link java.io.Serializable}. */
     private static final long serialVersionUID = 5366955716462191580L;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditor.class);
-
-    /** The id of the row in the "Add entry" table. */
-    private static final String ADDROW = "addrow";
 
     /** Messages used by the GUI. */
     static CmsMessages m_messages;
@@ -130,16 +113,18 @@ I_ItemDeletionListener {
 
     /** The context of the UI. */
     I_CmsAppUIContext m_context;
+
     /** The model behind the UI. */
     CmsMessageBundleEditorModel m_model;
+
     /** CmsObject for read / write actions. */
     CmsObject m_cms;
+
     /** The resource that was opened with the editor. */
     CmsResource m_resource;
+
     /** The table component that is shown. */
-    ExtendedFilterTable m_table;
-    /** The row for entering new entries. */
-    Table m_addEntry;
+    FilterTable m_table;
 
     /** The options column, optionally shown in the table. */
     CmsMessageBundleEditorTypes.OptionColumnGenerator m_optionsColumn;
@@ -147,8 +132,8 @@ I_ItemDeletionListener {
     /** The place where to go when the editor is closed. */
     private String m_backLink;
 
-    /** The text field displaying the name of the currently edited file. */
-    private TextField m_fileName;
+    /** The options view of the editor. */
+    private CmsMessageBundleEditorOptions m_options;
 
     /**
      * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
@@ -177,39 +162,20 @@ I_ItemDeletionListener {
     }
 
     /**
-     * Copies the entry from the "Add entry" table as new entry to the main table.
-     *
-     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_AddOptionClickHandler#handleAddOptionClick()
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_OptionListener#handleAddKey(java.lang.String)
      */
-    public void handleAddOptionClick() {
+    public boolean handleAddKey(final String newKey) {
 
-        Item newEntry = m_addEntry.getItem(ADDROW);
-        String newKey = (String)newEntry.getItemProperty(TableProperty.KEY).getValue();
-        Object copyEntryId;
         Map<Object, Object> filters = getFilters();
         m_table.clearFilters();
-        // check if key already exists
-        if (!keyAlreadyExists(newKey)) {
-            m_table.clearFilters();
-            copyEntryId = m_table.addItem();
+        boolean canAdd = !keyAlreadyExists(newKey);
+        if (canAdd) {
+            Object copyEntryId = m_table.addItem();
             Item copyEntry = m_table.getItem(copyEntryId);
-            for (TableProperty col : TableProperty.values()) {
-                if (col != TableProperty.OPTIONS) {
-                    Object newValue = newEntry.getItemProperty(col).getValue();
-                    Property<Object> prop = copyEntry.getItemProperty(col);
-                    if (prop != null) {
-                        prop.setValue(newValue);
-                    }
-                    newEntry.getItemProperty(col).setValue("");
-                }
-            }
-        } else {
-            showWarning(
-                Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_CAPTION_0,
-                Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_DESCRIPTION_0);
+            copyEntry.getItemProperty(TableProperty.KEY).setValue(newKey);
         }
         setFilters(filters);
-        ((AddEntryTableFieldFactory)m_addEntry.getTableFieldFactory()).getValueFields().get(TableProperty.KEY).focus();
+        return canAdd;
     }
 
     /**
@@ -223,9 +189,9 @@ I_ItemDeletionListener {
         if (m_model.handleKeyDeletion(key)) {
             return true;
         }
-        showWarning(
-            Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_CAPTION_0,
-            Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_DESCRIPTION_0);
+        CmsMessageBundleEditorTypes.showWarning(
+            m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_CAPTION_0),
+            m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_DESCRIPTION_0));
         return false;
 
     }
@@ -252,8 +218,45 @@ I_ItemDeletionListener {
             default:
                 throw new IllegalArgumentException();
         }
-        showWarning(captionKey, descriptionKey);
+        CmsMessageBundleEditorTypes.showWarning(m_messages.key(captionKey), m_messages.key(descriptionKey));
         event.getSource().focus();
+    }
+
+    /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_OptionListener#handleLanguageChange(java.util.Locale)
+     */
+    public void handleLanguageChange(final Locale locale) {
+
+        if (!locale.equals(m_model.getLocale())) {
+            Object sortProperty = m_table.getSortContainerPropertyId();
+            boolean isAcending = m_table.isSortAscending();
+            Map<Object, Object> filters = getFilters();
+            m_table.clearFilters();
+            if (m_model.setLocale(locale)) {
+                m_options.setEditedFilePath(m_model.getEditedFilePath());
+                m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
+            } else {
+                String caption = m_messages.key(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_LOCALE_SWITCHING_FAILED_CAPTION_0);
+                String description = m_messages.key(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_LOCALE_SWITCHING_FAILED_DESCRIPTION_0);
+                Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+                warning.setDelayMsec(-1);
+                warning.show(UI.getCurrent().getPage());
+                m_options.setLanguage(m_model.getLocale());
+            }
+            setFilters(filters);
+            m_table.select(m_table.getCurrentPageFirstItemId());
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_OptionListener#handleModeChange(org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode)
+     */
+    public void handleModeChange(final EditMode mode) {
+
+        setEditMode(mode);
+
     }
 
     /**
@@ -269,10 +272,16 @@ I_ItemDeletionListener {
 
         try {
             m_model = new CmsMessageBundleEditorModel(m_cms, m_resource);
+            m_options = new CmsMessageBundleEditorOptions(
+                m_model.getLocales(),
+                m_model.getLocale(),
+                m_model.getEditMode(),
+                this);
+            m_options.setEditedFilePath(m_model.getEditedFilePath());
             m_configurableMessages = m_model.getConfigurableMessages(m_messages, UI.getCurrent().getLocale());
 
             fillToolBar(context);
-            fillAppInfo(context);
+            context.showInfoArea(false);
 
             Component main = createMainComponent();
 
@@ -291,9 +300,9 @@ I_ItemDeletionListener {
             adjustFocus();
 
             if (m_model.getSwitchedLocaleOnOpening()) {
-                showWarning(
-                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0,
-                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_DESCRIPTION_0);
+                CmsMessageBundleEditorTypes.showWarning(
+                    m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0),
+                    m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_DESCRIPTION_0));
             }
 
         } catch (IOException | CmsException e) {
@@ -361,26 +370,6 @@ I_ItemDeletionListener {
     }
 
     /**
-     * Refreshes the "Add entry" table.
-     */
-    void refreshAddEntryTable() {
-
-        List<Object> visibleColumns = Arrays.asList(m_table.getVisibleColumns());
-        if (visibleColumns.contains(TableProperty.OPTIONS)) {
-            m_addEntry.setVisible(true);
-            for (Object c : m_addEntry.getVisibleColumns()) {
-                if (visibleColumns.contains(c) && !m_table.isColumnCollapsed(c)) {
-                    m_addEntry.setColumnCollapsed(c, false);
-                } else {
-                    m_addEntry.setColumnCollapsed(c, true);
-                }
-            }
-        } else {
-            m_addEntry.setVisible(false);
-        }
-    }
-
-    /**
      * Save the changes.
      */
     void saveAction() {
@@ -416,7 +405,8 @@ I_ItemDeletionListener {
                 m_table.setTableFieldFactory(m_fieldFactories.get(newMode));
                 m_table.setCellStyleGenerator(m_styleGenerators.get(newMode));
                 adjustOptionsColumn(oldMode, newMode);
-                refreshAddEntryTable();
+                m_options.updateShownOptions(m_model.hasMasterMode(), m_model.canAddKeys());
+                m_options.setEditMode(newMode);
                 success = true;
             } else {
                 Notification.show(m_messages.key(Messages.ERR_MODE_CHANGE_NOT_POSSIBLE_0), Type.ERROR_MESSAGE);
@@ -449,10 +439,8 @@ I_ItemDeletionListener {
      */
     private void adjustFocus() {
 
-        if (m_addEntry.isVisible()) {
-            ((AddEntryTableFieldFactory)m_addEntry.getTableFieldFactory()).getValueFields().get(
-                TableProperty.KEY).focus();
-        } else {
+        // Try to put the focus on the "Add key" input field first
+        if (!m_options.focusAddKey()) {
             // NOTE: A collection is returned, but actually it's a linked list.
             // It's a hack, but actually I don't know how to do better here.
             List<Integer> visibleItemIds = (List<Integer>)m_table.getVisibleItemIds();
@@ -563,7 +551,8 @@ I_ItemDeletionListener {
                         setEditMode(EditMode.MASTER);
                         m_table.setColumnCollapsingAllowed(true);
                         adjustVisibleColumns();
-                        fillAppInfo(m_context);
+                        m_options.updateShownOptions(m_model.hasMasterMode(), m_model.canAddKeys());
+                        m_options.setEditMode(m_model.getEditMode());
                     } catch (IOException | CmsException e) {
                         // Can never appear here, since container is created by addDescriptor already.
                         LOG.error(e.getLocalizedMessage(), e);
@@ -572,82 +561,6 @@ I_ItemDeletionListener {
             }
         });
         return addDescriptorButton;
-    }
-
-    /**
-     * Creates the table with the "Add entry" row.
-     * @return the table with the "Add entry" row.
-     */
-    private Table createAddEntryTable() {
-
-        final Table table = new Table();
-        table.setWidth("100%");
-
-        table.setEditable(true);
-        table.setSelectable(true);
-        table.setNullSelectionAllowed(false);
-        table.setMultiSelect(false);
-        table.setImmediate(true);
-        table.setColumnCollapsingAllowed(true);
-        table.setColumnReorderingAllowed(false);
-
-        table.setColumnCollapsible(TableProperty.KEY, true);
-        table.setColumnCollapsible(TableProperty.DESCRIPTION, true);
-        table.setColumnCollapsible(TableProperty.DEFAULT, true);
-        table.setColumnCollapsible(TableProperty.TRANSLATION, true);
-        table.setColumnCollapsible(TableProperty.OPTIONS, true);
-
-        table.setPageLength(1);
-        table.setCacheRate(1);
-
-        table.addContainerProperty(TableProperty.KEY, String.class, "");
-        table.addContainerProperty(TableProperty.DESCRIPTION, String.class, "");
-        table.addContainerProperty(TableProperty.DEFAULT, String.class, "");
-        table.addContainerProperty(TableProperty.TRANSLATION, String.class, "");
-        AddOptionColumnGenerator addOptionsColumn = generateAddOptionColumn();
-        table.addGeneratedColumn(TableProperty.OPTIONS, addOptionsColumn);
-
-        table.setColumnWidth(TableProperty.OPTIONS, 42);
-        table.setColumnExpandRatio(TableProperty.KEY, 1f);
-        table.setColumnExpandRatio(TableProperty.DESCRIPTION, 1f);
-        table.setColumnExpandRatio(TableProperty.DEFAULT, 1f);
-        table.setColumnExpandRatio(TableProperty.TRANSLATION, 1f);
-
-        table.setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
-
-        List<TableProperty> editableColumns = Arrays.asList(
-            new TableProperty[] {
-                TableProperty.KEY,
-                TableProperty.DESCRIPTION,
-                TableProperty.DEFAULT,
-                TableProperty.TRANSLATION});
-        final AddEntryTableFieldFactory fieldFactory = new AddEntryTableFieldFactory(
-            table,
-            editableColumns,
-            m_configurableMessages);
-        table.setTableFieldFactory(fieldFactory);
-
-        table.setCellStyleGenerator(new AddEntryTableCellStyleGenerator(editableColumns));
-
-        table.addItemClickListener(new ItemClickListener() {
-
-            private static final long serialVersionUID = 5418404788437252894L;
-
-            public void itemClick(ItemClickEvent event) {
-
-                Object propertyId = event.getPropertyId();
-                AbstractTextField newTF = ((AddEntryTableFieldFactory)table.getTableFieldFactory()).getValueFields().get(
-                    propertyId);
-                if (newTF != null) {
-                    newTF.focus();
-                }
-            }
-        });
-
-        table.addItem(ADDROW);
-        table.select(ADDROW);
-
-        return table;
     }
 
     /**
@@ -672,92 +585,6 @@ I_ItemDeletionListener {
     }
 
     /**
-     * Create the display for the file path.
-     * @return the display for the file path.
-     */
-    private Component createFilePathDisplay() {
-
-        FormLayout fileNameDisplay = new FormLayout();
-        fileNameDisplay.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        fileNameDisplay.setSizeFull();
-        m_fileName = new TextField();
-        m_fileName.setWidth("100%");
-        m_fileName.setValue(m_model.getEditedFilePath());
-        m_fileName.setEnabled(true);
-        m_fileName.setReadOnly(true);
-        m_fileName.setCaption(m_messages.key(Messages.GUI_FILENAME_LABEL_0));
-        fileNameDisplay.addComponent(m_fileName);
-        fileNameDisplay.setSpacing(true);
-        return fileNameDisplay;
-    }
-
-    /**
-     * Creates the language switcher UI Component.
-     * @return the language switcher.
-     */
-    @SuppressWarnings("serial")
-    private Component createLanguageSwitcher() {
-
-        FormLayout languages = new FormLayout();
-        languages.setHeight("100%");
-        languages.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        ComboBox languageSelect = new ComboBox();
-        languageSelect.setCaption(m_messages.key(Messages.GUI_LANGUAGE_SWITCHER_LABEL_0));
-        languageSelect.setNullSelectionAllowed(false);
-
-        // set Locales
-        for (Locale locale : m_model.getLocales()) {
-            languageSelect.addItem(locale);
-            String caption = locale.getDisplayName(UI.getCurrent().getLocale());
-            if (CmsLocaleManager.getDefaultLocale().equals(locale)) {
-                caption += " ("
-                    + Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_DEFAULT_LOCALE_0)
-                    + ")";
-            }
-            languageSelect.setItemCaption(locale, caption);
-        }
-        languageSelect.setValue(m_model.getLocale());
-        languageSelect.setNewItemsAllowed(false);
-        languageSelect.setTextInputAllowed(false);
-
-        if (m_model.getLocales().size() > 1) {
-            languageSelect.addValueChangeListener(new ValueChangeListener() {
-
-                @SuppressWarnings("synthetic-access")
-                public void valueChange(ValueChangeEvent event) {
-
-                    Object sortProperty = m_table.getSortContainerPropertyId();
-                    boolean isAcending = m_table.isSortAscending();
-                    Map<Object, Object> filters = getFilters();
-                    m_table.clearFilters();
-                    if (m_model.setLocale((Locale)event.getProperty().getValue())) {
-                        m_fileName.setReadOnly(false);
-                        m_fileName.setValue(m_model.getEditedFilePath());
-                        m_fileName.setReadOnly(true);
-                        m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
-                    } else {
-                        String caption = m_messages.key(
-                            Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_LOCALE_SWITCHING_FAILED_CAPTION_0);
-                        String description = m_messages.key(
-                            Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_LOCALE_SWITCHING_FAILED_DESCRIPTION_0);
-                        Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
-                        warning.setDelayMsec(-1);
-                        warning.show(UI.getCurrent().getPage());
-                        event.getProperty().setValue(m_model.getLocale());
-                    }
-                    setFilters(filters);
-                    m_table.select(m_table.getCurrentPageFirstItemId());
-                }
-            });
-
-        } else {
-            languageSelect.setEnabled(false);
-        }
-        languages.addComponent(languageSelect);
-        return languages;
-    }
-
-    /**
      * Creates the main component of the editor with all sub-components.
      * @return the completely filled main component of the editor.
      * @throws IOException thrown if setting the table's content data source fails.
@@ -769,17 +596,16 @@ I_ItemDeletionListener {
         mainComponent.setSizeFull();
         mainComponent.addStyleName("o-message-bundle-editor");
         m_table = createTable();
-        m_addEntry = createAddEntryTable();
         Panel navigator = new Panel();
         navigator.setSizeFull();
         navigator.setContent(m_table);
         navigator.addActionHandler(new CmsMessageBundleEditorTypes.TableKeyboardHandler(m_table));
         navigator.addStyleName("v-panel-borderless");
 
-        mainComponent.addComponent(m_addEntry);
+        mainComponent.addComponent(m_options.getOptionsComponent());
         mainComponent.addComponent(navigator);
         mainComponent.setExpandRatio(navigator, 1f);
-        refreshAddEntryTable();
+        m_options.updateShownOptions(m_model.hasMasterMode(), m_model.canAddKeys());
         return mainComponent;
     }
 
@@ -827,9 +653,9 @@ I_ItemDeletionListener {
      * @throws IOException thrown if reading the properties file fails.
      * @throws CmsException thrown if some read action for getting the table contentFilter fails.
      */
-    private ExtendedFilterTable createTable() throws IOException, CmsException {
+    private FilterTable createTable() throws IOException, CmsException {
 
-        final ExtendedFilterTable table = new ExtendedFilterTable();
+        final FilterTable table = new FilterTable();
         table.setSizeFull();
 
         table.setContainerDataSource(m_model.getContainerForCurrentLocale());
@@ -873,7 +699,7 @@ I_ItemDeletionListener {
             table.setFilterFieldVisible(TableProperty.OPTIONS, false);
             table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
         }
-        table.setColumnWidth(TableProperty.OPTIONS, 42);
+        table.setColumnWidth(TableProperty.OPTIONS, CmsMessageBundleEditorTypes.OPTION_COLUMN_WIDTH);
         table.setColumnExpandRatio(TableProperty.KEY, 1f);
         table.setColumnExpandRatio(TableProperty.DESCRIPTION, 1f);
         table.setColumnExpandRatio(TableProperty.DEFAULT, 1f);
@@ -901,106 +727,9 @@ I_ItemDeletionListener {
 
             }
         });
-        table.addColumnCollapseListener(new Table.ColumnCollapseListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void columnCollapseStateChange(ColumnCollapseEvent event) {
-
-                refreshAddEntryTable();
-
-            }
-        });
         table.setNullSelectionAllowed(false);
         table.select(table.getCurrentPageFirstItemId());
         return table;
-    }
-
-    /** Creates the view switcher UI component.
-     * @return the view switcher.
-     */
-    @SuppressWarnings("serial")
-    private Component createViewSwitcher() {
-
-        FormLayout views = new FormLayout();
-        views.setHeight("100%");
-        views.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-
-        final ComboBox viewSelect = new ComboBox();
-        viewSelect.setCaption(m_messages.key(Messages.GUI_VIEW_SWITCHER_LABEL_0));
-
-        // add Modes
-        viewSelect.addItem(CmsMessageBundleEditorTypes.EditMode.DEFAULT);
-        viewSelect.setItemCaption(
-            CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-            m_messages.key(Messages.GUI_VIEW_SWITCHER_EDITMODE_DEFAULT_0));
-        viewSelect.addItem(CmsMessageBundleEditorTypes.EditMode.MASTER);
-        viewSelect.setItemCaption(
-            CmsMessageBundleEditorTypes.EditMode.MASTER,
-            m_messages.key(Messages.GUI_VIEW_SWITCHER_EDITMODE_MASTER_0));
-
-        // set current mode as selected
-        viewSelect.setValue(m_model.getEditMode());
-
-        viewSelect.setNewItemsAllowed(false);
-        viewSelect.setTextInputAllowed(false);
-        viewSelect.setNullSelectionAllowed(false);
-
-        viewSelect.addValueChangeListener(new ValueChangeListener() {
-
-            public void valueChange(ValueChangeEvent event) {
-
-                Object sortProperty = m_table.getSortContainerPropertyId();
-                boolean isAcending = m_table.isSortAscending();
-                Map<Object, Object> filters = getFilters();
-                if (!setEditMode((CmsMessageBundleEditorTypes.EditMode)event.getProperty().getValue())) {
-                    viewSelect.setValue(m_model.getEditMode());
-                } else {
-                    m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
-                    m_table.select(m_table.getCurrentPageFirstItemId());
-                    setFilters(filters);
-                }
-            }
-        });
-        views.addComponent(viewSelect);
-        return views;
-    }
-
-    /**
-     * Adds the components to the app info bar.
-     * @param context the app UI context.
-     */
-    private void fillAppInfo(I_CmsAppUIContext context) {
-
-        HorizontalLayout appInfo = new HorizontalLayout();
-        appInfo.setSizeFull();
-        appInfo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        appInfo.setSpacing(true);
-
-        HorizontalLayout left = new HorizontalLayout();
-        left.setHeight("100%");
-        left.setSpacing(true);
-
-        HorizontalLayout rightAppInfo = new HorizontalLayout();
-        rightAppInfo.setSizeFull();
-        rightAppInfo.setSpacing(true);
-
-        appInfo.addComponent(left);
-        appInfo.addComponent(rightAppInfo);
-        appInfo.setExpandRatio(rightAppInfo, 1f);
-
-        Component languages = createLanguageSwitcher();
-        left.addComponent(languages);
-        if (m_model.hasMasterMode()) {
-            Component viewSwitcher = createViewSwitcher();
-            left.addComponent(viewSwitcher);
-        }
-
-        Component fileNameDisplay = createFilePathDisplay();
-        rightAppInfo.addComponent(fileNameDisplay);
-        rightAppInfo.setExpandRatio(fileNameDisplay, 2f);
-
-        context.setAppInfo(appInfo);
     }
 
     /** Adds Editor specific UI components to the toolbar.
@@ -1025,14 +754,6 @@ I_ItemDeletionListener {
             addDescriptorBtn.setEnabled(false);
         }
         context.addToolbarButton(addDescriptorBtn);
-    }
-
-    /** Generates the options column for the table.
-     * @return the options column
-     */
-    private CmsMessageBundleEditorTypes.AddOptionColumnGenerator generateAddOptionColumn() {
-
-        return new CmsMessageBundleEditorTypes.AddOptionColumnGenerator(this);
     }
 
     /** Generates the options column for the table.
@@ -1098,18 +819,4 @@ I_ItemDeletionListener {
         return false;
     }
 
-    /**
-     * Displays a localized warning.
-     * @param captionKey the key for the caption of the warning.
-     * @param descriptionKey the key for the description of the warning.
-     */
-    private void showWarning(final String captionKey, final String descriptionKey) {
-
-        String caption = m_messages.key(captionKey);
-        String description = m_messages.key(descriptionKey);
-        Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
-        warning.setDelayMsec(-1);
-        warning.show(UI.getCurrent().getPage());
-
-    }
 }

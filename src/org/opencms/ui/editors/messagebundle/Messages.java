@@ -60,9 +60,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0 = "GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0";
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ADD_ROW_0 = "GUI_ADD_ROW_0";
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ADD_ROW_BELOW_0 = "GUI_ADD_ROW_BELOW_0";
+    public static final String GUI_ADD_KEY_0 = "GUI_ADD_KEY_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REMOVE_ROW_0 = "GUI_REMOVE_ROW_0";
     /** Message constant for key in the resource bundle. */
@@ -122,7 +120,15 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_CAPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_CAPTION_0";
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_DESCRIPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_DESCRIPTION_0";
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_DESCRIPTION_1 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADEY_EXISTS_DESCRIPTION_1";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CAPTION_ADD_KEY_0 = "GUI_CAPTION_ADD_KEY_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROMPT_ADD_KEY_0 = "GUI_INPUT_PROMPT_ADD_KEY_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_SUCCESSFULLY_ADDED_1 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_SUCCESSFULLY_ADDED_1";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EMPTY_KEY_SUCCESSFULLY_ADDED_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EMPTY_KEY_SUCCESSFULLY_ADDED_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

@@ -372,6 +372,15 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Returns a flag, indicating if keys can be added in the current edit mode.
+     * @return a flag, indicating if keys can be added in the current edit mode.
+     */
+    public boolean canAddKeys() {
+
+        return !hasDescriptor() || getEditMode().equals(EditMode.MASTER);
+    }
+
+    /**
      * When the descriptor was added while editing, but the change was not saved, it has to be removed
      * when the editor is closed.
      * @throws CmsException thrown when deleting the descriptor resource fails

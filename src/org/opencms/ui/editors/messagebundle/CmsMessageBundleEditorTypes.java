@@ -38,7 +38,6 @@ import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.extensions.CmsAutoGrowingTextArea;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -65,7 +64,6 @@ import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.shared.ui.table.TableConstants;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -77,8 +75,8 @@ import com.vaadin.ui.CustomTable.ColumnGenerator;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnCollapseEvent;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -155,42 +153,6 @@ public final class CmsMessageBundleEditorTypes {
 
     }
 
-    /**
-     * Extension of {@link FilterTable} to allow to act on column collapsing (as is possible for normal {@link Table}.
-     */
-    public static class ExtendedFilterTable extends FilterTable {
-
-        /** Serialization id. */
-        private static final long serialVersionUID = 5242846432188542009L;
-
-        /**
-         * Register a listener for {@link ColumnCollapseEvent}.
-         *
-         * @param listener the listener to register.
-         */
-        public void addColumnCollapseListener(Table.ColumnCollapseListener listener) {
-
-            addListener(
-                TableConstants.COLUMN_COLLAPSE_EVENT_ID,
-                ColumnCollapseEvent.class,
-                listener,
-                ColumnCollapseEvent.METHOD);
-        }
-
-        /**
-         * Adds ColumnCollapseEvent fired.
-         *
-         * @see org.tepi.filtertable.FilterTable#setColumnCollapsed(java.lang.Object, boolean)
-         */
-        @Override
-        public void setColumnCollapsed(final Object propertyId, final boolean collapsed) throws IllegalStateException {
-
-            super.setColumnCollapsed(propertyId, collapsed);
-            fireEvent(new ColumnCollapseEvent(this, propertyId));
-        }
-
-    }
-
     /** The propertyIds of the table columns. */
     public enum TableProperty {
         /** Table column with the message key. */
@@ -203,181 +165,6 @@ public final class CmsMessageBundleEditorTypes {
         TRANSLATION,
         /** Table column with the options (add, delete). */
         OPTIONS
-    }
-
-    /** Custom cell style generator to allow different style for editable columns. */
-    @SuppressWarnings("serial")
-    static class AddEntryTableCellStyleGenerator implements Table.CellStyleGenerator {
-
-        /** The editable columns. */
-        private List<TableProperty> m_editableColums;
-
-        /**
-         * Default constructor, taking the list of editable columns.
-         *
-         * @param editableColumns the list of editable columns.
-         */
-        public AddEntryTableCellStyleGenerator(List<TableProperty> editableColumns) {
-            m_editableColums = editableColumns;
-            if (null == m_editableColums) {
-                m_editableColums = new ArrayList<TableProperty>();
-            }
-        }
-
-        /**
-         * @see com.vaadin.ui.CustomTable.CellStyleGenerator#getStyle(com.vaadin.ui.CustomTable, java.lang.Object, java.lang.Object)
-         */
-        public String getStyle(Table source, Object itemId, Object propertyId) {
-
-            String result = TableProperty.KEY.equals(propertyId) ? "key-" : "";
-            result += m_editableColums.contains(propertyId) ? "editable" : "fix";
-            return result;
-        }
-
-    }
-
-    /** TableFieldFactory for making only some columns editable and to support enhanced navigation. */
-    @SuppressWarnings("serial")
-    static class AddEntryTableFieldFactory extends DefaultFieldFactory {
-
-        /** Mapping from column -> row -> AbstractTextField. */
-        private final Map<TableProperty, AbstractTextField> m_valueFields;
-        /** The editable columns. */
-        private final List<TableProperty> m_editableColumns;
-        /** Reference to the table, the factory is used for. */
-        final Table m_table;
-
-        /** The configurable messages to read the column headers from. */
-        private final ConfigurableMessages m_configurableMessages;
-
-        /**
-         * Default constructor.
-         * @param table The table, the factory is used for.
-         * @param editableColumns the property names of the editable columns of the table.
-         * @param configurableMessages the configurable messages to read the column headers from.
-         */
-        public AddEntryTableFieldFactory(
-            Table table,
-            List<TableProperty> editableColumns,
-            ConfigurableMessages configurableMessages) {
-            m_table = table;
-            m_valueFields = new HashMap<TableProperty, AbstractTextField>();
-            m_editableColumns = editableColumns;
-            m_configurableMessages = configurableMessages;
-        }
-
-        /**
-         * @see com.vaadin.ui.TableFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
-         */
-        @Override
-        public Field<?> createField(
-            final Container container,
-            final Object itemId,
-            final Object propertyId,
-            Component uiContext) {
-
-            TableProperty pid = (TableProperty)propertyId;
-
-            for (int i = 1; i <= m_editableColumns.size(); i++) {
-                if (pid.equals(m_editableColumns.get(i - 1))) {
-
-                    AbstractTextField tf;
-                    if (pid.equals(TableProperty.KEY)) {
-                        tf = new TextField();
-                        tf.addValidator(new KeyValidator());
-                    } else {
-                        TextArea atf = new TextArea();
-                        atf.setRows(1);
-                        CmsAutoGrowingTextArea.addTo(atf, 20);
-                        tf = atf;
-                    }
-                    tf.setWidth("100%");
-                    tf.setResponsive(true);
-
-                    tf.setInputPrompt(m_configurableMessages.getColumnHeader(pid));
-                    m_valueFields.put(pid, tf);
-
-                    //TODO: remove?
-                    tf.addFocusListener(new FocusListener() {
-
-                        public void focus(FocusEvent event) {
-
-                            if (!m_table.isSelected(itemId)) {
-                                m_table.select(itemId);
-                            }
-                        }
-
-                    });
-                    return tf;
-                }
-            }
-            return null;
-
-        }
-
-        /**
-         * Returns the editable columns.
-         * @return the editable columns.
-         */
-        public List<TableProperty> getEditableColumns() {
-
-            return m_editableColumns;
-        }
-
-        /**
-         * Returns the mapping from the position in the table to the TextField.
-         * @return the mapping from the position in the table to the TextField.
-         */
-        public Map<TableProperty, AbstractTextField> getValueFields() {
-
-            return m_valueFields;
-        }
-    }
-
-    /**
-     * A column generater to add the row with the "+" button in the "Add entry" table.
-     * It can handle only the table with the single row.
-     * */
-    static class AddOptionColumnGenerator implements com.vaadin.ui.Table.ColumnGenerator {
-
-        /** Serialization id. */
-        private static final long serialVersionUID = 1473149981304927914L;
-
-        /** The handler called when the "+"-button is clicked. */
-        I_AddOptionClickHandler m_handler;
-
-        /**
-         * Default constructor.
-         * @param handler the handler to call when the "+" button is clicked.
-         */
-        public AddOptionColumnGenerator(I_AddOptionClickHandler handler) {
-            m_handler = handler;
-        }
-
-        /**
-         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
-         */
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            CmsMessages messages = Messages.get().getBundle(UI.getCurrent().getLocale());
-            Button add = new Button();
-            add.addStyleName("icon-only");
-            add.addStyleName("borderless");
-            add.setDescription(messages.key(Messages.GUI_REMOVE_ROW_0));
-            add.setIcon(FontOpenCms.CIRCLE_PLUS, messages.key(Messages.GUI_ADD_ROW_0));
-            add.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    m_handler.handleAddOptionClick();
-                }
-            });
-
-            return add;
-        }
-
     }
 
     /**
@@ -491,17 +278,6 @@ public final class CmsMessageBundleEditorTypes {
         }
     }
 
-    /**
-     * Interface to handle option clicks.
-     */
-    interface I_AddOptionClickHandler {
-
-        /**
-         * Method called, when the option is clicked.
-         */
-        void handleAddOptionClick();
-    }
-
     /** Interface for a item deletion listener. */
     static interface I_ItemDeletionListener {
 
@@ -521,6 +297,30 @@ public final class CmsMessageBundleEditorTypes {
          * @param event the key change event.
          */
         void handleKeyChange(KeyChangeEvent event);
+    }
+
+    /** Interface for an Listener for changes in the options. */
+    static interface I_OptionListener {
+
+        /**
+         * Handles adding a key.
+         * @param key the key to add.
+         * @return flag, indicating if the key was added. If not, it was already present.
+         */
+        boolean handleAddKey(String key);
+
+        /**
+         * Handles a language change.
+         * @param language the newly selected language.
+         */
+        void handleLanguageChange(Locale language);
+
+        /**
+         * Handles the change of the edit mode.
+         * @param mode the newly selected edit mode.
+         */
+        void handleModeChange(EditMode mode);
+
     }
 
     /** Item deletion event. */
@@ -559,7 +359,7 @@ public final class CmsMessageBundleEditorTypes {
         /** The key after it was edited. */
         private String m_newKey;
 
-        /** Default constructor
+        /** Default constructor.
          * @param source the field via which the key was edited.
          * @param itemId the item id of the table row in which the key was edited.
          * @param oldKey the key before it was edited.
@@ -1132,8 +932,17 @@ public final class CmsMessageBundleEditorTypes {
         }
     }
 
+    /** Messages used by the GUI. */
+    public static final CmsMessages MESSAGES = Messages.get().getBundle(UI.getCurrent().getLocale());
+
     /** The log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorTypes.class);
+
+    /** The width of the options column in pixel. */
+    public static final int OPTION_COLUMN_WIDTH = 42;
+
+    /** The width of the options column in pixel. */
+    public static final String OPTION_COLUMN_WIDTH_PX = OPTION_COLUMN_WIDTH + "px";
 
     /** Hide default constructor. */
     private CmsMessageBundleEditorTypes() {
@@ -1177,5 +986,18 @@ public final class CmsMessageBundleEditorTypes {
                 LOG.warn(Messages.get().getBundle().key(Messages.ERR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1, files));
                 return results.get(0);
         }
+    }
+
+    /**
+     * Displays a localized warning.
+     * @param caption the caption of the warning.
+     * @param description the description of the warning.
+     */
+    static void showWarning(final String caption, final String description) {
+
+        Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+        warning.setDelayMsec(-1);
+        warning.show(UI.getCurrent().getPage());
+
     }
 }
