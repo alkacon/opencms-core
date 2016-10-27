@@ -103,7 +103,9 @@ public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefau
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if ((resources.size() == 1) && !CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))) {
+        if ((resources.size() == 1)
+            && resources.get(0).isFile()
+            && !CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))) {
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
