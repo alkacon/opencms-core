@@ -35,6 +35,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsHistoryResourceBean;
 import org.opencms.i18n.CmsLocaleManager;
@@ -82,6 +83,7 @@ public class CmsTextDiff implements I_CmsDiffProvider {
         if ((type instanceof CmsResourceTypeXmlContent)
             || (type instanceof CmsResourceTypePlain)
             || (type instanceof CmsResourceTypeJsp)
+            || (type instanceof CmsResourceTypeXmlPage)
             || (type instanceof CmsResourceTypePointer)
             || (type instanceof CmsResourceTypeBinary)) {
             CmsResource resource2 = A_CmsAttributeDiff.readResource(cms, v2);
