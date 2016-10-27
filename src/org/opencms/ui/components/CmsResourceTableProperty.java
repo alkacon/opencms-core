@@ -232,6 +232,16 @@ public class CmsResourceTableProperty implements Serializable {
         0);
 
     /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_IN_NAVIGATION = new CmsResourceTableProperty(
+        "PROPERTY_IN_NAVIGATION",
+        Boolean.class,
+        Boolean.FALSE,
+        null,
+        true,
+        0,
+        0);
+
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_PERMISSIONS = new CmsResourceTableProperty(
         "PROPERTY_PERMISSIONS",
         String.class,

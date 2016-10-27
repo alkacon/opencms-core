@@ -34,6 +34,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_E
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IN_NAVIGATION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
@@ -51,6 +52,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_C
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_LOCKED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_MODIFIED;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -72,8 +74,10 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -328,6 +332,16 @@ public class CmsResourceTable extends CustomComponent {
             LOG.warn("CmsObject was 'null', using thread local CmsObject");
         }
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        Map<String, CmsProperty> resourceProps = null;
+        try {
+            List<CmsProperty> props = cms.readPropertyObjects(resource, false);
+            resourceProps = new HashMap<String, CmsProperty>();
+            for (CmsProperty prop : props) {
+                resourceProps.put(prop.getName(), prop);
+            }
+        } catch (CmsException e1) {
+            LOG.debug("Unable to read properties for resource '" + resource.getRootPath() + "'.", e1);
+        }
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         if (resourceItem.getItemProperty(PROPERTY_TYPE_ICON) != null) {
             resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
@@ -370,42 +384,56 @@ public class CmsResourceTable extends CustomComponent {
             resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
         }
 
-        if (resourceItem.getItemProperty(PROPERTY_TITLE) != null) {
-            resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
+        if ((resourceItem.getItemProperty(PROPERTY_TITLE) != null) && (resourceProps != null)) {
+            resourceItem.getItemProperty(PROPERTY_TITLE).setValue(
+                resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_TITLE)
+                ? resourceProps.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue()
+                : "");
+        }
+        boolean inNavigation = false;
+        if ((resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT) != null) && (resourceProps != null)) {
+            resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(
+                resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)
+                ? resourceProps.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()
+                : "");
+            inNavigation = resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT);
         }
 
-        if (resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT) != null) {
-            resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
-        }
-
-        if (resourceItem.getItemProperty(PROPERTY_NAVIGATION_POSITION) != null) {
+        if ((resourceItem.getItemProperty(PROPERTY_NAVIGATION_POSITION) != null) && (resourceProps != null)) {
             try {
-                CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_NAVPOS, false);
-                if (!prop.isNullProperty()) {
-                    Float navPos = Float.valueOf(prop.getValue());
-                    resourceItem.getItemProperty(PROPERTY_NAVIGATION_POSITION).setValue(navPos);
-                }
+                Float navPos = resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVPOS)
+                ? Float.valueOf(resourceProps.get(CmsPropertyDefinition.PROPERTY_NAVPOS).getValue())
+                : (inNavigation ? Float.valueOf(Float.MAX_VALUE) : null);
+                resourceItem.getItemProperty(PROPERTY_NAVIGATION_POSITION).setValue(navPos);
+                inNavigation = navPos != null;
             } catch (Exception e) {
                 LOG.debug("Error evaluating navPos property", e);
             }
         }
 
-        if (resourceItem.getItemProperty(PROPERTY_COPYRIGHT) != null) {
-            try {
-                CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_COPYRIGHT, false);
-                resourceItem.getItemProperty(PROPERTY_COPYRIGHT).setValue(prop.getValue(""));
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
+        if (resourceItem.getItemProperty(PROPERTY_IN_NAVIGATION) != null) {
+            if (inNavigation
+                && (resourceProps != null)
+                && resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVINFO)
+                && CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY.equals(
+                    resourceProps.get(CmsPropertyDefinition.PROPERTY_NAVINFO).getValue())) {
+                inNavigation = false;
             }
+            resourceItem.getItemProperty(PROPERTY_IN_NAVIGATION).setValue(Boolean.valueOf(inNavigation));
         }
 
-        if (resourceItem.getItemProperty(PROPERTY_CACHE) != null) {
-            try {
-                CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CACHE, false);
-                resourceItem.getItemProperty(PROPERTY_CACHE).setValue(prop.getValue(""));
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
+        if ((resourceItem.getItemProperty(PROPERTY_COPYRIGHT) != null) && (resourceProps != null)) {
+            resourceItem.getItemProperty(PROPERTY_COPYRIGHT).setValue(
+                resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_COPYRIGHT)
+                ? resourceProps.get(CmsPropertyDefinition.PROPERTY_COPYRIGHT).getValue()
+                : "");
+        }
+
+        if ((resourceItem.getItemProperty(PROPERTY_CACHE) != null) && (resourceProps != null)) {
+            resourceItem.getItemProperty(PROPERTY_CACHE).setValue(
+                resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_CACHE)
+                ? resourceProps.get(CmsPropertyDefinition.PROPERTY_CACHE).getValue()
+                : "");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE) != null) {

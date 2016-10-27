@@ -127,8 +127,12 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String HIDDEN_TOOLBAR = "o-hidden-toolbar";
+
     /** CSS style name. */
     public static final String HOVER_COLUMN = "o-hover-column";
+
+    /** CSS style name. */
+    public static final String IN_NAVIGATION = "o-in-navigation";
 
     /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";

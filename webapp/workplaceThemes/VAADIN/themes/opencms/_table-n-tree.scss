@@ -136,21 +136,26 @@
     background-color: $o-medium-background-color;
   }
   
-  .v-table .o-hover-column:hover div{
-  	color: #ffffff;
-  	position: relative;
-  	z-index: 1;
-  	&:before{
-  		content:"";
-  		background: $v-selection-color;
-  		position: absolute;
-  		top:-5px;
-  		left:4px;
-  		right:4px;
-  		bottom: -5px;
-  		z-index: -1;
-  		border-radius: $v-border-radius;
-  	}
+  .v-table .o-hover-column{
+  	&:hover div{
+	  	color: #ffffff;
+	  	position: relative;
+	  	z-index: 1;
+	  	&:before{
+	  		content:"";
+	  		background: $v-selection-color;
+	  		position: absolute;
+	  		top:-5px;
+	  		left:4px;
+	  		right:4px;
+	  		bottom: -5px;
+	  		z-index: -1;
+	  		border-radius: $v-border-radius;
+	  	}
+	}
+	&.o-in-navigation div{
+		font-weight: 800;
+	}
   }
   .v-table .v-selected .o-hover-column:hover div:before{
   	background: lighten($v-selection-color,10%);

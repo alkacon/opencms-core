@@ -36,7 +36,7 @@
 			clear: left;
 		  	@include valo-selection-item-style;
 		  	&.bold{
-		  		font-weight: bold;
+		  		font-weight: 800;
 		  	}
 		}
 		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu, .v-menubar-menuitem {

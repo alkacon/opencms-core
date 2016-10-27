@@ -34,6 +34,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_E
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IN_NAVIGATION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
@@ -321,6 +322,7 @@ public class CmsFileTable extends CmsResourceTable {
                 column(PROPERTY_TITLE);
                 column(PROPERTY_NAVIGATION_TEXT, COLLAPSED);
                 column(PROPERTY_NAVIGATION_POSITION, INVISIBLE);
+                column(PROPERTY_IN_NAVIGATION, INVISIBLE);
                 column(PROPERTY_COPYRIGHT, COLLAPSED);
                 column(PROPERTY_CACHE, COLLAPSED);
                 column(PROPERTY_RESOURCE_TYPE);
@@ -387,10 +389,17 @@ public class CmsFileTable extends CmsResourceTable {
 
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
-                return getStateStyle(m_container.getItem(itemId))
-                    + (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME == propertyId
-                    ? " " + OpenCmsTheme.HOVER_COLUMN
-                    : "");
+                Item item = m_container.getItem(itemId);
+                String style = getStateStyle(item);
+                if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME == propertyId) {
+                    style += " " + OpenCmsTheme.HOVER_COLUMN;
+                    if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
+                        && ((Boolean)item.getItemProperty(
+                            CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
+                        style += " " + OpenCmsTheme.IN_NAVIGATION;
+                    }
+                }
+                return style;
             }
         });
 
