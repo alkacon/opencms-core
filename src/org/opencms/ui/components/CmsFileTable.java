@@ -761,14 +761,7 @@ public class CmsFileTable extends CmsResourceTable {
                     || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
                     openContextMenu(event);
                 } else {
-                    I_CmsDialogContext context = m_contextProvider.getDialogContext();
-                    if ((m_currentResources.size() == 1)
-                        && m_currentResources.get(0).getStructureId().equals(itemId)
-                        && (context instanceof I_CmsEditPropertyContext)
-                        && ((I_CmsEditPropertyContext)context).isPropertyEditable(event.getPropertyId())) {
-
-                        ((I_CmsEditPropertyContext)context).editProperty(event.getPropertyId());
-                    } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
+                    if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
                         Boolean isFolder = (Boolean)event.getItem().getItemProperty(
                             CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                         if ((isFolder != null) && isFolder.booleanValue()) {
@@ -781,42 +774,26 @@ public class CmsFileTable extends CmsResourceTable {
                                 CmsObject cms = A_CmsUI.getCmsObject();
                                 CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
                                 m_currentResources = Collections.singletonList(res);
-                                context = m_contextProvider.getDialogContext();
+                                I_CmsDialogContext context = m_contextProvider.getDialogContext();
                                 I_CmsDefaultAction action = OpenCms.getWorkplaceAppManager().getDefaultAction(context);
-                                action.executeAction(context);
-                                //                                if (((CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
-                                //                                    || (CmsResourceTypeXmlContent.isXmlContent(res)
-                                //                                        && !CmsResourceTypeXmlContainerPage.isContainerPage(res)))
-                                //                                    && !res.getName().endsWith(".html")
-                                //                                    && !res.getName().endsWith(".htm")) {
-                                //                                    m_currentResources = Collections.singletonList(res);
-                                //                                    context = m_contextProvider.getDialogContext();
-                                //                                    CmsEditDialogAction action = new CmsEditDialogAction();
-                                //                                    if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
-                                //                                        && action.getVisibility(context).isActive()) {
-                                //                                        action.executeAction(context);
-                                //                                    } else {
-                                //                                        Notification.show(
-                                //                                            CmsVaadinUtils.getMessageText(Messages.GUI_NOT_EDITABLE_ONLINE_0));
-                                //                                    }
-                                //                                    return;
-                                //                                }
-                                //
-                                //                                String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                                //                                HttpServletRequest req = CmsVaadinUtils.getRequest();
-                                //                                CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-                                //                                if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                                //                                    A_CmsUI.get().openPageOrWarn(link, "_blank");
-                                //                                } else {
-                                //                                    A_CmsUI.get().getPage().setLocation(link);
-                                //                                }
-
-                                return;
+                                if (action != null) {
+                                    action.executeAction(context);
+                                    return;
+                                }
                             } catch (CmsVfsResourceNotFoundException e) {
                                 LOG.info(e.getLocalizedMessage(), e);
                             } catch (CmsException e) {
                                 LOG.error(e.getLocalizedMessage(), e);
                             }
+                        }
+                    } else {
+                        I_CmsDialogContext context = m_contextProvider.getDialogContext();
+                        if ((m_currentResources.size() == 1)
+                            && m_currentResources.get(0).getStructureId().equals(itemId)
+                            && (context instanceof I_CmsEditPropertyContext)
+                            && ((I_CmsEditPropertyContext)context).isPropertyEditable(event.getPropertyId())) {
+
+                            ((I_CmsEditPropertyContext)context).editProperty(event.getPropertyId());
                         }
                     }
                 }
