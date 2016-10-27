@@ -131,6 +131,9 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     /** The default shortcut actions. */
     private Map<Action, Runnable> m_defaultActions;
 
+    /** The requires restore from cache flag. */
+    private boolean m_requiresRestore;
+
     /**
      * Constructor.<p>
      *
@@ -320,11 +323,20 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     }
 
     /**
+     * @see org.opencms.ui.I_CmsAppView#requiresRestore()
+     */
+    public boolean requiresRestore() {
+
+        return m_requiresRestore;
+    }
+
+    /**
      * Restores the view from cache.<p>
      */
     public void restoreFromCache() {
 
         ((I_CmsCachableApp)m_app).onRestoreFromCache();
+        m_requiresRestore = false;
     }
 
     /**
@@ -335,5 +347,13 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     public void setCacheStatus(CacheStatus status) {
 
         m_cacheStatus = status;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsAppView#setRequiresRestore(boolean)
+     */
+    public void setRequiresRestore(boolean restored) {
+
+        m_requiresRestore = restored;
     }
 }
