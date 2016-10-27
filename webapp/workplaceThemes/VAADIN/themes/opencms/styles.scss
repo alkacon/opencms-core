@@ -12,6 +12,21 @@
 
 @include opencmsfont;
 
+
+/* additionally to the Open Sans font faces defined by the Vaadin Valo theme, add the 'Bold' variant as well. */
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 700;
+    src: url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix") format("embedded-opentype"), url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.woff") format("woff"), url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 800;
+    src: url("../valo/fonts/open-sans/OpenSans-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("../valo/fonts/open-sans/OpenSans-Bold-webfont.woff") format("woff"), url("../valo/fonts/open-sans/OpenSans-Bold-webfont.ttf") format("truetype");
+}
+
 .opencms {
    @include opencms;
    @include o-contextmenu;
