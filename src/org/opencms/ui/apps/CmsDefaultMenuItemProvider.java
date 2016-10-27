@@ -126,18 +126,6 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 null,
                 1100,
                 0),
-            new CmsContextMenuActionItem(
-                new CmsEditPropertyAction(CmsResourceTableProperty.PROPERTY_TITLE, Messages.GUI_EXPLORER_EDIT_TITLE_0),
-                null,
-                1300,
-                0),
-            new CmsContextMenuActionItem(
-                new CmsEditPropertyAction(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
-                    Messages.GUI_EXPLORER_EDIT_NAVIGATION_TEXT_0),
-                null,
-                1500,
-                0),
             new CmsContextMenuActionItem(new CmsDeleteDialogAction(), null, 1700, 0),
             new CmsContextMenuActionItem(new CmsReplaceDialogAction(), null, 1800, 0),
             new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 1900, 0),
