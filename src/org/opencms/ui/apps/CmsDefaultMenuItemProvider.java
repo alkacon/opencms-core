@@ -38,6 +38,7 @@ import org.opencms.ui.actions.CmsCopyDialogAction;
 import org.opencms.ui.actions.CmsCopyToProjectDialogAction;
 import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsDirectPublishDialogAction;
+import org.opencms.ui.actions.CmsDisplayAction;
 import org.opencms.ui.actions.CmsEditCodeDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.actions.CmsEditPageAction;
@@ -108,6 +109,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsEditPointerAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsGalleryDialogAction(), null, 50, 0),
+            new CmsContextMenuActionItem(new CmsDisplayAction(), null, 75, 0),
             new CmsContextMenuActionItem(new CmsLockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsUnlockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsStealLockAction(), null, 100, 0),

@@ -29,69 +29,49 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeJsp;
-import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.main.CmsLog;
+import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.apps.CmsAppView;
-import org.opencms.ui.apps.CmsAppView.CacheStatus;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
-import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.Messages;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
-import com.vaadin.navigator.View;
-import com.vaadin.ui.UI;
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * The edit dialog action. Used for all but container page contents.<p>
+ * The display action. Renders the selected resource.<p>
  */
-public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDefaultAction {
+public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefaultAction {
 
     /** The action id. */
-    public static final String ACTION_ID = "edit";
+    public static final String ACTION_ID = "display";
 
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
         CmsStandardVisibilityCheck.EDIT);
-
-    /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditDialogAction.class);
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        String backLink;
-        try {
-            String currentLocation = UI.getCurrent().getPage().getLocation().toString();
-            backLink = URLEncoder.encode(currentLocation, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            backLink = UI.getCurrent().getPage().getLocation().toString();
+        if (context.getResources().size() == 1) {
+            String link = OpenCms.getLinkManager().substituteLink(context.getCms(), context.getResources().get(0));
+            HttpServletRequest req = CmsVaadinUtils.getRequest();
+            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
+            if (context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
+                A_CmsUI.get().openPageOrWarn(link, "_blank");
+            } else {
+                A_CmsUI.get().getPage().setLocation(link);
+            }
         }
-        View view = CmsAppWorkplaceUi.get().getCurrentView();
-        if (view instanceof CmsAppView) {
-            ((CmsAppView)view).setCacheStatus(CacheStatus.cacheOnce);
-        }
-        CmsAppWorkplaceUi.get().showApp(
-            OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
-            CmsEditor.getEditState(context.getResources().get(0).getStructureId(), false, backLink));
     }
 
     /**
@@ -99,18 +79,7 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
      */
     public int getDefaultActionRank(I_CmsDialogContext context) {
 
-        CmsResource res = context.getResources().get(0);
-        boolean editXml = (CmsResourceTypeXmlContent.isXmlContent(res)
-            || (CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
-            || CmsResourceTypeXmlPage.isXmlPage(res))
-            && (!(res.getName().endsWith(".html") || res.getName().endsWith(".htm"))
-                || CmsStringUtil.isEmptyOrWhitespaceOnly(context.getCms().getRequestContext().getSiteRoot()));
-        editXml = editXml
-            || (CmsResourceTypeJsp.isJsp(res) && !(res.getName().endsWith(".html") || res.getName().endsWith(".htm")));
-        if (editXml) {
-            return 20;
-        }
-        return 0;
+        return 10;
     }
 
     /**
@@ -126,7 +95,7 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
      */
     public String getTitle() {
 
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_EDIT_0);
+        return getWorkplaceMessage(Messages.GUI_ACTION_DISPLAY_0);
     }
 
     /**
@@ -135,7 +104,7 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         if ((resources.size() == 1) && !CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))) {
-            return VISIBILITY.getVisibility(cms, resources);
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }

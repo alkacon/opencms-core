@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * The edit page action. Available for container pages.<p>
  */
-public class CmsEditPageAction extends A_CmsWorkplaceAction {
+public class CmsEditPageAction extends A_CmsWorkplaceAction implements I_CmsDefaultAction {
 
     /** The action id. */
     public static final String ACTION_ID = "editpage";
@@ -55,6 +55,14 @@ public class CmsEditPageAction extends A_CmsWorkplaceAction {
             A_CmsUI.get().getPage().setLocation(
                 OpenCms.getLinkManager().substituteLink(A_CmsUI.getCmsObject(), context.getResources().get(0)));
         }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsDefaultAction#getDefaultActionRank(org.opencms.ui.I_CmsDialogContext)
+     */
+    public int getDefaultActionRank(I_CmsDialogContext context) {
+
+        return 30;
     }
 
     /**

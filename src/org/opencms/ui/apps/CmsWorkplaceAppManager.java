@@ -37,8 +37,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsUserIconHelper;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.actions.CmsContextMenuActionItem;
+import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.editors.CmsAcaciaEditor;
 import org.opencms.ui.editors.CmsSourceEditor;
@@ -275,6 +279,40 @@ public class CmsWorkplaceAppManager {
     public Collection<I_CmsAppCategory> getCategories() {
 
         return Collections.unmodifiableCollection(m_appCategories.values());
+    }
+
+    /**
+     * Returns the default action for the given context if available.<p>
+     *
+     * @param context the dialog context
+     *
+     * @return the default action
+     */
+    public I_CmsDefaultAction getDefaultAction(I_CmsDialogContext context) {
+
+        I_CmsDefaultAction result = null;
+        int resultRank = -1;
+        if (context.getResources().size() == 1) {
+            for (I_CmsContextMenuItem menuItem : getMenuItemProvider().getMenuItems()) {
+                if ((menuItem instanceof CmsContextMenuActionItem)
+                    && (((CmsContextMenuActionItem)menuItem).getWorkplaceAction() instanceof I_CmsDefaultAction)) {
+                    I_CmsDefaultAction action = (I_CmsDefaultAction)((CmsContextMenuActionItem)menuItem).getWorkplaceAction();
+                    if (action.getVisibility(context).isActive()) {
+                        if (result == null) {
+                            result = action;
+                            resultRank = action.getDefaultActionRank(context);
+                        } else {
+                            int rank = action.getDefaultActionRank(context);
+                            if (rank > resultRank) {
+                                result = action;
+                                resultRank = rank;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     /**

@@ -56,18 +56,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsEditPropertyContext;
-import org.opencms.ui.actions.CmsEditDialogAction;
+import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.contextmenu.CmsContextMenu;
@@ -82,8 +77,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -106,7 +99,6 @@ import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
@@ -788,32 +780,36 @@ public class CmsFileTable extends CmsResourceTable {
                             try {
                                 CmsObject cms = A_CmsUI.getCmsObject();
                                 CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
-                                if (((CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
-                                    || (CmsResourceTypeXmlContent.isXmlContent(res)
-                                        && !CmsResourceTypeXmlContainerPage.isContainerPage(res)))
-                                    && !res.getName().endsWith(".html")
-                                    && !res.getName().endsWith(".htm")) {
-                                    m_currentResources = Collections.singletonList(res);
-                                    context = m_contextProvider.getDialogContext();
-                                    CmsEditDialogAction action = new CmsEditDialogAction();
-                                    if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
-                                        && action.getVisibility(context).isActive()) {
-                                        action.executeAction(context);
-                                    } else {
-                                        Notification.show(
-                                            CmsVaadinUtils.getMessageText(Messages.GUI_NOT_EDITABLE_ONLINE_0));
-                                    }
-                                    return;
-                                }
-
-                                String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                                HttpServletRequest req = CmsVaadinUtils.getRequest();
-                                CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-                                if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                                    A_CmsUI.get().openPageOrWarn(link, "_blank");
-                                } else {
-                                    A_CmsUI.get().getPage().setLocation(link);
-                                }
+                                m_currentResources = Collections.singletonList(res);
+                                context = m_contextProvider.getDialogContext();
+                                I_CmsDefaultAction action = OpenCms.getWorkplaceAppManager().getDefaultAction(context);
+                                action.executeAction(context);
+                                //                                if (((CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
+                                //                                    || (CmsResourceTypeXmlContent.isXmlContent(res)
+                                //                                        && !CmsResourceTypeXmlContainerPage.isContainerPage(res)))
+                                //                                    && !res.getName().endsWith(".html")
+                                //                                    && !res.getName().endsWith(".htm")) {
+                                //                                    m_currentResources = Collections.singletonList(res);
+                                //                                    context = m_contextProvider.getDialogContext();
+                                //                                    CmsEditDialogAction action = new CmsEditDialogAction();
+                                //                                    if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
+                                //                                        && action.getVisibility(context).isActive()) {
+                                //                                        action.executeAction(context);
+                                //                                    } else {
+                                //                                        Notification.show(
+                                //                                            CmsVaadinUtils.getMessageText(Messages.GUI_NOT_EDITABLE_ONLINE_0));
+                                //                                    }
+                                //                                    return;
+                                //                                }
+                                //
+                                //                                String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                                //                                HttpServletRequest req = CmsVaadinUtils.getRequest();
+                                //                                CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
+                                //                                if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                                //                                    A_CmsUI.get().openPageOrWarn(link, "_blank");
+                                //                                } else {
+                                //                                    A_CmsUI.get().getPage().setLocation(link);
+                                //                                }
 
                                 return;
                             } catch (CmsVfsResourceNotFoundException e) {
