@@ -715,7 +715,6 @@ public class CmsSitemapTreeController {
             }
         });
         if (nodes.size() == 1) {
-            System.out.println("Processing changes");
             updateNode(nodes.get(0));
         }
 

@@ -1033,9 +1033,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     rootCms.getRequestContext().setSiteRoot("");
                     rootCms.moveResource(ownRes.getRootPath(), newPath);
                 }
-
             }
-
         } catch (Exception e) {
             error(e);
         }

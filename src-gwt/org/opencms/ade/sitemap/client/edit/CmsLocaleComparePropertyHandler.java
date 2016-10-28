@@ -205,13 +205,6 @@ public class CmsLocaleComparePropertyHandler implements I_CmsPropertyEditorHandl
             }
         };
         action.execute();
-
-        CmsDebugLog.consoleLog("newname = " + newUrlName);
-        CmsDebugLog.consoleLog("path=" + vfsPath);
-        CmsDebugLog.consoleLog("changes = " + propertyChanges.toString());
-        CmsDebugLog.consoleLog("editedName = " + editedName);
-        CmsDebugLog.consoleLog("reloadMode = " + reloadMode);
-
     }
 
     /**
