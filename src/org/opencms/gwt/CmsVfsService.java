@@ -76,6 +76,7 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
@@ -88,6 +89,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
@@ -136,9 +138,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -150,6 +149,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -348,7 +350,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         listInfo.addAdditionalInfo(
             messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
             resTypeNiceName);
-        listInfo.setResourceType(resTypeName);
+        if (CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
+            listInfo.setResourceType(CmsGwtConstants.TYPE_NAVLEVEL);
+        } else {
+            listInfo.setResourceType(resTypeName);
+            // set the default file and detail type info
+            String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
+            listInfo.setDetailResourceType(detailType);
+        }
         return listInfo;
     }
 

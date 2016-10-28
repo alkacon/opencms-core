@@ -84,6 +84,7 @@ import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -93,7 +94,6 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.xml.containerpage.CmsADESessionCache;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -295,9 +295,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
-
-    /** The session cache. */
-    private CmsADESessionCache m_sessionCache;
 
     /** The workplace settings of the current user. */
     private CmsWorkplaceSettings m_workplaceSettings;
@@ -605,9 +602,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Returns the initial gallery data for the container page editor.<p>
      *
-     * @param resourceTypes the available resource types
-     * @param creatableTypes the creatable types
-     * @param deactivatedTypes the disabled types
+     * @param types the available resource types
      * @param uri the page URI
      * @param locale the content locale
      *
@@ -657,8 +652,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             data.setSitemapSiteSelectorOptions(sitemapOptionBuilder.getOptions());
             data.setDefaultScope(OpenCms.getWorkplaceManager().getGalleryDefaultScope());
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return data;
     }
@@ -1231,6 +1225,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      *
      * @throws CmsLoaderException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     private void addGalleriesForType(Map<String, CmsGalleryTypeInfo> galleryTypeInfos, String typeName)
     throws CmsLoaderException {
 
@@ -1393,11 +1388,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setRawTitle(rawTitle);
         // resource type
         bean.setType(sResult.getResourceType());
-        // structured id
-        bean.setClientId(sResult.getStructureId());
         CmsResource resultResource = cms.readResource(
             new CmsUUID(sResult.getStructureId()),
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+        bean.setDetailResourceType(CmsResourceIcon.getDefaultFileOrDetailType(cms, resultResource));
+        // structured id
+        bean.setClientId(sResult.getStructureId());
+
         CmsVfsService.addLockInfo(cms, resultResource, bean);
 
         String permalinkId = sResult.getStructureId().toString();
@@ -1578,6 +1575,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      *
      * @return the resource type bean
      */
+    @SuppressWarnings("deprecation")
     private CmsResourceTypeBean createTypeBean(
         I_CmsResourceType type,
         I_CmsPreviewProvider preview,
@@ -1794,6 +1792,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @return the list of galleries
      *
      */
+    @SuppressWarnings("deprecation")
     private List<CmsResource> getGalleriesByType(int galleryTypeId) {
 
         List<CmsResource> galleries = new ArrayList<CmsResource>();
@@ -2084,15 +2083,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration
      *
      * @return the resource types
-     *
-     * @throws CmsRpcException if something goes wrong reading the configuration
      */
     private List<CmsResourceTypeBean> getResourceTypeBeans(
         GalleryMode galleryMode,
         String referenceSitePath,
         List<String> resourceTypesList,
-        final List<String> typesForTypeTab)
-    throws CmsRpcException {
+        final List<String> typesForTypeTab) {
 
         List<I_CmsResourceType> resourceTypes = null;
         Set<String> creatableTypes = null;
@@ -2156,19 +2152,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(e);
         }
         return rootFolders;
-    }
-
-    /**
-     * Returns the session cache.<p>
-     *
-     * @return the session cache
-     */
-    private CmsADESessionCache getSessionCache() {
-
-        if (m_sessionCache == null) {
-            m_sessionCache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
-        }
-        return m_sessionCache;
     }
 
     /**

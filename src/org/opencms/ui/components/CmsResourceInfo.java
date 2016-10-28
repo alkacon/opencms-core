@@ -124,6 +124,7 @@ public class CmsResourceInfo extends CustomLayout {
             resUtil,
             CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
             useState ? resource.getState() : null,
+            true,
             true);
 
     }
@@ -140,7 +141,7 @@ public class CmsResourceInfo extends CustomLayout {
         this();
         m_topText.setValue(top);
         m_bottomText.setValue(bottom);
-        m_icon.initContent(null, iconPath, null, false);
+        m_icon.initContent(null, iconPath, null, false, true);
 
     }
 
@@ -187,7 +188,7 @@ public class CmsResourceInfo extends CustomLayout {
             A_CmsUI.getCmsObject(),
             resUtil.getResource(),
             IconMode.localeCompare);
-        info.getResourceIcon().initContent(resUtil, icon, null, true);
+        info.getResourceIcon().initContent(resUtil, icon, null, true, false);
         return info;
     }
 

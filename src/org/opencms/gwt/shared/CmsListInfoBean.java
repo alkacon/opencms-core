@@ -46,10 +46,14 @@ public class CmsListInfoBean implements IsSerializable {
     /** Lock icons. */
     public enum LockIcon {
         /** Closed lock. */
-        CLOSED, /** No lock. */
-        NONE, /** Open lock. */
-        OPEN, /** Shared closed lock. */
-        SHARED_CLOSED, /** Shared open lock. */
+        CLOSED,
+        /** No lock. */
+        NONE,
+        /** Open lock. */
+        OPEN,
+        /** Shared closed lock. */
+        SHARED_CLOSED,
+        /** Shared open lock. */
         SHARED_OPEN
     }
 
@@ -58,9 +62,12 @@ public class CmsListInfoBean implements IsSerializable {
      */
     public enum StateIcon {
         /** copy page icon. */
-        copy, /** export page icon. */
-        export, /** secure page icon. */
-        secure, /** standard page icon. */
+        copy,
+        /** export page icon. */
+        export,
+        /** secure page icon. */
+        secure,
+        /** standard page icon. */
         standard
     }
 
@@ -69,6 +76,9 @@ public class CmsListInfoBean implements IsSerializable {
 
     /** The additional info. */
     private List<CmsAdditionalInfoBean> m_additionalInfo;
+
+    /** The detail resource type. */
+    private String m_detailResourceType;
 
     /** The lock icon. */
     private LockIcon m_lockIcon;
@@ -150,6 +160,16 @@ public class CmsListInfoBean implements IsSerializable {
             m_additionalInfo = new ArrayList<CmsAdditionalInfoBean>();
         }
         return m_additionalInfo;
+    }
+
+    /**
+     * Returns the detail resource type.<p>
+     *
+     * @return the detail resource type
+     */
+    public String getDetailResourceType() {
+
+        return m_detailResourceType;
     }
 
     /**
@@ -252,6 +272,16 @@ public class CmsListInfoBean implements IsSerializable {
     public void setAdditionalInfo(List<CmsAdditionalInfoBean> additionalInfo) {
 
         m_additionalInfo = additionalInfo;
+    }
+
+    /**
+     * Sets the detail resource type.<p>
+     *
+     * @param detailResourceType the detail resource type to set
+     */
+    public void setDetailResourceType(String detailResourceType) {
+
+        m_detailResourceType = detailResourceType;
     }
 
     /**

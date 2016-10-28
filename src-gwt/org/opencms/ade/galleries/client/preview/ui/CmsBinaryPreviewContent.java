@@ -127,6 +127,7 @@ public class CmsBinaryPreviewContent extends Composite {
             : resourceInfo.getTitle());
         infoBean.setSubTitle(resourceInfo.getResourcePath());
         infoBean.setResourceType(resourceInfo.getResourceType());
+        infoBean.setDetailResourceType(resourceInfo.getDetailResourceType());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_SIZE_0), resourceInfo.getSize());
         if (resourceInfo.getDescription() != null) {
             infoBean.addAdditionalInfo(

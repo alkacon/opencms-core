@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsToolTipHandler;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
@@ -115,8 +116,14 @@ public class CmsResultItemWidget extends CmsListItemWidget {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getPseudoType())) {
             type = infoBean.getPseudoType();
         }
-
-        setIcon(CmsIconUtil.getResourceIconClasses(type, infoBean.getPath(), false));
+        String detailIconClasses = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getDetailResourceType())) {
+            detailIconClasses = CmsIconUtil.getResourceIconClasses(infoBean.getDetailResourceType(), true);
+            if (CmsGwtConstants.TYPE_CONTAINERPAGE.equals(infoBean.getResourceType())) {
+                detailIconClasses += " " + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().pageDetailType();
+            }
+        }
+        setIcon(CmsIconUtil.getResourceIconClasses(type, infoBean.getPath(), false), detailIconClasses);
 
         // if resourceType=="image" prepare for tile view
         if (CmsResultsTab.isImagelikeType(infoBean.getType())) {
@@ -129,25 +136,21 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             String timeParam = "&time=" + System.currentTimeMillis();
             // insert tile view image div
             ImageTile imageTile = new ImageTile("<img src=\""
-                + src
-                + getBigImageScaleParam()
-                // add time stamp to override browser image caching
+            + src
+            + getBigImageScaleParam()
+            // add time stamp to override browser image caching
                 + timeParam
                 + "\" class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImage()
                 + "\" />"
                 // using a second image tag for the small thumbnail variant
-                + "<img src=\""
-                + src
-                + getSmallImageScaleParam(infoBean)
+                + "<img src=\"" + src + getSmallImageScaleParam(infoBean)
                 // add time stamp to override browser image caching
                 + timeParam
                 + "\" class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().smallImage()
                 + "\" />"
-                + "<div class='"
-                + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expiredImageOverlay()
-                + "' />");
+                + "<div class='" + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expiredImageOverlay() + "' />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
             m_imageTile = imageTile;
             m_tooltipHandler = new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));

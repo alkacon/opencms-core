@@ -49,10 +49,12 @@ public interface I_CmsPublishResourceFormatter {
     List<CmsPublishResource> getPublishResources() throws CmsException;
 
     /**
+     * Initializes the formatter.<p>
      *
-     * @param options
-     * @param resources
-     * @throws CmsException
+     * @param options the publish options
+     * @param resources the publish resources
+     *
+     * @throws CmsException in case something goes wrong
      */
     void initialize(CmsPublishOptions options, ResourceMap resources) throws CmsException;
 }

@@ -77,7 +77,77 @@ public class CmsResourceIcon extends Label {
      */
     public CmsResourceIcon(CmsResourceUtil resUtil, String iconPath, CmsResourceState state, boolean showLocks) {
         this();
-        initContent(resUtil, iconPath, state, showLocks);
+        initContent(resUtil, iconPath, state, showLocks, true);
+    }
+
+    /**
+     * Returns the default file type or detail type for the given resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the container page resource
+     *
+     * @return the detail content type
+     */
+    public static String getDefaultFileOrDetailType(CmsObject cms, CmsResource resource) {
+
+        String type = null;
+
+        if (resource.isFolder()) {
+            if (!(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeFolderExtended)) {
+                try {
+                    CmsResource defaultFile = cms.readDefaultFile(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                    if (defaultFile != null) {
+                        type = getDetailType(cms, defaultFile, resource);
+                        if (type == null) {
+                            type = OpenCms.getResourceManager().getResourceType(defaultFile).getTypeName();
+                        }
+
+                    }
+                } catch (CmsSecurityException e) {
+                    // ignore
+                }
+            }
+        } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+            type = getDetailType(cms, resource, null);
+
+        }
+        return type;
+
+    }
+
+    /**
+     * Returns the detail content type for container pages that may be detail pages.<p>
+     *
+     * @param cms the cms context
+     * @param detailPage the container page resource
+     * @param parentFolder the parent folder or <code>null</code>
+     *
+     * @return the detail content type
+     */
+    public static String getDetailType(CmsObject cms, CmsResource detailPage, CmsResource parentFolder) {
+
+        String type = null;
+        try {
+            if (OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
+                List<CmsDetailPageInfo> detailPages = OpenCms.getADEManager().getAllDetailPages(cms);
+                if (parentFolder == null) {
+                    parentFolder = cms.readParentFolder(detailPage.getStructureId());
+                }
+                for (CmsDetailPageInfo info : detailPages) {
+                    if (info.getId().equals(detailPage.getStructureId())
+                        || info.getId().equals(parentFolder.getStructureId())) {
+                        type = info.getType();
+                        if (type.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
+                            type = CmsXmlDynamicFunctionHandler.TYPE_FUNCTION;
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            // parent folder can't be read, ignore
+        }
+        return type;
     }
 
     /**
@@ -99,7 +169,7 @@ public class CmsResourceIcon extends Label {
         return "<span class=\""
             + OpenCmsTheme.RESOURCE_ICON
             + "\">"
-            + getIconInnerHTML(resUtil, iconPath, state, showLocks)
+            + getIconInnerHTML(resUtil, iconPath, state, showLocks, true)
             + "</span>";
     }
 
@@ -128,50 +198,13 @@ public class CmsResourceIcon extends Label {
     }
 
     /**
-     * Returns the detail type icon URI.<p>
-     *
-     * @param cms the cms context
-     * @param detailPage the resource that may be a detail page
-     * @param parentFolder the parent folder if available
-     *
-     * @return the detail type URI if available
-     */
-    private static String getDetailTypeIcon(CmsObject cms, CmsResource detailPage, CmsResource parentFolder) {
-
-        String defaultFileIcon = null;
-        try {
-            if (OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
-                List<CmsDetailPageInfo> detailPages = OpenCms.getADEManager().getAllDetailPages(cms);
-                if (parentFolder == null) {
-                    parentFolder = cms.readParentFolder(detailPage.getStructureId());
-                }
-                for (CmsDetailPageInfo info : detailPages) {
-                    if (info.getId().equals(detailPage.getStructureId())
-                        || info.getId().equals(parentFolder.getStructureId())) {
-                        String type = info.getType();
-                        if (type.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
-                            type = CmsXmlDynamicFunctionHandler.TYPE_FUNCTION;
-                        }
-                        defaultFileIcon = CmsWorkplace.getResourceUri(
-                            CmsWorkplace.RES_PATH_FILETYPES
-                                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type).getIcon());
-                        break;
-                    }
-                }
-            }
-        } catch (CmsException e) {
-            // parent folder can't be read, ignore
-        }
-        return defaultFileIcon;
-    }
-
-    /**
      * Returns the icon inner HTML.<p>
      *
      * @param resUtil the resource util for the resource
      * @param iconPath the icon path
      * @param state the resource state
      * @param showLocks <code>true</code> to show lock state overlay
+     * @param showDetailIcon <code>true</code> to show the detail icon overlay
      *
      * @return the icon inner HTML
      */
@@ -179,38 +212,27 @@ public class CmsResourceIcon extends Label {
         CmsResourceUtil resUtil,
         String iconPath,
         CmsResourceState state,
-        boolean showLocks) {
+        boolean showLocks,
+        boolean showDetailIcon) {
 
         String content = "<img src=\"" + iconPath + "\" />";
 
         if (resUtil != null) {
-            if (resUtil.getResource().isFolder()
-                && !iconPath.endsWith(CmsIconUtil.ICON_NAV_LEVEL_BIG)
-                && !(OpenCms.getResourceManager().getResourceType(
-                    resUtil.getResource()) instanceof CmsResourceTypeFolderExtended)) {
-                try {
-                    CmsResource defaultFile = resUtil.getCms().readDefaultFile(
-                        resUtil.getResource(),
-                        CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                    if (defaultFile != null) {
-                        String defaultFileIcon = getDetailTypeIcon(
-                            resUtil.getCms(),
-                            defaultFile,
-                            resUtil.getResource());
-                        if (defaultFileIcon == null) {
-                            defaultFileIcon = CmsWorkplace.getResourceUri(
-                                (new CmsResourceUtil(resUtil.getCms(), defaultFile)).getIconPathResourceType());
-                        }
-                        content += "<img src=\"" + defaultFileIcon + "\" class=\"o-icon-overlay\" />";
+            if (showDetailIcon && !iconPath.endsWith(CmsIconUtil.ICON_NAV_LEVEL_BIG)) {
 
+                if (resUtil.getResource().isFolder()) {
+                    String detailType = getDefaultFileOrDetailType(resUtil.getCms(), resUtil.getResource());
+                    if (detailType != null) {
+                        content += "<img src=\"" + getSmallTypeIconURI(detailType) + "\" class=\"o-icon-overlay\" />";
                     }
-                } catch (CmsSecurityException e) {
-                    // ignore
-                }
-            } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resUtil.getResource())) {
-                String detailTypeIcon = getDetailTypeIcon(resUtil.getCms(), resUtil.getResource(), null);
-                if (detailTypeIcon != null) {
-                    content += "<img src=\"" + detailTypeIcon + "\" class=\"o-icon-overlay\" />";
+                } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resUtil.getResource())) {
+                    String detailType = getDefaultFileOrDetailType(resUtil.getCms(), resUtil.getResource());
+                    if (detailType != null) {
+                        content += "<img src=\""
+                            + getSmallTypeIconURI(detailType)
+                            + "\" class=\"o-page-icon-overlay\" />";
+                    }
+
                 }
             }
             if (showLocks) {
@@ -286,15 +308,34 @@ public class CmsResourceIcon extends Label {
     }
 
     /**
+     * Returns the URI of the small resource type icon for the given type.<p>
+     *
+     * @param type the resource type name
+     *
+     * @return the icon URI
+     */
+    private static String getSmallTypeIconURI(String type) {
+
+        return CmsWorkplace.getResourceUri(
+            CmsWorkplace.RES_PATH_FILETYPES + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type).getIcon());
+    }
+
+    /**
      * Initializes the content.<p>
      *
      * @param resUtil the resource util
      * @param iconPath the resource icon
      * @param state the resource state
      * @param showLocks <code>true</code> to show the resource locks
+     * @param showDetailIcon <code>true</code> to show the detail icon overlay
      */
-    public void initContent(CmsResourceUtil resUtil, String iconPath, CmsResourceState state, boolean showLocks) {
+    public void initContent(
+        CmsResourceUtil resUtil,
+        String iconPath,
+        CmsResourceState state,
+        boolean showLocks,
+        boolean showDetailIcon) {
 
-        setValue(getIconInnerHTML(resUtil, iconPath, state, showLocks));
+        setValue(getIconInnerHTML(resUtil, iconPath, state, showLocks, showDetailIcon));
     }
 }

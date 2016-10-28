@@ -283,14 +283,21 @@
 		box-sizing: border-box;
 		vertical-align: middle;
 		
-		.o-icon-overlay{
+		.o-icon-overlay, .o-page-icon-overlay{
 			display: block;
 			height: 16px;
 			width: 16px;
 			position: absolute;
+			z-index: 2;
+		}
+		.o-icon-overlay{
 			top:10px;
 			left: 10px;
-			z-index: 2;
+		}
+		
+		.o-page-icon-overlay{
+			top: 13px;
+			left: 16px;
 		}
 		 	
 		.o-lock-shared, .o-lock-user, .o-lock-other, .o-lock-publish, .o-state-changed, .o-state-new, .o-sibling{
