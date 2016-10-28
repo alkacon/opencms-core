@@ -153,9 +153,10 @@
 	  		border-radius: $v-border-radius;
 	  	}
 	}
-	&.o-in-navigation div{
+  }
+  
+  .v-table 	.o-in-navigation div{
 		font-weight: 800;
-	}
   }
   .v-table .v-selected .o-hover-column:hover div:before{
   	background: lighten($v-selection-color,10%);

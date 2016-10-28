@@ -393,6 +393,8 @@ public class CmsFileTable extends CmsResourceTable {
                 String style = getStateStyle(item);
                 if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME == propertyId) {
                     style += " " + OpenCmsTheme.HOVER_COLUMN;
+                } else if ((CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT == propertyId)
+                    || (CmsResourceTableProperty.PROPERTY_TITLE == propertyId)) {
                     if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
                         && ((Boolean)item.getItemProperty(
                             CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
