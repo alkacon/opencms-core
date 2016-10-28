@@ -70,6 +70,9 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
     /** The standard file name for inherited container configurations. */
     public static final String INHERITANCE_CONFIG_FILE_NAME = ".inherited";
 
+    /** UUID used to signal a cache clear. */
+    public static final CmsUUID UPDATE_ALL = CmsUUID.getNullUUID();
+
     /** The logger instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsContainerConfigurationCache.class);
 
@@ -112,7 +115,7 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
      */
     public synchronized void clear() {
 
-        initialize();
+        m_updateSet.add(UPDATE_ALL);
     }
 
     /**
@@ -122,9 +125,13 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
 
         Set<CmsUUID> updateIds = m_updateSet.removeAll();
         if (!updateIds.isEmpty()) {
-            Map<CmsUUID, CmsContainerConfigurationGroup> groups = loadFromIds(updateIds);
-            CmsContainerConfigurationCacheState state = m_state.updateWithChangedGroups(groups);
-            m_state = state;
+            if (updateIds.contains(UPDATE_ALL)) {
+                initialize();
+            } else {
+                Map<CmsUUID, CmsContainerConfigurationGroup> groups = loadFromIds(updateIds);
+                CmsContainerConfigurationCacheState state = m_state.updateWithChangedGroups(groups);
+                m_state = state;
+            }
         }
     }
 
