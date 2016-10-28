@@ -442,7 +442,8 @@ public class CmsSitemapTreeController {
                     }
                 });
 
-                ContextMenuItem propertiesItem = m_menu.addItem("Properties");
+                ContextMenuItem propertiesItem = m_menu.addItem(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_PROPERTIES_0));
                 propertiesItem.addItemClickListener(new ContextMenuItemClickListener() {
 
                     public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
@@ -454,7 +455,8 @@ public class CmsSitemapTreeController {
                     }
                 });
 
-                ContextMenuItem explorerItem = m_menu.addItem("Open explorer");
+                ContextMenuItem explorerItem = m_menu.addItem(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_EXPLORER_0));
                 explorerItem.addItemClickListener(new ContextMenuItemClickListener() {
 
                     public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
