@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.CmsCoreService;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.i18n.CmsLocaleManager;
@@ -450,6 +451,18 @@ public class CmsSitemapTreeController {
                             entry.getResource().getStructureId(),
                             m_root.getStructureId());
 
+                    }
+                });
+
+                ContextMenuItem explorerItem = m_menu.addItem("Open explorer");
+                explorerItem.addItemClickListener(new ContextMenuItemClickListener() {
+
+                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                        String link = CmsCoreService.getVaadinWorkplaceLink(
+                            A_CmsUI.getCmsObject(),
+                            entry.getResource().getStructureId());
+                        A_CmsUI.get().getPage().setLocation(link);
                     }
                 });
 
