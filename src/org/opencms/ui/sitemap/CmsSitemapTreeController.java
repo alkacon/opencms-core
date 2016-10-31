@@ -397,6 +397,15 @@ public class CmsSitemapTreeController {
                 if (!entry.isLinked()) {
                     addLinkItem(entry, node);
                 }
+                String openPage = CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_OPEN_PAGE_0);
+                ContextMenuItem openItem = m_menu.addItem(openPage);
+                openItem.addItemClickListener(new ContextMenuItemClickListener() {
+
+                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                        openTargetPage((CmsSitemapTreeNodeData)(node.getData()), false);
+                    }
+                });
                 if (m_localeContext.getRootLocale().equals(
                     A_CmsUI.getCmsObject().getLocaleGroupService().getMainLocale(
                         m_localeContext.getRoot().getRootPath()))) {
