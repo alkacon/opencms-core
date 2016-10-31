@@ -971,12 +971,12 @@ public class CmsSitemapTreeController {
                     new EntryOpen(),
                     new EntryExplorer(),
                     new EntryProperties(),
-                    new EntryCopy(),
-                    new EntryInfo(),
                     new EntryLink(),
                     new EntryUnlink(),
                     new EntryMark(),
-                    new EntryRemoveMark());
+                    new EntryRemoveMark(),
+                    new EntryCopy(),
+                    new EntryInfo());
 
                 MenuContext context = new MenuContext(entry, node);
                 m_menu.setEntries(entries, context);
