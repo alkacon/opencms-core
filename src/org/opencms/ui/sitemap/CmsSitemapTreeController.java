@@ -34,7 +34,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsCoreService;
-import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLockActionRecord;
@@ -70,7 +69,6 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -501,48 +499,6 @@ public class CmsSitemapTreeController {
                         }
                         if (mainLocaleCount == 1) {
                             addUnlinkItem(entry, node);
-                        }
-                        CmsLocaleGroup localeGroup = groupService.readLocaleGroup(primary);
-                        if (localeGroup.isRealGroup()) {
-                            ContextMenuItem show = m_menu.addItem(
-                                CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_SHOW_LOCALE_0));
-                            Map<Locale, CmsResource> resourcesByLocale = localeGroup.getResourcesByLocale();
-                            String mySiteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
-                            int realSubitemCount = 0;
-                            for (Map.Entry<Locale, CmsResource> localeGroupEntry : resourcesByLocale.entrySet()) {
-                                final Locale locale = localeGroupEntry.getKey();
-                                final CmsResource resource = localeGroupEntry.getValue();
-                                final boolean sameSite = mySiteRoot.equals(
-                                    OpenCms.getSiteManager().getSiteRoot(resource.getRootPath()));
-
-                                String localeName = locale.getDisplayLanguage(A_CmsUI.get().getLocale());
-                                ContextMenuItem showLanguage = show.addItem(localeName);
-                                if (!sameSite) {
-                                    showLanguage.addStyleName("o-show-locale-disabled");
-                                }
-                                showLanguage.addItemClickListener(new ContextMenuItemClickListener() {
-
-                                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                                        if (sameSite) {
-                                            CmsObject cms = A_CmsUI.getCmsObject();
-                                            String link = OpenCms.getLinkManager().substituteLink(cms, resource);
-                                            A_CmsUI.get().getPage().setLocation(link);
-                                        } else {
-                                            String message = CmsVaadinUtils.getMessageText(
-                                                Messages.GUI_LOCALECOMPARE_SHOW_WRONGSITE_1,
-                                                resource.getRootPath());
-
-                                            Notification.show(message, Type.ERROR_MESSAGE);
-                                        }
-                                    }
-                                });
-                                realSubitemCount += 1;
-
-                            }
-                            if (realSubitemCount == 0) {
-                                m_menu.removeItem(show);
-                            }
                         }
                     } catch (Exception e) {
                         LOG.error(e.getLocalizedMessage(), e);
