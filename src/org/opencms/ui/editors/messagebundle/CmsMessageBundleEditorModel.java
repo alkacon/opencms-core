@@ -314,6 +314,16 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Escapes line breaks that need to be escaped in a property in a .properties file.
+     * @param property the property without necessary escaping
+     * @return the property with the line breaks escaped.
+     */
+    private static String escapeLinebreaks(final String property) {
+
+        return property.replace("\n", "\\n\\\n\t").replace("\r", "\\r");
+    }
+
+    /**
      * Converts {@link Properties} to {@link Map} from {@link String} to {@link String}.
      *
      * @param props the properties to convert.
@@ -326,9 +336,21 @@ public class CmsMessageBundleEditorModel {
         }
         Map<String, String> map = new HashMap<String, String>(props.size());
         for (Object key : props.keySet()) {
-            map.put((String)key, props.getProperty((String)key));
+            String rawProperty = props.getProperty((String)key);
+            String unescapedProperty = unescapeProperty(rawProperty);
+            map.put((String)key, unescapedProperty);
         }
         return map;
+    }
+
+    /**
+     * Un-escapes line breaks that were escaped in a property in a .properties file.
+     * @param rawProperty the property as it is read from the .properties file.
+     * @return the property with the escaping for line breaks removed.
+     */
+    private static String unescapeProperty(final String rawProperty) {
+
+        return rawProperty.replace("\\n", "\n").replace("\\r", "\r");
     }
 
     /**
@@ -1309,7 +1331,8 @@ public class CmsMessageBundleEditorModel {
                     if (!key.isEmpty()) {
                         String value = props.get(key);
                         if (!value.isEmpty()) {
-                            content.append(key).append("=").append(value).append("\n");
+                            String escapedValue = escapeLinebreaks(value);
+                            content.append(key).append("=").append(escapedValue).append("\n");
                         }
                     }
                 }
