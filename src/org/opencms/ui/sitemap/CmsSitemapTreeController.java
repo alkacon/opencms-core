@@ -59,10 +59,9 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer;
 import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer.IconMode;
 import org.opencms.ui.contextmenu.CmsContextMenu;
-import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItem;
-import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickEvent;
-import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickListener;
+import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -271,6 +270,572 @@ public class CmsSitemapTreeController {
         }
     }
 
+    /**
+     * Copy menu entry.
+     */
+    class EntryCopy implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(MenuContext context) {
+
+            openPageCopyDialog(context.getNode(), context.getData());
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_COPY_PAGE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext context) {
+
+            return visibleIfTrue(context.getData().isCopyable());
+
+        }
+    }
+
+    /**
+     * Menu entry for opening the explorer.<p>
+     */
+    class EntryExplorer implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(MenuContext context) {
+
+            String link = CmsCoreService.getVaadinWorkplaceLink(
+                A_CmsUI.getCmsObject(),
+                context.getData().getResource().getStructureId());
+            A_CmsUI.get().getPage().setLocation(link);
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_EXPLORER_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext context) {
+
+            return visibleIfTrue(true);
+        }
+
+    }
+
+    /**
+     * Menu entry for opening the info dialog.<p>
+     */
+    class EntryInfo implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+        
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(MenuContext context) {
+
+            CmsResourceInfoAction infoAction = new CmsResourceInfoAction();
+            infoAction.executeAction(new DialogContext(context.getData().getResource(), context.getNode()));
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCE_INFO_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext context) {
+
+            return visibleIfTrue(true);
+        }
+
+    }
+
+    /**
+     * Menu entry for opening the 'LInk locale' dialog.<p>
+     */
+    class EntryLink implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public void executeAction(MenuContext data) {
+
+            try {
+                DialogContext dialogContext = new DialogContext(
+                    A_CmsUI.getCmsObject().readResource(
+                        data.getData().getClientEntry().getId(),
+                        CmsResourceFilter.IGNORE_EXPIRATION),
+                    data.getNode());
+                CmsLocaleLinkTargetSelectionDialog dialog = new CmsLocaleLinkTargetSelectionDialog(
+                    dialogContext,
+                    m_localeContext);
+                dialogContext.start(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0),
+                    dialog,
+                    DialogWidth.narrow);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                CmsErrorDialog.showErrorDialog(e);
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext data) {
+
+            return visibleIfTrue(!data.getData().isLinked());
+        }
+    }
+
+    /**
+     * Context menu entry for the 'Do not translate' mark.<p>
+     */
+    class EntryMark implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public void executeAction(MenuContext context) {
+
+            CmsSitemapTreeNodeData entry = context.getData();
+            CmsSitemapTreeNode node = context.getNode();
+
+            CmsObject cms = A_CmsUI.getCmsObject();
+            CmsLockActionRecord actionRecord = null;
+            CmsResource fileToModify2 = null;
+            try {
+
+                CmsResource primary = A_CmsUI.getCmsObject().readResource(
+                    entry.getClientEntry().getId(),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                if (primary.isFolder()) {
+                    CmsResource defaultFile = A_CmsUI.getCmsObject().readDefaultFile(
+                        primary,
+                        CmsResourceFilter.IGNORE_EXPIRATION);
+                    if (defaultFile != null) {
+                        primary = defaultFile;
+                    }
+                }
+                final CmsResource primaryFinal = primary;
+
+                fileToModify2 = primaryFinal;
+                if (fileToModify2.isFolder()) {
+                    try {
+                        fileToModify2 = A_CmsUI.getCmsObject().readDefaultFile(
+                            fileToModify2,
+                            CmsResourceFilter.IGNORE_EXPIRATION);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
+                actionRecord = CmsLockUtil.ensureLock(cms, fileToModify2);
+                m_localeContext.getComparisonLocale().toString();
+                CmsProperty prop = cms.readPropertyObject(
+                    fileToModify2,
+                    CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
+                    false);
+                String propValue = prop.getValue();
+                if (propValue == null) {
+                    propValue = ""; // make getLocales not return null
+                }
+                List<Locale> currentLocales = CmsLocaleManager.getLocales(propValue);
+                if (!currentLocales.contains(m_localeContext.getComparisonLocale())) {
+                    currentLocales.add(m_localeContext.getComparisonLocale());
+                    String newPropValue = Joiner.on(",").join(currentLocales);
+                    CmsProperty newProp = new CmsProperty(
+                        CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
+                        newPropValue,
+                        null);
+                    cms.writePropertyObjects(fileToModify2, Arrays.asList(newProp));
+                    DialogContext dialogContext = new DialogContext(
+                        A_CmsUI.getCmsObject().readResource(
+                            entry.getClientEntry().getId(),
+                            CmsResourceFilter.IGNORE_EXPIRATION),
+                        node);
+                    dialogContext.finish(Arrays.asList(fileToModify2.getStructureId()));
+
+                }
+
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                CmsErrorDialog.showErrorDialog(e);
+
+            } finally {
+                if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
+                    try {
+                        cms.unlockResource(fileToModify2);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        CmsErrorDialog.showErrorDialog(e);
+                    }
+                }
+            }
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_ADD_DONT_TRANSLATE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext context) {
+
+            CmsSitemapTreeNodeData entry = context.getData();
+            boolean result = context.isMainLocale()
+                && !entry.isMarkedNoTranslation(m_localeContext.getComparisonLocale())
+                && !entry.isLinked();
+            return visibleIfTrue(result);
+
+        }
+
+    }
+
+    /**
+     * 'Open page' menu entry.<p>
+     */
+    class EntryOpen implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public void executeAction(MenuContext context) {
+
+            openTargetPage((CmsSitemapTreeNodeData)(context.getNode().getData()), false);
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_OPEN_PAGE_0);
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext data) {
+
+            return visibleIfTrue(true);
+        }
+
+    }
+
+    /**
+     * 'Properties' menu entry.<p>
+     */
+    class EntryProperties implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public void executeAction(MenuContext context) {
+
+            ((CmsSitemapUI)A_CmsUI.get()).getSitemapExtension().openPropertyDialog(
+                context.getData().getResource().getStructureId(),
+                m_root.getStructureId());
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_PROPERTIES_0);
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext context) {
+
+            return visibleIfTrue(true);
+        }
+
+    }
+
+    /**
+     * 'Remove mark' menu entry.<p>
+     */
+    class EntryRemoveMark implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public void executeAction(MenuContext context) {
+
+            CmsSitemapTreeNodeData entry = context.getData();
+            CmsSitemapTreeNode node = context.getNode();
+
+            CmsObject cms = A_CmsUI.getCmsObject();
+            CmsLockActionRecord actionRecord = null;
+            CmsResource fileToModify2 = null;
+            try {
+                CmsResource primary = A_CmsUI.getCmsObject().readResource(
+                    entry.getClientEntry().getId(),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                if (primary.isFolder()) {
+                    CmsResource defaultFile = A_CmsUI.getCmsObject().readDefaultFile(
+                        primary,
+                        CmsResourceFilter.IGNORE_EXPIRATION);
+                    if (defaultFile != null) {
+                        primary = defaultFile;
+                    }
+                }
+                final CmsResource primaryFinal = primary;
+
+                fileToModify2 = primaryFinal;
+                if (fileToModify2.isFolder()) {
+                    try {
+                        fileToModify2 = A_CmsUI.getCmsObject().readDefaultFile(
+                            fileToModify2,
+                            CmsResourceFilter.IGNORE_EXPIRATION);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
+                actionRecord = CmsLockUtil.ensureLock(cms, fileToModify2);
+                m_localeContext.getComparisonLocale().toString();
+                CmsProperty prop = cms.readPropertyObject(
+                    fileToModify2,
+                    CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
+                    false);
+                String propValue = prop.getValue();
+                if (propValue == null) {
+                    propValue = ""; // make getLocales not return null
+                }
+                List<Locale> currentLocales = CmsLocaleManager.getLocales(propValue);
+                if (currentLocales.contains(m_localeContext.getComparisonLocale())) {
+                    currentLocales.remove(m_localeContext.getComparisonLocale());
+                    String newPropValue = Joiner.on(",").join(currentLocales);
+                    CmsProperty newProp = new CmsProperty(
+                        CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
+                        newPropValue,
+                        null);
+                    cms.writePropertyObjects(primaryFinal, Arrays.asList(newProp));
+                    DialogContext dialogContext = new DialogContext(
+                        A_CmsUI.getCmsObject().readResource(
+                            entry.getClientEntry().getId(),
+                            CmsResourceFilter.IGNORE_EXPIRATION),
+                        node);
+                    dialogContext.finish(Arrays.asList(fileToModify2.getStructureId()));
+                }
+
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                CmsErrorDialog.showErrorDialog(e);
+
+            } finally {
+                if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
+                    try {
+                        cms.unlockResource(fileToModify2);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        CmsErrorDialog.showErrorDialog(e);
+                    }
+                }
+            }
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext context) {
+
+            boolean result = context.isMainLocale()
+                && context.getData().isMarkedNoTranslation(m_localeContext.getComparisonLocale());
+            return visibleIfTrue(result);
+
+        }
+    }
+
+    /**
+     * 'Unlink' menu entry.<p>
+     */
+    class EntryUnlink implements I_CmsSimpleContextMenuEntry<MenuContext> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public void executeAction(MenuContext context) {
+
+            try {
+                CmsResource secondary = context.getData().getLinkedResource();
+                DialogContext dialogContext = new DialogContext(
+                    A_CmsUI.getCmsObject().readResource(
+                        context.getData().getClientEntry().getId(),
+                        CmsResourceFilter.IGNORE_EXPIRATION),
+                    context.getNode());
+                CmsUnlinkDialog dialog = new CmsUnlinkDialog(dialogContext, secondary);
+                dialogContext.start(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0),
+                    dialog,
+                    DialogWidth.wide);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                CmsErrorDialog.showErrorDialog(e);
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public CmsMenuItemVisibilityMode getVisibility(final MenuContext context) {
+
+            if (!context.getData().isLinked()) {
+                return visibleIfTrue(false);
+            }
+            try {
+                CmsResource primary = A_CmsUI.getCmsObject().readResource(
+                    context.getData().getClientEntry().getId(),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                if (primary.isFolder()) {
+                    CmsResource defaultFile = A_CmsUI.getCmsObject().readDefaultFile(
+                        primary,
+                        CmsResourceFilter.IGNORE_EXPIRATION);
+                    if (defaultFile != null) {
+                        primary = defaultFile;
+                    }
+                }
+                CmsLocaleGroupService groupService = A_CmsUI.getCmsObject().getLocaleGroupService();
+                Locale mainLocale = groupService.getMainLocale(m_localeContext.getRoot().getRootPath());
+                int mainLocaleCount = 0;
+                for (Locale testLocale : Arrays.asList(
+                    m_localeContext.getRootLocale(),
+                    m_localeContext.getComparisonLocale())) {
+                    mainLocaleCount += mainLocale.equals(testLocale) ? 1 : 0;
+                }
+                return visibleIfTrue(mainLocaleCount == 1);
+            } catch (Exception e) {
+                return visibleIfTrue(false);
+
+            }
+
+        }
+    }
+
+    /**
+     * Context object for the context menu.<p>
+     */
+    class MenuContext {
+
+        /** The tree node data. */
+        private CmsSitemapTreeNodeData m_data;
+
+        /** The tree node widget. */
+        private CmsSitemapTreeNode m_node;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param data the sitemap tree data
+         * @param node the tree node widget
+         */
+        public MenuContext(CmsSitemapTreeNodeData data, CmsSitemapTreeNode node) {
+            m_node = node;
+            m_data = data;
+        }
+
+        /**
+         * Gets the tree node data.<p>
+         *
+         * @return the tree node data
+         */
+        public CmsSitemapTreeNodeData getData() {
+
+            return m_data;
+        }
+
+        /**
+         * Gets the tree node widget.<p>
+         *
+         * @return the tree node widget
+         */
+        public CmsSitemapTreeNode getNode() {
+
+            return m_node;
+        }
+
+        /**
+         * Checks if the currently selected locale is the main locale.<p>
+         *
+         * @return true if we are in the main locale
+         */
+        @SuppressWarnings("synthetic-access")
+        public boolean isMainLocale() {
+
+            return m_localeContext.getRootLocale().equals(
+                A_CmsUI.getCmsObject().getLocaleGroupService().getMainLocale(m_localeContext.getRoot().getRootPath()));
+        }
+
+    }
+
     /** Default width for linked items displayed on the right side of tree items. */
     public static final int RHS_WIDTH = 420;
 
@@ -316,6 +881,17 @@ public class CmsSitemapTreeController {
         m_root = root;
         m_menu.extend((AbstractComponent)parent);
 
+    }
+
+    /**
+     * Returns VISIBILITY_ACTIVE if the given parameter is true, and VISIBILITY_INVISIBLE otherwise.<p>
+     *
+     * @param condition a boolean value
+     * @return the visibility based on the condition value
+     */
+    public static CmsMenuItemVisibilityMode visibleIfTrue(boolean condition) {
+
+        return condition ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 
     /**
@@ -388,125 +964,24 @@ public class CmsSitemapTreeController {
             /** Serial version id. */
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void menuSelected(MenuItem selectedItem) {
 
-                m_menu.removeAllItems();
-                if (!entry.isLinked()) {
-                    addLinkItem(entry, node);
-                }
-                String openPage = CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_OPEN_PAGE_0);
-                ContextMenuItem openItem = m_menu.addItem(openPage);
-                openItem.addItemClickListener(new ContextMenuItemClickListener() {
+                List<I_CmsSimpleContextMenuEntry<MenuContext>> entries = Arrays.asList(
 
-                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+                    new EntryOpen(),
+                    new EntryExplorer(),
+                    new EntryProperties(),
+                    new EntryCopy(),
+                    new EntryInfo(),
+                    new EntryLink(),
+                    new EntryUnlink(),
+                    new EntryMark(),
+                    new EntryRemoveMark());
 
-                        openTargetPage((CmsSitemapTreeNodeData)(node.getData()), false);
-                    }
-                });
-                if (m_localeContext.getRootLocale().equals(
-                    A_CmsUI.getCmsObject().getLocaleGroupService().getMainLocale(
-                        m_localeContext.getRoot().getRootPath()))) {
-                    try {
-                        CmsResource primary = A_CmsUI.getCmsObject().readResource(
-                            entry.getClientEntry().getId(),
-                            CmsResourceFilter.IGNORE_EXPIRATION);
-                        if (primary.isFolder()) {
-                            CmsResource defaultFile = A_CmsUI.getCmsObject().readDefaultFile(
-                                primary,
-                                CmsResourceFilter.IGNORE_EXPIRATION);
-                            if (defaultFile != null) {
-                                primary = defaultFile;
-                            }
-                        }
-                        final CmsResource primaryFinal = primary;
-                        addMarkItems(entry, node, primaryFinal);
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                        CmsErrorDialog.showErrorDialog(e);
-                    }
-
-                }
-
-                if (entry.isCopyable()) {
-                    ContextMenuItem copyItem = m_menu.addItem(
-                        CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_COPY_PAGE_0));
-                    copyItem.addItemClickListener(new ContextMenuItemClickListener() {
-
-                        public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                            openPageCopyDialog(node, entry);
-                        }
-                    });
-                }
-                ContextMenuItem infoItem = m_menu.addItem(CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCE_INFO_0));
-                infoItem.addItemClickListener(new ContextMenuItemClickListener() {
-
-                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                        CmsResourceInfoAction infoAction = new CmsResourceInfoAction();
-                        infoAction.executeAction(new DialogContext(entry.getResource(), node));
-                    }
-                });
-
-                ContextMenuItem propertiesItem = m_menu.addItem(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_PROPERTIES_0));
-                propertiesItem.addItemClickListener(new ContextMenuItemClickListener() {
-
-                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                        ((CmsSitemapUI)A_CmsUI.get()).getSitemapExtension().openPropertyDialog(
-                            entry.getResource().getStructureId(),
-                            m_root.getStructureId());
-
-                    }
-                });
-
-                ContextMenuItem explorerItem = m_menu.addItem(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_EXPLORER_0));
-                explorerItem.addItemClickListener(new ContextMenuItemClickListener() {
-
-                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                        String link = CmsCoreService.getVaadinWorkplaceLink(
-                            A_CmsUI.getCmsObject(),
-                            entry.getResource().getStructureId());
-                        A_CmsUI.get().getPage().setLocation(link);
-                    }
-                });
-
-                if (entry.isLinked()) {
-                    try {
-
-                        CmsResource primary = A_CmsUI.getCmsObject().readResource(
-                            entry.getClientEntry().getId(),
-                            CmsResourceFilter.IGNORE_EXPIRATION);
-                        if (primary.isFolder()) {
-                            CmsResource defaultFile = A_CmsUI.getCmsObject().readDefaultFile(
-                                primary,
-                                CmsResourceFilter.IGNORE_EXPIRATION);
-                            if (defaultFile != null) {
-                                primary = defaultFile;
-                            }
-                        }
-                        CmsLocaleGroupService groupService = A_CmsUI.getCmsObject().getLocaleGroupService();
-                        Locale mainLocale = groupService.getMainLocale(m_localeContext.getRoot().getRootPath());
-                        int mainLocaleCount = 0;
-                        for (Locale testLocale : Arrays.asList(
-                            m_localeContext.getRootLocale(),
-                            m_localeContext.getComparisonLocale())) {
-                            mainLocaleCount += mainLocale.equals(testLocale) ? 1 : 0;
-                        }
-                        if (mainLocaleCount == 1) {
-                            addUnlinkItem(entry, node);
-                        }
-                    } catch (Exception e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                        CmsErrorDialog.showErrorDialog(e);
-                    }
-                }
-
+                MenuContext context = new MenuContext(entry, node);
+                m_menu.setEntries(entries, context);
                 m_menu.open(menu);
+
             }
 
         });
@@ -734,232 +1209,6 @@ public class CmsSitemapTreeController {
     Log getTreeControllerLog() {
 
         return LOG;
-    }
-
-    /**
-     * Adds context menu items.<p<
-     *
-     * @param entry the sitemap node data
-     * @param node the sitemap node widget
-     */
-    private void addLinkItem(final CmsSitemapTreeNodeData entry, final CmsSitemapTreeNode node) {
-
-        ContextMenuItem linkItem = m_menu.addItem(
-            CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0));
-        linkItem.addItemClickListener(new ContextMenuItemClickListener() {
-
-            @SuppressWarnings("synthetic-access")
-            public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                try {
-                    DialogContext dialogContext = new DialogContext(
-                        A_CmsUI.getCmsObject().readResource(
-                            entry.getClientEntry().getId(),
-                            CmsResourceFilter.IGNORE_EXPIRATION),
-                        node);
-                    CmsLocaleLinkTargetSelectionDialog dialog = new CmsLocaleLinkTargetSelectionDialog(
-                        dialogContext,
-                        m_localeContext);
-                    dialogContext.start(
-                        CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0),
-                        dialog,
-                        DialogWidth.narrow);
-                } catch (CmsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                    CmsErrorDialog.showErrorDialog(e);
-                }
-
-            }
-        });
-    }
-
-    /**
-     * Adds context menu items.<p>
-     *
-     * @param entry the tree node bean
-     * @param node the tree node widget
-     * @param fileToModify the file which the context menu items should actually operate on
-     */
-    private void addMarkItems(
-        final CmsSitemapTreeNodeData entry,
-        final CmsSitemapTreeNode node,
-        final CmsResource fileToModify) {
-
-        if (!entry.isMarkedNoTranslation(m_localeContext.getComparisonLocale())) {
-            if (!entry.isLinked()) {
-                ContextMenuItem markPage = m_menu.addItem(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_ADD_DONT_TRANSLATE_0));
-                markPage.addItemClickListener(new ContextMenuItemClickListener() {
-
-                    @SuppressWarnings("synthetic-access")
-                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                        CmsResource fileToModify2 = fileToModify;
-                        if (fileToModify2.isFolder()) {
-                            try {
-                                fileToModify2 = A_CmsUI.getCmsObject().readDefaultFile(
-                                    fileToModify2,
-                                    CmsResourceFilter.IGNORE_EXPIRATION);
-                            } catch (CmsException e) {
-                                LOG.error(e.getLocalizedMessage(), e);
-                            }
-                        }
-
-                        CmsObject cms = A_CmsUI.getCmsObject();
-                        CmsLockActionRecord actionRecord = null;
-                        try {
-                            actionRecord = CmsLockUtil.ensureLock(cms, fileToModify2);
-                            m_localeContext.getComparisonLocale().toString();
-                            CmsProperty prop = cms.readPropertyObject(
-                                fileToModify2,
-                                CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
-                                false);
-                            String propValue = prop.getValue();
-                            if (propValue == null) {
-                                propValue = ""; // make getLocales not return null
-                            }
-                            List<Locale> currentLocales = CmsLocaleManager.getLocales(propValue);
-                            if (!currentLocales.contains(m_localeContext.getComparisonLocale())) {
-                                currentLocales.add(m_localeContext.getComparisonLocale());
-                                String newPropValue = Joiner.on(",").join(currentLocales);
-                                CmsProperty newProp = new CmsProperty(
-                                    CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
-                                    newPropValue,
-                                    null);
-                                cms.writePropertyObjects(fileToModify2, Arrays.asList(newProp));
-                                DialogContext dialogContext = new DialogContext(
-                                    A_CmsUI.getCmsObject().readResource(
-                                        entry.getClientEntry().getId(),
-                                        CmsResourceFilter.IGNORE_EXPIRATION),
-                                    node);
-                                dialogContext.finish(Arrays.asList(fileToModify2.getStructureId()));
-
-                            }
-
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                            CmsErrorDialog.showErrorDialog(e);
-
-                        } finally {
-                            if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
-                                try {
-                                    cms.unlockResource(fileToModify2);
-                                } catch (CmsException e) {
-                                    LOG.error(e.getLocalizedMessage(), e);
-                                    CmsErrorDialog.showErrorDialog(e);
-                                }
-                            }
-                        }
-
-                    }
-
-                });
-            }
-        } else {
-            ContextMenuItem unmarkPage = m_menu.addItem(
-                CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0));
-            unmarkPage.addItemClickListener(new ContextMenuItemClickListener() {
-
-                @SuppressWarnings("synthetic-access")
-                public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                    CmsResource fileToModify2 = fileToModify;
-                    if (fileToModify2.isFolder()) {
-                        try {
-                            fileToModify2 = A_CmsUI.getCmsObject().readDefaultFile(
-                                fileToModify2,
-                                CmsResourceFilter.IGNORE_EXPIRATION);
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    }
-
-                    CmsObject cms = A_CmsUI.getCmsObject();
-                    CmsLockActionRecord actionRecord = null;
-                    try {
-                        actionRecord = CmsLockUtil.ensureLock(cms, fileToModify2);
-                        m_localeContext.getComparisonLocale().toString();
-                        CmsProperty prop = cms.readPropertyObject(
-                            fileToModify2,
-                            CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
-                            false);
-                        String propValue = prop.getValue();
-                        if (propValue == null) {
-                            propValue = ""; // make getLocales not return null
-                        }
-                        List<Locale> currentLocales = CmsLocaleManager.getLocales(propValue);
-                        if (currentLocales.contains(m_localeContext.getComparisonLocale())) {
-                            currentLocales.remove(m_localeContext.getComparisonLocale());
-                            String newPropValue = Joiner.on(",").join(currentLocales);
-                            CmsProperty newProp = new CmsProperty(
-                                CmsPropertyDefinition.PROPERTY_LOCALE_NOTRANSLATION,
-                                newPropValue,
-                                null);
-                            cms.writePropertyObjects(fileToModify, Arrays.asList(newProp));
-                            DialogContext dialogContext = new DialogContext(
-                                A_CmsUI.getCmsObject().readResource(
-                                    entry.getClientEntry().getId(),
-                                    CmsResourceFilter.IGNORE_EXPIRATION),
-                                node);
-                            dialogContext.finish(Arrays.asList(fileToModify2.getStructureId()));
-                        }
-
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                        CmsErrorDialog.showErrorDialog(e);
-
-                    } finally {
-                        if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
-                            try {
-                                cms.unlockResource(fileToModify2);
-                            } catch (CmsException e) {
-                                LOG.error(e.getLocalizedMessage(), e);
-                                CmsErrorDialog.showErrorDialog(e);
-                            }
-                        }
-                    }
-
-                }
-
-            });
-        }
-    }
-
-    /**
-     * Adds a context menu item.<p>
-     *
-     * @param entry the tree node bean
-     * @param node the tree node widget
-     */
-    private void addUnlinkItem(final CmsSitemapTreeNodeData entry, final CmsSitemapTreeNode node) {
-
-        ContextMenuItem unlinkItem = m_menu.addItem(
-            CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0));
-        unlinkItem.addItemClickListener(new ContextMenuItemClickListener() {
-
-            @SuppressWarnings("synthetic-access")
-            public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                try {
-                    CmsResource secondary = entry.getLinkedResource();
-                    DialogContext dialogContext = new DialogContext(
-                        A_CmsUI.getCmsObject().readResource(
-                            entry.getClientEntry().getId(),
-                            CmsResourceFilter.IGNORE_EXPIRATION),
-                        node);
-                    CmsUnlinkDialog dialog = new CmsUnlinkDialog(dialogContext, secondary);
-                    dialogContext.start(
-                        CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0),
-                        dialog,
-                        DialogWidth.wide);
-                } catch (CmsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                    CmsErrorDialog.showErrorDialog(e);
-                }
-
-            }
-
-        });
     }
 
     /**

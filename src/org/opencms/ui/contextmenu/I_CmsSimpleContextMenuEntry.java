@@ -41,9 +41,9 @@ public interface I_CmsSimpleContextMenuEntry<T> {
     /**
      * Executes the entry action.<p>
      *
-     * @param data the item data
+     * @param context the item data
      */
-    void executeAction(T data);
+    void executeAction(T context);
 
     /**
      * Returns the entry title for the given locale.<p>
@@ -57,9 +57,9 @@ public interface I_CmsSimpleContextMenuEntry<T> {
     /**
      * Returns the entry visibility matching the given item data.<p>
      *
-     * @param data the item data
+     * @param context the item data
      *
      * @return the visibility mode
      */
-    CmsMenuItemVisibilityMode getVisibility(T data);
+    CmsMenuItemVisibilityMode getVisibility(T context);
 }
