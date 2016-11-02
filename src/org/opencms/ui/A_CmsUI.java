@@ -86,6 +86,7 @@ public abstract class A_CmsUI extends UI {
     public A_CmsUI() {
         m_windowExtension = new CmsWindowExtension(this);
         m_attributes = new ConcurrentHashMap<String, Serializable>();
+        getLoadingIndicatorConfiguration().setFirstDelay(600);
     }
 
     /**
