@@ -38,6 +38,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
@@ -111,6 +112,9 @@ I_OptionListener {
     private final Map<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator> m_styleGenerators = new HashMap<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator>(
         2);
 
+    /** Flag, indicating if leaving the editor is confirmed. */
+    boolean m_leaving;
+
     /** The context of the UI. */
     I_CmsAppUIContext m_context;
 
@@ -147,7 +151,22 @@ I_OptionListener {
     /**
      * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
      */
-    public boolean beforeViewChange(ViewChangeEvent event) {
+    public boolean beforeViewChange(final ViewChangeEvent event) {
+
+        if (!m_leaving && m_model.hasChanges()) {
+            CmsConfirmationDialog.show(
+                CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EDITOR_CLOSE_CAPTION_0),
+                CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EDITOR_CLOSE_TEXT_0),
+                new Runnable() {
+
+                    public void run() {
+
+                        m_leaving = true;
+                        event.getNavigator().navigateTo(event.getViewName());
+                    }
+                });
+            return false;
+        }
 
         cleanUpAction();
         return true;

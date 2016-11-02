@@ -75,6 +75,8 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.IndexedContainer;
 
@@ -82,7 +84,7 @@ import com.vaadin.data.util.IndexedContainer;
  * The class contains the logic behind the message translation editor.
  * In particular it reads / writes the involved files and provides the contents as {@link IndexedContainer}.
  */
-public class CmsMessageBundleEditorModel {
+public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
     /** Wrapper for the configurable messages for the column headers of the message bundle editor. */
     public static final class ConfigurableMessages {
@@ -199,6 +201,9 @@ public class CmsMessageBundleEditorModel {
         FAILED_FOR_OTHER_LANGUAGE
     }
 
+    /** Default serialization id, needed to implement {@link ValueChangeListener}. */
+    private static final long serialVersionUID = 1L;
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorModel.class);
 
@@ -261,6 +266,9 @@ public class CmsMessageBundleEditorModel {
 
     /** Flag, indicating if the descriptor should be removed when editing is cancelled. */
     private boolean m_removeDescriptorOnCancel;
+
+    /** Flag, indicating if something changed. */
+    boolean m_hasChanges;
 
     /**
      *
@@ -573,6 +581,15 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Returns a flag, indicating if something was edited.
+     * @return a flag, indicating if something was edited.
+     */
+    public boolean hasChanges() {
+
+        return m_hasChanges;
+    }
+
+    /**
      * Returns a flag, indicating if the descriptor specifies any default values.
      * @return flag, indicating if the descriptor specifies any default values.
      */
@@ -646,6 +663,9 @@ public class CmsMessageBundleEditorModel {
             saveToBundleDescriptor();
         }
 
+        m_hasChanges = false;
+        m_container.addValueChangeListener(this);
+
     }
 
     /**
@@ -698,6 +718,18 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Listens to changes on the container, i.e. to any value changes.
+     *
+     * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
+     */
+    public void valueChange(final ValueChangeEvent event) {
+
+        m_hasChanges = true;
+        m_container.removeValueChangeListener(this);
+
+    }
+
+    /**
      * Adjusts the locale for an already existing container by first saving the translation for the current locale and the loading the values of the new locale.
      *
      * @param locale the locale for which the container should be adjusted.
@@ -745,6 +777,9 @@ public class CmsMessageBundleEditorModel {
             }
         }
         container.setItemSorter(new DefaultItemSorter(new CmsCaseInsensitivePropertyValueComparator()));
+        if (!m_hasChanges) {
+            container.addValueChangeListener(this);
+        }
         return container;
     }
 
