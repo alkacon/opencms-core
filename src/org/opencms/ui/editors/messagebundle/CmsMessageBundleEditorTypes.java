@@ -509,7 +509,7 @@ public final class CmsMessageBundleEditorTypes {
          * Default constructor.
          */
         public KeyValidator() {
-            super(CmsMessageBundleEditor.m_messages.key(Messages.GUI_INVALID_KEY_0));
+            super(Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_INVALID_KEY_0));
 
         }
 
@@ -845,7 +845,8 @@ public final class CmsMessageBundleEditorTypes {
                     tf.setWidth("100%");
                     tf.setResponsive(true);
 
-                    tf.setInputPrompt(CmsMessageBundleEditor.m_messages.key(Messages.GUI_PLEASE_ADD_VALUE_0));
+                    tf.setInputPrompt(
+                        Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_PLEASE_ADD_VALUE_0));
                     tf.setData(new ComponentData(i, itemId, ""));
                     if (!m_valueFields.containsKey(Integer.valueOf(i))) {
                         m_valueFields.put(Integer.valueOf(i), new HashMap<Integer, AbstractTextField>());
@@ -931,9 +932,6 @@ public final class CmsMessageBundleEditorTypes {
             }
         }
     }
-
-    /** Messages used by the GUI. */
-    public static final CmsMessages MESSAGES = Messages.get().getBundle(UI.getCurrent().getLocale());
 
     /** The log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorTypes.class);

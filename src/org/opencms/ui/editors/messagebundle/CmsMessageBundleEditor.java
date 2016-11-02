@@ -99,7 +99,7 @@ I_OptionListener {
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditor.class);
 
     /** Messages used by the GUI. */
-    static CmsMessages m_messages;
+    CmsMessages m_messages;
 
     /** Configurable Messages. */
     ConfigurableMessages m_configurableMessages;

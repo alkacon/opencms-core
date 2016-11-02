@@ -62,7 +62,7 @@ import com.vaadin.ui.UI;
 public class CmsMessageBundleEditorOptions {
 
     /** Messages used by the GUI. */
-    static CmsMessages m_messages = Messages.get().getBundle(UI.getCurrent().getLocale());
+    CmsMessages m_messages;
 
     /** Grid with all options (2x2). */
     private GridLayout m_optionsComponent;
@@ -106,6 +106,7 @@ public class CmsMessageBundleEditorOptions {
         final EditMode currentMode,
         final I_OptionListener optionListener) {
 
+        m_messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         m_listener = optionListener;
         initLanguageSwitch(locales, currentLocale);
         initModeSwitch(currentMode);
