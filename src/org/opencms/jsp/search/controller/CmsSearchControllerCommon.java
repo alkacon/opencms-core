@@ -82,7 +82,13 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             if (queryString.isEmpty() && m_config.getSearchForEmptyQueryParam()) {
                 queryString = "*";
             }
-            query.set("q", "{!tag=q}" + m_config.getModifiedQuery(queryString));
+            String modifiedQuery = m_config.getModifiedQuery(queryString);
+            if (modifiedQuery.startsWith("{!")) {
+                modifiedQuery = "{!tag=q " + modifiedQuery.substring(2);
+            } else {
+                modifiedQuery = "{!tag=q}" + modifiedQuery;
+            }
+            query.set("q", modifiedQuery);
         }
 
         if (m_config.getSolrIndex() != null) {
