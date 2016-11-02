@@ -33,6 +33,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
@@ -48,10 +49,15 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -80,7 +86,7 @@ public class CmsUserInfo extends VerticalLayout {
     private Button m_editData;
 
     /** The dialog context. */
-    private I_CmsDialogContext m_context;
+    I_CmsDialogContext m_context;
 
     /**
      * Constructor.<p>
@@ -188,25 +194,45 @@ public class CmsUserInfo extends VerticalLayout {
      *
      * @return the created button
      */
-    CmsUploadButton createImageButton(CmsObject cms, CmsUser user, I_UploadListener uploadListener) {
+    Component createImageButton(CmsObject cms, CmsUser user, I_UploadListener uploadListener) {
 
-        CmsUploadButton button = new CmsUploadButton(
-            new ExternalResource(OpenCms.getWorkplaceAppManager().getUserIconHelper().getBigIconPath(cms, user)),
-            CmsUserIconHelper.USER_IMAGE_FOLDER + CmsUserIconHelper.TEMP_FOLDER);
-        button.getState().setUploadType(UploadType.singlefile);
-        button.getState().setTargetFileNamePrefix(user.getId().toString());
-        button.addStyleName("o-user-image");
-        button.getState().setDialogTitle(
-            CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_DIALOG_TITLE_0));
-        if (CmsAppWorkplaceUi.isOnlineProject()) {
-            button.setEnabled(false);
-            button.setDescription(
-                CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
-        } else {
-            button.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_0));
+        CssLayout layout = new CssLayout();
+        layout.addStyleName("o-user-image");
+        Image userImage = new Image();
+        userImage.setSource(
+            new ExternalResource(OpenCms.getWorkplaceAppManager().getUserIconHelper().getBigIconPath(cms, user)));
+
+        layout.addComponent(userImage);
+
+        if (!CmsAppWorkplaceUi.isOnlineProject()) {
+            CmsUploadButton uploadButton = new CmsUploadButton(
+                FontOpenCms.UPLOAD,
+                CmsUserIconHelper.USER_IMAGE_FOLDER + CmsUserIconHelper.TEMP_FOLDER);
+            uploadButton.getState().setUploadType(UploadType.singlefile);
+            uploadButton.getState().setTargetFileNamePrefix(user.getId().toString());
+            uploadButton.getState().setDialogTitle(
+                CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_DIALOG_TITLE_0));
+            uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_0));
+            uploadButton.addUploadListener(uploadListener);
+            layout.addComponent(uploadButton);
+            if (CmsUserIconHelper.hasUserImage(user)) {
+                Button deleteButton = new Button(FontAwesome.TRASH);
+                deleteButton.addClickListener(new ClickListener() {
+
+                    private static final long serialVersionUID = 1L;
+
+                    public void buttonClick(ClickEvent event) {
+
+                        OpenCms.getWorkplaceAppManager().getUserIconHelper().deleteUserImage(A_CmsUI.getCmsObject());
+                        m_context.updateUserInfo();
+
+                    }
+                });
+                layout.addComponent(deleteButton);
+            }
         }
-        button.addUploadListener(uploadListener);
-        return button;
+
+        return layout;
     }
 
     /**

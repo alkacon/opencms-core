@@ -167,9 +167,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** Displays the user icon and name. */
     private Label m_userInfo;
 
-    /** The user image delete button. */
-    private Button m_deleteImage;
-
     /**
      * Creates a new instance.<p>
      *
@@ -196,18 +193,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
                 + m_user.getName());
 
         initFields();
-
-        m_deleteImage.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                OpenCms.getWorkplaceAppManager().getUserIconHelper().deleteUserImage(A_CmsUI.getCmsObject());
-                updateUserInfo();
-
-            }
-        });
 
         m_cancelButton.addClickListener(new ClickListener() {
 

@@ -63,19 +63,52 @@
   
   .o-user-info{ 
   
-  	.o-user-image.v-button {
+  	.o-user-image {
+  		position: relative;
   		height: 102px;
   		padding: 2px;
+  		border: 1px solid #c5c5c7;
+  		border-radius: 4px;
   		
-  		> span.v-button-wrap {
-  			display: inline-block;
-  			vertical-align: top;
-  			
-  			img.v-icon {
+  		img {
   				height: 96px;
   				width: 96px;
+  		}
+  		
+  		.v-button{
+  			position: absolute;
+  			top: 64px;
+  			left: 38px;
+  			display: none;
+  			font-size: $app-icon-size-small;
+		    height: 32px;
+		    min-width: 32px;
+		    line-height: 24px;
+		    padding: 4px;
+		    margin: 0;
+		    color: inherit;
+		    background: $o-light-background-color;
+		    border: none;
+		    box-shadow: none;
+		    
+		    .v-icon{
+		    	margin: 0;
+		    }
+		    
+		    &:focus:after {
+		    	border-color: transparent;
+		    	box-shadow: none;
+		    }
+		    
+		    &.o-upload-button{
+  				left: 4px;
   			}
   		}
+  		
+  		&:hover .v-button{
+  			display: block;
+  		}
+  		
   	}
     .v-button.v-button-o-toolbar-button{
   	  padding: 2px;

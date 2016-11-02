@@ -109,6 +109,18 @@ public class CmsUserIconHelper {
     }
 
     /**
+     * Checks whether the given user has an individual user image.<p>
+     *
+     * @param user the user
+     *
+     * @return <code>true</code> if the given user has an individual user image
+     */
+    public static boolean hasUserImage(CmsUser user) {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)user.getAdditionalInfo(USER_IMAGE_INFO));
+    }
+
+    /**
      * Deletes the user image of the current user.<p>
      *
      * @param cms the cms context
