@@ -125,6 +125,9 @@ public class CmsContainerElement implements IsSerializable {
     /** The element client id. */
     private String m_clientId;
 
+    /** The copy in models flag. */
+    private boolean m_copyInModels;
+
     /** The 'create new' status of the element. */
     private boolean m_createNew;
 
@@ -321,6 +324,16 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Returns the copy in models flag.<p>
+     *
+     * @return the copy in models flag
+     */
+    public boolean isCopyInModels() {
+
+        return m_copyInModels;
+    }
+
+    /**
      * Reads the 'create new' status of the element.<p>
      *
      * When the page containing the element is used a model page, this flag determines whether a copy of the element
@@ -421,6 +434,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setClientId(String clientId) {
 
         m_clientId = clientId;
+    }
+
+    /**
+     * Sets the copy in models flag.<p>
+     *
+     * @param copyInModels the copy in models flag to set
+     */
+    public void setCopyInModels(boolean copyInModels) {
+
+        m_copyInModels = copyInModels;
     }
 
     /**

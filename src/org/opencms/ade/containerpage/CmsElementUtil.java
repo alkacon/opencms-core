@@ -288,10 +288,9 @@ public class CmsElementUtil {
         CmsADESessionCache cache) {
 
         I_CmsFormatterBean formatter = null;
-        Map<String, I_CmsFormatterBean> formatters = config.getFormatters(cms, element.getResource()).getFormatterSelection(
-            container.getType(),
-            container.getWidth(),
-            allowNested);
+        Map<String, I_CmsFormatterBean> formatters = config.getFormatters(
+            cms,
+            element.getResource()).getFormatterSelection(container.getType(), container.getWidth(), allowNested);
         String formatterId = element.getIndividualSettings().get(
             CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
         if (formatterId != null) {
@@ -389,7 +388,8 @@ public class CmsElementUtil {
         CmsResource page,
         CmsContainerElementBean element,
         Collection<CmsContainer> containers,
-        boolean allowNested) throws CmsException {
+        boolean allowNested)
+    throws CmsException {
 
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
@@ -545,7 +545,8 @@ public class CmsElementUtil {
         CmsContainerElementBean element,
         String containerId,
         Collection<CmsContainer> containers,
-        boolean allowNested) throws CmsException {
+        boolean allowNested)
+    throws CmsException {
 
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
@@ -571,8 +572,8 @@ public class CmsElementUtil {
                         I_CmsFormatterBean formatter = formatterEntry.getValue();
                         String id = formatterEntry.getKey();
                         if (missesFormatterSetting
-                            && ((element.getFormatterId() == null) || element.getFormatterId().equals(
-                                formatter.getJspStructureId()))) {
+                            && ((element.getFormatterId() == null)
+                                || element.getFormatterId().equals(formatter.getJspStructureId()))) {
                             elementData.getSettings().put(
                                 CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()),
                                 id);
@@ -647,7 +648,8 @@ public class CmsElementUtil {
             m_cms,
             elementBean.getResource());
         result.setNewEditorDisabled(newEditorDisabled);
-        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
+        String typeName = OpenCms.getResourceManager().getResourceType(
+            elementBean.getResource().getTypeId()).getTypeName();
         result.setResourceType(typeName);
         CmsPermissionInfo permissionInfo;
         String title;
@@ -666,21 +668,20 @@ public class CmsElementUtil {
                         folderPath,
                         CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
                     if (m_cms.existsResource(configPath)) {
-                        permissionInfo.setNoEditReason(new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(
-                            wpLocale,
-                            true));
+                        permissionInfo.setNoEditReason(
+                            new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(wpLocale, true));
                     } else {
                         if (!m_cms.getLock(folderPath).isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
-                            permissionInfo.setNoEditReason(org.opencms.workplace.explorer.Messages.get().getBundle(
-                                wpLocale).key(
-                                org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
-                                new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName()));
+                            permissionInfo.setNoEditReason(
+                                org.opencms.workplace.explorer.Messages.get().getBundle(wpLocale).key(
+                                    org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
+                                    new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName()));
                         }
                     }
                 }
             } else {
-                permissionInfo.setNoEditReason(Messages.get().getBundle(wpLocale).key(
-                    Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
+                permissionInfo.setNoEditReason(
+                    Messages.get().getBundle(wpLocale).key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
             }
             CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
                 m_cms,
@@ -707,6 +708,9 @@ public class CmsElementUtil {
 
         result.setCreateNew(elementBean.isCreateNew());
         CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
+        if (typeConfig != null) {
+            result.setCopyInModels(typeConfig.isCopyInModels());
+        }
         Map<CmsUUID, CmsElementView> viewMap = OpenCms.getADEManager().getElementViews(m_cms);
         boolean isModelGroup = elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID);
         if (isModelGroup) {
@@ -730,20 +734,21 @@ public class CmsElementUtil {
         }
         if (elementBean.isCreateNew()
             && CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
-            && ((typeConfig == null) || !typeConfig.checkCreatable(
-                m_cms,
-                CmsResource.getParentFolder(m_page.getRootPath())))) {
+            && ((typeConfig == null)
+                || !typeConfig.checkCreatable(m_cms, CmsResource.getParentFolder(m_page.getRootPath())))) {
             String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-            permissionInfo.setNoEditReason(Messages.get().getBundle(wpLocale).key(
-                Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1,
-                niceName));
+            permissionInfo.setNoEditReason(
+                Messages.get().getBundle(wpLocale).key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName));
         }
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
         result.setModelGroup(isModelGroup);
-        result.setWasModelGroup(elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
-            && (ModelGroupState.evaluate(elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.wasModelGroup));
+        result.setWasModelGroup(
+            elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
+                && (ModelGroupState.evaluate(
+                    elementBean.getIndividualSettings().get(
+                        CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.wasModelGroup));
         return result;
     }
 
@@ -812,10 +817,11 @@ public class CmsElementUtil {
             m_cms,
             page,
             element.getResource());
-        elementData.setSettings(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
-            m_cms,
-            element.getIndividualSettings(),
-            settingConfig));
+        elementData.setSettings(
+            CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
+                m_cms,
+                element.getIndividualSettings(),
+                settingConfig));
         return elementData;
     }
 
@@ -950,13 +956,9 @@ public class CmsElementUtil {
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
             m_req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
             String encoding = m_res.getCharacterEncoding();
-            return (new String(OpenCms.getResourceManager().getLoader(formatter).dump(
-                m_cms,
-                formatter,
-                null,
-                m_locale,
-                m_req,
-                m_res), encoding)).trim();
+            return (new String(
+                OpenCms.getResourceManager().getLoader(formatter).dump(m_cms, formatter, null, m_locale, m_req, m_res),
+                encoding)).trim();
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }
