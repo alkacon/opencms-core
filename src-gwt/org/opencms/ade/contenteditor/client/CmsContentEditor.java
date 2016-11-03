@@ -2418,7 +2418,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                                 }
                             } else {
                                 // values have been removed
-                                for (int i = updatedAttribute.getValueCount() - 1; i >= 0; i--) {
+                                for (int i = previousAttribute.getValueCount() - 1; i >= 0; i--) {
                                     if (i >= updatedAttribute.getSimpleValues().size()) {
                                         handler.removeAttributeValue(i);
                                     } else if (!updatedAttribute.getSimpleValues().get(i).equals(
@@ -2458,7 +2458,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                             }
                         } else {
                             // values have been removed
-                            for (int i = updatedAttribute.getValueCount() - 1; i >= 0; i--) {
+                            for (int i = previousAttribute.getValueCount() - 1; i >= 0; i--) {
                                 if (i >= updatedAttribute.getValueCount()) {
 
                                     handler.removeAttributeValue(i);
