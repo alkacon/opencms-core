@@ -223,7 +223,8 @@ public class CmsFileTable extends CmsResourceTable {
                     }
                     return result;
                 }
-            } else if (CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
+            } else if ((CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
+                || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
                 && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
                 int result;
                 Float pos1 = (Float)item1.getItemProperty(
