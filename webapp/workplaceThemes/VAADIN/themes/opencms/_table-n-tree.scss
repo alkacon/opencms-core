@@ -166,11 +166,11 @@
 		text-decoration: line-through;
 	}
   
-	.v-table-row-o-state-changed {
+	.v-table-row-o-state-changed .o-hover-column {
 		color: $o-state-changed-color;
 	}
   
-	.v-table-row-o-state-new {
+	.v-table-row-o-state-new .o-hover-column {
 		color: $o-state-new-color;
 	}
   
