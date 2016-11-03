@@ -119,6 +119,10 @@
 	.v-filterselect-suggestpopup{
 	 	 @include o-visible-scrollbars;
 	}
+	
+	.v-filterselect-suggestpopup .gwt-MenuItem.v-filterselect-item-bold{
+	 	font-weight: 800;
+	 }
   
 	/* Fix for disabled menu items - especially for non-collapsible table columns. */
 	.gwt-MenuItem span.v-disabled {

@@ -69,6 +69,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.ComboBox.ItemStyleGenerator;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -504,6 +505,8 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         m_targetFolder.setWidth("100%");
         form.addComponent(m_targetFolder);
         if (m_dialogMode != DialogMode.move) {
+            final Set<Action> defaultActions = new HashSet<Action>();
+
             m_actionCombo = new ComboBox();
             m_actionCombo.setCaption(CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_COPYPAGE_COPY_MODE_0));
             m_actionCombo.setNullSelectionAllowed(false);
@@ -516,6 +519,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             m_actionCombo.setValue(Action.automatic);
             if (m_context.getResources().size() == 1) {
                 if (m_context.getResources().get(0).isFile()) {
+                    defaultActions.add(Action.copy_all);
                     m_actionCombo.addItem(Action.copy_all);
                     m_actionCombo.setItemCaption(
                         Action.copy_all,
@@ -534,32 +538,37 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 } else {
                     CmsResource folder = m_context.getResources().get(0);
                     m_hasContainerPageDefaultFile = hasContainerPageDefaultFile(folder);
+                    defaultActions.add(Action.copy_sibling_mixed);
                     if (m_hasContainerPageDefaultFile) {
+                        defaultActions.clear();
+                        defaultActions.add(Action.container_page_copy);
                         m_actionCombo.addItem(Action.container_page_copy);
                         m_actionCombo.setItemCaption(
                             Action.container_page_copy,
                             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONTAINERPAGE_COPY_0));
-
+                        defaultActions.add(Action.container_page_reuse);
                         m_actionCombo.addItem(Action.container_page_reuse);
                         m_actionCombo.setItemCaption(
                             Action.container_page_reuse,
                             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0));
                     }
                     if (CmsResourceTypeFolderSubSitemap.isSubSitemap(folder)) {
+                        defaultActions.clear();
+                        defaultActions.add(Action.sub_sitemap);
                         m_actionCombo.addItem(Action.sub_sitemap);
                         m_actionCombo.setItemCaption(
                             Action.sub_sitemap,
                             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SUBSITEMAP_0));
                     }
-                    m_actionCombo.addItem(Action.copy_all);
-                    m_actionCombo.setItemCaption(
-                        Action.copy_all,
-                        CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_ALL_0));
                     m_actionCombo.addItem(Action.copy_sibling_mixed);
                     m_actionCombo.setItemCaption(
                         Action.copy_sibling_mixed,
                         CmsVaadinUtils.getMessageText(
                             org.opencms.workplace.commons.Messages.GUI_COPY_ALL_NO_SIBLINGS_0));
+                    m_actionCombo.addItem(Action.copy_all);
+                    m_actionCombo.setItemCaption(
+                        Action.copy_all,
+                        CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_ALL_0));
                     m_actionCombo.addItem(Action.copy_sibling_all);
                     m_actionCombo.setItemCaption(
                         Action.copy_sibling_all,
@@ -574,14 +583,15 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                     }
                 }
             } else {
-                m_actionCombo.addItem(Action.copy_all);
-                m_actionCombo.setItemCaption(
-                    Action.copy_all,
-                    CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_ALL_0));
+                defaultActions.add(Action.copy_sibling_mixed);
                 m_actionCombo.addItem(Action.copy_sibling_mixed);
                 m_actionCombo.setItemCaption(
                     Action.copy_sibling_mixed,
                     CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_ALL_NO_SIBLINGS_0));
+                m_actionCombo.addItem(Action.copy_all);
+                m_actionCombo.setItemCaption(
+                    Action.copy_all,
+                    CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_ALL_0));
                 m_actionCombo.addItem(Action.copy_sibling_all);
                 m_actionCombo.setItemCaption(
                     Action.copy_sibling_all,
@@ -595,7 +605,19 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                             org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_MOVE_RESOURCES_0));
                 }
             }
+            m_actionCombo.setItemStyleGenerator(new ItemStyleGenerator() {
 
+                private static final long serialVersionUID = 1L;
+
+                public String getStyle(ComboBox source, Object itemId) {
+
+                    String style = null;
+                    if (defaultActions.contains(itemId)) {
+                        style = "bold";
+                    }
+                    return style;
+                }
+            });
             form.addComponent(m_actionCombo);
         }
         if (m_context.getResources().size() > 1) {
