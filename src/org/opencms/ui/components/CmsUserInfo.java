@@ -49,7 +49,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -206,7 +205,7 @@ public class CmsUserInfo extends VerticalLayout {
 
         if (!CmsAppWorkplaceUi.isOnlineProject()) {
             CmsUploadButton uploadButton = new CmsUploadButton(
-                FontOpenCms.UPLOAD,
+                FontOpenCms.UPLOAD_SMALL,
                 CmsUserIconHelper.USER_IMAGE_FOLDER + CmsUserIconHelper.TEMP_FOLDER);
             uploadButton.getState().setUploadType(UploadType.singlefile);
             uploadButton.getState().setTargetFileNamePrefix(user.getId().toString());
@@ -216,7 +215,7 @@ public class CmsUserInfo extends VerticalLayout {
             uploadButton.addUploadListener(uploadListener);
             layout.addComponent(uploadButton);
             if (CmsUserIconHelper.hasUserImage(user)) {
-                Button deleteButton = new Button(FontAwesome.TRASH);
+                Button deleteButton = new Button(FontOpenCms.TRASH_SMALL);
                 deleteButton.addClickListener(new ClickListener() {
 
                     private static final long serialVersionUID = 1L;
