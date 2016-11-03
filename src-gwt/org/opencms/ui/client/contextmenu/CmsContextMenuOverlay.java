@@ -257,6 +257,7 @@ class CmsContextMenuOverlay extends VOverlay {
     public void unregister() {
 
         m_closeHandlerRegistration.removeHandler();
+        hide();
     }
 
     /**
