@@ -479,7 +479,8 @@ public final class CmsRequestUtil {
         String target,
         Map<String, String[]> params,
         HttpServletRequest req,
-        HttpServletResponse res) throws IOException, ServletException {
+        HttpServletResponse res)
+    throws IOException, ServletException {
 
         // cast the request back to a flex request so the parameter map can be accessed
         CmsFlexRequest f_req = (CmsFlexRequest)req;
@@ -729,6 +730,23 @@ public final class CmsRequestUtil {
      */
     public static List<FileItem> readMultipartFileItems(HttpServletRequest request) {
 
+        return readMultipartFileItems(request, OpenCms.getSystemInfo().getPackagesRfsPath());
+    }
+
+    /**
+     * Parses a request of the form <code>multipart/form-data</code>.
+     *
+     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * If the request is not of type <code>multipart/form-data</code>, then <code>null</code> is returned.<p>
+     *
+     * @param request the HTTP servlet request to parse
+     * @param tempFolderPath the real file system path to the temp file folder
+     *
+     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
+     */
+    public static List<FileItem> readMultipartFileItems(HttpServletRequest request, String tempFolderPath) {
+
         if (!ServletFileUpload.isMultipartContent(request)) {
             return null;
         }
@@ -736,7 +754,7 @@ public final class CmsRequestUtil {
         // maximum size that will be stored in memory
         factory.setSizeThreshold(4096);
         // the location for saving data that is larger than getSizeThreshold()
-        factory.setRepository(new File(OpenCms.getSystemInfo().getPackagesRfsPath()));
+        factory.setRepository(new File(tempFolderPath));
         ServletFileUpload fu = new ServletFileUpload(factory);
         // set encoding to correctly handle special chars (e.g. in filenames)
         fu.setHeaderEncoding(request.getCharacterEncoding());
