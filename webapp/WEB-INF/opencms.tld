@@ -785,6 +785,12 @@
         <name>contentaccess</name>
         <tag-class>org.opencms.jsp.CmsJspTagContentAccess</tag-class>
         <body-content>empty</body-content>
+        <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>java.util.Map</variable-class>
+            <declare>true</declare>
+            <scope>NESTED</scope>
+        </variable>
         <attribute>
             <description><![CDATA[
               Name of the exported scoped variable that provides access to the XML content currently loaded via <code>&lt;cms:contentload&gt;</code>. 
@@ -984,6 +990,12 @@
         <name>resourceaccess</name>
         <tag-class>org.opencms.jsp.CmsJspTagResourceAccess</tag-class>
         <body-content>empty</body-content>
+        <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>org.opencms.jsp.util.CmsJspResourceAccessBean</variable-class>
+            <declare>true</declare>
+            <scope>NESTED</scope>
+        </variable>
         <attribute>
             <description><![CDATA[
               Name of the exported scoped variable that provides access to resource currently loaded via <code>&lt;cms:resourceload&gt;</code>. 
@@ -2253,6 +2265,12 @@
         <name>formatter</name>
         <tag-class>org.opencms.jsp.CmsJspTagFormatter</tag-class>
         <body-content>JSP</body-content>
+        <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>org.opencms.jsp.util.CmsJspContentAccessBean</variable-class>
+            <declare>true</declare>
+            <scope>NESTED</scope>
+        </variable>
         <attribute>
           	<description><![CDATA[
               Name of the exported scoped variable that provides access to the loaded XML content. 
@@ -2379,6 +2397,12 @@
         <name>navigation</name>
         <tag-class>org.opencms.jsp.CmsJspTagNavigation</tag-class>
         <body-content>empty</body-content>
+        <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>org.opencms.jsp.util.CmsJspNavigationBean</variable-class>
+            <declare>true</declare>
+            <scope>AT_BEGIN</scope>
+        </variable>
         <attribute>
             <description><![CDATA[
               Name of the exported variable that holds a suitably initialized org.opencms.jsp.util.CmsJspNavigationBean object.
@@ -2530,6 +2554,12 @@
         <name>search</name>
         <tag-class>org.opencms.jsp.CmsJspTagSearch</tag-class>
         <body-content>JSP</body-content>
+        <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>org.opencms.jsp.search.result.I_CmsSearchResultWrapper</variable-class>
+            <declare>true</declare>
+            <scope>NESTED</scope>
+        </variable>
         <attribute>
           	<description><![CDATA[The name of the variable that exposes an object of type <code>org.opencms.jsp.search.result.I_CmsSearchResultWrapper</code>, 
           	which gives you access to the search results and to a search form controller.        	  
