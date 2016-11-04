@@ -49,7 +49,7 @@ public class CmsPermissionDialogAction extends A_CmsWorkplaceAction {
 
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
-        CmsStandardVisibilityCheck.PERMISSIONS);
+        CmsStandardVisibilityCheck.VIEW);
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
