@@ -920,7 +920,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public void select(ServletResponse response, CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
     throws Exception {
 
-        search(cms, query, ignoreMaxRows, response, false, null);
+        boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        CmsResourceFilter filter = isOnline ? null : CmsResourceFilter.IGNORE_EXPIRATION;
+
+        search(cms, query, ignoreMaxRows, response, false, filter);
     }
 
     /**
