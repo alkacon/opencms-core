@@ -823,6 +823,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns the locales available for the currently requested URI.
+     *
+     * @return the locales available for the currently requested URI.
+     */
+    public List<Locale> getAvailableLocales() {
+
+        return OpenCms.getLocaleManager().getAvailableLocales(m_cms, getRequestContext().getUri());
+    }
+
+    /**
      * Returns the container the currently rendered element is part of.<p>
      *
      * @return the currently the currently rendered element is part of
