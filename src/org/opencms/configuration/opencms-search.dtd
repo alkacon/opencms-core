@@ -12,6 +12,7 @@
 	directory,
 	timeout,
 	offlineUpdateFrequency?,
+	maxIndexWaitTime?,
 	forceunlock?,
 	excerpt,
 	extractionCacheMaxAge?,
@@ -62,6 +63,11 @@
 # Time in milliseconds to update offline indexes.
 -->
 <!ELEMENT offlineUpdateFrequency (#PCDATA)>
+
+<!--
+# Time in milliseconds to wait maximally for the update of offline indexes after edit operations.
+-->
+<!ELEMENT maxIndexWaitTime (#PCDATA)>
 
 <!--
 # The state of unlocking during the indexing threads (always|never|onlyfull), 

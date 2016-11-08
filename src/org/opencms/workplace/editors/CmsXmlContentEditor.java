@@ -602,7 +602,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // set the modified parameter
                 setParamModified(Boolean.TRUE.toString());
                 // update the offline search indices
-                OpenCms.getSearchManager().updateOfflineIndexes(0);
+                OpenCms.getSearchManager().updateOfflineIndexes();
             }
         } catch (CmsException e) {
             showErrorPage(e);

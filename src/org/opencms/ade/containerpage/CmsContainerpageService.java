@@ -93,7 +93,6 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.CmsSearchManager;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
@@ -1390,7 +1389,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Collection<String> ids = new ArrayList<String>();
         ids.add(groupContainer.getClientId());
         // update offline indices
-        OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+        OpenCms.getSearchManager().updateOfflineIndexes();
         return new CmsGroupContainerSaveResult(
             getElementsData(context, detailContentId, reqParams, ids, containers, false, false, null, locale),
             removedElements);

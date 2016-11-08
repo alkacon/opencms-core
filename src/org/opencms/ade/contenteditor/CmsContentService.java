@@ -620,7 +620,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 writeCategories(file, content, lastEditedEntity);
 
                 // update offline indices
-                OpenCms.getSearchManager().updateOfflineIndexes(0);
+                OpenCms.getSearchManager().updateOfflineIndexes();
                 if (clearOnSuccess) {
                     tryUnlock(resource);
                     getSessionCache().uncacheXmlContent(structureId);

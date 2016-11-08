@@ -395,7 +395,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
         cms.lockResource("/foo1.txt");
         cms.moveResource("/foo1.txt", "/foo2.txt");
-        OpenCms.getSearchManager().updateOfflineIndexes(5000);
+        OpenCms.getSearchManager().updateOfflineIndexes();
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setQuery("foo1");

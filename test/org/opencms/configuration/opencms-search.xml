@@ -6,7 +6,8 @@
 		<directory>index</directory>
 		<timeout>60000</timeout>
 		<offlineUpdateFrequency>30000</offlineUpdateFrequency>
-		<forceunlock>onlyfull</forceunlock>		
+		<maxIndexWaitTime>30000</maxIndexWaitTime>
+		<forceunlock>onlyfull</forceunlock>
 		<excerpt>1024</excerpt>	
 		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>
         <maxModificationsBeforeCommit>4711</maxModificationsBeforeCommit>            

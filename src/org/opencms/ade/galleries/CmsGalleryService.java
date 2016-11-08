@@ -74,7 +74,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
@@ -913,7 +912,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     public void updateIndex() throws CmsRpcException {
 
         try {
-            OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+            OpenCms.getSearchManager().updateOfflineIndexes();
         } catch (Throwable e) {
             error(e);
         }

@@ -362,6 +362,8 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PARSE_OFFLINE_UPDATE_FAILED_2 = "LOG_PARSE_OFFLINE_UPDATE_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_PARSE_MAX_INDEX_WAITTIME_FAILED_2 = "LOG_PARSE_MAX_INDEX_WAITTIME_FAILED_2";
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_TIMEOUT_FAILED_2 = "LOG_PARSE_TIMEOUT_FAILED_2";
 
     /** Message constant for key in the resource bundle. */

@@ -88,7 +88,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
-import org.opencms.search.CmsSearchManager;
 import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -381,7 +380,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             cms.writeFile(file);
             tryUnlock(resource);
             // update the offline search indices
-            OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+            OpenCms.getSearchManager().updateOfflineIndexes();
         } catch (Exception e) {
             error(e);
         }
@@ -1070,7 +1069,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
             tryUnlock(res);
             // update the offline search indices
-            OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+            OpenCms.getSearchManager().updateOfflineIndexes();
         } catch (Exception e) {
             error(e);
         }

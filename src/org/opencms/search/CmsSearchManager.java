@@ -635,6 +635,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The default update frequency for offline indexes (15000 msec = 15 sec). */
     public static final int DEFAULT_OFFLINE_UPDATE_FREQNENCY = 15000;
 
+    /** The default maximal wait time for re-indexing after editing a content. */
+    public static final int DEFAULT_MAX_INDEX_WAITTIME = 30000;
+
     /** The default timeout value used for generating a document for the search index (60000 msec = 1 min). */
     public static final int DEFAULT_TIMEOUT = 60000;
 
@@ -710,6 +713,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The update frequency of the offline indexer in milliseconds. */
     private long m_offlineUpdateFrequency;
 
+    /** The maximal time to wait for re-indexing after a content is edited (in milliseconds). */
+    private long m_maxIndexWaitTime;
+
     /** Path to index files below WEB-INF/. */
     private String m_path;
 
@@ -733,6 +739,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_extractionCacheMaxAge = DEFAULT_EXTRACTION_CACHE_MAX_AGE;
         m_maxExcerptLength = DEFAULT_EXCERPT_LENGTH;
         m_offlineUpdateFrequency = DEFAULT_OFFLINE_UPDATE_FREQNENCY;
+        m_maxIndexWaitTime = DEFAULT_MAX_INDEX_WAITTIME;
         m_maxModificationsBeforeCommit = DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT;
 
         m_fieldConfigurations = new HashMap<String, CmsSearchFieldConfiguration>();
@@ -1348,6 +1355,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public int getMaxExcerptLength() {
 
         return m_maxExcerptLength;
+    }
+
+    /**
+     * Returns the maximal time to wait for re-indexing after a content is edited (in milliseconds).<p>
+     *
+     * @return the maximal time to wait for re-indexing after a content is edited (in milliseconds)
+     */
+    public long getMaxIndexWaitTime() {
+
+        return m_maxIndexWaitTime;
     }
 
     /**
@@ -2109,6 +2126,36 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Sets the maximal wait time for offline index updates after edit operations.<p>
+     *
+     * @param maxIndexWaitTime  the maximal wait time to set in milliseconds
+     */
+    public void setMaxIndexWaitTime(long maxIndexWaitTime) {
+
+        m_maxIndexWaitTime = maxIndexWaitTime;
+    }
+
+    /**
+     * Sets the maximal wait time for offline index updates after edit operations.<p>
+     *
+     * @param maxIndexWaitTime the maximal wait time to set in milliseconds
+     */
+    public void setMaxIndexWaitTime(String maxIndexWaitTime) {
+
+        try {
+            setMaxIndexWaitTime(Long.parseLong(maxIndexWaitTime));
+        } catch (Exception e) {
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_PARSE_MAX_INDEX_WAITTIME_FAILED_2,
+                    maxIndexWaitTime,
+                    new Long(DEFAULT_MAX_INDEX_WAITTIME)),
+                e);
+            setMaxIndexWaitTime(DEFAULT_MAX_INDEX_WAITTIME);
+        }
+    }
+
+    /**
      * Sets the maximum number of modifications before a commit in the search index is triggered.<p>
      *
      * @param maxModificationsBeforeCommit the maximum number of modifications to set
@@ -2234,6 +2281,24 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
         }
+    }
+
+    /**
+     * Updates all offline indexes.<p>
+     *
+     * Can be used to force an index update when it's not convenient to wait until the
+     * offline update interval has eclipsed.<p>
+     *
+     * Since the offline indexes still need some time to update the new resources,
+     * the method waits for at most the configurable <code>maxIndexWaitTime</code>
+     * to ensure that updating is finished.
+     *
+     * @see #updateOfflineIndexes(long)
+     *
+     */
+    public void updateOfflineIndexes() {
+
+        updateOfflineIndexes(getMaxIndexWaitTime());
     }
 
     /**
