@@ -2653,7 +2653,21 @@
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     </tag>
-
+    
+     <tag>
+    	<description>
+    		Converts the output of the contained JSP code to an encoded JSON form, to be used in combination with the servlet filter org.opencms.jsp.jsonpart.CmsJsonPartFilter.  
+    	</description>
+    	<name>jsonpart</name>
+    	<tag-class>org.opencms.jsp.jsonpart.CmsJspTagJsonPart</tag-class>
+    	<body-content>JSP</body-content>
+    	<attribute>
+	        <description>The name of the element, which will be used as the JSON key.</description>    	
+	    	<name>element</name>
+	    	<required>true</required>
+	    	<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    </tag>
 
     <function>
         <description><![CDATA[

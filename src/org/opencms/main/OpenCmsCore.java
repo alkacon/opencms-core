@@ -66,6 +66,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
@@ -2239,6 +2240,7 @@ public final class OpenCmsCore {
             if ((status != 404)
                 && !isGuest
                 && (cms != null)
+                && (!CmsJsonPartFilter.isJsonRequest(req))
                 && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);

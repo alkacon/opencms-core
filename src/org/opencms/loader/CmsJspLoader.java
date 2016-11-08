@@ -44,6 +44,7 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspTagEnableAde;
+import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsEvent;
@@ -269,7 +270,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res) throws ServletException, IOException {
+        HttpServletResponse res)
+    throws ServletException, IOException {
 
         // get the current Flex controller
         CmsFlexController controller = CmsFlexController.getController(req);
@@ -509,6 +511,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     streaming = true;
                     bypass = true;
                 }
+            }
+
+            // For now, disable flex caching when the __json parameter is used
+            if (CmsJsonPartFilter.isJsonRequest(req)) {
+                streaming = true;
+                bypass = true;
             }
 
             // get the Flex controller
