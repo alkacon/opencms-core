@@ -51,11 +51,11 @@ public class CmsSitemapSelectField extends CmsResourceSelectField {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Selector popup window. */
+    Window m_window;
+
     /** The resource to initially show in the target selection tree. */
     private CmsResource m_startResource;
-
-    /** Selector popup window. */
-    private Window m_window;
 
     /**
      * Creates a new instance.<p>
@@ -94,7 +94,6 @@ public class CmsSitemapSelectField extends CmsResourceSelectField {
             m_window.setContent(fileSelect);
             fileSelect.addSelectionHandler(new I_CmsSelectionHandler<CmsResource>() {
 
-                @SuppressWarnings("synthetic-access")
                 public void onSelection(CmsResource selected) {
 
                     setResourceValue(selected);

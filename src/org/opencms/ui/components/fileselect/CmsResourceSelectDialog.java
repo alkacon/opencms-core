@@ -33,10 +33,11 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Collections;
 import java.util.List;
@@ -120,14 +121,14 @@ public class CmsResourceSelectDialog extends CustomComponent {
     /** The file tree (wrapped in an array, because Vaadin Declarative tries to bind it otherwise) .*/
     private CmsResourceTreeTable m_fileTree;
 
+    /** Boolean flag indicating whether the tree is currently filtered. */
+    private boolean m_isSitemapView = true;
+
     /** The site root. */
     private String m_siteRoot;
 
     /** Contains the data for the tree. */
     private CmsResourceTreeContainer m_treeData;
-
-    /** Boolean flag indicating whether the tree is currently filtered. */
-    private boolean m_isSitemapView = true;
 
     /**
      * Creates a new instance.<p>
@@ -181,6 +182,55 @@ public class CmsResourceSelectDialog extends CustomComponent {
     }
 
     /**
+     * Opens the given path.<p>
+     *
+     * @param path the path to open
+     */
+    public void openPath(String path) {
+
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(path);
+        if (site != null) {
+            // the given path is a root path switch to the determined site
+            getSiteSelector().setValue(site.getSiteRoot());
+            path = m_currentCms.getRequestContext().removeSiteRoot(path);
+        } else if (OpenCms.getSiteManager().startsWithShared(path)) {
+            getSiteSelector().setValue(OpenCms.getSiteManager().getSharedFolder());
+        } else if (path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+            getSiteSelector().setValue("");
+        }
+        if (!"/".equals(path)) {
+            List<CmsUUID> idsToOpen = Lists.newArrayList();
+            try {
+                CmsResource currentFolder = m_currentCms.readResource(CmsResource.getParentFolder(path));
+                if (!m_root.getStructureId().equals(currentFolder.getStructureId())) {
+                    idsToOpen.add(currentFolder.getStructureId());
+                    CmsResource parentFolder = null;
+
+                    do {
+                        try {
+                            parentFolder = m_currentCms.readParentFolder(currentFolder.getStructureId());
+                            idsToOpen.add(parentFolder.getStructureId());
+                            currentFolder = parentFolder;
+                        } catch (CmsException e) {
+                            LOG.info(e.getLocalizedMessage(), e);
+                            break;
+                        }
+                    } while (!parentFolder.getStructureId().equals(m_root.getStructureId()));
+                    // we need to iterate from "top" to "bottom", so we reverse the list of folders
+                    Collections.reverse(idsToOpen);
+
+                    for (CmsUUID id : idsToOpen) {
+                        m_fileTree.expandItem(id);
+                    }
+                }
+
+            } catch (CmsException e) {
+                LOG.debug("Can not read parent folder of current path.", e);
+            }
+        }
+    }
+
+    /**
      * Switches between the folders and sitemap view of the tree.<p>
      *
      * @param showSitemapView <code>true</code> to show the sitemap view
@@ -200,39 +250,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
      */
     public void showStartResource(CmsResource startResource) {
 
-        CmsObject cms = m_currentCms;
-        if (!m_root.equals(startResource)
-            && CmsStringUtil.isPrefixPath(m_root.getRootPath(), startResource.getRootPath())) {
-            String oldSiteRoot = cms.getRequestContext().getSiteRoot();
-            List<CmsUUID> idsToOpen = Lists.newArrayList();
-            try {
-                cms.getRequestContext().setSiteRoot("");
-                CmsResource currentFolder = startResource;
-                CmsResource parentFolder = null;
-
-                do {
-                    try {
-                        parentFolder = cms.readParentFolder(currentFolder.getStructureId());
-                        idsToOpen.add(parentFolder.getStructureId());
-                        currentFolder = parentFolder;
-                    } catch (CmsException e) {
-                        LOG.info(e.getLocalizedMessage(), e);
-                        break;
-                    }
-                } while (!parentFolder.getStructureId().equals(m_root.getStructureId()));
-                // we need to iterate from "top" to "bottom", so we reverse the list of folders
-                Collections.reverse(idsToOpen);
-
-                for (CmsUUID id : idsToOpen) {
-                    m_fileTree.expandItem(id);
-                }
-
-            } finally {
-                cms.getRequestContext().setSiteRoot(oldSiteRoot);
-            }
-
-        }
-
+        openPath(startResource.getRootPath());
     }
 
     /**

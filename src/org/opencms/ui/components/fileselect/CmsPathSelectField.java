@@ -60,7 +60,9 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
                 String value = (String)(event.getProperty().getValue());
                 if (!m_settingInternalValue) {
                     setInternalValue(value);
+                    fireValueChange(false);
                 }
+
             }
 
         });
@@ -156,6 +158,6 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     protected void setValue(boolean fireChange, String value) {
 
         m_textField.setValue(value);
-        fireValueChange(fireChange);
+        fireValueChange(false);
     }
 }

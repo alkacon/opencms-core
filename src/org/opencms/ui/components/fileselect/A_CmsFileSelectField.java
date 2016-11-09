@@ -64,17 +64,17 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The filter used for reading resources. */
-    protected CmsResourceFilter m_filter;
-
-    /** The text field containing the selected path. */
-    protected TextField m_textField;
-
     /** The file select dialog caption. */
     protected String m_fileSelectCaption;
 
+    /** The filter used for reading resources. */
+    protected CmsResourceFilter m_filter;
+
     /** The start with sitemap view flag. */
     protected boolean m_startWithSitemapView;
+
+    /** The text field containing the selected path. */
+    protected TextField m_textField;
 
     /**
      * Creates a new instance.<p>
@@ -166,6 +166,14 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
             A_CmsUI.get().addWindow(window);
             CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
             fileSelect.showSitemapView(m_startWithSitemapView);
+
+            T value = getValue();
+            if (value instanceof CmsResource) {
+                fileSelect.showStartResource((CmsResource)value);
+            } else if (value instanceof String) {
+                fileSelect.openPath((String)value);
+            }
+
             window.setContent(fileSelect);
             fileSelect.addSelectionHandler(new I_CmsSelectionHandler<CmsResource>() {
 
