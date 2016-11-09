@@ -182,8 +182,10 @@ public class CmsModelGroupHelper {
                 page = new CmsContainerPageBean(modelContainers);
                 // update the entry element value, as the settings will have changed
                 entry.setValue(element);
-                // also update the session cache
-                m_sessionCache.setCacheContainerElement(element.editorHash(), element);
+                if (m_sessionCache != null) {
+                    // also update the session cache
+                    m_sessionCache.setCacheContainerElement(element.editorHash(), element);
+                }
             } else {
                 // here we need to make sure to remove the source container page setting and to set a new element instance id
 
@@ -256,8 +258,10 @@ public class CmsModelGroupHelper {
 
                         // update the entry element value, as the settings will have changed
                         entry.setValue(element);
-                        // also update the session cache
-                        m_sessionCache.setCacheContainerElement(element.editorHash(), element);
+                        if (m_sessionCache != null) {
+                            // also update the session cache
+                            m_sessionCache.setCacheContainerElement(element.editorHash(), element);
+                        }
                     } catch (Exception e) {
                         LOG.info(e.getLocalizedMessage(), e);
                     }
@@ -297,7 +301,9 @@ public class CmsModelGroupHelper {
                             element,
                             baseElement,
                             false);
-                        m_sessionCache.setCacheContainerElement(replaceElement.editorHash(), replaceElement);
+                        if (m_sessionCache != null) {
+                            m_sessionCache.setCacheContainerElement(replaceElement.editorHash(), replaceElement);
+                        }
                         elements.add(replaceElement);
                         resultContainers.addAll(
                             readModelContainers(baseInstanceId, element.getInstanceId(), modelGroupPage));
@@ -555,7 +561,9 @@ public class CmsModelGroupHelper {
                         element,
                         container.getName(),
                         adjustedContainerName);
-                    m_sessionCache.setCacheContainerElement(copyElement.editorHash(), copyElement);
+                    if (m_sessionCache != null) {
+                        m_sessionCache.setCacheContainerElement(copyElement.editorHash(), copyElement);
+                    }
                     elements.add(copyElement);
                     result.addAll(
                         collectModelStructure(element.getInstanceId(), copyElement.getInstanceId(), containerByParent));

@@ -807,7 +807,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
                 cms,
                 OpenCms.getADEManager().lookupConfiguration(cms, cms.getRequestContext().getRootUri()),
-                CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms),
+                CmsJspTagEditable.isEditableRequest(req)
+                ? CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms)
+                : null,
                 CmsContainerpageService.isEditingModelGroups(cms, pageResource));
             containerPage = modelHelper.readModelGroups(xmlContainerPage.getContainerPage(cms));
             standardContext.setPage(containerPage);

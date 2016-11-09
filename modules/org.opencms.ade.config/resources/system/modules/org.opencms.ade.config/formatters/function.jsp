@@ -1,4 +1,4 @@
-<%@page taglibs="c,cms" %>
+<%@page taglibs="c,cms" session="false" %>
 <cms:formatter var="content" val="value">
 	<c:set var="format" value="${cms.functionFormatFromContent[content]}" />
 	<c:choose>

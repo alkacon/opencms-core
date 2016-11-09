@@ -1153,7 +1153,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
-     * Returns the ADE session cache for container elements.<p>
+     * Returns the ADE session cache for container elements in case of an editable request, otherwise <code>null</code>.<p>
      *
      * @param cms the cms context
      *
@@ -1161,7 +1161,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
      */
     private CmsADESessionCache getSessionCache(CmsObject cms) {
 
-        return CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms);
+        return m_editableRequest
+        ? CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms)
+        : null;
     }
 
     /**

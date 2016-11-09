@@ -197,6 +197,7 @@ public final class CmsADESessionCache {
 
     /**
      * Gets the session cache for the current session.<p>
+     * In case the request is not editable, <code>null</code> will be returned.<p>
      *
      * @param request the current request
      * @param cms the current CMS context
