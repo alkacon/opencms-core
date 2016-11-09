@@ -50,6 +50,7 @@ import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
+import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -1029,6 +1030,16 @@ public final class CmsJspStandardContextBean {
             m_isEditMode = Boolean.valueOf(CmsJspTagEditable.isEditableRequest(m_request));
         }
         return m_isEditMode.booleanValue();
+    }
+
+    /**
+     * Returns true if the current request is a JSON request.<p>
+     *
+     * @return true if we are in a JSON request
+     */
+    public boolean getIsJSONRequest() {
+
+        return CmsJsonPartFilter.isJsonRequest(m_request);
     }
 
     /**
