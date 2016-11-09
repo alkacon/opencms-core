@@ -104,19 +104,7 @@ public class CmsResourceSelectField extends A_CmsFileSelectField<CmsResource> {
     @Override
     public void setValue(CmsResource value) {
 
-        m_value = value;
-
-        m_textField.setComponentError(null);
-        String path;
-        if (m_value == null) {
-            path = "";
-        } else if (m_value.getRootPath().startsWith(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot())) {
-            path = A_CmsUI.getCmsObject().getSitePath(m_value);
-        } else {
-            path = m_value.getRootPath();
-        }
-        fireValueChange(true);
-        CmsVaadinUtils.setReadonlyValue(m_textField, path);
+        setValue(false, value);
     }
 
     /**
@@ -148,7 +136,30 @@ public class CmsResourceSelectField extends A_CmsFileSelectField<CmsResource> {
     @Override
     protected void setResourceValue(CmsResource resource) {
 
-        setValue(resource);
+        setValue(true, resource);
+    }
+
+    /**
+     * Sets the value.<p>
+     *
+     * @param fireChange <code>true</code> to fire the value change event
+     * @param value the value to set
+     */
+    protected void setValue(boolean fireChange, CmsResource value) {
+
+        m_value = value;
+
+        m_textField.setComponentError(null);
+        String path;
+        if (m_value == null) {
+            path = "";
+        } else if (m_value.getRootPath().startsWith(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot())) {
+            path = A_CmsUI.getCmsObject().getSitePath(m_value);
+        } else {
+            path = m_value.getRootPath();
+        }
+        fireValueChange(fireChange);
+        CmsVaadinUtils.setReadonlyValue(m_textField, path);
     }
 
     /**
