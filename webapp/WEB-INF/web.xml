@@ -40,10 +40,23 @@
 		</init-param>
 		 -->
 	</filter>
-	<filter-mapping>
-		<filter-name>OpenCmsUrlServletFilter</filter-name>
+	
+	<filter>
+        <filter-name>CmsJsonPartFilter</filter-name>
+        <filter-class>org.opencms.jsp.jsonpart.CmsJsonPartFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>OpenCmsUrlServletFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>CmsJsonPartFilter</filter-name>
+        <url-pattern>/opencms/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
 
 	<context-param>
 		<param-name>OpenCmsServlet</param-name>
