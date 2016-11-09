@@ -73,6 +73,9 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     /** The file select dialog caption. */
     protected String m_fileSelectCaption;
 
+    /** The start with sitemap view flag. */
+    protected boolean m_startWithSitemapView;
+
     /**
      * Creates a new instance.<p>
      */
@@ -101,6 +104,16 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
 
         m_filter = filter;
 
+    }
+
+    /**
+     * Sets the start with sitemap view flag.<p>
+     *
+     * @param startWithSitemapView the start with sitemap view flag
+     */
+    public void setStartWithSitempaView(boolean startWithSitemapView) {
+
+        m_startWithSitemapView = startWithSitemapView;
     }
 
     /**
@@ -152,6 +165,7 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
                 : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
             A_CmsUI.get().addWindow(window);
             CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
+            fileSelect.showSitemapView(m_startWithSitemapView);
             window.setContent(fileSelect);
             fileSelect.addSelectionHandler(new I_CmsSelectionHandler<CmsResource>() {
 

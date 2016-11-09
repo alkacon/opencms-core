@@ -282,6 +282,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0 = "GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_LOCALE_LABEL_1 = "GUI_LOCALECOMPARE_LOCALE_LABEL_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALECOMPARE_MAIN_LOCALE_0 = "GUI_LOCALECOMPARE_MAIN_LOCALE_0";
 
     /** Message constant for key in the resource bundle. */

@@ -514,12 +514,6 @@
     	}
     }
     
-    .o-locale-linkmode-bar { 
-    	.v-button::after { 
-    		display:none !important;
-    	}
-    }
-    
     .o-sitemap-tree-node-content .v-menubar.v-menubar-o-toolbar-button {
     	padding-left: 6px;
     	padding-right: 6px;
@@ -546,11 +540,6 @@
     	}
     }
     
-    
-     
-    	
-    
-	  
 	/* explorer bread crumb path input styles */
 	.o-crumb-wrapper{
 		position: relative;
@@ -766,32 +755,6 @@
 	.v-button.o-button-invisible { 
 		visibility: hidden; 
 	}
-	
-	
-	.v-tree-node-caption-o-locale-link-target-alredy-linked { 
-		color: orange;
-	}
-	
-	.v-tree-node-caption-o-locale-link-notranslation { 
-		font-weight: 100;
-		color: #afafaf;
-	}
-	
-	
-	.v-tree-node-caption-o-locale-link-target-other { 
-		font-weight: 100;
-		color: #afafaf; 
-	}
-	
-	.o-show-locale-disabled {
-		color: #afafaf !important;
-	} 
-		
-	
-	
-	
-	
-		
 	
 	/* history compare dialog styles */
 	

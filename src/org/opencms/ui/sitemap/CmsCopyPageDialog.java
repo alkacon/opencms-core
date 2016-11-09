@@ -165,6 +165,7 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
 
         FormLayout form = new FormLayout();
         CmsResourceSelectField field = new CmsSitemapSelectField(m_context.getResources().get(0));
+        field.setStartWithSitempaView(true);
         field.setResourceFilter(CmsResourceFilter.IGNORE_EXPIRATION.addRequireFolder());
         field.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_TARGET_FOLDER_0));
         form.addComponent(field);

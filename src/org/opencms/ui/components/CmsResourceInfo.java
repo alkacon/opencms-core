@@ -37,8 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer;
-import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer.IconMode;
+import org.opencms.ui.components.CmsResourceIcon.IconMode;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -184,7 +183,7 @@ public class CmsResourceInfo extends CustomLayout {
             }
         }
         info.getBottomLine().setValue(path);
-        String icon = CmsSitemapTreeContainer.getSitemapResourceIcon(
+        String icon = CmsResourceIcon.getSitemapResourceIcon(
             A_CmsUI.getCmsObject(),
             resUtil.getResource(),
             IconMode.localeCompare);

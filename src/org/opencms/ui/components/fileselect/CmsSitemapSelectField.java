@@ -28,6 +28,7 @@
 package org.opencms.ui.components.fileselect;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
@@ -83,11 +84,13 @@ public class CmsSitemapSelectField extends CmsResourceSelectField {
                 ? m_fileSelectCaption
                 : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
             A_CmsUI.get().addWindow(m_window);
-            CmsSitemapFolderSelectDialog fileSelect = new CmsSitemapFolderSelectDialog();
+            CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
             CmsResource startResource = getValue() != null ? getValue() : m_startResource;
             if (startResource != null) {
                 fileSelect.showStartResource(startResource);
             }
+            fileSelect.showSitemapView(m_startWithSitemapView);
             m_window.setContent(fileSelect);
             fileSelect.addSelectionHandler(new I_CmsSelectionHandler<CmsResource>() {
 
