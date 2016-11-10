@@ -50,8 +50,10 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
+import org.opencms.ui.components.fileselect.A_CmsFileSelectField;
+import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
-import org.opencms.ui.components.fileselect.CmsSitemapSelectField;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -137,6 +139,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** Indicates the copy folder has a default file of the type container page. */
     private boolean m_hasContainerPageDefaultFile;
 
+    /** If the is a multi resource action. */
+    private boolean m_isMultiResource;
+
     /** The OK button. */
     private Button m_okButton;
 
@@ -148,6 +153,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
     /** The target select field. */
     private CmsResourceSelectField m_targetFolder;
+
+    /** The target path select field. */
+    private CmsPathSelectField m_targetPath;
 
     /** The resources to update after dialog close. */
     private Set<CmsUUID> m_updateResources;
@@ -162,6 +170,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         m_dialogMode = mode;
         m_updateResources = new HashSet<CmsUUID>();
         m_context = context;
+        m_isMultiResource = m_context.getResources().size() != 1;
         displayResourceInfo(context.getResources());
         FormLayout form = initForm();
         setContent(form);
@@ -228,7 +237,11 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     public void setTargetForlder(CmsResource resource) {
 
         if (resource.isFolder()) {
-            m_targetFolder.setValue(resource);
+            if (m_isMultiResource) {
+                m_targetFolder.setValue(resource);
+            } else {
+                m_targetPath.setValue(getCms().getSitePath(resource));
+            }
         } else {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(
@@ -250,28 +263,51 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     protected void performSingleOperation(CmsResource source, CmsResource target, Action action, boolean overwrite)
     throws CmsException {
 
+        String name;
+        String folderRootPath = target.getRootPath();
+        if (!folderRootPath.endsWith("/")) {
+            folderRootPath += "/";
+        }
+        if (folderRootPath.equals(CmsResource.getParentFolder(source.getRootPath()))) {
+            name = OpenCms.getResourceManager().getNameGenerator().getCopyFileName(
+                getRootCms(),
+                folderRootPath,
+                source.getName());
+        } else {
+            name = source.getName();
+        }
+        performSingleOperation(source, target, name, action, overwrite);
+    }
+
+    /**
+     * Performs the single resource operation.<p>
+     *
+     * @param source the source
+     * @param target the target folder
+     * @param name the target resource name
+     * @param action the action
+     * @param overwrite if existing resources should be overwritten
+     *
+     * @throws CmsException in case the operation fails
+     */
+    protected void performSingleOperation(
+        CmsResource source,
+        CmsResource target,
+        String name,
+        Action action,
+        boolean overwrite)
+    throws CmsException {
+
         // add new parent and source to the update resources
         m_updateResources.add(target.getStructureId());
         m_updateResources.add(source.getStructureId());
-        // calculate the target name
+
         String finalTarget = target.getRootPath();
         if (finalTarget.equals(source.getRootPath()) || finalTarget.startsWith(source.getRootPath())) {
             throw new CmsVfsException(
                 Messages.get().container(org.opencms.workplace.commons.Messages.ERR_COPY_ONTO_ITSELF_1, finalTarget));
         }
-
-        if (!finalTarget.endsWith("/")) {
-            finalTarget += "/";
-        }
-        if (finalTarget.equals(CmsResource.getParentFolder(source.getRootPath()))) {
-            finalTarget += OpenCms.getResourceManager().getNameGenerator().getCopyFileName(
-                getRootCms(),
-                finalTarget,
-                source.getName());
-        } else {
-            finalTarget += source.getName();
-        }
-
+        finalTarget = CmsStringUtil.joinPaths(finalTarget, name);
         // delete existing target resource if selected or confirmed by the user
         if (overwrite && getRootCms().existsResource(finalTarget)) {
             CmsLockUtil.ensureLock(getRootCms(), getRootCms().readResource(finalTarget));
@@ -354,12 +390,25 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     void submit(boolean overwrite) {
 
         try {
-            CmsResource targetFolder = m_targetFolder.getValue();
+            CmsResource targetFolder;
+            String targetName = null;
+            if (m_isMultiResource) {
+                targetFolder = m_targetFolder.getValue();
+            } else {
+                String target = m_targetPath.getValue();
+                if (getCms().existsResource(target)) {
+                    targetFolder = getCms().readResource(target);
+
+                } else {
+                    targetName = CmsResource.getName(target);
+                    targetFolder = getCms().readResource(CmsResource.getParentFolder(target));
+                }
+            }
             if (targetFolder.isFile()) {
                 throw new CmsVfsException(
                     Messages.get().container(
                         org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
-                        m_targetFolder.getValue()));
+                        targetFolder));
             }
             overwrite = overwrite || isOverwriteExisting();
             if (!overwrite) {
@@ -384,9 +433,25 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 }
             }
             Map<CmsResource, CmsException> errors = new HashMap<CmsResource, CmsException>();
-            for (CmsResource source : m_context.getResources()) {
+            if (targetName == null) {
+                for (CmsResource source : m_context.getResources()) {
+                    try {
+                        performSingleOperation(source, targetFolder, action, overwrite);
+                    } catch (CmsException e) {
+                        errors.put(source, e);
+                        LOG.error(
+                            "Error while executing "
+                                + m_actionCombo.getValue().toString()
+                                + " on resource "
+                                + source.getRootPath(),
+                            e);
+                    }
+                }
+            } else {
+                // this will only be the case in a single resource scenario
+                CmsResource source = m_context.getResources().get(0);
                 try {
-                    performSingleOperation(source, targetFolder, action, overwrite);
+                    performSingleOperation(source, targetFolder, targetName, action, overwrite);
                 } catch (CmsException e) {
                     errors.put(source, e);
                     LOG.error(
@@ -497,15 +562,22 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
         FormLayout form = new FormLayout();
         form.setWidth("100%");
-        m_targetFolder = new CmsSitemapSelectField(
-            m_context.getResources().size() > 0 ? m_context.getResources().get(0) : null);
-        m_targetFolder.setCaption(
+        A_CmsFileSelectField<?> targetSelect;
+        if (m_isMultiResource) {
+            m_targetFolder = new CmsResourceSelectField();
+            targetSelect = m_targetFolder;
+        } else {
+            m_targetPath = new CmsPathSelectField();
+            targetSelect = m_targetPath;
+        }
+        targetSelect.setCaption(
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_TARGET_FOLDER_0));
-        m_targetFolder.setFileSelectCaption(
+        targetSelect.setFileSelectCaption(
             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0));
-        m_targetFolder.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
-        m_targetFolder.setWidth("100%");
-        form.addComponent(m_targetFolder);
+        targetSelect.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
+        targetSelect.setWidth("100%");
+        form.addComponent(targetSelect);
+
         if (m_dialogMode != DialogMode.move) {
             final Set<Action> defaultActions = new HashSet<Action>();
 

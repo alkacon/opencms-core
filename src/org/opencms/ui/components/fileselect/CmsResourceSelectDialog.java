@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -188,15 +189,17 @@ public class CmsResourceSelectDialog extends CustomComponent {
      */
     public void openPath(String path) {
 
-        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(path);
-        if (site != null) {
-            // the given path is a root path switch to the determined site
-            getSiteSelector().setValue(site.getSiteRoot());
-            path = m_currentCms.getRequestContext().removeSiteRoot(path);
-        } else if (OpenCms.getSiteManager().startsWithShared(path)) {
-            getSiteSelector().setValue(OpenCms.getSiteManager().getSharedFolder());
-        } else if (path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-            getSiteSelector().setValue("");
+        if (!CmsStringUtil.isPrefixPath(m_root.getRootPath(), path)) {
+            CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(path);
+            if (site != null) {
+                // the given path is a root path switch to the determined site
+                getSiteSelector().setValue(site.getSiteRoot());
+                path = m_currentCms.getRequestContext().removeSiteRoot(path);
+            } else if (OpenCms.getSiteManager().startsWithShared(path)) {
+                getSiteSelector().setValue(OpenCms.getSiteManager().getSharedFolder());
+            } else if (path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                getSiteSelector().setValue("");
+            }
         }
         if (!"/".equals(path)) {
             List<CmsUUID> idsToOpen = Lists.newArrayList();
