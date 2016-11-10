@@ -28,11 +28,15 @@
 package org.opencms.jsp.jsonpart;
 
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.CmsLog;
 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.TryCatchFinally;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Tag used to convert the HTML output of this tag's contents to encoded JSON.<p>
@@ -42,13 +46,27 @@ import javax.servlet.jsp.tagext.TagSupport;
  * used by the filter to generate JSON. The 'element' attribute on this tag can be used to control the JSON key which will be used for
  * the content.
  */
-public class CmsJspTagJsonPart extends TagSupport {
+public class CmsJspTagJsonPart extends TagSupport implements TryCatchFinally {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagJsonPart.class);
+
     /** The name to be used as a key for the JSON part. */
     private String m_element;
+
+    /** Variable to keep track of whether we still need to write the end marker. */
+    private boolean m_needEnd;
+
+    /**
+     * @see javax.servlet.jsp.tagext.TryCatchFinally#doCatch(java.lang.Throwable)
+     */
+    public void doCatch(Throwable arg0) throws Throwable {
+
+        throw arg0;
+    }
 
     /**
      * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
@@ -60,11 +78,27 @@ public class CmsJspTagJsonPart extends TagSupport {
             && CmsJsonPartFilter.isJsonRequest(pageContext.getRequest())) {
             try {
                 pageContext.getOut().write(CmsJsonPart.END);
+                m_needEnd = false;
             } catch (IOException e) {
                 throw new JspException(e);
             }
         }
         return EVAL_PAGE;
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.TryCatchFinally#doFinally()
+     */
+    public void doFinally() {
+
+        if (m_needEnd) { // Exception happened before we could write the end marker
+            m_needEnd = false;
+            try {
+                pageContext.getOut().write(CmsJsonPart.END);
+            } catch (IOException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**
@@ -81,6 +115,7 @@ public class CmsJspTagJsonPart extends TagSupport {
             && CmsJsonPartFilter.isJsonRequest(pageContext.getRequest())) {
             try {
                 pageContext.getOut().write(CmsJsonPart.getHeader(getElement()));
+                m_needEnd = true;
             } catch (IOException e) {
                 throw new JspException(e);
             }
