@@ -54,8 +54,8 @@ public class CmsInheritedOptionButton extends CmsPushButton implements I_CmsGrou
     public CmsInheritedOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.INHERITED.getIconClass());
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setImageClass(I_CmsButton.ButtonData.INHERITED.getSmallIconClass());
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
 
         String path = elementWidget.getInheritanceInfo().getPath();
         String title = I_CmsButton.ButtonData.INHERITED.getTitle();
@@ -65,7 +65,6 @@ public class CmsInheritedOptionButton extends CmsPushButton implements I_CmsGrou
                 elementWidget.getInheritanceInfo().getPath());
         }
         setTitle(title);
-        addStyleName(I_CmsButton.ButtonData.INHERITED.getIconClass());
         m_elementWidget = elementWidget;
     }
 

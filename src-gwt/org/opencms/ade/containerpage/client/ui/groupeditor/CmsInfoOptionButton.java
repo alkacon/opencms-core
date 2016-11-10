@@ -56,10 +56,9 @@ public class CmsInfoOptionButton extends CmsPushButton implements I_CmsGroupEdit
     public CmsInfoOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.INFO_BUTTON.getIconClass());
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setImageClass(I_CmsButton.ButtonData.INFO_BUTTON.getSmallIconClass());
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         setTitle(I_CmsButton.ButtonData.INFO_BUTTON.getTitle());
-        addStyleName(I_CmsButton.ButtonData.INFO_BUTTON.getIconClass());
         m_elementWidget = elementWidget;
         m_editor = editor;
     }

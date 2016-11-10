@@ -55,10 +55,9 @@ public class CmsMoveOptionButton extends CmsPushButton implements I_CmsGroupEdit
     public CmsMoveOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.MOVE.getIconClass());
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setImageClass(I_CmsButton.ButtonData.MOVE.getSmallIconClass());
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         setTitle(I_CmsButton.ButtonData.MOVE.getTitle());
-        addStyleName(I_CmsButton.ButtonData.MOVE.getIconClass());
         m_elementWidget = elementWidget;
     }
 
@@ -71,18 +70,18 @@ public class CmsMoveOptionButton extends CmsPushButton implements I_CmsGroupEdit
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.groupeditor.I_CmsGroupEditorOption#onClick(com.google.gwt.event.dom.client.ClickEvent)
-     */
-    public void onClick(ClickEvent event) {
-
-        // nothing to do
-    }
-
-    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
      */
     public I_CmsDraggable getDraggable() {
 
         return m_elementWidget;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.groupeditor.I_CmsGroupEditorOption#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     */
+    public void onClick(ClickEvent event) {
+
+        // nothing to do
     }
 }

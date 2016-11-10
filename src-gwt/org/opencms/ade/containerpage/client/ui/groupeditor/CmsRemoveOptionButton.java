@@ -56,10 +56,9 @@ public class CmsRemoveOptionButton extends CmsPushButton implements I_CmsGroupEd
     public CmsRemoveOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.REMOVE.getIconClass());
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setImageClass(I_CmsButton.ButtonData.REMOVE.getSmallIconClass());
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         setTitle(I_CmsButton.ButtonData.REMOVE.getTitle());
-        addStyleName(I_CmsButton.ButtonData.REMOVE.getIconClass());
         m_elementWidget = elementWidget;
         m_editor = editor;
     }

@@ -56,10 +56,9 @@ public class CmsFavoritesOptionButton extends CmsPushButton implements I_CmsGrou
     public CmsFavoritesOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getIconClass());
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setImageClass(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getSmallIconClass());
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         setTitle(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getTitle());
-        addStyleName(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getIconClass());
         m_elementWidget = elementWidget;
         m_editor = editor;
     }

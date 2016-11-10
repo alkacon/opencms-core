@@ -58,10 +58,8 @@ public class CmsEditOptionButton extends CmsPushButton implements I_CmsGroupEdit
 
         super();
         setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
-        addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
-        addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
         m_elementWidget = elementWidget;
         m_editor = editor;
     }
