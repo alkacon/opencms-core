@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -184,17 +185,16 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
 
         List<Locale> possibleLocaleSelections = getMainLocaleSelectOptions(cms, res, mainLocale, secondaryLocales);
         m_rootLocaleSelector = new ComboBox();
+        m_rootLocaleSelector.addStyleName("o-sitemap-localeselect");
         m_rootLocaleSelector.setNullSelectionAllowed(false);
         for (Locale selectableLocale : possibleLocaleSelections) {
             m_rootLocaleSelector.addItem(selectableLocale);
-            String localeOptionSuffix = "";
-            if (selectableLocale.equals(mainLocale)) {
-                localeOptionSuffix = " [*]";
-            }
+            m_rootLocaleSelector.setItemIcon(selectableLocale, FontOpenCms.SPACE);
             m_rootLocaleSelector.setItemCaption(
                 selectableLocale,
-                selectableLocale.getDisplayLanguage(A_CmsUI.get().getLocale()) + localeOptionSuffix);
+                selectableLocale.getDisplayLanguage(A_CmsUI.get().getLocale()));
         }
+        m_rootLocaleSelector.setItemIcon(mainLocale, FontOpenCms.CIRCLE_INV_CHECK);
         m_rootLocaleSelector.setValue(m_rootLocale);
         m_rootLocaleSelector.addValueChangeListener(new ValueChangeListener() {
 
@@ -219,26 +219,25 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
         });
 
         m_comparisonLocaleSelector = new ComboBox();
+        m_comparisonLocaleSelector.addStyleName("o-sitemap-localeselect");
         m_comparisonLocaleSelector.setNullSelectionAllowed(false);
 
         List<Locale> comparisonLocales = getComparisonLocales();
         Locale firstComparisonLocale = null;
         for (Locale comparisonLocale : comparisonLocales) {
             m_comparisonLocaleSelector.addItem(comparisonLocale);
-            String localeOptionSuffix = "";
-            if (comparisonLocale.equals(mainLocale)) {
-                localeOptionSuffix = " [*]";
-            }
+            m_comparisonLocaleSelector.setItemIcon(comparisonLocale, FontOpenCms.SPACE);
 
             m_comparisonLocaleSelector.setItemCaption(
                 comparisonLocale,
-                comparisonLocale.getDisplayLanguage(A_CmsUI.get().getLocale()) + localeOptionSuffix);
+                comparisonLocale.getDisplayLanguage(A_CmsUI.get().getLocale()));
             if ((firstComparisonLocale == null) && !comparisonLocale.equals(m_rootLocale)) {
                 firstComparisonLocale = comparisonLocale;
             }
         }
         m_comparisonLocale = firstComparisonLocale;
         m_comparisonLocaleSelector.setValue(firstComparisonLocale);
+        m_comparisonLocaleSelector.setItemIcon(mainLocale, FontOpenCms.CIRCLE_INV_CHECK);
 
         m_comparisonLocaleSelector.addValueChangeListener(new ValueChangeListener() {
 

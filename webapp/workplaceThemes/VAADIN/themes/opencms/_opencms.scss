@@ -501,10 +501,20 @@
     	margin-top: 9px; 
     }
     
+     .v-filterselect-suggestpopup-o-sitemap-localeselect .v-icon { 
+    	color: #474747 !important; 
+    	font-size: 11px !important;
+    }
+    
+    .o-sitemap-localeselect .v-icon {
+    	color: #474747 !important;
+    	font-size: 12px !important;
+    	padding-top: 0.13em !important; 
+    }
+    
     .o-pointer { 
     	cursor: pointer; 
     }
-    
     
     .o-sitemap-tree-node-content .v-menubar-menuitem {
     	min-width: 24px !important;
