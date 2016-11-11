@@ -341,6 +341,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                                                     ? (CmsContainerPageElementPanel)draggable
                                                     : null,
                                                     modelReplaceId);
+                                                container.removePlaceholder();
                                             }
                                         });
                                 }
@@ -354,6 +355,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                                     ? (CmsContainerPageElementPanel)draggable
                                     : null,
                                     modelReplaceId);
+                                container.removePlaceholder();
                             }
                         }
                     };
