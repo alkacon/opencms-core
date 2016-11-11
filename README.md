@@ -1,7 +1,7 @@
 # opencms-core
 Fork from  Opencms-core Alkacon software except add Chinese Localization module
 
-这个项目fork自alkacom/opencms-core 10.5 beta,增加了汉化模块org.opencms.locale.zh,汉化模块里的内容部份来之原opencms 9.0 的汉化模块，针对
+这个项目fork自alkacom/opencms-core 10.5 ,增加了汉化模块org.opencms.locale.zh,汉化模块里的内容部份来之原opencms 9.0 的汉化模块，针对
 OpenCms 10.5 beta做了增减，即增加10.5新增的properties关键词，去掉重复和无用部分。
 
 编译本项目将在opencms-core中自动包含汉化模块。
