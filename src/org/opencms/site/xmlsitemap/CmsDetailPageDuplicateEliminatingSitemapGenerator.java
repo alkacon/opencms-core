@@ -158,7 +158,7 @@ public class CmsDetailPageDuplicateEliminatingSitemapGenerator extends CmsXmlSit
                 String detailLink = getDetailLink(containerPage, detailRes, locale);
                 detailLink = CmsFileUtil.removeTrailingSeparator(detailLink);
                 CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
-                    detailLink,
+                    replaceServerUri(detailLink),
                     detailRes.getDateLastModified(),
                     getChangeFrequency(detailProps),
                     getPriority(detailProps));

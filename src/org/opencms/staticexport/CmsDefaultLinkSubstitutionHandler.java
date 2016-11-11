@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -112,6 +113,14 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
      */
     public String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
 
+        return getLink(cms, link, siteRoot, null, forceSecure);
+    }
+
+    /**
+     * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#getLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, boolean)
+     */
+    public String getLink(CmsObject cms, String link, String siteRoot, String targetDetailPage, boolean forceSecure) {
+
         if (CmsStringUtil.isEmpty(link)) {
             // not a valid link parameter, return an empty String
             return "";
@@ -175,7 +184,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             if (!rootVfsName.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
                 // never use the ADE manager for workplace links, to be sure the workplace stays usable in case of configuration errors
                 I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
-                detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
+                detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri(), targetDetailPage);
             }
             if (detailPage != null) {
                 CmsSite detailPageSite = OpenCms.getSiteManager().getSiteForRootPath(detailPage);
@@ -237,7 +246,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         uriBaseName = exportManager.getRfsName(cms, oriUri);
                     } else {
                         // base URI dosn't need to be exported
-                        uriBaseName = addVfsPrefix(cms, oriUri, targetSite);
+                        CmsPair<String, String> uriParamPair = addVfsPrefix(cms, oriUri, targetSite, parameters);
+                        uriBaseName = uriParamPair.getFirst();
+                        parameters = uriParamPair.getSecond();
                     }
                     // cache export base URI
                     exportManager.cacheOnlineLink(cacheKey, uriBaseName);
@@ -267,12 +278,14 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     if (exportManager.isExportLink(cms, vfsName)) {
                         parameters = prepareExportParameters(cms, vfsName, parameters);
                         // export required, get export name for target link
-                        resultLink = exportManager.getRfsName(cms, vfsName, parameters);
+                        resultLink = exportManager.getRfsName(cms, vfsName, parameters, targetDetailPage);
                         // now set the parameters to null, we do not need them anymore
                         parameters = null;
                     } else {
                         // no export required for the target link
-                        resultLink = addVfsPrefix(cms, vfsName, targetSite);
+                        CmsPair<String, String> uriParamPair = addVfsPrefix(cms, vfsName, targetSite, parameters);
+                        resultLink = uriParamPair.getFirst();
+                        parameters = uriParamPair.getSecond();
                         // add cut off parameters if required
                         if (parameters != null) {
                             resultLink = resultLink.concat(parameters);
@@ -367,7 +380,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // offline project, no export or secure handling required
             if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                 // in unit test this code would fail otherwise
-                resultLink = addVfsPrefix(cms, vfsName, targetSite);
+                CmsPair<String, String> uriParamPair = addVfsPrefix(cms, vfsName, targetSite, parameters);
+                resultLink = uriParamPair.getFirst();
+                parameters = uriParamPair.getSecond();
             }
 
             // add cut off parameters and return the result
@@ -401,18 +416,23 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     }
 
     /**
-     * Adds the VFS prefix to the VFS name.<p>
+     * Adds the VFS prefix to the VFS name and potentially adjusts request parameters<p>
      * This method is required as a hook used in {@link CmsLocalePrefixLinkSubstitutionHandler}.<p>
      *
      * @param cms the cms context
      * @param vfsName the VFS name
      * @param targetSite the target site
+     * @param parameters the request parameters
      *
-     * @return the path
+     * @return the path and the (adjusted) request parameters.
      */
-    protected String addVfsPrefix(CmsObject cms, String vfsName, CmsSite targetSite) {
+    protected CmsPair<String, String> addVfsPrefix(
+        CmsObject cms,
+        String vfsName,
+        CmsSite targetSite,
+        String parameters) {
 
-        return OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+        return new CmsPair<String, String>(OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName), parameters);
     }
 
     /**

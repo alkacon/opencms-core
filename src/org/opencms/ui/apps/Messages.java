@@ -63,12 +63,6 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CLICK_TO_EDIT_0 = "GUI_EXPLORER_CLICK_TO_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPLORER_EDIT_NAVIGATION_TEXT_0 = "GUI_EXPLORER_EDIT_NAVIGATION_TEXT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPLORER_EDIT_TITLE_0 = "GUI_EXPLORER_EDIT_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_FILTER_0 = "GUI_EXPLORER_FILTER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -223,6 +217,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_TITLE_0 = "GUI_SITEMAP_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SWITCHED_TO_PROJECT_1 = "GUI_SWITCHED_TO_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0 = "GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0";

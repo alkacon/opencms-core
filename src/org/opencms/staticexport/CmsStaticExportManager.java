@@ -1225,11 +1225,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @return the static export rfs name for a give vfs resource
      *
      * @see #getVfsName(CmsObject, String)
-     * @see #getRfsName(CmsObject, String, String)
+     * @see #getRfsName(CmsObject, String, String, String)
      */
     public String getRfsName(CmsObject cms, String vfsName) {
 
-        return getRfsName(cms, vfsName, null);
+        return getRfsName(cms, vfsName, null, null);
     }
 
     /**
@@ -1239,10 +1239,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param cms an initialized cms context
      * @param vfsName the name of the vfs resource
      * @param parameters the parameters of the link pointing to the resource
+     * @param targetDetailPage the target detail page to use
      *
      * @return the static export rfs name for a give vfs resource
      */
-    public String getRfsName(CmsObject cms, String vfsName, String parameters) {
+    public String getRfsName(CmsObject cms, String vfsName, String parameters, String targetDetailPage) {
 
         String rfsName;
         try {
@@ -1255,7 +1256,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     String detailPage = finder.getDetailPage(
                         cms,
                         vfsRes.getRootPath(),
-                        cms.getRequestContext().getUri());
+                        cms.getRequestContext().getUri(),
+                        targetDetailPage);
                     if (detailPage != null) {
                         vfsName = CmsStringUtil.joinPaths(
                             detailPage,
@@ -1719,17 +1721,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         Messages.get().getBundle().key(Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1, "/"));
                 }
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_EXPORT_EXPORT_HANDLER_1,
-                    getHandler().getClass().getName()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_EXPORT_EXPORT_HANDLER_1,
+                        getHandler().getClass().getName()));
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_LINKSUBSTITUTION_HANDLER_1,
-                    getLinkSubstitutionHandler().getClass().getName()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_LINKSUBSTITUTION_HANDLER_1,
+                        getLinkSubstitutionHandler().getClass().getName()));
             } else {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
             }
@@ -2799,7 +2803,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String exportPath,
         String rfsName,
         CmsResource resource,
-        byte[] content) throws CmsException {
+        byte[] content)
+    throws CmsException {
 
         String exportFileName = CmsFileUtil.normalizePath(exportPath + rfsName);
 

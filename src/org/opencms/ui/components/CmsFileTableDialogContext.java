@@ -53,12 +53,17 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
     /**
      * Creates a new instance.<p>
      *
+     * @param appId the app id
      * @param contextType the context type
      * @param fileTable the file table instance
      * @param resources the list of selected resources
      */
-    public CmsFileTableDialogContext(ContextType contextType, CmsFileTable fileTable, List<CmsResource> resources) {
-        super(contextType, resources);
+    public CmsFileTableDialogContext(
+        String appId,
+        ContextType contextType,
+        CmsFileTable fileTable,
+        List<CmsResource> resources) {
+        super(appId, contextType, resources);
         m_fileTable = fileTable;
     }
 
@@ -70,7 +75,8 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
         new CmsContextMenuEditHandler(
             getResources().get(0).getStructureId(),
             (CmsResourceTableProperty)propertyId,
-            m_fileTable).start();
+            m_fileTable,
+            this).start();
     }
 
     /**
@@ -132,5 +138,13 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
     public void setEditableProperties(Collection<CmsResourceTableProperty> editableProperties) {
 
         m_editableProperties = editableProperties;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+     */
+    public void updateUserInfo() {
+
+        // not supported
     }
 }

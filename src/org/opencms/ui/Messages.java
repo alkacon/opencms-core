@@ -45,6 +45,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_USER_NOT_SELF_MANAGED_1 = "ERR_USER_NOT_SELF_MANAGED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ACTION_DISPLAY_0 = "GUI_ACTION_DISPLAY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ACTION_OPEN_FORM_EDITOR_0 = "GUI_ACTION_OPEN_FORM_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
@@ -132,6 +135,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATAVIEW_SEARCH_0 = "GUI_DATAVIEW_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOGTITLE_COPY_0 = "GUI_DIALOGTITLE_COPY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOGTITLE_COPYMOVE_0 = "GUI_DIALOGTITLE_COPYMOVE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -139,6 +145,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOGTITLE_LOCKREPORT_0 = "GUI_DIALOGTITLE_LOCKREPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOGTITLE_MOVE_0 = "GUI_DIALOGTITLE_MOVE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOGTITLE_SECUREEXPORT_0 = "GUI_DIALOGTITLE_SECUREEXPORT_0";
@@ -267,6 +276,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCALECOMPARE_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_DONT_TRANSLATE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_EXPLORER_0 = "GUI_LOCALECOMPARE_EXPLORER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0 = "GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -279,7 +291,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCALECOMPARE_MODE_SITES_0 = "GUI_LOCALECOMPARE_MODE_SITES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_NO_TRANSLATION_BOTTOM_0 = "GUI_LOCALECOMPARE_NO_TRANSLATION_BOTTOM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_NO_TRANSLATION_TOP_0 = "GUI_LOCALECOMPARE_NO_TRANSLATION_TOP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALECOMPARE_OPEN_PAGE_0 = "GUI_LOCALECOMPARE_OPEN_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALECOMPARE_PROPERTIES_0 = "GUI_LOCALECOMPARE_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0 = "GUI_LOCALECOMPARE_REMOVE_DONT_TRANSLATE_0";

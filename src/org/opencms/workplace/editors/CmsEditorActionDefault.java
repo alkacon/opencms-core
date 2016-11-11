@@ -32,6 +32,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -96,9 +97,14 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             // append the parameters and the report "ok" button action to the link
             publishLink += params.toString() + CmsEncoder.escapeWBlanks(linkTarget, CmsEncoder.ENCODING_UTF_8);
         } else {
-            // append the parameters and the report "ok" button action to the link
-            publishLink += params.toString()
-                + CmsEncoder.escapeWBlanks(jsp.link(CmsWorkplace.JSP_WORKPLACE_URI), CmsEncoder.ENCODING_UTF_8);
+            // check for links to the new workplace
+            if (CmsLinkManager.isWorkplaceLink(editor.getParamBacklink())) {
+                publishLink += params.toString()
+                    + CmsEncoder.escapeWBlanks(jsp.link(editor.getParamBacklink()), CmsEncoder.ENCODING_UTF_8);
+            } else {
+                publishLink += params.toString()
+                    + CmsEncoder.escapeWBlanks(jsp.link(CmsWorkplace.JSP_WORKPLACE_URI), CmsEncoder.ENCODING_UTF_8);
+            }
 
         }
         // redirect to the publish dialog with all necessary parameters

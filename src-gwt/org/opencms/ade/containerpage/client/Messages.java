@@ -250,6 +250,9 @@ public final class Messages {
     public static final String GUI_SELECT_ELEMENT_VIEW_0 = "GUI_SELECT_ELEMENT_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_ONLINE_0 = "GUI_VIEW_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_FORMATTER_LABEL_0 = "GUI_SELECT_FORMATTER_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
@@ -290,6 +293,9 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOW_LOCALE_0 = "GUI_SHOW_LOCALE_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

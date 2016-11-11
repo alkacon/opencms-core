@@ -27,6 +27,7 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.file.CmsFile;
@@ -55,6 +56,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.site.CmsSite;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
@@ -302,8 +304,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         String description,
         String firstname,
         String lastname,
-        String email)
-    throws Exception {
+        String email) throws Exception {
 
         if (existsUser(name)) {
             m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_USER_ALREADY_EXISTS_1, name));
@@ -1230,6 +1231,25 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         m_shell.setLocale(locale);
         m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_SETLOCALE_POST_1, locale));
+    }
+
+    /**
+     * Sets a site parameter and writes back the updated system configuration.<p>
+     *
+     * @param siteRoot the root path used to identify the site
+     *
+     * @param key the parameter key
+     * @param value the parameter value
+     */
+    public void setSiteParam(String siteRoot, String key, String value) {
+
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(siteRoot);
+        if (site == null) {
+            throw new IllegalArgumentException("No site found for path: " + siteRoot);
+        } else {
+            site.getParameters().put(key, value);
+            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        }
     }
 
     /**

@@ -494,7 +494,7 @@ public class CmsLoginController {
             final String loginTarget = getLoginTarget(currentCms, settings, m_params.getRequestedResource());
             final boolean isPublicPC = CmsLoginForm.PC_TYPE_PUBLIC.equals(pcType);
             if (OpenCms.getLoginManager().requiresUserDataCheck(currentCms, userObj)) {
-                I_CmsDialogContext context = new A_CmsDialogContext(ContextType.appToolbar, null) {
+                I_CmsDialogContext context = new A_CmsDialogContext("", ContextType.appToolbar, null) {
 
                     @Override
                     public void finish(CmsProject project, String siteRoot) {
@@ -530,6 +530,11 @@ public class CmsLoginController {
                                 ((CmsBasicDialog)dialog).initActionHandler(m_window);
                             }
                         }
+                    }
+
+                    public void updateUserInfo() {
+
+                        // not supported
                     }
                 };
                 CmsUser u = currentCms.readUser(userObj.getId());

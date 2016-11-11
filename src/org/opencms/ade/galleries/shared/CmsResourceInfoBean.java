@@ -45,6 +45,9 @@ public class CmsResourceInfoBean implements IsSerializable {
     /** The description of the resource. */
     private String m_description;
 
+    /** The detail resource type. */
+    private String m_detailResourceType;
+
     /** The last modification date. */
     private Date m_lastModified;
 
@@ -88,6 +91,16 @@ public class CmsResourceInfoBean implements IsSerializable {
     public String getDescription() {
 
         return m_description;
+    }
+
+    /**
+     * Returns the detail resource type.<p>
+     *
+     * @return the detail resource type
+     */
+    public String getDetailResourceType() {
+
+        return m_detailResourceType;
     }
 
     /**
@@ -187,6 +200,16 @@ public class CmsResourceInfoBean implements IsSerializable {
     public void setDescription(String description) {
 
         m_description = description;
+    }
+
+    /**
+     * Sets the detail resource type.<p>
+     *
+     * @param detailResourceType the detail resource type to set
+     */
+    public void setDetailResourceType(String detailResourceType) {
+
+        m_detailResourceType = detailResourceType;
     }
 
     /**

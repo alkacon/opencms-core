@@ -5426,6 +5426,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         data.put(
             I_CmsEventListener.KEY_CHANGE,
             new Integer(changedProjectLastModified ? CHANGED_PROJECT : NOTHING_CHANGED));
+        data.put(I_CmsEventListener.KEY_SKIPINDEX, Boolean.TRUE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 

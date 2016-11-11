@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The user info toolbar button.<p>
  */
-public class CmsQuickLauncher extends CmsMenuButton {
+public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButton {
 
     /**
      * Abstract class for standard handling of quick launh items.<p>
@@ -130,7 +130,7 @@ public class CmsQuickLauncher extends CmsMenuButton {
                     public void onClick(ClickEvent event) {
 
                         closeMenu();
-                        m_handler.handleQuickLaunch(data);
+                        m_quickLaunchHandler.handleQuickLaunch(data);
 
                     }
                 }, ClickEvent.getType());
@@ -164,10 +164,13 @@ public class CmsQuickLauncher extends CmsMenuButton {
         + "'>\ue617</span>";
 
     /** The quick launch handler. */
-    private I_QuickLaunchHandler m_handler;
+    private I_QuickLaunchHandler m_quickLaunchHandler;
 
     /** The panel containing the individual quick launch buttons. */
     private Panel m_itemContainer;
+
+    /** The handler instance. */
+    private I_CmsToolbarHandler m_handler;
 
     /**
      * Constructor.<p>
@@ -193,9 +196,96 @@ public class CmsQuickLauncher extends CmsMenuButton {
 
             public void onClick(ClickEvent event) {
 
-                toggleQuickLauncher();
+                onToolbarClick();
             }
         });
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#isActive()
+     */
+    public boolean isActive() {
+
+        return isOpen();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()
+     */
+    public void onToolbarActivate() {
+
+        CmsRpcAction<List<CmsQuickLaunchData>> action = new CmsRpcAction<List<CmsQuickLaunchData>>() {
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void execute() {
+
+                start(150, false);
+                CmsCoreProvider.getVfsService().loadQuickLaunchItems(m_quickLaunchHandler.getParameters(), this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsQuickLaunchData> result) {
+
+                stop(false);
+                fillItems(result);
+                openMenu();
+            }
+
+        };
+        action.execute();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarClick()
+     */
+    public void onToolbarClick() {
+
+        boolean active = isActive();
+
+        setActive(!active);
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
+     */
+    public void onToolbarDeactivate() {
+
+        // nothing to do
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#setActive(boolean)
+     */
+    public void setActive(boolean active) {
+
+        if (active) {
+            if (m_handler != null) {
+                m_handler.deactivateCurrentButton();
+                m_handler.setActiveButton(this);
+            }
+            m_popup.catchNotifications();
+            onToolbarActivate();
+            openMenu();
+        } else {
+            onToolbarDeactivate();
+            closeMenu();
+            if (m_handler != null) {
+                m_handler.setActiveButton(null);
+                m_handler.activateSelection();
+            }
+        }
+    }
+
+    /**
+     * Sets the button handler.<p>
+     *
+     * @param handler the button handler
+     */
+    public void setHandler(I_CmsToolbarHandler handler) {
+
+        m_handler = handler;
     }
 
     /**
@@ -203,10 +293,24 @@ public class CmsQuickLauncher extends CmsMenuButton {
      *
      * @param handler the quick launch handler
      */
-    public void setHandler(I_QuickLaunchHandler handler) {
+    public void setQuicklaunchHandler(I_QuickLaunchHandler handler) {
 
-        m_handler = handler;
+        m_quickLaunchHandler = handler;
         setVisible(true);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsMenuButton#autoClose()
+     */
+    @Override
+    protected void autoClose() {
+
+        super.autoClose();
+        onToolbarDeactivate();
+        if (m_handler != null) {
+            m_handler.setActiveButton(null);
+            m_handler.activateSelection();
+        }
     }
 
     /**
@@ -224,34 +328,13 @@ public class CmsQuickLauncher extends CmsMenuButton {
     }
 
     /**
-     * Toggles the user info visibility.<p>
+     * Returns the container-page handler.<p>
+     *
+     * @return the container-page handler
      */
-    protected void toggleQuickLauncher() {
+    protected I_CmsToolbarHandler getHandler() {
 
-        if (isOpen()) {
-            closeMenu();
-        } else {
-            CmsRpcAction<List<CmsQuickLaunchData>> action = new CmsRpcAction<List<CmsQuickLaunchData>>() {
-
-                @SuppressWarnings("synthetic-access")
-                @Override
-                public void execute() {
-
-                    start(150, false);
-                    CmsCoreProvider.getVfsService().loadQuickLaunchItems(m_handler.getParameters(), this);
-                }
-
-                @Override
-                protected void onResponse(List<CmsQuickLaunchData> result) {
-
-                    stop(false);
-                    fillItems(result);
-                    openMenu();
-                }
-
-            };
-            action.execute();
-        }
+        return m_handler;
     }
 
     /**

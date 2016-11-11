@@ -58,9 +58,9 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
     }
 
     /**
-     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.detailpage.I_CmsDetailPageFinder#getDetailPage(org.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String)
      */
-    public String getDetailPage(CmsObject cms, String rootPath, String linkSource) {
+    public String getDetailPage(CmsObject cms, String rootPath, String linkSource, String targetDetailPage) {
 
         CmsADEManager manager = OpenCms.getADEManager();
         if (!manager.isInitialized()) {
@@ -71,7 +71,7 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
             // exclude these for performance reasons
             return null;
         }
-        String result = manager.getDetailPage(cms, rootPath, linkSource);
+        String result = manager.getDetailPage(cms, rootPath, linkSource, targetDetailPage);
         if (result == null) {
             return null;
         }

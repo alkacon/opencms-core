@@ -195,7 +195,6 @@ div.itemIcon{
 	height: 24px;
 	width: 24px;
 	float: left;
-	overflow: hidden;
 	margin: 7px 4px;
 	position: relative;
 }
@@ -205,6 +204,17 @@ div.itemIcon{
 	width: 24px;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
+}
+
+.itemIcon .cms_type_icon > span {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+}
+
+.itemIcon .cms_type_icon > span.pageDetailType {
+	top: 5px;
+	left: 8px;
 }
 
 .itemContainer .itemTitle{

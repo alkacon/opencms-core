@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 8.x and 9.x to @OPENCMS_VERSION@
+      Instructions for updating OpenCms 8.x, 9.x and 10.0.x to @OPENCMS_VERSION@
 
 
                                     WARNING:
@@ -26,7 +26,7 @@ IMPORTANT: This version of OpenCms requires at least Java 7.
 IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modules.
            If you made modifications to these modules, their changes will be lost.
            In this case export the changed module resources before starting the update.
-           Hint: You can use the "Resource changed since" feature in the the Database 
+           Hint: You can use the "Resource changed since" feature in the Database 
            Administration to export all the changes you have done after installing 
            OpenCms.
 
@@ -115,10 +115,13 @@ During the update Solr will be disabled in the WEB-INF/config/opencms-search.xml
 To update Solr you must update the 'schema.xml and' the 'solrconfig.xml' manually.
 The new default configuration files are located in the solr-update/ directory in 
 the WEB-INF folder of your application. If you are using the default configuration
-from the distribution, it is sufficient to copy the new configuration files to the
-WEB-INF/solr folder. Else if you have customized the Solr configuration you might 
-want to merge the 'schema.xml' and the 'solrconfig.xml' first. When you are done 
-set the attribute enabled to 'true' again (and restart the servelt container).
+from the distribution, it is sufficient to replace the folder WEB-INF/solr/ with
+the solr-update/ folder. Else if you have customized the Solr configuration you might
+want to merge the 'schema.xml' and the 'solrconfig.xml' first. Note that these two files
+are now located under solr/configsets/default/conf/ - up to OpenCms 10 it was solr/conf/.
+Even if you only keep your old config files, move them to solr/configsets/default/conf/.
+When you are done, enable Solr in the opencms-search.xml again (and restart the servlet
+container).
 
 If you are updating from an earlier version than 8.5.0, copy the solr-complete/ 
 folder to the solr folder instead. 

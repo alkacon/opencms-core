@@ -195,7 +195,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         m_title = doc.getFieldValueAsString(effFieldName);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_title)) {
             m_title = doc.getFieldValueAsString(
-                CmsPropertyDefinition.PROPERTY_TITLE + CmsSearchField.FIELD_DYNAMIC_PROPERTIES);
+                CmsPropertyDefinition.PROPERTY_TITLE + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT);
         }
 
         effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(

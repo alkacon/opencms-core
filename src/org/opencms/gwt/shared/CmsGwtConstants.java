@@ -73,7 +73,16 @@ public final class CmsGwtConstants {
     public static final String ACTION_SELECTELEMENTVIEW = "selectelementview";
 
     /** Context menu action id. */
+    public static final Object ACTION_SHOWLOCALE = "showlocale";
+
+    /** Context menu action id. */
     public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
+
+    /** Context menu action id. */
+    public static final String ACTION_VIEW_ONLINE = "viewonline";
+
+    /** Name of the Javascript callback used to handle property changes triggered from the locale compare view. */
+    public static final String CALLBACK_HANDLE_CHANGED_PROPERTIES = "cmsHandleChangedProperties";
 
     /** Javascript function name for showing the locale compare view. */
     public static final String CALLBACK_REFRESH_LOCALE_COMPARISON = "cmsRefreshLocaleComparison";
@@ -104,6 +113,9 @@ public final class CmsGwtConstants {
 
     /** Id of the element ussed to  display the sitemap header from Vaadin code. */
     public static final String ID_LOCALE_HEADER_CONTAINER = "locale-header-container";
+
+    /** Name of the Javascript callback used to open the locale comparison view. */
+    public static final String LOCALECOMPARE_EDIT_PROPERTIES = "cmsLocaleCompareEditProperties";
 
     /** Parameter for the button left position. */
     public static final String PARAM_BUTTON_LEFT = "__buttonLeft";

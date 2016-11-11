@@ -53,7 +53,7 @@ public class CmsSitemapSelectField extends CmsResourceSelectField {
     /** The resource to initially show in the target selection tree. */
     private CmsResource m_startResource;
 
-    /** Selector popup window. */ 
+    /** Selector popup window. */
     private Window m_window;
 
     /**
@@ -84,7 +84,10 @@ public class CmsSitemapSelectField extends CmsResourceSelectField {
                 : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
             A_CmsUI.get().addWindow(m_window);
             CmsSitemapFolderSelectDialog fileSelect = new CmsSitemapFolderSelectDialog();
-            fileSelect.showStartResource(m_startResource);
+            CmsResource startResource = getValue() != null ? getValue() : m_startResource;
+            if (startResource != null) {
+                fileSelect.showStartResource(startResource);
+            }
             m_window.setContent(fileSelect);
             fileSelect.addSelectionHandler(new I_CmsSelectionHandler<CmsResource>() {
 

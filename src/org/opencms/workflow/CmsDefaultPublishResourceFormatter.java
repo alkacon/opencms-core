@@ -37,7 +37,9 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
@@ -45,6 +47,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -385,11 +388,22 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
         CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, null);
+
+        String typeName;
+        String detailTypeName = null;
+        if (CmsJspNavBuilder.isNavLevelFolder(m_cms, resource)) {
+            typeName = CmsGwtConstants.TYPE_NAVLEVEL;
+        } else {
+            typeName = resUtil.getResourceTypeName();
+            detailTypeName = CmsResourceIcon.getDefaultFileOrDetailType(m_cms, resource);
+        }
+
         CmsPublishResource pubResource = new CmsPublishResource(
             resource.getStructureId(),
             resUtil.getFullPath(),
             resUtil.getTitle(),
-            resUtil.getResourceTypeName(),
+            typeName,
+            detailTypeName,
             resource.getState(),
             permissionInfo,
             resource.getDateLastModified(),

@@ -51,6 +51,9 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     /** The window used to display the dialog. */
     protected Window m_window;
 
+    /** The app id. */
+    private String m_appId;
+
     /** The context type. */
     private ContextType m_contextType;
 
@@ -60,10 +63,12 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     /**
      * Constructor.<p>
      *
+     * @param appId the app id
      * @param contextType the context type, to be used for visibility evaluation
      * @param resources the list of resources
      */
-    protected A_CmsDialogContext(ContextType contextType, List<CmsResource> resources) {
+    protected A_CmsDialogContext(String appId, ContextType contextType, List<CmsResource> resources) {
+        m_appId = appId;
         m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
         m_contextType = contextType;
     }
@@ -102,6 +107,14 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
 
         closeWindow();
         CmsAppWorkplaceUi.get().enableGlobalShortcuts();
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#getAppId()
+     */
+    public String getAppId() {
+
+        return m_appId;
     }
 
     /**

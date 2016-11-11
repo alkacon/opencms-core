@@ -127,8 +127,12 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String HIDDEN_TOOLBAR = "o-hidden-toolbar";
+
     /** CSS style name. */
     public static final String HOVER_COLUMN = "o-hover-column";
+
+    /** CSS style name. */
+    public static final String IN_NAVIGATION = "o-in-navigation";
 
     /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
@@ -151,6 +155,9 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
+
+    /** CSS style name. */
+    public static final String NO_TRANSLATION_ICON = "o-notranslation";
 
     /** Path to the OpenCms logo theme resource. */
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";

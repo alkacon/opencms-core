@@ -194,6 +194,66 @@ public class TestLocaleGroups extends OpenCmsTestCase {
         assertEquals("no relations should exist on copy of locale variant", new ArrayList<CmsRelation>(), rels);
     }
 
+    public void testNormalizeRelations1() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String path1 = "/testnormalize-1-1.txt";
+        String path2 = "/testnormalize-1-2.txt";
+        CmsResource r1 = makeResource(path1, Locale.ENGLISH);
+        CmsResource r2 = makeResource(path2, Locale.GERMAN);
+
+        cms.addRelationToResource(r1, r2, CmsRelationType.LOCALE_VARIANT.getName());
+        cms.addRelationToResource(r2, r1, CmsRelationType.LOCALE_VARIANT.getName());
+        cms.addRelationToResource(r1, r2, CmsRelationType.CATEGORY.getName());
+
+        assertEquals(
+            0,
+            cms.readRelations(
+                CmsRelationFilter.relationsFromStructureId(r1.getStructureId()).filterType(
+                    CmsRelationType.LOCALE_VARIANT)).size());
+        assertEquals(
+            1,
+            cms.readRelations(
+                CmsRelationFilter.relationsFromStructureId(r2.getStructureId()).filterType(
+                    CmsRelationType.LOCALE_VARIANT)).size());
+
+        assertEquals(
+            0,
+            cms.readRelations(
+                CmsRelationFilter.relationsToStructureId(r2.getStructureId()).filterType(
+                    CmsRelationType.LOCALE_VARIANT)).size());
+        assertEquals(
+            1,
+            cms.readRelations(
+                CmsRelationFilter.relationsToStructureId(r1.getStructureId()).filterType(
+                    CmsRelationType.LOCALE_VARIANT)).size());
+
+        assertEquals(1, cms.readRelations(CmsRelationFilter.relationsFromStructureId(r1.getStructureId())).size());
+
+    }
+
+    public void testNormalizeRelations2() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String path1 = "/testnormalize-2-1.txt";
+        String path2 = "/testnormalize-2-2.txt";
+        String path3 = "/testnormalize-2-3.txt";
+        String path4 = "/testnormalize-2-4.txt";
+        CmsResource r1 = makeResource(path1, Locale.ENGLISH);
+        CmsResource r2 = makeResource(path2, Locale.GERMAN);
+        CmsResource r3 = makeResource(path3, Locale.ITALIAN);
+        CmsResource r4 = makeResource(path4, Locale.FRENCH);
+
+        cms.addRelationToResource(r2, r1, CmsRelationType.LOCALE_VARIANT.getName());
+        cms.addRelationToResource(r3, r1, CmsRelationType.LOCALE_VARIANT.getName());
+        cms.addRelationToResource(r4, r3, CmsRelationType.LOCALE_VARIANT.getName());
+
+        assertEquals(0, cms.readRelations(CmsRelationFilter.relationsFromStructureId(r3.getStructureId())).size());
+        assertEquals(1, cms.readRelations(CmsRelationFilter.relationsToStructureId(r1.getStructureId())).size());
+        assertEquals(1, cms.readRelations(CmsRelationFilter.relationsToStructureId(r3.getStructureId())).size());
+
+    }
+
     public void testSameLocaleGroupWhenReadFromDifferentResources() throws Exception {
 
         CmsObject cms = getCmsObject();

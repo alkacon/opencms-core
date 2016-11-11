@@ -29,7 +29,11 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
@@ -40,6 +44,7 @@ import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -55,7 +60,7 @@ import com.vaadin.ui.UI;
 /**
  * The edit dialog action. Used for all but container page contents.<p>
  */
-public class CmsEditDialogAction extends A_CmsWorkplaceAction {
+public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDefaultAction {
 
     /** The action id. */
     public static final String ACTION_ID = "edit";
@@ -87,6 +92,25 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
         CmsAppWorkplaceUi.get().showApp(
             OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
             CmsEditor.getEditState(context.getResources().get(0).getStructureId(), false, backLink));
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsDefaultAction#getDefaultActionRank(org.opencms.ui.I_CmsDialogContext)
+     */
+    public int getDefaultActionRank(I_CmsDialogContext context) {
+
+        CmsResource res = context.getResources().get(0);
+        boolean editXml = (CmsResourceTypeXmlContent.isXmlContent(res)
+            || (CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
+            || CmsResourceTypeXmlPage.isXmlPage(res))
+            && (!(res.getName().endsWith(".html") || res.getName().endsWith(".htm"))
+                || CmsStringUtil.isEmptyOrWhitespaceOnly(context.getCms().getRequestContext().getSiteRoot()));
+        editXml = editXml
+            || (CmsResourceTypeJsp.isJsp(res) && !(res.getName().endsWith(".html") || res.getName().endsWith(".htm")));
+        if (editXml) {
+            return 20;
+        }
+        return 0;
     }
 
     /**

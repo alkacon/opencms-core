@@ -10,7 +10,7 @@
 .itemAdditionalTitle, .itemAdditionalValue, .dragging,
 .cmsState, .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering,
 .cmsState-down-disabled, .export, .secure, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockClosed, .titleInput, .copyModel, .itemInfoRow,
-.unselectable, .changed, .topRightIcon, .titleDeleted, .itemSubtitle {} 
+.unselectable, .changed, .topRightIcon, .titleDeleted, .itemSubtitle, .pageDetailType {} 
 
 .tilingItem .imageTile, .tilingList .tilingItem .titleRow, .tilingList .tilingItem .itemIcon, .tilingList .tilingItem .itemAdditional{
 	display: none;

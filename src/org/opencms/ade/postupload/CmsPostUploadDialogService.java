@@ -122,6 +122,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
             String typeName = type.getTypeName();
             listInfo.setResourceType(typeName);
+
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
 
             List<String> defaultProperties = settings.getProperties();

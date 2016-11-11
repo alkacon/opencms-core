@@ -78,17 +78,7 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarOptionButton {
     @Override
     public void onToolbarClick() {
 
-        boolean active = isDown();
-
-        if (active) {
-            getHandler().deactivateCurrentButton();
-            getHandler().setActiveButton(this);
-            onToolbarActivate();
-            m_handler.resetEditableListButtons();
-            m_handler.reInitInlineEditing();
-        } else {
-            getHandler().deactivateCurrentButton();
-        }
+        getHandler().deactivateCurrentButton();
         getHandler().showPreview(getElement().getAbsoluteLeft());
     }
 }

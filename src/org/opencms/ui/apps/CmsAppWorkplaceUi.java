@@ -316,11 +316,11 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
             if (view instanceof CmsAppView) {
                 CmsAppView appView = (CmsAppView)view;
                 if (appView.getCacheStatus() == CacheStatus.cache) {
-                    appView.restoreFromCache();
+                    appView.setRequiresRestore(true);
                     return appView;
                 } else if (appView.getCacheStatus() == CacheStatus.cacheOnce) {
                     appView.setCacheStatus(CacheStatus.noCache);
-                    appView.restoreFromCache();
+                    appView.setRequiresRestore(true);
                     return appView;
                 }
             }
@@ -443,6 +443,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         m_currentView = view;
         Component component = null;
         if (view instanceof I_CmsAppView) {
+            if (((I_CmsAppView)view).requiresRestore()) {
+                ((I_CmsAppView)view).restoreFromCache();
+            }
             component = ((I_CmsAppView)view).getComponent();
         } else if (view instanceof Component) {
             component = (Component)view;
@@ -451,7 +454,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         if (component != null) {
             setContent(component);
         }
-
     }
 
     /**

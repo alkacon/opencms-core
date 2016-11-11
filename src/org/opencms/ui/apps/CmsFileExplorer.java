@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -42,12 +43,13 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
-import org.opencms.ui.actions.CmsCopyMoveDialogAction;
+import org.opencms.ui.actions.CmsCopyDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.components.A_CmsFocusShortcutListener;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.CmsUploadButton;
@@ -96,7 +98,6 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.combobox.FilteringMode;
@@ -108,6 +109,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TextField;
@@ -135,7 +137,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         private static final long serialVersionUID = 5392136127699472654L;
 
         /** The copy move action. */
-        final I_CmsWorkplaceAction m_copyMoveAction = new CmsCopyMoveDialogAction();
+        final I_CmsWorkplaceAction m_copyMoveAction = new CmsCopyDialogAction();
 
         /**
          * @see com.vaadin.event.dd.DropHandler#drop(com.vaadin.event.dd.DragAndDropEvent)
@@ -145,9 +147,13 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             try {
                 CmsExplorerDialogContext context = getContext(dragEvent);
                 if (m_copyMoveAction.isActive(context)) {
-                    CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context);
+                    CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(
+                        context,
+                        CmsCopyMoveDialog.DialogMode.copy_and_move);
                     dialog.setTargetFolder(getTargetId(dragEvent));
-                    context.start(m_copyMoveAction.getTitle(), dialog);
+                    context.start(
+                        CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_DIALOGTITLE_COPYMOVE_0),
+                        dialog);
                 }
             } catch (Exception e) {
                 LOG.error("Moving resource failed", e);
@@ -391,7 +397,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     public static final Collection<CmsResourceTableProperty> INLINE_EDIT_PROPERTIES = Arrays.asList(
         CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
         CmsResourceTableProperty.PROPERTY_TITLE,
-        CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT);
+        CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
+        CmsResourceTableProperty.PROPERTY_COPYRIGHT,
+        CmsResourceTableProperty.PROPERTY_CACHE);
 
     /** The opened paths session attribute name. */
     public static final String OPENED_PATHS = "explorer-opened-paths";
@@ -430,6 +438,12 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     private static final Action ACTION_SELECT_ALL = new ShortcutAction(
         "Ctrl+A",
         ShortcutAction.KeyCode.A,
+        new int[] {ShortcutAction.ModifierKey.CTRL});
+
+    /** The switch online shortcut. */
+    private static final Action ACTION_SWITCH_ONLINE = new ShortcutAction(
+        "Ctrl+O",
+        ShortcutAction.KeyCode.O,
         new int[] {ShortcutAction.ModifierKey.CTRL});
 
     /** The files and folder resource filter. */
@@ -565,6 +579,14 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             }
         });
 
+        m_shortcutActions.put(ACTION_SWITCH_ONLINE, new Runnable() {
+
+            public void run() {
+
+                toggleOnlineOffline();
+            }
+        });
+
         m_fileTable = new CmsFileTable(this);
         m_fileTable.setSizeFull();
         m_fileTable.setMenuBuilder(new CmsResourceContextMenuBuilder());
@@ -581,7 +603,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         addTreeContainerProperties(
             CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
             CmsResourceTableProperty.PROPERTY_STATE,
-            CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE,
+            CmsResourceTableProperty.PROPERTY_TREE_CAPTION,
             CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT,
             CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED,
             CmsResourceTableProperty.PROPERTY_DISABLED);
@@ -590,8 +612,10 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         m_fileTree.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         m_fileTree.setWidth("100%");
         m_fileTree.setContainerDataSource(m_treeContainer);
-        m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE);
-        m_fileTree.setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
+        //    m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE);
+        m_fileTree.setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_TREE_CAPTION);
+        //        m_fileTree.setCaptionAsHtml(true);
+        m_fileTree.setHtmlContentAllowed(true);
         m_expandListener = new TreeExpandListener();
         m_fileTree.addExpandListener(m_expandListener);
         m_fileTree.addCollapseListener(new CollapseListener() {
@@ -1084,8 +1108,16 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             Item resourceItem = m_treeContainer.getItem(id);
             if (resourceItem != null) {
                 // use the root path as name in case of the root item
-                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
-                    parentId == null ? resource.getRootPath() : resource.getName());
+                String resName = parentId == null ? resource.getRootPath() : resource.getName();
+                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(resName);
+                CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+                String iconHTML = CmsResourceIcon.getTreeCaptionHTML(
+                    resName,
+                    resUtil,
+                    resUtil.getBigIconPath(),
+                    null,
+                    false);
+                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(iconHTML);
                 resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
                 if (parentId != null) {
                     m_treeContainer.setParent(resource.getStructureId(), parentId);
@@ -1093,6 +1125,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             } else {
                 addTreeItem(cms, resource, parentId, false, m_treeContainer);
             }
+            m_fileTree.markAsDirty();
         } catch (CmsVfsResourceNotFoundException e) {
             m_treeContainer.removeItemRecursively(id);
             LOG.debug(e.getLocalizedMessage(), e);
@@ -1474,6 +1507,54 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     }
 
     /**
+     * Toggles between the online and the offline project.<p>
+     */
+    void toggleOnlineOffline() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        CmsProject targetProject = null;
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            targetProject = A_CmsUI.get().getLastOfflineProject();
+            if (targetProject == null) {
+                CmsUserSettings userSettings = new CmsUserSettings(cms);
+                try {
+                    CmsProject project = cms.readProject(userSettings.getStartProject());
+                    if (!project.isOnlineProject()
+                        && OpenCms.getOrgUnitManager().getAllAccessibleProjects(
+                            cms,
+                            project.getOuFqn(),
+                            false).contains(project)) {
+                        targetProject = project;
+                    }
+                } catch (CmsException e) {
+                    LOG.debug("Error reading user start project.", e);
+                }
+                if (targetProject == null) {
+                    List<CmsProject> availableProjects = CmsVaadinUtils.getAvailableProjects(cms);
+                    for (CmsProject project : availableProjects) {
+                        if (!project.isOnlineProject()) {
+                            targetProject = project;
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            try {
+                targetProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+            } catch (CmsException e) {
+                LOG.debug("Error reading online project.", e);
+            }
+        }
+        if (targetProject != null) {
+            A_CmsUI.get().changeProject(targetProject);
+            onSiteOrProjectChange(targetProject, null);
+            Notification.show(
+                CmsVaadinUtils.getMessageText(Messages.GUI_SWITCHED_TO_PROJECT_1, targetProject.getName()));
+        }
+    }
+
+    /**
      * Adds the given properties to the tree container.<p>
      *
      * @param properties the properties tom add
@@ -1501,21 +1582,24 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         boolean disabled,
         HierarchicalContainer container) {
 
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         Item resourceItem = container.getItem(resource.getStructureId());
         if (resourceItem == null) {
             resourceItem = container.addItem(resource.getStructureId());
         }
+
         // use the root path as name in case of the root item
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
-            parentId == null ? resource.getRootPath() : resource.getName());
+        String resName = parentId == null ? resource.getRootPath() : resource.getName();
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(resName);
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT).setValue(
             Boolean.valueOf(resUtil.isInsideProject()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).setValue(
             Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE).setValue(
-            new ExternalResource(resUtil.getBigIconPath()));
+        String iconHTML = CmsResourceIcon.getTreeCaptionHTML(resName, resUtil, resUtil.getBigIconPath(), null, false);
+
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(iconHTML);
         if (disabled) {
             resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).setValue(Boolean.TRUE);
         }

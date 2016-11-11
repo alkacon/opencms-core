@@ -79,4 +79,23 @@ public interface I_CmsAppView extends View {
      * @return the new component
      */
     Component reinitComponent();
+
+    /**
+     * Returns whether this view needs to be restored from cache.<p>
+     *
+     * @return <code>true</code> if this view needs to be restored from cache
+     */
+    boolean requiresRestore();
+
+    /**
+     * Restores the view from cache.<p>
+     */
+    void restoreFromCache();
+
+    /**
+     * Sets the requires restore from cache flag.<p>
+     *
+     * @param restored the requires restore from cache flag
+     */
+    void setRequiresRestore(boolean restored);
 }

@@ -41,6 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -59,8 +60,6 @@ import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Resource;
 
 /**
  * Data container which is used as a data source for VFS file selectors.<p>
@@ -238,7 +237,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
 
         addContainerProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, String.class, null);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
-        addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION, String.class, null);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT, Boolean.class, Boolean.TRUE);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER, Boolean.class, Boolean.TRUE);
         addContainerProperty(PROPERTY_RESOURCE, CmsResource.class, null);
@@ -257,11 +256,11 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
         resourceItem.getItemProperty(PROPERTY_RESOURCE).setValue(resource);
         // use the root path as name in case of the root item
         String name = getName(cms, resource, parentId);
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(name);
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
-        String icon = getIcon(cms, resource);
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(new ExternalResource(icon));
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        String iconHTML = CmsResourceIcon.getTreeCaptionHTML(name, resUtil, resUtil.getBigIconPath(), null, false);
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(iconHTML);
         resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER).setValue(
             Boolean.valueOf(resource.isFolder()));

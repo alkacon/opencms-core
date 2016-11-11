@@ -76,6 +76,8 @@ import org.opencms.util.CmsWaitHandle;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -188,6 +190,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         // skip lock & unlock
                         return;
                     }
+                    // skip indexing if flag is set in event
+                    Object skip = event.getData().get(I_CmsEventListener.KEY_SKIPINDEX);
+                    if (skip != null) {
+                        return;
+                    }
+
                     // a resource has been modified - offline indexes require (re)indexing
                     List<CmsResource> resources = Collections.singletonList(
                         (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE));
@@ -435,24 +443,26 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             List<CmsPublishedResource> resourcesToIndex = m_handler.getResourcesToIndex();
             List<CmsPublishedResource> result = new ArrayList<CmsPublishedResource>(resourcesToIndex.size());
 
+            // Reverse to always keep the last list entries
+            Collections.reverse(resourcesToIndex);
             for (CmsPublishedResource pubRes : resourcesToIndex) {
-                int pos = result.indexOf(pubRes);
-
-                // do not index temporary files
-                if (pos < 0) {
-                    // resource not already contained in the update list
-                    result.add(pubRes);
-                } else {
-                    CmsPublishedResource curRes = result.get(pos);
-                    if ((pubRes.getState() != curRes.getState())
-                        || (pubRes.getMovedState() != curRes.getMovedState())
-                        || !pubRes.getRootPath().equals(curRes.getRootPath())) {
-                        // resource already in the update list but new state is different, so also add this
-                        result.add(pubRes);
+                boolean addResource = true;
+                for (CmsPublishedResource resRes : result) {
+                    if (pubRes.equals(resRes)
+                        && (pubRes.getState() == resRes.getState())
+                        && (pubRes.getMovedState() == resRes.getMovedState())
+                        && pubRes.getRootPath().equals(resRes.getRootPath())) {
+                        // resource already in the update list
+                        addResource = false;
+                        break;
                     }
+                }
+                if (addResource) {
+                    result.add(pubRes);
                 }
 
             }
+            Collections.reverse(result);
             return changeStateOfMoveOriginsToDeleted(result);
         }
 
@@ -1709,37 +1719,43 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         // create a new core if no core exists for the given index
-        if (!m_coreContainer.getCoreNames().contains(index.getName())) {
+        if (!m_coreContainer.getCoreNames().contains(index.getCoreName())) {
             // Being sure the core container is not 'null',
             // we can create a core for this index if not already existent
             File dataDir = new File(index.getPath());
             if (!dataDir.exists()) {
-                if (!dataDir.exists()) {
-                    dataDir.mkdirs();
-                    if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(
-                            Messages.get().getBundle().key(
-                                Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
-                                index.getName(),
-                                index.getPath()));
-                    }
+                dataDir.mkdirs();
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
+                            index.getName(),
+                            index.getPath()));
+                }
+            }
+            File instanceDir = new File(
+                m_solrConfig.getHome() + FileSystems.getDefault().getSeparator() + index.getName());
+            if (!instanceDir.exists()) {
+                instanceDir.mkdirs();
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
+                            index.getName(),
+                            index.getPath()));
                 }
             }
 
             // create the core
             // TODO: suboptimal - forces always the same schema
-            CoreDescriptor descriptor = new CoreDescriptor(
-                m_coreContainer,
-                index.getName(),
-                m_solrConfig.getHome(),
-                CoreDescriptor.CORE_DATADIR,
-                dataDir.getAbsolutePath());
             SolrCore core = null;
             try {
                 // creation includes registration.
-                core = m_coreContainer.create(descriptor, false);
-                core.setName(index.getName());
-                index.setSolrServer(new EmbeddedSolrServer(m_coreContainer, index.getName()));
+                // TODO: this was the old code: core = m_coreContainer.create(descriptor, false);
+                Map<String, String> properties = new HashMap<String, String>(3);
+                properties.put(CoreDescriptor.CORE_DATADIR, dataDir.getAbsolutePath());
+                properties.put(CoreDescriptor.CORE_CONFIGSET, "default");
+                core = m_coreContainer.create(index.getCoreName(), instanceDir.toPath(), properties);
             } catch (NullPointerException e) {
                 if (core != null) {
                     core.close();
@@ -1747,14 +1763,20 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 throw new CmsConfigurationException(
                     Messages.get().container(
                         Messages.ERR_SOLR_SERVER_NOT_CREATED_3,
-                        index.getName(),
+                        index.getName() + " (" + index.getCoreName() + ")",
                         index.getPath(),
                         m_solrConfig.getSolrConfigFile().getAbsolutePath()),
                     e);
             }
         }
+        if (index.isNoSolrServerSet()) {
+            index.setSolrServer(new EmbeddedSolrServer(m_coreContainer, index.getCoreName()));
+        }
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SOLR_SERVER_CREATED_1, index.getName()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_SOLR_SERVER_CREATED_1,
+                    index.getName() + " (" + index.getCoreName() + ")"));
         }
     }
 
@@ -1819,7 +1841,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public boolean removeSearchFieldConfigurationField(
         CmsSearchFieldConfiguration fieldConfiguration,
-        CmsSearchField field) throws CmsIllegalStateException {
+        CmsSearchField field)
+    throws CmsIllegalStateException {
 
         if (fieldConfiguration.getFields().size() < 2) {
             throw new CmsIllegalStateException(
@@ -1881,6 +1904,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void removeSearchIndex(CmsSearchIndex searchIndex) {
 
+        // shut down index to remove potential config files of Solr indexes
+        searchIndex.shutDown();
+        if (searchIndex instanceof CmsSolrIndex) {
+            CmsSolrIndex solrIndex = (CmsSolrIndex)searchIndex;
+            m_coreContainer.unload(solrIndex.getCoreName(), true, true, true);
+        }
         m_indexes.remove(searchIndex);
         initOfflineIndexes();
 
@@ -2614,7 +2643,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     protected synchronized void updateIndex(
         CmsSearchIndex index,
         I_CmsReport report,
-        List<CmsPublishedResource> resourcesToIndex) throws CmsException {
+        List<CmsPublishedResource> resourcesToIndex)
+    throws CmsException {
 
         // copy the stored admin context for the indexing
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
@@ -2777,7 +2807,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsObject cms,
         CmsSearchIndex index,
         I_CmsReport report,
-        List<CmsPublishedResource> resourcesToIndex) throws CmsException {
+        List<CmsPublishedResource> resourcesToIndex)
+    throws CmsException {
 
         // update the existing index
         List<CmsSearchIndexUpdateData> updateCollections = new ArrayList<CmsSearchIndexUpdateData>();
@@ -2945,7 +2976,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         try {
             // get the core container
             // still no core container: create it
-            container = CoreContainer.createAndLoad(m_solrConfig.getHome(), m_solrConfig.getSolrFile());
+            container = CoreContainer.createAndLoad(
+                Paths.get(m_solrConfig.getHome()),
+                m_solrConfig.getSolrFile().toPath());
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(
@@ -3015,17 +3048,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (m_coreContainer != null) {
             for (SolrCore core : m_coreContainer.getCores()) {
-                m_coreContainer.unload(core.getName());
-                if (core.getOpenCount() > 1) {
-                    LOG.error(
-                        "There are still " + core.getOpenCount() + " open Solr cores left, potetial resource leak!");
-                    while (core.getOpenCount() >= 0) {
-                        core.close();
-                    }
-                } else {
-                    // close the last one
-                    core.close();
-                }
+                m_coreContainer.unload(core.getName(), false, false, true);
             }
             m_coreContainer.shutdown();
             if (CmsLog.INIT.isInfoEnabled()) {

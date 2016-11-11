@@ -355,9 +355,13 @@ public class CmsLoginUI extends A_CmsUI {
             CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
             settings = CmsLoginHelper.initSiteAndProject(cms);
-            VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
-                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
-                settings);
+            if (VaadinService.getCurrentRequest() != null) {
+                VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
+                    CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                    settings);
+            } else {
+                session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
+            }
         }
         return settings;
     }

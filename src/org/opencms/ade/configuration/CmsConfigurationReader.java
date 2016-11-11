@@ -174,6 +174,9 @@ public class CmsConfigurationReader {
     /** The property name node name. */
     public static final String N_PROPERTY_NAME = "PropertyName";
 
+    /** Node name for the "Remove all formatters"-option. */
+    public static final String N_REMOVE_ALL_FORMATTERS = "RemoveAllFormatters";
+
     /** Node name for removed formatters. */
     public static final String N_REMOVE_FORMATTER = "RemoveFormatter";
 
@@ -396,7 +399,8 @@ public class CmsConfigurationReader {
             parseFunctionReference(node);
         }
 
-        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(basePath, root);
+        boolean removeAllFormatters = getBoolean(root, N_REMOVE_ALL_FORMATTERS);
+        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(basePath, root, removeAllFormatters);
         boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
         boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
         boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
@@ -739,18 +743,26 @@ public class CmsConfigurationReader {
      *
      * @param basePath the configuration base path
      * @param node the parent node
+     * @param removeAllFormatters flag, indicating if all formatters that are not explicitly added should be removed
      * @return the formatter change set
      */
-    protected CmsFormatterChangeSet parseFormatterChangeSet(String basePath, I_CmsXmlContentLocation node) {
+    protected CmsFormatterChangeSet parseFormatterChangeSet(
+        String basePath,
+        I_CmsXmlContentLocation node,
+        boolean removeAllFormatters) {
 
         Set<String> addFormatters = parseAddFormatters(node);
         addFormatters.addAll(readLocalMacroFormatters(node));
-        Set<String> removeFormatters = parseRemoveFormatters(node);
+        Set<String> removeFormatters = removeAllFormatters ? new HashSet<String>() : parseRemoveFormatters(node);
         String siteRoot = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)) {
             siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
         }
-        CmsFormatterChangeSet result = new CmsFormatterChangeSet(removeFormatters, addFormatters, siteRoot);
+        CmsFormatterChangeSet result = new CmsFormatterChangeSet(
+            removeFormatters,
+            addFormatters,
+            siteRoot,
+            removeAllFormatters);
         return result;
     }
 

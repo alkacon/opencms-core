@@ -279,7 +279,26 @@
 		height: 32px;
 		width: 32px !important;
 		position: relative;
-		padding: 4px;
+		padding: 4px !important;
+		box-sizing: border-box;
+		vertical-align: middle;
+		
+		.o-icon-overlay, .o-page-icon-overlay{
+			display: block;
+			height: 16px;
+			width: 16px;
+			position: absolute;
+			z-index: 2;
+		}
+		.o-icon-overlay{
+			top:10px;
+			left: 10px;
+		}
+		
+		.o-page-icon-overlay{
+			top: 13px;
+			left: 16px;
+		}
 		 	
 		.o-lock-shared, .o-lock-user, .o-lock-other, .o-lock-publish, .o-state-changed, .o-state-new, .o-sibling{
 			position: absolute;
@@ -375,7 +394,7 @@
 	*[location="buttonContainer"] > * > * > .o-resinfo2 {
 		margin-top: -1px; 
 	}
-		
+	
 	
 	.o-resinfo2 {
 		 border: 1px solid #ccc; 
@@ -399,6 +418,12 @@
 		
 		.o-resource-icon {
 			margin-top: 2px;
+		}
+		
+		.o-resource-icon.o-notranslation {
+			color: $alkacon-red; 
+			font-size: 24px;
+			margin-top: -10px; 
 		}
 	
 		.o-resinfo-top {
@@ -713,6 +738,7 @@
 		.o-sitemap-tree-node-right {
 			-ms-flex: 1; 
 			flex: 1; 
+			min-width: 0px;
 		}
 		
 		.o-sitemap-tree-node-children { 

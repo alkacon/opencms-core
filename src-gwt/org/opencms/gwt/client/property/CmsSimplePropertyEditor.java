@@ -32,6 +32,7 @@ import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsSimpleFormFieldPanel;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientProperty.Mode;
 import org.opencms.gwt.shared.property.CmsPathValue;
@@ -92,6 +93,7 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
         Map<String, CmsClientProperty> defaultFileProps = m_handler.getDefaultFileProperties();
         Map<String, CmsClientProperty> props;
         CmsUUID id = null;
+        CmsDebugLog.consoleLog("buildFields -- isFolder == " + m_handler.isFolder());
         if (!m_handler.isFolder()) {
             props = ownProps;
             id = m_handler.getId();

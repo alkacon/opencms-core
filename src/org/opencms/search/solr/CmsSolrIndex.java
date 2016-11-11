@@ -83,7 +83,6 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
@@ -174,6 +173,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /** The post document manipulator. */
     private I_CmsSolrPostSearchProcessor m_postProcessor;
+
+    /** The core name for the index. */
+    private String m_coreName;
 
     /**
      * Default constructor.<p>
@@ -316,10 +318,21 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * Returns the name of the core of the index.
+     * NOTE: Index and core name differ since OpenCms 10.5 due to new naming rules for cores in SOLR.
+     *
+     * @return the name of the core of the index.
+     */
+    public String getCoreName() {
+
+        return m_coreName;
+    }
+
+    /**
      * @see org.opencms.search.CmsSearchIndex#getDocument(java.lang.String, java.lang.String)
      */
     @Override
-    public I_CmsSearchDocument getDocument(String fieldname, String term) {
+    public synchronized I_CmsSearchDocument getDocument(String fieldname, String term) {
 
         try {
             SolrQuery query = new SolrQuery();
@@ -332,7 +345,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             if (res != null) {
                 SolrDocumentList sdl = m_solr.query(query).getResults();
                 if ((sdl.getNumFound() == 1L) && (sdl.get(0) != null)) {
-                    return new CmsSolrDocument(ClientUtils.toSolrInputDocument(sdl.get(0)));
+                    return new CmsSolrDocument(sdl.get(0));
                 }
             }
         } catch (Exception e) {
@@ -419,6 +432,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
         }
     }
 
+    /** Returns a flag, indicating if the Solr server is not yet set.
+     * @return a flag, indicating if the Solr server is not yet set.
+     */
+    public boolean isNoSolrServerSet() {
+
+        return null == m_solr;
+    }
+
     /**
      * Not yet implemented for Solr.<p>
      *
@@ -432,7 +453,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      */
     @Override
     @Deprecated
-    public CmsSearchResultList search(CmsObject cms, CmsSearchParameters params) {
+    public synchronized CmsSearchResultList search(CmsObject cms, CmsSearchParameters params) {
 
         throw new UnsupportedOperationException();
     }
@@ -524,7 +545,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
         CmsObject cms,
         final CmsSolrQuery query,
         boolean ignoreMaxRows,
-        final CmsResourceFilter filter) throws CmsSearchException {
+        final CmsResourceFilter filter)
+    throws CmsSearchException {
 
         return search(cms, query, ignoreMaxRows, null, false, filter);
     }
@@ -552,7 +574,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
         boolean ignoreMaxRows,
         ServletResponse response,
         boolean ignoreSearchExclude,
-        CmsResourceFilter filter) throws CmsSearchException {
+        CmsResourceFilter filter)
+    throws CmsSearchException {
 
         // check if the user is allowed to access this index
         checkOfflineAccess(cms);
@@ -702,7 +725,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 new Integer(new Long(System.currentTimeMillis() - startTime).intValue()));
             long highlightEndTime = System.currentTimeMillis();
             SolrCore core = m_solr instanceof EmbeddedSolrServer
-            ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName())
+            ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getCoreName())
             : null;
             CmsSolrResultList result = null;
             try {
@@ -839,7 +862,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     e),
                 e);
         } finally {
-
+            if (solrQueryRequest != null) {
+                solrQueryRequest.close();
+            }
             // re-set thread to previous priority
             Thread.currentThread().setPriority(previousPriority);
         }
@@ -899,6 +924,20 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * Sets the logical key/name of this search index.<p>
+     *
+     * @param name the logical key/name of this search index
+     *
+     * @throws CmsIllegalArgumentException if the given name is null, empty or already taken by another search index
+     */
+    @Override
+    public void setName(String name) throws CmsIllegalArgumentException {
+
+        super.setName(name);
+        updateCoreName();
+    }
+
+    /**
      * Sets the search post processor.<p>
      *
      * @param postProcessor the search post processor to set
@@ -916,17 +955,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public void setSolrServer(SolrClient client) {
 
         m_solr = client;
-    }
-
-    /**
-     * @see org.opencms.search.CmsSearchIndex#shutDown()
-     */
-    @Override
-    public void shutDown() {
-
-        if (null != m_solr) {
-            m_solr.shutdown();
-        }
     }
 
     /**
@@ -981,7 +1009,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
             // create and return the result
             core = m_solr instanceof EmbeddedSolrServer
-            ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName())
+            ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getCoreName())
             : null;
 
             SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
@@ -1021,7 +1049,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         if (m_solr instanceof EmbeddedSolrServer) {
             EmbeddedSolrServer ser = (EmbeddedSolrServer)m_solr;
             CoreContainer con = ser.getCoreContainer();
-            SolrCore core = con.getCore(getName());
+            SolrCore core = con.getCore(getCoreName());
             if (core != null) {
                 try {
                     SolrRequestHandler h = core.getRequestHandler("/replication");
@@ -1055,6 +1083,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /**
      * @see org.opencms.search.CmsSearchIndex#indexSearcherClose()
      */
+    @SuppressWarnings("sync-override")
     @Override
     protected void indexSearcherClose() {
 
@@ -1064,8 +1093,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /**
      * @see org.opencms.search.CmsSearchIndex#indexSearcherOpen(java.lang.String)
      */
+    @SuppressWarnings("sync-override")
     @Override
-    protected void indexSearcherOpen(String path) {
+    protected void indexSearcherOpen(final String path) {
 
         // nothing to do here
     }
@@ -1073,6 +1103,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /**
      * @see org.opencms.search.CmsSearchIndex#indexSearcherUpdate()
      */
+    @SuppressWarnings("sync-override")
     @Override
     protected void indexSearcherUpdate() {
 
@@ -1129,6 +1160,29 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * Generates a valid core name from the provided name (the index name).
+     * @param name the index name.
+     * @return the core name
+     */
+    private String generateCoreName(final String name) {
+
+        if (name != null) {
+            //TODO: Add more name manipulations to guarantee a valid core name
+            return name.replace(" ", "-");
+        }
+        return null;
+    }
+
+    /**
+     * Updates the core name to be in sync with the index name.
+     */
+    private void updateCoreName() {
+
+        m_coreName = generateCoreName(getName());
+
+    }
+
+    /**
      * Writes the Solr response.<p>
      *
      * @param response the servlet response
@@ -1142,7 +1196,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
     throws IOException, UnsupportedEncodingException {
 
         if (m_solr instanceof EmbeddedSolrServer) {
-            SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
+            SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getCoreName());
+            Writer out = null;
             try {
                 QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
 
@@ -1156,7 +1211,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
                 } else {
                     String charset = ContentStreamBase.getCharsetFromContentType(ct);
-                    Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString()))
+                    out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString()))
                     ? new OutputStreamWriter(response.getOutputStream(), UTF8)
                     : new OutputStreamWriter(response.getOutputStream(), charset);
                     out = new FastWriter(out);
@@ -1165,6 +1220,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 }
             } finally {
                 core.close();
+                if (out != null) {
+                    out.close();
+                }
             }
         } else {
             throw new UnsupportedOperationException();

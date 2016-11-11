@@ -16,6 +16,7 @@
         	<xsd:element name="SitemapInclude" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded"/>
         	<xsd:element name="SitemapExclude" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded"/>
         	<xsd:element name="RobotsTxtText" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+        	<xsd:element name="ServerUrl" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -36,6 +37,8 @@
 					<resource key="label.SeoFile.RobotsTxtText.help">The text which will be inserted after the sitemap references if robots.txt mode is selected.</resource>
 					<resource key="label.SeoFile.GeneratorClass">Sitemap generator class</resource>
 					<resource key="label.SeoFile.GeneratorClass.help">The name of the custom Java class to use for sitemap generation (optional).</resource>
+					<resource key="label.SeoFile.ServerUrl">Server URL</resource>
+					<resource key="label.SeoFile.ServerUrl.help">Can be used to override the server URL for the generated links in an XML sitemap.</resource>
 					<resource key="choice.xmlsitemap">XML sitemap</resource>
 					<resource key="choice.robotstxt">robots.txt</resource>
 				</bundle> 
@@ -52,6 +55,9 @@
 					<resource key="label.SeoFile.RobotsTxtText.help">Der Text, der im robots.txt-Modus nach den Sitemap-Referenzen eingefügt wird.</resource>
 					<resource key="label.SeoFile.GeneratorClass">Sitemapgenerator-Klasse</resource>
 					<resource key="label.SeoFile.GeneratorClass.help">Der Name der Java-Klasse, die für die Erzeugung der Sitemap verwendet werden soll (optional).</resource>
+					<resource key="label.SeoFile.ServerUrl">Server-URL</resource>
+					<resource key="label.SeoFile.ServerUrl.help">Kann verwendet werden, um den Servernamen in den erzeugten Links der XML-Sitemap zu überschreiben.</resource>
+					
 					<resource key="choice.xmlsitemap">XML-Sitemap</resource>
 					<resource key="choice.robotstxt">robots.txt</resource>
 				</bundle>						

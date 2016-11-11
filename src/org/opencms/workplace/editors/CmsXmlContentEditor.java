@@ -44,7 +44,6 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -603,7 +602,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // set the modified parameter
                 setParamModified(Boolean.TRUE.toString());
                 // update the offline search indices
-                OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+                OpenCms.getSearchManager().updateOfflineIndexes(0);
             }
         } catch (CmsException e) {
             showErrorPage(e);
@@ -1824,10 +1823,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         }
 
                         result.append("<div style=\"padding: 3px;\"><strong>");
-                        result.append(
-                            key(
-                                Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_LANG_1,
-                                new Object[] {locale.getLanguage()}));
+                        result.append(key(
+                            Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_LANG_1,
+                            new Object[] {locale.getLanguage()}));
                         result.append("</strong></div>\n");
                         result.append("<ul>");
 

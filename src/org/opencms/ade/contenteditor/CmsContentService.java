@@ -61,7 +61,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.search.CmsSearchManager;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsStringUtil;
@@ -621,7 +620,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 writeCategories(file, content, lastEditedEntity);
 
                 // update offline indices
-                OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+                OpenCms.getSearchManager().updateOfflineIndexes(0);
                 if (clearOnSuccess) {
                     tryUnlock(resource);
                     getSessionCache().uncacheXmlContent(structureId);

@@ -1397,7 +1397,8 @@ public final class CmsJspStandardContextBean {
                 String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
                     m_cms,
                     m_element.getResource().getRootPath(),
-                    m_cms.getRequestContext().getUri());
+                    m_cms.getRequestContext().getUri(),
+                    null);
                 result = detailPage != null;
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);

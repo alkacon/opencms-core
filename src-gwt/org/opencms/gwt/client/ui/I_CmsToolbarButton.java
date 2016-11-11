@@ -37,13 +37,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 public interface I_CmsToolbarButton extends HasClickHandlers {
 
     /**
-     * The icon CSS class of this button.<p>
-     *
-     * @return the CSS class name
-     */
-    String getIconClass();
-
-    /**
      * Returns the localized button title. Will show in tool-tip.<p>
      *
      * @return the button title

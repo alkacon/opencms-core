@@ -35,6 +35,9 @@
 			float: left;
 			clear: left;
 		  	@include valo-selection-item-style;
+		  	&.bold{
+		  		font-weight: 800;
+		  	}
 		}
 		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu, .v-menubar-menuitem {
 			padding-top: 2px;

@@ -34,8 +34,14 @@ import com.vaadin.server.FontIcon;
  */
 public enum FontOpenCms implements FontIcon {
 
+    /** The add icon. */
+    ADD_SMALL(0xe90b),
+
     /** The apps icon. */
     APPS(0xe617),
+
+    /** The check icon. */
+    CHECK_SMALL(0xe916),
 
     /** The circle icon. */
     CIRCLE(0xe62a),
@@ -88,8 +94,20 @@ public enum FontOpenCms implements FontIcon {
     /** The context menu icon. */
     CONTEXT_MENU(0xe616),
 
+    /** The context menu icon. */
+    CONTEXT_MENU_SMALL(0xe909),
+
     /** The copy locale icon. */
     COPY_LOCALE(0xe61a),
+
+    /** The cut icon. */
+    CUT_SMALL(0xe906),
+
+    /** the delete icon. */
+    DELETE_SMALL(0xe90c),
+
+    /** The edit down icon. */
+    EDIT_DOWN_SMALL(0xe90f),
 
     /** The bulls eye edit icon. */
     EDIT_POINT(0xe600),
@@ -97,11 +115,20 @@ public enum FontOpenCms implements FontIcon {
     /** The disabled bulls eye edit icon. */
     EDIT_POINT_DISABLED(0xe601),
 
+    /** The bulls eye edit icon. */
+    EDIT_POINT_SMALL(0xe900),
+
+    /** The edit up icon. */
+    EDIT_UP_SMALL(0xe910),
+
     /** The error icon. */
     ERROR(0xed6b),
 
     /** The exit icon. */
     EXIT(0xe615),
+
+    /** The favorite icon. */
+    FAVORITE_SMALL(0xe905),
 
     /** The filter icon. */
     FILTER(0xe60c),
@@ -121,8 +148,23 @@ public enum FontOpenCms implements FontIcon {
     /** The info icon. */
     INFO(0xe612),
 
+    /** The info icon. */
+    INFO_SMALL(0xe903),
+
+    /** The lock icon. */
+    LOCK_SMALL(0xe90d),
+
+    /** The move icon. */
+    MOVE_SMALL(0xe902),
+
     /** The pen/edit icon. */
     PEN(0xe614),
+
+    /** The pen/edit icon. */
+    PEN_SMALL(0xe901),
+
+    /** The preview icon. */
+    PREVIEW_SMALL(0xe90e),
 
     /** The publish icon. */
     PUBLISH(0xe60e),
@@ -142,8 +184,14 @@ public enum FontOpenCms implements FontIcon {
     /** The search icon. */
     SEARCH(0xe60d),
 
+    /** The search icon. */
+    SEARCH_SMALL(0xe907),
+
     /** The settings icon. */
     SETTINGS(0xe618),
+
+    /** The settings icon. */
+    SETTINGS_SMALL(0xe904),
 
     /** The show icon. */
     SHOW(0xe608),
@@ -151,23 +199,32 @@ public enum FontOpenCms implements FontIcon {
     /** The sitemap icon. */
     SITEMAP(0xe613),
 
+    /** The sitemap icon. */
+    SITEMAP_SMALL(0xe90a),
+
+    /** The trash icon. */
+    TRASH_SMALL(0xe913),
+
+    /** 'minus' state icon for tree opener. */
+    TREE_MINUS(0xe919),
+
+    /** 'plus' state icon for tree opener. */
+    TREE_PLUS(0xe918),
+
     /** The undo icon. */
     UNDO(0xe606),
 
     /** The upload icon. */
     UPLOAD(0xe604),
 
+    /** The upload icon. */
+    UPLOAD_SMALL(0xe908),
+
     /** The wand icon. */
     WAND(0xe610),
 
     /** The warning icon. */
-    WARNING(0xed50),
-
-    /** 'plus' state icon for tree opener. */ 
-    TREE_PLUS(0xe918),
-
-    /** 'minus' state icon for tree opener. */ 
-    TREE_MINUS(0xe919);
+    WARNING(0xed50);
 
     /** The icon code point. */
     private int m_codepoint;

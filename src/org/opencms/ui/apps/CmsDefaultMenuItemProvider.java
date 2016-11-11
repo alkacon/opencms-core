@@ -34,11 +34,11 @@ import org.opencms.ui.actions.CmsCategoriesDialogAction;
 import org.opencms.ui.actions.CmsChangeTypeDialogAction;
 import org.opencms.ui.actions.CmsClassicWorkplaceAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
-import org.opencms.ui.actions.CmsCopyMoveDialogAction;
-import org.opencms.ui.actions.CmsCopyPageDialogAction;
+import org.opencms.ui.actions.CmsCopyDialogAction;
 import org.opencms.ui.actions.CmsCopyToProjectDialogAction;
 import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsDirectPublishDialogAction;
+import org.opencms.ui.actions.CmsDisplayAction;
 import org.opencms.ui.actions.CmsEditCodeDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.actions.CmsEditPageAction;
@@ -50,6 +50,7 @@ import org.opencms.ui.actions.CmsHistoryDialogAction;
 import org.opencms.ui.actions.CmsLinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsLockAction;
 import org.opencms.ui.actions.CmsLockedResourcesAction;
+import org.opencms.ui.actions.CmsMoveDialogAction;
 import org.opencms.ui.actions.CmsPermissionDialogAction;
 import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
@@ -64,6 +65,7 @@ import org.opencms.ui.actions.CmsStealLockAction;
 import org.opencms.ui.actions.CmsTouchDialogAction;
 import org.opencms.ui.actions.CmsUndeleteDialogAction;
 import org.opencms.ui.actions.CmsUndoDialogAction;
+import org.opencms.ui.actions.CmsUnlinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsUnlockAction;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.contextmenu.CmsSubmenu;
@@ -80,11 +82,11 @@ import org.apache.commons.logging.Log;
  */
 public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider {
 
-    /** Logger instance for this class. */
-    static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
-
     /** The advanced menu id. */
     public static final String ADVANCED_MENU_ID = "advanced";
+
+    /** Logger instance for this class. */
+    static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
 
     /**
      * Creates a new instance.<p>
@@ -107,6 +109,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsEditPointerAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsGalleryDialogAction(), null, 50, 0),
+            new CmsContextMenuActionItem(new CmsDisplayAction(), null, 75, 0),
             new CmsContextMenuActionItem(new CmsLockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsUnlockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsStealLockAction(), null, 100, 0),
@@ -114,25 +117,14 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsCopyToProjectDialogAction(), null, 150, 0),
             new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 300, 0),
             new CmsContextMenuActionItem(new CmsPublishScheduledDialogAction(), null, 400, 0),
-            new CmsContextMenuActionItem(new CmsCopyMoveDialogAction(), null, 900, 0),
+            new CmsContextMenuActionItem(new CmsCopyDialogAction(), null, 900, 0),
+            new CmsContextMenuActionItem(new CmsMoveDialogAction(), null, 1000, 0),
             new CmsContextMenuActionItem(
                 new CmsEditPropertyAction(
                     CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
                     Messages.GUI_EXPLORER_RENAME_0),
                 null,
                 1100,
-                0),
-            new CmsContextMenuActionItem(
-                new CmsEditPropertyAction(CmsResourceTableProperty.PROPERTY_TITLE, Messages.GUI_EXPLORER_EDIT_TITLE_0),
-                null,
-                1300,
-                0),
-            new CmsContextMenuActionItem(
-                new CmsEditPropertyAction(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
-                    Messages.GUI_EXPLORER_EDIT_NAVIGATION_TEXT_0),
-                null,
-                1500,
                 0),
             new CmsContextMenuActionItem(new CmsDeleteDialogAction(), null, 1700, 0),
             new CmsContextMenuActionItem(new CmsReplaceDialogAction(), null, 1800, 0),
@@ -143,7 +135,6 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsPermissionDialogAction(), null, 2400, 0),
 
             advanced,
-            new CmsContextMenuActionItem(new CmsCopyPageDialogAction(), advanced.getId(), 150, 0),
             new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),
@@ -153,6 +144,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsRestoreDeletedAction(), advanced.getId(), 1000, 0),
 
             new CmsContextMenuActionItem(new CmsLinkLocaleVariantAction(), advanced.getId(), 1100, 0),
+            new CmsContextMenuActionItem(new CmsUnlinkLocaleVariantAction(), advanced.getId(), 1150, 0),
 
             new CmsContextMenuActionItem(new CmsHistoryDialogAction(), null, 2450, 0),
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),

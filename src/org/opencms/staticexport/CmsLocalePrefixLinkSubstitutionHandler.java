@@ -32,10 +32,13 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Link substitution handler required to render single tree localized sites.<p>
@@ -46,16 +49,47 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
      * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#addVfsPrefix(org.opencms.file.CmsObject, java.lang.String, org.opencms.site.CmsSite)
      */
     @Override
-    protected String addVfsPrefix(CmsObject cms, String vfsName, CmsSite targetSite) {
+    protected CmsPair<String, String> addVfsPrefix(
+        CmsObject cms,
+        String vfsName,
+        CmsSite targetSite,
+        String parameters) {
 
         if (CmsSite.LocalizationMode.singleTree.equals(targetSite.getLocalizationMode())) {
+            // check if locale is specified via parameters
+            Locale localeFromParameter = null;
+            if (null != parameters) {
+                Pattern pattern = Pattern.compile("(.*)" + CmsLocaleManager.PARAMETER_LOCALE + "=([^&]*)(.*)");
+                Matcher matcher = pattern.matcher(parameters);
+                if (matcher.find()) {
+                    String localeFromParameterString = matcher.group(2);
+                    if ((localeFromParameterString != null) && !localeFromParameterString.isEmpty()) {
+                        Locale l = CmsLocaleManager.getLocale(localeFromParameterString);
+                        if (OpenCms.getLocaleManager().getAvailableLocales(cms, vfsName).contains(l)) {
+                            localeFromParameter = l;
+                            if (matcher.group(3).isEmpty()) {
+                                parameters = matcher.group(1).substring(0, matcher.group(1).length() - 1);
+                                if (parameters.isEmpty()) {
+                                    parameters = null;
+                                }
+                            } else {
+                                parameters = matcher.group(1) + matcher.group(3).substring(1);
+                            }
+                        }
+                    }
+                }
+            }
             // inject the current locale as a virtual path element
-            return CmsStringUtil.joinPaths(
-                OpenCms.getStaticExportManager().getVfsPrefix(),
-                cms.getRequestContext().getLocale().toString(),
-                vfsName);
+            return new CmsPair<String, String>(
+                CmsStringUtil.joinPaths(
+                    OpenCms.getStaticExportManager().getVfsPrefix(),
+                    null != localeFromParameter
+                    ? localeFromParameter.toString()
+                    : cms.getRequestContext().getLocale().toString(),
+                    vfsName),
+                parameters);
         } else {
-            return super.addVfsPrefix(cms, vfsName, targetSite);
+            return super.addVfsPrefix(cms, vfsName, targetSite, parameters);
         }
     }
 

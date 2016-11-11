@@ -72,7 +72,7 @@ public class CmsIconCssRuleBuilder {
      */
     public void addSelectorForType(String type, boolean small) {
 
-        String template = " div.%1$s.%2$s";
+        String template = " div.%1$s.%2$s, span.%1$s.%2$s";
         String selector = String.format(
             template,
             CmsIconUtil.TYPE_ICON_CLASS,

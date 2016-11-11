@@ -36,6 +36,13 @@ import com.vaadin.shared.communication.ServerRpc;
 public interface I_CmsSitemapServerRpc extends ServerRpc {
 
     /**
+     * Handles changes made via the property dialog.<p>
+     *
+     * @param id the structure id of the changed resource
+     */
+    void handleChangedProperties(String id);
+
+    /**
      * Opens the page copy dialog for a resource.<p>
      *
      * @param callId a unique (per client) id representing the RPC call

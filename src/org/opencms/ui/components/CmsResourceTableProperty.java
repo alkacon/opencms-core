@@ -46,7 +46,9 @@ import static org.opencms.workplace.explorer.Messages.GUI_INPUT_USERCREATED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_USERLASTMODIFIED_0;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.io.Serializable;
@@ -60,7 +62,6 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.google.common.collect.Maps;
 import com.vaadin.data.util.converter.Converter;
-import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
 /**
@@ -113,12 +114,10 @@ public class CmsResourceTableProperty implements Serializable {
         }
     }
 
-    /** The serial version id. */
-    private static final long serialVersionUID = -8006568789417647500L;
-
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_CACHE = new CmsResourceTableProperty(
         "PROPERTY_CACHE",
+        CmsPropertyDefinition.PROPERTY_CACHE,
         String.class,
         null,
         GUI_INPUT_CACHE_0,
@@ -129,6 +128,7 @@ public class CmsResourceTableProperty implements Serializable {
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_COPYRIGHT = new CmsResourceTableProperty(
         "PROPERTY_COPYRIGHT",
+        CmsPropertyDefinition.PROPERTY_COPYRIGHT,
         String.class,
         null,
         GUI_INPUT_COPYRIGHT_0,
@@ -211,13 +211,34 @@ public class CmsResourceTableProperty implements Serializable {
         0);
 
     /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_NAVIGATION_POSITION = new CmsResourceTableProperty(
+        "PROPERTY_NAVIGATION_POSITION",
+        Float.class,
+        null,
+        null,
+        true,
+        0,
+        0);
+
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_NAVIGATION_TEXT = new CmsResourceTableProperty(
         "PROPERTY_NAVIGATION_TEXT",
+        CmsPropertyDefinition.PROPERTY_NAVTEXT,
         String.class,
         null,
         GUI_INPUT_NAVTEXT_0,
         true,
         2,
+        0);
+
+    /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_IN_NAVIGATION = new CmsResourceTableProperty(
+        "PROPERTY_IN_NAVIGATION",
+        Boolean.class,
+        Boolean.FALSE,
+        null,
+        true,
+        0,
         0);
 
     /** Resource table property. */
@@ -313,6 +334,7 @@ public class CmsResourceTableProperty implements Serializable {
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_TITLE = new CmsResourceTableProperty(
         "PROPERTY_TITLE",
+        CmsPropertyDefinition.PROPERTY_TITLE,
         String.class,
         null,
         GUI_INPUT_TITLE_0,
@@ -320,20 +342,20 @@ public class CmsResourceTableProperty implements Serializable {
         3,
         0);
 
-    /** Resoure table property. */
-    public static final CmsResourceTableProperty PROPERTY_TYPE_ICON = new CmsResourceTableProperty(
-        "PROPERTY_TYPE_ICON",
-        Component.class,
+    /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_TREE_CAPTION = new CmsResourceTableProperty(
+        "PROPERTY_TREE_CAPTION",
+        String.class,
         null,
         "",
         false,
         0,
         40);
 
-    /** Resource table property. */
-    public static final CmsResourceTableProperty PROPERTY_TYPE_ICON_RESOURCE = new CmsResourceTableProperty(
-        "PROPERTY_TYPE_ICON_RESOURCE",
-        Resource.class,
+    /** Resoure table property. */
+    public static final CmsResourceTableProperty PROPERTY_TYPE_ICON = new CmsResourceTableProperty(
+        "PROPERTY_TYPE_ICON",
+        Component.class,
         null,
         "",
         false,
@@ -373,6 +395,9 @@ public class CmsResourceTableProperty implements Serializable {
     /** Map to keep track of default columns by name. */
     private static Map<String, CmsResourceTableProperty> m_columnsByName;
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -8006568789417647500L;
+
     /** The column collapsible flag. */
     private boolean m_collapsible;
 
@@ -387,6 +412,9 @@ public class CmsResourceTableProperty implements Serializable {
 
     /** Default value for the column. */
     private Object m_defaultValue;
+
+    /** The editable property id. */
+    private String m_editPropertyId;
 
     /** The column expand ratio. */
     private float m_expandRatio;
@@ -448,6 +476,31 @@ public class CmsResourceTableProperty implements Serializable {
         m_expandRatio = expandRation;
         m_columnWidth = columnWidth;
         m_converter = converter;
+    }
+
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param id the id (should be unique)
+     * @param editPropertyId the editable property id
+     * @param columnType the column type
+     * @param defaultValue the default value
+     * @param headerKey the message key for the header
+     * @param collapsible the column collapsible flag
+     * @param expandRation the column expand ratio
+     * @param columnWidth the column width
+     */
+    public CmsResourceTableProperty(
+        String id,
+        String editPropertyId,
+        Class<?> columnType,
+        Object defaultValue,
+        String headerKey,
+        boolean collapsible,
+        float expandRation,
+        int columnWidth) {
+        this(id, columnType, defaultValue, headerKey, collapsible, expandRation, columnWidth, null);
+        m_editPropertyId = editPropertyId;
     }
 
     /**
@@ -547,6 +600,16 @@ public class CmsResourceTableProperty implements Serializable {
     }
 
     /**
+     * Returns the edit property id.<p>
+     *
+     * @return the edit property id
+     */
+    public String getEditPropertyId() {
+
+        return m_editPropertyId;
+    }
+
+    /**
      * Returns the expand ratio.<p>
      *
      * @return the expand ratio
@@ -593,6 +656,16 @@ public class CmsResourceTableProperty implements Serializable {
     public boolean isCollapsible() {
 
         return m_collapsible;
+    }
+
+    /**
+     * Checks whether this is an edit property.<p>
+     *
+     * @return <code>true</code> if this is an edit property
+     */
+    public boolean isEditProperty() {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editPropertyId);
     }
 
     /**

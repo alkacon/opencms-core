@@ -742,7 +742,8 @@ tinyMCE.init({
     height: "100%",
     valid_children : "+body[style]",
     //element options
-    extended_valid_elements : "script[type|src|defer|async|charset],style[dir<ltr?rtl|lang|media|title|type],link[charset|class|dir<ltr?rtl|href|hreflang|id|lang|media|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|rel|rev|style|title|target|type]",
+    valid_elements: "*[*]",
+    allow_script_urls: true,
     <%
     if(formatSelectOption){
     	String format = options.getOptionValue("formatselect.options", "", displayOptions);

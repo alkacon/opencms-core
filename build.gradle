@@ -1113,21 +1113,22 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
 
 artifacts {
     archives jar
-    
     archives sourcesJar
+    
     if (project.hasProperty('publish_repository')){
         // do not include the war if only running the install task, it takes ages to build
         archives war
+        archives widgetSetJar
     }
     archives setupJar
-    
     archives sourcesJarSetup
+    
     archives gwtJar
-    
     archives sourcesJarGwt
-    archives testJar
     
+    archives testJar
     archives sourcesJarTest
+    
     tasks.each{ task ->
         if (task.name.startsWith("jar_org.opencms.")){
         	def moduleName=task.baseName
@@ -1253,7 +1254,7 @@ if (project.hasProperty('publish_repository')){
                         }
                     }
                 }
-                'setup,gwt,test'.split(",").each { groupName ->
+                'setup,gwt,widgetset,test'.split(",").each { groupName ->
                     addFilter(groupName){artifact, file ->
                         artifact.name.startsWith("opencms-$groupName")
                     }
@@ -1444,7 +1445,7 @@ install {
                     }
                 }
             }
-            'setup,gwt,test'.split(",").each { groupName ->
+            'setup,gwt,test,widgetset'.split(",").each { groupName ->
                 addFilter(groupName){artifact, file ->
                     artifact.name.startsWith("opencms-$groupName")
                 }

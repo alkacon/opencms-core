@@ -63,7 +63,7 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         CmsFileTable fileTable,
         CmsFileExplorer explorer,
         List<CmsResource> resources) {
-        super(contextType, fileTable, resources);
+        super(CmsFileExplorerConfiguration.APP_ID, contextType, fileTable, resources);
         m_explorer = explorer;
     }
 
@@ -126,5 +126,14 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
         }
+    }
+
+    /**
+     * @see org.opencms.ui.components.CmsFileTableDialogContext#updateUserInfo()
+     */
+    @Override
+    public void updateUserInfo() {
+
+        m_explorer.m_appContext.updateUserInfo();
     }
 }

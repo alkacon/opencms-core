@@ -82,13 +82,15 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsToolBar extends CssLayout {
 
     /** Toolbar dialog context. */
-    protected static class ToolbarContext extends A_CmsDialogContext {
+    protected class ToolbarContext extends A_CmsDialogContext {
 
         /**
          * Constructor.<p>
+         *
+         * @param appId the app id
          */
-        protected ToolbarContext() {
-            super(ContextType.appToolbar, Collections.<CmsResource> emptyList());
+        protected ToolbarContext(String appId) {
+            super(appId, ContextType.appToolbar, Collections.<CmsResource> emptyList());
         }
 
         /**
@@ -105,6 +107,14 @@ public class CmsToolBar extends CssLayout {
         public List<CmsUUID> getAllStructureIdsInView() {
 
             return Lists.newArrayList();
+        }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+         */
+        public void updateUserInfo() {
+
+            refreshUserInfoDropDown();
         }
     }
 
@@ -142,10 +152,6 @@ public class CmsToolBar extends CssLayout {
         m_quickLaunchDropDown = createQuickLaunchDropDown();
         m_userDropDown = createUserInfoDropDown();
         Design.read("CmsToolBar.html", this);
-        m_dialogContext = new ToolbarContext();
-        initContextMenu();
-        m_itemsRight.addComponent(m_quickLaunchDropDown);
-        m_itemsRight.addComponent(m_userDropDown);
     }
 
     /**
@@ -320,6 +326,16 @@ public class CmsToolBar extends CssLayout {
     }
 
     /**
+     * Refreshes the user drop down.<p>
+     */
+    public void refreshUserInfoDropDown() {
+
+        Component oldVersion = m_userDropDown;
+        m_userDropDown = createUserInfoDropDown();
+        m_itemsRight.replaceComponent(oldVersion, m_userDropDown);
+    }
+
+    /**
      * Removes the given button from the toolbar.<p>
      *
      * @param button the button to remove
@@ -382,6 +398,19 @@ public class CmsToolBar extends CssLayout {
                 Messages.GUI_TOOLBAR_PROJECT_SITE_INFO_2,
                 A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName(),
                 siteName));
+    }
+
+    /**
+     * Initializes the toolbar.<p>
+     *
+     * @param appId the app id
+     */
+    protected void init(String appId) {
+
+        m_dialogContext = new ToolbarContext(appId);
+        initContextMenu();
+        m_itemsRight.addComponent(m_quickLaunchDropDown);
+        m_itemsRight.addComponent(m_userDropDown);
     }
 
     /**
@@ -569,15 +598,5 @@ public class CmsToolBar extends CssLayout {
         for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
             createMenuEntry(main, node, treeBuilder);
         }
-    }
-
-    /**
-     * Refreshes the user drop down.<p>
-     */
-    private void refreshUserInfoDropDown() {
-
-        Component oldVersion = m_userDropDown;
-        m_userDropDown = createUserInfoDropDown();
-        m_itemsRight.replaceComponent(oldVersion, m_userDropDown);
     }
 }

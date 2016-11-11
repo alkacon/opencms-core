@@ -76,6 +76,7 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
@@ -88,6 +89,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
@@ -348,7 +350,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         listInfo.addAdditionalInfo(
             messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
             resTypeNiceName);
-        listInfo.setResourceType(resTypeName);
+        if (CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
+            listInfo.setResourceType(CmsGwtConstants.TYPE_NAVLEVEL);
+        } else {
+            listInfo.setResourceType(resTypeName);
+            // set the default file and detail type info
+            String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
+            listInfo.setDetailResourceType(detailType);
+        }
         return listInfo;
     }
 
@@ -781,7 +790,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        CmsUUID detailContentId) throws CmsRpcException {
+        CmsUUID detailContentId)
+    throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -1289,7 +1299,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsObject cms,
         CmsResource historyRes,
         boolean offline,
-        int maxVersion) throws CmsException {
+        int maxVersion)
+    throws CmsException {
 
         CmsHistoryResourceBean result = new CmsHistoryResourceBean();
 
@@ -1619,6 +1630,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             previewContent = "<img src=\"" + imageLink + "\" title=\"" + title + "\" style=\"display:block\" />";
             height = scaler.getHeight();
             width = scaler.getWidth();
+        } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)
+            || CmsResourceTypeXmlPage.isXmlPage(resource)) {
+            String link = "";
+            if (resource instanceof I_CmsHistoryResource) {
+                int version = ((I_CmsHistoryResource)resource).getVersion();
+                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                    cms,
+                    CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+            } else {
+                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+            }
+            return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
         } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             if (!locales.containsKey(locale.toString())) {
                 locale = CmsLocaleManager.getMainLocale(cms, resource);

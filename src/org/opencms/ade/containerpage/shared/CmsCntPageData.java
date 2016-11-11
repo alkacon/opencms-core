@@ -31,6 +31,7 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -117,6 +118,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The content locale. */
     private String m_locale;
 
+    /** The locale link beans. */
+    private Map<String, CmsLocaleLinkBean> m_localeLinkBeans;
+
     /** The lock information, if the page is locked by another user. */
     private String m_lockInfo;
 
@@ -125,6 +129,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The reason why the user is not able to edit the current container page. */
     private String m_noEditReason;
+
+    /** The online link to the current page. */
+    private String m_onlineLink;
 
     /** The original request parameters. */
     private String m_requestParams;
@@ -150,6 +157,7 @@ public final class CmsCntPageData implements IsSerializable {
     /**
      * Constructor.<p>
      *
+     * @param onlineLink the online link to the current page
      * @param noEditReason the reason why the current user is not allowed to edit the current container page
      * @param requestParams the original request parameters
      * @param sitemapUri the current sitemap URI
@@ -168,8 +176,10 @@ public final class CmsCntPageData implements IsSerializable {
      * @param isModelPage true if this is a model page
      * @param isModelGroup true if the page is used for model groups
      * @param mainLocale the main locale to this page in case it is part of a locale group
+     * @param localeLinkBeans beans for links to other pages in the locale group
      */
     public CmsCntPageData(
+        String onlineLink,
         String noEditReason,
         String requestParams,
         String sitemapUri,
@@ -187,8 +197,9 @@ public final class CmsCntPageData implements IsSerializable {
         ElementReuseMode reuseMode,
         boolean isModelPage,
         boolean isModelGroup,
-        String mainLocale) {
-
+        String mainLocale,
+        Map<String, CmsLocaleLinkBean> localeLinkBeans) {
+        m_onlineLink = onlineLink;
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
         m_sitemapUri = sitemapUri;
@@ -207,6 +218,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_isModelPage = isModelPage;
         m_isModelGroup = isModelGroup;
         m_mainLocale = mainLocale;
+        m_localeLinkBeans = localeLinkBeans;
     }
 
     /**
@@ -308,6 +320,18 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Gets the locale link beans, with localized language names as keys.<p>
+     *
+     * The beans represent links to different locale variants of this page.
+     *
+     * @return the locale link bean map for this
+     */
+    public Map<String, CmsLocaleLinkBean> getLocaleLinkBeans() {
+
+        return m_localeLinkBeans;
+    }
+
+    /**
      * Returns the lock information, if the page is locked by another user.<p>
      *
      * @return the lock infomation
@@ -335,6 +359,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getNoEditReason() {
 
         return m_noEditReason;
+    }
+
+    /**
+     * Returns the online link to the current page.<p>
+     *
+     * @return the online link to the current page
+     */
+    public String getOnlineLink() {
+
+        return m_onlineLink;
     }
 
     /**

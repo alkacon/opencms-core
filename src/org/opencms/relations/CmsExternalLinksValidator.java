@@ -84,7 +84,9 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
                 if ("http".equals(url.getProtocol())) {
                     // ensure that file is encoded properly
                     HttpURLConnection httpcon = (HttpURLConnection)url.openConnection();
-                    return (httpcon.getResponseCode() == 200);
+                    int responseCode = httpcon.getResponseCode();
+                    // accepting all status codes 2xx success and 3xx - redirect
+                    return ((responseCode >= 200) && (responseCode < 400));
                 } else {
                     return true;
                 }
@@ -130,6 +132,7 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
      *
      * @throws CmsException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public void validateLinks(CmsObject cms) throws CmsException {
 
         if (m_report == null) {
@@ -141,6 +144,7 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
             I_CmsReport.FORMAT_HEADLINE);
 
         // get all links
+
         int pointerId = OpenCms.getResourceManager().getResourceType(
             CmsResourceTypePointer.getStaticTypeName()).getTypeId();
         CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(pointerId);

@@ -109,6 +109,51 @@ public class CmsUserIconHelper {
     }
 
     /**
+     * Checks whether the given user has an individual user image.<p>
+     *
+     * @param user the user
+     *
+     * @return <code>true</code> if the given user has an individual user image
+     */
+    public static boolean hasUserImage(CmsUser user) {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)user.getAdditionalInfo(USER_IMAGE_INFO));
+    }
+
+    /**
+     * Deletes the user image of the current user.<p>
+     *
+     * @param cms the cms context
+     */
+    public void deleteUserImage(CmsObject cms) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        String userIconPath = (String)user.getAdditionalInfo(USER_IMAGE_INFO);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userIconPath)) {
+            try {
+                CmsObject adminCms = OpenCms.initCmsObject(m_adminCms);
+                if (adminCms.existsResource(userIconPath)) {
+
+                    CmsProject tempProject = adminCms.createTempfileProject();
+                    adminCms.getRequestContext().setCurrentProject(tempProject);
+                    adminCms.lockResource(userIconPath);
+                    adminCms.deleteResource(userIconPath, CmsResource.DELETE_REMOVE_SIBLINGS);
+                }
+                user.deleteAdditionalInfo(CmsUserIconHelper.USER_IMAGE_INFO);
+                adminCms.writeUser(user);
+
+                try {
+                    OpenCms.getPublishManager().publishProject(adminCms);
+                } catch (Exception e) {
+                    LOG.error("Error publishing user image resources.", e);
+                }
+            } catch (CmsException e) {
+                LOG.error("Error deleting previous user image.", e);
+            }
+        }
+    }
+
+    /**
      * Returns the big ident-icon path for the given user.<p>
      *
      * @param cms the cms context
@@ -177,7 +222,7 @@ public class CmsUserIconHelper {
             scaler.setHeight(192);
             scaler.setWidth(192);
             byte[] content = scaler.scaleImage(tempFile);
-            String previousImage = null;
+            String previousImage = (String)user.getAdditionalInfo(CmsUserIconHelper.USER_IMAGE_INFO);
             String newFileName = USER_IMAGE_FOLDER
                 + user.getId().toString()
                 + "_"
@@ -195,7 +240,21 @@ public class CmsUserIconHelper {
                 adminCms.writePropertyObject(
                     newFileName,
                     new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, "w:192,h:192"));
+
             } else {
+                // create a new user image file
+                adminCms.createResource(
+                    newFileName,
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()),
+                    content,
+                    Collections.singletonList(
+                        new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, "w:192,h:192")));
+            }
+            if (newFileName.equals(previousImage)) {
+                previousImage = null;
+            }
+
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previousImage)) {
                 previousImage = (String)user.getAdditionalInfo(CmsUserIconHelper.USER_IMAGE_INFO);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previousImage)
                     && cms.existsResource(newFileName, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
@@ -206,13 +265,6 @@ public class CmsUserIconHelper {
                         LOG.error("Error deleting previous user image.", e);
                     }
                 }
-                // create a new user image file
-                adminCms.createResource(
-                    newFileName,
-                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()),
-                    content,
-                    Collections.singletonList(
-                        new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, "w:192,h:192")));
             }
             user.setAdditionalInfo(CmsUserIconHelper.USER_IMAGE_INFO, newFileName);
             adminCms.writeUser(user);

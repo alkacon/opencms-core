@@ -47,15 +47,18 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
         config,
 
         /** from other source. */
-        other, /** unknown. */
+        other,
+        /** unknown. */
         unknown
     }
 
     /** Enum representing the visibility of a resource type in the bean. */
     public enum TypeVisibility {
         /** Never displayed. */
-        hidden, /** Always show the type. */
-        showAlways, /** The user may choose to display the type, but it's not shown by default. */
+        hidden,
+        /** Always show the type. */
+        showAlways,
+        /** The user may choose to display the type, but it's not shown by default. */
         showOptional
     }
 
@@ -74,6 +77,7 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     /** An array of gallery type names associated with this content type. */
     private ArrayList<String> m_galleryTypeNames;
 
+    /** The naming pattern for new resources. */
     private String m_namePattern;
 
     /** Origin. */
@@ -124,6 +128,11 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
         return m_galleryTypeNames;
     }
 
+    /**
+     * Returns the naming pattern for new resources.<p>
+     *
+     * @return the naming pattern
+     */
     public String getNamePattern() {
 
         return m_namePattern;
@@ -259,6 +268,11 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
         m_galleryTypeNames = galleryNames;
     }
 
+    /**
+     * Sets the naming pattern for new resources.<p>
+     *
+     * @param pattern the naming pattern for new resources
+     */
     public void setNamePattern(String pattern) {
 
         m_namePattern = pattern;

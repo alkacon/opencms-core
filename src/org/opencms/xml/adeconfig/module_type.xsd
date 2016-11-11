@@ -34,7 +34,7 @@
 				<layout element="ElementView" widget="org.opencms.widgets.CmsElementViewSelectWidget" configuration=""/>
 			</layouts>
 			<defaults>
-				<default element="Disabled" value="False"/>
+				<default element="Disabled" value="False" />
 			</defaults>
         </xsd:appinfo>
     </xsd:annotation>

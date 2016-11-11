@@ -49,6 +49,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
+import org.opencms.ade.containerpage.shared.CmsLocaleLinkBean;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
@@ -97,6 +98,7 @@ import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
@@ -1090,8 +1092,43 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (group.isRealGroup() && !cms.getRequestContext().getLocale().equals(group.getMainLocale())) {
                 mainLocale = group.getMainLocale();
             }
+            CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
+            String ownRoot = siteManager.getSiteRoot(containerPage.getRootPath());
+            Map<String, CmsLocaleLinkBean> localeLinkBeans = null;
+            if (group.isRealGroup()) {
+                localeLinkBeans = Maps.newHashMap();
+                Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+                for (Map.Entry<Locale, CmsResource> entry : group.getResourcesByLocale().entrySet()) {
+                    String otherRoot = siteManager.getSiteRoot(entry.getValue().getRootPath());
+                    if ((otherRoot != null) && otherRoot.equals(ownRoot)) {
+                        String theLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                            cms,
+                            cms.getRequestContext().removeSiteRoot(entry.getValue().getRootPath()));
+                        localeLinkBeans.put(entry.getKey().getDisplayLanguage(locale), CmsLocaleLinkBean.link(theLink));
+                    } else {
+                        localeLinkBeans.put(
+                            entry.getKey().getDisplayLanguage(locale),
+                            CmsLocaleLinkBean.error(
+                                Messages.get().getBundle(locale).key(Messages.GUI_SHOWLOCALE_WRONG_SITE_0)));
+                    }
+                }
+            }
 
+            String onlineLink = null;
+            if (!OpenCms.getSiteManager().getWorkplaceServer().equals(
+                OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot()).getUrl())) {
+                if (detailResource != null) {
+                    onlineLink = OpenCms.getLinkManager().getOnlineLink(
+                        cms,
+                        cms.getSitePath(containerPage),
+                        cms.getSitePath(detailResource),
+                        false);
+                } else {
+                    onlineLink = OpenCms.getLinkManager().getOnlineLink(cms, cms.getSitePath(containerPage));
+                }
+            }
             data = new CmsCntPageData(
+                onlineLink,
                 noEditReason,
                 CmsRequestUtil.encodeParams(request),
                 sitemapPath,
@@ -1109,7 +1146,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 reuseMode,
                 isModelPage,
                 isEditingModelGroups(cms, containerPage),
-                mainLocale != null ? mainLocale.toString() : null);
+                mainLocale != null ? mainLocale.toString() : null,
+                localeLinkBeans);
         } catch (Throwable e) {
             error(e);
         }
