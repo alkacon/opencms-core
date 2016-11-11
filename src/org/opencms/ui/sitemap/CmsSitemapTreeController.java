@@ -342,7 +342,7 @@ public class CmsSitemapTreeController {
     class EntryInfo implements I_CmsSimpleContextMenuEntry<MenuContext> {
 
         /**
-        
+
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(MenuContext context) {
@@ -410,9 +410,12 @@ public class CmsSitemapTreeController {
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
-        public CmsMenuItemVisibilityMode getVisibility(MenuContext data) {
+        @SuppressWarnings("synthetic-access")
+        public CmsMenuItemVisibilityMode getVisibility(MenuContext context) {
 
-            return visibleIfTrue(!data.getData().isLinked());
+            return activeIfTrue(
+                !context.getData().isLinked()
+                    && !context.getData().isMarkedNoTranslation(m_localeContext.getComparisonLocale()));
         }
     }
 
@@ -880,6 +883,17 @@ public class CmsSitemapTreeController {
         m_root = root;
         m_menu.extend((AbstractComponent)parent);
 
+    }
+
+    /**
+     * Returns VISIBILITY_ACTIVE if the given parameter is true, and VISIBILITY_INACTIVE otherwise.<p>
+     *
+     * @param condition a boolean value
+     * @return the visibility based on the condition value
+     */
+    public static CmsMenuItemVisibilityMode activeIfTrue(boolean condition) {
+
+        return condition ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
     }
 
     /**
