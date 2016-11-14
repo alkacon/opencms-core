@@ -659,7 +659,7 @@ public final class CmsPublishEngine {
             if (dbc != null) {
                 dbc.rollback();
             }
-            LOG.error(t);
+            LOG.error(t.getLocalizedMessage(), t);
             // catch every thing including runtime exceptions
             publishJob.getPublishReport().println(t);
         } finally {
