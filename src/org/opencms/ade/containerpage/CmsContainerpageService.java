@@ -398,7 +398,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     public static boolean isEditingModelGroups(CmsObject cms, CmsResource containerPage) {
 
-        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith(MODEL_GROUP_PATH_FRAGMENT)
+        return (OpenCms.getResourceManager().getResourceType(containerPage).getTypeName().equals(
+            CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME)
             && OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER));
     }
 
@@ -1126,6 +1127,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     onlineLink = OpenCms.getLinkManager().getOnlineLink(cms, cms.getSitePath(containerPage));
                 }
             }
+            boolean isEditingModelGroup = isEditingModelGroups(cms, containerPage);
+            String modelGroupElementId = null;
+            if (isEditingModelGroup) {
+                CmsProperty modelElementProp = cms.readPropertyObject(
+                    containerPage,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    false);
+                if (!modelElementProp.isNullProperty() && CmsUUID.isValidUUID(modelElementProp.getValue())) {
+                    modelGroupElementId = modelElementProp.getValue();
+                }
+            }
             data = new CmsCntPageData(
                 onlineLink,
                 noEditReason,
@@ -1144,7 +1156,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 viewHelper.getDefaultView(),
                 reuseMode,
                 isModelPage,
-                isEditingModelGroups(cms, containerPage),
+                isEditingModelGroup,
+                modelGroupElementId,
                 mainLocale != null ? mainLocale.toString() : null,
                 localeLinkBeans);
         } catch (Throwable e) {
@@ -1266,23 +1279,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsContainerElement.ELEMENT_INSTANCE_ID,
                     elementBean.getIndividualSettings().get(CmsContainerElement.ELEMENT_INSTANCE_ID));
             }
-            if (isEditingModelGroups(cms, pageResource)) {
-                if ((ModelGroupState.evaluate(
-                    settings.get(CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.isModelGroup)) {
-                    // make sure to keep the model group id
-                    if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)) {
-                        settings.put(
-                            CmsContainerElement.MODEL_GROUP_ID,
-                            elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID));
-                    } else {
-                        // no model group resource assigned yet, create it
-                        CmsResource modelGroup = CmsModelGroupHelper.createModelGroup(
-                            cms,
-                            getConfigData(pageResource.getRootPath()));
-                        settings.put(CmsContainerElement.MODEL_GROUP_ID, modelGroup.getStructureId().toString());
-                    }
-                }
-            } else {
+            if (!isEditingModelGroups(cms, pageResource)) {
                 // in case of model group state set to 'noGroup', the group will be dissolved and former group id forgotten
                 if (!(settings.containsKey(CmsContainerElement.MODEL_GROUP_STATE)
                     && (ModelGroupState.noGroup == ModelGroupState.evaluate(
@@ -2516,7 +2513,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             getSessionCache(),
             isEditingModelGroups(cms, containerpage));
         if (isEditingModelGroups(cms, containerpage)) {
-            page = modelHelper.saveModelGroups(page);
+            page = modelHelper.saveModelGroups(page, containerpage);
         } else {
             page = modelHelper.removeModelGroupContainers(page);
         }

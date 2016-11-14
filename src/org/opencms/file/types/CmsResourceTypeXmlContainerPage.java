@@ -80,6 +80,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The resource type name for inherited container references.  */
     public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritance_group";
 
+    /** The model group resource type name. */
     public static final String MODEL_GROUP_TYPE_NAME = "modelgroup";
 
     /** The name of this resource type. */
@@ -163,7 +164,8 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
         boolean result = false;
         if (resource != null) {
-            result = (resource.getTypeId() == getContainerPageTypeIdSafely());
+            result = (resource.getTypeId() == getContainerPageTypeIdSafely())
+                || (OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContainerPage);
         }
 
         return result;
@@ -179,7 +181,8 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         boolean hasModelUri = false;
         CmsXmlContainerPage newContent = null;

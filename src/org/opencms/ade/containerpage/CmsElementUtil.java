@@ -712,7 +712,16 @@ public class CmsElementUtil {
             result.setCopyInModels(typeConfig.isCopyInModels());
         }
         Map<CmsUUID, CmsElementView> viewMap = OpenCms.getADEManager().getElementViews(m_cms);
+
         boolean isModelGroup = elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID);
+
+        if (!isModelGroup
+            && CmsModelGroupHelper.isModelGroupResource(m_page)
+            && elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
+            && (ModelGroupState.isModelGroup == ModelGroupState.evaluate(
+                elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE)))) {
+            isModelGroup = true;
+        }
         if (isModelGroup) {
             CmsResourceTypeConfig modelGroupConfig = getConfigData().getResourceType(
                 CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);

@@ -780,6 +780,9 @@ public final class CmsContainerpageController {
     /** The max container level. */
     private int m_maxContainerLevel;
 
+    /** The model group base element id. */
+    private String m_modelGroupElementId;
+
     /** The browser location at the time the containerpage controller was initialized. */
     private String m_originalUrl;
 
@@ -804,6 +807,7 @@ public final class CmsContainerpageController {
                 getContainerpageService(),
                 CmsCntPageData.DICT_NAME);
             m_elementView = m_data.getElementView();
+            m_modelGroupElementId = m_data.getModelGroupElementId();
         } catch (SerializationException e) {
             CmsErrorDialog.handleException(
                 new Exception(
@@ -1674,6 +1678,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the model group base element id.<p>
+     *
+     * @return the model group base element id
+     */
+    public String getModelGroupElementId() {
+
+        return m_modelGroupElementId;
+    }
+
+    /**
      * Returns the element data for a resource type representing a new element.<p>
      *
      * @param resourceType the resource type name
@@ -1837,51 +1851,51 @@ public final class CmsContainerpageController {
                     showDeleteCheckbox,
                     new AsyncCallback<Boolean>() {
 
-                    public void onFailure(Throwable caught) {
+                        public void onFailure(Throwable caught) {
 
-                        element.removeHighlighting();
-                    }
-
-                    public void onSuccess(Boolean shouldDeleteResource) {
-
-                        Runnable[] nextActions = new Runnable[] {};
-
-                        if (shouldDeleteResource.booleanValue()) {
-                            final CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
-
-                                @Override
-                                public void execute() {
-
-                                    start(200, true);
-
-                                    CmsUUID id = new CmsUUID(getServerId(element.getId()));
-                                    CmsCoreProvider.getVfsService().deleteResource(id, this);
-                                }
-
-                                @Override
-                                public void onResponse(Void result) {
-
-                                    stop(true);
-                                }
-                            };
-                            nextActions = new Runnable[] {null};
-                            nextActions[0] = new Runnable() {
-
-                                public void run() {
-
-                                    deleteAction.execute();
-                                }
-                            };
+                            element.removeHighlighting();
                         }
-                        I_CmsDropContainer container = element.getParentTarget();
-                        element.removeFromParent();
-                        if (container instanceof CmsContainerPageContainer) {
-                            ((CmsContainerPageContainer)container).checkEmptyContainers();
+
+                        public void onSuccess(Boolean shouldDeleteResource) {
+
+                            Runnable[] nextActions = new Runnable[] {};
+
+                            if (shouldDeleteResource.booleanValue()) {
+                                final CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
+
+                                    @Override
+                                    public void execute() {
+
+                                        start(200, true);
+
+                                        CmsUUID id = new CmsUUID(getServerId(element.getId()));
+                                        CmsCoreProvider.getVfsService().deleteResource(id, this);
+                                    }
+
+                                    @Override
+                                    public void onResponse(Void result) {
+
+                                        stop(true);
+                                    }
+                                };
+                                nextActions = new Runnable[] {null};
+                                nextActions[0] = new Runnable() {
+
+                                    public void run() {
+
+                                        deleteAction.execute();
+                                    }
+                                };
+                            }
+                            I_CmsDropContainer container = element.getParentTarget();
+                            element.removeFromParent();
+                            if (container instanceof CmsContainerPageContainer) {
+                                ((CmsContainerPageContainer)container).checkEmptyContainers();
+                            }
+                            cleanUpContainers();
+                            setPageChanged(nextActions);
                         }
-                        cleanUpContainers();
-                        setPageChanged(nextActions);
-                    }
-                });
+                    });
                 removeDialog.center();
             }
 
@@ -2555,7 +2569,8 @@ public final class CmsContainerpageController {
      */
     public CmsContainerPageElementPanel replaceContainerElement(
         CmsContainerPageElementPanel containerElement,
-        CmsContainerElementData elementData) throws Exception {
+        CmsContainerElementData elementData)
+    throws Exception {
 
         I_CmsDropContainer parentContainer = containerElement.getParentTarget();
         String containerId = parentContainer.getContainerId();
@@ -3012,6 +3027,16 @@ public final class CmsContainerpageController {
             reInitInlineEditing();
             updateGalleryData(true, nextAction);
         }
+    }
+
+    /**
+     * Sets the model group base element id.<p>
+     *
+     * @param modelGroupElementId the model group base element id
+     */
+    public void setModelGroupElementId(String modelGroupElementId) {
+
+        m_modelGroupElementId = modelGroupElementId;
     }
 
     /**

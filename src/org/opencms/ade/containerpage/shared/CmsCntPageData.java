@@ -154,6 +154,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** The model group base element id. */
+    private String m_modelGroupEmenetId;
+
     /**
      * Constructor.<p>
      *
@@ -175,6 +178,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param reuseMode the element reuse mode
      * @param isModelPage true if this is a model page
      * @param isModelGroup true if the page is used for model groups
+     * @param modelGroupEmenetId the model group base element id
      * @param mainLocale the main locale to this page in case it is part of a locale group
      * @param localeLinkBeans beans for links to other pages in the locale group
      */
@@ -197,6 +201,7 @@ public final class CmsCntPageData implements IsSerializable {
         ElementReuseMode reuseMode,
         boolean isModelPage,
         boolean isModelGroup,
+        String modelGroupEmenetId,
         String mainLocale,
         Map<String, CmsLocaleLinkBean> localeLinkBeans) {
         m_onlineLink = onlineLink;
@@ -217,6 +222,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_reuseMode = reuseMode;
         m_isModelPage = isModelPage;
         m_isModelGroup = isModelGroup;
+        m_modelGroupEmenetId = modelGroupEmenetId;
         m_mainLocale = mainLocale;
         m_localeLinkBeans = localeLinkBeans;
     }
@@ -349,6 +355,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getMainLocale() {
 
         return m_mainLocale;
+    }
+
+    /**
+     * Returns the model group base element id.<p>
+     *
+     * @return the model group base element id
+     */
+    public String getModelGroupElementId() {
+
+        return m_modelGroupEmenetId;
     }
 
     /**

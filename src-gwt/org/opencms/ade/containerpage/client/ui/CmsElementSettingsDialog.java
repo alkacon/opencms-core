@@ -126,7 +126,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     private CmsMultiCheckBox m_contextsWidget;
 
     /** The container page controller. */
-    private CmsContainerpageController m_controller;
+    CmsContainerpageController m_controller;
 
     /** Checkbox to set the 'createNew' status. */
     private CmsCheckBox m_createNewCheckBox;
@@ -147,7 +147,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     private CmsTextBox m_modelGroupDescription;
 
     /** Checkbox to set the 'model group' status. */
-    private CmsSelectBox m_modelGroupSelect;
+    CmsSelectBox m_modelGroupSelect;
 
     /** The is model group title field. */
     private CmsTextBox m_modelGroupTitle;
@@ -179,9 +179,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         infoBean.setResourceType(elementBean.getResourceType());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
+
         boolean isEditableModelGroup = CmsCoreProvider.get().getUserInfo().isDeveloper()
             && m_controller.getData().isModelGroup()
-            && !m_controller.hasModelGroupChild(elementWidget);
+            && ((m_controller.getModelGroupElementId() == null)
+                || CmsContainerpageController.getServerId(elementBean.getClientId()).equals(
+                    m_controller.getModelGroupElementId()));
         boolean isDeveloper = CmsCoreProvider.get().getUserInfo().isDeveloper();
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
             || isDeveloper
@@ -403,6 +406,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     @SuppressWarnings("incomplete-switch")
     void submitForm(CmsForm formParam, final Map<String, String> fieldValues, Set<String> editedFields) {
 
+        String modelGroupId = null;
+
         if (CmsInheritanceContainerEditor.getInstance() != null) {
             CmsInheritanceContainerEditor.getInstance().onSettingsEdited();
         }
@@ -448,6 +453,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 fieldValues.put(
                     CmsContainerElement.MODEL_GROUP_DESCRIPTION,
                     m_modelGroupDescription.getFormValueAsString());
+                modelGroupId = CmsContainerpageController.getServerId(m_elementBean.getClientId());
             }
         }
 
@@ -463,7 +469,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 filteredFieldValues.put(key, value);
             }
         }
-
+        final String changeModelGroupId = modelGroupId;
         m_controller.reloadElementWithSettings(
             m_elementWidget,
             m_elementBean.getClientId(),
@@ -485,6 +491,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                     if (result.getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER)
                         && !CmsContainerpageController.get().isGroupcontainerEditing()) {
                         CmsContainerpageController.get().reloadPage();
+                    }
+                    if (m_modelGroupSelect != null) {
+                        m_controller.setModelGroupElementId(changeModelGroupId);
                     }
                 }
 
