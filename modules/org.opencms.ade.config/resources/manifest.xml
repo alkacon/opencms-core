@@ -402,6 +402,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage"/>
+						<entry key="SHOWLOCALE" name="showlocale" rule="containerpage"/>
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage"/>
 						<entry key="VIEWONLINE" name="viewonline" rule="containerpage"/>
 						<entry key="SELECTELEMENTVIEW" name="selectelementview" rule="containerpage"/>
@@ -409,7 +410,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted"/>
 						<entry key="EDITSMALLELEMENTS" name="editsmallelements" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage-basic">
-							<entry key="SHOWLOCALE" name="showlocale" rule="containerpage"/>
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction" rule="containerpage-no-different-site-and-has-editor-role"/>
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage"/>
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role"/>
