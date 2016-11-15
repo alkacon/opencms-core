@@ -304,6 +304,12 @@ public final class CmsDomUtil {
         /** CSS Property. */
         padding,
 
+        /** CSS property. */
+        paddingLeft,
+
+        /** CSS property. */
+        paddingRight,
+
         /** CSS Property. */
         position,
 
@@ -821,7 +827,8 @@ public final class CmsDomUtil {
     public static native void ensureStyleSheetIncluded(String styleSheetLink)/*-{
         var styles = $wnd.document.styleSheets;
         for (var i = 0; i < styles.length; i++) {
-            if (styles[i].href != null && styles[i].href.indexOf(styleSheetLink) >= 0) {
+            if (styles[i].href != null
+                    && styles[i].href.indexOf(styleSheetLink) >= 0) {
                 // style-sheet is present
                 return;
             }
@@ -900,17 +907,20 @@ public final class CmsDomUtil {
                 var html = embed.outerHTML;
                 // replace an existing wmode parameter
                 if (html.match(/wmode\s*=\s*('|")[a-zA-Z]+('|")/i))
-                    new_embed = html.replace(/wmode\s*=\s*('|")window('|")/i, "wmode='transparent'");
+                    new_embed = html.replace(/wmode\s*=\s*('|")window('|")/i,
+                            "wmode='transparent'");
                 // add a new wmode parameter
                 else
-                    new_embed = html.replace(/<embed\s/i, "<embed wmode='transparent' ");
+                    new_embed = html.replace(/<embed\s/i,
+                            "<embed wmode='transparent' ");
                 // replace the old embed object with the fixed version
                 embed.insertAdjacentHTML('beforeBegin', new_embed);
                 embed.parentNode.removeChild(embed);
             } else {
                 // cloneNode is buggy in some versions of Safari & Opera, but works fine in FF
                 new_embed = embed.cloneNode(true);
-                if (!new_embed.getAttribute('wmode') || new_embed.getAttribute('wmode').toLowerCase() == 'window')
+                if (!new_embed.getAttribute('wmode')
+                        || new_embed.getAttribute('wmode').toLowerCase() == 'window')
                     new_embed.setAttribute('wmode', 'transparent');
                 embed.parentNode.replaceChild(new_embed, embed);
             }
@@ -924,13 +934,17 @@ public final class CmsDomUtil {
             if (object.outerHTML) {
                 var html = object.outerHTML;
                 // replace an existing wmode parameter
-                if (html.match(/<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")[a-zA-Z]+('|")\s*\/?\>/i))
-                    new_object = html.replace(
-                            /<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")window('|")\s*\/?\>/i,
-                            "<param name='wmode' value='transparent' />");
+                if (html
+                        .match(/<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")[a-zA-Z]+('|")\s*\/?\>/i))
+                    new_object = html
+                            .replace(
+                                    /<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")window('|")\s*\/?\>/i,
+                                    "<param name='wmode' value='transparent' />");
                 // add a new wmode parameter
                 else
-                    new_object = html.replace(/<\/object\>/i, "<param name='wmode' value='transparent' />\n</object>");
+                    new_object = html
+                            .replace(/<\/object\>/i,
+                                    "<param name='wmode' value='transparent' />\n</object>");
                 // loop through each of the param tags
                 var children = object.childNodes;
                 for (j = 0; j < children.length; j++) {
@@ -941,7 +955,9 @@ public final class CmsDomUtil {
                                 new_object = new_object
                                         .replace(
                                                 /<param\s+name\s*=\s*('|")flashvars('|")\s+value\s*=\s*('|")[^'"]*('|")\s*\/?\>/i,
-                                                "<param name='flashvars' value='" + children[j].getAttribute('value')
+                                                "<param name='flashvars' value='"
+                                                        + children[j]
+                                                                .getAttribute('value')
                                                         + "' />");
                             }
                         }
@@ -1480,7 +1496,8 @@ public final class CmsDomUtil {
     public static native boolean isJavaScriptPresent(String javascriptLink)/*-{
         var scripts = $wnd.document.scripts;
         for (var i = 0; i < scripts.length; i++) {
-            if (scripts[i].src != null && scripts[i].src.indexOf(javascriptLink) >= 0) {
+            if (scripts[i].src != null
+                    && scripts[i].src.indexOf(javascriptLink) >= 0) {
                 // script resource is present
                 return true;
             }
@@ -1586,7 +1603,8 @@ public final class CmsDomUtil {
      * @return the JSON object
      */
     public static native JavaScriptObject parseJSON(String jsonString)/*-{
-        return (typeof $wnd.JSON != 'undefined') && $wnd.JSON.parse(jsonString) || eval('(' + jsonString + ')');
+        return (typeof $wnd.JSON != 'undefined') && $wnd.JSON.parse(jsonString)
+                || eval('(' + jsonString + ')');
     }-*/;
 
     /**

@@ -551,6 +551,23 @@
     	}
     }
     
+    #sitemap-ui-overlays { 
+		.v-context-menu, div.v-menubar-submenu {	
+			.v-context-menu-item-basic-icon-container {
+				width: 16px;
+			}
+				
+			.v-context-menu-item-basic-text {
+				padding: 0 0px 0 0px;
+			}
+		}
+		
+		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu {
+			padding-right: 11px; 
+		}
+	}
+    
+    
 	/* explorer bread crumb path input styles */
 	.o-crumb-wrapper{
 		position: relative;
@@ -881,5 +898,6 @@
 	.o-table-cell-padding .v-table-cell-wrapper { 
 		padding: 10px 10px; 
 	}
+	
 	 
 }
