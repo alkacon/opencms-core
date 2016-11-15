@@ -492,7 +492,9 @@ public class CmsResultsTab extends A_CmsListTab {
     protected void addContent(CmsGallerySearchBean searchBean) {
 
         if (searchBean.getResults() != null) {
-            addContentItems(searchBean.getResults(), false);
+            boolean showPath = SortParams.path_asc.name().equals(searchBean.getSortOrder())
+                || SortParams.path_desc.name().equals(searchBean.getSortOrder());
+            addContentItems(searchBean.getResults(), false, showPath);
         }
     }
 
@@ -500,16 +502,16 @@ public class CmsResultsTab extends A_CmsListTab {
      * Adds list items for a list of search results.<p>
      *
      * @param list the list of search results
-     *
      * @param front if true, list items will be added to the front of the list, else at the back
+     * @param showPath <code>true</code> to show the resource path in sub title
      */
-    protected void addContentItems(List<CmsResultItemBean> list, boolean front) {
+    protected void addContentItems(List<CmsResultItemBean> list, boolean front, boolean showPath) {
 
         if (front) {
             list = Lists.reverse(list);
         }
         for (CmsResultItemBean resultItem : list) {
-            addSingleResult(resultItem, front);
+            addSingleResult(resultItem, front, showPath);
         }
         if (isTilingViewAllowed()) {
             m_selectView.getElement().getStyle().clearDisplay();
@@ -526,8 +528,9 @@ public class CmsResultsTab extends A_CmsListTab {
      *
      * @param resultItem the search result
      * @param front if true, adds the list item to the front of the list, else at the back
+     * @param showPath <code>true</code> to show the resource path in sub title
      */
-    protected void addSingleResult(CmsResultItemBean resultItem, boolean front) {
+    protected void addSingleResult(CmsResultItemBean resultItem, boolean front, boolean showPath) {
 
         m_types.add(resultItem.getType());
         boolean hasPreview = m_tabHandler.hasPreview(resultItem.getType());
@@ -535,7 +538,7 @@ public class CmsResultsTab extends A_CmsListTab {
         if (!m_galleryHandler.filterDnd(resultItem)) {
             dndHandler = null;
         }
-        CmsResultListItem listItem = new CmsResultListItem(resultItem, hasPreview, dndHandler);
+        CmsResultListItem listItem = new CmsResultListItem(resultItem, hasPreview, showPath, dndHandler);
         if (resultItem.isPreset()) {
             m_preset = listItem;
         }

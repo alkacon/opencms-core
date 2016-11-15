@@ -107,11 +107,17 @@ public class CmsResultItemWidget extends CmsListItemWidget {
      * Constructor.<p>
      *
      * @param infoBean the resource info bean
+     * @param showPath <code>true</code> to show the resource path in sub title
      */
-    public CmsResultItemWidget(CmsResultItemBean infoBean) {
+    public CmsResultItemWidget(CmsResultItemBean infoBean, boolean showPath) {
 
         super(infoBean);
-        setSubtitleTitle(infoBean.getPath());
+        if (showPath) {
+            setSubtitleLabel(infoBean.getPath());
+            setSubtitleTitle(infoBean.getSubTitle());
+        } else {
+            setSubtitleTitle(infoBean.getPath());
+        }
         String type = infoBean.getType();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getPseudoType())) {
             type = infoBean.getPseudoType();
