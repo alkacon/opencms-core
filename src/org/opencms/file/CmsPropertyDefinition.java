@@ -161,6 +161,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
 
+    /** Property for the model group base element. */
+    public static final String PROPERTY_MODEL_GROUP_BASE = "modelgroup.base";
+
     /** Property constant for <code>"NavImage"</code>. */
     public static final String PROPERTY_NAVIMAGE = "NavImage";
 

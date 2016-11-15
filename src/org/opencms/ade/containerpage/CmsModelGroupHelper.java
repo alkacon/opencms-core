@@ -36,7 +36,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.flex.CmsFlexController;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -49,6 +54,7 @@ import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,6 +64,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
@@ -135,7 +144,7 @@ public class CmsModelGroupHelper {
         try {
             CmsProperty modelElementProp = cms.readPropertyObject(
                 page,
-                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                CmsPropertyDefinition.PROPERTY_MODEL_GROUP_BASE,
                 false);
             if (!modelElementProp.isNullProperty() && CmsUUID.isValidUUID(modelElementProp.getValue())) {
                 id = modelElementProp.getValue();
@@ -157,6 +166,170 @@ public class CmsModelGroupHelper {
 
         return CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
             OpenCms.getResourceManager().getResourceType(resource).getTypeName());
+    }
+
+    /**
+     * Updates a model group resource to the changed data structure.<p>
+     * This step is necessary when updating from version 10.0.x to 10.5.x.<p>
+     *
+     * @param cms the cms context
+     * @param group the model group resource
+     * @param baseContainerName the new base container name
+     *
+     * @return <code>true</code> if the resource was updated
+     */
+    public static boolean updateModelGroupResource(CmsObject cms, CmsResource group, String baseContainerName) {
+
+        if (!isModelGroupResource(group)) {
+            // skip resources that are no model group
+            return false;
+        }
+        try {
+            CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, group);
+            CmsContainerPageBean pageBean = xmlContainerPage.getContainerPage(cms);
+            CmsContainerBean baseContainer = pageBean.getContainers().get(MODEL_GROUP_BASE_CONTAINER);
+            String modelId = getModelElementId(cms, group);
+            boolean changedContent = false;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(modelId)) {
+                // model id property is not set yet
+                // look up the model root element
+
+                if ((baseContainer != null) && (baseContainer.getElements().size() > 0)) {
+                    CmsContainerElementBean element = baseContainer.getElements().get(0);
+                    modelId = element.getId().toString();
+
+                }
+            } else {
+                modelId = null;
+            }
+            if ((baseContainer != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(baseContainerName)) {
+
+                List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
+                for (CmsContainerBean container : pageBean.getContainers().values()) {
+                    if (container.getName().equals(MODEL_GROUP_BASE_CONTAINER)) {
+                        CmsContainerBean replacer = new CmsContainerBean(
+                            baseContainerName,
+                            container.getType(),
+                            container.getParentInstanceId(),
+                            container.getElements());
+                        containers.add(replacer);
+                        changedContent = true;
+                    } else {
+                        containers.add(container);
+                    }
+                }
+                if (changedContent) {
+                    pageBean = new CmsContainerPageBean(containers);
+                }
+            }
+            if (changedContent || (modelId != null)) {
+                ensureLock(cms, group);
+                if (modelId != null) {
+                    cms.writePropertyObjects(
+                        group,
+                        Collections.singletonList(
+                            new CmsProperty(CmsPropertyDefinition.PROPERTY_MODEL_GROUP_BASE, modelId, null)));
+                }
+                if (changedContent) {
+                    xmlContainerPage.save(cms, pageBean);
+                }
+                tryUnlock(cms, group);
+                return true;
+            }
+            return false;
+
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return false;
+        }
+
+    }
+
+    /**
+     * Updates model group resources to the changed data structure.<p>
+     * This step is necessary when updating from version 10.0.x to 10.5.x.<p>
+     *
+     * @param request the request
+     * @param response the response
+     * @param basePath the path to the model group, or the base path to search for model groups
+     * @param baseContainerName the new base container name
+     *
+     * @throws IOException in case writing to the response fails
+     */
+    public static void updateModelGroupResources(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        String basePath,
+        String baseContainerName)
+    throws IOException {
+
+        if (CmsFlexController.isCmsRequest(request)) {
+
+            try {
+                CmsFlexController controller = CmsFlexController.getController(request);
+                CmsObject cms = controller.getCmsObject();
+                CmsResource base = cms.readResource(basePath);
+                List<CmsResource> resources;
+                I_CmsResourceType groupType = OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
+                if (base.isFolder()) {
+                    resources = cms.readResources(
+                        basePath,
+                        CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(groupType));
+                } else if (OpenCms.getResourceManager().getResourceType(base).equals(groupType)) {
+                    resources = Collections.singletonList(base);
+                } else {
+                    resources = Collections.emptyList();
+                }
+
+                if (resources.isEmpty()) {
+                    response.getWriter().println("No model group resources found at " + basePath + "<br />");
+                } else {
+                    for (CmsResource group : resources) {
+                        boolean updated = updateModelGroupResource(cms, group, baseContainerName);
+                        response.getWriter().println(
+                            "Group '" + group.getRootPath() + "' was updated " + updated + "<br />");
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                e.printStackTrace(response.getWriter());
+            }
+        }
+    }
+
+    /**
+     * Locks the given resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource to lock
+     *
+     * @throws CmsException in case locking fails
+     */
+    private static void ensureLock(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsLock lock = cms.getLock(resource);
+        if (!lock.isOwnedBy(user)) {
+            cms.lockResourceTemporary(resource);
+        } else if (!lock.isOwnedInProjectBy(user, cms.getRequestContext().getCurrentProject())) {
+            cms.changeLock(resource);
+        }
+    }
+
+    /**
+     * Tries to unlock a resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource to unlock
+     */
+    private static void tryUnlock(CmsObject cms, CmsResource resource) {
+
+        try {
+            cms.unlockResource(resource);
+        } catch (CmsException e) {
+            LOG.debug("Unable to unlock " + resource.getRootPath(), e);
+        }
     }
 
     /**
@@ -422,9 +595,11 @@ public class CmsModelGroupHelper {
     throws CmsException {
 
         CmsUUID modelElementId = null;
+        CmsContainerElementBean baseElement = null;
         for (CmsContainerElementBean element : page.getElements()) {
             if (element.isModelGroup()) {
                 modelElementId = element.getId();
+                baseElement = element;
                 break;
 
             }
@@ -462,13 +637,32 @@ public class CmsModelGroupHelper {
 
         }
 
-        m_cms.writePropertyObjects(
-            pageResource,
-            Collections.singletonList(
+        List<CmsProperty> changedProps = new ArrayList<CmsProperty>();
+        changedProps.add(
+            new CmsProperty(
+                CmsPropertyDefinition.PROPERTY_MODEL_GROUP_BASE,
+                modelElementId != null ? modelElementId.toString() : null,
+                null));
+        if (baseElement != null) {
+            changedProps.add(
+                new CmsProperty(
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    baseElement.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_TITLE),
+                    null));
+            changedProps.add(
+                new CmsProperty(
+                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                    baseElement.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_DESCRIPTION),
+                    null));
+            changedProps.add(
                 new CmsProperty(
                     CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                    modelElementId != null ? modelElementId.toString() : null,
-                    null)));
+                    Boolean.parseBoolean(baseElement.getIndividualSettings().get(CmsContainerElement.USE_AS_COPY_MODEL))
+                    ? CmsContainerElement.USE_AS_COPY_MODEL
+                    : null,
+                    null));
+        }
+        m_cms.writePropertyObjects(pageResource, changedProps);
 
         return new CmsContainerPageBean(containers);
 

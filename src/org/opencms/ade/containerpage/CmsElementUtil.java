@@ -714,15 +714,15 @@ public class CmsElementUtil {
         Map<CmsUUID, CmsElementView> viewMap = OpenCms.getADEManager().getElementViews(m_cms);
 
         boolean isModelGroup = elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID);
-
+        boolean isModelGroupEditing = CmsModelGroupHelper.isModelGroupResource(m_page);
         if (!isModelGroup
-            && CmsModelGroupHelper.isModelGroupResource(m_page)
+            && isModelGroupEditing
             && elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
             && (ModelGroupState.isModelGroup == ModelGroupState.evaluate(
                 elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE)))) {
             isModelGroup = true;
         }
-        if (isModelGroup) {
+        if (!isModelGroupEditing && isModelGroup) {
             CmsResourceTypeConfig modelGroupConfig = getConfigData().getResourceType(
                 CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
             if (modelGroupConfig != null) {
