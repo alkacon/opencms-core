@@ -341,7 +341,7 @@
 }
 
 .toolbarBackground div.userInfo > div:hover{
-	border-color: #2197DB;
+	border-color: #2197DB !important;
 }
 
 div.userInfoDialog{
