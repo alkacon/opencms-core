@@ -95,6 +95,17 @@ public final class CmsJsUtil {
     }-*/;
 
     /**
+     * Reads a string-valued attribute from a Javascript object.<p>
+     *
+     * @param jso the Javascript object
+     * @param attr the name of the attribute
+     * @return the value of the attribute
+     */
+    public static native String getAttributeString(JavaScriptObject jso, String attr) /*-{
+        return jso[attr];
+    }-*/;
+
+    /**
      * Gets the current window as a Javascript object.<p>
      *
      * @return the current window

@@ -30,6 +30,7 @@ package org.opencms.ui.sitemap;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleGroupService;
@@ -57,6 +58,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
@@ -361,6 +363,10 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
             rootRes,
             this,
             m_treeContainer);
+
+        // no need to escape a structure id
+        JavaScript.eval(CmsGwtConstants.VAR_LOCALE_ROOT + "='" + rootRes.getStructureId() + "'");
+
         CmsSitemapUI ui = (CmsSitemapUI)(A_CmsUI.get());
         ui.getSitemapExtension().setSitemapTreeController(controller);
         CmsSitemapTreeNode root1 = controller.createRootNode();

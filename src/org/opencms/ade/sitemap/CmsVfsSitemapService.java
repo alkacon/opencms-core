@@ -961,6 +961,33 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#prepareReloadSitemap(org.opencms.util.CmsUUID, org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode)
+     */
+    public String prepareReloadSitemap(CmsUUID rootId, EditorMode mode) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
+
+            CmsResource target = cms.readResource(rootId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            String targetRootPath = OpenCms.getADEManager().getSubSiteRoot(cms, target.getRootPath());
+            CmsSite targetSite = OpenCms.getSiteManager().getSiteForRootPath(targetRootPath);
+            CmsADESessionCache.getCache(getRequest(), getCmsObject()).setSitemapEditorMode(mode);
+            if (targetSite != null) {
+                cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
+                String path = cms.getRequestContext().removeSiteRoot(targetRootPath);
+                String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                link = link + "?path=" + path;
+                return link;
+            }
+            return null;
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#removeModelPage(java.lang.String, org.opencms.util.CmsUUID)
      */
     public void removeModelPage(String entryPointUri, CmsUUID id) throws CmsRpcException {

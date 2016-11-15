@@ -226,6 +226,18 @@ public interface I_CmsSitemapServiceAsync {
     void prefetch(String sitemapUri, AsyncCallback<CmsSitemapData> callback);
 
     /**
+     * Prepares sitemap reloading for the given sitemap root.<p>
+     *
+     * This method may change the currently set site root.
+     *
+     * @param rootId the structure id of the new sitemap root
+     * @param mode the new editor mode
+     *
+     * @param resultUrl the callback for the URL which should be used to reload the sitemap
+     */
+    void prepareReloadSitemap(CmsUUID rootId, EditorMode mode, AsyncCallback<String> resultUrl);
+
+    /**
      * Removes a model page from the current sitemap configuration.<p>
      *
      * @param baseUri the base uri for the current sitemap

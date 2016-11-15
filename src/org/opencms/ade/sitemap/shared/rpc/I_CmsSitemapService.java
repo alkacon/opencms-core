@@ -255,6 +255,21 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsSitemapData prefetch(String sitemapUri) throws CmsRpcException;
 
     /**
+     * Prepares sitemap reloading for the given sitemap root.<p>
+     *
+     * This method may change the currently set site root. If the given root id is not in a valid site,
+     * null will be returned, otherwise the URL which the client should use to reload the sitemap will be returned.
+     *
+     * @param rootId the structure id of the new sitemap root
+     * @param mode the new editor mode
+     *
+     * @return the URL which should be used to reload the sitemap
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    String prepareReloadSitemap(CmsUUID rootId, EditorMode mode) throws CmsRpcException;
+
+    /**
      * Removes a model page from the current sitemap configuration.<p>
      *
      * @param baseUri the base uri for the current sitemap

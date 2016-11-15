@@ -113,6 +113,7 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -1207,9 +1208,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             m_editorMode = editorMode;
             m_controller.setEditorModeInSession(m_editorMode);
             if (oldEditorMode == EditorMode.compareLocales) {
-                // we may not switch directly from compareLocales to navigation/vfs, so we need to remember
-                // to refresh the tree later when we do
-                m_needTreeRefresh = true;
+                // reload sitemap editor because we may need to move to a different site
+                reloadForLocaleCompareRoot(m_editorMode);
+                return;
             }
             switch (m_editorMode) {
                 case galleries:
@@ -1226,9 +1227,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     getController().loadGalleries();
                     break;
                 case navigation:
-                    if (!m_needTreeRefresh) {
-                        m_tree.getElement().getStyle().clearDisplay();
-                    }
+                    m_tree.getElement().getStyle().clearDisplay();
                     setGalleriesVisible(false);
                     setModelPagesVisible(false);
                     setCategoriesVisible(false);
@@ -1237,54 +1236,17 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     m_toolbar.setNewEnabled(true, null);
 
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
-                    if (m_needTreeRefresh) {
-                        m_needTreeRefresh = false;
-                        m_controller.refreshRoot(new AsyncCallback<Void>() {
-
-                            public void onFailure(Throwable caught) {
-
-                                // TODO Auto-generated method stub
-
-                            }
-
-                            public void onSuccess(Void result) {
-
-                                m_tree.getElement().getStyle().clearDisplay();
-                            }
-                        });
-                    }
                     break;
                 case vfs:
-                    if (!m_needTreeRefresh) {
-                        m_tree.getElement().getStyle().clearDisplay();
-                    }
-
+                    m_tree.getElement().getStyle().clearDisplay();
                     setGalleriesVisible(false);
-
                     setCategoriesVisible(false);
                     setHeaderVisible(true);
-
                     m_localeComparison.setVisible(false);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_toolbar.setClipboardEnabled(true, null);
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
                     setModelPagesVisible(false);
-                    if (m_needTreeRefresh) {
-                        m_needTreeRefresh = false;
-                        m_controller.refreshRoot(new AsyncCallback<Void>() {
-
-                            public void onFailure(Throwable caught) {
-
-                                // TODO Auto-generated method stub
-
-                            }
-
-                            public void onSuccess(Void result) {
-
-                                m_tree.getElement().getStyle().clearDisplay();
-                            }
-                        });
-                    }
                     break;
                 case modelpages:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
@@ -1752,6 +1714,41 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         for (CmsSitemapTreeItem item : itemsOnPath) {
             item.setOpen(true);
         }
+    }
+
+    /**
+     * Reloads the sitemap editor for the currently selected locale when leaving locale compare mode.<p>
+     *
+     * @param editorMode the new editor mode
+     */
+    private void reloadForLocaleCompareRoot(final EditorMode editorMode) {
+
+        final String localeRootIdStr = CmsJsUtil.getAttributeString(
+            CmsJsUtil.getWindow(),
+            CmsGwtConstants.VAR_LOCALE_ROOT);
+        CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void execute() {
+
+                start(0, false);
+                m_controller.getService().prepareReloadSitemap(new CmsUUID(localeRootIdStr), editorMode, this);
+            }
+
+            @Override
+            protected void onResponse(String result) {
+
+                stop(false);
+                if (result != null) {
+                    Window.Location.assign(result);
+                } else {
+                    Window.Location.reload();
+                }
+            }
+        };
+        action.execute();
+
     }
 
     /**

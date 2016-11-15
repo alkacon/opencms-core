@@ -156,6 +156,9 @@ public final class CmsGwtConstants {
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
 
+    /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
+    public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
+
     /**
      * Hide constructor.<p>
      */
