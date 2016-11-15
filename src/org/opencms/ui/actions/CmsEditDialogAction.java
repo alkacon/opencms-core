@@ -34,6 +34,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
@@ -100,14 +101,21 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
     public int getDefaultActionRank(I_CmsDialogContext context) {
 
         CmsResource res = context.getResources().get(0);
-        boolean editXml = (CmsResourceTypeXmlContent.isXmlContent(res)
+
+        boolean editAsDefault = (CmsResourceTypeXmlContent.isXmlContent(res)
             || (CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
             || CmsResourceTypeXmlPage.isXmlPage(res))
             && (!(res.getName().endsWith(".html") || res.getName().endsWith(".htm"))
                 || CmsStringUtil.isEmptyOrWhitespaceOnly(context.getCms().getRequestContext().getSiteRoot()));
-        editXml = editXml
+
+        editAsDefault = editAsDefault
             || (CmsResourceTypeJsp.isJsp(res) && !(res.getName().endsWith(".html") || res.getName().endsWith(".htm")));
-        if (editXml) {
+
+        boolean isPropertyBundle = OpenCms.getResourceManager().getResourceType(res).getTypeName().equals(
+            CmsVfsBundleManager.TYPE_PROPERTIES_BUNDLE);
+        editAsDefault = editAsDefault || isPropertyBundle;
+
+        if (editAsDefault) {
             return 20;
         }
         return 0;
