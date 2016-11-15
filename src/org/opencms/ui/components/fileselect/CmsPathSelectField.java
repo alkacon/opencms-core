@@ -142,7 +142,9 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     protected void setResourceValue(CmsResource resource) {
 
         CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resource.getRootPath());
-        if (!m_useRootPaths && A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
+        if (!m_useRootPaths
+            && (site != null)
+            && A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
             setValue(true, A_CmsUI.getCmsObject().getSitePath(resource));
         } else {
             setValue(true, resource.getRootPath());
