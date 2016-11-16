@@ -56,6 +56,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.Lists;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.JavaScript;
@@ -72,6 +73,9 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** Icon for the main locale option in select boxes. */
+    public static final Resource MAIN_LOCALE_ICON = FontOpenCms.CIRCLE_INFO;
 
     /** The parent layout of the tree. */
     protected CssLayout m_treeContainer = new CssLayout();
@@ -104,7 +108,7 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(A_CmsUI.getCmsObject());
         A_CmsUI.get().setLocale(locale);
         try {
-            initialize(new CmsUUID(id));
+            initialize(new CmsUUID(id), null);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
             CmsErrorDialog.showErrorDialog(e);
@@ -168,11 +172,12 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
     /**
      * Initializes the locale comparison view.<p>
      *
-     * @param id the structure id of the currrent sitemap root entry.<p>
+     * @param id the structure id of the currrent sitemap root entry
+     * @param initialComparisonLocale if not null, the initially selected ccomparison locale
      *
      * @throws CmsException if something goes wrong
      */
-    public void initialize(CmsUUID id) throws CmsException {
+    public void initialize(CmsUUID id, Locale initialComparisonLocale) throws CmsException {
 
         removeAllComponents();
         CmsObject cms = A_CmsUI.getCmsObject();
@@ -196,7 +201,7 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
                 selectableLocale,
                 selectableLocale.getDisplayLanguage(A_CmsUI.get().getLocale()));
         }
-        m_rootLocaleSelector.setItemIcon(mainLocale, FontOpenCms.CIRCLE_INFO);
+        m_rootLocaleSelector.setItemIcon(mainLocale, MAIN_LOCALE_ICON);
         m_rootLocaleSelector.setValue(m_rootLocale);
         m_rootLocaleSelector.addValueChangeListener(new ValueChangeListener() {
 
@@ -225,21 +230,27 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
         m_comparisonLocaleSelector.setNullSelectionAllowed(false);
 
         List<Locale> comparisonLocales = getComparisonLocales();
-        Locale firstComparisonLocale = null;
+        Locale selectedComparisonLocale = null;
         for (Locale comparisonLocale : comparisonLocales) {
             m_comparisonLocaleSelector.addItem(comparisonLocale);
             m_comparisonLocaleSelector.setItemIcon(comparisonLocale, FontOpenCms.SPACE);
-
             m_comparisonLocaleSelector.setItemCaption(
                 comparisonLocale,
                 comparisonLocale.getDisplayLanguage(A_CmsUI.get().getLocale()));
-            if ((firstComparisonLocale == null) && !comparisonLocale.equals(m_rootLocale)) {
-                firstComparisonLocale = comparisonLocale;
+            if ((selectedComparisonLocale == null) && !comparisonLocale.equals(m_rootLocale)) {
+                selectedComparisonLocale = comparisonLocale;
             }
+            if ((initialComparisonLocale != null)
+                && comparisonLocale.equals(initialComparisonLocale)
+                && !comparisonLocale.equals(m_rootLocale)) {
+                // if an initial comparison locale is given, it should have priority over the first comparison locale
+                selectedComparisonLocale = comparisonLocale;
+            }
+
         }
-        m_comparisonLocale = firstComparisonLocale;
-        m_comparisonLocaleSelector.setValue(firstComparisonLocale);
-        m_comparisonLocaleSelector.setItemIcon(mainLocale, FontOpenCms.CIRCLE_INFO);
+        m_comparisonLocale = selectedComparisonLocale;
+        m_comparisonLocaleSelector.setValue(selectedComparisonLocale);
+        m_comparisonLocaleSelector.setItemIcon(mainLocale, MAIN_LOCALE_ICON);
 
         m_comparisonLocaleSelector.addValueChangeListener(new ValueChangeListener() {
 
@@ -305,7 +316,7 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
     public void refreshAll() {
 
         try {
-            initialize(m_currentRoot.getStructureId());
+            initialize(m_currentRoot.getStructureId(), m_comparisonLocale);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
             CmsErrorDialog.showErrorDialog(e);
