@@ -238,8 +238,8 @@ public class CmsLocaleGroup {
         if (mainLocale == null) {
             return false;
         }
-        Locale myLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, m_primaryResource);
-        return mainLocale.equals(myLocale);
+        Locale primaryLocale = getMainLocale();
+        return mainLocale.equals(primaryLocale);
 
     }
 

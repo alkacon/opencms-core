@@ -291,38 +291,34 @@ public class CmsLocaleGroupService {
                 return Status.alreadyLinked;
             }
 
-            List<CmsResource> secondaryResources = Lists.newArrayList();
-            secondaryResources.addAll(group1.getSecondaryResources());
-            secondaryResources.add(group1.getPrimaryResource());
-            secondaryResources.addAll(group2.getSecondaryResources());
-            secondaryResources.add(group2.getPrimaryResource());
-            for (CmsResource secondaryRes : secondaryResources) {
-
-                if (!m_cms.hasPermissions(
-                    secondaryRes,
-                    CmsPermissionSet.ACCESS_WRITE,
-                    false,
-                    CmsResourceFilter.IGNORE_EXPIRATION)) {
-                    return Status.other;
-                }
-                CmsLock lock = m_cms.getLock(secondaryRes);
-                if (!lock.isUnlocked()
-                    && !lock.getUserId().equals(m_cms.getRequestContext().getCurrentUser().getId())) {
-                    LOG.debug(debugPrefix + "  rejected - lock state: " + secondaryRes.getRootPath());
-                    return Status.other;
-                }
-            }
-
             if (group1.isMarkedNoTranslation(group2.getLocales())
                 || group2.isMarkedNoTranslation(group1.getLocales())) {
                 LOG.debug(debugPrefix + "  rejected - marked 'no translation'");
                 return Status.notranslation;
-
             }
-            int numberOfRealGroups = (group1.isRealGroupOrPotentialGroupHead() ? 1 : 0)
-                + (group2.isRealGroupOrPotentialGroupHead() ? 1 : 0);
-            if (numberOfRealGroups != 1) {
-                LOG.debug(debugPrefix + "  rejected - already complete disjoint locale groups");
+
+            if (group1.isRealGroupOrPotentialGroupHead() == group2.isRealGroupOrPotentialGroupHead()) {
+                LOG.debug(debugPrefix + "  rejected - incompatible locale group states");
+                return Status.other;
+            }
+
+            CmsResource permCheckResource = null;
+            if (group1.isRealGroupOrPotentialGroupHead()) {
+                permCheckResource = group2.getPrimaryResource();
+            } else {
+                permCheckResource = group1.getPrimaryResource();
+            }
+            if (!m_cms.hasPermissions(
+                permCheckResource,
+                CmsPermissionSet.ACCESS_WRITE,
+                false,
+                CmsResourceFilter.IGNORE_EXPIRATION)) {
+                LOG.debug(debugPrefix + " no write permissions: " + permCheckResource.getRootPath());
+                return Status.other;
+            }
+
+            if (!checkLock(permCheckResource)) {
+                LOG.debug(debugPrefix + " lock state: " + permCheckResource.getRootPath());
                 return Status.other;
             }
 
@@ -334,9 +330,8 @@ public class CmsLocaleGroupService {
             LOG.error(debugPrefix + e.getLocalizedMessage(), e);
             LOG.debug(debugPrefix + "  rejected - exception (see previous)");
             return Status.other;
-
         }
-
+        LOG.debug(debugPrefix + " OK");
         return Status.linkable;
     }
 
@@ -571,6 +566,20 @@ public class CmsLocaleGroupService {
         }
         return res;
 
+    }
+
+    /**
+     * Checks that the resource is not locked by another user.<p>
+     *
+     * @param resource the resource
+     * @return true if the resource is not locked by another user
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private boolean checkLock(CmsResource resource) throws CmsException {
+
+        CmsLock lock = m_cms.getLock(resource);
+        return lock.isUnlocked() || lock.getUserId().equals(m_cms.getRequestContext().getCurrentUser().getId());
     }
 
 }
