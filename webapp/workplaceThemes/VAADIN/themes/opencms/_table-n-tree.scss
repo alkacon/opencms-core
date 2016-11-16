@@ -209,8 +209,11 @@
   .v-table 	.o-in-navigation div{
 		font-weight: 800;
   }
-  .v-table .v-selected .o-hover-column:hover div:before{
-  	background: lighten($v-selection-color,10%);
+  .v-table .v-selected .o-hover-column{
+  	color: inherit;
+  	&:hover div:before{
+  		background: lighten($v-selection-color,10%);
+  	}
   }
   
   .v-table-row-o-state-deleted {
