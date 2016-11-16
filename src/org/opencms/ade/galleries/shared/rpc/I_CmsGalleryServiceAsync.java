@@ -134,6 +134,14 @@ public interface I_CmsGalleryServiceAsync {
     void loadVfsEntryBean(String path, AsyncCallback<CmsVfsEntryBean> resultCallback);
 
     /**
+     * Stores the result view type with the user.<p>
+     *
+     * @param resultViewType the result view type
+     * @param callback the callback
+     */
+    void saveResultViewType(String resultViewType, AsyncCallback<Void> callback);
+
+    /**
      * Saves the tree open state.<p>
      *
      * @param treeName the tree name

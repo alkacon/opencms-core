@@ -158,6 +158,13 @@ public interface I_CmsGalleryService extends RemoteService {
     CmsVfsEntryBean loadVfsEntryBean(String path) throws CmsRpcException;
 
     /**
+     * Stores the result view type with the user.<p>
+     *
+     * @param resultViewType the result view type
+     */
+    void saveResultViewType(String resultViewType);
+
+    /**
      * Saves the tree open state for a tree tab.<p>
      *
      * @param treeName the tree name for which to save the tree state

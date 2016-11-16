@@ -295,8 +295,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
 
-    /** Key for additional info gallery folder filter */
+    /** Key for additional info gallery folder filter. */
     public static final String FOLDER_FILTER_ADD_INFO_KEY = "gallery_folder_filter";
+
+    /** Key for additional info gallery result view type. */
+    public static final String RESULT_VIEW_TYPE_ADD_INFO_KEY = "gallery_result_view_type";
 
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
@@ -626,7 +629,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     PREF_GALLERY_SHOW_INVALID_DEFAULT,
                     true));
             data.setIncludeExpiredDefault(galleryShowInvalidDefault);
-
+            data.setResultViewType(readResultViewType());
             data.setMode(GalleryMode.ade);
             data.setGalleryStoragePrefix("");
             data.setLocales(buildLocalesMap());
@@ -889,6 +892,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } catch (Throwable e) {
             error(e);
             return null;
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#saveResultViewType(java.lang.String)
+     */
+    public void saveResultViewType(String resultViewType) {
+
+        CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
+        user.setAdditionalInfo(RESULT_VIEW_TYPE_ADD_INFO_KEY, resultViewType);
+        try {
+            getCmsObject().writeUser(user);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -1876,7 +1893,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         CmsGalleryDataBean data = new CmsGalleryDataBean();
         data.setMode(conf.getGalleryMode());
-
+        data.setResultViewType(readResultViewType());
         boolean galleryShowInvalidDefault = Boolean.parseBoolean(
             getWorkplaceSettings().getUserSettings().getAdditionalPreference(PREF_GALLERY_SHOW_INVALID_DEFAULT, true));
         data.setIncludeExpiredDefault(galleryShowInvalidDefault);
@@ -2468,6 +2485,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             }
         }
         return galleryTypeInfos;
+    }
+
+    /**
+     * Reads the result view type from the current user.<p>
+     *
+     * @return the result view type
+     */
+    private String readResultViewType() {
+
+        return (String)getCmsObject().getRequestContext().getCurrentUser().getAdditionalInfo(
+            RESULT_VIEW_TYPE_ADD_INFO_KEY);
     }
 
     /**

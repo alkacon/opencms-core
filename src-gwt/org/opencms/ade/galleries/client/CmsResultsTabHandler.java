@@ -70,6 +70,16 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Returns the result view type.<p>
+     *
+     * @return the result view type
+     */
+    public String getResultViewType() {
+
+        return m_controller.getResultViewType();
+    }
+
+    /**
      * Returns if a preview is available for the given resource type.<p>
      *
      * @param resourceType the requested resource type
@@ -159,6 +169,16 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public void removeParam(String paramKey) {
 
         // nothing to do
+    }
+
+    /**
+     * Stores the result view type.<p>
+     *
+     * @param resultViewType the result view type
+     */
+    public void setResultViewType(String resultViewType) {
+
+        m_controller.setResultViewType(resultViewType);
     }
 
     /**

@@ -81,6 +81,9 @@ public class CmsGalleryDataBean implements IsSerializable {
      */
     private String m_referenceSitePath;
 
+    /** The result view type. */
+    private String m_resultViewType;
+
     /** The search scope. */
     private CmsGallerySearchScope m_scope;
 
@@ -92,6 +95,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** The start folder. */
     private String m_startFolder;
+
+    /** The folder filter for the initial search. */
+    private Set<String> m_startFolderFilter;
 
     /** The start gallery folder. */
     private String m_startGallery;
@@ -116,9 +122,6 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** List of site selector options. */
     private List<CmsSiteSelectorOption> m_vfsSiteSelectorOptions;
-
-    /** The folder filter for the initial search. */
-    private Set<String> m_startFolderFilter;
 
     /**
      * Default constructor.<p>
@@ -230,6 +233,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
+     * Returns the result view type.<p>
+     *
+     * @return the result view type
+     */
+    public String getResultViewType() {
+
+        return m_resultViewType;
+    }
+
+    /**
      * Returns the search scope.<p>
      *
      * @return the search scope
@@ -270,9 +283,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
-     * Returns the startFolderFilter.<p>
+     * Returns the start folder filter.<p>
      *
-     * @return the startFolderFilter
+     * @return the start folder filter
      */
     public Set<String> getStartFolderFilter() {
 
@@ -461,6 +474,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
+     * Sets the result view type.<p>
+     *
+     * @param resultViewType the result view type to set
+     */
+    public void setResultViewType(String resultViewType) {
+
+        m_resultViewType = resultViewType;
+    }
+
+    /**
      * Sets the search scope.<p>
      *
      * @param scope the search scope
@@ -501,9 +524,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
-     * Sets the startFolderFilter.<p>
+     * Sets the start folder filter.<p>
      *
-     * @param startFolderFilter the startFolderFilter to set
+     * @param startFolderFilter the start folder filter to set
      */
     public void setStartFolderFilter(Set<String> startFolderFilter) {
 

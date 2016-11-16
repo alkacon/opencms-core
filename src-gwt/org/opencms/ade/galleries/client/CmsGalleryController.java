@@ -632,6 +632,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns the result view type.<p>
+     *
+     * @return the result view type
+     */
+    public String getResultViewType() {
+
+        return m_dialogBean.getResultViewType();
+    }
+
+    /**
      * Returns the search locale.<p>
      *
      * @return the search locale
@@ -1272,6 +1282,31 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             ValueChangeEvent.fire(this, m_searchObject);
         }
 
+    }
+
+    /**
+     * Stores the result view type.<p>
+     *
+     * @param resultViewType the result view type
+     */
+    public void setResultViewType(final String resultViewType) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                getGalleryService().saveResultViewType(resultViewType, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                // nothing to do
+            }
+
+        };
+        action.execute();
     }
 
     /**

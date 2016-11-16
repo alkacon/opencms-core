@@ -312,6 +312,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
         super(GalleryTabId.cms_tab_results);
         m_galleryHandler = galleryHandler;
+
         m_contextMenuHandler = new CmsResultContextMenuHandler(tabHandler);
         m_types = new HashSet<String>();
         m_hasMoreResults = false;
@@ -327,9 +328,14 @@ public class CmsResultsTab extends A_CmsListTab {
         views.put(DETAILS, Messages.get().key(Messages.GUI_VIEW_LABEL_DETAILS_0));
         views.put(SMALL, Messages.get().key(Messages.GUI_VIEW_LABEL_SMALL_ICONS_0));
         views.put(BIG, Messages.get().key(Messages.GUI_VIEW_LABEL_BIG_ICONS_0));
+        String resultViewType = m_tabHandler.getResultViewType();
+        if (!views.containsKey(resultViewType)) {
+            resultViewType = SMALL;
+        }
         m_selectView = new CmsSelectBox(views);
         m_selectView.addStyleName(DIALOG_CSS.selectboxWidth());
-        m_selectView.selectValue(SMALL);
+        m_selectView.selectValue(resultViewType);
+        selectView(resultViewType);
         addWidgetToOptions(m_selectView);
         m_selectView.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -338,6 +344,7 @@ public class CmsResultsTab extends A_CmsListTab {
                 selectView(event.getValue());
                 setScrollPosition(0);
                 onContentChange();
+                getTabHandler().setResultViewType(event.getValue());
             }
         });
     }
