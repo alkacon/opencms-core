@@ -139,9 +139,6 @@ public class CmsContainerPageCopier {
     /** The log instance used for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContainerPageCopier.class);
 
-    /** Original copy mode. */
-    private CopyMode m_originalMode;
-
     /** The CMS context used by this object. */
     private CmsObject m_cms;
 
@@ -245,7 +242,8 @@ public class CmsContainerPageCopier {
      */
     public CmsContainerElementBean replaceContainerElement(
         CmsResource targetPage,
-        CmsContainerElementBean originalElement) throws CmsException, NoCustomReplacementException {
+        CmsContainerElementBean originalElement)
+    throws CmsException, NoCustomReplacementException {
         // if (m_elementReplacements.containsKey(originalElement.getId()
 
         CmsObject targetCms = OpenCms.initCmsObject(m_cms);
@@ -274,18 +272,10 @@ public class CmsContainerPageCopier {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(originalResource);
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(m_cms, targetPage.getRootPath());
             CmsResourceTypeConfig typeConfig = config.getResourceType(type.getTypeName());
-            boolean shouldCopyElement;
-            if (m_copyMode == CopyMode.reuse) {
-                shouldCopyElement = false;
-            } else if (typeConfig == null) {
-                LOG.warn(
-                    "Type configuration for type " + type.getTypeName() + " not found at " + targetPage.getRootPath());
-                shouldCopyElement = false;
-            } else {
-                shouldCopyElement = (originalElement.isCreateNew() || typeConfig.isCopyInModels())
-                    && !type.getTypeName().equals(CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
-            }
-            if (shouldCopyElement) {
+            if ((m_copyMode != CopyMode.reuse)
+                && (typeConfig != null)
+                && (originalElement.isCreateNew() || typeConfig.isCopyInModels())
+                && !type.getTypeName().equals(CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME)) {
                 CmsResource resourceCopy = typeConfig.createNewElement(
                     targetCms,
                     originalResource,
@@ -516,8 +506,7 @@ public class CmsContainerPageCopier {
             m_createdResources.add(copiedPage);
             replaceElements(copiedPage);
             CmsLocaleGroupService localeGroupService = rootCms.getLocaleGroupService();
-            if ((m_originalMode == CopyMode.automatic)
-                && (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage))) {
+            if (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage)) {
                 try {
                     localeGroupService.attachLocaleGroupIndirect(m_originalPage, copiedPage);
                 } catch (CmsException e) {
@@ -558,8 +547,7 @@ public class CmsContainerPageCopier {
             m_copiedFolderOrPage = copiedPage;
             replaceElements(copiedPage);
             CmsLocaleGroupService localeGroupService = rootCms.getLocaleGroupService();
-            if ((m_originalMode == CopyMode.automatic)
-                && (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage))) {
+            if (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage)) {
                 try {
                     localeGroupService.attachLocaleGroupIndirect(m_originalPage, copiedPage);
                 } catch (CmsException e) {
@@ -578,7 +566,6 @@ public class CmsContainerPageCopier {
      */
     public void setCopyMode(CopyMode copyMode) {
 
-        m_originalMode = copyMode;
         m_copyMode = copyMode;
     }
 
