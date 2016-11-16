@@ -74,6 +74,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1102,6 +1103,26 @@ public final class CmsJspStandardContextBean {
     public CmsContainerPageBean getPage() {
 
         return m_page;
+    }
+
+    /**
+     * Returns the instance id parent container mapping.<p>
+     *
+     * @return the instance id parent container mapping
+     */
+    public Map<String, CmsContainerBean> getParentContainers() {
+
+        return Collections.unmodifiableMap(m_parentContainers);
+    }
+
+    /**
+     * Returns the parent element to the current element if available.<p>
+     *
+     * @return the parent element or null
+     */
+    public CmsContainerElementBean getParentElement() {
+
+        return getParentElement(getElement());
     }
 
     /**
