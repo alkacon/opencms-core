@@ -233,6 +233,13 @@ public class CmsModelGroupHelper {
                 if (changedContent) {
                     xmlContainerPage.save(cms, pageBean);
                 }
+                if (group.getName().endsWith(".xml")) {
+                    // renaming model groups so they will be rendered correctly by the browser
+                    String targetPath = cms.getSitePath(group);
+                    targetPath = targetPath.substring(0, targetPath.length() - 4) + ".html";
+                    cms.renameResource(cms.getSitePath(group), targetPath);
+                    group = cms.readResource(group.getStructureId());
+                }
                 tryUnlock(cms, group);
                 return true;
             }
@@ -492,7 +499,11 @@ public class CmsModelGroupHelper {
                             modelGroupPage,
                             element.getResource());
                         if (baseElement == null) {
-                            break;
+                            LOG.error(
+                                "Error rendering model group '"
+                                    + element.getResource().getRootPath()
+                                    + "', base element could not be determind.");
+                            continue;
                         }
                         String baseInstanceId = baseElement.getInstanceId();
                         CmsContainerElementBean replaceElement = getModelReplacementElement(
@@ -889,7 +900,14 @@ public class CmsModelGroupHelper {
                     break;
                 }
             }
+        } else {
+            // try to fall back to the old data structure used befor version 10.5
+            CmsContainerBean baseContainer = modelGroupPage.getContainers().get(MODEL_GROUP_BASE_CONTAINER);
+            if ((baseContainer != null) && !baseContainer.getElements().isEmpty()) {
+                result = baseContainer.getElements().get(0);
+            }
         }
+
         return result;
     }
 
