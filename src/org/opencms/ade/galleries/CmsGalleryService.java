@@ -50,6 +50,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePointer;
@@ -65,6 +66,8 @@ import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavBuilder.Visibility;
 import org.opencms.jsp.CmsJspNavElement;
@@ -291,6 +294,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
+
+    /** Key for additional info gallery folder filter */
+    public static final String FOLDER_FILTER_ADD_INFO_KEY = "gallery_folder_filter";
 
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
@@ -637,6 +643,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             Map<String, CmsGalleryTypeInfo> adeGalleryTypeInfos = readGalleryInfosByTypeBeans(types);
             data.setGalleries(buildGalleriesList(adeGalleryTypeInfos));
             data.setStartTab(GalleryTabId.cms_tab_types);
+            data.setStartFolderFilter(readFolderFilters());
 
             CmsSiteSelectorOptionBuilder optionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
             optionBuilder.addNormalSites(true, getWorkplaceSettings().getUserSettings().getStartFolder());
@@ -762,6 +769,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             Set<String> folders = new HashSet<String>();
                             folders.add(data.getStartFolder());
                             result.setFolders(folders);
+                        } else if (data.getStartFolderFilter() != null) {
+                            result.setFolders(data.getStartFolderFilter());
                         }
                         result.setTypes(types);
                         result.setLocale(data.getLocale());
@@ -1650,12 +1659,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         ArrayList<String> types = new ArrayList<String>();
         String resType = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         types.add(resType);
+        Set<String> folders = null;
+        if (data.getStartFolderFilter() != null) {
+            for (String folder : data.getStartFolderFilter()) {
+                if (resource.getRootPath().startsWith(folder)) {
+                    folders = data.getStartFolderFilter();
+                    break;
+                }
+            }
+        }
         CmsGallerySearchBean initialSearchObj = new CmsGallerySearchBean();
         initialSearchObj.setGalleryMode(data.getMode());
         initialSearchObj.setGalleryStoragePrefix(data.getGalleryStoragePrefix());
         initialSearchObj.setIncludeExpired(data.getIncludeExpiredDefault());
         initialSearchObj.setIgnoreSearchExclude(true);
         initialSearchObj.setTypes(types);
+        if (folders != null) {
+            initialSearchObj.setFolders(folders);
+        }
         ArrayList<String> galleries = new ArrayList<String>();
         for (CmsGalleryFolderBean gallery : data.getGalleries()) {
             String galleryPath = gallery.getPath();
@@ -1869,6 +1890,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
+        data.setStartFolderFilter(readFolderFilters());
         data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
 
         List<CmsResourceTypeBean> types = null;
@@ -2383,6 +2405,30 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Reads the folder filters for the current site.<p>
+     *
+     * @return the folder filters
+     */
+    private Set<String> readFolderFilters() {
+
+        JSONObject storedFilters = readUserFolderFilters();
+        Set<String> result = null;
+        if (storedFilters.has(getCmsObject().getRequestContext().getSiteRoot())) {
+            try {
+                org.opencms.json.JSONArray folders = storedFilters.getJSONArray(
+                    getCmsObject().getRequestContext().getSiteRoot());
+                result = new HashSet<String>();
+                for (int i = 0; i < folders.length(); i++) {
+                    result.add(folders.getString(i));
+                }
+            } catch (JSONException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns a map with gallery type names associated with the list of available galleries for this type.<p>
      *
      * @param resourceTypes the resources types to collect the galleries for
@@ -2425,6 +2471,29 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Reads the users folder filters from the additional info.<p>
+     *
+     * @return the folder filters
+     */
+    private JSONObject readUserFolderFilters() {
+
+        CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
+        String addInfo = (String)user.getAdditionalInfo(FOLDER_FILTER_ADD_INFO_KEY);
+        JSONObject result = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(addInfo)) {
+            try {
+                result = new JSONObject(addInfo);
+            } catch (JSONException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        if (result == null) {
+            result = new JSONObject();
+        }
+        return result;
+    }
+
+    /**
      * Returns the gallery search object containing the results for the current parameter.<p>
      *
      * @param searchObj the current search object
@@ -2439,6 +2508,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         if (searchObj == null) {
             return searchObjBean;
         }
+        // store folder filter
+        storeFolderFilter(searchObj.getFolders());
+
         // search
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
@@ -2494,6 +2566,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         referenceTypeName),
                     galleryPath);
             }
+        }
+    }
+
+    /**
+     * Stores the folder filters for the current site.<p>
+     *
+     * @param folders the folder filters
+     */
+    private void storeFolderFilter(Set<String> folders) {
+
+        JSONObject storedFilters = readUserFolderFilters();
+        try {
+            storedFilters.put(getCmsObject().getRequestContext().getSiteRoot(), folders);
+            CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
+            user.setAdditionalInfo(FOLDER_FILTER_ADD_INFO_KEY, storedFilters.toString());
+            getCmsObject().writeUser(user);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 }

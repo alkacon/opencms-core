@@ -34,6 +34,7 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -115,6 +116,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** List of site selector options. */
     private List<CmsSiteSelectorOption> m_vfsSiteSelectorOptions;
+
+    /** The folder filter for the initial search. */
+    private Set<String> m_startFolderFilter;
 
     /**
      * Default constructor.<p>
@@ -263,6 +267,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public String getStartFolder() {
 
         return m_startFolder;
+    }
+
+    /**
+     * Returns the startFolderFilter.<p>
+     *
+     * @return the startFolderFilter
+     */
+    public Set<String> getStartFolderFilter() {
+
+        return m_startFolderFilter;
     }
 
     /**
@@ -484,6 +498,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setStartFolder(String startFolder) {
 
         m_startFolder = startFolder;
+    }
+
+    /**
+     * Sets the startFolderFilter.<p>
+     *
+     * @param startFolderFilter the startFolderFilter to set
+     */
+    public void setStartFolderFilter(Set<String> startFolderFilter) {
+
+        m_startFolderFilter = startFolderFilter;
     }
 
     /**
