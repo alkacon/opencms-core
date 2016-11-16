@@ -255,21 +255,30 @@ public class CmsLocaleGroupService {
      */
     public Status checkLinkable(CmsResource firstResource, CmsResource secondResource) {
 
+        String debugPrefix = "checkLinkable [" + Thread.currentThread().getName() + "]: ";
+        LOG.debug(
+            debugPrefix
+                + (firstResource != null ? firstResource.getRootPath() : null)
+                + " -- "
+                + (secondResource != null ? secondResource.getRootPath() : null));
         try {
             CmsResource firstResourceCorrected = getDefaultFileOrSelf(firstResource);
             CmsResource secondResourceCorrected = getDefaultFileOrSelf(secondResource);
             if ((firstResourceCorrected == null) || (secondResourceCorrected == null)) {
+                LOG.debug(debugPrefix + " rejected - no resource");
                 return Status.other;
             }
             Locale locale1 = OpenCms.getLocaleManager().getDefaultLocale(m_cms, firstResourceCorrected);
             Locale locale2 = OpenCms.getLocaleManager().getDefaultLocale(m_cms, secondResourceCorrected);
             if (locale1.equals(locale2)) {
+                LOG.debug(debugPrefix + "  rejected - same locale " + locale1);
                 return Status.other;
             }
 
             Locale mainLocale1 = getMainLocale(firstResourceCorrected.getRootPath());
             Locale mainLocale2 = getMainLocale(secondResourceCorrected.getRootPath());
             if ((mainLocale1 == null) || !(mainLocale1.equals(mainLocale2))) {
+                LOG.debug(debugPrefix + " rejected - incompatible main locale " + mainLocale1 + "/" + mainLocale2);
                 return Status.other;
             }
 
@@ -278,6 +287,7 @@ public class CmsLocaleGroupService {
             CmsLocaleGroup group2 = readLocaleGroup(secondResourceCorrected);
             Set<Locale> locales2 = group2.getLocales();
             if (!(Sets.intersection(locales1, locales2).isEmpty())) {
+                LOG.debug(debugPrefix + "  rejected - already linked (case 1)");
                 return Status.alreadyLinked;
             }
 
@@ -298,26 +308,31 @@ public class CmsLocaleGroupService {
                 CmsLock lock = m_cms.getLock(secondaryRes);
                 if (!lock.isUnlocked()
                     && !lock.getUserId().equals(m_cms.getRequestContext().getCurrentUser().getId())) {
+                    LOG.debug(debugPrefix + "  rejected - lock state: " + secondaryRes.getRootPath());
                     return Status.other;
                 }
             }
 
             if (group1.isMarkedNoTranslation(group2.getLocales())
                 || group2.isMarkedNoTranslation(group1.getLocales())) {
+                LOG.debug(debugPrefix + "  rejected - marked 'no translation'");
                 return Status.notranslation;
 
             }
             int numberOfRealGroups = (group1.isRealGroupOrPotentialGroupHead() ? 1 : 0)
                 + (group2.isRealGroupOrPotentialGroupHead() ? 1 : 0);
             if (numberOfRealGroups != 1) {
+                LOG.debug(debugPrefix + "  rejected - already complete disjoint locale groups");
                 return Status.other;
             }
 
             if (group2.getPrimaryResource().getStructureId().equals(group1.getPrimaryResource().getStructureId())) {
+                LOG.debug(debugPrefix + "  rejected - already linked (case 2)");
                 return Status.alreadyLinked;
             }
         } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            LOG.error(debugPrefix + e.getLocalizedMessage(), e);
+            LOG.debug(debugPrefix + "  rejected - exception (see previous)");
             return Status.other;
 
         }
