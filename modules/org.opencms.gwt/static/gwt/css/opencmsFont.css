@@ -43,6 +43,34 @@
 	font-style: normal;
 }
 
+/* Styles for the leave preview mode button */
+button#opencms-leave-preview {
+	font-size:32px; 
+	color:#474747; 
+	border:none; 
+	background:transparent; 
+	position:fixed; 
+	top:5px; 
+	left:20%; 
+	z-index:1000000; 
+	padding:4px;
+} 
+button#opencms-leave-preview:hover {
+	color:#356EE1;
+} 
+button#opencms-leave-preview:after {
+	content:""; 
+	position:absolute; 
+	z-index:-1; 
+	background:#fff; 
+	top:0; 
+	left:0; 
+	right:0; 
+	bottom:0; 
+	opacity:0.7; 
+	border-radius:4px;
+}
+
 .opencms-font-icon, .opencms-icon[class^="opencms-icon-"], .opencms-icon[class*=" opencms-icon-"], .opencms-icon [class^="opencms-icon-"], .opencms-icon [class*=" opencms-icon-"] {
 	font-family: opencms-font !important;
 	speak: none;
