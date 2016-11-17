@@ -40,6 +40,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockUtil.LockedFile;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -668,6 +669,24 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
     }
 
+    public void saveAsPropertyBundle() throws UnsupportedEncodingException, CmsException, IOException {
+
+        switch (m_bundleType) {
+            case XML:
+                saveLocalization();
+                loadAllRemainingLocalizations();
+                createPropertyVfsBundleFiles();
+                saveToPropertyVfsBundle();
+                m_bundleType = BundleType.PROPERTY;
+                removeXmlBundleFile();
+
+                break;
+            default:
+                //TODO: throw exception? ... should never happen
+        }
+
+    }
+
     /**
      * Set the edit mode.
      * @param mode the edit mode to set.
@@ -891,6 +910,22 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         }
 
         return container;
+
+    }
+
+    private void createPropertyVfsBundleFiles() throws CmsIllegalArgumentException, CmsLoaderException, CmsException {
+
+        String bundleFileBasePath = m_sitepath + m_basename + "_";
+        for (Locale l : m_localizations.keySet()) {
+            CmsResource res = m_cms.createResource(
+                bundleFileBasePath + l.toString(),
+                OpenCms.getResourceManager().getResourceType(
+                    CmsMessageBundleEditorTypes.BundleType.PROPERTY.toString()));
+            m_bundleFiles.put(l, res);
+            LockedFile file = LockedFile.lockResource(m_cms, res);
+            file.setCreated(true);
+            m_lockedBundleFiles.put(l, file);
+        }
 
     }
 
@@ -1239,6 +1274,13 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             }
         }
         return true;
+    }
+
+    private void removeXmlBundleFile() throws CmsException {
+
+        m_cms.deleteResource(m_resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        m_resource = null;
+
     }
 
     /**

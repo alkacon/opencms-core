@@ -603,6 +603,32 @@ I_OptionListener {
         return closeBtn;
     }
 
+    private Component createConvertToPropertyBundleButton() {
+
+        Button addDescriptorButton = CmsToolBar.createButton(
+            FontOpenCms.SETTINGS,
+            m_messages.key(Messages.GUI_CONVERT_TO_PROPERTY_BUNDLE_0));
+
+        addDescriptorButton.setDisableOnClick(true);
+
+        addDescriptorButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                try {
+                    m_model.saveAsPropertyBundle();
+                    Notification.show("Conversion successful.");
+                } catch (CmsException | IOException e) {
+                    CmsVaadinUtils.showAlert("Conversion failed", e.getLocalizedMessage(), null);
+                }
+            }
+        });
+        addDescriptorButton.setDisableOnClick(true);
+        return addDescriptorButton;
+    }
+
     /**
      * Creates the main component of the editor with all sub-components.
      * @return the completely filled main component of the editor.
@@ -773,6 +799,10 @@ I_OptionListener {
             addDescriptorBtn.setEnabled(false);
         }
         context.addToolbarButton(addDescriptorBtn);
+        if (m_model.getBundleType().equals(BundleType.XML)) {
+            Component convertToPropertyBundleBtn = createConvertToPropertyBundleButton();
+            context.addToolbarButton(convertToPropertyBundleBtn);
+        }
     }
 
     /** Generates the options column for the table.

@@ -130,6 +130,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EMPTY_KEY_SUCCESSFULLY_ADDED_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EMPTY_KEY_SUCCESSFULLY_ADDED_0";
 
+    public static final String GUI_CONVERT_TO_PROPERTY_BUNDLE_0 = "GUI_CONVERT_TO_PROPERTY_BUNDLE_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */
