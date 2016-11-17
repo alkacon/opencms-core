@@ -1112,6 +1112,9 @@ public final class CmsJspStandardContextBean {
      */
     public Map<String, CmsContainerBean> getParentContainers() {
 
+        if (m_parentContainers == null) {
+            initPageData();
+        }
         return Collections.unmodifiableMap(m_parentContainers);
     }
 
