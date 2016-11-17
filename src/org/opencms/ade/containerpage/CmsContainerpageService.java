@@ -144,6 +144,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -467,15 +468,31 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             List<CmsUUID> additionalIds = new ArrayList<CmsUUID>();
             additionalIds.add(structureId);
+            boolean detailOnlyChanged = false;
             if (detailContentId != null) {
                 additionalIds.add(detailContentId);
+                try {
+
+                    CmsObject cms = getCmsObject();
+                    CmsResource detailContentRes = cms.readResource(detailContentId, CmsResourceFilter.ALL);
+                    Optional<CmsResource> detailOnlyRes = CmsJspTagContainer.getDetailOnlyPage(cms, detailContentRes);
+                    if (detailOnlyRes.isPresent()) {
+                        detailOnlyChanged = CmsDefaultResourceStatusProvider.getContainerpageRelationTargets(
+                            getCmsObject(),
+                            detailOnlyRes.get().getStructureId(),
+                            Arrays.asList(detailOnlyRes.get().getStructureId()),
+                            true).isChanged();
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
-            CmsRelationTargetListBean result = CmsDefaultResourceStatusProvider.getContainerpageRelationTargets(
-                getCmsObject(),
-                structureId,
-                additionalIds,
-                true);
-            return result.isChanged();
+            return detailOnlyChanged
+                || CmsDefaultResourceStatusProvider.getContainerpageRelationTargets(
+                    getCmsObject(),
+                    structureId,
+                    additionalIds,
+                    true /*stop looking if we find a changed resource.*/).isChanged();
         } catch (Throwable e) {
             error(e);
             return false; // will never be reached

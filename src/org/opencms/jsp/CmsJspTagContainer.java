@@ -87,6 +87,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Optional;
+
 /**
  * Provides access to the page container elements.<p>
  *
@@ -214,6 +216,31 @@ public class CmsJspTagContainer extends BodyTagSupport {
         String parentFolder = CmsResource.getParentFolder(detailContainersPage);
         detailName = CmsStringUtil.joinPaths(CmsResource.getParentFolder(parentFolder), detailName);
         return detailName;
+    }
+
+    /**
+     * Gets the detail only page for a detail content.<p>
+     *
+     * @param cms the CMS context
+     * @param detailContent the detail content
+     *
+     * @return the detail only page, or Optional.absent() if there is no detail only page
+     */
+    public static Optional<CmsResource> getDetailOnlyPage(CmsObject cms, CmsResource detailContent) {
+
+        try {
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            String path = getDetailOnlyPageName(detailContent.getRootPath());
+            if (rootCms.existsResource(path, CmsResourceFilter.ALL)) {
+                CmsResource detailOnlyRes = rootCms.readResource(path, CmsResourceFilter.ALL);
+                return Optional.of(detailOnlyRes);
+            }
+            return Optional.absent();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return Optional.absent();
+        }
     }
 
     /**
