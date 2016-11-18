@@ -229,6 +229,17 @@ public final class CmsResourceFilter {
     }
 
     /**
+     * Returns the DEFAULT filter in the Online project, and IGNORE_EXPIRATION otherwise.<p>
+     *
+     * @param cms the CMS context whose project to check
+     * @return the resource filter based on the given CmsObject
+     */
+    public static CmsResourceFilter ignoreExpirationOffline(CmsObject cms) {
+
+        return cms.getRequestContext().getCurrentProject().isOnlineProject() ? DEFAULT : IGNORE_EXPIRATION;
+    }
+
+    /**
      * Returns a new CmsResourceFilter requiring the given type.<p>
      *
      * @param type the required resource type

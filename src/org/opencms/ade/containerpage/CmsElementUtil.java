@@ -44,6 +44,7 @@ import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -179,7 +180,9 @@ public class CmsElementUtil {
         // initializing request for standard context bean
         req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
         if (detailContentId != null) {
-            CmsResource detailRes = m_cms.readResource(detailContentId);
+            CmsResource detailRes = m_cms.readResource(
+                detailContentId,
+                CmsResourceFilter.ignoreExpirationOffline(m_cms));
             req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
         }
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
@@ -217,7 +220,7 @@ public class CmsElementUtil {
         // initializing request for standard context bean
         req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
         if (detailContentId != null) {
-            CmsResource detailRes = m_cms.readResource(detailContentId);
+            CmsResource detailRes = m_cms.readResource(detailContentId, CmsResourceFilter.ignoreExpirationOffline(cms));
             req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
         }
         m_standardContext = CmsJspStandardContextBean.getInstance(req);

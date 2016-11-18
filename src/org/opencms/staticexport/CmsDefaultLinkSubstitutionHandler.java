@@ -199,7 +199,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 String originalSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
                     cms.getRequestContext().setSiteRoot("");
-                    CmsResource element = cms.readResource(rootVfsName);
+                    CmsResource element = cms.readResource(rootVfsName, CmsResourceFilter.IGNORE_EXPIRATION);
                     detailContent = element;
                     Locale locale = cms.getRequestContext().getLocale();
                     List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();

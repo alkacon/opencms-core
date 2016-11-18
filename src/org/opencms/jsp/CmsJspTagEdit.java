@@ -33,6 +33,7 @@ import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
 import org.opencms.file.types.I_CmsResourceType;
@@ -418,7 +419,7 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
         if (m_uuid != null) {
             try {
                 CmsUUID uuid = new CmsUUID(m_uuid);
-                resource = cms.readResource(uuid);
+                resource = cms.readResource(uuid, CmsResourceFilter.ignoreExpirationOffline(cms));
 
             } catch (NumberFormatException | CmsException e) {
                 // TODO: Localize debug message.

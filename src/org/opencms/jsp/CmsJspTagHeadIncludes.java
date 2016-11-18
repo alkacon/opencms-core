@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -383,7 +384,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             inlineCss);
         if (standardContext.getDetailContentId() != null) {
             try {
-                CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
+                CmsResource detailContent = cms.readResource(
+                    standardContext.getDetailContentId(),
+                    CmsResourceFilter.ignoreExpirationOffline(cms));
                 CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().getRootUri()).getFormatters(cms, detailContent);
@@ -482,7 +485,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             inlineJS);
         if (standardContext.getDetailContentId() != null) {
             try {
-                CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
+                CmsResource detailContent = cms.readResource(
+                    standardContext.getDetailContentId(),
+                    CmsResourceFilter.ignoreExpirationOffline(cms));
                 CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().getRootUri()).getFormatters(cms, detailContent);

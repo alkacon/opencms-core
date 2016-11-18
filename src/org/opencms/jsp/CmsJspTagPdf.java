@@ -29,6 +29,7 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -79,7 +80,7 @@ public class CmsJspTagPdf extends TagSupport {
             cms.getRequestContext().setLocale(localeObj);
         }
         CmsResource formatterRes = cms.readResource(format);
-        CmsResource contentRes = cms.readResource(content);
+        CmsResource contentRes = cms.readResource(content, CmsResourceFilter.ignoreExpirationOffline(cms));
         CmsPdfLink pdfLink = new CmsPdfLink(cms, formatterRes, contentRes);
         return pdfLink.getLink();
     }

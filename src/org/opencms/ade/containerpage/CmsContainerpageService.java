@@ -1338,7 +1338,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
-                CmsResource detailResource = rootCms.readResource(detailContentId);
+                CmsResource detailResource = rootCms.readResource(detailContentId, CmsResourceFilter.IGNORE_EXPIRATION);
                 CmsResource detailContainerPage = rootCms.readResource(
                     CmsJspTagContainer.getDetailOnlyPageName(detailResource.getRootPath()));
                 ensureLock(detailContainerPage);

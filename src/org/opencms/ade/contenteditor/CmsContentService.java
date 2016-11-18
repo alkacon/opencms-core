@@ -663,7 +663,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         try {
             CmsObject cms = getCmsObject();
-            CmsResource element = cms.readResource(new CmsUUID(contentId));
+            CmsResource element = cms.readResource(new CmsUUID(contentId), CmsResourceFilter.IGNORE_EXPIRATION);
             ensureLock(element);
             CmsFile elementFile = cms.readFile(element);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, elementFile);

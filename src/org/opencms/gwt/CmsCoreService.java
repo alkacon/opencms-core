@@ -864,7 +864,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         CmsCategoryService catService = CmsCategoryService.getInstance();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ignoreExpirationOffline(cms));
             List<CmsCategory> categories = catService.readResourceCategories(cms, resource);
             List<String> currentCategories = new ArrayList<String>();
             for (CmsCategory category : categories) {
@@ -1081,7 +1081,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             if (resource.getDateLastModified() != modification) {
                 CmsUser user = cms.readUser(resource.getUserLastModified());
                 return CmsLockInfo.forChangedResource(user.getFullName());
@@ -1192,7 +1192,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         CmsCategoryService catService = CmsCategoryService.getInstance();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             ensureLock(resource);
             String sitePath = cms.getSitePath(resource);
             List<CmsCategory> previousCategories = catService.readResourceCategories(cms, resource);
@@ -1342,7 +1342,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     protected CmsLockInfo getLock(CmsUUID structureId) throws CmsException {
 
-        CmsResource res = getCmsObject().readResource(structureId);
+        CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         return getLock(getCmsObject().getSitePath(res));
     }
 
