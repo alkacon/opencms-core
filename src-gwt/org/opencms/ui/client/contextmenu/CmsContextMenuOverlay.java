@@ -284,7 +284,8 @@ class CmsContextMenuOverlay extends VOverlay {
      */
     protected void normalizeItemWidths() {
 
-        int widestItemWidth = getWidthOfWidestItem();
+        int widestItemWidth = 1 + getWidthOfWidestItem();
+        // Add 1 because actual width may not be an integer
         for (CmsContextMenuItemWidget item : m_menuItems) {
             if (measureWidth(item) <= widestItemWidth) {
                 item.setWidth(widestItemWidth + "px");
@@ -322,7 +323,7 @@ class CmsContextMenuOverlay extends VOverlay {
         int maxWidth = 0;
 
         for (CmsContextMenuItemWidget item : m_menuItems) {
-
+            item.getElement().getStyle().clearWidth();
             int itemWidth = measureWidth(item);
             if (itemWidth > maxWidth) {
                 maxWidth = itemWidth;
