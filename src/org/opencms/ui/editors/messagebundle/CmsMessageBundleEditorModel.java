@@ -30,6 +30,7 @@ package org.opencms.ui.editors.messagebundle;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
@@ -1428,6 +1429,18 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 }
                 CmsFile file = f.getFile();
                 file.setContents(contentBytes);
+                String contentEncodingProperty = m_cms.readPropertyObject(
+                    file,
+                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                    false).getValue();
+                if ((null == contentEncodingProperty) || !contentEncodingProperty.equals(f.getEncoding())) {
+                    m_cms.writePropertyObject(
+                        m_cms.getSitePath(file),
+                        new CmsProperty(
+                            CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                            f.getEncoding(),
+                            f.getEncoding()));
+                }
                 m_cms.writeFile(file);
             }
         }
