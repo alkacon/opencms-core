@@ -41,16 +41,20 @@ import org.opencms.util.CmsUUID;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.Action;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 
 /**
  * The editor app. Will open the appropriate editor for a resource.<p>
  */
-public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener {
+public class CmsEditor
+implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions {
 
     /** The serial version id. */
     private static final long serialVersionUID = 7503052469189004387L;
@@ -151,6 +155,18 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
             return ((ViewChangeListener)m_editorInstance).beforeViewChange(event);
         } else {
             return true;
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsHasShortcutActions#getShortcutActions()
+     */
+    public Map<Action, Runnable> getShortcutActions() {
+
+        if (m_editorInstance instanceof I_CmsHasShortcutActions) {
+            return ((I_CmsHasShortcutActions)m_editorInstance).getShortcutActions();
+        } else {
+            return Collections.EMPTY_MAP;
         }
     }
 
@@ -278,7 +294,7 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
     }
 
     /**
-     * Returns if plain text/source editing is requested
+     * Returns if plain text/source editing is requested.
      *
      * @param state the state
      *
