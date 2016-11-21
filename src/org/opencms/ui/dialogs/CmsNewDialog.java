@@ -193,7 +193,7 @@ public class CmsNewDialog extends CmsBasicDialog {
             }
         });
 
-        m_defaultLocationCheckbox.setValue(DEFAULT_LOCATION_DEFAULT);
+        m_defaultLocationCheckbox.setValue(getInitialValueForUseDefaultLocationOption(folderResource));
         m_defaultLocationCheckbox.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
@@ -427,6 +427,19 @@ public class CmsNewDialog extends CmsBasicDialog {
             throw new RuntimeException(e);
         }
 
+    }
+
+    /**
+     * Gets the initial value for the 'default location' option.<p>
+     *
+     * @param folderResource the current folder
+     *
+     * @return the initial value for the option
+     */
+    private Boolean getInitialValueForUseDefaultLocationOption(CmsResource folderResource) {
+
+        String rootPath = folderResource.getRootPath();
+        return Boolean.valueOf(OpenCms.getSiteManager().getSiteForRootPath(rootPath) != null);
     }
 
     /**
