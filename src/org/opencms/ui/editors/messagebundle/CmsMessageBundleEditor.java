@@ -38,6 +38,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.apps.I_CmsHasShortcutActions;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
@@ -69,8 +70,10 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.Action;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.AbstractTextField;
@@ -91,13 +94,34 @@ import com.vaadin.ui.VerticalLayout;
 @Theme("opencms")
 public class CmsMessageBundleEditor
 implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_KeyChangeListener, I_ItemDeletionListener,
-I_OptionListener {
+I_OptionListener, I_CmsHasShortcutActions {
 
     /** Used to implement {@link java.io.Serializable}. */
     private static final long serialVersionUID = 5366955716462191580L;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditor.class);
+
+    /** Save shortcut. */
+    private static final Action ACTION_SAVE = new ShortcutAction(
+        "Ctrl+S",
+        ShortcutAction.KeyCode.S,
+        new int[] {ShortcutAction.ModifierKey.CTRL});
+
+    /** Save & Exit shortcut. */
+    private static final Action ACTION_SAVE_AND_EXIT = new ShortcutAction(
+        "Ctrl+Shift+S",
+        ShortcutAction.KeyCode.S,
+        new int[] {ShortcutAction.ModifierKey.CTRL, ShortcutAction.ModifierKey.SHIFT});
+
+    /** Exit shortcut. */
+    private static final Action ACTION_EXIT = new ShortcutAction(
+        "Ctrl+X",
+        ShortcutAction.KeyCode.X,
+        new int[] {ShortcutAction.ModifierKey.CTRL, ShortcutAction.ModifierKey.SHIFT});
+
+    /** The bundle editor shortcuts. */
+    Map<Action, Runnable> m_shortcutActions;
 
     /** Messages used by the GUI. */
     CmsMessages m_messages;
@@ -140,6 +164,36 @@ I_OptionListener {
     private CmsMessageBundleEditorOptions m_options;
 
     /**
+     * Default constructor.
+     */
+    public CmsMessageBundleEditor() {
+        m_shortcutActions = new HashMap<Action, Runnable>();
+        m_shortcutActions.put(ACTION_SAVE, new Runnable() {
+
+            public void run() {
+
+                saveAction();
+            }
+        });
+        m_shortcutActions.put(ACTION_SAVE_AND_EXIT, new Runnable() {
+
+            public void run() {
+
+                saveAction();
+                closeAction();
+            }
+        });
+        m_shortcutActions.put(ACTION_EXIT, new Runnable() {
+
+            public void run() {
+
+                closeAction();
+            }
+        });
+
+    }
+
+    /**
      * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
      */
     public void afterViewChange(ViewChangeEvent event) {
@@ -178,6 +232,14 @@ I_OptionListener {
     public int getPriority() {
 
         return 200;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsHasShortcutActions#getShortcutActions()
+     */
+    public Map<Action, Runnable> getShortcutActions() {
+
+        return m_shortcutActions;
     }
 
     /**
@@ -603,6 +665,10 @@ I_OptionListener {
         return closeBtn;
     }
 
+    /**
+     * Creates the button for converting an XML bundle in a property bundle.
+     * @return the created button.
+     */
     private Component createConvertToPropertyBundleButton() {
 
         Button addDescriptorButton = CmsToolBar.createButton(
