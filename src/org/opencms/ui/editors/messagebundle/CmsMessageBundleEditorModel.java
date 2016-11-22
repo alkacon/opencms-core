@@ -45,6 +45,10 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItem;
+import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickEvent;
+import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickListener;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleType;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
@@ -81,6 +85,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.UI;
 
 /**
  * The class contains the logic behind the message translation editor.
@@ -235,8 +240,6 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private Locale m_locale;
     /** The type of the loaded bundle. */
     private CmsMessageBundleEditorTypes.BundleType m_bundleType;
-    /** Messages used by the GUI. */
-    CmsMessages m_messages;
     /** The complete key set as map from keys to the number of occurrences. */
     CmsMessageBundleEditorTypes.KeySet m_keyset;
 
@@ -271,6 +274,9 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
     /** Flag, indicating if something changed. */
     boolean m_hasChanges;
+
+    /** Flag, indicating if all localizations have already been loaded. */
+    private boolean m_alreadyLoadedAllLocalizations;
 
     /**
      *
@@ -465,6 +471,54 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             m_container = createContainer();
         }
         return m_container;
+    }
+
+    /**
+     * Returns the context menu for the table item.
+     * @param itemId the table item.
+     * @return the context menu for the given item.
+     */
+    public CmsContextMenu getContextMenuForItem(Object itemId) {
+
+        CmsContextMenu result = null;
+        try {
+            final Item item = m_container.getItem(itemId);
+            Property<?> keyProp = item.getItemProperty(TableProperty.KEY);
+            String key = (String)keyProp.getValue();
+            if ((null != key) && !key.isEmpty()) {
+                loadAllRemainingLocalizations();
+                final Map<Locale, String> localesWithEntries = new HashMap<Locale, String>();
+                for (Locale l : m_localizations.keySet()) {
+                    if (l != m_locale) {
+                        String value = m_localizations.get(l).get(key);
+                        if ((null != value) && !value.isEmpty()) {
+                            localesWithEntries.put(l, value);
+                        }
+                    }
+                }
+                if (!localesWithEntries.isEmpty()) {
+                    result = new CmsContextMenu();
+                    ContextMenuItem mainItem = result.addItem(
+                        Messages.get().getBundle(UI.getCurrent().getLocale()).key(
+                            Messages.GUI_BUNDLE_EDITOR_CONTEXT_COPY_LOCALE_0));
+                    for (final Locale l : localesWithEntries.keySet()) {
+
+                        ContextMenuItem menuItem = mainItem.addItem(l.getDisplayName(UI.getCurrent().getLocale()));
+                        menuItem.addItemClickListener(new ContextMenuItemClickListener() {
+
+                            public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                                item.getItemProperty(TableProperty.TRANSLATION).setValue(localesWithEntries.get(l));
+
+                            }
+                        });
+                    }
+                }
+            }
+        } catch (Exception e) {
+            //TODO: Improve
+        }
+        return result;
     }
 
     /**
@@ -1149,33 +1203,37 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      */
     private void loadAllRemainingLocalizations() throws CmsException, UnsupportedEncodingException, IOException {
 
-        // is only necessary for property bundles
-        if (m_bundleType.equals(BundleType.PROPERTY)) {
-            //TODO: IMPROVE!
-            for (Locale l : m_locales) {
-                if (null == m_localizations.get(l)) {
-                    CmsResource resource = m_bundleFiles.get(l);
-                    if (resource != null) {
-                        LockedFile file = LockedFile.lockResource(m_cms, resource);
-                        m_lockedBundleFiles.put(l, file);
-                        Properties props = new Properties();
-                        props.load(
-                            new InputStreamReader(
-                                new ByteArrayInputStream(file.getFile().getContents()),
-                                file.getEncoding()));
-                        Map<String, String> properties = propertiesToMap(props);
-                        m_localizations.put(l, properties);
+        if (!m_alreadyLoadedAllLocalizations) {
+            // is only necessary for property bundles
+            if (m_bundleType.equals(BundleType.PROPERTY)) {
+                //TODO: IMPROVE!
+                for (Locale l : m_locales) {
+                    if (null == m_localizations.get(l)) {
+                        CmsResource resource = m_bundleFiles.get(l);
+                        if (resource != null) {
+                            LockedFile file = LockedFile.lockResource(m_cms, resource);
+                            m_lockedBundleFiles.put(l, file);
+                            Properties props = new Properties();
+                            props.load(
+                                new InputStreamReader(
+                                    new ByteArrayInputStream(file.getFile().getContents()),
+                                    file.getEncoding()));
+                            Map<String, String> properties = propertiesToMap(props);
+                            m_localizations.put(l, properties);
+                        }
                     }
                 }
             }
-        }
-        if (m_bundleType.equals(BundleType.XML)) {
-            for (Locale l : m_locales) {
-                if (null == m_localizations.get(l)) {
-                    loadLocalizationFromXmlBundle(l);
+            if (m_bundleType.equals(BundleType.XML)) {
+                for (Locale l : m_locales) {
+                    if (null == m_localizations.get(l)) {
+                        loadLocalizationFromXmlBundle(l);
+                    }
                 }
             }
+            m_alreadyLoadedAllLocalizations = true;
         }
+
     }
 
     /**
@@ -1420,7 +1478,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                     contentBytes = content.toString().getBytes(f.getEncoding());
                 } catch (UnsupportedEncodingException e) {
                     LOG.error(
-                        m_messages.key(
+                        Messages.get().getBundle().key(
                             Messages.ERR_READING_FILE_UNSUPPORTED_ENCODING_2,
                             f.getFile().getRootPath(),
                             f.getEncoding()),

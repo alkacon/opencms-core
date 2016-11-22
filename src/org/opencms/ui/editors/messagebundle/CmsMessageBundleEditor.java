@@ -42,6 +42,7 @@ import org.opencms.ui.apps.I_CmsHasShortcutActions;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
+import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.KeyChangeResult;
@@ -71,8 +72,8 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.Action;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.ContextClickEvent;
+import com.vaadin.event.ContextClickEvent.ContextClickListener;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinServlet;
@@ -819,23 +820,19 @@ I_OptionListener, I_CmsHasShortcutActions {
         table.setPageLength(30);
         table.setCacheRate(1);
         table.sort(new Object[] {TableProperty.KEY}, new boolean[] {true});
-        table.addItemClickListener(new ItemClickListener() {
+        table.addContextClickListener(new ContextClickListener() {
 
-            private static final long serialVersionUID = 5418404788437252894L;
+            private static final long serialVersionUID = 1L;
 
-            public void itemClick(ItemClickEvent event) {
+            public void contextClick(ContextClickEvent event) {
 
-                Object propertyId = event.getPropertyId();
-                Object itemId = event.getItemId();
-                int col = m_model.getEditableColumns().indexOf(propertyId);
-                if (col >= 0) {
-                    AbstractTextField newTF = ((TranslateTableFieldFactory)m_table.getTableFieldFactory()).getValueFields().get(
-                        Integer.valueOf(col + 1)).get(itemId);
-                    if (newTF != null) {
-                        newTF.focus();
-                    }
+                Object itemId = m_table.getValue();
+                CmsContextMenu contextMenu = m_model.getContextMenuForItem(itemId);
+                if (null != contextMenu) {
+                    contextMenu.setAsContextMenuOf(m_table);
+                    contextMenu.setOpenAutomatically(false);
+                    contextMenu.open(event.getClientX(), event.getClientY());
                 }
-
             }
         });
         table.setNullSelectionAllowed(false);
