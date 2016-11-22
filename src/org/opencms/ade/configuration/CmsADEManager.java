@@ -331,6 +331,16 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns the names of the bundles configured as workplace bundles in any module configuration.
+     * @return the names of the bundles configured as workplace bundles in any module configuration.
+     */
+    public Set<String> getConfiguredWorkplaceBundles() {
+
+        CmsADEConfigData configData = internalLookupConfiguration(null, null);
+        return configData.getConfiguredWorkplaceBundles();
+    }
+
+    /**
      * Reads the current element bean from the request.<p>
      *
      * @param req the servlet request
@@ -806,7 +816,8 @@ public class CmsADEManager {
         CmsObject userCms,
         HttpServletRequest request,
         HttpServletResponse response,
-        String htmlRedirect) throws CmsException {
+        String htmlRedirect)
+    throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(m_offlineCms);
         CmsRequestContext userContext = userCms.getRequestContext();
@@ -1047,7 +1058,8 @@ public class CmsADEManager {
         CmsResource pageResource,
         String name,
         boolean newOrder,
-        List<CmsContainerElementBean> elements) throws CmsException {
+        List<CmsContainerElementBean> elements)
+    throws CmsException {
 
         CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
         writer.save(cms, name, newOrder, pageResource, elements);
@@ -1073,7 +1085,8 @@ public class CmsADEManager {
         String sitePath,
         String name,
         boolean newOrder,
-        List<CmsContainerElementBean> elements) throws CmsException {
+        List<CmsContainerElementBean> elements)
+    throws CmsException {
 
         saveInheritedContainer(cms, cms.readResource(sitePath), name, newOrder, elements);
     }
@@ -1287,7 +1300,7 @@ public class CmsADEManager {
      */
     protected CmsADEConfigData internalLookupConfiguration(CmsObject cms, String rootPath) {
 
-        boolean online = isOnline(cms);
+        boolean online = (null == cms) || isOnline(cms);
         CmsADEConfigCacheState state = getCacheState(online);
         return state.lookupConfiguration(rootPath);
     }

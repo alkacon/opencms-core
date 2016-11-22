@@ -111,6 +111,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The name of the resource type. */
     private String m_typeName;
 
+    /** The bundle to add as workplace bundle for the resource type. */
+    private String m_localization;
+
     /**
      * Creates a new resource type configuration.<p>
      *
@@ -131,6 +134,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             CmsElementView.DEFAULT_ELEMENT_VIEW.getId(),
             null,
             null,
+            null,
             I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
@@ -144,6 +148,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param addDisabled true if adding elements of this type via ADE should be disabled
      * @param elementView the element view id
+     * @param localization the base name of the bundle to add as workplace bundle for the resource type
      * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it
      * @param copyInModels if elements of this type when used in models should be copied instead of reused
      *
@@ -157,6 +162,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         boolean detailPagesDisabled,
         boolean addDisabled,
         CmsUUID elementView,
+        String localization,
         Boolean showInDefaultView,
         Boolean copyInModels,
         int order) {
@@ -168,6 +174,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_detailPagesDisabled = detailPagesDisabled;
         m_addDisabled = addDisabled;
         m_elementView = elementView;
+        m_localization = localization;
         m_showInDefaultView = showInDefaultView;
         m_copyInModels = copyInModels;
         m_order = order;
@@ -436,6 +443,15 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Returns the bundle that is configured as workplace bundle for the resource type, or <code>null</code> if none is configured.
+     * @return the bundle that is configured as workplace bundle for the resource type, or <code>null</code> if none is configured.
+     */
+    public String getConfiguredWorkplaceBundle() {
+
+        return m_localization;
+    }
+
+    /**
      * Returns the element view id.<p>
      *
      * @return the element view id
@@ -638,6 +654,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
             childConfig.isAddDisabled(),
             elementView,
+            m_localization,
             showInDefaultView,
             copyInModels,
             m_order);
@@ -674,6 +691,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_detailPagesDisabled,
             isAddDisabled(),
             m_elementView,
+            m_localization,
             m_showInDefaultView,
             m_copyInModels,
             m_order);

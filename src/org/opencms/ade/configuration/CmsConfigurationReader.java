@@ -42,6 +42,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.relations.CmsLink;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
@@ -53,6 +55,7 @@ import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -110,6 +113,9 @@ public class CmsConfigurationReader {
 
     /** The element view node name. */
     public static final String N_ELEMENT_VIEW = "ElementView";
+
+    /** The localization node name. */
+    public static final String N_LOCALIZATION = "Localization";
 
     /** The error node name. */
     public static final String N_ERROR = "Error";
@@ -595,6 +601,27 @@ public class CmsConfigurationReader {
             }
         }
 
+        I_CmsXmlContentValueLocation locationLoc = node.getSubValue(N_LOCALIZATION);
+        String localization = null;
+        if (locationLoc != null) {
+            CmsXmlVfsFileValue locationValue = (CmsXmlVfsFileValue)locationLoc.getValue();
+            CmsLink link = locationValue.getLink(m_cms);
+            if (null != link) {
+                String stringValue = link.getSitePath();
+                // extract bundle base name from the path to the bundle file
+                int lastSlashIndex = stringValue.lastIndexOf("/");
+                String fileName = stringValue.substring(lastSlashIndex + 1);
+                if (CmsFileUtil.getExtension(fileName).equals(".properties")) {
+                    fileName = fileName.substring(0, fileName.length() - ".properties".length());
+                }
+                String localeSuffix = CmsStringUtil.getLocaleSuffixForName(fileName);
+                if (fileName.endsWith(localeSuffix)) {
+                    fileName = fileName.substring(0, fileName.length() - localeSuffix.length() - 1);
+                }
+                localization = fileName;
+            }
+        }
+
         I_CmsXmlContentValueLocation showDefaultViewLoc = node.getSubValue(N_SHOW_IN_DEFAULT_VIEW);
         Boolean showInDefaultView = null;
         if (showDefaultViewLoc != null) {
@@ -622,6 +649,7 @@ public class CmsConfigurationReader {
             detailPagesDisabled,
             addDisabled,
             elementView,
+            localization,
             showInDefaultView,
             copyInModels,
             order);
