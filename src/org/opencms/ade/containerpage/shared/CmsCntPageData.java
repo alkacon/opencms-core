@@ -157,6 +157,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The model group base element id. */
     private String m_modelGroupEmenetId;
 
+    /** The app title to display in the toolbar. */
+    private String m_appTitle;
+
     /**
      * Constructor.<p>
      *
@@ -181,6 +184,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param modelGroupEmenetId the model group base element id
      * @param mainLocale the main locale to this page in case it is part of a locale group
      * @param localeLinkBeans beans for links to other pages in the locale group
+     * @param appTitle the title to display in the toolbar
      */
     public CmsCntPageData(
         String onlineLink,
@@ -203,7 +207,8 @@ public final class CmsCntPageData implements IsSerializable {
         boolean isModelGroup,
         String modelGroupEmenetId,
         String mainLocale,
-        Map<String, CmsLocaleLinkBean> localeLinkBeans) {
+        Map<String, CmsLocaleLinkBean> localeLinkBeans,
+        String appTitle) {
         m_onlineLink = onlineLink;
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
@@ -225,6 +230,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_modelGroupEmenetId = modelGroupEmenetId;
         m_mainLocale = mainLocale;
         m_localeLinkBeans = localeLinkBeans;
+        m_appTitle = appTitle;
     }
 
     /**
@@ -233,6 +239,16 @@ public final class CmsCntPageData implements IsSerializable {
     protected CmsCntPageData() {
 
         // empty
+    }
+
+    /**
+     * Gets the title to display in the toolbar.<p>
+     *
+     * @return the title for the toolbar
+     */
+    public String getAppTitle() {
+
+        return m_appTitle;
     }
 
     /**

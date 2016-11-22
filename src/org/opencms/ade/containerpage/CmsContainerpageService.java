@@ -1033,7 +1033,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsCntPageData data = null;
         CmsObject cms = getCmsObject();
-
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         HttpServletRequest request = getRequest();
         try {
             CmsTemplateContextInfo info = OpenCms.getTemplateContextManager().getContextInfoBean(cms, request);
@@ -1155,6 +1155,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     modelGroupElementId = modelElementProp.getValue();
                 }
             }
+            String title = null;
+            if (isModelPage || isEditingModelGroup) {
+                title = Messages.get().getBundle(wpLocale).key(Messages.GUI_TITLE_MODEL_0);
+
+            }
             data = new CmsCntPageData(
                 onlineLink,
                 noEditReason,
@@ -1176,7 +1181,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 isEditingModelGroup,
                 modelGroupElementId,
                 mainLocale != null ? mainLocale.toString() : null,
-                localeLinkBeans);
+                localeLinkBeans,
+                title);
         } catch (Throwable e) {
             error(e);
         }
