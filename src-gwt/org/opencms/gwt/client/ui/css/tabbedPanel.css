@@ -8,6 +8,12 @@
 	position: static !important;
 	height: 27px;
 }
+
+.wrapTabs.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
+	height: auto !important; 
+}
+
+
 .gwt-TabLayoutPanel .tabPanel {
 }
 .gwt-TabLayoutPanel .tabLeftMargin {
@@ -24,6 +30,10 @@
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
 	height: auto;
 	display: block;
+}
+
+.wrapTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar { 
+	height: auto !important; 
 }
 
 .buttonTabs .gwt-TabLayoutPanelTabs {
