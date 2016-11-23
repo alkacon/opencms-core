@@ -38,6 +38,7 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -68,6 +69,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -84,6 +87,93 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class CmsContainerPageElementPanel extends AbsolutePanel
 implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
+
+    /**
+     * Parses CSS classess of the form 'oc-point-TY_LX', where X and Y are strings
+     * of decimal digits possibly preceded by a minus sign.<p>
+     *
+     * The numeric values of Y and X will be available after a successful parse using the
+     * methods getOffsetTop() and getOffsetLeft().
+     *
+     * This is used to offer the formatter developer some control over the edit point
+     * positioning.
+     */
+    public static class PointPositioningParser {
+
+        /** Regular expression used to match the special CSS classes. */
+        private static final RegExp REGEX = RegExp.compile("^oc-point-T(-?[0-9]+)_L(-?[0-9]+)$");
+
+        /** The left offset. */
+        private int m_left;
+
+        /** The top offset. */
+        private int m_top;
+
+        /**
+         * Gets the left offset after a CSS class has successfully been parsed.<p>
+         *
+         * @return the left offset
+         */
+        int getOffsetLeft() {
+
+            return m_left;
+        }
+
+        /**
+         * Gets the top offset after a CSS class has successfully been parsed.<p>
+         *
+         * @return the top offset
+         */
+        int getOffsetTop() {
+
+            return m_top;
+        }
+
+        /**
+         * Tries to parse a point positioning instruction from an element's class attribute
+         * and returns true when successful.<p>
+         *
+         * @param cssClass the value of a class attribute
+         *
+         * @return true if a positioning instruction was found
+         */
+        boolean tryParse(String cssClass) {
+
+            m_left = 0;
+            m_top = 0;
+            if (cssClass == null) {
+                cssClass = "";
+            }
+            for (String token : cssClass.trim().split(" +")) {
+                if (tryParseSingleClass(token)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Parses a single token from a class attribute.<p>
+         *
+         * @param token the token
+         * @return true if the token was a point positioning instruction
+         */
+        private boolean tryParseSingleClass(String token) {
+
+            MatchResult result = REGEX.exec(token);
+            if (result != null) {
+                m_top = Integer.parseInt(result.getGroup(1));
+                m_left = Integer.parseInt(result.getGroup(2));
+                return true;
+            } else {
+                if (token.startsWith("oc-point")) {
+                    CmsDebugLog.consoleLog("Malformed oc-point class: " + token);
+                }
+                return false;
+            }
+        }
+
+    }
 
     /** The is model group property key. */
     public static final String PROP_IS_MODEL_GROUP = "is_model_group";
@@ -179,6 +269,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * Without write permissions, the element can not be edited.
      **/
     private boolean m_writePermission;
+
+    /** Parser for point positioning isntructions. */
+    private PointPositioningParser m_positioningInstructionParser = new PointPositioningParser();
 
     /**
      * Constructor.<p>
@@ -896,27 +989,51 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             int absoluteRight = getElement().getAbsoluteRight();
             CmsPositionBean dimensions = CmsPositionBean.getBoundingClientRect(getElement());
 
+            int top = 0;
+            int right = 0;
+            int offsetLeft = 0;
+            int offsetTop = 0;
+
+            final Style style = m_elementOptionBar.getElement().getStyle();
+
+            if (m_positioningInstructionParser.tryParse(getElement().getClassName())) {
+                offsetLeft = m_positioningInstructionParser.getOffsetLeft();
+                offsetTop = m_positioningInstructionParser.getOffsetTop();
+            }
+
             if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
                 absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
-                m_elementOptionBar.getElement().getStyle().setTop(absoluteTop, Unit.PX);
-            } else {
-                m_elementOptionBar.getElement().getStyle().clearTop();
+                top = absoluteTop;
             }
             if (Math.abs(absoluteRight - dimensions.getLeft() - dimensions.getWidth()) > 20) {
                 absoluteRight = (absoluteRight - dimensions.getLeft() - dimensions.getWidth()) + 2;
-                m_elementOptionBar.getElement().getStyle().setRight(absoluteTop, Unit.PX);
-            } else {
-                m_elementOptionBar.getElement().getStyle().clearRight();
+                right = absoluteRight;
             }
+
+            top += offsetTop;
+            right -= offsetLeft;
+
+            if (top != 0) {
+                style.setTop(top, Unit.PX);
+            } else {
+                style.clearTop();
+            }
+
+            if (right != 0) {
+                style.setRight(right, Unit.PX);
+            } else {
+                style.clearRight();
+            }
+
             if (isOptionbarIFrameCollision(absoluteTop, m_elementOptionBar.getCalculatedWidth())) {
-                m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
+                style.setPosition(Position.RELATIVE);
                 int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
                 if (marginLeft > 0) {
-                    m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
+                    style.setMarginLeft(marginLeft, Unit.PX);
                 }
             } else {
-                m_elementOptionBar.getElement().getStyle().clearPosition();
-                m_elementOptionBar.getElement().getStyle().clearMarginLeft();
+                style.clearPosition();
+                style.clearMarginLeft();
             }
         }
     }
@@ -1108,28 +1225,28 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * Resets the node inserted handler.<p>
      */
     private native void resetNodeInsertedHandler()/*-{
-		var $this = this;
-		var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-		var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-		if (handler == null) {
-			handler = function(event) {
-				$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-			};
-			$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-		} else {
-			if (element.removeEventLister) {
-				element.removeEventListener("DOMNodeInserted", handler);
-			} else if (element.detachEvent) {
-				// IE specific
-				element.detachEvent("onDOMNodeInserted", handler);
-			}
-		}
-		if (element.addEventListener) {
-			element.addEventListener("DOMNodeInserted", handler, false);
-		} else if (element.attachEvent) {
-			// IE specific
-			element.attachEvent("onDOMNodeInserted", handler);
-		}
+        var $this = this;
+        var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+        var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+        if (handler == null) {
+            handler = function(event) {
+                $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+            };
+            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+        } else {
+            if (element.removeEventLister) {
+                element.removeEventListener("DOMNodeInserted", handler);
+            } else if (element.detachEvent) {
+                // IE specific
+                element.detachEvent("onDOMNodeInserted", handler);
+            }
+        }
+        if (element.addEventListener) {
+            element.addEventListener("DOMNodeInserted", handler, false);
+        } else if (element.attachEvent) {
+            // IE specific
+            element.attachEvent("onDOMNodeInserted", handler);
+        }
     }-*/;
 
     /**
