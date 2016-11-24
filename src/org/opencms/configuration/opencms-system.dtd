@@ -94,6 +94,7 @@
 	order CDATA #IMPLIED
 	port CDATA #IMPLIED
 	protocol CDATA #IMPLIED
+	security CDATA #IMPLIED
 	user CDATA  #IMPLIED
 	password CDATA #IMPLIED>
 

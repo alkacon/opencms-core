@@ -27,12 +27,8 @@
 
 package org.opencms.mail;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 
 /**
@@ -46,9 +42,6 @@ import org.apache.commons.mail.MultiPartEmail;
  */
 public class CmsMultiPartMail extends MultiPartEmail {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsMultiPartMail.class);
-
     /**
      * Default constructor of a CmsHtmlMail.<p>
      *
@@ -60,24 +53,7 @@ public class CmsMultiPartMail extends MultiPartEmail {
 
         // call super constructor
         super();
-        // set the host to the default mail host
-        CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
-        setHostName(host.getHostname());
-        setSmtpPort(host.getPort());
-
-        // check if username and password are provided
-        String userName = host.getUsername();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userName)) {
-            // authentication needed, set user name and password
-            setAuthentication(userName, host.getPassword());
-        }
-        try {
-            // set default mail from address
-            setFrom(OpenCms.getSystemInfo().getMailSettings().getMailFromDefault());
-        } catch (EmailException e) {
-            // default email address is not valid, log error
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
-        }
+        CmsMailUtil.configureMail(OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost(), this);
     }
 
 }

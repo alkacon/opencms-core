@@ -83,7 +83,7 @@ public class CmsMailSettings {
      */
     public void addMailHost(String hostname, String order, String protocol, String username, String password) {
 
-        addMailHost(hostname, "25", order, protocol, username, password);
+        addMailHost(hostname, "25", order, protocol, null, username, password);
     }
 
     /**
@@ -93,6 +93,7 @@ public class CmsMailSettings {
        * @param port the port of the mail host
        * @param order the order in which the host is tried
        * @param protocol the protocol to use (default "smtp")
+       * @param security the security mode
        * @param username the user name to use for authentication
        * @param password the password to use for authentication
        */
@@ -101,6 +102,7 @@ public class CmsMailSettings {
         String port,
         String order,
         String protocol,
+        String security,
         String username,
         String password) {
 
@@ -121,7 +123,7 @@ public class CmsMailSettings {
             // valueOf: use jdk int cache if possible and not new operator:
             theOrder = Integer.valueOf(m_orderDefault);
         }
-        CmsMailHost host = new CmsMailHost(hostname, thePort, theOrder, protocol, username, password);
+        CmsMailHost host = new CmsMailHost(hostname, thePort, theOrder, protocol, security, username, password);
         m_mailHosts.add(host);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_ADD_HOST_1, host));

@@ -81,7 +81,7 @@ dependencies {
     distribution group: 'javax.activation', name: 'activation', version: '1.1.1'
     distribution group: 'javax.annotation', name: 'jsr250-api', version: '1.0'
     distribution group: 'javax.jws', name: 'jsr181-api', version: '1.0-MR1'
-    distribution group: 'javax.mail', name: 'mail', version: '1.4.7'
+    distribution group: 'com.sun.mail', name: 'javax.mail', version: '1.5.2'
     distribution group: 'javax.xml.bind', name: 'jaxb-api', version: '2.1'
     distribution group: 'javax.xml.ws', name: 'jaxws-api', version: '2.1'
     distribution group: 'javax.xml.soap', name: 'saaj-api', version: '1.3'
@@ -108,7 +108,7 @@ dependencies {
           }
     }
     distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-support', version: '0.7.0'
-    distribution group: 'org.apache.commons', name: 'commons-email', version: '1.2'
+    distribution group: 'org.apache.commons', name: 'commons-email', version: '1.4'
     distribution group: 'org.apache.commons', name: 'commons-compress', version: '1.3'
     distribution group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jms_1.1_spec', version: '1.1.1'

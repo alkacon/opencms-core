@@ -134,6 +134,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "server" attribute. */
     public static final String A_SERVER = "server";
 
+    /** The "security" attribute. */
+    public static final String A_SECURITY = "security";
+
     /** The "title" attribute. */
     public static final String A_TITLE = "title";
 
@@ -837,13 +840,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_MAIL, "setMailSettings");
 
         // add mail host configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, "addMailHost", 6);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, "addMailHost", 7);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 0, A_NAME);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 1, A_PORT);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 2, A_ORDER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 3, A_PROTOCOL);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 4, A_USER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 5, A_PASSWORD);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 4, A_SECURITY);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 5, A_USER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 6, A_PASSWORD);
 
         // add scheduler creation rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SCHEDULER, "addScheduleManager");
@@ -1280,7 +1284,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 A_NAME,
                 host.getHostname()).addAttribute(A_PORT, Integer.toString(host.getPort())).addAttribute(
                     A_ORDER,
-                    host.getOrder().toString()).addAttribute(A_PROTOCOL, host.getProtocol());
+                    host.getOrder().toString()).addAttribute(A_PROTOCOL, host.getProtocol()).addAttribute(
+                        A_SECURITY,
+                        host.getSecurity());
             if (host.isAuthenticating()) {
                 hostElement.addAttribute(A_USER, host.getUsername()).addAttribute(A_PASSWORD, host.getPassword());
             }
