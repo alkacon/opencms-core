@@ -120,7 +120,6 @@ public class CmsSitemapTreeController {
         /**
          * Closes the dialog window.<p>
          */
-        @SuppressWarnings("synthetic-access")
         public void closeWindow() {
 
             if (m_window != null) {
@@ -236,6 +235,14 @@ public class CmsSitemapTreeController {
         }
 
         /**
+         * @see org.opencms.ui.I_CmsDialogContext#setWindow(com.vaadin.ui.Window)
+         */
+        public void setWindow(Window window) {
+
+            m_window = window;
+        }
+
+        /**
          * @see org.opencms.ui.I_CmsDialogContext#start(java.lang.String, com.vaadin.ui.Component)
          */
         public void start(String title, Component dialog) {
@@ -246,7 +253,6 @@ public class CmsSitemapTreeController {
         /**
          * @see org.opencms.ui.I_CmsDialogContext#start(java.lang.String, com.vaadin.ui.Component, org.opencms.ui.components.CmsBasicDialog.DialogWidth)
          */
-        @SuppressWarnings("synthetic-access")
         public void start(String title, Component dialog, DialogWidth width) {
 
             if (dialog != null) {
@@ -342,7 +348,7 @@ public class CmsSitemapTreeController {
     class EntryInfo implements I_CmsSimpleContextMenuEntry<MenuContext> {
 
         /**
-
+        
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(MenuContext context) {
@@ -847,6 +853,9 @@ public class CmsSitemapTreeController {
     /** The context menu. */
     CmsContextMenu m_menu = new CmsContextMenu();
 
+    /** The currently opened window. */
+    Window m_window;
+
     /** Map of already loaded nodes. */
     private IdentityHashMap<CmsSitemapTreeNode, Void> m_alreadyLoaded = new IdentityHashMap<>();
 
@@ -861,9 +870,6 @@ public class CmsSitemapTreeController {
 
     /** The tree data provider. */
     private CmsSitemapTreeDataProvider m_treeDataProvider;
-
-    /** The currently opened window. */
-    private Window m_window;
 
     /**
      * Creates a new instance.<p>

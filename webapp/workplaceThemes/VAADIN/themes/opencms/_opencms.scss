@@ -129,6 +129,62 @@
 		display: none;
 	}
 	
+	/* Toolbar drop down */
+	.v-popupview.v-popupview-o-navigator-dropdown{
+		color: inherit;
+	}
+	
+	div.v-popupview-popup.v-popupview-popup-o-navigator-dropdown{
+		margin-top: 55px !important;
+		margin-left: -10px !important;
+		border: 4px solid $v-window-background-color;
+	}
+	
+	.v-popupview-popup-o-navigator-dropdown .popupContent{
+		max-width: 352px;
+	}
+	
+	
+	
+	.v-window.o-dropdown{
+		overflow: visible !important;
+		&:after {
+			content: "";
+			top: -2px;
+			right: 12px;
+			height: 40px;
+			width: 40px;
+			position: absolute;
+			transform: rotate(45deg);
+			background: $v-window-background-color;
+			z-index: -1;
+		}
+		
+		.v-window-closebox, .v-window-closebox:hover {
+			position: fixed;
+			top: -10000px;
+			left: -10000px;
+			width: 20000px;
+			height: 20000px;
+			color: transparent;
+			z-index: -1;
+		}
+	
+		.v-window-contents {
+			overflow: hidden;
+			border-radius: 4px;
+			position: relative;
+			z-index: 10;
+			> .v-scrollable > div{
+				background: $v-app-background-color;
+			    color: valo-font-color($v-app-background-color);
+			    margin: 4px;
+			    padding: $v-overlay-padding-vertical $v-overlay-padding-horizontal;
+			    width: auto !important;
+			}
+	    }
+	}
+	
 	/* Toolbar menu pointy corner */
 	div.o-toolbar-menu-corner{
 		width: 40px;
@@ -364,21 +420,6 @@
 	
 	.o-hidden-toolbar .o-main {
 		top: 0;
-	}
-	
-	/* Toolbar drop down */
-	.v-popupview.v-popupview-o-navigator-dropdown{
-		color: inherit;
-	}
-	
-	.v-popupview-popup-o-navigator-dropdown{
-		margin-top: 55px !important;
-		margin-left: -10px !important;
-		border: 4px solid $v-window-background-color;
-	}
-	
-	.v-popupview-popup-o-navigator-dropdown .popupContent{
-		max-width: 352px;
 	}
 	
 	/* Resource info box */ 
@@ -878,26 +919,6 @@
 			left: -($v-font-size + 2);
 		}
 	}
-
-	.o-wrap-table .v-table-cell-wrapper {
-		white-space: normal !important; 
-	}
 	
-	.o-wrap-table .v-table-body-wrapper {
-		overflow-y: auto !important;
-	}
 	
-	.o-table-image { 
-		max-width: 200px; 
-		max-height: 200px;
-		width: auto;
-		height: auto;
-		display: block; 
-	}
-	
-	.o-table-cell-padding .v-table-cell-wrapper { 
-		padding: 10px 10px; 
-	}
-	
-	 
 }

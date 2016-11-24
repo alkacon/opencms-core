@@ -35,9 +35,12 @@ import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
+import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 import org.opencms.ui.dialogs.CmsUserDataDialog;
+import org.opencms.ui.login.CmsChangePasswordDialog;
 import org.opencms.ui.login.CmsLoginController;
 import org.opencms.ui.shared.components.CmsUploadState.UploadType;
 import org.opencms.util.CmsStringUtil;
@@ -49,6 +52,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -72,20 +76,23 @@ public class CmsUserInfo extends VerticalLayout {
     /** The serial version id. */
     private static final long serialVersionUID = 7215454442218119869L;
 
+    /** The dialog context. */
+    I_CmsDialogContext m_context;
+
+    /** The current user. */
+    CmsUser m_user;
+
     /** The info. */
     private Label m_info;
 
     /** The info panel. */
     private HorizontalLayout m_infoPanel;
 
-    /** The logout button. */
-    private Button m_logout;
+    /** The user menu. */
+    private CmsVerticalMenu m_menu;
 
-    /** The preferences. */
-    private Button m_editData;
-
-    /** The dialog context. */
-    I_CmsDialogContext m_context;
+    /** The upload listener. */
+    private I_UploadListener m_uploadListener;
 
     /**
      * Constructor.<p>
@@ -96,33 +103,14 @@ public class CmsUserInfo extends VerticalLayout {
     public CmsUserInfo(I_UploadListener uploadListener, I_CmsDialogContext context) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsObject cms = A_CmsUI.getCmsObject();
-        CmsUser user = cms.getRequestContext().getCurrentUser();
+        m_uploadListener = uploadListener;
+        m_user = cms.getRequestContext().getCurrentUser();
         m_context = context;
         m_info.setContentMode(ContentMode.HTML);
         m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
-        m_infoPanel.addComponent(createImageButton(cms, user, uploadListener), 0);
-        m_logout.addClickListener(new Button.ClickListener() {
+        m_infoPanel.addComponent(createImageButton(), 0);
+        initUserMenu();
 
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                logout();
-            }
-        });
-        if (cms.getRequestContext().getCurrentUser().isManaged()) {
-            m_editData.setVisible(false);
-        } else {
-            m_editData.addClickListener(new Button.ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    editUserData();
-                }
-            });
-        }
     }
 
     /**
@@ -185,36 +173,51 @@ public class CmsUserInfo extends VerticalLayout {
     }
 
     /**
+     * Shows the user preferences dialog.<p>
+     */
+    void editUserData() {
+
+        if (m_context instanceof CmsEmbeddedDialogContext) {
+            ((CmsEmbeddedDialogContext)m_context).closeWindow(true);
+        } else {
+            A_CmsUI.get().closeWindows();
+        }
+        CmsUserDataDialog dialog = new CmsUserDataDialog(m_context);
+        m_context.start(CmsVaadinUtils.getMessageText(Messages.GUI_USER_EDIT_0), dialog);
+    }
+
+    /**
+     * Executes the logout.<p>
+     */
+    void logout() {
+
+        CmsLoginController.logout();
+    }
+
+    /**
      * Creates the user image button.<p>
-     *
-     * @param cms the cms context
-     * @param user the current user
-     * @param uploadListener the upload listener
      *
      * @return the created button
      */
-    Component createImageButton(CmsObject cms, CmsUser user, I_UploadListener uploadListener) {
+    private Component createImageButton() {
 
         CssLayout layout = new CssLayout();
-        layout.addStyleName("o-user-image");
+        layout.addStyleName(OpenCmsTheme.USER_IMAGE);
         Image userImage = new Image();
         userImage.setSource(
-            new ExternalResource(OpenCms.getWorkplaceAppManager().getUserIconHelper().getBigIconPath(cms, user)));
+            new ExternalResource(
+                OpenCms.getWorkplaceAppManager().getUserIconHelper().getBigIconPath(A_CmsUI.getCmsObject(), m_user)));
 
         layout.addComponent(userImage);
 
         if (!CmsAppWorkplaceUi.isOnlineProject()) {
-            CmsUploadButton uploadButton = new CmsUploadButton(
+            CmsUploadButton uploadButton = createImageUploadButton(
+                null,
                 FontOpenCms.UPLOAD_SMALL,
-                CmsUserIconHelper.USER_IMAGE_FOLDER + CmsUserIconHelper.TEMP_FOLDER);
-            uploadButton.getState().setUploadType(UploadType.singlefile);
-            uploadButton.getState().setTargetFileNamePrefix(user.getId().toString());
-            uploadButton.getState().setDialogTitle(
-                CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_DIALOG_TITLE_0));
-            uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_0));
-            uploadButton.addUploadListener(uploadListener);
+                m_user,
+                m_uploadListener);
             layout.addComponent(uploadButton);
-            if (CmsUserIconHelper.hasUserImage(user)) {
+            if (CmsUserIconHelper.hasUserImage(m_user)) {
                 Button deleteButton = new Button(FontOpenCms.TRASH_SMALL);
                 deleteButton.addClickListener(new ClickListener() {
 
@@ -235,20 +238,108 @@ public class CmsUserInfo extends VerticalLayout {
     }
 
     /**
-     * Shows the user preferences dialog.<p>
+     * Creates an user image upload button.<p>
+     *
+     * @param label the label to use
+     * @param icon the icon to use
+     * @param user the user
+     * @param uploadListener the upload listener
+     *
+     * @return the button
      */
-    void editUserData() {
+    private CmsUploadButton createImageUploadButton(
+        String label,
+        Resource icon,
+        CmsUser user,
+        I_UploadListener uploadListener) {
 
-        CmsAppWorkplaceUi.get().closeWindows();
-        CmsUserDataDialog dialog = new CmsUserDataDialog(m_context);
-        m_context.start(CmsVaadinUtils.getMessageText(Messages.GUI_USER_EDIT_0), dialog);
+        CmsUploadButton uploadButton = new CmsUploadButton(
+            CmsUserIconHelper.USER_IMAGE_FOLDER + CmsUserIconHelper.TEMP_FOLDER);
+        if (label != null) {
+            uploadButton.setCaption(label);
+        }
+        if (icon != null) {
+            uploadButton.setIcon(icon);
+        }
+        uploadButton.getState().setUploadType(UploadType.singlefile);
+        uploadButton.getState().setTargetFileNamePrefix(user.getId().toString());
+        uploadButton.getState().setDialogTitle(
+            CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_DIALOG_TITLE_0));
+        uploadButton.addUploadListener(uploadListener);
+        return uploadButton;
+
     }
 
     /**
-     * Executes the logout.<p>
+     * Initializes the use menu.<p>
      */
-    void logout() {
+    private void initUserMenu() {
 
-        CmsLoginController.logout();
+        //        m_menu.addMenuEntry(
+        //            createImageUploadButton(
+        //                CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_0),
+        //                null,
+        //                m_user,
+        //                m_uploadListener));
+        //        if (CmsUserIconHelper.hasUserImage(m_user)) {
+        //            m_menu.addMenuEntry(
+        //                CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_DELETE_IMAGE_0),
+        //                null).addClickListener(new ClickListener() {
+        //
+        //                    private static final long serialVersionUID = 1L;
+        //
+        //                    public void buttonClick(ClickEvent event) {
+        //
+        //                        OpenCms.getWorkplaceAppManager().getUserIconHelper().deleteUserImage(A_CmsUI.getCmsObject());
+        //                        m_context.updateUserInfo();
+        //
+        //                    }
+        //                });
+        //        }
+        m_menu.addMenuEntry(
+            CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_CHANGE_PASSWORD_BUTTON_0),
+            null).addClickListener(new ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    m_context.start(
+                        CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_PWCHANGE_HEADER_0)
+                            + m_user.getSimpleName(),
+                        new CmsChangePasswordDialog(m_context));
+                }
+            });
+        final CmsPreferencesDialogAction preferencesAction = new CmsPreferencesDialogAction();
+        m_menu.addMenuEntry(preferencesAction.getTitle(), null).addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                preferencesAction.executeAction(m_context);
+            }
+        });
+        m_menu.addMenuEntry(CmsVaadinUtils.getMessageText(Messages.GUI_USER_EDIT_0), null).addClickListener(
+            new Button.ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    editUserData();
+                }
+            });
+        m_menu.addMenuEntry(
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_LOGOUT_0),
+            null).addClickListener(new Button.ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    logout();
+                }
+            });
     }
 }

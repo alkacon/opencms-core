@@ -36,7 +36,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
@@ -444,15 +443,8 @@ public class CmsToolBar extends CssLayout {
     void handleUpload(List<String> uploadedFiles) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        if (uploadedFiles.size() == 1) {
-            String tempFile = CmsStringUtil.joinPaths(
-                CmsUserIconHelper.USER_IMAGE_FOLDER,
-                CmsUserIconHelper.TEMP_FOLDER,
-                uploadedFiles.get(0));
-            OpenCms.getWorkplaceAppManager().getUserIconHelper().handleImageUpload(
-                cms,
-                cms.getRequestContext().getCurrentUser(),
-                tempFile);
+        boolean success = OpenCms.getWorkplaceAppManager().getUserIconHelper().handleImageUpload(cms, uploadedFiles);
+        if (success) {
             refreshUserInfoDropDown();
         }
     }

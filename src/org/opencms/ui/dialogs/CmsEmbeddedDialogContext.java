@@ -241,6 +241,23 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#setWindow(com.vaadin.ui.Window)
+     */
+    public void setWindow(Window window) {
+
+        m_window = window;
+        m_window.addCloseListener(new CloseListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void windowClose(CloseEvent e) {
+
+                handleWindowClose();
+            }
+        });
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#start(java.lang.String, com.vaadin.ui.Component)
      */
     public void start(String title, Component dialog) {

@@ -68,7 +68,6 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.Window;
 
 /**
  * The workplace ui.<p>
@@ -228,13 +227,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
-     * Closes all opened dialog windows.<p>
+     * @see org.opencms.ui.A_CmsUI#closeWindows()
      */
+    @Override
     public void closeWindows() {
 
-        for (Window window : getWindows()) {
-            window.close();
-        }
+        super.closeWindows();
         if (m_currentView instanceof CmsAppView) {
             ((CmsAppView)m_currentView).getComponent().closePopupViews();
         }
@@ -380,8 +378,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
-     * Reloads the current UI.<p>
+     * @see org.opencms.ui.A_CmsUI#reload()
      */
+    @Override
     public void reload() {
 
         if (m_currentView instanceof I_CmsAppView) {

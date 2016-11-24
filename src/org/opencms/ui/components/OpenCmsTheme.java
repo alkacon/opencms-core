@@ -136,20 +136,20 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
+
     /** CSS style name. */
     public static final String LABEL_ERROR = "o-label-error";
 
     /** CSS style name. */
     public static final String LOCK_OTHER = "o-lock-other";
+
     /** CSS style name. */
     public static final String LOCK_PUBLISH = "o-lock-publish";
-
     /** CSS style name. */
     public static final String LOCK_SHARED = "o-lock-shared";
 
     /** CSS style name. */
     public static final String LOCK_USER = "o-lock-user";
-
     /** CSS style name. */
     public static final String MAIN = "o-main";
 
@@ -265,7 +265,16 @@ public final class OpenCmsTheme {
     public static final String TOOLBAR_LOGO = "o-toolbar-logo";
 
     /** CSS style name. */
+    public static final String USER_IMAGE = "o-user-image";
+
+    /** CSS style name. */
     public static final String USER_INFO = "o-user-info";
+
+    /** CSS style name. */
+    public static final String VERTICAL_MENU = "o-verticalmenu";
+
+    /** CSS style name. */
+    public static final String VERTICAL_MENU_ITEM = "o-verticalmenu-menuitem";
 
     /** CSS style name. */
     public static final String WORKPLACE_MAXWIDTH = "o-workplace-maxwidth";

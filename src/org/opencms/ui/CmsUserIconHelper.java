@@ -52,6 +52,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 
@@ -186,12 +187,15 @@ public class CmsUserIconHelper {
      * @param cms the cms context
      * @param user the user
      * @param uploadedFile the uploaded file
+     *
+     * @return <code>true</code> in case the image was set successfully
      */
-    public void handleImageUpload(CmsObject cms, CmsUser user, String uploadedFile) {
+    public boolean handleImageUpload(CmsObject cms, CmsUser user, String uploadedFile) {
 
+        boolean result = false;
         try {
             setUserImage(cms, user, uploadedFile);
-
+            result = true;
         } catch (CmsException e) {
             LOG.error("Error setting user image.", e);
         }
@@ -201,6 +205,26 @@ public class CmsUserIconHelper {
         } catch (CmsException e) {
             LOG.error("Error deleting user image temp file.", e);
         }
+        return result;
+    }
+
+    /**
+     * Handles a user image upload.
+     * The uploaded file will be scaled and save as a new file beneath /system/userimages/, the original file will be deleted.<p>
+     *
+     * @param cms the cms context
+     * @param uploadedFiles the uploaded file paths
+     *
+     * @return <code>true</code> in case the image was set successfully
+     */
+    public boolean handleImageUpload(CmsObject cms, List<String> uploadedFiles) {
+
+        boolean result = false;
+        if (uploadedFiles.size() == 1) {
+            String tempFile = CmsStringUtil.joinPaths(USER_IMAGE_FOLDER, TEMP_FOLDER, uploadedFiles.get(0));
+            result = handleImageUpload(cms, cms.getRequestContext().getCurrentUser(), tempFile);
+        }
+        return result;
     }
 
     /**

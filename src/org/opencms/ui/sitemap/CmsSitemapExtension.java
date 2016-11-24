@@ -203,6 +203,14 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         }
 
         /**
+         * @see org.opencms.ui.I_CmsDialogContext#setWindow(com.vaadin.ui.Window)
+         */
+        public void setWindow(Window window) {
+
+            m_window = window;
+        }
+
+        /**
          * @see org.opencms.ui.I_CmsDialogContext#start(java.lang.String, com.vaadin.ui.Component)
          */
         public void start(String title, Component dialog) {

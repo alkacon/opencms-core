@@ -63,6 +63,10 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** The available window widths. */
     public enum DialogWidth {
+
+        /** Depending on the content. */
+        content,
+
         /** The maximum width of 90% of the window width. */
         max,
 
@@ -182,6 +186,9 @@ public class CmsBasicDialog extends VerticalLayout {
             }
         }
         switch (width) {
+            case content:
+                // do nothing
+                break;
             case wide:
                 window.setWidth("800px");
                 break;

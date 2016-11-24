@@ -97,7 +97,6 @@ public abstract class A_CmsUI extends UI {
     public static A_CmsUI get() {
 
         return (A_CmsUI)(UI.getCurrent());
-
     }
 
     /**
@@ -139,6 +138,16 @@ public abstract class A_CmsUI extends UI {
             getCmsObject().getRequestContext().setSiteRoot(siteRoot);
             getWorkplaceSettings().setSite(siteRoot);
             OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
+        }
+    }
+
+    /**
+     * Closes all opened dialog windows.<p>
+     */
+    public void closeWindows() {
+
+        for (Window window : getWindows()) {
+            window.close();
         }
     }
 
@@ -239,6 +248,14 @@ public abstract class A_CmsUI extends UI {
                 Notification.show(warning, Type.ERROR_MESSAGE);
             }
         });
+    }
+
+    /**
+     * Reloads the current UI.<p>
+     */
+    public void reload() {
+
+        getPage().reload();
     }
 
     /**

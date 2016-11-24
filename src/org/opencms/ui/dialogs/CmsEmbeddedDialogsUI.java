@@ -36,7 +36,6 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
@@ -72,6 +71,11 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
     private static final long serialVersionUID = 1201184887611215370L;
 
     /**
+     * The dialog context of the currently opened dialog.<p>
+     */
+    CmsEmbeddedDialogContext m_currentContext;
+
+    /**
      * Returns the context path for embedded dialogs.<p>
      *
      * @return the context path for embedded dialogs
@@ -89,6 +93,17 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
 
         CmsObject cms = getCmsObject();
         return OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+    }
+
+    /**
+     * @see org.opencms.ui.A_CmsUI#reload()
+     */
+    @Override
+    public void reload() {
+
+        if (m_currentContext != null) {
+            m_currentContext.reload();
+        }
     }
 
     /**
@@ -136,10 +151,10 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
                     LOG.error("Could not parse context type parameter " + typeParam);
                 }
 
-                I_CmsDialogContext context = new CmsEmbeddedDialogContext(appId, type, resourceList);
+                m_currentContext = new CmsEmbeddedDialogContext(appId, type, resourceList);
                 I_CmsWorkplaceAction action = getAction(request);
-                if (action.isActive(context)) {
-                    action.executeAction(context);
+                if (action.isActive(m_currentContext)) {
+                    action.executeAction(m_currentContext);
                 } else {
                     errorMessage = CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_TITLE_0);
                 }
@@ -158,7 +173,8 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
 
                 public void run() {
 
-                    new CmsEmbeddedDialogContext("", null, Collections.<CmsResource> emptyList()).finish(null);
+                    m_currentContext = new CmsEmbeddedDialogContext("", null, Collections.<CmsResource> emptyList());
+                    m_currentContext.finish(null);
                 }
             });
         }

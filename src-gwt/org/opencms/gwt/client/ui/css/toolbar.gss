@@ -318,7 +318,7 @@
 }
 
 .toolbarBackground div.userInfo{
-	padding: 0px;
+	padding: 0px !important;
     display: inline-block;
     position: relative;
     -ms-order: 99;

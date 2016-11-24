@@ -231,4 +231,25 @@
 	.v-table-row-o-project-other {
 		color: $o-state-other-project-color;
 	}
+	
+	/* Data view table styles */
+	.o-wrap-table .v-table-cell-wrapper {
+		white-space: normal !important; 
+	}
+	
+	.o-wrap-table .v-table-body-wrapper {
+		overflow-y: auto !important;
+	}
+	
+	.o-table-image { 
+		max-width: 200px; 
+		max-height: 200px;
+		width: auto;
+		height: auto;
+		display: block; 
+	}
+	
+	.o-table-cell-padding .v-table-cell-wrapper { 
+		padding: 10px 10px; 
+	}
 }

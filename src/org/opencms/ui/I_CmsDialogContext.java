@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 
 /**
  * Context for dialogs opened from the context menu.<p>
@@ -142,6 +143,13 @@ public interface I_CmsDialogContext {
      * Reloads the UI.<p>
      */
     void reload();
+
+    /**
+     * Sets the current window.<p>
+     *
+     * @param window the current dialog window
+     */
+    void setWindow(Window window);
 
     /**
      * Called to start up the dialog with the given main widget and title string.<p>

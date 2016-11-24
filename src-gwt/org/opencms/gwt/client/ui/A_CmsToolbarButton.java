@@ -60,9 +60,11 @@ implements I_CmsToolbarButton {
     protected A_CmsToolbarButton(I_CmsButton.ButtonData buttonData, HANDLER handler) {
 
         super();
-        m_buttonData = buttonData;
-        setImageClass(buttonData.getIconClass());
-        setTitle(buttonData.getTitle());
+        if (buttonData != null) {
+            m_buttonData = buttonData;
+            setImageClass(buttonData.getIconClass());
+            setTitle(buttonData.getTitle());
+        }
         setButtonStyle(ButtonStyle.FONT_ICON, null);
         setSize(Size.big);
         m_handler = handler;
@@ -76,14 +78,6 @@ implements I_CmsToolbarButton {
     public I_CmsButton.ButtonData getButtonData() {
 
         return m_buttonData;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#getIconClass()
-     */
-    public String getIconClass() {
-
-        return m_buttonData.getIconClass();
     }
 
     /**
