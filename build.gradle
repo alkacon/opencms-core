@@ -904,7 +904,7 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     
     from (modulesDistsDir) { into '/WEB-INF/packages/modules' }
 
-        from ("F:/dev/2016/opencms10.5_apollo/zip") { into '/WEB-INF/packages/modules' }
+        from ("C:/dev/appollo") { into '/WEB-INF/packages/modules' }
 
     from("${projectDir}/lib/jni") { into "/WEB-INF/lib/jni" }
 }
