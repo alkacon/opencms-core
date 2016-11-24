@@ -1551,7 +1551,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
         if (m_searchObject.isEmpty()) {
             // don't search: notify the user that at least one search criteria should be selected
-            m_handler.showFirstTab();
+            if (m_handler.m_galleryDialog.getResultsTab().isSelected()) {
+                m_handler.showFirstTab();
+            }
         } else {
             // perform the search
 
@@ -1830,23 +1832,27 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
-     * Helper method for getting the default site root for a list of site selector options.<p>
+     * Helper method for getting the default (sub)site root for a list of site selector options.<p>
      *
      * @param options the list of options
      *
-     * @return the default site root
+     * @return the default (sub)site root
      */
     private String getDefaultSiteRoot(List<CmsSiteSelectorOption> options) {
 
         if (m_startSite != null) {
             return m_startSite;
         } else if ((options != null) && (!options.isEmpty())) {
+            String defaultOption = options.get(0).getSiteRoot();
             for (CmsSiteSelectorOption option : options) {
-                if (option.isCurrentSite()) {
+                if (option.getType().equals(CmsSiteSelectorOption.Type.currentSubsite)) {
                     return option.getSiteRoot();
                 }
+                if (option.isCurrentSite()) {
+                    defaultOption = option.getSiteRoot();
+                }
             }
-            return options.get(0).getSiteRoot();
+            return defaultOption;
         } else {
             return CmsCoreProvider.get().getSiteRoot();
         }

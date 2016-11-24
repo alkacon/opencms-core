@@ -77,7 +77,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
      */
     public String getDefaultSelectedSiteRoot() {
 
-        return m_controller.getSitemapSiteSelectorOptions().get(0).getSiteRoot();
+        return m_controller.getDefaultSitemapTabSiteRoot();
     }
 
     /**
@@ -150,7 +150,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         getTab().setSortSelectBoxValue(siteRoot, true);
         m_controller.getDefaultScope();
         if (siteRoot == null) {
-            siteRoot = m_controller.getDefaultVfsTabSiteRoot();
+            siteRoot = m_controller.getDefaultSitemapTabSiteRoot();
         }
         m_siteRoot = siteRoot;
         getSubEntries(siteRoot, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {

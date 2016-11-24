@@ -113,6 +113,7 @@ public class CmsSitemapTab extends A_CmsListTab {
 
         if (!m_disableFillDefault) {
             fill(entries);
+            selectSite(m_handler.getDefaultSelectedSiteRoot());
         }
     }
 

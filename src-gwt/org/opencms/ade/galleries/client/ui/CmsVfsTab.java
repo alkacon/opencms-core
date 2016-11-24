@@ -178,10 +178,24 @@ public class CmsVfsTab extends A_CmsListTab {
      */
     public void fillInitially(List<CmsVfsEntryBean> entries) {
 
+        fillInitially(entries, null);
+    }
+
+    /**
+     * Sets the initial folders in the VFS tab.<p>
+     *
+     * @param entries the root folders to display
+     * @param selectedSiteRoot site root that should be selected in the select box
+     */
+    public void fillInitially(List<CmsVfsEntryBean> entries, String selectedSiteRoot) {
+
         clear();
         for (CmsVfsEntryBean entry : entries) {
             CmsLazyTreeItem item = createItem(entry);
             addWidgetToList(item);
+        }
+        if (null != selectedSiteRoot) {
+            selectSite(selectedSiteRoot);
         }
         m_initialized = true;
     }
@@ -220,11 +234,8 @@ public class CmsVfsTab extends A_CmsListTab {
      */
     public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
 
-        fillInitially(Collections.singletonList(vfsPreloadData));
         String siteRoot = vfsPreloadData.getSiteRoot();
-        if (siteRoot != null) {
-            selectSite(siteRoot);
-        }
+        fillInitially(Collections.singletonList(vfsPreloadData), siteRoot);
     }
 
     /**

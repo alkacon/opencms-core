@@ -241,7 +241,9 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             if (vfsPreloadData != null) {
                 onReceiveVfsPreloadData(vfsPreloadData);
             } else if ((dialogBean.getVfsRootFolders() != null)) {
-                m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
+                m_galleryDialog.getVfsTab().fillInitially(
+                    dialogBean.getVfsRootFolders(),
+                    controller.getDefaultVfsTabSiteRoot());
             }
         }
 
