@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.main.OpenCms;
 import org.opencms.ui.components.CmsToolLayout;
 import org.opencms.util.CmsStringUtil;
 
@@ -41,6 +42,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 
 /**
  * Super class for workplace apps to help implementing the app navigation and layout.<p>
@@ -126,6 +128,9 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
     /** State parameter separator. */
     public static final String PARAM_SEPARATOR = "!!";
 
+    /** The app UI context. */
+    protected I_CmsAppUIContext m_uiContext;
+
     /** The root layout. */
     private CmsToolLayout m_rootLayout;
 
@@ -178,8 +183,9 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
      */
     public void initUI(I_CmsAppUIContext context) {
 
-        context.showInfoArea(false);
-        context.setAppContent(m_rootLayout);
+        m_uiContext = context;
+        m_uiContext.showInfoArea(false);
+        m_uiContext.setAppContent(m_rootLayout);
     }
 
     /**
@@ -284,24 +290,26 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
      */
     protected void updateBreadCrumb(Map<String, String> breadCrumbEntries) {
 
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<div>");
+        appendBreadCrumbEntry(
+            buffer,
+            CmsAppHierarchyConfiguration.APP_ID,
+            OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsAppHierarchyConfiguration.APP_ID).getName(
+                UI.getCurrent().getLocale()));
         if ((breadCrumbEntries != null) && !breadCrumbEntries.isEmpty()) {
-            StringBuffer buffer = new StringBuffer();
             for (Entry<String, String> entry : breadCrumbEntries.entrySet()) {
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getKey())) {
-                    buffer.append(
-                        "<a href=\"#!"
-                            + entry.getKey()
-                            + "\">"
-                            + entry.getValue()
-                            + "</a>&nbsp;&nbsp;&gt;&nbsp;&nbsp;");
-                } else {
-                    buffer.append(entry.getValue());
-                }
+                appendBreadCrumbEntry(buffer, entry.getKey(), entry.getValue());
             }
-            m_rootLayout.setBreadCrumb(buffer.toString());
         } else {
-            m_rootLayout.setBreadCrumb(null);
+            appendBreadCrumbEntry(
+                buffer,
+                null,
+                OpenCms.getWorkplaceAppManager().getAppConfiguration(m_uiContext.getAppId()).getName(
+                    UI.getCurrent().getLocale()));
         }
+        buffer.append("</div>");
+        m_rootLayout.setBreadCrumb(buffer.toString());
     }
 
     /**
@@ -319,6 +327,22 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
             for (NavEntry entry : subEntries) {
                 addSubNavEntry(entry);
             }
+        }
+    }
+
+    /**
+     * Appends a bread crumb entry.<p>
+     *
+     * @param buffer the string buffer to append to
+     * @param target the target state
+     * @param label the entry label
+     */
+    private void appendBreadCrumbEntry(StringBuffer buffer, String target, String label) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(target)) {
+            buffer.append("<a href=\"#!").append(target).append("\">").append(label).append("</a>");
+        } else {
+            buffer.append("<span class=\"o-tools-breadcrumb-active\">").append(label).append("</span>");
         }
     }
 }
