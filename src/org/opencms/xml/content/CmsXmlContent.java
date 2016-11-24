@@ -381,7 +381,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         clone.m_autoCorrectionEnabled = m_autoCorrectionEnabled;
         clone.m_contentDefinition = m_contentDefinition;
         clone.m_conversion = m_conversion;
-        clone.m_document = m_document;
+        clone.m_document = (Document)(m_document.clone());
         clone.m_encoding = m_encoding;
         clone.m_file = m_file;
         clone.initDocument();
