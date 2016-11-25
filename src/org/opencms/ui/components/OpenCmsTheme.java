@@ -114,6 +114,9 @@ public final class OpenCmsTheme {
     public static final String DISABLED = "o-disabled";
 
     /** CSS style name. */
+    public static final String DROPDOWN = "o-dropdown";
+
+    /** CSS style name. */
     public static final String EXPIRED = "o-expired";
 
     /** CSS style name. */

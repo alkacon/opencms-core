@@ -35,6 +35,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.components.CmsUserInfo;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -77,7 +78,7 @@ public class CmsUserInfoDialogAction extends A_CmsWorkplaceAction {
         window.setResizable(false);
         window.setContent(dialog);
         context.setWindow(window);
-        window.addStyleName("o-userinfo-dropdown");
+        window.addStyleName(OpenCmsTheme.DROPDOWN);
         UI.getCurrent().addWindow(window);
         window.setPosition(left, top);
     }
