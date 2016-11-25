@@ -66,6 +66,18 @@
   }
   
   .o-user-info{ 
+  	p {
+  		margin: 0 0 5px;
+  		font-weight: bold;
+  		overflow: hidden;
+    	text-overflow: ellipsis;
+  	}
+  	
+  	.o-user-details {
+  		margin: 0 0 10px 8px; 
+  		overflow: hidden;
+    	text-overflow: ellipsis;
+  	}
   
   	.o-user-image {
   		position: relative;

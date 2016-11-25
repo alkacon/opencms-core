@@ -85,6 +85,9 @@ public class CmsUserInfo extends VerticalLayout {
     /** The info. */
     private Label m_info;
 
+    /** The details. */
+    private Label m_details;
+
     /** The info panel. */
     private HorizontalLayout m_infoPanel;
 
@@ -108,68 +111,11 @@ public class CmsUserInfo extends VerticalLayout {
         m_context = context;
         m_info.setContentMode(ContentMode.HTML);
         m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
+        m_details.setContentMode(ContentMode.HTML);
+        m_details.setValue(generateInfoDetails(cms, UI.getCurrent().getLocale()));
         m_infoPanel.addComponent(createImageButton(), 0);
         initUserMenu();
 
-    }
-
-    /**
-     * Generates the user info HTML.<p>
-     *
-     * @param cms the cms context
-     * @param locale the user workplace locale
-     *
-     * @return the user info
-     */
-    public static String generateUserInfoHtml(CmsObject cms, Locale locale) {
-
-        StringBuffer infoHtml = new StringBuffer(256);
-        infoHtml.append("<div class=\"cms-user-image\"><img src=\"");
-        infoHtml.append(
-            OpenCms.getWorkplaceAppManager().getUserIconHelper().getBigIconPath(
-                cms,
-                cms.getRequestContext().getCurrentUser()));
-        infoHtml.append("\" title=\"");
-        infoHtml.append(Messages.get().getBundle(locale).key(Messages.GUI_USER_INFO_NO_UPLOAD_0));
-        infoHtml.append("\" /></div><div class=\"cms-user-info\">");
-        infoHtml.append(generateInfo(cms, locale));
-        infoHtml.append("</div>");
-        return infoHtml.toString();
-    }
-
-    /**
-     * Generates the info data HTML.<p>
-     *
-     * @param cms the cms context.<p>
-     * @param locale the locale
-     *
-     * @return the info data HTML
-     */
-    private static String generateInfo(CmsObject cms, Locale locale) {
-
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        StringBuffer infoHtml = new StringBuffer(128);
-        infoHtml.append("<b>").append(user.getFullName()).append("</b>").append(LINE_BREAK);
-        for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-            if (!info.getField().equals(Field.firstname) && !info.getField().equals(Field.lastname)) {
-                String value = info.getValue(user);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-                    infoHtml.append(value).append(LINE_BREAK);
-                }
-            }
-        }
-        infoHtml.append(
-            Messages.get().getBundle(locale).key(
-                Messages.GUI_USER_INFO_ONLINE_SINCE_1,
-                DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(user.getLastlogin())))).append(
-                    LINE_BREAK);
-        infoHtml.append(
-            org.opencms.workplace.Messages.get().getBundle(locale).key(
-                org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0));
-        infoHtml.append(": ");
-        infoHtml.append(cms.getRequestContext().getCurrentProject().getName()).append(LINE_BREAK);
-
-        return infoHtml.toString();
     }
 
     /**
@@ -268,6 +214,64 @@ public class CmsUserInfo extends VerticalLayout {
         uploadButton.addUploadListener(uploadListener);
         return uploadButton;
 
+    }
+
+    /**
+     * Generates the info data HTML.<p>
+     *
+     * @param cms the cms context
+     * @param locale the locale
+     *
+     * @return the info data HTML
+     */
+    private String generateInfo(CmsObject cms, Locale locale) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        StringBuffer infoHtml = new StringBuffer(128);
+        infoHtml.append("<p>").append(CmsStringUtil.escapeHtml(user.getName())).append("</p>");
+        infoHtml.append("<p>");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getFirstname())) {
+            infoHtml.append(CmsStringUtil.escapeHtml(user.getFirstname())).append("&nbsp;");
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getLastname())) {
+            infoHtml.append(CmsStringUtil.escapeHtml(user.getLastname()));
+        }
+        infoHtml.append("</p>");
+        return infoHtml.toString();
+    }
+
+    /**
+     * Generates the user info details.<p>
+     *
+     * @param cms the cms context
+     * @param locale the locale
+     *
+     * @return the user info details
+     */
+    private String generateInfoDetails(CmsObject cms, Locale locale) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        StringBuffer infoHtml = new StringBuffer(128);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getEmail())) {
+            infoHtml.append("<p>").append(CmsStringUtil.escapeHtml(user.getEmail())).append("</p>");
+        }
+        for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
+            if (!info.getField().equals(Field.firstname)
+                && !info.getField().equals(Field.lastname)
+                && !Field.email.equals(info.getField())) {
+                String value = info.getValue(user);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    infoHtml.append(CmsStringUtil.escapeHtml(value)).append(LINE_BREAK);
+                }
+            }
+        }
+        infoHtml.append(
+            Messages.get().getBundle(locale).key(
+                Messages.GUI_USER_INFO_ONLINE_SINCE_1,
+                DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(user.getLastlogin())))).append(
+                    LINE_BREAK);
+
+        return infoHtml.toString();
     }
 
     /**

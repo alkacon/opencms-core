@@ -71,7 +71,6 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
-import org.opencms.ui.components.CmsUserInfo;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -957,7 +956,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
                 cms,
                 cms.getRequestContext().getCurrentUser()),
-            CmsUserInfo.generateUserInfoHtml(cms, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)),
             isAdmin,
             isDeveloper,
             isCategoryManager,
