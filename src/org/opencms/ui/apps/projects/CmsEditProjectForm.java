@@ -30,6 +30,10 @@ package org.opencms.ui.apps.projects;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
@@ -45,14 +49,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -62,6 +68,9 @@ public class CmsEditProjectForm extends VerticalLayout {
 
     /** The serial version id. */
     private static final long serialVersionUID = 2345799706922671537L;
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsEditProjectForm.class.getName());
 
     /** The add resources button. */
     private Button m_addResource;
@@ -81,6 +90,9 @@ public class CmsEditProjectForm extends VerticalLayout {
     /** The project name field. */
     private TextField m_fieldName;
 
+    /** The OU field. */
+    private TextField m_fieldOU;
+
     /** The user group field. */
     private CmsPrincipalSelect m_fieldUser;
 
@@ -96,9 +108,6 @@ public class CmsEditProjectForm extends VerticalLayout {
     /** The resources form layout. */
     private FormLayout m_resources;
 
-    /** The title label. */
-    private Label m_title;
-
     /**
      * Constructor.<p>
      * Use this to create a new project.<p>
@@ -109,9 +118,20 @@ public class CmsEditProjectForm extends VerticalLayout {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_manager = manager;
-        m_title.setValue(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_CREATE_NEW_0));
         m_fieldManager.setWidgetType(WidgetType.groupwidget);
         m_fieldUser.setWidgetType(WidgetType.groupwidget);
+
+        try {
+            CmsOrganizationalUnit ou = OpenCms.getRoleManager().getOrgUnitsForRole(
+                A_CmsUI.getCmsObject(),
+                CmsRole.PROJECT_MANAGER,
+                true).get(0);
+            m_fieldOU.setValue(ou.getName());
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            m_fieldOU.setValue(null);
+        }
+
         m_addResource.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -153,12 +173,20 @@ public class CmsEditProjectForm extends VerticalLayout {
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             m_project = cms.readProject(projectId);
-            m_title.setValue(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_EDIT_1, m_project.getName()));
             m_fieldName.setValue(m_project.getName());
             m_fieldName.setEnabled(false);
             m_fieldDescription.setValue(m_project.getDescription());
             m_fieldUser.setValue(cms.readGroup(m_project.getGroupId()).getName());
             m_fieldManager.setValue(cms.readGroup(m_project.getManagerGroupId()).getName());
+            try {
+                CmsOrganizationalUnit ou;
+                ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, m_project.getOuFqn());
+                m_fieldOU.setValue(ou.getDisplayName(UI.getCurrent().getLocale()));
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                m_fieldOU.setValue(null);
+            }
+            m_fieldOU.setEnabled(false);
             for (String resName : cms.readProjectResources(m_project)) {
                 addResourceField(resName);
             }
@@ -184,6 +212,7 @@ public class CmsEditProjectForm extends VerticalLayout {
             field,
             CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_REMOVE_RESOURCE_0));
         row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCE_0));
+        row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCE_HELP_0));
         m_resources.addComponent(row);
     }
 
@@ -215,8 +244,18 @@ public class CmsEditProjectForm extends VerticalLayout {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
+            String name = "/";
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_fieldOU.getValue())) {
+                name = CmsStringUtil.joinPaths(name, m_fieldOU.getValue());
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_fieldName.getValue())) {
+                name = CmsStringUtil.joinPaths(name, m_fieldName.getValue());
+            } else {
+                name = CmsStringUtil.joinPaths(name, "/");
+            }
+
             m_project = cms.createProject(
-                m_fieldName.getValue(),
+                name,
                 m_fieldDescription.getValue(),
                 m_fieldUser.getValue(),
                 m_fieldManager.getValue(),
