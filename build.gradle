@@ -904,7 +904,6 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     
     from (modulesDistsDir) { into '/WEB-INF/packages/modules' }
 
-   //     from ("C:/dev/2016/apollo_10.5") { into '/WEB-INF/packages/modules' }
 
     from("${projectDir}/lib/jni") { into "/WEB-INF/lib/jni" }
 }
