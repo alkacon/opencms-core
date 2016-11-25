@@ -73,7 +73,7 @@ public final class CmsGwtConstants {
     public static final String ACTION_SELECTELEMENTVIEW = "selectelementview";
 
     /** Context menu action id. */
-    public static final Object ACTION_SHOWLOCALE = "showlocale";
+    public static final String ACTION_SHOWLOCALE = "showlocale";
 
     /** Context menu action id. */
     public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
