@@ -38,6 +38,7 @@ import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -343,6 +344,9 @@ public class CmsProjectsTable extends Table {
         setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_USER_GROUP_0));
         setColumnHeader(PROP_DATE_CREATED, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DATE_CREATED_0));
         setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCES_0));
+        setColumnExpandRatio(PROP_NAME, 2);
+        setColumnExpandRatio(PROP_DESCRIPTION, 2);
+        setColumnExpandRatio(PROP_RESOURCES, 2);
         setSelectable(true);
         setMultiSelect(true);
         m_menu = new CmsContextMenu();
@@ -354,6 +358,18 @@ public class CmsProjectsTable extends Table {
             public void itemClick(ItemClickEvent event) {
 
                 onItemClick(event);
+            }
+        });
+        setCellStyleGenerator(new CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                if (PROP_NAME.equals(propertyId)) {
+                    return OpenCmsTheme.HOVER_COLUMN;
+                }
+                return null;
             }
         });
     }
@@ -491,6 +507,12 @@ public class CmsProjectsTable extends Table {
                 }
                 m_menu.setEntries(getMenuEntries(), (Set<CmsUUID>)getValue());
                 m_menu.openForTable(event, this);
+            } else if (event.getButton().equals(MouseButton.LEFT) && PROP_NAME.equals(event.getPropertyId())) {
+                Item item = event.getItem();
+                CmsUUID id = (CmsUUID)item.getItemProperty(PROP_ID).getValue();
+                m_manager.openSubView(
+                    A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_EDIT, "projectId", id.toString()),
+                    true);
             }
         }
     }
