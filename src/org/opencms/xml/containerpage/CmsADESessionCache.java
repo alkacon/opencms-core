@@ -229,7 +229,7 @@ public final class CmsADESessionCache {
             m_recentFormatters.put(resType, formatterIds);
         }
         formatterIds.remove(formatterId);
-        if (formatterIds.size() >= (RECENT_FORMATTERS_SIZE - 1)) {
+        if (formatterIds.size() >= (RECENT_FORMATTERS_SIZE)) {
             formatterIds.remove(RECENT_FORMATTERS_SIZE - 1);
         }
         formatterIds.add(0, formatterId);
