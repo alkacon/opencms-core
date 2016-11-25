@@ -178,6 +178,7 @@ public enum FontOpenCms implements FontIcon {
     /** The save icon. */
     SAVE(0xe60b),
 
+    /** An empty icon. */
     SPACE(0x0020),
 
     /** The save and exit icon. */

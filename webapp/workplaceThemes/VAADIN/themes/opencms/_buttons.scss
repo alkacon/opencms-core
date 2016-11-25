@@ -18,7 +18,11 @@
   
   .v-button.o-button-plain {
   		min-width: 100px;
-  		@include valo-button-style($unit-size: 30px, $font-weight: bold);
+  		@include valo-button-style($unit-size: 30px, $font-color: $v-font-color, $font-weight: bold, $background-color: $o-dark-background-color);
+  }
+  
+  .v-button.o-button-icon {
+  		@include valo-button-style($unit-size: 30px, $padding: 0 8px, $font-color: $v-font-color, $font-size: 18px, $background-color: $o-dark-background-color);
   }
   
   .v-menubar.v-menubar-o-toolbar-button{
@@ -214,12 +218,12 @@
   }
   
   .v-button.o-button-table-icon, .v-button.o-button-unpadded {
-		padding: 0px;
-	}
+	padding: 0px;
+  }
 	
-	.o-button-icon-small .opencms-font {
-		font-size: 16px;
-		color: $alkacon-gray; 
-		vertical-align: middle; 
-	}
+  .v-button.o-button-table-icon .opencms-font {
+	font-size: 16px;
+	color: $alkacon-gray; 
+	vertical-align: middle; 
+  }
 }

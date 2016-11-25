@@ -51,7 +51,7 @@ public final class OpenCmsTheme {
     public static final String BUTTON_BLUE = "o-button-blue";
 
     /** CSS style name. */
-    public static final String BUTTON_ICON_SMALL = "o-button-icon-small";
+    public static final String BUTTON_ICON = "o-button-icon";
 
     /** CSS style name. */
     public static final String BUTTON_INVISIBLE = "o-button-invisible";

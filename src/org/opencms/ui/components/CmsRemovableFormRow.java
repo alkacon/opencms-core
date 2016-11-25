@@ -27,7 +27,8 @@
 
 package org.opencms.ui.components;
 
-import com.vaadin.server.FontAwesome;
+import org.opencms.ui.FontOpenCms;
+
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -35,7 +36,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Removable form row.<p>
@@ -64,9 +64,8 @@ public class CmsRemovableFormRow<T extends AbstractField<?>> extends HorizontalL
         addComponent(input);
         setExpandRatio(input, 1f);
         Button deleteButton = new Button("");
-        deleteButton.addStyleName(ValoTheme.BUTTON_LINK);
-        deleteButton.setIcon(FontAwesome.TIMES_CIRCLE);
-        deleteButton.addStyleName(OpenCmsTheme.BUTTON_UNPADDED);
+        deleteButton.setIcon(FontOpenCms.CIRCLE_MINUS);
+        deleteButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
         deleteButton.setDescription(removeLabel);
         deleteButton.addClickListener(new ClickListener() {
 

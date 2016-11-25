@@ -31,17 +31,15 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.workplace.CmsWorkplace;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -49,7 +47,6 @@ import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Abstract file select field. Used by {@link org.opencms.ui.components.fileselect.CmsResourceSelectField} and {@link org.opencms.ui.components.fileselect.CmsPathSelectField}.<p>
@@ -127,13 +124,8 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
         layout.setSpacing(true);
         layout.addComponent(m_textField);
         Button fileSelectButton = new Button("");
-        fileSelectButton.addStyleName(OpenCmsTheme.BUTTON_UNPADDED);
-        fileSelectButton.addStyleName(ValoTheme.BUTTON_LINK);
-        ExternalResource folderRes = new ExternalResource(
-            CmsWorkplace.getResourceUri(
-                CmsWorkplace.RES_PATH_FILETYPES
-                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting("folder").getBigIconIfAvailable()));
-        fileSelectButton.setIcon(folderRes);
+        fileSelectButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
+        fileSelectButton.setIcon(FontOpenCms.GALLERY);
 
         layout.addComponent(fileSelectButton);
         layout.setExpandRatio(m_textField, 1f);

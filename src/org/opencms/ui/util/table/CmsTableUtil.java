@@ -59,7 +59,6 @@ public final class CmsTableUtil {
 
         button.addStyleName(OpenCmsTheme.BUTTON_TABLE_ICON);
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        button.addStyleName(OpenCmsTheme.BUTTON_ICON_SMALL);
         button.setIcon(icon);
         button.setDescription(caption);
         return button;
