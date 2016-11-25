@@ -1673,6 +1673,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 cms.getRequestContext().setSiteRoot(originalSiteRoot);
             }
         }
+        boolean typeOk = true;
+        if ((data.getTypes() != null) && !data.getTypes().isEmpty()) {
+            typeOk = false;
+            for (CmsResourceTypeBean type : data.getTypes()) {
+                if (OpenCms.getResourceManager().matchResourceType(type.getType(), resource.getTypeId())) {
+                    typeOk = true;
+                }
+            }
+        }
+        if (!typeOk) {
+            LOG.debug(
+                "Selected resource " + resource.getRootPath() + " has invalid type for configured gallery widget.");
+            return null;
+        }
         ArrayList<String> types = new ArrayList<String>();
         String resType = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         types.add(resType);
