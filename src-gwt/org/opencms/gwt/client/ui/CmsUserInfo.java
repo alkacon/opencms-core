@@ -57,13 +57,6 @@ public class CmsUserInfo extends A_CmsToolbarButton<I_CmsToolbarHandler> {
         addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().userInfo());
         getUpFace().setHTML("<img src=\"" + CmsCoreProvider.get().getUserInfo().getUserIcon() + "\" />");
         m_dialogHandler = new CmsEmbeddedDialogHandler();
-        m_dialogHandler.setOnCloseCommand(new Command() {
-
-            public void execute() {
-
-                onClose();
-            }
-        });
         addClickHandler(new ClickHandler() {
 
             /**
@@ -94,6 +87,13 @@ public class CmsUserInfo extends A_CmsToolbarButton<I_CmsToolbarHandler> {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("left", String.valueOf(getElement().getAbsoluteLeft()));
+        m_dialogHandler.setOnCloseCommand(new Command() {
+
+            public void execute() {
+
+                onClose();
+            }
+        });
         m_dialogHandler.openDialog(
             "org.opencms.ui.actions.CmsUserInfoDialogAction",
             CmsGwtConstants.CONTEXT_TYPE_APP_TOOLBAR,
@@ -119,6 +119,7 @@ public class CmsUserInfo extends A_CmsToolbarButton<I_CmsToolbarHandler> {
     @Override
     public void onToolbarDeactivate() {
 
+        m_dialogHandler.setOnCloseCommand(null);
         m_dialogHandler.finish(null);
     }
 
