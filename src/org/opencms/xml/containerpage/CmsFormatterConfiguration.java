@@ -376,7 +376,7 @@ public final class CmsFormatterConfiguration {
      */
     public I_CmsFormatterBean getDisplayFormatter() {
 
-        if (!getDetailFormatters().isEmpty()) {
+        if (!getDisplayFormatters().isEmpty()) {
             return getDisplayFormatters().get(0);
         }
         return null;
