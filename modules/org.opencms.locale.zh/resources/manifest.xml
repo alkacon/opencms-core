@@ -129,28 +129,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/ade/configuration</destination>
-			<type>folder</type>
-			<uuidstructure>ee4afa5d-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:16 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/ade/configuration/messages_zh.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/ade/configuration/messages_zh.properties</destination>
-			<type>plain</type>
-			<uuidstructure>fedc918e-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>fedc918f-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:23 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/zh/messages/org/opencms/ade/containerpage</destination>
 			<type>folder</type>
 			<uuidstructure>4d9cb1d1-050c-11e6-9266-0a0027000000</uuidstructure>
@@ -185,18 +163,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/ade/containerpage/workplace_zh.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/ade/containerpage/workplace_zh.properties</destination>
-			<type>plain</type>
-			<uuidstructure>fef08ec4-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>fef08ec5-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:23 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/zh/messages/org/opencms/ade/contenteditor</destination>
 			<type>folder</type>
 			<uuidstructure>ee6909b5-05d6-11e6-97a8-0a0027000000</uuidstructure>
@@ -212,18 +178,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<type>plain</type>
 			<uuidstructure>fefa52c6-a491-11e6-8103-0a0027000003</uuidstructure>
 			<uuidresource>fefa52c7-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:23 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/ade/contenteditor/messages_zh.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/ade/contenteditor/messages_zh.properties</destination>
-			<type>plain</type>
-			<uuidstructure>fefe7178-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>fefe7179-a491-11e6-8103-0a0027000003</uuidresource>
 			<datecreated>Mon, 07 Nov 2016 02:29:23 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
@@ -423,36 +377,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/apollo</destination>
-			<type>folder</type>
-			<uuidstructure>e12a175e-0a8c-11e6-9767-0a0027000000</uuidstructure>
-			<datecreated>Mon, 25 Apr 2016 02:24:47 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/apollo/template</destination>
-			<type>folder</type>
-			<uuidstructure>e13784e0-0a8c-11e6-9767-0a0027000000</uuidstructure>
-			<datecreated>Mon, 25 Apr 2016 02:24:47 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/apollo/template/extensions</destination>
-			<type>folder</type>
-			<uuidstructure>e138bd62-0a8c-11e6-9767-0a0027000000</uuidstructure>
-			<datecreated>Mon, 25 Apr 2016 02:24:47 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/zh/messages/org/opencms/cache</destination>
 			<type>folder</type>
 			<uuidstructure>5bb69e8f-050c-11e6-9266-0a0027000000</uuidstructure>
@@ -519,66 +443,10 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/as400</destination>
-			<type>folder</type>
-			<uuidstructure>eef67cb9-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:17 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/as400/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/as400/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ff7c0606-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ff7c0607-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/db2</destination>
-			<type>folder</type>
-			<uuidstructure>ef0019ad-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:17 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/db2/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/db2/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ff852dc8-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ff852dc9-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/zh/messages/org/opencms/db/generic</destination>
 			<type>folder</type>
 			<uuidstructure>604ffcdb-050c-11e6-9266-0a0027000000</uuidstructure>
 			<datecreated>Mon, 18 Apr 2016 02:22:19 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/generic/messages.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/generic/messages.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ff8f8e0a-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ff8f8e0b-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -597,78 +465,10 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/generic/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/generic/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ff98409e-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ff98409f-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/hsqldb</destination>
-			<type>folder</type>
-			<uuidstructure>ef1f1365-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:17 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/hsqldb/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/hsqldb/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ffa1dd90-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ffa1dd91-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/jpa</destination>
-			<type>folder</type>
-			<uuidstructure>ef263f59-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:17 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/jpa/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/jpa/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ffab5372-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ffab5373-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/zh/messages/org/opencms/db/log</destination>
 			<type>folder</type>
 			<uuidstructure>62520e70-050c-11e6-9266-0a0027000000</uuidstructure>
 			<datecreated>Mon, 18 Apr 2016 02:22:22 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/log/messages.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/log/messages.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ffb5dac4-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ffb5dac5-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -681,94 +481,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<uuidstructure>ffb9d266-a491-11e6-8103-0a0027000003</uuidstructure>
 			<uuidresource>ffb9d267-a491-11e6-8103-0a0027000003</uuidresource>
 			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/mssql</destination>
-			<type>folder</type>
-			<uuidstructure>ef3fbacf-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:17 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/mssql/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/mssql/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ffc236d8-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ffc236d9-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:24 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/mysql</destination>
-			<type>folder</type>
-			<uuidstructure>ef470cd3-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:17 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/mysql/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/mysql/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ffcb107a-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ffcb107b-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:25 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/oracle</destination>
-			<type>folder</type>
-			<uuidstructure>ef4e5fd7-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:17 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/oracle/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/oracle/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ffd4383c-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ffd4383d-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:25 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/postgresql</destination>
-			<type>folder</type>
-			<uuidstructure>ef55d9eb-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:17 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/db/postgresql/query.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/db/postgresql/query.properties</destination>
-			<type>plain</type>
-			<uuidstructure>ffdd38ee-a491-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>ffdd38ef-a491-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:25 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1147,32 +859,10 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/jsp/search</destination>
-			<type>folder</type>
-			<uuidstructure>4a4c73ad-076e-11e6-b2bb-0a0027000000</uuidstructure>
-			<datecreated>Thu, 21 Apr 2016 03:08:15 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/zh/messages/org/opencms/jsp/util</destination>
 			<type>folder</type>
 			<uuidstructure>5205e34b-050d-11e6-9266-0a0027000000</uuidstructure>
 			<datecreated>Mon, 18 Apr 2016 02:29:05 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/jsp/util/errorpage.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/jsp/util/errorpage.properties</destination>
-			<type>plain</type>
-			<uuidstructure>00893080-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>00893081-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:26 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1195,18 +885,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<type>folder</type>
 			<uuidstructure>f00e2d89-05d6-11e6-97a8-0a0027000000</uuidstructure>
 			<datecreated>Tue, 19 Apr 2016 02:32:18 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/legacy/messages_de.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/legacy/messages_de.properties</destination>
-			<type>plain</type>
-			<uuidstructure>0096c514-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>0096c515-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:26 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -1306,18 +984,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<type>plain</type>
 			<uuidstructure>00bf5bbe-a492-11e6-8103-0a0027000003</uuidstructure>
 			<uuidresource>00bf5bbf-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:26 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/main/version.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/main/version.properties</destination>
-			<type>plain</type>
-			<uuidstructure>00c3a180-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>00c3a181-a492-11e6-8103-0a0027000003</uuidresource>
 			<datecreated>Mon, 07 Nov 2016 02:29:26 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
@@ -1775,18 +1441,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/ugc/messages.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/ugc/messages.properties</destination>
-			<type>plain</type>
-			<uuidstructure>0184f5da-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>0184f5db-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:27 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/locales/zh/messages/org/opencms/ugc/messages_zh.properties</source>
 			<destination>system/workplace/locales/zh/messages/org/opencms/ugc/messages_zh.properties</destination>
 			<type>plain</type>
@@ -1934,28 +1588,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<type>plain</type>
 			<uuidstructure>01b83ae6-a492-11e6-8103-0a0027000003</uuidstructure>
 			<uuidresource>01b83ae7-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:28 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/zh/messages/org/opencms/util/ant</destination>
-			<type>folder</type>
-			<uuidstructure>f1100d4f-05d6-11e6-97a8-0a0027000000</uuidstructure>
-			<datecreated>Tue, 19 Apr 2016 02:32:20 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/util/ant/taskdefs_zh.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/util/ant/taskdefs_zh.properties</destination>
-			<type>plain</type>
-			<uuidstructure>01c0ed78-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>01c0ed79-a492-11e6-8103-0a0027000003</uuidresource>
 			<datecreated>Mon, 07 Nov 2016 02:29:28 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
@@ -2127,18 +1759,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/workplace/demos/messages_de.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/workplace/demos/messages_de.properties</destination>
-			<type>plain</type>
-			<uuidstructure>020ff7e8-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>020ff7e9-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:28 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/locales/zh/messages/org/opencms/workplace/demos/messages_zh.properties</source>
 			<destination>system/workplace/locales/zh/messages/org/opencms/workplace/demos/messages_zh.properties</destination>
 			<type>plain</type>
@@ -2239,35 +1859,11 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/workplace/editors/ade/messages_de.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/workplace/editors/ade/messages_de.properties</destination>
-			<type>plain</type>
-			<uuidstructure>024d00f8-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>024d00f9-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:29 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/locales/zh/messages/org/opencms/workplace/editors/ade/messages_zh.properties</source>
 			<destination>system/workplace/locales/zh/messages/org/opencms/workplace/editors/ade/messages_zh.properties</destination>
 			<type>plain</type>
 			<uuidstructure>0250aa7a-a492-11e6-8103-0a0027000003</uuidstructure>
 			<uuidresource>0250aa7b-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:29 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/workplace/editors/ade/messagesADE_de.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/workplace/editors/ade/messagesADE_de.properties</destination>
-			<type>plain</type>
-			<uuidstructure>0244c394-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>0244c395-a492-11e6-8103-0a0027000003</uuidresource>
 			<datecreated>Mon, 07 Nov 2016 02:29:29 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
@@ -2411,18 +2007,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<type>folder</type>
 			<uuidstructure>f1c1833f-05d6-11e6-97a8-0a0027000000</uuidstructure>
 			<datecreated>Tue, 19 Apr 2016 02:32:21 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/workplace/help/mappings_zh.properties</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/workplace/help/mappings_zh.properties</destination>
-			<type>plain</type>
-			<uuidstructure>02880d36-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>02880d37-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:29 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -2874,18 +2458,6 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<type>plain</type>
 			<uuidstructure>035855b0-a492-11e6-8103-0a0027000003</uuidstructure>
 			<uuidresource>035855b1-a492-11e6-8103-0a0027000003</uuidresource>
-			<datecreated>Mon, 07 Nov 2016 02:29:30 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/zh/messages/org/opencms/workplace/tools/projects/messages_zh.properties.old</source>
-			<destination>system/workplace/locales/zh/messages/org/opencms/workplace/tools/projects/messages_zh.properties.old</destination>
-			<type>plain</type>
-			<uuidstructure>035c9b72-a492-11e6-8103-0a0027000003</uuidstructure>
-			<uuidresource>035c9b73-a492-11e6-8103-0a0027000003</uuidresource>
 			<datecreated>Mon, 07 Nov 2016 02:29:30 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
