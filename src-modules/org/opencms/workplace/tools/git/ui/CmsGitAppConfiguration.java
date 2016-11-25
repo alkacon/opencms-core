@@ -31,19 +31,22 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
-import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.workplace.tools.git.CmsGitCheckin;
 import org.opencms.workplace.tools.git.Messages;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
+import com.vaadin.ui.Component;
 
 /**
  * App configuration for the Git checkin tool.<p>
@@ -64,19 +67,25 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new I_CmsWorkplaceApp() {
+        return new A_CmsWorkplaceApp() {
 
-            public void initUI(I_CmsAppUIContext context) {
+            @Override
+            protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
 
-                CmsGitCheckin checkin = new CmsGitCheckin(A_CmsUI.getCmsObject());
-                context.setAppContent(new CmsGitToolOptionsPanel(checkin));
-                context.showInfoArea(false);
+                return null;
             }
 
-            public void onStateChange(String state) {
+            @Override
+            protected Component getComponentForState(String state) {
 
-                // TODO Auto-generated method stub
+                CmsGitCheckin checkin = new CmsGitCheckin(A_CmsUI.getCmsObject());
+                return new CmsGitToolOptionsPanel(checkin);
+            }
 
+            @Override
+            protected List<NavEntry> getSubNavEntries(String state) {
+
+                return null;
             }
         };
     }
