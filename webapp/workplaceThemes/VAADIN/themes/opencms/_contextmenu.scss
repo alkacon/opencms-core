@@ -8,6 +8,10 @@
 	    padding-right: $v-unit-size;
 	    position: relative;
 	  }
+	  
+	  &.#{$primary-stylename}-border-top > div:first-child:before{
+	  	display: block;
+	  }
 
 	  .#{$primary-stylename}-menuitem:hover {
 	    @include valo-selection-item-selected-style;

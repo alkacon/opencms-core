@@ -229,14 +229,13 @@ public class CmsUserInfo extends VerticalLayout {
         CmsUser user = cms.getRequestContext().getCurrentUser();
         StringBuffer infoHtml = new StringBuffer(128);
         infoHtml.append("<p>").append(CmsStringUtil.escapeHtml(user.getName())).append("</p>");
-        infoHtml.append("<p>");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getFirstname())) {
             infoHtml.append(CmsStringUtil.escapeHtml(user.getFirstname())).append("&nbsp;");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getLastname())) {
             infoHtml.append(CmsStringUtil.escapeHtml(user.getLastname()));
         }
-        infoHtml.append("</p>");
+        infoHtml.append(LINE_BREAK);
         return infoHtml.toString();
     }
 
@@ -253,7 +252,7 @@ public class CmsUserInfo extends VerticalLayout {
         CmsUser user = cms.getRequestContext().getCurrentUser();
         StringBuffer infoHtml = new StringBuffer(128);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getEmail())) {
-            infoHtml.append("<p>").append(CmsStringUtil.escapeHtml(user.getEmail())).append("</p>");
+            infoHtml.append(CmsStringUtil.escapeHtml(user.getEmail())).append(LINE_BREAK);
         }
         for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
             if (!info.getField().equals(Field.firstname)
@@ -279,27 +278,6 @@ public class CmsUserInfo extends VerticalLayout {
      */
     private void initUserMenu() {
 
-        //        m_menu.addMenuEntry(
-        //            createImageUploadButton(
-        //                CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_0),
-        //                null,
-        //                m_user,
-        //                m_uploadListener));
-        //        if (CmsUserIconHelper.hasUserImage(m_user)) {
-        //            m_menu.addMenuEntry(
-        //                CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_DELETE_IMAGE_0),
-        //                null).addClickListener(new ClickListener() {
-        //
-        //                    private static final long serialVersionUID = 1L;
-        //
-        //                    public void buttonClick(ClickEvent event) {
-        //
-        //                        OpenCms.getWorkplaceAppManager().getUserIconHelper().deleteUserImage(A_CmsUI.getCmsObject());
-        //                        m_context.updateUserInfo();
-        //
-        //                    }
-        //                });
-        //        }
         m_menu.addMenuEntry(
             CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_CHANGE_PASSWORD_BUTTON_0),
             null).addClickListener(new ClickListener() {
