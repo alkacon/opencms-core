@@ -1038,8 +1038,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             CmsTemplateContextInfo info = OpenCms.getTemplateContextManager().getContextInfoBean(cms, request);
             CmsResource containerPage = getContainerpage(cms);
+            boolean isEditingModelGroup = isEditingModelGroups(cms, containerPage);
             boolean isModelPage = isModelPage(cms, containerPage);
-
             if (isModelPage) {
                 // the model edit confirm dialog should only be shown once per session, disable it after first model editing
                 getRequest().getSession().setAttribute(
@@ -1080,9 +1080,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     noEditReason = getNoEditReason(rootCms, rootCms.readResource(permissionFolder));
                 }
             } else {
-                locationCache.setPageEditorLocation(
-                    cms.getRequestContext().getSiteRoot(),
-                    cms.getSitePath(containerPage));
+                if (!isModelPage && !isEditingModelGroup) {
+                    locationCache.setPageEditorLocation(
+                        cms.getRequestContext().getSiteRoot(),
+                        cms.getSitePath(containerPage));
+                }
                 noEditReason = getNoEditReason(cms, containerPage);
             }
 
@@ -1144,7 +1146,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     onlineLink = OpenCms.getLinkManager().getOnlineLink(cms, cms.getSitePath(containerPage));
                 }
             }
-            boolean isEditingModelGroup = isEditingModelGroups(cms, containerPage);
+
             String modelGroupElementId = null;
             if (isEditingModelGroup) {
                 CmsProperty modelElementProp = cms.readPropertyObject(

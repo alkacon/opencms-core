@@ -32,8 +32,10 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
@@ -96,6 +98,14 @@ public class CmsQuickLaunchProvider {
                 appConfigs.add(config);
             }
         }
+        CmsResource currentPage = null;
+        if (params.getPageId() != null) {
+            try {
+                currentPage = cms.readResource(params.getPageId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
         CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(session);
         for (I_CmsWorkplaceAppConfiguration config : appConfigs) {
             try {
@@ -114,7 +124,7 @@ public class CmsQuickLaunchProvider {
                     } else {
                         if (cms.existsResource("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                             link = CmsCoreService.getVaadinWorkplaceLink(cms, cms.getRequestContext().getSiteRoot());
-                        } else if (cms.existsResource(params.getPageId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                        } else if (currentPage != null) {
                             link = CmsCoreService.getVaadinWorkplaceLink(cms, params.getPageId());
                         } else {
                             errorTitle = config.getName(locale);
@@ -124,7 +134,18 @@ public class CmsQuickLaunchProvider {
                     }
                 } else if (CmsPageEditorConfiguration.APP_ID.equals(config.getId())) {
                     if (params.isPageContext()) {
-                        reload = true;
+                        if ((currentPage != null)
+                            && CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
+                                OpenCms.getResourceManager().getResourceType(currentPage).getTypeName())) {
+                            String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+                            if (page != null) {
+                                link = OpenCms.getLinkManager().substituteLink(cms, page);
+                            } else {
+                                reload = true;
+                            }
+                        } else {
+                            reload = true;
+                        }
                     } else if (params.isSitemapContext()) {
                         String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
                         if (page == null) {
@@ -145,8 +166,8 @@ public class CmsQuickLaunchProvider {
                         link = sitemapLink + "?path=" + page;
                     }
                 } else if (CmsTraditionalWorkplaceConfiguration.APP_ID.equals(config.getId())) {
-                    String resourceRootFolder = params.getPageId() != null
-                    ? CmsResource.getFolderPath(cms.readResource(params.getPageId()).getRootPath())
+                    String resourceRootFolder = currentPage != null
+                    ? CmsResource.getFolderPath(currentPage.getRootPath())
                     : cms.getRequestContext().getSiteRoot();
                     link = CmsWorkplace.getWorkplaceExplorerLink(cms, resourceRootFolder);
                     useLegacyButtonStyle = true;
