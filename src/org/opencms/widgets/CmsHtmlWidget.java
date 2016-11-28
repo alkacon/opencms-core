@@ -411,9 +411,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                         cms,
                         OpenCmsSpellcheckHandler.getSpellcheckHandlerPath()));
 
-                result.put(
-                    "spellcheck_language",
-                    "+" + contentLocale.getDisplayLanguage(workplaceLocale) + "=" + contentLocale.getLanguage());
+                result.put("spellcheck_language", contentLocale.getLanguage());
             }
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);

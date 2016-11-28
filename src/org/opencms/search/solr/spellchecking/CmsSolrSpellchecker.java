@@ -375,13 +375,13 @@ public final class CmsSolrSpellchecker {
     private CmsSpellcheckingRequest parseJsonRequest(JSONObject jsonRequest) {
 
         final String id = jsonRequest.optString(JSON_ID);
-        final String lang = jsonRequest.optString(JSON_LANG, LANG_DEFAULT);
         final JSONObject params = jsonRequest.optJSONObject(JSON_PARAMS);
 
         if (null == params) {
             LOG.debug("Invalid JSON request: No field \"params\" defined. ");
             return null;
         }
+        final String lang = params.optString(JSON_LANG, LANG_DEFAULT);
         final JSONArray words = params.optJSONArray(JSON_WORDS);
 
         if (null == words) {
