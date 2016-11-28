@@ -43,6 +43,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
@@ -50,9 +51,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
-import org.opencms.ui.components.fileselect.A_CmsFileSelectField;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
-import org.opencms.ui.components.fileselect.CmsResourceSelectField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -85,8 +84,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** The copy/move actions. */
     public static enum Action {
 
-        /** Automatic action selection. */
-        automatic,
         /** Copy container page automatic mode. */
         container_page_automatic,
         /** Copy container page including referenced elements. */
@@ -121,6 +118,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The default actions. */
+    List<Action> m_defaultActions;
+
     /** The action radio buttons. */
     private ComboBox m_actionCombo;
 
@@ -139,9 +139,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** Indicates the copy folder has a default file of the type container page. */
     private boolean m_hasContainerPageDefaultFile;
 
-    /** If the is a multi resource action. */
-    private boolean m_isMultiResource;
-
     /** The OK button. */
     private Button m_okButton;
 
@@ -150,9 +147,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
     /** The root cms context. */
     private CmsObject m_rootCms;
-
-    /** The target select field. */
-    private CmsResourceSelectField m_targetFolder;
 
     /** The target path select field. */
     private CmsPathSelectField m_targetPath;
@@ -170,10 +164,11 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         m_dialogMode = mode;
         m_updateResources = new HashSet<CmsUUID>();
         m_context = context;
-        m_isMultiResource = m_context.getResources().size() != 1;
+        m_defaultActions = new ArrayList<Action>();
         displayResourceInfo(context.getResources());
         FormLayout form = initForm();
         setContent(form);
+        updateDefaultActions(null);
         m_okButton = new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
         m_okButton.addClickListener(new ClickListener() {
 
@@ -237,11 +232,8 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     public void setTargetForlder(CmsResource resource) {
 
         if (resource.isFolder()) {
-            if (m_isMultiResource) {
-                m_targetFolder.setValue(resource);
-            } else {
-                m_targetPath.setValue(getCms().getSitePath(resource));
-            }
+            m_targetPath.setValue(getCms().getSitePath(resource));
+            updateDefaultActions(resource.getRootPath());
         } else {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(
@@ -392,18 +384,23 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         try {
             CmsResource targetFolder;
             String targetName = null;
-            if (m_isMultiResource) {
-                targetFolder = m_targetFolder.getValue();
-            } else {
-                String target = m_targetPath.getValue();
-                if (getCms().existsResource(target)) {
-                    targetFolder = getCms().readResource(target);
+            String target = m_targetPath.getValue();
+            // resolve relative paths
+            target = CmsLinkManager.getAbsoluteUri(
+                target,
+                CmsResource.getParentFolder(getCms().getSitePath(m_context.getResources().get(0))));
 
-                } else {
-                    targetName = CmsResource.getName(target);
-                    targetFolder = getCms().readResource(CmsResource.getParentFolder(target));
-                }
+            // check if the given path is a root path
+            CmsObject cms = OpenCms.getSiteManager().getSiteForRootPath(target) != null ? getRootCms() : getCms();
+
+            if (cms.existsResource(target)) {
+                targetFolder = cms.readResource(target);
+
+            } else {
+                targetName = CmsResource.getName(target);
+                targetFolder = cms.readResource(CmsResource.getParentFolder(target));
             }
+
             if (targetFolder.isFile()) {
                 throw new CmsVfsException(
                     Messages.get().container(
@@ -418,20 +415,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                     return;
                 }
             }
-            Action action = (Action)m_actionCombo.getValue();
-            if (action == Action.automatic) {
-                if (m_hasContainerPageDefaultFile) {
-                    action = Action.container_page_automatic;
-                } else if (m_context.getResources().size() == 1) {
-                    if (CmsResourceTypeFolderSubSitemap.isSubSitemap(m_context.getResources().get(0))) {
-                        action = Action.sub_sitemap;
-                    } else if (m_context.getResources().get(0).isFile()) {
-                        action = Action.copy_all;
-                    }
-                } else {
-                    action = Action.copy_sibling_mixed;
-                }
-            }
+            Action action = m_actionCombo != null ? (Action)m_actionCombo.getValue() : Action.move;
             Map<CmsResource, CmsException> errors = new HashMap<CmsResource, CmsException>();
             if (targetName == null) {
                 for (CmsResource source : m_context.getResources()) {
@@ -562,38 +546,28 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
         FormLayout form = new FormLayout();
         form.setWidth("100%");
-        A_CmsFileSelectField<?> targetSelect;
-        if (m_isMultiResource) {
-            m_targetFolder = new CmsResourceSelectField();
-            targetSelect = m_targetFolder;
-        } else {
-            m_targetPath = new CmsPathSelectField();
-            targetSelect = m_targetPath;
-        }
-        targetSelect.setCaption(
+        m_targetPath = new CmsPathSelectField();
+        m_targetPath.setCaption(
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_TARGET_FOLDER_0));
-        targetSelect.setFileSelectCaption(
+        m_targetPath.setFileSelectCaption(
             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0));
-        targetSelect.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
-        targetSelect.setWidth("100%");
-        form.addComponent(targetSelect);
+        m_targetPath.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
+        m_targetPath.setWidth("100%");
+        form.addComponent(m_targetPath);
 
         if (m_dialogMode != DialogMode.move) {
-            final Set<Action> defaultActions = new HashSet<Action>();
-
             m_actionCombo = new ComboBox();
             m_actionCombo.setCaption(CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_COPYPAGE_COPY_MODE_0));
             m_actionCombo.setNullSelectionAllowed(false);
             m_actionCombo.setNewItemsAllowed(false);
             m_actionCombo.setWidth("100%");
-            m_actionCombo.addItem(Action.automatic);
-            m_actionCombo.setItemCaption(
-                Action.automatic,
-                CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_AUTOMATIC_0));
-            m_actionCombo.setValue(Action.automatic);
+            //            m_actionCombo.addItem(Action.automatic);
+            //            m_actionCombo.setItemCaption(
+            //                Action.automatic,
+            //                CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_AUTOMATIC_0));
+            //            m_actionCombo.setValue(Action.automatic);
             if (m_context.getResources().size() == 1) {
                 if (m_context.getResources().get(0).isFile()) {
-                    defaultActions.add(Action.copy_all);
                     m_actionCombo.addItem(Action.copy_all);
                     m_actionCombo.setItemCaption(
                         Action.copy_all,
@@ -612,23 +586,17 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 } else {
                     CmsResource folder = m_context.getResources().get(0);
                     m_hasContainerPageDefaultFile = hasContainerPageDefaultFile(folder);
-                    defaultActions.add(Action.copy_sibling_mixed);
                     if (m_hasContainerPageDefaultFile) {
-                        defaultActions.clear();
-                        defaultActions.add(Action.container_page_copy);
                         m_actionCombo.addItem(Action.container_page_copy);
                         m_actionCombo.setItemCaption(
                             Action.container_page_copy,
                             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONTAINERPAGE_COPY_0));
-                        defaultActions.add(Action.container_page_reuse);
                         m_actionCombo.addItem(Action.container_page_reuse);
                         m_actionCombo.setItemCaption(
                             Action.container_page_reuse,
                             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONTAINERPAGE_REUSE_0));
                     }
                     if (CmsResourceTypeFolderSubSitemap.isSubSitemap(folder)) {
-                        defaultActions.clear();
-                        defaultActions.add(Action.sub_sitemap);
                         m_actionCombo.addItem(Action.sub_sitemap);
                         m_actionCombo.setItemCaption(
                             Action.sub_sitemap,
@@ -657,7 +625,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                     }
                 }
             } else {
-                defaultActions.add(Action.copy_sibling_mixed);
                 m_actionCombo.addItem(Action.copy_sibling_mixed);
                 m_actionCombo.setItemCaption(
                     Action.copy_sibling_mixed,
@@ -686,7 +653,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 public String getStyle(ComboBox source, Object itemId) {
 
                     String style = null;
-                    if (defaultActions.contains(itemId)) {
+                    if (m_defaultActions.contains(itemId)) {
                         style = "bold";
                     }
                     return style;
@@ -746,4 +713,43 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         UI.getCurrent().addWindow(window);
     }
 
+    /**
+     * Updates the default dialog actions.<p>
+     *
+     * @param targetRootPath the target root path
+     */
+    private void updateDefaultActions(String targetRootPath) {
+
+        if (m_actionCombo != null) {
+            m_defaultActions.clear();
+            String resPath = m_context.getResources().get(0).getRootPath();
+            String parentFolder = CmsResource.getParentFolder(resPath);
+            if ((DialogMode.copy_and_move == m_dialogMode) && !parentFolder.equals(targetRootPath)) {
+                m_defaultActions.clear();
+                m_defaultActions.add(Action.move);
+            } else if (m_context.getResources().size() == 1) {
+                if (m_context.getResources().get(0).isFile()) {
+                    m_defaultActions.add(Action.copy_all);
+                } else {
+                    m_defaultActions.add(Action.copy_sibling_mixed);
+                    if (m_hasContainerPageDefaultFile) {
+                        m_defaultActions.clear();
+                        m_defaultActions.add(Action.container_page_copy);
+                        m_defaultActions.add(Action.container_page_reuse);
+                    }
+                    CmsResource folder = m_context.getResources().get(0);
+                    if (CmsResourceTypeFolderSubSitemap.isSubSitemap(folder)) {
+                        m_defaultActions.clear();
+                        m_defaultActions.add(Action.sub_sitemap);
+                    }
+                }
+            } else {
+                m_defaultActions.add(Action.copy_sibling_mixed);
+            }
+            if (!m_defaultActions.isEmpty()) {
+                m_actionCombo.setValue(m_defaultActions.get(0));
+            }
+            m_actionCombo.markAsDirty();
+        }
+    }
 }
