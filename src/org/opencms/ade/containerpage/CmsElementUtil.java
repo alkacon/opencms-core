@@ -502,6 +502,7 @@ public class CmsElementUtil {
                             elementData.getSettings().put(
                                 CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()),
                                 formatter.getId());
+                            element.addFormatterSetting(cnt.getName(), formatter.getId());
                         }
                     } else {
                         Map<String, I_CmsFormatterBean> formatterSelection = formatterConfiguraton.getFormatterSelection(

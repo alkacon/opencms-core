@@ -653,6 +653,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 container,
                 m_isNew);
             if (m_isNew) {
+                CmsDebugLog.consoleLog("Setting new type: " + CmsContainerpageController.getServerId(m_draggableId));
                 containerElement.setNewType(CmsContainerpageController.getServerId(m_draggableId));
             } else {
                 m_controller.addToRecentList(elementData.getClientId(), null);

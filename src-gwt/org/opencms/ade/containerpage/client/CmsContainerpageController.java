@@ -1695,44 +1695,30 @@ public final class CmsContainerpageController {
      */
     public void getNewElement(final String resourceType, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
-        if (m_elements.containsKey(resourceType)) {
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
 
-                /**
-                 * @see com.google.gwt.user.client.Command#execute()
-                 */
-                public void execute() {
+            @Override
+            public void execute() {
 
-                    callback.execute(m_elements.get(resourceType));
+                getContainerpageService().getNewElementData(
+                    getData().getRpcContext(),
+                    getData().getDetailId(),
+                    getRequestParams(),
+                    resourceType,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
+                    getLocale(),
+                    this);
+            }
 
-                }
-            });
-        } else {
-            CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+            @Override
+            protected void onResponse(CmsContainerElementData result) {
 
-                @Override
-                public void execute() {
-
-                    getContainerpageService().getNewElementData(
-                        getData().getRpcContext(),
-                        getData().getDetailId(),
-                        getRequestParams(),
-                        resourceType,
-                        getPageState(),
-                        !isGroupcontainerEditing(),
-                        getLocale(),
-                        this);
-                }
-
-                @Override
-                protected void onResponse(CmsContainerElementData result) {
-
-                    m_elements.put(result.getClientId(), result);
-                    callback.execute(result);
-                }
-            };
-            action.execute();
-        }
+                m_elements.put(result.getClientId(), result);
+                callback.execute(result);
+            }
+        };
+        action.execute();
     }
 
     /**

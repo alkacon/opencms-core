@@ -1225,28 +1225,28 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * Resets the node inserted handler.<p>
      */
     private native void resetNodeInsertedHandler()/*-{
-        var $this = this;
-        var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-        var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-        if (handler == null) {
-            handler = function(event) {
-                $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-            };
-            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-        } else {
-            if (element.removeEventLister) {
-                element.removeEventListener("DOMNodeInserted", handler);
-            } else if (element.detachEvent) {
-                // IE specific
-                element.detachEvent("onDOMNodeInserted", handler);
-            }
-        }
-        if (element.addEventListener) {
-            element.addEventListener("DOMNodeInserted", handler, false);
-        } else if (element.attachEvent) {
-            // IE specific
-            element.attachEvent("onDOMNodeInserted", handler);
-        }
+		var $this = this;
+		var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+		var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+		if (handler == null) {
+			handler = function(event) {
+				$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+			};
+			$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+		} else {
+			if (element.removeEventLister) {
+				element.removeEventListener("DOMNodeInserted", handler);
+			} else if (element.detachEvent) {
+				// IE specific
+				element.detachEvent("onDOMNodeInserted", handler);
+			}
+		}
+		if (element.addEventListener) {
+			element.addEventListener("DOMNodeInserted", handler, false);
+		} else if (element.attachEvent) {
+			// IE specific
+			element.attachEvent("onDOMNodeInserted", handler);
+		}
     }-*/;
 
     /**

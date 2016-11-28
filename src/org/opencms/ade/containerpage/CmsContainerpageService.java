@@ -905,7 +905,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     public CmsContainerElementData getNewElementData(
         CmsContainerPageRpcContext context,
-
         CmsUUID detailContentId,
         String reqParams,
         String resourceType,
@@ -2341,20 +2340,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             getResponse(),
             true,
             locale);
-        CmsContainerElementBean elementBean = getSessionCache().getCacheContainerElement(resourceTypeName);
-        if (elementBean == null) {
-            CmsADEConfigData configData = getConfigData(cms.getRequestContext().addSiteRoot(uriParam));
-            CmsResourceTypeConfig typeConfig = configData.getResourceType(resourceTypeName);
-            elementBean = CmsContainerElementBean.createElementForResourceType(
-                cms,
-                OpenCms.getResourceManager().getResourceType(resourceTypeName),
-                "/",
-                Collections.<String, String> emptyMap(),
-                typeConfig.isCopyInModels(),
-                locale);
-            getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
-        }
-        return elemUtil.getElementData(elemUtil.getPage(), elementBean, containers, allowNested);
+        CmsADEConfigData configData = getConfigData(cms.getRequestContext().addSiteRoot(uriParam));
+        CmsResourceTypeConfig typeConfig = configData.getResourceType(resourceTypeName);
+        CmsContainerElementBean elementBean = CmsContainerElementBean.createElementForResourceType(
+            cms,
+            OpenCms.getResourceManager().getResourceType(resourceTypeName),
+            "/",
+            Collections.<String, String> emptyMap(),
+            typeConfig.isCopyInModels(),
+            locale);
+        CmsContainerElementData data = elemUtil.getElementData(
+            elemUtil.getPage(),
+            elementBean,
+            containers,
+            allowNested);
+        getSessionCache().setCacheContainerElement(resourceTypeName, elementBean);
+        getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
+        return data;
     }
 
     /**

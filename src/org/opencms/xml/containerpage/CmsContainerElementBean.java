@@ -30,6 +30,7 @@ package org.opencms.xml.containerpage;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -343,6 +344,20 @@ public class CmsContainerElementBean implements Cloneable {
             return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         return "";
+    }
+
+    /**
+     * Adds a formatter setting.<p>
+     *
+     * @param containerName the container name
+     * @param formatterId the formatter id
+     */
+    public void addFormatterSetting(String containerName, String formatterId) {
+
+        Map<String, String> newSettings = new HashMap<String, String>(m_individualSettings);
+        newSettings.put(CmsFormatterConfig.getSettingsKeyForContainer(containerName), formatterId);
+        m_individualSettings = Collections.unmodifiableMap(newSettings);
+        m_editorHash = m_elementId.toString() + getSettingsHash();
     }
 
     /**

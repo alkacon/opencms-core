@@ -63,6 +63,20 @@ public class CmsAddToFavoritesButton extends A_CmsToolbarOptionButton {
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
+     */
+    @Override
+    public boolean isOptionAvailable(CmsContainerPageElementPanel element) {
+
+        try {
+            element.getStructureId();
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     @Override
