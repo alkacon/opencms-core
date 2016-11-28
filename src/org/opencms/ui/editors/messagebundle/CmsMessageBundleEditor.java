@@ -523,8 +523,10 @@ I_OptionListener, I_CmsHasShortcutActions {
 
         // Try to put the focus on the "Add key" input field first
         if (!m_options.focusAddKey()) {
+            // TODO: Find a better solution
             // NOTE: A collection is returned, but actually it's a linked list.
             // It's a hack, but actually I don't know how to do better here.
+            @SuppressWarnings("unchecked")
             List<Integer> visibleItemIds = (List<Integer>)m_table.getVisibleItemIds();
             if (!visibleItemIds.isEmpty()) {
                 Map<Integer, AbstractTextField> firstEditableCol = m_fieldFactories.get(

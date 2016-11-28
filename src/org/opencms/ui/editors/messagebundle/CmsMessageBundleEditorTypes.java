@@ -416,20 +416,20 @@ public final class CmsMessageBundleEditorTypes {
     static final class KeySet {
 
         /** Map from keys to the number of locales they are present. */
-        Map<String, Integer> m_keyset;
+        Map<Object, Integer> m_keyset;
 
         /** Default constructor. */
         public KeySet() {
-            m_keyset = new HashMap<String, Integer>();
+            m_keyset = new HashMap<Object, Integer>();
         }
 
         /**
          * Returns the current key set.
          * @return the current key set.
          */
-        public Set<String> getKeySet() {
+        public Set<Object> getKeySet() {
 
-            return new HashSet<String>(m_keyset.keySet());
+            return new HashSet<Object>(m_keyset.keySet());
         }
 
         /**
@@ -463,15 +463,15 @@ public final class CmsMessageBundleEditorTypes {
          * @param oldKeys keys of a locale as registered before
          * @param newKeys keys of the locale now
          */
-        public void updateKeySet(Set<String> oldKeys, Set<String> newKeys) {
+        public void updateKeySet(Set<Object> oldKeys, Set<Object> newKeys) {
 
             // Remove keys that are not present anymore
             if (null != oldKeys) {
-                Set<String> removedKeys = new HashSet<String>(oldKeys);
+                Set<Object> removedKeys = new HashSet<Object>(oldKeys);
                 if (null != newKeys) {
                     removedKeys.removeAll(newKeys);
                 }
-                for (String key : removedKeys) {
+                for (Object key : removedKeys) {
                     Integer i = m_keyset.get(key);
                     int uses = null != i ? i.intValue() : 0;
                     if (uses > 1) {
@@ -484,11 +484,11 @@ public final class CmsMessageBundleEditorTypes {
 
             // Add keys that are new
             if (null != newKeys) {
-                Set<String> addedKeys = new HashSet<String>(newKeys);
+                Set<Object> addedKeys = new HashSet<Object>(newKeys);
                 if (null != oldKeys) {
                     addedKeys.removeAll(oldKeys);
                 }
-                for (String key : addedKeys) {
+                for (Object key : addedKeys) {
                     if (m_keyset.containsKey(key)) {
                         m_keyset.put(key, Integer.valueOf(m_keyset.get(key).intValue() + 1));
                     } else {
@@ -688,8 +688,10 @@ public final class CmsMessageBundleEditorTypes {
                 @SuppressWarnings("boxing") // rowIdInteger should never be null
                 int rowId = Integer.valueOf(rowIdInteger);
 
+                // TODO: Find a better solution?
                 // NOTE: A collection is returned, but actually it's a linked list.
                 // It's a hack, but actually I don't know how to do better here.
+                @SuppressWarnings("unchecked")
                 List<Integer> visibleItemIds = (List<Integer>)m_table.getVisibleItemIds();
 
                 if ((action == m_curDown) || (action == m_enter)) {

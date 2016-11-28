@@ -234,7 +234,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     /** The xml bundle edited (or null, if a property bundle is edited). */
     private CmsXmlContent m_xmlBundle;
     /** The already loaded localizations. */
-    private Map<Locale, Map<String, String>> m_localizations;
+    private Map<Locale, Properties> m_localizations;
     /** The bundle's base name. */
     private String m_basename;
     /** The site path to the folder where the edited resource is in. */
@@ -305,7 +305,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
         m_bundleFiles = new HashMap<Locale, CmsResource>();
         m_lockedBundleFiles = new HashMap<Locale, LockedFile>();
-        m_localizations = new HashMap<Locale, Map<String, String>>();
+        m_localizations = new HashMap<Locale, Properties>();
         m_keyset = new CmsMessageBundleEditorTypes.KeySet();
 
         m_bundleType = initBundleType();
@@ -330,25 +330,6 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
         initEditorStates();
 
-    }
-
-    /**
-     * Converts {@link Properties} to {@link Map} from {@link String} to {@link String}.
-     *
-     * @param props the properties to convert.
-     * @return the resulting map.
-     */
-    private static Map<String, String> propertiesToMap(Properties props) {
-
-        if (null == props) {
-            return new HashMap<String, String>();
-        }
-        Map<String, String> map = new HashMap<String, String>(props.size());
-        for (Object key : props.keySet()) {
-            String rawProperty = props.getProperty((String)key);
-            map.put((String)key, rawProperty);
-        }
-        return map;
     }
 
     /**
@@ -416,7 +397,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     /** Returns the a set with all keys that are used at least in one translation.
      * @return the a set with all keys that are used at least in one translation.
      */
-    public Set<String> getAllUsedKeys() {
+    public Set<Object> getAllUsedKeys() {
 
         return m_keyset.getKeySet();
     }
@@ -472,7 +453,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 final Map<Locale, String> localesWithEntries = new HashMap<Locale, String>();
                 for (Locale l : m_localizations.keySet()) {
                     if (l != m_locale) {
-                        String value = m_localizations.get(l).get(key);
+                        String value = m_localizations.get(l).getProperty(key);
                         if ((null != value) && !value.isEmpty()) {
                             localesWithEntries.put(l, value);
                         }
@@ -497,7 +478,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("unused") Exception e) {
             //TODO: Improve
         }
         return result;
@@ -706,6 +687,12 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
     }
 
+    /**
+     * Saves the loaded XML bundle as property bundle.
+     * @throws UnsupportedEncodingException thrown if localizations from the XML bundle could not be loaded correctly.
+     * @throws CmsException thrown if any of the interactions with the VFS fails.
+     * @throws IOException thrown if localizations from the XML bundle could not be loaded correctly.
+     */
     public void saveAsPropertyBundle() throws UnsupportedEncodingException, CmsException, IOException {
 
         switch (m_bundleType) {
@@ -856,7 +843,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         container.addContainerProperty(TableProperty.TRANSLATION, String.class, "");
 
         // add entries
-        Map<String, String> localization = getLocalization(m_locale);
+        Properties localization = getLocalization(m_locale);
         CmsXmlContentValueSequence messages = m_descContent.getValueSequence(Descriptor.N_MESSAGE, Descriptor.LOCALE);
         String descValue;
         boolean hasDescription = false;
@@ -869,7 +856,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             Item item = container.getItem(itemId);
             String key = m_descContent.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(m_cms);
             item.getItemProperty(TableProperty.KEY).setValue(key);
-            String translation = localization.get(key);
+            String translation = localization.getProperty(key);
             item.getItemProperty(TableProperty.TRANSLATION).setValue(null == translation ? "" : translation);
             descValue = m_descContent.getValue(prefix + Descriptor.N_DESCRIPTION, Descriptor.LOCALE).getStringValue(
                 m_cms);
@@ -902,14 +889,14 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         container.addContainerProperty(TableProperty.TRANSLATION, String.class, "");
 
         // add entries
-        Map<String, String> localization = getLocalization(m_locale);
-        Set<String> keySet = m_keyset.getKeySet();
-        for (String key : keySet) {
+        Properties localization = getLocalization(m_locale);
+        Set<Object> keySet = m_keyset.getKeySet();
+        for (Object key : keySet) {
 
             Object itemId = container.addItem();
             Item item = container.getItem(itemId);
             item.getItemProperty(TableProperty.KEY).setValue(key);
-            String translation = localization.get(key);
+            Object translation = localization.get(key);
             item.getItemProperty(TableProperty.TRANSLATION).setValue(null == translation ? "" : translation);
         }
 
@@ -993,7 +980,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      * @throws IOException thrown if reading the properties from a file fails.
      * @throws CmsException thrown if reading the properties from a file fails.
      */
-    private Map<String, String> getLocalization(Locale locale) throws IOException, CmsException {
+    private Properties getLocalization(Locale locale) throws IOException, CmsException {
 
         if (null == m_localizations.get(locale)) {
             switch (m_bundleType) {
@@ -1111,7 +1098,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         // consider only available locales
         for (Locale l : m_locales) {
             if (m_xmlBundle.hasLocale(l)) {
-                Set<String> keys = new HashSet<String>();
+                Set<Object> keys = new HashSet<Object>();
                 for (I_CmsXmlContentValue msg : m_xmlBundle.getValueSequence("Message", l).getValues()) {
                     String msgpath = msg.getPath();
                     keys.add(m_xmlBundle.getStringValue(m_cms, msgpath + "/Key", l));
@@ -1164,7 +1151,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 resource = m_cms.readResource(filePath);
                 Properties props = new Properties();
                 props.load(new ByteArrayInputStream(m_cms.readFile(resource).getContents()));
-                m_keyset.updateKeySet(null, propertiesToMap(props).keySet());
+                m_keyset.updateKeySet(null, props.keySet());
                 m_bundleFiles.put(l, resource);
             }
         }
@@ -1208,8 +1195,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                                 new InputStreamReader(
                                     new ByteArrayInputStream(file.getFile().getContents()),
                                     file.getEncoding()));
-                            Map<String, String> properties = propertiesToMap(props);
-                            m_localizations.put(l, properties);
+                            m_localizations.put(l, props);
                         }
                     }
                 }
@@ -1262,8 +1248,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         m_lockedBundleFiles.put(locale, file);
         Properties props = new Properties();
         props.load(new InputStreamReader(new ByteArrayInputStream(file.getFile().getContents()), file.getEncoding()));
-        Map<String, String> properties = propertiesToMap(props);
-        m_localizations.put(locale, properties);
+        m_localizations.put(locale, props);
 
     }
 
@@ -1275,7 +1260,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private void loadLocalizationFromXmlBundle(Locale locale) {
 
         CmsXmlContentValueSequence messages = m_xmlBundle.getValueSequence("Message", locale);
-        Map<String, String> props = new HashMap<String, String>();
+        Properties props = new Properties();
         if (null != messages) {
             for (I_CmsXmlContentValue msg : messages.getValues()) {
                 String msgpath = msg.getPath();
@@ -1285,21 +1270,6 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             }
         }
         m_localizations.put(locale, props);
-    }
-
-    /**
-     * Converts a map with keys and values to properties.
-     *
-     * @param propMap the map to convert
-     * @return the properties object containing the map entries.
-     */
-    private Properties mapToProperties(Map<String, String> propMap) {
-
-        Properties props = new Properties();
-        for (Map.Entry<String, String> entry : propMap.entrySet()) {
-            props.put(entry.getKey(), entry.getValue());
-        }
-        return props;
     }
 
     /**
@@ -1331,7 +1301,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 e.printStackTrace();
                 return false;
             }
-            for (Map<String, String> localization : m_localizations.values()) {
+            for (Properties localization : m_localizations.values()) {
                 if (localization.containsKey(key)) {
                     localization.remove(key);
                 }
@@ -1366,9 +1336,9 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             e.printStackTrace();
             return false;
         }
-        for (Map<String, String> localization : m_localizations.values()) {
+        for (Properties localization : m_localizations.values()) {
             if (localization.containsKey(oldKey)) {
-                String value = localization.get(oldKey);
+                String value = localization.getProperty(oldKey);
                 localization.remove(oldKey);
                 localization.put(newKey, value);
             }
@@ -1399,22 +1369,22 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private boolean replaceValues(Locale locale) {
 
         try {
-            Map<String, String> localization = getLocalization(locale);
+            Properties localization = getLocalization(locale);
             if (hasDescriptor()) {
                 for (Object itemId : m_container.getItemIds()) {
                     Item item = m_container.getItem(itemId);
                     String key = item.getItemProperty(TableProperty.KEY).getValue().toString();
-                    String value = localization.get(key);
+                    Object value = localization.get(key);
                     item.getItemProperty(TableProperty.TRANSLATION).setValue(null == value ? "" : value);
                 }
             } else {
                 m_container.removeAllItems();
-                Set<String> keyset = m_keyset.getKeySet();
-                for (String key : keyset) {
+                Set<Object> keyset = m_keyset.getKeySet();
+                for (Object key : keyset) {
                     Object itemId = m_container.addItem();
                     Item item = m_container.getItem(itemId);
                     item.getItemProperty(TableProperty.KEY).setValue(key);
-                    String value = localization.get(key);
+                    Object value = localization.get(key);
                     item.getItemProperty(TableProperty.TRANSLATION).setValue(null == value ? "" : value);
                 }
                 if (m_container.getItemIds().isEmpty()) {
@@ -1434,7 +1404,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      */
     private void saveLocalization() {
 
-        Map<String, String> localization = new HashMap<String, String>();
+        Properties localization = new Properties();
         for (Object itemId : m_container.getItemIds()) {
             Item item = m_container.getItem(itemId);
             String key = item.getItemProperty(TableProperty.KEY).getValue().toString();
@@ -1469,16 +1439,14 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private void saveToPropertyVfsBundle() throws CmsException {
 
         for (Locale l : m_locales) {
-            Map<String, String> propMap = m_localizations.get(l);
-            if (null != propMap) {
-                Properties props = mapToProperties(propMap);
+            Properties props = m_localizations.get(l);
+            if (null != props) {
                 LockedFile f = m_lockedBundleFiles.get(l);
-                byte[] contentBytes;
                 try {
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     Writer writer = new OutputStreamWriter(outputStream, f.getEncoding());
                     props.store(writer, null);
-                    contentBytes = outputStream.toByteArray();
+                    byte[] contentBytes = outputStream.toByteArray();
                     CmsFile file = f.getFile();
                     file.setContents(contentBytes);
                     String contentEncodingProperty = m_cms.readPropertyObject(
@@ -1515,20 +1483,20 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private void saveToXmlVfsBundle() throws CmsException {
 
         for (Locale l : m_locales) {
-            Map<String, String> props = m_localizations.get(l);
+            Properties props = m_localizations.get(l);
             if (null != props) {
                 if (m_xmlBundle.hasLocale(l)) {
                     m_xmlBundle.removeLocale(l);
                 }
                 m_xmlBundle.addLocale(m_cms, l);
                 int i = 0;
-                for (String key : props.keySet()) {
-                    if (!key.isEmpty()) {
-                        String value = props.get(key);
+                for (Object key : props.keySet()) {
+                    if ((null != key) && !key.toString().isEmpty()) {
+                        String value = props.getProperty(key.toString());
                         if (!value.isEmpty()) {
                             m_xmlBundle.addValue(m_cms, "Message", l, i);
                             i++;
-                            m_xmlBundle.getValue("Message[" + i + "]/Key", l).setStringValue(m_cms, key);
+                            m_xmlBundle.getValue("Message[" + i + "]/Key", l).setStringValue(m_cms, key.toString());
                             m_xmlBundle.getValue("Message[" + i + "]/Value", l).setStringValue(m_cms, value);
                         }
                     }
