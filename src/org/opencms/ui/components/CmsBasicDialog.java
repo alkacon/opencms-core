@@ -49,7 +49,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -277,17 +276,17 @@ public class CmsBasicDialog extends VerticalLayout {
      *
      * @param window the parent window
      */
-    public void initActionHandler(Window window) {
+    public void initActionHandler(final Window window) {
 
         if (m_actionHandler != null) {
-            UI.getCurrent().addActionHandler(m_actionHandler);
+            window.addActionHandler(m_actionHandler);
             window.addCloseListener(new CloseListener() {
 
                 private static final long serialVersionUID = 1L;
 
                 public void windowClose(CloseEvent e) {
 
-                    clearActionHandler();
+                    clearActionHandler(window);
                 }
             });
         }
@@ -427,11 +426,13 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /**
      * Removes the action handler.<p>
+     *
+     * @param window the window the action handler is attached to
      */
-    void clearActionHandler() {
+    void clearActionHandler(Window window) {
 
         if (m_actionHandler != null) {
-            UI.getCurrent().removeActionHandler(m_actionHandler);
+            window.removeActionHandler(m_actionHandler);
         }
     }
 
