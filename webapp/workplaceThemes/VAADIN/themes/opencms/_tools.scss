@@ -49,7 +49,7 @@
 					padding-right: 13px;
 				}
 				
-				&.o-tools-breadcrumb-active, &:hover{
+				&.o-tools-breadcrumb-active{
 					background: $breadcrumb-background-active;
 					color: white;
 					&:after {
@@ -76,7 +76,14 @@
 				&:last-child:after {
 					content: none;
 				}
-				
+			}
+			a:hover{
+				$background-color: $v-table-background-color or valo-table-background-color();
+			  	$bg: mix($v-focus-color, $background-color, 20%);
+			  	background-color: $bg;
+				&:after {
+					background: $bg;
+				}
 			}
 		}
 		.o-tools-container{

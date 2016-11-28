@@ -18,11 +18,11 @@
   
   .v-button.o-button-plain {
   		min-width: 100px;
-  		@include valo-button-style($unit-size: 30px, $font-color: $v-font-color, $font-weight: bold, $background-color: $o-dark-background-color);
+  		@include valo-button-style($unit-size: 30px, $font-color: $v-font-color, $font-weight: bold, $background-color: $o-medium-background-color);
   }
   
   .v-button.o-button-icon {
-  		@include valo-button-style($unit-size: 30px, $padding: 0 8px, $font-color: $v-font-color, $font-size: 18px, $background-color: $o-dark-background-color);
+  		@include valo-button-style($unit-size: 30px, $padding: 0 8px, $font-color: $v-font-color, $font-size: 18px, $background-color: $o-medium-background-color);
   }
   
   .v-menubar.v-menubar-o-toolbar-button{

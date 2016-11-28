@@ -33,6 +33,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -145,7 +146,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         m_main.setExpandRatio(m_principalName, 2);
 
         m_selectPrincipalButton = new Button(FontAwesome.USER);
-        m_selectPrincipalButton.addStyleName("borderless");
+        m_selectPrincipalButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
         m_selectPrincipalButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -590,7 +591,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         if (enabled) {
             if (m_addPermissionSetButton == null) {
                 m_addPermissionSetButton = new Button(FontAwesome.PLUS);
-                m_addPermissionSetButton.addStyleName("borderless");
+                m_addPermissionSetButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
                 m_addPermissionSetButton.addClickListener(new ClickListener() {
 
                     private static final long serialVersionUID = 1L;
