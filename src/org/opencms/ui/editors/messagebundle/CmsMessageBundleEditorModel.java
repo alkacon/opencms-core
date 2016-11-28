@@ -63,9 +63,12 @@ import org.opencms.xml.content.CmsXmlContentValueSequence;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -330,16 +333,6 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     }
 
     /**
-     * Escapes line breaks that need to be escaped in a property in a .properties file.
-     * @param property the property without necessary escaping
-     * @return the property with the line breaks escaped.
-     */
-    private static String escapeLinebreaks(final String property) {
-
-        return property.replace("\n", "\\n\\\n\t").replace("\r", "\\r");
-    }
-
-    /**
      * Converts {@link Properties} to {@link Map} from {@link String} to {@link String}.
      *
      * @param props the properties to convert.
@@ -353,20 +346,9 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         Map<String, String> map = new HashMap<String, String>(props.size());
         for (Object key : props.keySet()) {
             String rawProperty = props.getProperty((String)key);
-            String unescapedProperty = unescapeProperty(rawProperty);
-            map.put((String)key, unescapedProperty);
+            map.put((String)key, rawProperty);
         }
         return map;
-    }
-
-    /**
-     * Un-escapes line breaks that were escaped in a property in a .properties file.
-     * @param rawProperty the property as it is read from the .properties file.
-     * @return the property with the escaping for line breaks removed.
-     */
-    private static String unescapeProperty(final String rawProperty) {
-
-        return rawProperty.replace("\\n", "\n").replace("\\r", "\r");
     }
 
     /**
@@ -968,6 +950,14 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
     }
 
+    /**
+     * Creates all propertyvfsbundle files for the currently loaded translations.
+     * The method is used to convert xmlvfsbundle files into propertyvfsbundle files.
+     *
+     * @throws CmsIllegalArgumentException thrown if resource creation fails.
+     * @throws CmsLoaderException thrown if the propertyvfsbundle type can't be read from the resource manager.
+     * @throws CmsException thrown if creation, type retrieval or locking fails.
+     */
     private void createPropertyVfsBundleFiles() throws CmsIllegalArgumentException, CmsLoaderException, CmsException {
 
         String bundleFileBasePath = m_sitepath + m_basename + "_";
@@ -1298,6 +1288,21 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     }
 
     /**
+     * Converts a map with keys and values to properties.
+     *
+     * @param propMap the map to convert
+     * @return the properties object containing the map entries.
+     */
+    private Properties mapToProperties(Map<String, String> propMap) {
+
+        Properties props = new Properties();
+        for (Map.Entry<String, String> entry : propMap.entrySet()) {
+            props.put(entry.getKey(), entry.getValue());
+        }
+        return props;
+    }
+
+    /**
      * Remove a key for all language versions. If a descriptor is present, the key is only removed in the descriptor.
      *
      * @param key the key to remove.
@@ -1335,6 +1340,10 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         return true;
     }
 
+    /**
+     * Deletes the VFS XML bundle file.
+     * @throws CmsException thrown if the delete operation fails.
+     */
     private void removeXmlBundleFile() throws CmsException {
 
         m_cms.deleteResource(m_resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
@@ -1460,46 +1469,40 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private void saveToPropertyVfsBundle() throws CmsException {
 
         for (Locale l : m_locales) {
-            Map<String, String> props = m_localizations.get(l);
-            if (null != props) {
-                StringBuffer content = new StringBuffer();
-                for (String key : props.keySet()) {
-                    if (!key.isEmpty()) {
-                        String value = props.get(key);
-                        if (!value.isEmpty()) {
-                            String escapedValue = escapeLinebreaks(value);
-                            content.append(key).append("=").append(escapedValue).append("\n");
-                        }
-                    }
-                }
+            Map<String, String> propMap = m_localizations.get(l);
+            if (null != propMap) {
+                Properties props = mapToProperties(propMap);
                 LockedFile f = m_lockedBundleFiles.get(l);
                 byte[] contentBytes;
                 try {
-                    contentBytes = content.toString().getBytes(f.getEncoding());
-                } catch (UnsupportedEncodingException e) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    Writer writer = new OutputStreamWriter(outputStream, f.getEncoding());
+                    props.store(writer, null);
+                    contentBytes = outputStream.toByteArray();
+                    CmsFile file = f.getFile();
+                    file.setContents(contentBytes);
+                    String contentEncodingProperty = m_cms.readPropertyObject(
+                        file,
+                        CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                        false).getValue();
+                    if ((null == contentEncodingProperty) || !contentEncodingProperty.equals(f.getEncoding())) {
+                        m_cms.writePropertyObject(
+                            m_cms.getSitePath(file),
+                            new CmsProperty(
+                                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                                f.getEncoding(),
+                                f.getEncoding()));
+                    }
+                    m_cms.writeFile(file);
+                } catch (IOException e) {
                     LOG.error(
                         Messages.get().getBundle().key(
                             Messages.ERR_READING_FILE_UNSUPPORTED_ENCODING_2,
                             f.getFile().getRootPath(),
                             f.getEncoding()),
                         e);
-                    contentBytes = content.toString().getBytes();
+
                 }
-                CmsFile file = f.getFile();
-                file.setContents(contentBytes);
-                String contentEncodingProperty = m_cms.readPropertyObject(
-                    file,
-                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                    false).getValue();
-                if ((null == contentEncodingProperty) || !contentEncodingProperty.equals(f.getEncoding())) {
-                    m_cms.writePropertyObject(
-                        m_cms.getSitePath(file),
-                        new CmsProperty(
-                            CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                            f.getEncoding(),
-                            f.getEncoding()));
-                }
-                m_cms.writeFile(file);
             }
         }
     }
