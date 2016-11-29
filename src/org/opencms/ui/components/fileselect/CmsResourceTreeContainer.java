@@ -223,6 +223,21 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
     }
 
     /**
+     * Updates the item order according to the latest sort setting.<p>
+     */
+    public void updateSort() {
+
+        doSort();
+
+        // Post sort updates
+        if (isFiltered()) {
+            filterAll();
+        } else {
+            fireItemSetChange();
+        }
+    }
+
+    /**
      * Defines the container properties.<p>
      */
     protected void defineProperties() {
