@@ -51,6 +51,14 @@
   span.v-treetable-treespacer{
   	line-height: $v-tree-row-height;
   	color: $v-font-color;
+  	&:after{
+  		content: "";
+  		position: absolute;
+  		top: 0;
+  		left: -200px;
+  		right: 0;
+  		bottom: 0;
+  	}
   }
   div.o-tree-table-caption{
   	width: 100%;
