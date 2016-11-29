@@ -156,6 +156,7 @@ dependencies {
     distribution group: 'org.noggit', name: 'noggit', version: '0.6'
     distribution group: 'org.owasp.antisamy', name: 'antisamy', version: '1.4.4'
     distribution group: 'org.restlet.jee', name: 'org.restlet', version: '2.3.1'
+    distribution group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.12'
     distribution group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
     distribution group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.12'
     distribution group: 'oro', name: 'oro', version: '2.0.8'
