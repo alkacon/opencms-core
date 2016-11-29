@@ -8,12 +8,12 @@
 
 	<display-name>OpenCms</display-name>
 
-	<description>
+	<description><![CDATA[
         OpenCms, the Open Source Content Management System. 
-        (c) Alkacon Software GmbH.
+        (c) Alkacon Software GmbH & Co. KG.
         For more details about OpenCms, please see http://www.opencms.org/.
-        For more details about Alkacon Software GmbH, please see http://www.alkacon.com/.    
-    </description>
+        For more details about Alkacon Software GmbH & Co. KG, please see http://www.alkacon.com/.    
+    ]]></description>
 
 	<!-- Changing the servlet name from "opencms" to something else requires 
 		2 changes in this file. For example, to change the servlet name to "mycms" 
