@@ -42,6 +42,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -152,6 +153,20 @@ public class CmsExtendedPublishResourceFormatter extends CmsDefaultPublishResour
     protected String getMessage(String key, String... args) {
 
         return Messages.get().getBundle(m_cms.getRequestContext().getLocale()).key(key, args);
+    }
+
+    /**
+     * @see org.opencms.workflow.CmsDefaultPublishResourceFormatter#getResourceMapFilter()
+     */
+    @Override
+    protected Predicate<CmsResource> getResourceMapFilter() {
+
+        // in 'release' mode, we don't want to filter, otherwise we use the filter from the parent class
+        if (m_isRelease) {
+            return null;
+        } else {
+            return super.getResourceMapFilter();
+        }
     }
 
     /**

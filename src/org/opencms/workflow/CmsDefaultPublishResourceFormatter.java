@@ -35,6 +35,7 @@ import org.opencms.ade.publish.shared.CmsPublishResourceInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -65,6 +66,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -257,6 +259,31 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
         }
     }
 
+    /**
+     * Predicate which checks whether the current user has publish permissions for a resource.<p>
+     */
+    public class PublishPermissionFilter implements Predicate<CmsResource> {
+
+        /**
+         * @see com.google.common.base.Predicate#apply(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public boolean apply(CmsResource input) {
+
+            try {
+                return m_cms.hasPermissions(
+                    input,
+                    CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                    false,
+                    CmsResourceFilter.ALL);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return true;
+            }
+        }
+
+    }
+
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultPublishResourceFormatter.class);
 
@@ -318,6 +345,10 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
     public void initialize(CmsPublishOptions options, ResourceMap resources) throws CmsException {
 
         m_options = options;
+        Predicate<CmsResource> resourceMapFilter = getResourceMapFilter();
+        if (resourceMapFilter != null) {
+            resources = resources.filter(resourceMapFilter);
+        }
         for (CmsResource parentRes : resources.keySet()) {
             m_resources.put(parentRes.getStructureId(), parentRes);
             for (CmsResource childRes : resources.get(parentRes)) {
@@ -423,6 +454,18 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
     protected Locale getLocale() {
 
         return OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+    }
+
+    /**
+     * Gets the resource map filter.<p>
+     *
+     * This can be used to remove resources which shouldn't be displayed.<p>
+     *
+     * @return a predicate whose
+     */
+    protected Predicate<CmsResource> getResourceMapFilter() {
+
+        return new PublishPermissionFilter();
     }
 
     /**
