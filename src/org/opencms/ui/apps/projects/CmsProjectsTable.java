@@ -57,6 +57,8 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
@@ -277,6 +279,9 @@ public class CmsProjectsTable extends Table {
     /** The serial version id. */
     private static final long serialVersionUID = 1540265836332964510L;
 
+    /** Project icon property. */
+    public static final String PROP_ICON = "icon";
+
     /** Project id property. */
     public static final String PROP_ID = "id";
 
@@ -326,6 +331,10 @@ public class CmsProjectsTable extends Table {
 
         m_container = new IndexedContainer();
         m_container.addContainerProperty(PROP_ID, CmsUUID.class, null);
+        m_container.addContainerProperty(
+            PROP_ICON,
+            Resource.class,
+            new ExternalResource(OpenCmsTheme.getImageLink(CmsProjectManager.ICON_PROJECT_SMALL)));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DESCRIPTION, String.class, "");
         m_container.addContainerProperty(PROP_ORG_UNIT, String.class, "");
@@ -336,6 +345,8 @@ public class CmsProjectsTable extends Table {
         m_container.addContainerProperty(PROP_RESOURCES, Label.class, "");
 
         setContainerDataSource(m_container);
+        setItemIconPropertyId(PROP_ICON);
+        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_NAME_0));
         setColumnHeader(PROP_DESCRIPTION, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DESCRIPTION_0));
         setColumnHeader(PROP_ORG_UNIT, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ORG_UNIT_0));
@@ -496,7 +507,7 @@ public class CmsProjectsTable extends Table {
 
         if (!event.isCtrlKey() && !event.isShiftKey()) {
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
                 CmsUUID itemId = (CmsUUID)event.getItemId();
                 Set<CmsUUID> value = (Set<CmsUUID>)getValue();
                 if (value == null) {

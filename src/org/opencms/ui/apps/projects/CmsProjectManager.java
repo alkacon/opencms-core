@@ -64,6 +64,9 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     /** The project history path name. */
     public static final String PATH_NAME_HISTORY = "history";
 
+    /** The small project icon path. */
+    public static final String ICON_PROJECT_SMALL = "apps/project_fileicon.png";
+
     /** The add project icon path. */
     private static final String ICON_ADD = "apps/project_add.png";
 
