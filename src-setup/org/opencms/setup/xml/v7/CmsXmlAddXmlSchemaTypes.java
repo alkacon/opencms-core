@@ -37,6 +37,7 @@ import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.widgets.CmsVfsImageWidget;
 import org.opencms.xml.types.CmsXmlCategoryValue;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlPlainTextStringValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsImageValue;
@@ -155,6 +156,7 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsXmlVfs {
             m_schemaData.put(CmsXmlVfsImageValue.class.getName(), CmsVfsImageWidget.class.getName());
             m_schemaData.put(CmsXmlPlainTextStringValue.class.getName(), CmsInputWidget.class.getName());
             m_schemaData.put(CmsXmlCategoryValue.class.getName(), CmsCategoryWidget.class.getName());
+            m_schemaData.put(CmsXmlDynamicCategoryValue.class.getName(), CmsCategoryWidget.class.getName());
         }
         return m_schemaData;
     }
