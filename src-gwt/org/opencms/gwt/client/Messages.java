@@ -91,6 +91,9 @@ public final class Messages {
     public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCATION_MISSING_API_KEY_1 = "ERR_LOCATION_MISSING_API_KEY_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROWSE_0 = "GUI_BROWSE_0";
 
     /** Message constant for key in the resource bundle. */

@@ -146,6 +146,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property stating where to create new gallery folders. */
     public static final String PROPERTY_GALLERIES_FOLDER = "galleries.folder";
 
+    /** Property containing the maps API key. */
+    public static final String PROPERTY_GOOGLE_API_KEY = "google.apikey";
+
     /** Property constant for <code>"image.size"</code>. */
     public static final String PROPERTY_IMAGE_SIZE = "image.size";
 

@@ -1,3 +1,5 @@
+@external gm-err-content;
+
 div.locationMainPanel div.mapCanvas {
 	float: left;
 	height: 400px;
@@ -15,6 +17,22 @@ div.locationMainPanel div.buttonBar {
 	bottom:5px;
 	right: 5px;
 	text-align: right;
+}
+
+div.gm-err-content, div.mapPreview > div > div:empty{
+	position: relative;
+}
+div.gm-err-content:after, div.mapPreview > div > div:empty:after{
+	content: "Missing API key";
+	text-align: center;
+	position: absolute;
+	background: value("constants.css.backgroundColorInputError")";
+	white-space: pre-wrap;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 3;
 }
 
 div.locationMainPanel div.buttonBar > div{
@@ -67,8 +85,8 @@ div.locationField input[type="text"]:focus{
 }
 div.opener{
 	position: absolute;
-	right: 3px;
-	top: 1px;
+	right: 6px;
+	top: 6px;
 }
 
 div.locationInfo{
