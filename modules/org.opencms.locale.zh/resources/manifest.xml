@@ -1241,6 +1241,28 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/zh/messages/org/opencms/search/replace</destination>
+			<type>folder</type>
+			<uuidstructure>6de9ff17-b5f7-11e6-a690-63fe7803cd8d</uuidstructure>
+			<datecreated>Tue, 29 Nov 2016 05:48:18 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/zh/messages/org/opencms/search/replace/messages_zh.properties</source>
+			<destination>system/workplace/locales/zh/messages/org/opencms/search/replace/messages_zh.properties</destination>
+			<type>plain</type>
+			<uuidstructure>78c90c09-b5f7-11e6-a690-63fe7803cd8d</uuidstructure>
+			<uuidresource>78c90c0a-b5f7-11e6-a690-63fe7803cd8d</uuidresource>
+			<datecreated>Tue, 29 Nov 2016 05:48:36 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/zh/messages/org/opencms/search/solr</destination>
 			<type>folder</type>
 			<uuidstructure>84507e06-050d-11e6-9266-0a0027000000</uuidstructure>
@@ -1499,6 +1521,38 @@ This module is base upon opencms 9.0.1 chinese localization,it is the ressult of
 			<uuidstructure>01ae76e4-a492-11e6-8103-0a0027000003</uuidstructure>
 			<uuidresource>01ae76e5-a492-11e6-8103-0a0027000003</uuidresource>
 			<datecreated>Mon, 07 Nov 2016 02:29:28 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/zh/messages/org/opencms/ui/editors</destination>
+			<type>folder</type>
+			<uuidstructure>c670328b-b5f7-11e6-a690-63fe7803cd8d</uuidstructure>
+			<datecreated>Tue, 29 Nov 2016 05:50:47 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/zh/messages/org/opencms/ui/editors/messagebundle</destination>
+			<type>folder</type>
+			<uuidstructure>d1638acd-b5f7-11e6-a690-63fe7803cd8d</uuidstructure>
+			<datecreated>Tue, 29 Nov 2016 05:51:05 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/zh/messages/org/opencms/ui/editors/messagebundle/messages_zh.properties</source>
+			<destination>system/workplace/locales/zh/messages/org/opencms/ui/editors/messagebundle/messages_zh.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6ea8c5d2-b5f8-11e6-a690-63fe7803cd8d</uuidstructure>
+			<uuidresource>6ea8c5d3-b5f8-11e6-a690-63fe7803cd8d</uuidresource>
+			<datecreated>Tue, 29 Nov 2016 05:55:29 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
