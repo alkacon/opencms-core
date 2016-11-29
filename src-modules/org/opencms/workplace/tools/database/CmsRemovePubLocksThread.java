@@ -3,9 +3,9 @@
  *
  * This license applies to all programs, pages, Java classes, parts and
  * modules of the Alkacon OpenCms Software library published by
- * Alkacon Software GmbH, unless otherwise noted.
+ * Alkacon Software GmbH & Co. KG, unless otherwise noted.
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,20 +21,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * companys website: http://www.alkacon.com.
  *
  * For further information about OpenCms, please see the OpenCms project
  * website: http://www.opencms.org.
  *
- * The names "Alkacon", "Alkacon Software GmbH" and "OpenCms" must not be used
+ * The names "Alkacon", "Alkacon Software GmbH & Co. KG" and "OpenCms" must not be used
  * to endorse or promote products derived from this software without prior
  * written permission. For written permission, please contact info@alkacon.com.
  *
  * Products derived from this software may not be called "Alkacon",
- * "Alkacon Software GmbH" or "OpenCms", nor may "Alkacon", "Alkacon Software GmbH"
+ * "Alkacon Software GmbH & Co. KG" or "OpenCms", nor may "Alkacon", "Alkacon Software GmbH & Co. KG"
  * or "OpenCms" appear in their name, without prior written permission of
- * Alkacon Software GmbH.
+ * Alkacon Software GmbH & Co. KG.
  *
  * This program is also available under a commercial non-GPL license. For
  * pricing and ordering information, please inquire at sales@alkacon.com.

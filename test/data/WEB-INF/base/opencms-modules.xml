@@ -58,9 +58,9 @@
 		<group>OpenCms ADE</group>
 		<class />
 		<description><![CDATA[Configuration for OpenCms websites.<br>
-<i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
+<i>&copy; 2015 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i>]]></description>
 		<version>10.0.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated />
 		<userinstalled />

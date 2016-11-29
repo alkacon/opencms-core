@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,7 +42,7 @@ public class CmsCloneModuleInfo {
     private String m_authorEmail = "sales@alkacon.com";
 
     /** The author's name used for the clone. */
-    private String m_authorName = "Alkacon Software GmbH";
+    private String m_authorName = "Alkacon Software GmbH & Co. KG";
 
     /** Option to change the resource types (optional flag). */
     private String m_changeResourceTypes;

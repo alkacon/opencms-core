@@ -1052,7 +1052,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
         repositoryInfo.setProductName("OpenCms");
         repositoryInfo.setProductVersion(OpenCms.getSystemInfo().getVersion());
-        repositoryInfo.setVendorName("Alkacon Software GmbH");
+        repositoryInfo.setVendorName("Alkacon Software GmbH & Co. KG");
         repositoryInfo.setRootFolder(m_root.getStructureId().toString());
         repositoryInfo.setThinClientUri("");
         repositoryInfo.setPrincipalAnonymous(OpenCms.getDefaultUsers().getUserGuest());

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -40,7 +40,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** The copyright message for OpenCms. */
     public static final String[] COPYRIGHT_BY_ALKACON = {
         "",
-        "Copyright (c) 2016 Alkacon Software GmbH",
+        "Copyright (c) 2016 Alkacon Software GmbH & Co. KG",
         "OpenCms comes with ABSOLUTELY NO WARRANTY",
         "This is free software, and you are welcome to",
         "redistribute it under certain conditions.",

@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Created-By: Alkacon Software GmbH - The OpenCms Experts
+Created-By: Alkacon Software GmbH & Co. KG - The OpenCms Experts
 Main-Class: org.opencms.main.CmsShell

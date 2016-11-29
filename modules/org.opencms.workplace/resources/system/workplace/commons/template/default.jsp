@@ -112,7 +112,7 @@
 		
 			<!-- begin: #footer -->
 			<div id="footer">
-				Built with <a href="http://www.opencms.org/">OpenCms - The Open Source Cms</a>, provided by <a href="http://www.alkacon.com" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH - The OpenCms Experts</a>
+				Built with <a href="http://www.opencms.org/">OpenCms - The Open Source Cms</a>, provided by <a href="http://www.alkacon.com" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH &amp; Co. KG - The OpenCms Experts</a>
 			</div>
 			<!-- end: #footer -->
 		

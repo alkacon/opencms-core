@@ -16,7 +16,7 @@
 <body>
     <div class="center">
         <h1>This is OpenCms <%= OpenCms.getSystemInfo().getVersionNumber() %></h1>
-        <p><a href="http://alkacon.com" target="_blank">&copy; Alkacon Software GmbH - All rights reserved</a></p>    
+        <p><a href="http://alkacon.com" target="_blank">&copy; Alkacon Software GmbH &amp; Co. KG - All rights reserved</a></p>    
         <h2>Version and Build Information</h2>    
     </div>
     
@@ -49,7 +49,7 @@
     <div class="center">
         <p>
             OpenCms is free software available under the GNU LGPL license.
-            Alkacon OpenCms and the OpenCms logo are registered trademarks of Alkacon Software GmbH.
+            Alkacon OpenCms and the OpenCms logo are registered trademarks of Alkacon Software GmbH &amp; Co. KG.
         </p>    
         <p>
             Visit the OpenCms Website at <a href="http://opencms.org" target="_blank">http://opencms.org</a>.
