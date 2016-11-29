@@ -189,6 +189,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
+            m_searchObject.setOriginalGalleryData(dialogBean);
             m_searchObject.setGalleryMode(m_dialogMode);
             m_searchObject.setIgnoreSearchExclude(m_dialogMode != GalleryMode.ade);
             m_searchObject.setLocale(m_dialogBean.getLocale());
@@ -1742,7 +1743,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                         availableTypes.add(type.getType());
                     }
                 }
-                preparedSearchObj.setTypes(availableTypes);
+                preparedSearchObj.setServerSearchTypes(availableTypes);
                 // at least one gallery is selected
             } else {
 
@@ -1759,9 +1760,11 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     availableTypes.add(type.getType());
                 }
 
-                preparedSearchObj.setTypes(
+                preparedSearchObj.setServerSearchTypes(
                     new ArrayList<String>(CmsClientCollectionUtil.intersection(availableTypes, galleryTypes)));
             }
+        } else {
+            preparedSearchObj.setServerSearchTypes(m_searchObject.getTypes());
         }
         if (m_galleriesChanged) {
             preparedSearchObj.setGalleriesChanged(true);
@@ -1916,7 +1919,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             protected void onResponse(List<CmsCategoryTreeEntry> result) {
 
                 m_dialogBean.setCategories(result);
-                m_handler.setCategoriesTabContent(result);
+                m_handler.setCategoriesTabContent(result, new ArrayList<String>());
                 m_handler.onCategoriesTabSelection();
                 stop(false);
             }

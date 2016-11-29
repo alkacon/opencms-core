@@ -31,13 +31,13 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
-import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -256,7 +256,7 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID elementView,
         String uri,
         String locale,
-        AsyncCallback<CmsGalleryDataBean> callback);
+        AsyncCallback<CmsContainerPageGalleryData> callback);
 
     /**
      * Returns new container element data for the given resource type name.<p>

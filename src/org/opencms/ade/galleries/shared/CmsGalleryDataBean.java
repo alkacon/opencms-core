@@ -32,6 +32,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +51,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** The category tree entry to display as tree. */
     private List<CmsCategoryTreeEntry> m_categoryTreeEntry;
+
+    /** Additional data about the context from which the gallery dialog was started. */
+    private Map<String, String> m_contextParameters = new HashMap<String, String>();
 
     /** The current element. */
     private String m_currentElement;
@@ -138,6 +142,19 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsCategoryTreeEntry> getCategories() {
 
         return m_categoryTreeEntry;
+    }
+
+    /**
+     * Gets the context parameters.<p>
+     *
+     * These are additional parameters to store information about the context from which the gallery dialog was
+     * opened.
+     *
+     * @return the context parameters
+     */
+    public Map<String, String> getContextParameters() {
+
+        return m_contextParameters;
     }
 
     /**

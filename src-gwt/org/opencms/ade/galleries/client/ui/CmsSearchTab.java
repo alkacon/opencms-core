@@ -326,6 +326,32 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
+     * Sets the form fields to the values from the stored  gallery search.<p>
+     *
+     * @param search a previously stored gallery search
+     */
+    public void fillParams(CmsGallerySearchBean search) {
+
+        m_localeSelection.setFormValue(search.getLocale(), false);
+        m_searchInput.setFormValueAsString(search.getQuery());
+        m_includeExpiredCheckBox.setChecked(search.isIncludeExpired());
+        if (search.getDateCreatedStart() > 9) {
+            m_dateCreatedStartDateBox.setValue(new Date(search.getDateCreatedStart()));
+        }
+        if (search.getDateCreatedEnd() > 0) {
+            m_dateCreatedEndDateBox.setValue(new Date(search.getDateCreatedEnd()));
+        }
+        if (search.getDateModifiedStart() > 0) {
+            m_dateModifiedStartDateBox.setValue(new Date(search.getDateModifiedStart()));
+        }
+        if (search.getDateModifiedEnd() > 0) {
+            m_dateModifiedEndDateBox.setValue(new Date(search.getDateModifiedEnd()));
+        }
+        m_scopeSelection.setFormValue(search.getScope().name());
+
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
     @Override

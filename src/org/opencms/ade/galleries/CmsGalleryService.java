@@ -58,6 +58,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
@@ -96,6 +97,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -280,6 +282,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     }
 
+    /** Key for additional info gallery folder filter. */
+    public static final String FOLDER_FILTER_ADD_INFO_KEY = "gallery_folder_filter";
+
     /** Limit to the number results loaded on initial search. */
     public static final int INITIAL_SEARCH_MAX_RESULTS = 200;
 
@@ -289,17 +294,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** Name for the 'galleryShowInvalidDefault' preference. */
     public static final String PREF_GALLERY_SHOW_INVALID_DEFAULT = "galleryShowInvalidDefault";
 
+    /** Key for additional info gallery result view type. */
+    public static final String RESULT_VIEW_TYPE_ADD_INFO_KEY = "gallery_result_view_type";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGalleryService.class);
 
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
-
-    /** Key for additional info gallery folder filter. */
-    public static final String FOLDER_FILTER_ADD_INFO_KEY = "gallery_folder_filter";
-
-    /** Key for additional info gallery result view type. */
-    public static final String RESULT_VIEW_TYPE_ADD_INFO_KEY = "gallery_result_view_type";
 
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
@@ -660,6 +662,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             }
             data.setSitemapSiteSelectorOptions(sitemapOptionBuilder.getOptions());
             data.setDefaultScope(OpenCms.getWorkplaceManager().getGalleryDefaultScope());
+            CmsCoreService service = new CmsCoreService();
+            service.setCms(getCmsObject());
+            data.setCategories(service.getCategoriesForSitePath(data.getReferenceSitePath()));
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -759,6 +764,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                     if ((result == null) || (result.getResults() == null) || result.getResults().isEmpty()) {
                         result = new CmsGallerySearchBean();
+                        result.setOriginalGalleryData(data);
                         result.setGalleryMode(data.getMode());
                         result.setGalleryStoragePrefix(data.getGalleryStoragePrefix());
                         result.setIgnoreSearchExclude(true);
@@ -2277,8 +2283,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsObject cms = getCmsObject();
 
         // set the selected types to the parameters
-        if (searchData.getTypes() != null) {
-            params.setResourceTypes(searchData.getTypes());
+        if (searchData.getServerSearchTypes() != null) {
+            params.setResourceTypes(searchData.getServerSearchTypes());
         }
 
         // set the selected galleries to the parameters
@@ -2571,6 +2577,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         searchObjBean.setPage(params.getResultPage());
         searchObjBean.setLastPage(params.getResultPage());
         searchObjBean.setResults(buildSearchResultList(searchResults, null));
+        if (searchObj.getGalleryMode().equals(GalleryMode.ade)) {
+            if (searchObjBean.getResultCount() > 0) {
+                CmsADESessionCache cache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
+                cache.setLastPageEditorGallerySearch(searchObj);
+            }
+        }
 
         return searchObjBean;
     }

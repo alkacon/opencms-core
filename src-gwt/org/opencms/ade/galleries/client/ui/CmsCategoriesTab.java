@@ -126,12 +126,13 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * Fill the content of the categories tab panel.<p>
      *
      * @param categoryRoot the category tree root entry
+     * @param selected the selected categories
      */
-    public void fillContent(List<CmsCategoryTreeEntry> categoryRoot) {
+    public void fillContent(List<CmsCategoryTreeEntry> categoryRoot, List<String> selected) {
 
         setInitOpen(true);
 
-        updateContentTree(categoryRoot, null);
+        updateContentTree(categoryRoot, selected);
     }
 
     /**
@@ -143,9 +144,12 @@ public class CmsCategoriesTab extends A_CmsListTab {
         List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
         for (String categoryPath : searchObj.getCategories()) {
             CmsCategoryBean categoryItem = m_categories.get(categoryPath);
-            String title = categoryItem.getTitle();
+            String title = "";
+            if (categoryItem != null) {
+                title = categoryItem.getTitle();
+            }
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = categoryItem.getPath();
+                title = categoryPath;
             }
             CmsSearchParamPanel panel = new CmsSearchParamPanel(
                 Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORIES_0),

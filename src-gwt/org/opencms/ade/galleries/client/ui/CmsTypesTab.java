@@ -121,23 +121,23 @@ public class CmsTypesTab extends A_CmsListTab {
     /** The list of selection handlers. */
     List<SelectionHandler> m_selectionHandlers = Lists.newArrayList();
 
+    /** Style variable to control whether the full type list should be shown. */
+    CmsStyleVariable m_typeListMode;
+
+    /** Custom widget to display in the top bar of the types tab. */
+    private Widget m_additionalTypeTabControl;
+
     /** The reference to the drag handler for the list elements. */
     private CmsDNDHandler m_dndHandler;
 
     /** The reference to the handler of this tab. */
     private CmsTypesTabHandler m_tabHandler;
 
-    /** Map of type beans to type name. */
-    private Map<String, CmsResourceTypeBean> m_types;
-
-    /** Style variable to control whether the full type list should be shown. */
-    CmsStyleVariable m_typeListMode;
-
     /** The switch to enable/disable the full type list. */
     private Widget m_typeModeToggle;
 
-    /** Custom widget to display in the top bar of the types tab. */
-    private Widget m_additionalTypeTabControl;
+    /** Map of type beans to type name. */
+    private Map<String, CmsResourceTypeBean> m_types;
 
     /**
      * Constructor.<p>
@@ -214,9 +214,12 @@ public class CmsTypesTab extends A_CmsListTab {
         List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
         for (String type : searchObj.getTypes()) {
             CmsResourceTypeBean typeBean = m_types.get(type);
-            String title = typeBean.getTitle();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = typeBean.getType();
+            String title = type;
+            if (typeBean != null) {
+                title = typeBean.getTitle();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                    title = typeBean.getType();
+                }
             }
             CmsSearchParamPanel panel = new CmsSearchParamPanel(
                 Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0),

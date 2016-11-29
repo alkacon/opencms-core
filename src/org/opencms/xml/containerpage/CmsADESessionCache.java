@@ -30,6 +30,7 @@ package org.opencms.xml.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.file.CmsObject;
@@ -142,6 +143,9 @@ public final class CmsADESessionCache {
 
     /** Bean containing last page info. */
     private LastPageBean m_lastPage;
+
+    /** The last stored gallery search for the page editor. */
+    private CmsGallerySearchBean m_lastPageEditorGallerySearch;
 
     /** The recently used formatters by resource type. */
     private Map<String, List<CmsUUID>> m_recentFormatters = new ConcurrentHashMap<String, List<CmsUUID>>();
@@ -307,6 +311,16 @@ public final class CmsADESessionCache {
     }
 
     /**
+     * Returns the lastPageEditorGallerySearch.<p>
+     *
+     * @return the lastPageEditorGallerySearch
+     */
+    public CmsGallerySearchBean getLastPageEditorGallerySearch() {
+
+        return m_lastPageEditorGallerySearch;
+    }
+
+    /**
      * Returns the least recently used matching formatter for the given resource type.<p>
      *
      * @param resType the resource type
@@ -455,6 +469,16 @@ public final class CmsADESessionCache {
 
         m_lastPage = new LastPageBean(cms.getRequestContext().getSiteRoot(), pageId, detailId);
 
+    }
+
+    /**
+     * Sets the last stored gallery search from the page editor.<p>
+     *
+     * @param searchObj the search to store
+     */
+    public void setLastPageEditorGallerySearch(CmsGallerySearchBean searchObj) {
+
+        m_lastPageEditorGallerySearch = searchObj;
     }
 
     /**
