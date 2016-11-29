@@ -5,8 +5,7 @@
   	<meta name="package-mapping" content="o:org.opencms.ui.components" />
 </head>
 <body>
-	<v-vertical-layout margin>
-		<v-vertical-layout _id="m_mainContainer" :center spacing style-name="o-workplace-maxwidth">
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
 			<v-panel id=m_configurationSelectionPanel" caption="%(key.GUI_GIT_CONFIGURATION_SELECTION_0)">
 				<v-vertical-layout _id="m_configurationSelectionContainer" margin spacing>
 					<v-horizontal-layout spacing>
@@ -14,7 +13,7 @@
 					</v-horizontal-layout>
 				</v-vertical-layout>
 			</v-panel>
-			<v-panel caption="%(key.GUI_GIT_MODULE_SELECTION_0)">
+			<v-panel caption="%(key.GUI_GIT_MODULE_SELECTION_0)" height="100%" :expand>
 				<v-vertical-layout _id="m_moduleSelectionContainer" margin spacing>
 					<v-horizontal-layout _id="m_moduleSelectorContainer" spacing>
 						<v-combo-box _id="m_moduleSelector" />
@@ -30,7 +29,7 @@
 							<v-text-field _id="m_emailField" width="100%" caption="%(key.GUI_GIT_EMAIL_0)"  input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)"/>
 							<v-text-area _id="m_commitMessage" width="100%" caption="%(key.GUI_GIT_COMMIT_MESSAGE_0)" />
 							<v-button _id="m_toggleOptions" caption="%(key.GUI_GIT_TOGGLE_OPTIONS_0)" />
-							<v-vertical-layout spacing>
+							<v-vertical-layout _id="m_advancedLayout" spacing>
 								<v-check-box _id="m_ignoreUnclean" caption="%(key.GUI_GIT_IGNORE_UNCLEAN_0)" description="%(key.GUI_GIT_IGNORE_UNCLEAN_DESC_0)"/>
 								<v-check-box _id="m_pullFirst" caption="%(key.GUI_GIT_PULL_FIRST_0)" description="%(key.GUI_GIT_PULL_FIRST_DESC_0)" />
 								<v-check-box _id="m_copyAndUnzip" caption="%(key.GUI_GIT_COPY_UNZIP_0)" description="%(key.GUI_GIT_COPY_UNZIP_DESC_0)" />
@@ -60,6 +59,5 @@
 				</v-horizontal-layout>
 			</v-panel>
 		</v-vertical-layout>
-	</v-vertical-layout>
 </body>
 </html>
