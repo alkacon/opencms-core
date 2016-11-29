@@ -3113,7 +3113,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (m_coreContainer != null) {
             for (SolrCore core : m_coreContainer.getCores()) {
-                m_coreContainer.unload(core.getName(), false, false, true);
+                // do not unload spellcheck core because otherwise the core.properties file is removed
+                // even when calling m_coreContainer.unload(core.getName(), false, false, false);
+                if (!core.getName().equals(CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE)) {
+                    m_coreContainer.unload(core.getName(), false, false, true);
+                }
             }
             m_coreContainer.shutdown();
             if (CmsLog.INIT.isInfoEnabled()) {
