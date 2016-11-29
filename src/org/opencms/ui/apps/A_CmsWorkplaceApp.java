@@ -128,11 +128,11 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
     /** State parameter separator. */
     public static final String PARAM_SEPARATOR = "!!";
 
+    /** The root layout. */
+    protected CmsToolLayout m_rootLayout;
+
     /** The app UI context. */
     protected I_CmsAppUIContext m_uiContext;
-
-    /** The root layout. */
-    private CmsToolLayout m_rootLayout;
 
     /**
      * Constructor.<p>

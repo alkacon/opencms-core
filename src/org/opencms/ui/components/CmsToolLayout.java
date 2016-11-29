@@ -117,6 +117,21 @@ public class CmsToolLayout extends CssLayout {
     }
 
     /**
+     * Sets the height of the main panel to 100% to allow for scrollable children.<p>
+     * If not set, the height of the main panel will adjust to it's content.<p>
+     *
+     * @param full <code>true</code> to set the height to 100%
+     */
+    public void setMainHeightFull(boolean full) {
+
+        if (full) {
+            m_main.setHeight("100%");
+        } else {
+            m_main.setHeightUndefined();
+        }
+    }
+
+    /**
      * Shows or hides the sub navigation.<p>
      *
      * @param visible <code>true</code> to show the sub navigation

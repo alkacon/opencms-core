@@ -138,19 +138,24 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     protected Component getComponentForState(String state) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+            m_rootLayout.setMainHeightFull(true);
             return getProjectsTable();
         } else if (state.equals(PATH_NAME_ADD)) {
+            m_rootLayout.setMainHeightFull(false);
             return getNewProjectForm();
         } else if (state.equals(PATH_NAME_HISTORY)) {
+            m_rootLayout.setMainHeightFull(true);
             return new CmsProjectHistoryTable();
         } else if (state.startsWith(PATH_NAME_EDIT)) {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
+                m_rootLayout.setMainHeightFull(false);
                 return new CmsEditProjectForm(this, projectId);
             }
         } else if (state.startsWith(PATH_NAME_FILES)) {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
+                m_rootLayout.setMainHeightFull(true);
                 return new CmsProjectFiles(projectId);
             }
         }

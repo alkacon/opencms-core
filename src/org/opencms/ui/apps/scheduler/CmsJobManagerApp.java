@@ -124,10 +124,12 @@ public class CmsJobManagerApp extends A_CmsWorkplaceApp {
     protected Component getComponentForState(String state) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+            m_rootLayout.setMainHeightFull(true);
             CmsJobTable table = getJobTable();
             table.reloadJobs();
             return table;
         } else if (state.startsWith(PATH_NAME_EDIT)) {
+            m_rootLayout.setMainHeightFull(false);
             String jobId = A_CmsWorkplaceApp.getParamFromState(state, PARAM_JOB_ID);
             String copyMode = A_CmsWorkplaceApp.getParamFromState(state, PARAM_COPY);
             return getJobEditView(jobId, Boolean.valueOf(copyMode).booleanValue());
