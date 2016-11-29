@@ -882,7 +882,11 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
             DRIVERS_SUBSCRIPTION: drivers_subscription,
             ADDITIONAL_DB_POOLS: db_additional_pools,
             OPENCMS_CONFIGURATION: opencms_configuration,
-            RUNTIME_INFO: system_runtimeinfo
+            RUNTIME_INFO: system_runtimeinfo,
+            COMMENT_UPDATER_START: '',
+            COMMENT_UPDATER_END: '',
+            COMMENT_WAR_START: '<!--',
+            COMMENT_WAR_END: '-->'
         ])
     }
     
@@ -959,7 +963,7 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     from ("${projectDir}/webapp/WEB-INF"){
         into '/WEB-INF'
         include 'opencms.tld'
-        include 'web.xml'
+        exclude 'web.xml'
         include 'cmsshell.sh'
         include 'classes/META-INF/persistence.xml'
         include 'classes/ehcache.xml'
@@ -967,6 +971,16 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         include 'sun-jaxws.xml'
         include 'wsdl/**'
         include 'spellcheck/**'
+    }
+    from ("${projectDir}/webapp/WEB-INF"){
+        into '/WEB-INF'
+        include 'web.xml'
+        filter(ReplaceTokens, tokens: [
+            COMMENT_UPDATER_START: '<!-- ',
+            COMMENT_UPDATER_END: '-->',
+            COMMENT_WAR_START: '',
+            COMMENT_WAR_END: ''
+        ])
     }
     from ("${projectDir}/webapp/resources"){
         into '/resources'

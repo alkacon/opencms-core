@@ -49,6 +49,8 @@ and 'lib/opencms.jar' are replaced with the new version from the archive before 
 continue. Be also sure that after unpacking the tomcat user has write permissions on 
 the whole web application directory.
 Be also aware that the 'web.xml' might be overwritten.
+The OpenCmsUrlServletFilter available since version 10.5.0 will be disabled by default. 
+Edit the 'web.xml' to enable it.
 
 
 3. Enable the upgrade wizard

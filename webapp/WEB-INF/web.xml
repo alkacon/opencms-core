@@ -29,17 +29,20 @@
 		to "/mycms-errorhandler/handle404" 3. Change the <error-page> setting for 
 		the 500 error from "/opencms-errorhandler/system/handler/handle500.html" 
 		to "/mycms-errorhandler/system/handler/handle500.html" -->
-
-	<filter>
+		
+	<!-- Use the OpenCmsUrlServletFilter to remove the OpenCms servlet name from URLs.
+		When using the filter make sure to also adjust the file /WEB-INF/config/opencms-importexport.xml setting 
+		opencms/importexport/staticexport/rendersettings/vfs-prefix to ${CONTEXT_NAME}. -->
+	@COMMENT_UPDATER_START@<filter>
 		<filter-name>OpenCmsUrlServletFilter</filter-name>
 		<filter-class>org.opencms.main.OpenCmsUrlServletFilter</filter-class>
-		<!-- Use the init-param to prevent rewriting for URI that start with the provided prefixes
+		@COMMENT_WAR_START@ Use the init-param to prevent rewriting for URI that start with the provided prefixes
 		<init-param>
 			<param-name>additionalExcludePrefixes</param-name>
 			<param-value>/my-servlet-1|/my-servlet-2</param-value>
 		</init-param>
-		 -->
-	</filter>
+		 @COMMENT_WAR_END@
+	</filter> @COMMENT_UPDATER_END@
 	
 	<filter>
         <filter-name>CmsJsonPartFilter</filter-name>
