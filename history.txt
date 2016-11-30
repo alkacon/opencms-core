@@ -15,6 +15,40 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 10.5.0 Final - November 30, 2016
+! The user interface now uses mostly font icons for better support in high resolution (retina) screens.
+! New and improved Project Management app.
+! Expired / unreleased resources in lists can now be shown on their detail page.
+! Added OpenCmsUrlServletFilter to easily remove the /opencms servlet name.
+! Added <cms:jsonpart> tag and CmsJsonPartFilter to split the output of a page to JSON fragments. 
+! Added <cms:scaleImage> tag for creating responsive image variations, provided by mwxwidmann.
+! Improved behavior when switching between page editor, sitemap and explorer views.
+! Explorer: Displays of icon overlays on folders showing the default file type.
+! Explorer: Resources that are part of a sitemap are shown with a bold title.
+! Explorer: Option to sort by navigation position by click on icon column.
+! Explorer: Improved Display / Edit default actions when clicking on a file. 
+! Explorer: Improved Copy / Move / Rename functions and dialogs.
+! Explorer: Values for Title, Navigation, Copyright and Cache columns can be edited directly by clicking.
+! Keyboard shortcuts: Added option to switch the Explorer view to the "Online" project (Ctrl-O).
+! Added "Show Online" option to page editor (requires correct site configuration). 
+! Added option to disable all formatter in a subsitemap configuration.
+! Added support for connecting with encrypted email servers.
+! Added support for Google API keys to the location picker widget that uses Google Maps.
+! Improved model group handling to keep all group data in a single resource.
+! Improved user info dialog.
+! Enhanced <cms:link> tag to allow links to specific detail pages.
+! Updated Chinese and Japanese localization, provided by twofisher.
+! Updated Russian localization, provided by makarov-iliya.
+! Updated CodeMirror to version 5.21.0.
+! Updated TinyMCE to version 4.4.3.
+! Updated Lucene/SOLR to Version 5.5.3.
+* Fixed performance issues with inheritance groups.
+* Fixed issue #422 with bad performance of 'Choice' elements for XML contents, provided by mwxwidmann.
+* Fixed issue #425 where wrong content encoding header was set for GWT dialog messages by gallardo.
+* Fixed issue #451 where too many tabs caused layout problems in content editor.
+* Fixed issue #455 with TinyMCE when using Portuguese as workplace language.
+
+
 OpenCms 10.5.0 Beta - September 26, 2016
 ! Localization: Compare localized subsites side-by-side.
 ! Localization: Copy pages from one language to another, including content.
