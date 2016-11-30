@@ -231,6 +231,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdateFiletypeIcons());
         m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlChangeExplorerTypeAccess());
         m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdateAvailabilityMenuEntries());
+        m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdatePreferences());
 
         setup();
     }
