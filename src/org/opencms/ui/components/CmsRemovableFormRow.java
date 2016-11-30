@@ -64,7 +64,7 @@ public class CmsRemovableFormRow<T extends AbstractField<?>> extends HorizontalL
         addComponent(input);
         setExpandRatio(input, 1f);
         Button deleteButton = new Button("");
-        deleteButton.setIcon(FontOpenCms.CIRCLE_MINUS);
+        deleteButton.setIcon(FontOpenCms.CUT_SMALL);
         deleteButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
         deleteButton.setDescription(removeLabel);
         deleteButton.addClickListener(new ClickListener() {
