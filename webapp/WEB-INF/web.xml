@@ -49,10 +49,10 @@
         <filter-class>org.opencms.jsp.jsonpart.CmsJsonPartFilter</filter-class>
     </filter>
 
-    <filter-mapping>
+   @COMMENT_UPDATER_START@<filter-mapping>
         <filter-name>OpenCmsUrlServletFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    </filter-mapping> @COMMENT_UPDATER_END@
 
     <filter-mapping>
         <filter-name>CmsJsonPartFilter</filter-name>
