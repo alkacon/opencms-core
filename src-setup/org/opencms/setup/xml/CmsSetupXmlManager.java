@@ -166,8 +166,6 @@ public class CmsSetupXmlManager {
         // search
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemovePageSearchIndexSource1());
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveSysSearchIndex());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddDEHelpSearchIndex());
-
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddSolrSearch());
 
         // system
