@@ -415,7 +415,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role"/>
 							<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog" rule="containerpage-no-different-site-and-has-editor-role"/>
 						</entry>
-						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings" rule="containerpage-basic"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishQueueDialogAction" rule="containerpage-basic"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout" rule="containerpage-basic"/>
 					</contextmenu>
@@ -510,7 +509,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 							<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0" name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog" rule="sitemap"/>
 							<entry key="GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditFile" params="reload=true|filename=%(subsite)/.content/.config" rule="sitemapcheckfile"/>
 						</entry>
-						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishQueueDialogAction" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout" rule="sitemap"/>
 					</contextmenu>

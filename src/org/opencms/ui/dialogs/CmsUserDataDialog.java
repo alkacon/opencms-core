@@ -42,7 +42,6 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
-import org.opencms.ui.login.CmsChangePasswordDialog;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsAccountInfo;
@@ -158,9 +157,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** The OK  button. */
     private Button m_okButton;
 
-    /** The change password button. */
-    private Button m_changePassword;
-
     /** The edited user. */
     private CmsUser m_user;
 
@@ -214,15 +210,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
                 submit();
             }
         });
-        m_changePassword.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                openChangePassword();
-            }
-        });
 
         setActionHandler(new CmsOkCancelActionHandler() {
 
@@ -254,7 +241,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
             ((VerticalLayout)m_userInfo.getParent()).addComponent(new Label(getUserDataCheckMessage()), 1);
 
             m_cancelButton.setVisible(false);
-            m_changePassword.setVisible(false);
         }
     }
 
@@ -290,22 +276,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
 
         m_context.finish(Collections.<CmsUUID> emptyList());
         m_context.updateUserInfo();
-    }
-
-    /**
-     * Opens the change password dialog.<p>
-     */
-    void openChangePassword() {
-
-        if (m_context instanceof CmsEmbeddedDialogContext) {
-            ((CmsEmbeddedDialogContext)m_context).closeWindow(true);
-        } else {
-            m_context.finish(Collections.<CmsUUID> emptyList());
-        }
-        m_context.start(
-            Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
-                + m_user.getSimpleName(),
-            new CmsChangePasswordDialog(m_context));
     }
 
     /**

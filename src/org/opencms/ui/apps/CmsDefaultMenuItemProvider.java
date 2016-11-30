@@ -52,7 +52,6 @@ import org.opencms.ui.actions.CmsLockAction;
 import org.opencms.ui.actions.CmsLockedResourcesAction;
 import org.opencms.ui.actions.CmsMoveDialogAction;
 import org.opencms.ui.actions.CmsPermissionDialogAction;
-import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.CmsPublishQueueDialogAction;
@@ -151,7 +150,6 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
 
             // toolbar menu entries
             new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 100, 0),
-            new CmsContextMenuActionItem(new CmsPreferencesDialogAction(), null, 300, 0),
             new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 500, 0),
             new CmsContextMenuActionItem(new CmsClassicWorkplaceAction(), null, 700, 0),
             new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 900, 0));
