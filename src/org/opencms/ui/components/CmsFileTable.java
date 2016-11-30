@@ -76,7 +76,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -263,6 +266,9 @@ public class CmsFileTable extends CmsResourceTable {
     /** The logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsFileTable.class);
 
+    /** The default file table columns. */
+    private static final Map<CmsResourceTableProperty, Integer> DEFAULT_TABLE_PROPERTIES = new LinkedHashMap<CmsResourceTableProperty, Integer>();
+
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
 
@@ -281,20 +287,50 @@ public class CmsFileTable extends CmsResourceTable {
     /** The context menu builder. */
     I_CmsContextMenuBuilder m_menuBuilder;
 
+    /** The dialog context provider. */
+    private I_CmsContextProvider m_contextProvider;
+
     /** The edited item id. */
     private CmsUUID m_editItemId;
 
     /** The edited property id. */
     private CmsResourceTableProperty m_editProperty;
 
+    /** The folder select handler. */
+    private I_FolderSelectHandler m_folderSelectHandler;
+
     /** The original edit value. */
     private String m_originalEditValue;
 
-    /** The dialog context provider. */
-    private I_CmsContextProvider m_contextProvider;
+    /** The default action column property. */
+    CmsResourceTableProperty m_actionColumnProperty;
 
-    /** The folder select handler. */
-    private I_FolderSelectHandler m_folderSelectHandler;
+    {
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_TITLE, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_SIZE, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
+    }
 
     /**
      * Default constructor.<p>
@@ -302,8 +338,8 @@ public class CmsFileTable extends CmsResourceTable {
      * @param contextProvider the dialog context provider
      */
     public CmsFileTable(I_CmsContextProvider contextProvider) {
-
         super();
+        m_actionColumnProperty = PROPERTY_RESOURCE_NAME;
         m_contextProvider = contextProvider;
         m_container.setItemSorter(new FileSorter());
         m_fileTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -314,36 +350,11 @@ public class CmsFileTable extends CmsResourceTable {
         m_fileTable.setMultiSelect(true);
 
         m_fileTable.setTableFieldFactory(new FileFieldFactory());
-        new ColumnBuilder() {
-
-            {
-                column(PROPERTY_TYPE_ICON);
-                column(PROPERTY_PROJECT, COLLAPSED);
-                column(PROPERTY_RESOURCE_NAME);
-                column(PROPERTY_TITLE);
-                column(PROPERTY_NAVIGATION_TEXT, COLLAPSED);
-                column(PROPERTY_NAVIGATION_POSITION, INVISIBLE);
-                column(PROPERTY_IN_NAVIGATION, INVISIBLE);
-                column(PROPERTY_COPYRIGHT, COLLAPSED);
-                column(PROPERTY_CACHE, COLLAPSED);
-                column(PROPERTY_RESOURCE_TYPE);
-                column(PROPERTY_SIZE);
-                column(PROPERTY_PERMISSIONS, COLLAPSED);
-                column(PROPERTY_DATE_MODIFIED);
-                column(PROPERTY_USER_MODIFIED, COLLAPSED);
-                column(PROPERTY_DATE_CREATED, COLLAPSED);
-                column(PROPERTY_USER_CREATED, COLLAPSED);
-                column(PROPERTY_DATE_RELEASED);
-                column(PROPERTY_DATE_EXPIRED);
-                column(PROPERTY_STATE_NAME);
-                column(PROPERTY_USER_LOCKED);
-                column(PROPERTY_IS_FOLDER, INVISIBLE);
-                column(PROPERTY_STATE, INVISIBLE);
-                column(PROPERTY_INSIDE_PROJECT, INVISIBLE);
-                column(PROPERTY_RELEASED_NOT_EXPIRED, INVISIBLE);
-            }
-
-        }.buildColumns();
+        ColumnBuilder builder = new ColumnBuilder();
+        for (Entry<CmsResourceTableProperty, Integer> entry : DEFAULT_TABLE_PROPERTIES.entrySet()) {
+            builder.column(entry.getKey(), entry.getValue().intValue());
+        }
+        builder.buildColumns();
 
         m_fileTable.setSortContainerPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
         m_menu = new CmsContextMenu();
@@ -392,7 +403,7 @@ public class CmsFileTable extends CmsResourceTable {
 
                 Item item = m_container.getItem(itemId);
                 String style = getStateStyle(item);
-                if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME == propertyId) {
+                if (m_actionColumnProperty == propertyId) {
                     style += " " + OpenCmsTheme.HOVER_COLUMN;
                 } else if ((CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT == propertyId)
                     || (CmsResourceTableProperty.PROPERTY_TITLE == propertyId)) {
@@ -558,6 +569,16 @@ public class CmsFileTable extends CmsResourceTable {
     public void openContextMenu(ItemClickEvent event) {
 
         m_menu.openForTable(event, m_fileTable);
+    }
+
+    /**
+     * Sets the default action column property.<p>
+     *
+     * @param actionColumnProperty the default action column property
+     */
+    public void setActionColumnProperty(CmsResourceTableProperty actionColumnProperty) {
+
+        m_actionColumnProperty = actionColumnProperty;
     }
 
     /**
@@ -773,7 +794,7 @@ public class CmsFileTable extends CmsResourceTable {
                     || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
                     openContextMenu(event);
                 } else {
-                    if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
+                    if (m_actionColumnProperty.equals(event.getPropertyId())) {
                         Boolean isFolder = (Boolean)event.getItem().getItemProperty(
                             CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                         if ((isFolder != null) && isFolder.booleanValue()) {

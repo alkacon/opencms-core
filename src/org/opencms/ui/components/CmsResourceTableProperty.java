@@ -37,6 +37,7 @@ import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATERELEASED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_NAVTEXT_0;
+import static org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_PERMISSIONS_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_SIZE_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0;
@@ -296,7 +297,7 @@ public class CmsResourceTableProperty implements Serializable {
         "PROPERTY_SITE_PATH",
         String.class,
         null,
-        null,
+        GUI_INPUT_PATH_0,
         true,
         0,
         0);
