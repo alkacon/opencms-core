@@ -125,8 +125,8 @@ Even if you only keep your old config files, move them to solr/configsets/defaul
 When you are done, enable Solr in the opencms-search.xml again (and restart the servlet
 container).
 
-If you are updating from an earlier version than 8.5.0, copy the solr-complete/ 
-folder to the solr folder instead. 
+If you are updating from an earlier version than 8.5.0, always copy the whole solr-update/ 
+folder to the solr/ folder instead. 
 
 
 7. Shutdown and restart your OpenCms servlet container
