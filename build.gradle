@@ -944,12 +944,6 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
 
     from ("${projectDir}/webapp/WEB-INF/solr"){
         into '/WEB-INF/solr-update/'
-        include 'conf/schema.xml'
-        include 'conf/solrconfig.xml'
-        include 'solr.xml'
-    }
-    from ("${projectDir}/webapp/WEB-INF/solr") {
-        into '/WEB-INF/solr-complete/'
         include '*'
         include '**/*'
     }
