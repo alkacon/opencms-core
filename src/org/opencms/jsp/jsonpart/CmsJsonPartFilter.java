@@ -241,7 +241,8 @@ public class CmsJsonPartFilter implements Filter {
      */
     public static boolean isJsonRequest(ServletRequest request) {
 
-        return Boolean.parseBoolean(request.getParameter(PARAM_JSON));
+        HttpServletRequest sr = (HttpServletRequest)request;
+        return (sr.getQueryString() != null) && (sr.getQueryString().contains("__json=true"));
     }
 
     /**
