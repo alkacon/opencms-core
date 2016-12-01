@@ -49,10 +49,9 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -121,7 +120,7 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
 
             // initialize return values
             StringBuffer content = new StringBuffer();
-            Map<String, String> items = new HashMap<String, String>();
+            LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
 
             CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
             for (CmsContainerElementBean element : containerBean.getElements()) {

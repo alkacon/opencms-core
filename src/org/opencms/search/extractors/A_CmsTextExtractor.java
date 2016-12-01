@@ -33,7 +33,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.tika.metadata.DublinCore;
@@ -123,7 +123,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      */
     protected CmsExtractionResult extractText(InputStream in, Parser parser) throws Exception {
 
-        Map<String, String> contentItems = new HashMap<String, String>();
+        LinkedHashMap<String, String> contentItems = new LinkedHashMap<String, String>();
 
         StringWriter writer = new StringWriter();
         BodyContentHandler handler = new BodyContentHandler(writer);

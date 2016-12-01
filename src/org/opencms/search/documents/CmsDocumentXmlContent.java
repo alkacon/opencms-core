@@ -47,11 +47,10 @@ import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Lucene document factory class to extract index data from an OpenCms VFS resource
@@ -112,7 +111,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
             Locale locale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
             List<String> elements = xmlContent.getNames(locale);
             StringBuffer content = new StringBuffer();
-            Map<String, String> items = new HashMap<String, String>();
+            LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
             for (Iterator<String> i = elements.iterator(); i.hasNext();) {
                 String xpath = i.next();
                 // xpath will have the form "Text[1]" or "Nested[1]/Text[1]"

@@ -40,11 +40,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Lucene document factory class to extract index data from a cms resource
@@ -80,7 +79,7 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
 
             List<String> elements = page.getNames(locale);
             StringBuffer content = new StringBuffer();
-            Map<String, String> items = new HashMap<String, String>();
+            LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
             for (Iterator<String> i = elements.iterator(); i.hasNext();) {
                 String elementName = i.next();
                 String value = page.getStringValue(cms, elementName, locale);
