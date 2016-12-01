@@ -46,6 +46,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -111,10 +112,10 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             // Add to each container page the contents in all available locales,
             // in case one containerpage is used in multiple languages.
             List<Locale> localesAvailable = OpenCms.getLocaleManager().getAvailableLocales(cms, resource);
-            Map<Locale, Map<String, String>> multilingualValues = new HashMap<Locale, Map<String, String>>(
+            Map<Locale, LinkedHashMap<String, String>> multilingualValues = new HashMap<Locale, LinkedHashMap<String, String>>(
                 localesAvailable.size());
             for (Locale localeAvailable : localesAvailable) {
-                multilingualValues.put(localeAvailable, new HashMap<String, String>());
+                multilingualValues.put(localeAvailable, new LinkedHashMap<String, String>());
             }
             ex = new CmsExtractionResult(locale, multilingualValues, fieldMappings);
             ex = ex.merge(all);

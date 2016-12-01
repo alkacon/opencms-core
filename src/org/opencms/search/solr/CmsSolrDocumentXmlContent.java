@@ -65,6 +65,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -259,17 +260,17 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
 
         // initialize some variables
-        Map<Locale, Map<String, String>> items = new HashMap<Locale, Map<String, String>>();
+        Map<Locale, LinkedHashMap<String, String>> items = new HashMap<Locale, LinkedHashMap<String, String>>();
         Map<String, String> fieldMappings = new HashMap<String, String>();
         StringBuffer locales = new StringBuffer();
         Locale resourceLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
 
-        Map<String, String> localeItems = null;
+        LinkedHashMap<String, String> localeItems = null;
 
         // loop over the locales of the content
         for (Locale locale : xmlContent.getLocales()) {
             GalleryNameChooser galleryNameChooser = new GalleryNameChooser(cms, xmlContent, locale);
-            localeItems = new HashMap<String, String>();
+            localeItems = new LinkedHashMap<String, String>();
             StringBuffer textContent = new StringBuffer();
             // store the locales of the content as space separated field
             locales.append(locale.toString());
