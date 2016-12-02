@@ -231,18 +231,6 @@ public class CmsLinkManager {
     }
 
     /**
-     * Returns if the given URI points to a static resource.<p>
-     *
-     * @param uri the URI to test
-     *
-     * @return <code>true</code> in case the given URI points to a static resource
-     */
-    public static boolean isStaticResourceUri(URI uri) {
-
-        return (uri != null) && uri.getPath().startsWith(OpenCms.getSystemInfo().getStaticResourceContext());
-    }
-
-    /**
      * Returns if the given link points to the OpenCms workplace UI.<p>
      *
      * @param link the link to test
@@ -687,7 +675,7 @@ public class CmsLinkManager {
      *
      * @param cms the current OpenCms user context
      * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
-    
+
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> in the current site
      */

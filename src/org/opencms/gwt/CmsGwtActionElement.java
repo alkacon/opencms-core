@@ -34,7 +34,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
-import org.opencms.module.CmsModule;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -263,7 +262,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         if (!CmsStringUtil.isEmpty(prefix)) {
             try {
                 param = "?prefix=" + URLEncoder.encode(prefix, OpenCms.getSystemInfo().getDefaultEncoding());
-            } catch (@SuppressWarnings("unused") UnsupportedEncodingException e) {
+            } catch (UnsupportedEncodingException e) {
                 //ignore, default encoding should be available
             }
         }
@@ -376,13 +375,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             + moduleName
             + "\" >\n<script type=\"text/javascript\" src=\""
             + CmsWorkplace.getStaticResourceUri("gwt/opencms/opencms.nocache.js");
-        CmsModule module = OpenCms.getModuleManager().getModule("org.opencms.gwt");
-        if (module != null) {
-            result += "?version="
-                + module.getVersion().toString()
-                + "_"
-                + OpenCms.getSystemInfo().getVersionNumber().hashCode();
-        }
         result += "\"></script>\n";
         return result;
     }

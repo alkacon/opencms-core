@@ -50,7 +50,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.CmsSystemInfo;
+import org.opencms.main.CmsStaticResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
@@ -1529,7 +1529,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsXmlContentDefinition contentDefinition,
         String elementName,
         String invalidate,
-        String type) throws CmsXmlException {
+        String type)
+    throws CmsXmlException {
 
         I_CmsXmlSchemaType schemaType = contentDefinition.getSchemaType(elementName);
         if (schemaType == null) {
@@ -1594,7 +1595,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected void addConfiguration(
         CmsXmlContentDefinition contentDefinition,
         String elementName,
-        String configurationValue) throws CmsXmlException {
+        String configurationValue)
+    throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
             throw new CmsXmlException(
@@ -1618,7 +1620,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsXmlContentDefinition contentDefinition,
         String elementName,
         String defaultValue,
-        String resolveMacrosValue) throws CmsXmlException {
+        String resolveMacrosValue)
+    throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
             throw new CmsXmlException(
@@ -1648,7 +1651,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected void addDefaultCheckRules(
         CmsXmlContentDefinition rootContentDefinition,
         I_CmsXmlSchemaType schemaType,
-        String elementPath) throws CmsXmlException {
+        String elementPath)
+    throws CmsXmlException {
 
         if ((schemaType != null) && schemaType.isSimpleType()) {
             if ((schemaType.getMinOccurs() == 0)
@@ -1690,7 +1694,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected void addDisplayType(
         CmsXmlContentDefinition contentDefinition,
         String elementName,
-        DisplayType displayType) throws CmsXmlException {
+        DisplayType displayType)
+    throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
             throw new CmsXmlException(
@@ -1713,7 +1718,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsXmlContentDefinition contentDefinition,
         String elementName,
         String mapping,
-        String useDefault) throws CmsXmlException {
+        String useDefault)
+    throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
             throw new CmsXmlException(
@@ -1815,7 +1821,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         String elementName,
         String regex,
         String message,
-        boolean isWarning) throws CmsXmlException {
+        boolean isWarning)
+    throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
             throw new CmsXmlException(
@@ -3075,7 +3082,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
 
             // check for links to static resources
-            if (sitePath.startsWith(CmsSystemInfo.STATIC_RESOURCE_PREFIX)) {
+            if (CmsStaticResourceHandler.isStaticResourceUri(sitePath)) {
                 return false;
             }
             // validate the link for error
@@ -3370,7 +3377,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private I_CmsSearchFieldMapping createSearchFieldMapping(
         CmsXmlContentDefinition contentDefinition,
         Element element,
-        Locale locale) throws CmsXmlException {
+        Locale locale)
+    throws CmsXmlException {
 
         I_CmsSearchFieldMapping fieldMapping = null;
         String typeAsString = element.attributeValue(APPINFO_ATTR_TYPE);
@@ -3435,6 +3443,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         return result;
     }
 
+    /**
+     * Initializes the message key fall back handler.<p>
+     *
+     * @param element the XML element node
+     */
     private void initMessageKeyHandler(Element element) {
 
         String className = element.attributeValue(APPINFO_ATTR_CLASS);
@@ -3481,7 +3494,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         boolean valueIsSimple,
         int valueIndex,
         Locale valueLocale,
-        String originalStringValue) throws CmsException {
+        String originalStringValue)
+    throws CmsException {
 
         CmsObject rootCms = createRootCms(cms);
         // get the original VFS file from the content

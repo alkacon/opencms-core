@@ -118,10 +118,6 @@ public class CmsSystemInfo {
     /** Name of the config folder property provides as Java VM parameter -Dopencms.config=.*/
     public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
 
-    /** The static resource prefix '/handleStatic/'. */
-    public static final String STATIC_RESOURCE_PREFIX = OpenCmsServlet.HANDLE_PATH
-        + CmsStaticResourceHandler.HANDLER_NAME;
-
     /** Relative path to persistence.xml file. */
     public static final String FILE_PERSISTENCE = "classes"
         + File.separatorChar
@@ -209,6 +205,9 @@ public class CmsSystemInfo {
 
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
+
+    /** The static resource version parameter. */
+    private String m_staticResourcePathFragment;
 
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
@@ -577,7 +576,12 @@ public class CmsSystemInfo {
      */
     public String getStaticResourceContext() {
 
-        return getOpenCmsContext() + STATIC_RESOURCE_PREFIX;
+        if (m_staticResourcePathFragment == null) {
+            m_staticResourcePathFragment = CmsStaticResourceHandler.getStaticResourceContext(
+                getOpenCmsContext(),
+                getVersionNumber());
+        }
+        return m_staticResourcePathFragment;
     }
 
     /**
@@ -829,7 +833,7 @@ public class CmsSystemInfo {
         Properties props = new Properties();
         try {
             props.load(this.getClass().getClassLoader().getResourceAsStream("org/opencms/main/version.properties"));
-        } catch (@SuppressWarnings("unused") Throwable t) {
+        } catch (Throwable t) {
             // no properties found - we just use the defaults
             return;
         }
