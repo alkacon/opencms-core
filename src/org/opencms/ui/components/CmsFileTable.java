@@ -810,7 +810,7 @@ public class CmsFileTable extends CmsResourceTable {
                                 I_CmsDialogContext context = m_contextProvider.getDialogContext();
                                 I_CmsDefaultAction action = OpenCms.getWorkplaceAppManager().getDefaultAction(context);
                                 if (action != null) {
-                                    action.executeAction(context);
+                                    action.executeAction(context, event.getButton().equals(MouseButton.MIDDLE));
                                     return;
                                 }
                             } catch (CmsVfsResourceNotFoundException e) {

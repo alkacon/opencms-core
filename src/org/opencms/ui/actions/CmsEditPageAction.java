@@ -50,10 +50,24 @@ public class CmsEditPageAction extends A_CmsWorkplaceAction implements I_CmsDefa
      */
     public void executeAction(I_CmsDialogContext context) {
 
+        executeAction(context, false);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsDefaultAction#executeAction(org.opencms.ui.I_CmsDialogContext, boolean)
+     */
+    public void executeAction(I_CmsDialogContext context, boolean hasModifier) {
+
         if ((context.getResources().size() == 1)
             && CmsResourceTypeXmlContainerPage.isContainerPage(context.getResources().get(0))) {
-            A_CmsUI.get().getPage().setLocation(
-                OpenCms.getLinkManager().substituteLink(A_CmsUI.getCmsObject(), context.getResources().get(0)));
+            String link = OpenCms.getLinkManager().substituteLink(
+                A_CmsUI.getCmsObject(),
+                context.getResources().get(0));
+            if (hasModifier || context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
+                A_CmsUI.get().openPageOrWarn(link, "_blank");
+            } else {
+                A_CmsUI.get().getPage().setLocation(link);
+            }
         }
     }
 

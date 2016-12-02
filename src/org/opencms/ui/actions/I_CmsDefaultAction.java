@@ -35,6 +35,14 @@ import org.opencms.ui.I_CmsDialogContext;
 public interface I_CmsDefaultAction extends I_CmsWorkplaceAction {
 
     /**
+     * Executes the action.<p>
+     *
+     * @param context the current dialog context.<p>
+     * @param hasModifier <code>true</code> in case the action was triggered with an active modifier
+     */
+    void executeAction(I_CmsDialogContext context, boolean hasModifier);
+
+    /**
      * Returns the action rank, the highest ranked default action will be used.<p>
      *
      * @param context the dialog context

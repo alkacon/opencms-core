@@ -78,6 +78,14 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
      */
     public void executeAction(I_CmsDialogContext context) {
 
+        executeAction(context, false);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsDefaultAction#executeAction(org.opencms.ui.I_CmsDialogContext, boolean)
+     */
+    public void executeAction(I_CmsDialogContext context, boolean hasModifier) {
+
         String backLink;
         try {
             String currentLocation = UI.getCurrent().getPage().getLocation().toString();
