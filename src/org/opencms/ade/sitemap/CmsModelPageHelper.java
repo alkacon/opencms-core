@@ -317,7 +317,6 @@ public class CmsModelPageHelper {
         CmsResourceTypeConfig config = m_adeConfig.getResourceType(
             CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
         if ((config != null) && !config.isDisabled()) {
-            config.getFolderPath(m_cms, m_rootResource.getRootPath());
             String modelGroupFolderPath = config.getFolderPath(m_cms, m_adeConfig.getBasePath());
             if (m_cms.existsResource(modelGroupFolderPath)) {
                 try {

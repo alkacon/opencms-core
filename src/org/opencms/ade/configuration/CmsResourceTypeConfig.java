@@ -476,7 +476,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return m_folderOrName.getFolderPath(cms, pageFolderRootPath);
         } else {
             return CmsStringUtil.joinPaths(
-                cms.getRequestContext().getSiteRoot(),
+                OpenCms.getSiteManager().getSiteRoot(pageFolderRootPath),
                 CmsADEManager.CONTENT_FOLDER_NAME,
                 m_typeName);
         }
