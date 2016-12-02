@@ -475,10 +475,14 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         if (m_folderOrName != null) {
             return m_folderOrName.getFolderPath(cms, pageFolderRootPath);
         } else {
-            return CmsStringUtil.joinPaths(
-                OpenCms.getSiteManager().getSiteRoot(pageFolderRootPath),
-                CmsADEManager.CONTENT_FOLDER_NAME,
-                m_typeName);
+            String siteRoot = null;
+            if (pageFolderRootPath != null) {
+                siteRoot = OpenCms.getSiteManager().getSiteRoot(pageFolderRootPath);
+            }
+            if (siteRoot == null) {
+                siteRoot = cms.getRequestContext().getSiteRoot();
+            }
+            return CmsStringUtil.joinPaths(siteRoot, CmsADEManager.CONTENT_FOLDER_NAME, m_typeName);
         }
     }
 
