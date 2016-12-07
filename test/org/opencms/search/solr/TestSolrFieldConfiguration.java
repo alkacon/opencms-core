@@ -225,8 +225,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         // test the 'attribute' mapping
         fieldValue = res.getField("ateaser_en");
-        // This is the Lucene optimized String representaion of the date
-        assertTrue(fieldValue.contains("20110616074840000"));
+        // This is NOT the Lucene optimized String representation of the date.
+        // For Solr just the milliseconds are stored to allow mapping to date fields.
+        assertTrue(fieldValue.contains("1308210520000"));
 
         // test the 'dynamic' mapping with 'class' attribute
         fieldValue = res.getField("ateaser_en");
