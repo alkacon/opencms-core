@@ -62,25 +62,16 @@ public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefau
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        executeAction(context, false);
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsDefaultAction#executeAction(org.opencms.ui.I_CmsDialogContext, boolean)
-     */
-    public void executeAction(I_CmsDialogContext context, boolean hasModifier) {
-
         if (context.getResources().size() == 1) {
             String link = OpenCms.getLinkManager().substituteLink(context.getCms(), context.getResources().get(0));
             HttpServletRequest req = CmsVaadinUtils.getRequest();
             CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-            if (hasModifier || context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
+            if (context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
                 A_CmsUI.get().openPageOrWarn(link, "_blank");
             } else {
                 A_CmsUI.get().getPage().setLocation(link);
             }
         }
-
     }
 
     /**
