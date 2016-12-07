@@ -201,33 +201,19 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                         // map all attributes for a resource
                         switch (attribute) {
                             case dateContent:
-                                content = DateTools.timeToString(
-                                    res.getDateContent(),
-                                    DateTools.Resolution.MILLISECOND);
+                                content = Long.toString(res.getDateContent());
                                 break;
                             case dateCreated:
-                                content = DateTools.timeToString(
-                                    res.getDateCreated(),
-                                    DateTools.Resolution.MILLISECOND);
+                                content = Long.toString(res.getDateCreated());
                                 break;
                             case dateExpired:
-                                long expirationDate = res.getDateExpired();
-                                if (expirationDate == CmsResource.DATE_EXPIRED_DEFAULT) {
-                                    // default of Long.MAX_VALUE is to big, use January 1, 2100 instead
-                                    content = DATE_EXPIRED_DEFAULT_STR;
-                                } else {
-                                    content = DateTools.timeToString(expirationDate, DateTools.Resolution.MILLISECOND);
-                                }
+                                content = Long.toString(res.getDateExpired());
                                 break;
                             case dateLastModified:
-                                content = DateTools.timeToString(
-                                    res.getDateLastModified(),
-                                    DateTools.Resolution.MILLISECOND);
+                                content = Long.toString(res.getDateLastModified());
                                 break;
                             case dateReleased:
-                                content = DateTools.timeToString(
-                                    res.getDateReleased(),
-                                    DateTools.Resolution.MILLISECOND);
+                                content = Long.toString(res.getDateReleased());
                                 break;
                             case flags:
                                 content = String.valueOf(res.getFlags());
