@@ -76,12 +76,26 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
     /** The mapping type. */
     private CmsSearchFieldMappingType m_type;
 
+    /** Flag, indicating if the mapping applies to a lucene index. */
+    private boolean m_isLucene;
+
     /**
      * Public constructor for a new search field mapping.<p>
      */
     public CmsSearchFieldMapping() {
 
         // no initialization required
+    }
+
+    /**
+     * Public constructor for a new search field mapping.<p>
+     *
+     * @param isLucene flag, indicating if the mapping is done for a lucene index
+     */
+    public CmsSearchFieldMapping(boolean isLucene) {
+
+        this();
+        m_isLucene = isLucene;
     }
 
     /**
@@ -95,6 +109,19 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
         this();
         setType(type);
         setParam(param);
+    }
+
+    /**
+     * Public constructor for a new search field mapping.<p>
+     *
+     * @param type the type to use, see {@link #setType(CmsSearchFieldMappingType)}
+     * @param param the mapping parameter, see {@link #setParam(String)}
+     * @param isLucene flag, indicating if the mapping is done for a lucene index
+     */
+    public CmsSearchFieldMapping(CmsSearchFieldMappingType type, String param, boolean isLucene) {
+
+        this(type, param);
+        m_isLucene = isLucene;
     }
 
     /**
@@ -201,19 +228,39 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                         // map all attributes for a resource
                         switch (attribute) {
                             case dateContent:
-                                content = Long.toString(res.getDateContent());
+                                content = m_isLucene
+                                ? DateTools.timeToString(res.getDateContent(), DateTools.Resolution.MILLISECOND)
+                                : Long.toString(res.getDateContent());
                                 break;
                             case dateCreated:
-                                content = Long.toString(res.getDateCreated());
+                                content = m_isLucene
+                                ? DateTools.timeToString(res.getDateCreated(), DateTools.Resolution.MILLISECOND)
+                                : Long.toString(res.getDateCreated());
                                 break;
                             case dateExpired:
-                                content = Long.toString(res.getDateExpired());
+                                if (m_isLucene) {
+                                    long expirationDate = res.getDateExpired();
+                                    if (expirationDate == CmsResource.DATE_EXPIRED_DEFAULT) {
+                                        // default of Long.MAX_VALUE is to big, use January 1, 2100 instead
+                                        content = DATE_EXPIRED_DEFAULT_STR;
+                                    } else {
+                                        content = DateTools.timeToString(
+                                            expirationDate,
+                                            DateTools.Resolution.MILLISECOND);
+                                    }
+                                } else {
+                                    content = Long.toString(res.getDateExpired());
+                                }
                                 break;
                             case dateLastModified:
-                                content = Long.toString(res.getDateLastModified());
+                                content = m_isLucene
+                                ? DateTools.timeToString(res.getDateLastModified(), DateTools.Resolution.MILLISECOND)
+                                : Long.toString(res.getDateLastModified());
                                 break;
                             case dateReleased:
-                                content = Long.toString(res.getDateReleased());
+                                content = m_isLucene
+                                ? DateTools.timeToString(res.getDateReleased(), DateTools.Resolution.MILLISECOND)
+                                : Long.toString(res.getDateReleased());
                                 break;
                             case flags:
                                 content = String.valueOf(res.getFlags());

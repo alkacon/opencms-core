@@ -339,10 +339,10 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
                     }
                 }
                 if (m_mapping == null) {
-                    m_mapping = new CmsSearchFieldMapping();
+                    m_mapping = new CmsSearchFieldMapping(true);
                 }
             } catch (Exception e) {
-                m_mapping = new CmsSearchFieldMapping();
+                m_mapping = new CmsSearchFieldMapping(true);
             }
         }
     }
