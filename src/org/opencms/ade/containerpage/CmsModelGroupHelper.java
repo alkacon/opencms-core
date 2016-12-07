@@ -131,31 +131,6 @@ public class CmsModelGroupHelper {
     }
 
     /**
-     * Returns the model element id property value.<p>
-     *
-     * @param cms the current cms context
-     * @param page the model group page
-     *
-     * @return the model element id
-     */
-    public static String getModelElementId(CmsObject cms, CmsResource page) {
-
-        String id = null;
-        try {
-            CmsProperty modelElementProp = cms.readPropertyObject(
-                page,
-                CmsPropertyDefinition.PROPERTY_MODEL_GROUP_BASE,
-                false);
-            if (!modelElementProp.isNullProperty() && CmsUUID.isValidUUID(modelElementProp.getValue())) {
-                id = modelElementProp.getValue();
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return id;
-    }
-
-    /**
      * Returns if the given resource is a model group resource.<p>
      *
      * @param resource the resource
@@ -187,21 +162,9 @@ public class CmsModelGroupHelper {
         try {
             CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, group);
             CmsContainerPageBean pageBean = xmlContainerPage.getContainerPage(cms);
+
             CmsContainerBean baseContainer = pageBean.getContainers().get(MODEL_GROUP_BASE_CONTAINER);
-            String modelId = getModelElementId(cms, group);
             boolean changedContent = false;
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(modelId)) {
-                // model id property is not set yet
-                // look up the model root element
-
-                if ((baseContainer != null) && (baseContainer.getElements().size() > 0)) {
-                    CmsContainerElementBean element = baseContainer.getElements().get(0);
-                    modelId = element.getId().toString();
-
-                }
-            } else {
-                modelId = null;
-            }
             if ((baseContainer != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(baseContainerName)) {
 
                 List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
@@ -222,14 +185,9 @@ public class CmsModelGroupHelper {
                     pageBean = new CmsContainerPageBean(containers);
                 }
             }
-            if (changedContent || (modelId != null)) {
+            if (changedContent) {
                 ensureLock(cms, group);
-                if (modelId != null) {
-                    cms.writePropertyObjects(
-                        group,
-                        Collections.singletonList(
-                            new CmsProperty(CmsPropertyDefinition.PROPERTY_MODEL_GROUP_BASE, modelId, null)));
-                }
+
                 if (changedContent) {
                     xmlContainerPage.save(cms, pageBean);
                 }
@@ -649,11 +607,6 @@ public class CmsModelGroupHelper {
         }
 
         List<CmsProperty> changedProps = new ArrayList<CmsProperty>();
-        changedProps.add(
-            new CmsProperty(
-                CmsPropertyDefinition.PROPERTY_MODEL_GROUP_BASE,
-                modelElementId != null ? modelElementId.toString() : null,
-                null));
         if (baseElement != null) {
             changedProps.add(
                 new CmsProperty(
@@ -891,23 +844,13 @@ public class CmsModelGroupHelper {
         CmsResource modelGroupResource) {
 
         CmsContainerElementBean result = null;
-        String id = getModelElementId(m_cms, modelGroupResource);
-        if (id != null) {
-            CmsUUID baseElementId = new CmsUUID(id);
-            for (CmsContainerElementBean element : modelGroupPage.getElements()) {
-                if (element.getId().equals(baseElementId)) {
-                    result = element;
-                    break;
-                }
-            }
-        } else {
-            // try to fall back to the old data structure used befor version 10.5
-            CmsContainerBean baseContainer = modelGroupPage.getContainers().get(MODEL_GROUP_BASE_CONTAINER);
-            if ((baseContainer != null) && !baseContainer.getElements().isEmpty()) {
-                result = baseContainer.getElements().get(0);
+        for (CmsContainerElementBean element : modelGroupPage.getElements()) {
+            if (CmsContainerElement.ModelGroupState.isModelGroup.name().equals(
+                element.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE))) {
+                result = element;
+                break;
             }
         }
-
         return result;
     }
 
