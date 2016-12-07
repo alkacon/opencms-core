@@ -347,7 +347,9 @@ public class CmsSearchTab extends A_CmsTab {
         if (search.getDateModifiedEnd() > 0) {
             m_dateModifiedEndDateBox.setValue(new Date(search.getDateModifiedEnd()));
         }
-        m_scopeSelection.setFormValue(search.getScope().name());
+        if (search.getScope() != null) {
+            m_scopeSelection.setFormValue(search.getScope().name());
+        }
 
     }
 
