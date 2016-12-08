@@ -225,12 +225,14 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
     public void editPropertiesForNewResource(String propertyDataString) {
 
         try {
+            CmsVUI.clearStoredFocusForCurrentInstance(); // we need to control the focus for ourselves in the property dialog
             CmsPropertiesBean propData = (CmsPropertiesBean)(CmsRpcPrefetcher.getSerializedObjectFromString(
                 GWT.create(I_CmsVfsService.class),
                 propertyDataString));
             CmsEditProperties.PropertyEditingContext context = new CmsEditProperties.PropertyEditingContext();
             context.setPropertySaver(new PropertySaver());
             context.setAllowCreateProperties(false);
+            context.setFocusNameField(true);
             CmsEditProperties.openPropertyDialog(propData, new ContextMenuHandler(), true, new Runnable() {
 
                 @SuppressWarnings("synthetic-access")

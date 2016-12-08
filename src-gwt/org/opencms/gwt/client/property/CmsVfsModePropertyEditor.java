@@ -84,6 +84,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** The interval used for updating the height. */
     public static final int UPDATE_HEIGHT_INTERVAL = 200;
 
+    /** True when resizing of the dialog is disabled. */
     protected static boolean m_resizeDisabled;
 
     /** The map of tab names. */
@@ -132,10 +133,10 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
     }
 
-    /** 
+    /**
      * Disables resizing.<p>
-     * 
-     * @param disabled true if resizing should be disabled 
+     *
+     * @param disabled true if resizing should be disabled
      */
     public static void disableResize(boolean disabled) {
 
@@ -166,6 +167,16 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             widget.setEnabled(false);
         }
         return widget;
+    }
+
+    /**
+     * Focuses the file name field (delayed).<p>
+     */
+    public void focusNameField() {
+
+        m_activeFieldData = new CmsActiveFieldData(null, "simple", A_CmsPropertyEditor.FIELD_URLNAME);
+        m_panel.tryToRestoreFieldData(m_activeFieldData);
+
     }
 
     /**

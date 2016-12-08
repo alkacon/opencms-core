@@ -29,6 +29,10 @@
     	<when-type-is class="com.vaadin.client.ui.VPopupView" />
     </replace-with>
     
+    <replace-with class="org.opencms.ui.client.CmsVUI">
+    	<when-type-is class="com.vaadin.client.ui.VUI" />
+    </replace-with>
+    
     <replace-with class="org.opencms.ui.client.CmsRpcManager">
     	<when-type-is class="com.vaadin.client.communication.RpcManager" />
     </replace-with>

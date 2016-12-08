@@ -236,6 +236,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         textbox.setInhibitValidationForKeypresses(true);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox);
+        result.getLayoutData().put("property", A_CmsPropertyEditor.FIELD_URLNAME);
         String urlName = m_handler.getName();
         if (urlName == null) {
             urlName = "";
