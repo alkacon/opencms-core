@@ -49,17 +49,22 @@
         <filter-class>org.opencms.jsp.jsonpart.CmsJsonPartFilter</filter-class>
     </filter>
 
-   @COMMENT_UPDATER_START@<filter-mapping>
-        <filter-name>OpenCmsUrlServletFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping> @COMMENT_UPDATER_END@
-
     <filter-mapping>
         <filter-name>CmsJsonPartFilter</filter-name>
         <url-pattern>/opencms/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
+
+   @COMMENT_UPDATER_START@<!-- IMPORTANT: The mapping for the OpenCmsUrlServletFilter sends a forward if the
+       URL is adjusted. That can cause that the filters, where the mappings are defined below, to be skipped.
+       Therefore, declare all other filter mappings above this one, unless you are really sure that the mapping
+       has be defined below.
+    -->
+   <filter-mapping>
+        <filter-name>OpenCmsUrlServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping> @COMMENT_UPDATER_END@
 
     <context-param>
         <param-name>OpenCmsServlet</param-name>
