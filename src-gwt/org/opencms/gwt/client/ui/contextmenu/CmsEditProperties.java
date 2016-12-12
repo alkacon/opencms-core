@@ -39,10 +39,8 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
-import org.opencms.gwt.client.ui.input.form.CmsForm.I_FieldChangeHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
@@ -548,13 +546,6 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
             m_submitHandler = new CmsPropertySubmitHandler(handler);
             editor.getForm().setFormHandler(this);
-            editor.getForm().setFieldChangeHandler(new I_FieldChangeHandler() {
-
-                public void onFieldChange(I_CmsFormField field, String newValue) {
-
-                    editor.handleFieldChange(field);
-                }
-            });
             try {
                 CmsVfsModePropertyEditor.disableResize(true);
                 editor.restoreActiveFieldData(m_prevFieldData);

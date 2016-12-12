@@ -66,6 +66,11 @@ public class CmsActiveFieldData {
         return m_field;
     }
 
+    public String getFieldId() {
+
+        return (m_field != null) ? m_field.getId() : "(null)";
+    }
+
     /**
      * Gets the property name.<p>
      *

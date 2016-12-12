@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
@@ -388,7 +389,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
                         };
                         timer2.schedule(1);
-
                     }
                 }
 
@@ -401,7 +401,10 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
                     CmsTextBox box = (CmsTextBox)widget;
                     box.selectAll();
                     box.setFocus(true);
-
+                } else if (widget instanceof CmsTextArea) {
+                    CmsTextArea textarea = ((CmsTextArea)widget);
+                    textarea.selectAll();
+                    textarea.setFocus(true);
                 }
             }
         };

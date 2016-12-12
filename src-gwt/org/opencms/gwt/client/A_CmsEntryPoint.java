@@ -112,7 +112,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
      */
     protected void enableRemoteExceptionHandler() {
 
-        if (!GWT.isScript()) {
+        if (GWT.isScript()) {
             // In hosted mode, uncaught exceptions are easier to debug
             return;
         }

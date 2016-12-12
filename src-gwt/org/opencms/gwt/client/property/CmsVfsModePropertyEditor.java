@@ -30,8 +30,8 @@ package org.opencms.gwt.client.property;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
-import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
@@ -187,18 +187,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     public CmsActiveFieldData getActiveFieldData() {
 
         return m_activeFieldData;
-    }
-
-    /**
-     * Handles field value changes.<p>
-     *
-     * @param field the changed field
-     */
-    public void handleFieldChange(I_CmsFormField field) {
-
-        if ((m_activeFieldData != null) && (m_activeFieldData.getField() != field)) {
-            m_activeFieldData = null;
-        }
     }
 
     /**
@@ -400,7 +388,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             defaultValue = defaultValueAndOrigin.getFirst();
             origin = defaultValueAndOrigin.getSecond();
         }
-        Widget w = (Widget)field.getWidget();
+        final Widget w = (Widget)field.getWidget();
         I_CmsStringModel model = getStringModel(pathValue);
         field.bind(model);
         boolean ghost = CmsStringUtil.isEmptyOrWhitespaceOnly(pathValue.getValue());
@@ -411,14 +399,19 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
                 initialValue = null;
             }
         }
-        if ((w instanceof CmsTextBox)) {
+        if (w instanceof HasFocusHandlers) {
             try {
                 ((HasFocusHandlers)w).addFocusHandler(new FocusHandler() {
 
                     @SuppressWarnings("synthetic-access")
                     public void onFocus(FocusEvent event) {
 
-                        m_activeFieldData = new CmsActiveFieldData(field, tab, propName);
+                        if ((w instanceof CmsTextBox) || (w instanceof CmsTextArea)) {
+                            m_activeFieldData = new CmsActiveFieldData(field, tab, propName);
+                        } else {
+                            // field received focus, but it doesn't make sense to restore it later
+                            m_activeFieldData = null;
+                        }
                     }
                 });
             } catch (Exception e) {
