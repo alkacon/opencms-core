@@ -386,7 +386,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_COPY_MOVE_MOVE_RESOURCES_0 = "GUI_COPY_MOVE_MOVE_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MOVE_TARGET_FOLDER_0 = "GUI_COPY_MOVE_TARGET_FOLDER_0";
+    public static final String GUI_COPY_MOVE_TARGET_0 = "GUI_COPY_MOVE_TARGET_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MULTI_2 = "GUI_COPY_MULTI_2";
