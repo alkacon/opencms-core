@@ -548,7 +548,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         form.setWidth("100%");
         m_targetPath = new CmsPathSelectField();
         m_targetPath.setCaption(
-            CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_TARGET_FOLDER_0));
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_TARGET_0));
         m_targetPath.setFileSelectCaption(
             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0));
         m_targetPath.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
