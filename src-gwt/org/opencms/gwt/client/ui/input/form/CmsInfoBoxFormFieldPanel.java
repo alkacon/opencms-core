@@ -66,10 +66,10 @@ public class CmsInfoBoxFormFieldPanel extends A_CmsFormFieldPanel {
 
         m_panel = new FlowPanel();
         m_innerPanel = new FlowPanel();
-        CmsListItemWidget liWidget = new CmsListItemWidget(info);
-        liWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
-        liWidget.setStateIcon(StateIcon.standard);
-        m_panel.add(liWidget);
+        m_infoWidget = new CmsListItemWidget(info);
+        m_infoWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
+        m_infoWidget.setStateIcon(StateIcon.standard);
+        m_panel.add(m_infoWidget);
         m_panel.add(m_innerPanel);
         m_innerPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_innerPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().navModePropertiesBox());

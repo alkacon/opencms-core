@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.util.CmsStringUtil;
@@ -52,12 +53,25 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
     /** Stored truncation width. */
     protected int m_truncationWidth = -1;
 
+    /** The info widget. */
+    protected CmsListItemWidget m_infoWidget;
+
     /**
      * Returns the default group name.<p>
      *
      * @return the default group name
      */
     public abstract String getDefaultGroup();
+
+    /**
+     * Returns the info widget.<p>
+     *
+     * @return the info widget
+     */
+    public CmsListItemWidget getInfoWidget() {
+
+        return m_infoWidget;
+    }
 
     /**
      * Renders a collection of fields.<p>

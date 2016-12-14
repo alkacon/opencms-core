@@ -138,8 +138,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
      */
     public CmsPropertyPanel(boolean showShared, CmsListInfoBean info) {
 
-        CmsListItemWidget liWidget = createListItemWidget(info);
-        m_simpleTabWrapper.add(liWidget);
+        m_infoWidget = createListItemWidget(info);
+        m_simpleTabWrapper.add(m_infoWidget);
         m_simpleTabWrapper.add(m_simpleTab);
         m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_simpleTab.addStyleName(
