@@ -416,13 +416,13 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
-     * Updates a single select cell.<p>
+     * Updates the select cell.<p>
      *
-     * @param cell the select cell to update
+     * @param cell the select cell
      */
-    public void updateCell(CmsLabelSelectCell cell) {
-
+    protected void updateCell(CmsLabelSelectCell cell) {
         // do nothing
+
     }
 
     /**
