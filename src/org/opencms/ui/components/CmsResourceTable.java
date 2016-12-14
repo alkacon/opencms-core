@@ -369,6 +369,9 @@ public class CmsResourceTable extends CustomComponent {
                     break;
                 default:
             }
+            if (projectFlag != null) {
+                projectFlag.setDescription(resUtil.getLockedInProjectName());
+            }
             resourceItem.getItemProperty(PROPERTY_PROJECT).setValue(projectFlag);
         }
 
