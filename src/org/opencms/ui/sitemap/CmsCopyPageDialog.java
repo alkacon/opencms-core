@@ -27,6 +27,7 @@
 
 package org.opencms.ui.sitemap;
 
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.tools.CmsContainerPageCopier;
 import org.opencms.i18n.tools.CmsContainerPageCopier.NoCustomReplacementException;
@@ -36,8 +37,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.components.fileselect.CmsResourceSelectField;
-import org.opencms.ui.components.fileselect.CmsSitemapSelectField;
+import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
     private Button m_okButton;
 
     /** The field for selecting the target folder. */
-    private CmsResourceSelectField m_targetSelect;
+    private CmsPathSelectField m_targetSelect;
 
     /**
      * Creates a new instance.<p>
@@ -140,7 +140,10 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
         try {
             CmsContainerPageCopier.CopyMode mode = (CmsContainerPageCopier.CopyMode)(m_copyMode.getValue());
             copier.setCopyMode(mode);
-            copier.run(m_context.getResources().get(0), m_targetSelect.getValue());
+            CmsResource targetFolder = m_context.getCms().readResource(
+                m_targetSelect.getValue(),
+                CmsResourceFilter.IGNORE_EXPIRATION.addRequireFolder());
+            copier.run(m_context.getResources().get(0), targetFolder);
             m_context.finish(
                 Arrays.asList(
                     copier.getTargetFolder().getStructureId(),
@@ -164,7 +167,8 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
     private FormLayout initContent() {
 
         FormLayout form = new FormLayout();
-        CmsResourceSelectField field = new CmsSitemapSelectField(m_context.getResources().get(0));
+        CmsPathSelectField field = new CmsPathSelectField();
+        field.setValue(m_context.getCms().getSitePath(m_context.getResources().get(0)));
         field.setStartWithSitempaView(true);
         field.setResourceFilter(CmsResourceFilter.IGNORE_EXPIRATION.addRequireFolder());
         field.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_TARGET_FOLDER_0));
