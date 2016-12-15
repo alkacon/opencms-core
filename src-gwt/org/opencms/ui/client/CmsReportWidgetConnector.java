@@ -46,6 +46,12 @@ public class CmsReportWidgetConnector extends AbstractComponentConnector impleme
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** True if we know the report is finished (i.e. the last report update (null) has been received. */
+    private boolean m_reportFinished;
+
+    /** True if the connector has been unregistered. */
+    private boolean m_unregistered;
+
     /**
      * Creates a new instance.<p>
      */
@@ -70,19 +76,17 @@ public class CmsReportWidgetConnector extends AbstractComponentConnector impleme
     }
 
     /**
-     * @see com.vaadin.client.ui.AbstractComponentConnector#createWidget()
+     * @see org.opencms.ui.shared.rpc.I_CmsReportClientRpc#handleReportUpdate(java.lang.String)
      */
-    @Override
-    protected Widget createWidget() {
+    public void handleReportUpdate(String reportUpdate) {
 
-        return new CmsClientReportWidget();
+        if (reportUpdate == null) {
+            m_reportFinished = true;
+        } else {
+            CmsClientReportWidget widget = (CmsClientReportWidget)getWidget();
+            widget.append(reportUpdate);
+        }
     }
-
-    /** True if the connector has been unregistered. */
-    private boolean m_unregistered;
-
-    /** True if we know the report is finished (i.e. the last report update (null) has been received. */
-    private boolean m_reportFinished;
 
     /**
      * @see com.vaadin.client.ui.AbstractComponentConnector#onUnregister()
@@ -95,16 +99,12 @@ public class CmsReportWidgetConnector extends AbstractComponentConnector impleme
     }
 
     /**
-     * @see org.opencms.ui.shared.rpc.I_CmsReportClientRpc#handleReportUpdate(java.lang.String)
+     * @see com.vaadin.client.ui.AbstractComponentConnector#createWidget()
      */
-    public void handleReportUpdate(String reportUpdate) {
+    @Override
+    protected Widget createWidget() {
 
-        if (reportUpdate == null) {
-            m_reportFinished = true;
-        } else {
-            CmsClientReportWidget widget = (CmsClientReportWidget)getWidget();
-            widget.append(reportUpdate);
-        }
+        return new CmsClientReportWidget();
     }
 
 }

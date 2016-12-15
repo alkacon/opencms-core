@@ -50,15 +50,6 @@ public interface I_CmsReport {
     /** Indicates headline formatting. */
     int FORMAT_HEADLINE = 2;
 
-    /** Indicates note formatting. */
-    int FORMAT_NOTE = 3;
-
-    /** Indicates OK formatting. */
-    int FORMAT_OK = 4;
-
-    /** Indicates warning formatting. */
-    int FORMAT_WARNING = 1;
-
     /** Names of the report format constants. */
     public static final String[] FORMAT_NAMES = {
         "FORMAT_DEFAULT",
@@ -67,6 +58,15 @@ public interface I_CmsReport {
         "FORMAT_NOTE",
         "FORMAT_OK",
         "FORMAT_NOTE"};
+
+    /** Indicates note formatting. */
+    int FORMAT_NOTE = 3;
+
+    /** Indicates OK formatting. */
+    int FORMAT_OK = 4;
+
+    /** Indicates warning formatting. */
+    int FORMAT_WARNING = 1;
 
     /** Request parameter value that this report should create an "extended" output. */
     String REPORT_TYPE_EXTENDED = "extended";

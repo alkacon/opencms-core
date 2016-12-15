@@ -63,6 +63,16 @@ public class CmsClientReportWidget extends FlowPanel {
     }
 
     /**
+     * Appends HTML to the content.<p>
+     *
+     * @param element the report content element
+     * @param html the HTML to append
+     */
+    private native void appendHtmlInternal(Element element, String html) /*-{
+        element.insertAdjacentHTML('beforeend', html);
+    }-*/;
+
+    /**
      * Scrolls to the bottom.<p>
      *
      * @param element the report widget element
@@ -72,15 +82,5 @@ public class CmsClientReportWidget extends FlowPanel {
 
         element.scrollTop = content.offsetHeight;
 
-    }-*/;
-
-    /**
-     * Appends HTML to the content.<p>
-     *
-     * @param element the report content element
-     * @param html the HTML to append
-     */
-    private native void appendHtmlInternal(Element element, String html) /*-{
-        element.insertAdjacentHTML('beforeend', html);
     }-*/;
 }

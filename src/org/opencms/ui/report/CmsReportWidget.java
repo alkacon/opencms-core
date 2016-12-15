@@ -46,14 +46,26 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Handlers to execute when the report finishes while displaying the report widget. */
+    private List<Runnable> m_reportFinishedHandlers = Lists.newArrayList();
+
     /** The report thread. */
     private A_CmsReportThread m_thread;
 
     /** True if the report thread is finished. */
     private boolean m_threadFinished;
 
-    /** Handlers to execute when the report finishes while displaying the report widget. */
-    private List<Runnable> m_reportFinishedHandlers = Lists.newArrayList();
+    /**
+     * Creates a new instance.<p>
+     *
+     * This does not start the report thread.
+     *
+     * @param thread the report thread
+     */
+    public CmsReportWidget(A_CmsReportThread thread) {
+        m_thread = thread;
+        registerRpc(this, I_CmsReportServerRpc.class);
+    }
 
     /**
      * Adds an action that should be executed if the report is finished.<p>
@@ -78,27 +90,6 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
     }
 
     /**
-     * Creates a new instance.<p>
-     *
-     * This does not start the report thread.
-     *
-     * @param thread the report thread
-     */
-    public CmsReportWidget(A_CmsReportThread thread) {
-        m_thread = thread;
-        registerRpc(this, I_CmsReportServerRpc.class);
-    }
-
-    /**
-     * @see com.vaadin.ui.AbstractComponent#getState()
-     */
-    @Override
-    protected CmsReportWidgetState getState() {
-
-        return (CmsReportWidgetState)(super.getState());
-    }
-
-    /**
      * @see org.opencms.ui.shared.rpc.I_CmsReportServerRpc#requestReportUpdate()
      */
     public void requestReportUpdate() {
@@ -112,5 +103,14 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
             m_threadFinished = true;
         }
         getRpcProxy(I_CmsReportClientRpc.class).handleReportUpdate(reportUpdate);
+    }
+
+    /**
+     * @see com.vaadin.ui.AbstractComponent#getState()
+     */
+    @Override
+    protected CmsReportWidgetState getState() {
+
+        return (CmsReportWidgetState)(super.getState());
     }
 }

@@ -51,6 +51,18 @@ public class CmsLogReport extends A_CmsReport {
      * using the provided Java class for the log channel.<p>
      *
      * @param locale the locale to use for the report output messages
+     * @param channel the log channel
+     */
+    public CmsLogReport(Locale locale, Class<?> channel) {
+        this(locale, (Object)channel);
+
+    }
+
+    /**
+     * Constructs a new report using the provided locale for the output language,
+     * using the provided Java class for the log channel.<p>
+     *
+     * @param locale the locale to use for the report output messages
      * @param channel the log channel (usually a string with the package name, or a class)
      */
     public CmsLogReport(Locale locale, Object channel) {
@@ -61,18 +73,6 @@ public class CmsLogReport extends A_CmsReport {
             channel = CmsLogReport.class;
         }
         m_channel = channel;
-    }
-
-    /**
-     * Constructs a new report using the provided locale for the output language,
-     * using the provided Java class for the log channel.<p>
-     *
-     * @param locale the locale to use for the report output messages
-     * @param channel the log channel
-     */
-    public CmsLogReport(Locale locale, Class<?> channel) {
-        this(locale, (Object)channel);
-
     }
 
     /**

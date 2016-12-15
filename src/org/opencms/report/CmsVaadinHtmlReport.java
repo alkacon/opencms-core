@@ -52,25 +52,16 @@ import org.antlr.stringtemplate.language.DefaultTemplateLexer;
  */
 public class CmsVaadinHtmlReport extends A_CmsReport {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsVaadinHtmlReport.class);
-
-    /** Format constant for newlines. */
-    public static final int FORMAT_NEWLINE = -1;
-
-    /** The log report to send output to. */
-    private CmsLogReport m_logReport;
-
     /**
      * Represents a single report entry.<p>
      */
     class ReportEntry {
 
-        /** String indicating the report type. */
-        private String m_type;
-
         /** Either a string, or an exception. */
         private Object m_message;
+
+        /** String indicating the report type. */
+        private String m_type;
 
         /**
          * Creates a new instance.<p>
@@ -81,16 +72,6 @@ public class CmsVaadinHtmlReport extends A_CmsReport {
         public ReportEntry(String type, Object message) {
             m_type = type;
             m_message = message;
-        }
-
-        /**
-         * Gets the entry type.<p>
-         *
-         * @return the entry type
-         */
-        public String getType() {
-
-            return m_type;
         }
 
         /**
@@ -105,10 +86,23 @@ public class CmsVaadinHtmlReport extends A_CmsReport {
             return m_message;
         }
 
+        /**
+         * Gets the entry type.<p>
+         *
+         * @return the entry type
+         */
+        public String getType() {
+
+            return m_type;
+        }
+
     }
 
-    /** The StringTemplate group used by this report. */
-    private StringTemplateGroup m_templateGroup;
+    /** Format constant for newlines. */
+    public static final int FORMAT_NEWLINE = -1;
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsVaadinHtmlReport.class);
 
     /** The list of report objects e.g. String, CmsPageLink, Exception ... */
     private List<Object> m_content;
@@ -119,23 +113,17 @@ public class CmsVaadinHtmlReport extends A_CmsReport {
      */
     private int m_indexNext;
 
+    /** The log report to send output to. */
+    private CmsLogReport m_logReport;
+
+    /** The StringTemplate group used by this report. */
+    private StringTemplateGroup m_templateGroup;
+
     /** If set to <code>true</code> nothing is kept in memory. */
     private boolean m_transient;
 
     /** Boolean flag indicating whether this report should generate HTML or JavaScript output. */
     private boolean m_writeHtml;
-
-    /**
-     * Constructs a new report using the provided locale for the output language.<p>
-     *
-     * @param locale the locale to use for the output language
-     * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
-     * @param logChannel the log channel to send the report output to (or null if this shouldn't be done)
-     */
-    public CmsVaadinHtmlReport(Locale locale, String siteRoot, Object logChannel) {
-
-        this(locale, siteRoot, false, false, logChannel);
-    }
 
     /**
      * Constructs a new report using the provided locale for the output language.<p>
@@ -168,16 +156,16 @@ public class CmsVaadinHtmlReport extends A_CmsReport {
                     new StringTemplateErrorListener() {
 
                         @SuppressWarnings("synthetic-access")
+                        public void error(String arg0, Throwable arg1) {
+
+                            LOG.error(arg0 + ": " + arg1.getMessage(), arg1);
+                        }
+
+                        @SuppressWarnings("synthetic-access")
                         public void warning(String arg0) {
 
                             LOG.warn(arg0);
 
-                        }
-
-                        @SuppressWarnings("synthetic-access")
-                        public void error(String arg0, Throwable arg1) {
-
-                            LOG.error(arg0 + ": " + arg1.getMessage(), arg1);
                         }
                     });
             } catch (UnsupportedEncodingException e) {
@@ -187,6 +175,18 @@ public class CmsVaadinHtmlReport extends A_CmsReport {
         } catch (IOException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * Constructs a new report using the provided locale for the output language.<p>
+     *
+     * @param locale the locale to use for the output language
+     * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
+     * @param logChannel the log channel to send the report output to (or null if this shouldn't be done)
+     */
+    public CmsVaadinHtmlReport(Locale locale, String siteRoot, Object logChannel) {
+
+        this(locale, siteRoot, false, false, logChannel);
     }
 
     /**
