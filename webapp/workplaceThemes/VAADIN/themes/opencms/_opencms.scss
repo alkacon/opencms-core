@@ -936,6 +936,10 @@
 	border: 1px solid $gray; 
 }
 
+.o-report-content {
+  @include user-select(text);
+}
+
 .o-report-headline  { color: #000099; font-weight: bold; }
 .o-report-note  { color: #666666; }
 .o-report-ok    { color: #009900; }
