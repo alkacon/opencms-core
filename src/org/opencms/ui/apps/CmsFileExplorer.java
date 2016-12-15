@@ -1508,7 +1508,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                             CmsObject cms = A_CmsUI.getCmsObject();
                             CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
                             String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                            A_CmsUI.get().getPage().setLocation(link);
+                            A_CmsUI.get().openPageOrWarn(link,"octarget");
                             return;
                         } catch (CmsVfsResourceNotFoundException e) {
                             LOG.info(e.getLocalizedMessage(), e);
