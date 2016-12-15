@@ -921,4 +921,30 @@
 	}
 	
 	
+.o-report { 
+	box-sizing: border-box; 
+	-moz-box-sizing: border-box; 
+	padding: 10px; 
+	margin: 0; 
+	color: #000000; 
+	background-color: /*begin-color Window*/#ffffff/*end-color*/; 
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 11px; 
+	white-space: nowrap;
+	overflow-y: auto;
+	border-radius: $v-border-radius;
+	border: 1px solid $gray; 
+}
+
+.o-report-headline  { color: #000099; font-weight: bold; }
+.o-report-note  { color: #666666; }
+.o-report-ok    { color: #009900; }
+.o-report-warn  { color: #990000; padding-left: 40px; }
+.o-report-error   { color: #990000; font-weight: bold; padding-left: 40px; }
+.o-report-exception { color: #990000; font-weight: bold; }
+.o-report-stacktraceline { margin-left: 6ex; }
+	
+	
+	
+	
 }

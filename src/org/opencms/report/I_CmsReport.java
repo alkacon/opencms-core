@@ -59,6 +59,15 @@ public interface I_CmsReport {
     /** Indicates warning formatting. */
     int FORMAT_WARNING = 1;
 
+    /** Names of the report format constants. */
+    public static final String[] FORMAT_NAMES = {
+        "FORMAT_DEFAULT",
+        "FORMAT_WARNING",
+        "FORMAT_HEADLINE",
+        "FORMAT_NOTE",
+        "FORMAT_OK",
+        "FORMAT_NOTE"};
+
     /** Request parameter value that this report should create an "extended" output. */
     String REPORT_TYPE_EXTENDED = "extended";
 
