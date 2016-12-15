@@ -839,6 +839,17 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * Removes the given container-page element.<p>
      *
      * @param element the element
+     *
+     */
+    public void removeElement(CmsContainerPageElementPanel element) {
+
+        m_controller.removeElement(element);
+    }
+
+    /**
+     * Removes the given container-page element.<p>
+     *
+     * @param element the element
      * @param removeMode the element remove mode
      *
      */

@@ -28,7 +28,6 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
-import org.opencms.ade.containerpage.client.CmsContainerpageController.ElementRemoveMode;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
@@ -67,10 +66,6 @@ public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
     @Override
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
-        getHandler().removeElement(
-            element,
-            CmsContainerpageController.isConfirmRemove()
-            ? ElementRemoveMode.confirmRemove
-            : ElementRemoveMode.saveAndCheckReferences);
+        getHandler().removeElement(element);
     }
 }

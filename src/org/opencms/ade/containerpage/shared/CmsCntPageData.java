@@ -42,6 +42,18 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public final class CmsCntPageData implements IsSerializable {
 
+    /** The element delte modes. */
+    public enum ElementDeleteMode {
+        /** Don't ask, delete no longer referenced element resources. */
+        alwaysDelete,
+        /** Don't ask, keep no longer referenced element resources. */
+        alwaysKeep,
+        /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
+        askDelete,
+        /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
+        askKeep
+    }
+
     /** Enum representing the different ways dropping elements on a container page can be handled. */
     public enum ElementReuseMode {
 
@@ -160,6 +172,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The app title to display in the toolbar. */
     private String m_appTitle;
 
+    /** The element delete mode. */
+    private ElementDeleteMode m_deleteMode;
+
     /**
      * Constructor.<p>
      *
@@ -179,6 +194,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param elementViews the element views
      * @param elementView the current element view
      * @param reuseMode the element reuse mode
+     * @param deleteMode the element delete mode
      * @param isModelPage true if this is a model page
      * @param isModelGroup true if the page is used for model groups
      * @param modelGroupEmenetId the model group base element id
@@ -203,6 +219,7 @@ public final class CmsCntPageData implements IsSerializable {
         List<CmsElementViewInfo> elementViews,
         CmsElementViewInfo elementView,
         ElementReuseMode reuseMode,
+        ElementDeleteMode deleteMode,
         boolean isModelPage,
         boolean isModelGroup,
         String modelGroupEmenetId,
@@ -225,6 +242,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_elementViews = elementViews;
         m_elementView = elementView;
         m_reuseMode = reuseMode;
+        m_deleteMode = deleteMode;
         m_isModelPage = isModelPage;
         m_isModelGroup = isModelGroup;
         m_modelGroupEmenetId = modelGroupEmenetId;
@@ -269,6 +287,16 @@ public final class CmsCntPageData implements IsSerializable {
     public long getDateLastModified() {
 
         return m_lastModified;
+    }
+
+    /**
+     * Returns the element delete mode.<p>
+     *
+     * @return the element delete mode
+     */
+    public ElementDeleteMode getDeleteMode() {
+
+        return m_deleteMode;
     }
 
     /**

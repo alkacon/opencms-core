@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementReuseMode;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
@@ -1190,6 +1191,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 title = Messages.get().getBundle(wpLocale).key(Messages.GUI_TITLE_MODEL_0);
 
             }
+            ElementDeleteMode deleteMode = OpenCms.getWorkplaceManager().getElementDeleteMode();
+            if (deleteMode == null) {
+                deleteMode = ElementDeleteMode.askDelete;
+            }
+
             data = new CmsCntPageData(
                 onlineLink,
                 noEditReason,
@@ -1207,6 +1213,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 Lists.newArrayList(viewHelper.getViewMap().values()),
                 viewHelper.getDefaultView(),
                 reuseMode,
+                deleteMode,
                 isModelPage,
                 isEditingModelGroup,
                 modelGroupElementId,

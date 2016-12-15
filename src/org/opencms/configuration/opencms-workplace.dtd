@@ -41,7 +41,8 @@
 	user-lists?,
 	synchronization?,
 	keep-alive?,
-	gallery-default-scope?
+	gallery-default-scope?,
+	element-delete-mode?
 	)>
 
 <!--
@@ -888,7 +889,15 @@
 
 <!ELEMENT keep-alive (#PCDATA)>
 
+<!--
+# The default search scope for gallery dialogs. Values allowed: [everything|shared|site|siteShared|subSite|subSiteShared]
+-->
 <!ELEMENT gallery-default-scope (#PCDATA)>
+
+<!--
+# The element delete mode sets the behavior of the element remove dialog in the container page editor. Values allowed: [alwaysDelete|alwaysKeep|askDelete|askKeep]
+-->
+<!ELEMENT element-delete-mode (#PCDATA)>
 
 <!--
 # Include the explorer types DTD.
