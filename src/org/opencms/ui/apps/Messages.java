@@ -156,6 +156,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROJECTS_MANAGER_TITLE_0 = "GUI_PROJECTS_MANAGER_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_MANAGER_HELP_0 = "GUI_PROJECTS_MANAGER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_NAME_0 = "GUI_PROJECTS_NAME_0";
 
     /** Message constant for key in the resource bundle. */

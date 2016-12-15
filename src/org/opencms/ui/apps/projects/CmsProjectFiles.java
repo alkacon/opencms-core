@@ -37,7 +37,6 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
-import org.opencms.ui.apps.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;

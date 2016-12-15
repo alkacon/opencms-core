@@ -25,12 +25,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps;
+package org.opencms.ui.apps.projects;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.apps.projects.CmsProjectManager;
+import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
+import org.opencms.ui.apps.CmsAppVisibilityStatus;
+import org.opencms.ui.apps.CmsWorkplaceAppManager;
+import org.opencms.ui.apps.I_CmsAppButtonProvider;
+import org.opencms.ui.apps.I_CmsWorkplaceApp;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
@@ -78,7 +83,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_PROJECTS_MANAGER_HELP_0);
     }
 
     /**
