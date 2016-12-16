@@ -27,12 +27,21 @@
 
 package org.opencms.ui.apps.projects;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsFileTableDialogContext;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -155,7 +164,7 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
                 m_rootLayout.setMainHeightFull(true);
-                return new CmsProjectFiles(projectId);
+                return getProjectFiles(projectId);
             }
         }
 
@@ -170,6 +179,46 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     protected Component getNewProjectForm() {
 
         return new CmsEditProjectForm(this);
+    }
+
+    /**
+     * Returns the project files table.<p>
+     *
+     * @param projectId the selected project id
+     *
+     * @return the file table
+     */
+    protected CmsFileTable getProjectFiles(CmsUUID projectId) {
+
+        final CmsFileTable fileTable = new CmsFileTable(null);
+        fileTable.applyWorkplaceAppSettings();
+        fileTable.setContextProvider(new I_CmsContextProvider() {
+
+            /**
+             * @see org.opencms.ui.apps.I_CmsContextProvider#getDialogContext()
+             */
+            public I_CmsDialogContext getDialogContext() {
+
+                CmsFileTableDialogContext context = new CmsFileTableDialogContext(
+                    CmsProjectManagerConfiguration.APP_ID,
+                    ContextType.fileTable,
+                    fileTable,
+                    fileTable.getSelectedResources());
+                context.setEditableProperties(CmsFileExplorer.INLINE_EDIT_PROPERTIES);
+                return context;
+            }
+        });
+        CmsObject cms = A_CmsUI.getCmsObject();
+        List<CmsResource> childResources;
+        try {
+            childResources = cms.readProjectView(projectId, CmsResource.STATE_KEEP);
+            fileTable.fillTable(cms, childResources);
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(
+                CmsVaadinUtils.getMessageText(Messages.ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0),
+                e);
+        }
+        return fileTable;
     }
 
     /**

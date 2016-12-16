@@ -42,6 +42,7 @@ import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
+import org.opencms.ui.apps.search.CmsSourceSearchAppConfiguration;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -576,7 +577,8 @@ public class CmsWorkplaceAppManager {
                 new CmsEditorConfiguration(),
                 new CmsQuickLaunchEditorConfiguration(),
                 new CmsTraditionalWorkplaceConfiguration(),
-                new CmsProjectManagerConfiguration()));
+                new CmsProjectManagerConfiguration(),
+                new CmsSourceSearchAppConfiguration()));
         return result;
     }
 

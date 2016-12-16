@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-panel caption="Source search">
+			<v-form-layout margin spacing style-name="o-formlayout-main">
+				<v-combo-box _id="m_searchType" immediate="true"  width="100%" caption="Search type"/>
+				<f-cms-path-select-field _id="m_searchRoot" width="100%" caption="Search root" />
+				<v-combo-box _id="m_resourceType" immediate="true"  width="100%" caption="Resource type"/>
+				<v-combo-box _id="m_locale" immediate="true"  width="100%" caption="Locale"/>
+				<v-text-field _id="m_xPath" width="100%" caption="XPath" />
+				<v-combo-box _id="m_searchIndex" immediate="true"  width="100%" caption="Search index"/>
+				<v-text-field _id="m_solrQuery" width="100%" caption="Query" />
+				<v-text-field _id="m_searchPattern" width="100%" caption="Search pattern" />
+				<v-check-box _id="m_replace" caption="Replace" />
+				<v-text-field _id="m_replacePattern" width="100%" caption="Replace pattern" />
+				<v-combo-box _id="m_workProject" immediate="true"  width="100%" caption="Work project"/>
+			</v-form-layout>
+		</v-panel>
+		<v-panel>
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_search">Search</v-button>
+				</v-horizontal-layout>
+			</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>

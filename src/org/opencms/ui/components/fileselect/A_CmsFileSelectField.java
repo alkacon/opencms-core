@@ -49,7 +49,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 
 /**
- * Abstract file select field. Used by {@link org.opencms.ui.components.fileselect.CmsResourceSelectField} and {@link org.opencms.ui.components.fileselect.CmsPathSelectField}.<p>
+ * Abstract file select field. Used by {@link org.opencms.ui.components.fileselect.CmsPathSelectField}.<p>
  *
  * @param <T> the value type
  */

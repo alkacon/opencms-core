@@ -61,12 +61,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsEditPropertyContext;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuBuilder;
 import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
@@ -454,6 +456,46 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Applies settings generally used within workplace app file lists.<p>
+     */
+    public void applyWorkplaceAppSettings() {
+
+        // add site path property to container
+        m_container.addContainerProperty(
+            CmsResourceTableProperty.PROPERTY_SITE_PATH,
+            CmsResourceTableProperty.PROPERTY_SITE_PATH.getColumnType(),
+            CmsResourceTableProperty.PROPERTY_SITE_PATH.getDefaultValue());
+
+        // replace the resource name column with the path column
+        Object[] visibleCols = m_fileTable.getVisibleColumns();
+        for (int i = 0; i < visibleCols.length; i++) {
+            if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(visibleCols[i])) {
+                visibleCols[i] = CmsResourceTableProperty.PROPERTY_SITE_PATH;
+            }
+        }
+        m_fileTable.setVisibleColumns(visibleCols);
+        m_fileTable.setColumnCollapsible(CmsResourceTableProperty.PROPERTY_SITE_PATH, false);
+        m_fileTable.setColumnHeader(
+            CmsResourceTableProperty.PROPERTY_SITE_PATH,
+            CmsVaadinUtils.getMessageText(CmsResourceTableProperty.PROPERTY_SITE_PATH.getHeaderKey()));
+
+        // update column visibility according to the latest file explorer settings
+        CmsFileExplorerSettings settings;
+        try {
+            settings = OpenCms.getWorkplaceAppManager().getAppSettings(
+                A_CmsUI.getCmsObject(),
+                CmsFileExplorerSettings.class);
+
+            setTableState(settings);
+        } catch (Exception e) {
+            LOG.error("Error while reading file explorer settings from user.", e);
+        }
+        m_fileTable.setSortContainerPropertyId(CmsResourceTableProperty.PROPERTY_SITE_PATH);
+        setActionColumnProperty(CmsResourceTableProperty.PROPERTY_SITE_PATH);
+        setMenuBuilder(new CmsResourceContextMenuBuilder());
+    }
+
+    /**
     * Filters the displayed resources.<p>
     * Only resources where either the resource name, the title or the nav-text contains the given substring are shown.<p>
     *
@@ -579,6 +621,16 @@ public class CmsFileTable extends CmsResourceTable {
     public void setActionColumnProperty(CmsResourceTableProperty actionColumnProperty) {
 
         m_actionColumnProperty = actionColumnProperty;
+    }
+
+    /**
+     * Sets the dialog context provider.<p>
+     *
+     * @param provider the dialog context provider
+     */
+    public void setContextProvider(I_CmsContextProvider provider) {
+
+        m_contextProvider = provider;
     }
 
     /**
@@ -719,16 +771,6 @@ public class CmsFileTable extends CmsResourceTable {
     public void updateSorting() {
 
         m_fileTable.sort();
-    }
-
-    /**
-     * Sets the dialog context provider.<p>
-     *
-     * @param provider the dialog context provider
-     */
-    protected void setContextProvider(I_CmsContextProvider provider) {
-
-        m_contextProvider = provider;
     }
 
     /**

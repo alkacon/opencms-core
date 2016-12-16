@@ -57,14 +57,23 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
 
     /**
      * Creates a new instance.<p>
+     * Use in declarative layouts, remember to call .<p>
+     * This does not start the report thread.<p>
+     */
+    public CmsReportWidget() {
+        registerRpc(this, I_CmsReportServerRpc.class);
+    }
+
+    /**
+     * Creates a new instance.<p>
      *
      * This does not start the report thread.
      *
      * @param thread the report thread
      */
     public CmsReportWidget(A_CmsReportThread thread) {
+        this();
         m_thread = thread;
-        registerRpc(this, I_CmsReportServerRpc.class);
     }
 
     /**
@@ -95,14 +104,28 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
     public void requestReportUpdate() {
 
         String reportUpdate = null;
-        if (!m_threadFinished) {
+        if (!m_threadFinished && (m_thread != null)) {
             // if thread is not alive at this point, there may still be report updates
             reportUpdate = m_thread.getReportUpdate();
-        }
-        if (!m_thread.isAlive()) {
-            m_threadFinished = true;
+
+            if (!m_thread.isAlive()) {
+                m_threadFinished = true;
+                for (Runnable handler : m_reportFinishedHandlers) {
+                    handler.run();
+                }
+            }
         }
         getRpcProxy(I_CmsReportClientRpc.class).handleReportUpdate(reportUpdate);
+    }
+
+    /**
+     * Sets the report thread.<p>
+     *
+     * @param thread the report thread
+     */
+    public void setReportThread(A_CmsReportThread thread) {
+
+        m_thread = thread;
     }
 
     /**

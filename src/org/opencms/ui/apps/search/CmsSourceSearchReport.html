@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="r:org.opencms.ui.report" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-panel caption="Report" :expand height="100%" width="100%">
+			<r-cms-report-widget _id="m_report"  height="100%" width="100%" />
+		</v-panel>
+		<v-panel>
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_showFiles">Show files</v-button>
+				</v-horizontal-layout>
+			</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>
