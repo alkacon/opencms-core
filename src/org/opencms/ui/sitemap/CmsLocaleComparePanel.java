@@ -199,7 +199,7 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
             m_rootLocaleSelector.setItemIcon(selectableLocale, FontOpenCms.SPACE);
             m_rootLocaleSelector.setItemCaption(
                 selectableLocale,
-                selectableLocale.getDisplayLanguage(A_CmsUI.get().getLocale()));
+                selectableLocale.getDisplayName(A_CmsUI.get().getLocale()));
         }
         m_rootLocaleSelector.setItemIcon(mainLocale, MAIN_LOCALE_ICON);
         m_rootLocaleSelector.setValue(m_rootLocale);
@@ -236,7 +236,7 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
             m_comparisonLocaleSelector.setItemIcon(comparisonLocale, FontOpenCms.SPACE);
             m_comparisonLocaleSelector.setItemCaption(
                 comparisonLocale,
-                comparisonLocale.getDisplayLanguage(A_CmsUI.get().getLocale()));
+                comparisonLocale.getDisplayName(A_CmsUI.get().getLocale()));
             if ((selectedComparisonLocale == null) && !comparisonLocale.equals(m_rootLocale)) {
                 selectedComparisonLocale = comparisonLocale;
             }
