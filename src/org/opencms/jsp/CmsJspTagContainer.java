@@ -610,7 +610,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 List<CmsContainerElementBean> allElements = new ArrayList<CmsContainerElementBean>();
                 CmsContainerElementBean detailElement = null;
                 if (isUsedAsDetailView) {
-                    detailElement = generateDetailViewElement(cms, detailContent);
+                    detailElement = generateDetailViewElement(cms, detailContent, container);
                 }
                 if (detailElement != null) {
                     allElements.add(detailElement);
@@ -1076,10 +1076,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
      *
      * @param cms the CMS context
      * @param detailContent the detail content resource
+     * @param container the container
      *
      * @return the detail view element
      */
-    private CmsContainerElementBean generateDetailViewElement(CmsObject cms, CmsResource detailContent) {
+    private CmsContainerElementBean generateDetailViewElement(
+        CmsObject cms,
+        CmsResource detailContent,
+        CmsContainerBean container) {
 
         CmsContainerElementBean element = null;
         if (detailContent != null) {
@@ -1093,6 +1097,19 @@ public class CmsJspTagContainer extends BodyTagSupport {
             if (formatter != null) {
                 // use structure id as the instance id to enable use of nested containers
                 Map<String, String> settings = new HashMap<String, String>();
+                if (!container.getElements().isEmpty()) {
+                    // in case the first element in the container is of the same type as the detail content, transfer it's settings
+                    CmsContainerElementBean el = container.getElements().get(0);
+                    try {
+                        el.initResource(cms);
+                        if (el.getResource().getTypeId() == detailContent.getTypeId()) {
+                            settings.putAll(el.getIndividualSettings());
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
                 settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, detailContent.getStructureId().toString());
                 // create element bean
                 element = new CmsContainerElementBean(
