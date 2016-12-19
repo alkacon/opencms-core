@@ -1106,6 +1106,20 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns the parent container to the current container if available.<p>
+     *
+     * @return the parent container
+     */
+    public CmsContainerBean getParentContainer() {
+
+        CmsContainerBean result = null;
+        if ((getContainer() != null) && (getContainer().getParentInstanceId() != null)) {
+            result = m_parentContainers.get(getContainer().getParentInstanceId());
+        }
+        return result;
+    }
+
+    /**
      * Returns the instance id parent container mapping.<p>
      *
      * @return the instance id parent container mapping
