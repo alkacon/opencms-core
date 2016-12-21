@@ -44,6 +44,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
+import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;

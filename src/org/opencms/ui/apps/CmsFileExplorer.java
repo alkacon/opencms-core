@@ -413,6 +413,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     /** The state separator string. */
     public static final String STATE_SEPARATOR = "!!";
 
+    /** The initial split position between folder tree and file table. */
+    public static final int LAYOUT_SPLIT_POSITION = 399;
+
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
 
@@ -867,8 +870,8 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             LOG.error("Error while reading file explorer settings from user.", e);
         }
         sp.setSecondComponent(m_fileTable);
-        int splitLeft = 399;
-        sp.setSplitPosition(splitLeft, Unit.PIXELS);
+
+        sp.setSplitPosition(LAYOUT_SPLIT_POSITION, Unit.PIXELS);
 
         context.setAppContent(sp);
         context.showInfoArea(true);
@@ -893,7 +896,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         context.setAppInfo(inf);
 
         initToolbarButtons(context);
-        m_fileTable.updateColumnWidths(A_CmsUI.get().getPage().getBrowserWindowWidth() - splitLeft);
+        m_fileTable.updateColumnWidths(A_CmsUI.get().getPage().getBrowserWindowWidth() - LAYOUT_SPLIT_POSITION);
     }
 
     /**

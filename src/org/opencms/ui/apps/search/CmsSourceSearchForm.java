@@ -36,6 +36,7 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.CmsVaadinUtils.PropertyId;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsUUID;
 
@@ -126,7 +127,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
             public void valueChange(ValueChangeEvent event) {
 
-                toggleReplace();
+                updateReplace();
             }
         });
         m_searchType.addValueChangeListener(new ValueChangeListener() {
@@ -147,7 +148,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
                 search();
             }
         });
-        toggleReplace();
+        updateReplace();
         changedSearchType();
     }
 
@@ -164,8 +165,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
         m_solrQuery.setVisible(solrSearch);
         m_searchPattern.setVisible(!solrSearch);
         m_replace.setVisible(!solrSearch);
-        m_replacePattern.setVisible(!solrSearch);
-        m_workProject.setVisible(!solrSearch);
+        updateReplace();
         m_xPath.setVisible(xmlSearch);
         m_locale.setVisible(xmlSearch || solrSearch);
 
@@ -231,10 +231,11 @@ public class CmsSourceSearchForm extends VerticalLayout {
     /**
      * Toggles the replace option.<p>
      */
-    void toggleReplace() {
+    void updateReplace() {
 
-        m_replacePattern.setEnabled(m_replace.getValue().booleanValue());
-        m_workProject.setEnabled(m_replace.getValue().booleanValue());
+        boolean replace = m_replace.getValue().booleanValue() && (SearchType.solr != m_searchType.getValue());
+        m_replacePattern.setVisible(replace);
+        m_workProject.setVisible(replace);
     }
 
     /**
@@ -248,12 +249,18 @@ public class CmsSourceSearchForm extends VerticalLayout {
         m_searchType.setFilteringMode(FilteringMode.OFF);
         m_resourceType.setNullSelectionAllowed(false);
         m_searchType.addItem(SearchType.fullText);
-        m_searchType.setItemCaption(SearchType.fullText, "Full text");
+        m_searchType.setItemCaption(
+            SearchType.fullText,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SERACH_TYPE_FULLTEXT_0));
         m_searchType.addItem(SearchType.xmlContent);
-        m_searchType.setItemCaption(SearchType.xmlContent, "XML content");
+        m_searchType.setItemCaption(
+            SearchType.xmlContent,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SERACH_TYPE_XMLCONTENT_0));
         if (OpenCms.getSearchManager().getSolrServerConfiguration().isEnabled()) {
             m_searchType.addItem(SearchType.solr);
-            m_searchType.setItemCaption(SearchType.solr, "SOLR");
+            m_searchType.setItemCaption(
+                SearchType.solr,
+                CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SERACH_TYPE_SOLR_0));
 
             m_searchIndex.setFilteringMode(FilteringMode.OFF);
             m_searchIndex.setNullSelectionAllowed(false);

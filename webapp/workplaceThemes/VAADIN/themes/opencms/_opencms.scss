@@ -39,8 +39,8 @@
 	}
 }
 
-@mixin o-workplace-form-narrow {
-	.o-formlayout-workplace-main { 
+@mixin o-workplace-form-narrow($stylename: o-formlayout-workplace-main) {
+	.#{$stylename} { 
 		.v-formlayout-row .v-formlayout-captioncell {
 			display: inline-block;  
 			margin-left: 0px !important; 
@@ -296,6 +296,8 @@
 	.v-formlayout.o-form-less-margin{
 		@include valo-formlayout-margin(14px);
 	}
+	
+	@include o-workplace-form-narrow(o-formlayout-narrow);
   
 	.o-responsive[width-range~="1241px-"]{
 		/* big screen styles */
@@ -920,6 +922,28 @@
 		}
 	}
 	
+.o-report-overlay {
+	
+	@include o-loading-overlay;
+	z-index: 200000;
+	
+	.o-report-window{
+		visibility: hidden;
+		position: absolute;
+		top: 40px;
+		left: 20%;
+		width: 60%;
+	}
+}
+
+.o-report-show .o-report-overlay{
+	.oc-spin-center{
+		display: none;
+	}
+	.o-report-window{
+		visibility: visible;
+	}
+}
 	
 .o-report { 
 	box-sizing: border-box; 
@@ -930,19 +954,52 @@
 	white-space: nowrap;
 	overflow-y: auto;
 	border-radius: $v-border-radius;
+	
+	&.o-report-hidden {
+		display: none;
+	}
+	&.o-report-popup-view {
+		@include valo-overlay-style($animate-in: v-popup-animate-in 120ms, $animate-out: (valo-animate-out-fade 120ms));
+		position: fixed;
+		top:10%;
+		left: 20%;
+		height: 80%;
+		width: 60%;
+	}
+	
+	.o-report-content {
+		@include user-select(text);
+		.o-report-headline { 
+			color: #000099; font-weight: bold;
+		}
+		.o-report-note { 
+			color: #666666; 
+		}
+		.o-report-ok { 
+			color: #009900;
+		}
+		.o-report-warn { 
+			color: #990000; 
+			padding-left: 40px; 
+		}
+		.o-report-error { 
+			color: #990000; 
+			font-weight: bold; 
+			padding-left: 40px; 
+		}
+		.o-report-exception {
+			color: #990000;
+			font-weight: bold;
+		}
+		.o-report-stacktraceline { 
+			margin-left: 6ex; 
+		}
+	}
 }
 
-.o-report-content {
-  @include user-select(text);
-}
 
-.o-report-headline  { color: #000099; font-weight: bold; }
-.o-report-note  { color: #666666; }
-.o-report-ok    { color: #009900; }
-.o-report-warn  { color: #990000; padding-left: 40px; }
-.o-report-error   { color: #990000; font-weight: bold; padding-left: 40px; }
-.o-report-exception { color: #990000; font-weight: bold; }
-.o-report-stacktraceline { margin-left: 6ex; }
+
+
 	
 	
 	
