@@ -62,15 +62,18 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentValueSequence;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -168,7 +171,27 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     }
 
     /** Comparator that compares strings case insensitive. */
-    static class CmsCaseInsensitivePropertyValueComparator implements Comparator<Object> {
+    static final class CmsCaseInsensitiveStringComparator implements Comparator<Object> {
+
+        /** Single instance of the comparator. */
+        private static CmsCaseInsensitiveStringComparator m_instance = new CmsCaseInsensitiveStringComparator();
+
+        /**
+         * Hide the default constructor.
+         */
+        private CmsCaseInsensitiveStringComparator() {
+            // Hide constructor
+        }
+
+        /**
+         * Returns the comparator instance.
+         * @return the comparator
+         */
+        public static CmsCaseInsensitiveStringComparator getInstance() {
+
+            // is never null, because it's directly initialized on class load.
+            return m_instance;
+        }
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -180,7 +203,12 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             // Normal non-null comparison
             if ((o1 != null) && (o2 != null)) {
                 if ((o1 instanceof String) && (o2 instanceof String)) {
-                    return ((String)o1).compareToIgnoreCase((String)o2);
+                    String string1 = (String)o1;
+                    String string2 = (String)o2;
+                    r = String.CASE_INSENSITIVE_ORDER.compare(string1, string2);
+                    if (r == 0) {
+                        r = string1.compareTo(string2);
+                    }
                 } else {
                     // Assume the objects can be cast to Comparable, throw
                     // ClassCastException otherwise.
@@ -211,6 +239,189 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         FAILED_FOR_OTHER_LANGUAGE
     }
 
+    /** Extension of {@link Properties} to allow saving with keys alphabetically ordered and without time stamp as first comment.
+     *
+     * NOTE: Can't handle comments. They are just discarded.
+     * NOTE: Most of the class is just a plain copy of the private methods of {@link Properties}, so be aware that adjustments may be necessary if the {@link Properties} implementation changes.
+     * NOTE: The solution was taken to guarantee correct escaping when storing properties.
+     *
+     */
+    private static final class SortedProperties extends Properties {
+
+        /** Serialization id to implement Serializable. */
+        private static final long serialVersionUID = 8814525892788043348L;
+
+        /**
+         * NOTE: This is a one-to-one copy from {@link java.util.Properties} with HEX_DIGIT renamed to HEX_DIGIT.
+         * A table of hex digits.
+         */
+        private static final char[] HEX_DIGIT = {
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+            'F'};
+
+        /**
+         * Default constructor.
+         */
+        public SortedProperties() {
+            super();
+        }
+
+        /**
+         * NOTE: This is a one-to-one copy from {@link java.util.Properties}
+         * Convert a nibble to a hex character.
+         * @param   nibble  the nibble to convert.
+         * @return the character as Hex
+         */
+        private static char toHex(int nibble) {
+
+            return HEX_DIGIT[(nibble & 0xF)];
+        }
+
+        /**
+         * Override to omit the date comment.
+         * @see java.util.Properties#store(java.io.OutputStream, java.lang.String)
+         */
+        @Override
+        public void store(OutputStream out, String comments) throws IOException {
+
+            store0(new BufferedWriter(new OutputStreamWriter(out, "8859_1")), true);
+        }
+
+        /**
+         * Override to omit the date comment.
+         * @see java.util.Properties#store(java.io.Writer, java.lang.String)
+         */
+        @Override
+        public void store(Writer writer, String comments) throws IOException {
+
+            store0((writer instanceof BufferedWriter) ? (BufferedWriter)writer : new BufferedWriter(writer), false);
+        }
+
+        /**
+         * NOTE: This is a one-to-one copy of the private method from {@link java.util.Properties}
+         * Converts unicodes to encoded &#92;uxxxx and escapes
+         * special characters with a preceding slash.
+         *
+         * @param theString string to convert
+         * @param escapeSpace flag, indicating if spaces should be escaped
+         * @param escapeUnicode flag, indicating if unicode signs should be escaped
+         * @return the converted string
+         */
+        private String saveConvert(String theString, boolean escapeSpace, boolean escapeUnicode) {
+
+            int len = theString.length();
+            int bufLen = len * 2;
+            if (bufLen < 0) {
+                bufLen = Integer.MAX_VALUE;
+            }
+            StringBuffer outBuffer = new StringBuffer(bufLen);
+
+            for (int x = 0; x < len; x++) {
+                char aChar = theString.charAt(x);
+                // Handle common case first, selecting largest block that
+                // avoids the specials below
+                if ((aChar > 61) && (aChar < 127)) {
+                    if (aChar == '\\') {
+                        outBuffer.append('\\');
+                        outBuffer.append('\\');
+                        continue;
+                    }
+                    outBuffer.append(aChar);
+                    continue;
+                }
+                switch (aChar) {
+                    case ' ':
+                        if ((x == 0) || escapeSpace) {
+                            outBuffer.append('\\');
+                        }
+                        outBuffer.append(' ');
+                        break;
+                    case '\t':
+                        outBuffer.append('\\');
+                        outBuffer.append('t');
+                        break;
+                    case '\n':
+                        outBuffer.append('\\');
+                        outBuffer.append('n');
+                        break;
+                    case '\r':
+                        outBuffer.append('\\');
+                        outBuffer.append('r');
+                        break;
+                    case '\f':
+                        outBuffer.append('\\');
+                        outBuffer.append('f');
+                        break;
+                    case '=': // Fall through
+                    case ':': // Fall through
+                    case '#': // Fall through
+                    case '!':
+                        outBuffer.append('\\');
+                        outBuffer.append(aChar);
+                        break;
+                    default:
+                        if (((aChar < 0x0020) || (aChar > 0x007e)) & escapeUnicode) {
+                            outBuffer.append('\\');
+                            outBuffer.append('u');
+                            outBuffer.append(toHex((aChar >> 12) & 0xF));
+                            outBuffer.append(toHex((aChar >> 8) & 0xF));
+                            outBuffer.append(toHex((aChar >> 4) & 0xF));
+                            outBuffer.append(toHex(aChar & 0xF));
+                        } else {
+                            outBuffer.append(aChar);
+                        }
+                }
+            }
+            return outBuffer.toString();
+        }
+
+        /**
+         * Adaption of {@link java.util.Properties#store0(BufferedWriter,String,boolean)}.
+         * The behavior differs as follows:<ul>
+         * <li>Comments are not handled.</li>
+         * <li>The time stamp comment is omited.</li>
+         * <li>Messages are stored sorted alphabetically by key</li>
+         * </ul>
+         * @param bw writer to write to
+         * @param escUnicode flag, indicating if unicode characters should be escaped
+         * @throws IOException
+         */
+        @SuppressWarnings("javadoc")
+        private void store0(BufferedWriter bw, boolean escUnicode) throws IOException {
+
+            synchronized (this) {
+                List<Object> keys = new ArrayList<Object>(super.keySet());
+                Collections.sort(keys, CmsCaseInsensitiveStringComparator.getInstance());
+                for (Object k : keys) {
+                    String key = (String)k;
+                    String val = (String)get(key);
+                    key = saveConvert(key, true, escUnicode);
+                    /* No need to escape embedded and trailing spaces for value, hence
+                     * pass false to flag.
+                     */
+                    val = saveConvert(val, false, escUnicode);
+                    bw.write(key + "=" + val);
+                    bw.newLine();
+                }
+            }
+            bw.flush();
+        }
+    }
+
     /** Default serialization id, needed to implement {@link ValueChangeListener}. */
     private static final long serialVersionUID = 1L;
 
@@ -219,6 +430,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
     /** The property for configuring the message bundle used for localizing the bundle descriptors entries. */
     public static final String PROPERTY_BUNDLE_DESCRIPTOR_LOCALIZATION = "bundle.descriptor.messages";
+
     /** CmsObject for read / write operations. */
     private CmsObject m_cms;
     /** The files currently edited. */
@@ -234,7 +446,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     /** The xml bundle edited (or null, if a property bundle is edited). */
     private CmsXmlContent m_xmlBundle;
     /** The already loaded localizations. */
-    private Map<Locale, Properties> m_localizations;
+    private Map<Locale, SortedProperties> m_localizations;
     /** The bundle's base name. */
     private String m_basename;
     /** The site path to the folder where the edited resource is in. */
@@ -243,12 +455,12 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private Locale m_locale;
     /** The type of the loaded bundle. */
     private CmsMessageBundleEditorTypes.BundleType m_bundleType;
+
     /** The complete key set as map from keys to the number of occurrences. */
     CmsMessageBundleEditorTypes.KeySet m_keyset;
 
     /** Containers holding the keys for each locale. */
     private IndexedContainer m_container;
-
     /** The available locales. */
     private Collection<Locale> m_locales;
     /** Map from edit mode to the editor state. */
@@ -257,6 +469,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private boolean m_hasMasterMode;
     /** The current edit mode. */
     private CmsMessageBundleEditorTypes.EditMode m_editMode;
+
     /** Descriptor file, if edited besides a bundle. */
     private LockedFile m_descFile;
 
@@ -305,7 +518,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
         m_bundleFiles = new HashMap<Locale, CmsResource>();
         m_lockedBundleFiles = new HashMap<Locale, LockedFile>();
-        m_localizations = new HashMap<Locale, Properties>();
+        m_localizations = new HashMap<Locale, SortedProperties>();
         m_keyset = new CmsMessageBundleEditorTypes.KeySet();
 
         m_bundleType = initBundleType();
@@ -819,7 +1032,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 container = createContainerForBundleWithoutDescriptor();
             }
         }
-        container.setItemSorter(new DefaultItemSorter(new CmsCaseInsensitivePropertyValueComparator()));
+        container.setItemSorter(new DefaultItemSorter(CmsCaseInsensitiveStringComparator.getInstance()));
         if (!m_hasChanges) {
             container.addValueChangeListener(this);
         }
@@ -843,7 +1056,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         container.addContainerProperty(TableProperty.TRANSLATION, String.class, "");
 
         // add entries
-        Properties localization = getLocalization(m_locale);
+        SortedProperties localization = getLocalization(m_locale);
         CmsXmlContentValueSequence messages = m_descContent.getValueSequence(Descriptor.N_MESSAGE, Descriptor.LOCALE);
         String descValue;
         boolean hasDescription = false;
@@ -889,7 +1102,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         container.addContainerProperty(TableProperty.TRANSLATION, String.class, "");
 
         // add entries
-        Properties localization = getLocalization(m_locale);
+        SortedProperties localization = getLocalization(m_locale);
         Set<Object> keySet = m_keyset.getKeySet();
         for (Object key : keySet) {
 
@@ -980,7 +1193,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      * @throws IOException thrown if reading the properties from a file fails.
      * @throws CmsException thrown if reading the properties from a file fails.
      */
-    private Properties getLocalization(Locale locale) throws IOException, CmsException {
+    private SortedProperties getLocalization(Locale locale) throws IOException, CmsException {
 
         if (null == m_localizations.get(locale)) {
             switch (m_bundleType) {
@@ -1149,7 +1362,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 CmsResourceFilter.requireType(
                     OpenCms.getResourceManager().getResourceType(BundleType.PROPERTY.toString())))) {
                 resource = m_cms.readResource(filePath);
-                Properties props = new Properties();
+                SortedProperties props = new SortedProperties();
                 props.load(new ByteArrayInputStream(m_cms.readFile(resource).getContents()));
                 m_keyset.updateKeySet(null, props.keySet());
                 m_bundleFiles.put(l, resource);
@@ -1190,7 +1403,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                         if (resource != null) {
                             LockedFile file = LockedFile.lockResource(m_cms, resource);
                             m_lockedBundleFiles.put(l, file);
-                            Properties props = new Properties();
+                            SortedProperties props = new SortedProperties();
                             props.load(
                                 new InputStreamReader(
                                     new ByteArrayInputStream(file.getFile().getContents()),
@@ -1246,7 +1459,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             file.setCreated(true);
         }
         m_lockedBundleFiles.put(locale, file);
-        Properties props = new Properties();
+        SortedProperties props = new SortedProperties();
         props.load(new InputStreamReader(new ByteArrayInputStream(file.getFile().getContents()), file.getEncoding()));
         m_localizations.put(locale, props);
 
@@ -1260,7 +1473,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private void loadLocalizationFromXmlBundle(Locale locale) {
 
         CmsXmlContentValueSequence messages = m_xmlBundle.getValueSequence("Message", locale);
-        Properties props = new Properties();
+        SortedProperties props = new SortedProperties();
         if (null != messages) {
             for (I_CmsXmlContentValue msg : messages.getValues()) {
                 String msgpath = msg.getPath();
@@ -1301,7 +1514,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 e.printStackTrace();
                 return false;
             }
-            for (Properties localization : m_localizations.values()) {
+            for (SortedProperties localization : m_localizations.values()) {
                 if (localization.containsKey(key)) {
                     localization.remove(key);
                 }
@@ -1336,7 +1549,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             e.printStackTrace();
             return false;
         }
-        for (Properties localization : m_localizations.values()) {
+        for (SortedProperties localization : m_localizations.values()) {
             if (localization.containsKey(oldKey)) {
                 String value = localization.getProperty(oldKey);
                 localization.remove(oldKey);
@@ -1369,7 +1582,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private boolean replaceValues(Locale locale) {
 
         try {
-            Properties localization = getLocalization(locale);
+            SortedProperties localization = getLocalization(locale);
             if (hasDescriptor()) {
                 for (Object itemId : m_container.getItemIds()) {
                     Item item = m_container.getItem(itemId);
@@ -1404,7 +1617,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      */
     private void saveLocalization() {
 
-        Properties localization = new Properties();
+        SortedProperties localization = new SortedProperties();
         for (Object itemId : m_container.getItemIds()) {
             Item item = m_container.getItem(itemId);
             String key = item.getItemProperty(TableProperty.KEY).getValue().toString();
@@ -1439,7 +1652,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private void saveToPropertyVfsBundle() throws CmsException {
 
         for (Locale l : m_locales) {
-            Properties props = m_localizations.get(l);
+            SortedProperties props = m_localizations.get(l);
             if (null != props) {
                 LockedFile f = m_lockedBundleFiles.get(l);
                 try {
@@ -1483,14 +1696,16 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private void saveToXmlVfsBundle() throws CmsException {
 
         for (Locale l : m_locales) {
-            Properties props = m_localizations.get(l);
+            SortedProperties props = m_localizations.get(l);
             if (null != props) {
                 if (m_xmlBundle.hasLocale(l)) {
                     m_xmlBundle.removeLocale(l);
                 }
                 m_xmlBundle.addLocale(m_cms, l);
                 int i = 0;
-                for (Object key : props.keySet()) {
+                List<Object> keys = new ArrayList<Object>(props.keySet());
+                Collections.sort(keys, CmsCaseInsensitiveStringComparator.getInstance());
+                for (Object key : keys) {
                     if ((null != key) && !key.toString().isEmpty()) {
                         String value = props.getProperty(key.toString());
                         if (!value.isEmpty()) {
