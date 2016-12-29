@@ -123,6 +123,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         public void onBlur(BlurEvent event) {
 
             m_focus = false;
+            ValueChangeEvent.fire(CmsTextBox.this, m_currentValue); // need this to trigger validation
             updateGhostStyle();
         }
 
@@ -145,7 +146,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
          */
         public void onKeyUp(KeyUpEvent event) {
 
-            actionChangeTextFieldValue(m_textbox.getValue());
+            actionChangeTextFieldValue(m_textbox.getValue(), true);
 
         }
 
@@ -172,7 +173,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
          */
         public void onValueChange(ValueChangeEvent<String> event) {
 
-            actionChangeTextFieldValue(event.getValue());
+            actionChangeTextFieldValue(event.getValue(), false);
 
         }
 
@@ -180,15 +181,18 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
          * Sets the current value.<p>
          *
          * @param value the current value
+         * @param inhibitValidation true if validation should be inhibited
          */
-        public void setValue(String value) {
+        public void setValue(String value, boolean inhibitValidation) {
 
             if (value == null) {
                 value = "";
             }
             if (!Objects.equal(value, m_currentValue)) {
                 m_currentValue = value;
-                ValueChangeEvent.fire(CmsTextBox.this, value);
+                CmsExtendedValueChangeEvent<String> event = new CmsExtendedValueChangeEvent<String>(value);
+                event.setInhibitValidation(inhibitValidation);
+                fireEvent(event);
             }
         }
 
@@ -219,11 +223,12 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
          * This method is called when the value in the text box is changed.<p>
          *
          * @param value the new value
+         * @param inhibitValidation true if validation should be inhibited
          */
-        private void actionChangeTextFieldValue(String value) {
+        private void actionChangeTextFieldValue(String value, boolean inhibitValidation) {
 
             if (m_focus) {
-                setValue(value);
+                setValue(value, inhibitValidation);
                 updateGhostStyle();
             }
         }
@@ -683,7 +688,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public void setFormValueAsString(String newValue) {
 
-        m_handler.setValue(newValue);
+        m_handler.setValue(newValue, false);
         m_handler.updateGhostStyle();
     }
 
