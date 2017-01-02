@@ -30,6 +30,7 @@ package org.opencms.ui.apps.search;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
@@ -38,6 +39,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.CmsVaadinUtils.PropertyId;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -61,7 +63,7 @@ import com.vaadin.ui.VerticalLayout;
 public class CmsSourceSearchForm extends VerticalLayout {
 
     /** The available search types. */
-    enum SearchType {
+    public static enum SearchType {
         /** full text search. */
         fullText,
         /** Search using a solr index. */
@@ -93,22 +95,16 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
     /** The search index select. */
     private ComboBox m_searchIndex;
-
     /** The search pattern field. */
     private TextField m_searchPattern;
-
     /** The search root path select. */
     private CmsPathSelectField m_searchRoot;
-
     /** The search type select. */
     private ComboBox m_searchType;
-
     /** The SOLR query field. */
     private TextField m_solrQuery;
-
     /** The replace project. */
     private ComboBox m_workProject;
-
     /** The XPath field. */
     private TextField m_xPath;
 
@@ -153,6 +149,47 @@ public class CmsSourceSearchForm extends VerticalLayout {
     }
 
     /**
+     * Initializes the form with the given settings
+     *
+     * @param settings the settings
+     */
+    public void initFormValues(CmsSearchReplaceSettings settings) {
+
+        m_searchType.setValue(settings.getType());
+        if (!settings.getPaths().isEmpty()) {
+            m_searchRoot.setValue(settings.getPaths().get(0));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(settings.getTypes())) {
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(settings.getTypes());
+                m_resourceType.setValue(type);
+            } catch (CmsLoaderException e) {
+                // nothing to do, skip setting the type
+            }
+        }
+        switch (settings.getType()) {
+            default:
+            case fullText:
+                m_searchPattern.setValue(settings.getSearchpattern());
+
+                break;
+            case xmlContent:
+                m_searchPattern.setValue(settings.getSearchpattern());
+                if (settings.getLocale() != null) {
+                    m_locale.setValue(settings.getLocale());
+                }
+                m_xPath.setValue(settings.getXpath());
+                break;
+            case solr:
+                m_solrQuery.setValue(settings.getQuery());
+                if (settings.getLocale() != null) {
+                    m_locale.setValue(settings.getLocale());
+                }
+                m_searchIndex.setValue(settings.getSource());
+        }
+    }
+
+    /**
      * Handles search type changes.<p>
      */
     void changedSearchType() {
@@ -181,6 +218,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
     void search() {
 
         CmsSearchReplaceSettings settings = new CmsSearchReplaceSettings();
+        settings.setType((SearchType)m_searchType.getValue());
         settings.setPaths(Collections.singletonList(m_searchRoot.getValue()));
         I_CmsResourceType type = (I_CmsResourceType)m_resourceType.getValue();
         if (type != null) {
@@ -225,7 +263,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
                 }
                 settings.setSource((String)m_searchIndex.getValue());
         }
-        m_app.search(settings);
+        m_app.search(settings, true);
     }
 
     /**
@@ -274,6 +312,8 @@ public class CmsSourceSearchForm extends VerticalLayout {
             }
         }
         m_searchType.setValue(SearchType.fullText);
+
+        m_searchRoot.setValue("/");
 
         m_locale.setFilteringMode(FilteringMode.OFF);
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {

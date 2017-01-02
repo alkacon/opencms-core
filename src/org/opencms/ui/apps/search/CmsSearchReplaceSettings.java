@@ -27,23 +27,21 @@
 
 package org.opencms.ui.apps.search;
 
+import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Settings bean for the dialog.
  * <p>
- *
- * @since 7.5.3
- *
  */
+public class CmsSearchReplaceSettings implements Serializable {
 
-public class CmsSearchReplaceSettings {
-
-    /** The content search result list attribute name in the session. */
-    public static final String ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST = "sourcesearchResultList";
+    /** The serial version id. */
+    private static final long serialVersionUID = 1122133222446934991L;
 
     /** The force replacement flag. */
     private boolean m_forceReplace;
@@ -77,6 +75,9 @@ public class CmsSearchReplaceSettings {
 
     /** The source to retrive the resources from. */
     private String m_source;
+
+    /** The search type. */
+    private SearchType m_type;
 
     /** The resource type to use for replacement. */
     private String[] m_types;
@@ -179,6 +180,16 @@ public class CmsSearchReplaceSettings {
     public String getSource() {
 
         return m_source;
+    }
+
+    /**
+     * Returns the search type.<p>
+     *
+     * @return the search type
+     */
+    public SearchType getType() {
+
+        return m_type;
     }
 
     /**
@@ -347,6 +358,16 @@ public class CmsSearchReplaceSettings {
     public void setSource(String source) {
 
         m_source = source;
+    }
+
+    /**
+     * Sets the search type.<p>
+     *
+     * @param type the search type to set
+     */
+    public void setType(SearchType type) {
+
+        m_type = type;
     }
 
     /**
