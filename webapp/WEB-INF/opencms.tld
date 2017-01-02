@@ -2876,4 +2876,28 @@
             java.lang.String lookup(java.lang.String, java.lang.String)
         </function-signature>
     </function>
+    
+    <function>
+        <description>
+           Repairs the given HTML input.
+        </description>    
+        <name>repairHtml</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String repairHtml(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           Returns whether the given site path points to a sub sitemap folder.
+           The first argument needs to be either the page context, the request or the current user CmsObject.
+           The second argument the site path to the resource to check.
+        </description>    
+        <name>isSubSitemap</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String isSubSitemap(java.lang.Object, java.lang.String)
+        </function-signature>
+    </function>
 </taglib>

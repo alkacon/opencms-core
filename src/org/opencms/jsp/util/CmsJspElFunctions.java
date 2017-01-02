@@ -29,6 +29,7 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -40,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.util.CmsHtml2TextConverter;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -445,6 +447,27 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Returns whether the given site path points to a sub sitemap folder.<p>
+     *
+     * @param context either the page context, the request or the current user CmsObject
+     * @param sitePath the resource site path
+     *
+     * @return <code>true</code> if the given site path points to a sub sitemap folder
+     */
+    public static boolean isSubSitemap(Object context, String sitePath) {
+
+        boolean result = false;
+        CmsObject cms = convertCmsObject(context);
+
+        try {
+            result = CmsResourceTypeFolderSubSitemap.isSubSitemap(cms.readResource(sitePath));
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        return result;
+    }
+
+    /**
      * Converts a string (which is assumed to contain a JSON object whose values are strings only) to a map, for use in JSPs.<p>
      *
      * @param maybeJsonString the JSON string
@@ -530,6 +553,20 @@ public final class CmsJspElFunctions {
             return defaultValue;
         }
         return result;
+    }
+
+    /**
+     * Repairs the given HTML input.<p>
+     *
+     * @param input the HTML input
+     *
+     * @return the repaired HTML or an empty string in case of errors
+     */
+    public static String repairHtml(String input) {
+
+        CmsHtmlConverter converter = new CmsHtmlConverter();
+        String result = converter.convertToStringSilent(input);
+        return result == null ? "" : result;
     }
 
     /**
