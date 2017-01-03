@@ -52,6 +52,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -77,6 +78,7 @@ import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
+import org.opencms.main.CmsStaticResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearch;
@@ -474,16 +476,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 result.setTitle(messageBundle.key(Messages.GUI_EXTERNAL_LINK_0));
                 result.setSubTitle("");
                 result.setType(CmsResourceTypePointer.getStaticTypeName());
+            } else if (CmsStaticResourceHandler.isStaticResourceUri(linkPath)) {
+                result = new CmsResultItemBean();
+                result.setTitle(messageBundle.key(Messages.GUI_STATIC_RESOURCE_0));
+                result.setSubTitle(CmsStaticResourceHandler.removeStaticResourcePrefix(linkPath));
+                result.setType(CmsResourceTypeBinary.getStaticTypeName());
             } else {
                 boolean notFound = false;
                 String path = linkPath;
                 String siteRoot = OpenCms.getSiteManager().getSiteRoot(linkPath);
                 String oldSite = cms.getRequestContext().getSiteRoot();
                 try {
-                    //                    if ((siteRoot == null) && !cms.existsResource(path)) {
-                    //                        // if no site root was found and the resource does not exist in the current site, assume the root site
-                    //                        siteRoot = "/";
-                    //                    }
                     if (siteRoot != null) {
                         // only switch the site if needed
                         cms.getRequestContext().setSiteRoot(siteRoot);
