@@ -107,17 +107,11 @@ public class CmsContainerElement implements IsSerializable {
     /** The container id marking the edit menus. */
     public static final String MENU_CONTAINER_ID = "cms_edit_menu_container";
 
-    /** The is model group description element setting key. */
-    public static final String MODEL_GROUP_DESCRIPTION = "model_group_description";
-
     /** The model group id setting key. */
     public static final String MODEL_GROUP_ID = "model_group_id";
 
     /** The is model group element setting key. */
     public static final String MODEL_GROUP_STATE = "model_group_state";
-
-    /** The is model group title element setting key. */
-    public static final String MODEL_GROUP_TITLE = "model_group_title";
 
     /** The use as copy model setting key. */
     public static final String USE_AS_COPY_MODEL = "use_as_copy_model";
