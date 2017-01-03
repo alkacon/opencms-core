@@ -744,7 +744,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public String changePassword(String oldPassword, String newPassword, String newPasswordConfirm)
     throws CmsRpcException {
 
-        System.out.println("changing password from " + oldPassword + " to " + newPassword);
         CmsObject cms = getCmsObject();
         CmsPasswordInfo passwordBean = new CmsPasswordInfo(cms);
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
