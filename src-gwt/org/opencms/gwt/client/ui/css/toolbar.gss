@@ -317,7 +317,7 @@
     line-height: 32px;
 }
 
-.toolbarBackground div.userInfo{
+div.toolbarBackground > div.toolbarContent div.userInfo{
 	padding: 0px !important;
     display: inline-block;
     position: relative;
