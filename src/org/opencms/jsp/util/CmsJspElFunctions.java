@@ -447,24 +447,15 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Returns whether the given site path points to a sub sitemap folder.<p>
+     * Returns whether the given resource is a sub sitemap folder.<p>
      *
-     * @param context either the page context, the request or the current user CmsObject
-     * @param sitePath the resource site path
+     * @param resource the resource to check
      *
-     * @return <code>true</code> if the given site path points to a sub sitemap folder
+     * @return <code>true</code> if the given resource is a sub sitemap folder
      */
-    public static boolean isSubSitemap(Object context, String sitePath) {
+    public static boolean isSubSitemap(CmsResource resource) {
 
-        boolean result = false;
-        CmsObject cms = convertCmsObject(context);
-
-        try {
-            result = CmsResourceTypeFolderSubSitemap.isSubSitemap(cms.readResource(sitePath));
-        } catch (CmsException e) {
-            LOG.debug(e.getLocalizedMessage(), e);
-        }
-        return result;
+        return (resource != null) && CmsResourceTypeFolderSubSitemap.isSubSitemap(resource);
     }
 
     /**

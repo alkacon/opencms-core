@@ -2890,14 +2890,12 @@
     
     <function>
         <description>
-           Returns whether the given site path points to a sub sitemap folder.
-           The first argument needs to be either the page context, the request or the current user CmsObject.
-           The second argument the site path to the resource to check.
+           Returns whether the given resource is a sub sitemap folder.
         </description>    
         <name>isSubSitemap</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
-            java.lang.String isSubSitemap(java.lang.Object, java.lang.String)
+            java.lang.String isSubSitemap(org.opencms.file.CmsResource)
         </function-signature>
     </function>
 </taglib>
