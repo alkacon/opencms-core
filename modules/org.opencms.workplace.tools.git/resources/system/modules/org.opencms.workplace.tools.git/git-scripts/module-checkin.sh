@@ -564,7 +564,7 @@ if [ $copyAndUnzip == 1 ]; then
 			#delete all resources currently checked in in the project
 			if [[ "$(pwd)" == "${MODULE_PATH}"* ]]; then
 				echo "   * Removing old version of the module resources under $(pwd)."
-				rm -fr ./*
+				rm -fr ./{.[^.],}*
 				if [[ $? != 0 ]]; then
 					echo
 					echo "ERROR: Failed to remove all resources under $(pwd)."
