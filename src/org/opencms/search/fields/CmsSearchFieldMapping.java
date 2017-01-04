@@ -33,8 +33,10 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.search.Messages;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
@@ -43,7 +45,6 @@ import org.opencms.xml.CmsXmlUtils;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
@@ -207,7 +208,9 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                     Map<String, String> localizedContentItems = null;
                     String xpath = null;
                     if (paramParts.length > 1) {
-                        localizedContentItems = extractionResult.getContentItems(new Locale(paramParts[0].trim()));
+                        OpenCms.getLocaleManager();
+                        localizedContentItems = extractionResult.getContentItems(
+                            CmsLocaleManager.getLocale(paramParts[0].trim()));
                         xpath = paramParts[1].trim();
                     } else {
                         localizedContentItems = extractionResult.getContentItems();
