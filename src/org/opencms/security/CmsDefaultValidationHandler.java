@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
 public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
     /** The email regular expression. */
-    public static final String EMAIL_REGEX = "^([a-zA-Z0-9_\\.\\-'])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$";
+    public static final String EMAIL_REGEX = "\\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z";
 
     /** The user name constraints. */
     public static final String USERNAME_CONSTRAINTS = "-._~$@";
