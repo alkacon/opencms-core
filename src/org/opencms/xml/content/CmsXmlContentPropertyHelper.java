@@ -66,6 +66,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
@@ -269,7 +271,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     public static Map<String, CmsXmlContentProperty> getPropertyInfo(
         CmsObject cms,
         CmsResource page,
-        CmsResource resource) throws CmsException {
+        CmsResource resource)
+    throws CmsException {
 
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
@@ -623,7 +626,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         CmsObject cms,
         CmsResource page,
         CmsResource resource,
-        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
+        Map<String, CmsXmlContentProperty> propertiesConf)
+    throws CmsException {
 
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
@@ -701,8 +705,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             parentElement.remove((Element)propElement);
         }
 
+        // use a sorted map to force a defined order
+        SortedMap<String, String> props = new TreeMap<String, String>(properties);
+
         // create new entries
-        for (Map.Entry<String, String> property : properties.entrySet()) {
+        for (Map.Entry<String, String> property : props.entrySet()) {
             String propName = property.getKey();
             String propValue = property.getValue();
             if ((propValue == null) || (propValue.length() == 0)) {

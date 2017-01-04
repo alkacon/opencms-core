@@ -58,6 +58,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -609,7 +610,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         parent.clearContent();
 
-        for (String containerName : cntPage.getNames()) {
+        // save containers in a defined order
+        List<String> containerNames = new ArrayList<String>(cntPage.getNames());
+        Collections.sort(containerNames);
+
+        for (String containerName : containerNames) {
             CmsContainerBean container = cntPage.getContainers().get(containerName);
 
             // the container
