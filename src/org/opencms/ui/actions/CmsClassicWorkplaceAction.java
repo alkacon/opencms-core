@@ -45,6 +45,9 @@ import java.util.List;
  */
 public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
 
+    /** The name of the classic workplace window. */
+    public static final String WORKPLACE_WINDOW_NAME = "workplaceClassic";
+
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
@@ -60,7 +63,7 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
             initPath = CmsFileUtil.addTrailingSeparator(cms.getRequestContext().getSiteRoot());
         }
         String link = CmsWorkplace.getWorkplaceExplorerLink(cms, initPath);
-        A_CmsUI.get().openPageOrWarn(link, "_blank");
+        A_CmsUI.get().openPageOrWarn(link, WORKPLACE_WINDOW_NAME);
     }
 
     /**

@@ -50,6 +50,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefaultAction {
 
+    /** The name of the online version window. */
+    public static final String ONLINE_WINDOW_NAME = "opencmsOnline";
+
     /** The action id. */
     public static final String ACTION_ID = "display";
 
@@ -67,7 +70,7 @@ public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefau
             HttpServletRequest req = CmsVaadinUtils.getRequest();
             CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
             if (context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
-                A_CmsUI.get().openPageOrWarn(link, "_blank");
+                A_CmsUI.get().openPageOrWarn(link, ONLINE_WINDOW_NAME);
             } else {
                 A_CmsUI.get().getPage().setLocation(link);
             }
