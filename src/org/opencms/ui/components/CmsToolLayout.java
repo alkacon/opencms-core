@@ -30,13 +30,10 @@ package org.opencms.ui.components;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp.NavEntry;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
-import org.opencms.util.CmsStringUtil;
 
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 
 /**
@@ -46,9 +43,6 @@ public class CmsToolLayout extends CssLayout {
 
     /** The serial version id. */
     private static final long serialVersionUID = 2195018534066531670L;
-
-    /** The bread crumb navigation. */
-    private Label m_breadCrumb;
 
     /** The main panel. */
     private Panel m_main;
@@ -61,7 +55,6 @@ public class CmsToolLayout extends CssLayout {
      */
     public CmsToolLayout() {
         CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
-        m_breadCrumb.setContentMode(ContentMode.HTML);
     }
 
     /**
@@ -87,22 +80,6 @@ public class CmsToolLayout extends CssLayout {
     public void clearSubNav() {
 
         m_subNav.removeAllComponents();
-    }
-
-    /**
-     * Sets the bread crumb navigation.<p>
-     *
-     * @param breadCrumbHtml the bread crumb HTML
-     */
-    public void setBreadCrumb(String breadCrumbHtml) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(breadCrumbHtml)) {
-            m_breadCrumb.setValue(null);
-            m_breadCrumb.setVisible(false);
-        } else {
-            m_breadCrumb.setValue(breadCrumbHtml);
-            m_breadCrumb.setVisible(true);
-        }
     }
 
     /**

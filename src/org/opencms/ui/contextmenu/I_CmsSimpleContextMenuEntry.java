@@ -39,6 +39,19 @@ import java.util.Locale;
 public interface I_CmsSimpleContextMenuEntry<T> {
 
     /**
+     * This interface allows special styles for certain entries.<p>
+     */
+    public interface I_HasCssStyles {
+
+        /**
+         * Returns the styles to use for this menu entry.<p>
+         *
+         * @return the styles to use for this menu entry
+         */
+        String getStyles();
+    }
+
+    /**
      * Executes the entry action.<p>
      *
      * @param context the item data

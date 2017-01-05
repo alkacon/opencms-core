@@ -1258,6 +1258,9 @@ public class CmsContextMenu extends AbstractExtension {
                         }
                     });
                 }
+                if (entry instanceof I_CmsSimpleContextMenuEntry.I_HasCssStyles) {
+                    item.addStyleName(((I_CmsSimpleContextMenuEntry.I_HasCssStyles)entry).getStyles());
+                }
             }
         }
     }

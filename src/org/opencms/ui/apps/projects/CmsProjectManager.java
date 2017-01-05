@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
@@ -52,8 +53,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The project manager app.<p>
@@ -83,6 +89,8 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
 
     /** The logger for this class. */
     private static Log LOG = CmsLog.getLog(CmsProjectManager.class.getName());
+
+    private TextField m_searchField;
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -145,6 +153,11 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
+        if (m_searchField != null) {
+            m_infoLayout.removeComponent(m_searchField);
+            m_searchField = null;
+        }
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             m_rootLayout.setMainHeightFull(true);
             return getProjectsTable();
@@ -164,7 +177,25 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
                 m_rootLayout.setMainHeightFull(true);
-                return getProjectFiles(projectId);
+                final CmsFileTable fileTable = getProjectFiles(projectId);
+                m_searchField = new TextField();
+                m_searchField.setIcon(FontOpenCms.FILTER);
+                m_searchField.setInputPrompt(
+                    Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+                m_searchField.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+                m_searchField.setWidth("200px");
+                m_searchField.addTextChangeListener(new TextChangeListener() {
+
+                    private static final long serialVersionUID = 1L;
+
+                    public void textChange(TextChangeEvent event) {
+
+                        fileTable.filterTable(event.getText());
+
+                    }
+                });
+                m_infoLayout.addComponent(m_searchField);
+                return fileTable;
             }
         }
 

@@ -29,6 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.main.OpenCms;
 import org.opencms.ui.components.CmsToolLayout;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.LinkedHashMap;
@@ -37,10 +38,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.vaadin.server.Resource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 
@@ -128,11 +131,17 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
     /** State parameter separator. */
     public static final String PARAM_SEPARATOR = "!!";
 
+    /** The app info layout containing the bread crumb navigation as first component. */
+    protected HorizontalLayout m_infoLayout;
+
     /** The root layout. */
     protected CmsToolLayout m_rootLayout;
 
     /** The app UI context. */
     protected I_CmsAppUIContext m_uiContext;
+
+    /** The bread crumb navigation. */
+    private Label m_breadCrumb;
 
     /**
      * Constructor.<p>
@@ -184,7 +193,17 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
     public void initUI(I_CmsAppUIContext context) {
 
         m_uiContext = context;
-        m_uiContext.showInfoArea(false);
+        m_uiContext.showInfoArea(true);
+        m_breadCrumb = new Label();
+        m_breadCrumb.addStyleName(OpenCmsTheme.TOOLS_BREADCRUMB);
+        m_breadCrumb.setContentMode(ContentMode.HTML);
+        m_infoLayout = new HorizontalLayout();
+        m_infoLayout.setSizeFull();
+        m_infoLayout.setSpacing(true);
+        m_infoLayout.setMargin(true);
+        m_uiContext.setAppInfo(m_infoLayout);
+        m_infoLayout.addComponent(m_breadCrumb);
+        m_infoLayout.setExpandRatio(m_breadCrumb, 2);
         m_uiContext.setAppContent(m_rootLayout);
     }
 
@@ -309,7 +328,8 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
                     UI.getCurrent().getLocale()));
         }
         buffer.append("</div>");
-        m_rootLayout.setBreadCrumb(buffer.toString());
+        m_breadCrumb.setValue(buffer.toString());
+        //  m_rootLayout.setBreadCrumb(buffer.toString());
     }
 
     /**

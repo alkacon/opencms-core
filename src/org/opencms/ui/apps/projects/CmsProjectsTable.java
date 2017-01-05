@@ -37,6 +37,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
@@ -64,6 +65,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The projects table.<p>
@@ -78,17 +80,44 @@ public class CmsProjectsTable extends Table {
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
-        public void executeAction(Set<CmsUUID> data) {
+        public void executeAction(final Set<CmsUUID> data) {
 
-            for (CmsUUID projectId : data) {
-                try {
-                    A_CmsUI.getCmsObject().deleteProject(projectId);
-                    CmsAppWorkplaceUi.get().reload();
-                } catch (CmsException e) {
-                    LOG.error("Error deleting project " + projectId, e);
-                    displayException(e);
+            String message;
+            if (data.size() == 1) {
+                Item item = m_container.getItem(data.iterator().next());
+                message = CmsVaadinUtils.getMessageText(
+                    Messages.GUI_PROJECTS_CONFIRM_DELETE_PROJECT_1,
+                    item.getItemProperty(PROP_NAME).getValue());
+            } else {
+                message = "";
+                for (CmsUUID id : data) {
+                    if (message.length() > 0) {
+                        message += ", ";
+                    }
+                    Item item = m_container.getItem(id);
+                    message += item.getItemProperty(PROP_NAME).getValue();
                 }
+                message = CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_CONFIRM_DELETE_PROJECTS_1, message);
             }
+
+            CmsConfirmationDialog.show(
+                CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DELETE_0),
+                message,
+                new Runnable() {
+
+                    public void run() {
+
+                        for (CmsUUID projectId : data) {
+                            try {
+                                A_CmsUI.getCmsObject().deleteProject(projectId);
+                                CmsAppWorkplaceUi.get().reload();
+                            } catch (CmsException e) {
+                                LOG.error("Error deleting project " + projectId, e);
+                                displayException(e);
+                            }
+                        }
+                    }
+                });
         }
 
         /**
@@ -194,7 +223,8 @@ public class CmsProjectsTable extends Table {
     /**
      * The show project files context menu entry.<p>
      */
-    class ShowFilesEntry implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>> {
+    class ShowFilesEntry
+    implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
@@ -205,6 +235,14 @@ public class CmsProjectsTable extends Table {
             m_manager.openSubView(
                 A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_FILES, "projectId", id.toString()),
                 true);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles#getStyles()
+         */
+        public String getStyles() {
+
+            return ValoTheme.LABEL_BOLD;
         }
 
         /**
@@ -355,6 +393,7 @@ public class CmsProjectsTable extends Table {
         setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_USER_GROUP_0));
         setColumnHeader(PROP_DATE_CREATED, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DATE_CREATED_0));
         setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCES_0));
+        setColumnWidth(PROP_ICON, 40);
         setColumnExpandRatio(PROP_NAME, 2);
         setColumnExpandRatio(PROP_DESCRIPTION, 2);
         setColumnExpandRatio(PROP_RESOURCES, 2);
@@ -522,7 +561,7 @@ public class CmsProjectsTable extends Table {
                 Item item = event.getItem();
                 CmsUUID id = (CmsUUID)item.getItemProperty(PROP_ID).getValue();
                 m_manager.openSubView(
-                    A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_EDIT, "projectId", id.toString()),
+                    A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_FILES, "projectId", id.toString()),
                     true);
             }
         }

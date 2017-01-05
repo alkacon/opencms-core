@@ -268,6 +268,9 @@ public final class OpenCmsTheme {
     public static final String TOOLBAR_LOGO = "o-toolbar-logo";
 
     /** CSS style name. */
+    public static final String TOOLS_BREADCRUMB = "o-tools-breadcrumb";
+
+    /** CSS style name. */
     public static final String USER_IMAGE = "o-user-image";
 
     /** CSS style name. */

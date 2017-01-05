@@ -108,6 +108,12 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROJECTS_ADD_RESOURCE_0 = "GUI_PROJECTS_ADD_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_CONFIRM_DELETE_PROJECT_1 = "GUI_PROJECTS_CONFIRM_DELETE_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_CONFIRM_DELETE_PROJECTS_1 = "GUI_PROJECTS_CONFIRM_DELETE_PROJECTS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_CREATE_NEW_0 = "GUI_PROJECTS_CREATE_NEW_0";
 
     /** Message constant for key in the resource bundle. */
