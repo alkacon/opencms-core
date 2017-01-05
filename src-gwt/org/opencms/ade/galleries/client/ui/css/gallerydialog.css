@@ -81,10 +81,10 @@ div.paramsText {
 }
 
 div.showParams div.cmsState{
-	font-size:10px;
-	position: absolute;
-	right: 4px;
-	top: 8px;
+	font-size:10px !important;
+	position: absolute !important;
+	right: 4px !important;
+	top: 8px !important;
 }
 
 div.searchTabRow {
