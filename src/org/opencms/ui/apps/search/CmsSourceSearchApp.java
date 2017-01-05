@@ -30,6 +30,7 @@ package org.opencms.ui.apps.search;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
@@ -49,9 +50,14 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The source search app.<p>
@@ -102,6 +108,9 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
 
     /** The current search report. */
     private CmsReportOverlay m_report;
+
+    /** The result table filter input. */
+    private TextField m_resultTableFilter;
 
     /** The search form. */
     private CmsSourceSearchForm m_searchForm;
@@ -267,6 +276,24 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             }
         });
         m_resultTable.setSizeFull();
+        m_resultTableFilter = new TextField();
+        m_resultTableFilter.setIcon(FontOpenCms.FILTER);
+        m_resultTableFilter.setInputPrompt(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+        m_resultTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        m_resultTableFilter.setWidth("200px");
+        m_resultTableFilter.addTextChangeListener(new TextChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void textChange(TextChangeEvent event) {
+
+                m_resultTable.filterTable(event.getText());
+
+            }
+        });
+        m_infoLayout.addComponent(m_resultTableFilter);
+
         sp.setSecondComponent(m_resultTable);
         sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
 
@@ -319,6 +346,7 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
         m_searchForm.addComponent(m_report);
         m_report.setTitle(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_REPORT_TITLE_0));
         m_thread.start();
+        m_resultTableFilter.clear();
     }
 
     /**

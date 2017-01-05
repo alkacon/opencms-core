@@ -66,6 +66,9 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsProjectManager extends A_CmsWorkplaceApp {
 
+    /** The small project icon path. */
+    public static final String ICON_PROJECT_SMALL = "apps/project_fileicon.png";
+
     /** The add project path name. */
     public static final String PATH_NAME_ADD = "add";
 
@@ -78,9 +81,6 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     /** The project history path name. */
     public static final String PATH_NAME_HISTORY = "history";
 
-    /** The small project icon path. */
-    public static final String ICON_PROJECT_SMALL = "apps/project_fileicon.png";
-
     /** The add project icon path. */
     private static final String ICON_ADD = "apps/project_add.png";
 
@@ -90,7 +90,8 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     /** The logger for this class. */
     private static Log LOG = CmsLog.getLog(CmsProjectManager.class.getName());
 
-    private TextField m_searchField;
+    /** The file table filter input. */
+    private TextField m_fileTableFilter;
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -153,9 +154,9 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
-        if (m_searchField != null) {
-            m_infoLayout.removeComponent(m_searchField);
-            m_searchField = null;
+        if (m_fileTableFilter != null) {
+            m_infoLayout.removeComponent(m_fileTableFilter);
+            m_fileTableFilter = null;
         }
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
@@ -178,13 +179,13 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             if (projectId != null) {
                 m_rootLayout.setMainHeightFull(true);
                 final CmsFileTable fileTable = getProjectFiles(projectId);
-                m_searchField = new TextField();
-                m_searchField.setIcon(FontOpenCms.FILTER);
-                m_searchField.setInputPrompt(
+                m_fileTableFilter = new TextField();
+                m_fileTableFilter.setIcon(FontOpenCms.FILTER);
+                m_fileTableFilter.setInputPrompt(
                     Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-                m_searchField.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-                m_searchField.setWidth("200px");
-                m_searchField.addTextChangeListener(new TextChangeListener() {
+                m_fileTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+                m_fileTableFilter.setWidth("200px");
+                m_fileTableFilter.addTextChangeListener(new TextChangeListener() {
 
                     private static final long serialVersionUID = 1L;
 
@@ -194,7 +195,7 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
 
                     }
                 });
-                m_infoLayout.addComponent(m_searchField);
+                m_infoLayout.addComponent(m_fileTableFilter);
                 return fileTable;
             }
         }
