@@ -33,21 +33,28 @@
     <!-- Use the OpenCmsUrlServletFilter to remove the OpenCms servlet name from URLs.
         When using the filter make sure to also adjust the file /WEB-INF/config/opencms-importexport.xml setting 
         opencms/importexport/staticexport/rendersettings/vfs-prefix to ${CONTEXT_NAME}. -->
-    @COMMENT_UPDATER_START@<filter>
+    <filter>
         <filter-name>OpenCmsUrlServletFilter</filter-name>
         <filter-class>org.opencms.main.OpenCmsUrlServletFilter</filter-class>
-        @COMMENT_WAR_START@ Use the init-param to prevent rewriting for URI that start with the provided prefixes
+        <!-- Use the init-param to prevent rewriting for URI that start with the provided prefixes
         <init-param>
             <param-name>additionalExcludePrefixes</param-name>
             <param-value>/my-servlet-1|/my-servlet-2</param-value>
         </init-param>
-         @COMMENT_WAR_END@
-    </filter> @COMMENT_UPDATER_END@
+         -->
+    </filter> 
     
     <filter>
         <filter-name>CmsJsonPartFilter</filter-name>
         <filter-class>org.opencms.jsp.jsonpart.CmsJsonPartFilter</filter-class>
     </filter>
+
+
+
+   <filter-mapping>
+        <filter-name>OpenCmsUrlServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping> 
 
     <filter-mapping>
         <filter-name>CmsJsonPartFilter</filter-name>
@@ -56,15 +63,7 @@
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
 
-   @COMMENT_UPDATER_START@<!-- IMPORTANT: The mapping for the OpenCmsUrlServletFilter sends a forward if the
-       URL is adjusted. That can cause that the filters, where the mappings are defined below, to be skipped.
-       Therefore, declare all other filter mappings above this one, unless you are really sure that the mapping
-       has be defined below.
-    -->
-   <filter-mapping>
-        <filter-name>OpenCmsUrlServletFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping> @COMMENT_UPDATER_END@
+
 
     <context-param>
         <param-name>OpenCmsServlet</param-name>
@@ -262,13 +261,15 @@
         <listener-class>org.apache.chemistry.opencmis.server.impl.CmisRepositoryContextListener</listener-class>
     </listener>
 
-    <listener>
-        <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
-    </listener>
 
     <servlet>
         <servlet-name>cmisws</servlet-name>
-        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
+        <servlet-class>org.apache.chemistry.opencmis.server.impl.webservices.CmisWebServicesServlet</servlet-class>
+        <init-param>
+            <description>CMIS version</description>
+            <param-name>cmisVersion</param-name>
+            <param-value>1.0</param-value>
+        </init-param>
         <!-- do not load on startup by default -->
         <load-on-startup>-1</load-on-startup>
     </servlet>

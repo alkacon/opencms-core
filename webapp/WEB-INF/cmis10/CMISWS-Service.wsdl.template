@@ -22,9 +22,9 @@
 	<types>
 		<xsd:schema elementFormDefault="qualified"
 			targetNamespace="http://docs.oasis-open.org/ns/cmis/ws/200908/">
-			<xsd:import schemaLocation="CMIS-Core.xsd"
+			<xsd:import schemaLocation="<%cmiscore%>"
 				namespace="http://docs.oasis-open.org/ns/cmis/core/200908/" />
-			<xsd:import schemaLocation="CMIS-Messaging.xsd"
+			<xsd:import schemaLocation="<%cmismsg%>"
 				namespace="http://docs.oasis-open.org/ns/cmis/messaging/200908/" />
 		</xsd:schema>
 	</types>
@@ -1121,52 +1121,52 @@
 	<service name="DiscoveryService">
 		<port name="DiscoveryServicePort" binding="cmisw:DiscoveryServicePortBinding">
 			<soap:address
-				location="http://cmis/services/DiscoveryService.DiscoveryServicePort" />
+				location="<%cmisbase%>/DiscoveryService" />
 		</port>
 	</service>
 	<service name="MultiFilingService">
 		<port name="MultiFilingServicePort" binding="cmisw:MultiFilingServicePortBinding">
 			<soap:address
-				location="http://cmis/services/MultiFilingService.MultiFilingServicePort" />
+				location="<%cmisbase%>/MultiFilingService" />
 		</port>
 	</service>
 	<service name="NavigationService">
 		<port name="NavigationServicePort" binding="cmisw:NavigationServicePortBinding">
 			<soap:address
-				location="http://cmis/services/NavigationService.NavigationServicePort" />
+				location="<%cmisbase%>/NavigationService" />
 		</port>
 	</service>
 	<service name="ObjectService">
 		<port name="ObjectServicePort" binding="cmisw:ObjectServicePortBinding">
-			<soap:address location="http://cmis/services/ObjectService.ObjectServicePort" />
+			<soap:address location="<%cmisbase%>/ObjectService" />
 		</port>
 	</service>
 	<service name="PolicyService">
 		<port name="PolicyServicePort" binding="cmisw:PolicyServicePortBinding">
-			<soap:address location="http://cmis/services/PolicyService.PolicyServicePort" />
+			<soap:address location="<%cmisbase%>/PolicyService" />
 		</port>
 	</service>
 	<service name="RelationshipService">
 		<port name="RelationshipServicePort" binding="cmisw:RelationshipServicePortBinding">
 			<soap:address
-				location="http://cmis/services/RelationshipService.RelationshipServicePort" />
+				location="<%cmisbase%>/RelationshipService" />
 		</port>
 	</service>
 	<service name="RepositoryService">
 		<port name="RepositoryServicePort" binding="cmisw:RepositoryServicePortBinding">
 			<soap:address
-				location="http://cmis/services/RepositoryService.RepositoryServicePort" />
+				location="<%cmisbase%>/RepositoryService" />
 		</port>
 	</service>
 	<service name="VersioningService">
 		<port name="VersioningServicePort" binding="cmisw:VersioningServicePortBinding">
 			<soap:address
-				location="http://cmis/services/VersioningService.VersioningServicePort" />
+				location="<%cmisbase%>/VersioningService" />
 		</port>
 	</service>
 	<service name="ACLService">
 		<port name="ACLServicePort" binding="cmisw:ACLServicePortBinding">
-			<soap:address location="http://cmis/services/ACLService.ACLServicePort" />
+			<soap:address location="<%cmisbase%>/ACLService" />
 		</port>
 	</service>
 

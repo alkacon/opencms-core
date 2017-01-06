@@ -298,7 +298,7 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
             length = BigInteger.valueOf(content.length - offsetLong);
         }
         long lengthLong = length.longValue();
-        return Arrays.copyOfRange(content, (int)offsetLong, (int)(offsetLong + lengthLong));
+        return Arrays.copyOfRange(content, (int)offsetLong, Math.min(content.length, (int)(offsetLong + lengthLong)));
     }
 
     /**

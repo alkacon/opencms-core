@@ -44,7 +44,7 @@ import java.util.Set;
 import org.apache.chemistry.opencmis.commons.impl.server.AbstractServiceFactory;
 import org.apache.chemistry.opencmis.commons.server.CallContext;
 import org.apache.chemistry.opencmis.commons.server.CmisService;
-import org.apache.chemistry.opencmis.server.support.CmisServiceWrapper;
+import org.apache.chemistry.opencmis.server.support.wrapper.ConformanceCmisServiceWrapper;
 import org.apache.commons.logging.Log;
 
 /**
@@ -162,7 +162,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
             this.getClass().getClassLoader(),
             new Class[] {CmisService.class},
             new LoggingServiceProxy(service));
-        CmisServiceWrapper<CmisService> wrapperService = new CmisServiceWrapper<CmisService>(
+        ConformanceCmisServiceWrapper wrapperService = new ConformanceCmisServiceWrapper(
             proxyService,
             DEFAULT_MAX_ITEMS_TYPES,
             DEFAULT_DEPTH_TYPES,

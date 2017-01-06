@@ -22,7 +22,7 @@ dependencies {
             classifier = 'sources'
         }
     }
-    compile group: 'org.ow2.asm', name: 'asm', version: '5.0.3'
+    distribution group: 'org.ow2.asm', name: 'asm', version: '5.0.3'
     compile group: 'org.ow2.asm', name: 'asm-commons', version: '5.0.3'
     compile group: 'org.ow2.asm', name: 'asm-util', version: '5.0.3'
     compile group: 'org.ow2.asm', name: 'asm-tree', version: '5.0.3'
@@ -50,14 +50,17 @@ dependencies {
     
     distribution group: 'com.cybozu.labs', name: 'langdetect', version: '1.1-20120112'
     distribution group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-    distribution group: 'com.google.guava', name: 'guava', version: '15.0'
-    distribution group: 'com.google.guava', name: 'guava-gwt', version: '15.0'
+    distribution group: 'com.google.guava', name: 'guava', version: '19.0'
+    distribution group: 'com.google.guava', name: 'guava-gwt', version: '19.0'
     distribution group: 'com.google.gwt', name: 'gwt-servlet', version: '2.7.0'
     distribution group: 'org.json', name: 'json', version: '20140107'
     distribution group: 'com.google.code.findbugs', name: 'jsr305', version: '2.0.1'
-    distribution group: 'com.spatial4j', name: 'spatial4j', version: '0.4.1'
-    distribution group: 'com.sun.org.apache.xml.internal', name: 'resolver', version: '20050927'
-    distribution group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.1.11'
+    distribution group: 'com.spatial4j', name: 'spatial4j', version: '0.4.1' 
+    
+    distribution group: 'xml-resolver', name: 'xml-resolver', version: '1.2'
+    distribution group: 'org.apache.ws.xmlschema', name: 'xmlschema-core', version: '2.2.1' 
+    distribution group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.11'
+    distribution group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.2.11'
     distribution group: 'com.sun.xml.messaging.saaj', name: 'saaj-impl', version: '1.3.3'
     distribution group: 'com.sun.xml.stream.buffer', name: 'streambuffer', version: '0.9'
     distribution group: 'com.sun.xml.ws', name: 'jaxws-rt', version: '2.1.7'
@@ -98,19 +101,13 @@ dependencies {
     distribution group: 'org.antlr', name: 'antlr-runtime', version: '3.5.2'
     distribution group: 'org.antlr', name: 'stringtemplate', version: '3.2'
     distribution group: 'org.apache.bval', name: 'org.apache.bval.bundle', version: '0.4'
-    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-api', version: '0.7.0'
-    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-impl', version: '0.7.0'
-    distribution (group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-bindings', version: '0.7.0'){
-          artifact {
-            name = 'chemistry-opencmis-server-bindings'
-            classifier= 'classes'
-            type= 'jar'
-          }
-    }
-    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-support', version: '0.7.0'
+    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-api', version: '1.0.0'
+    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-impl', version: '1.0.0'
+    distribution (group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-bindings', version: '1.0.0')
+    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-support', version: '1.0.0'
     distribution group: 'org.apache.commons', name: 'commons-email', version: '1.4'
     distribution group: 'org.apache.commons', name: 'commons-compress', version: '1.3'
-    distribution group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+    distribution group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
     distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jms_1.1_spec', version: '1.1.1'
     distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jpa_2.0_spec', version: '1.1'
     distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jta_1.1_spec', version: '1.1.1'
@@ -152,7 +149,6 @@ dependencies {
     distribution group: 'org.htmlparser', name: 'htmlparser', version: '1.6'
     distribution group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
     distribution group: 'org.jvnet', name: 'mimepull', version: '1.3'
-    distribution group: 'org.jvnet.staxex', name: 'stax-ex', version: '1.2'
     distribution group: 'org.noggit', name: 'noggit', version: '0.6'
     distribution group: 'org.owasp.antisamy', name: 'antisamy', version: '1.4.4'
     distribution group: 'org.restlet.jee', name: 'org.restlet', version: '2.3.1'
@@ -161,7 +157,7 @@ dependencies {
     distribution group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.12'
     distribution group: 'oro', name: 'oro', version: '2.0.8'
     distribution group: 'quartz', name: 'quartz', version: '1.5.2'
-    distribution group: 'stax', name: 'stax-api', version: '1.0.1'
+    distribution group: 'org.codehaus.woodstox', name: 'stax2-api', version: '3.1.4'
     distribution group: 'taglibs', name: 'standard', version: '1.1.2'
     distribution group: 'xerces', name: 'xercesImpl', version: '2.11.0'
     distribution group: 'xml-apis', name: 'xml-apis', version: '1.4.01'
@@ -169,6 +165,18 @@ dependencies {
     distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-core', version: '9.0.4'
     distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf', version: '9.0.4'
     distribution group: 'com.lowagie', name: 'itext', version: '2.1.7'
-    
+    distribution group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
+    distribution group: 'wsdl4j', name: 'wsdl4j', version: '1.6.3'
+    distribution group: 'org.apache.neethi', name: 'neethi', version: '3.0.3'
+    distribution group: 'org.apache.cxf', name: 'cxf-core', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-bindings-soap', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-bindings-xml', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-databinding-jaxb', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-frontend-simple', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-ws-addr', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-ws-policy', version: '3.0.10'
+    distribution group: 'org.apache.cxf', name: 'cxf-rt-wsdl', version: '3.0.10'
     distribution files("lib/runtime/jpedal_lgpl.jar")
 }

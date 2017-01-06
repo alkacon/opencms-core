@@ -44,7 +44,7 @@ import org.apache.chemistry.opencmis.commons.enums.PropertyType;
 import org.apache.chemistry.opencmis.commons.enums.Updatability;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
-import org.apache.chemistry.opencmis.commons.impl.Converter;
+import org.apache.chemistry.opencmis.commons.impl.WSConverter;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AbstractPropertyDefinition;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AbstractTypeDefinition;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.DocumentTypeDefinitionImpl;
@@ -155,89 +155,97 @@ public class CmsCmisTypeManager {
                 false,
                 false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.OBJECT_ID,
-            "Object Id",
-            "Object Id",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
-
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.OBJECT_TYPE_ID,
-            "Type Id",
-            "Type Id",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.ONCREATE,
-            false,
-            true));
-
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.NAME,
-            "Name",
-            "Name",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READWRITE,
-            false,
-            true));
-
-        type.addPropertyDefinition(queryableAndOrderable(
+        type.addPropertyDefinition(
             createPropDef(
-                PropertyIds.CREATED_BY,
-                "Created By",
-                "Created By",
+                PropertyIds.OBJECT_ID,
+                "Object Id",
+                "Object Id",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
+
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.OBJECT_TYPE_ID,
+                "Type Id",
+                "Type Id",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.ONCREATE,
+                false,
+                true));
+
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.NAME,
+                "Name",
+                "Name",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READWRITE,
+                false,
+                true));
+
+        type.addPropertyDefinition(
+            queryableAndOrderable(
+                createPropDef(
+                    PropertyIds.CREATED_BY,
+                    "Created By",
+                    "Created By",
+                    PropertyType.STRING,
+                    Cardinality.SINGLE,
+                    Updatability.READONLY,
+                    false,
+                    false)));
+
+        type.addPropertyDefinition(
+            queryableAndOrderable(
+                createPropDef(
+                    PropertyIds.CREATION_DATE,
+                    "Creation Date",
+                    "Creation Date",
+                    PropertyType.DATETIME,
+                    Cardinality.SINGLE,
+                    Updatability.READONLY,
+                    false,
+                    false)));
+
+        type.addPropertyDefinition(
+            queryableAndOrderable(
+                createPropDef(
+                    PropertyIds.LAST_MODIFIED_BY,
+                    "Last Modified By",
+                    "Last Modified By",
+                    PropertyType.STRING,
+                    Cardinality.SINGLE,
+                    Updatability.READONLY,
+                    false,
+                    false)));
+
+        type.addPropertyDefinition(
+            queryableAndOrderable(
+                createPropDef(
+                    PropertyIds.LAST_MODIFICATION_DATE,
+                    "Last Modification Date",
+                    "Last Modification Date",
+                    PropertyType.DATETIME,
+                    Cardinality.SINGLE,
+                    Updatability.READONLY,
+                    false,
+                    false)));
+
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.CHANGE_TOKEN,
+                "Change Token",
+                "Change Token",
                 PropertyType.STRING,
                 Cardinality.SINGLE,
                 Updatability.READONLY,
                 false,
-                false)));
-
-        type.addPropertyDefinition(queryableAndOrderable(
-            createPropDef(
-                PropertyIds.CREATION_DATE,
-                "Creation Date",
-                "Creation Date",
-                PropertyType.DATETIME,
-                Cardinality.SINGLE,
-                Updatability.READONLY,
-                false,
-                false)));
-
-        type.addPropertyDefinition(queryableAndOrderable(
-            createPropDef(
-                PropertyIds.LAST_MODIFIED_BY,
-                "Last Modified By",
-                "Last Modified By",
-                PropertyType.STRING,
-                Cardinality.SINGLE,
-                Updatability.READONLY,
-                false,
-                false)));
-
-        type.addPropertyDefinition(queryableAndOrderable(
-            createPropDef(
-                PropertyIds.LAST_MODIFICATION_DATE,
-                "Last Modification Date",
-                "Last Modification Date",
-                PropertyType.DATETIME,
-                Cardinality.SINGLE,
-                Updatability.READONLY,
-                false,
-                false)));
-
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.CHANGE_TOKEN,
-            "Change Token",
-            "Change Token",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+                false));
 
     }
 
@@ -259,135 +267,148 @@ public class CmsCmisTypeManager {
                 false,
                 false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.IS_LATEST_VERSION,
-            "Is Latest Version",
-            "Is Latest Version",
-            PropertyType.BOOLEAN,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.IS_LATEST_VERSION,
+                "Is Latest Version",
+                "Is Latest Version",
+                PropertyType.BOOLEAN,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.IS_MAJOR_VERSION,
-            "Is Major Version",
-            "Is Major Version",
-            PropertyType.BOOLEAN,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.IS_MAJOR_VERSION,
+                "Is Major Version",
+                "Is Major Version",
+                PropertyType.BOOLEAN,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.IS_LATEST_MAJOR_VERSION,
-            "Is Latest Major Version",
-            "Is Latest Major Version",
-            PropertyType.BOOLEAN,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.IS_LATEST_MAJOR_VERSION,
+                "Is Latest Major Version",
+                "Is Latest Major Version",
+                PropertyType.BOOLEAN,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.VERSION_LABEL,
-            "Version Label",
-            "Version Label",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.VERSION_LABEL,
+                "Version Label",
+                "Version Label",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.VERSION_SERIES_ID,
-            "Version Series Id",
-            "Version Series Id",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.VERSION_SERIES_ID,
+                "Version Series Id",
+                "Version Series Id",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.IS_VERSION_SERIES_CHECKED_OUT,
-            "Is Verison Series Checked Out",
-            "Is Verison Series Checked Out",
-            PropertyType.BOOLEAN,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.IS_VERSION_SERIES_CHECKED_OUT,
+                "Is Verison Series Checked Out",
+                "Is Verison Series Checked Out",
+                PropertyType.BOOLEAN,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.VERSION_SERIES_CHECKED_OUT_ID,
-            "Version Series Checked Out Id",
-            "Version Series Checked Out Id",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.VERSION_SERIES_CHECKED_OUT_ID,
+                "Version Series Checked Out Id",
+                "Version Series Checked Out Id",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.VERSION_SERIES_CHECKED_OUT_BY,
-            "Version Series Checked Out By",
-            "Version Series Checked Out By",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.VERSION_SERIES_CHECKED_OUT_BY,
+                "Version Series Checked Out By",
+                "Version Series Checked Out By",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.CHECKIN_COMMENT,
-            "Checkin Comment",
-            "Checkin Comment",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.CHECKIN_COMMENT,
+                "Checkin Comment",
+                "Checkin Comment",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.CONTENT_STREAM_LENGTH,
-            "Content Stream Length",
-            "Content Stream Length",
-            PropertyType.INTEGER,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.CONTENT_STREAM_LENGTH,
+                "Content Stream Length",
+                "Content Stream Length",
+                PropertyType.INTEGER,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.CONTENT_STREAM_MIME_TYPE,
-            "MIME Type",
-            "MIME Type",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.CONTENT_STREAM_MIME_TYPE,
+                "MIME Type",
+                "MIME Type",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.CONTENT_STREAM_FILE_NAME,
-            "Filename",
-            "Filename",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.CONTENT_STREAM_FILE_NAME,
+                "Filename",
+                "Filename",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.CONTENT_STREAM_ID,
-            "Content Stream Id",
-            "Content Stream Id",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.CONTENT_STREAM_ID,
+                "Content Stream Id",
+                "Content Stream Id",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
     }
 
     /**
@@ -408,25 +429,27 @@ public class CmsCmisTypeManager {
                 false,
                 false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.ALLOWED_CHILD_OBJECT_TYPE_IDS,
-            "Allowed Child Object Type Ids",
-            "Allowed Child Object Type Ids",
-            PropertyType.ID,
-            Cardinality.MULTI,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.ALLOWED_CHILD_OBJECT_TYPE_IDS,
+                "Allowed Child Object Type Ids",
+                "Allowed Child Object Type Ids",
+                PropertyType.ID,
+                Cardinality.MULTI,
+                Updatability.READONLY,
+                false,
+                false));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.PATH,
-            "Path",
-            "Path",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.PATH,
+                "Path",
+                "Path",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
     }
 
     /**
@@ -447,15 +470,16 @@ public class CmsCmisTypeManager {
                 false,
                 true));
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.TARGET_ID,
-            "Target",
-            "Target",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.ONCREATE,
-            false,
-            true));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.TARGET_ID,
+                "Target",
+                "Target",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.ONCREATE,
+                false,
+                true));
 
     }
 
@@ -468,7 +492,7 @@ public class CmsCmisTypeManager {
      */
     private static TypeDefinition copyTypeDefintion(TypeDefinition type) {
 
-        return Converter.convert(Converter.convert(type));
+        return WSConverter.convert(WSConverter.convert(type));
     }
 
     /**
@@ -869,15 +893,16 @@ public class CmsCmisTypeManager {
 
         for (CmsPropertyDefinition propDef : m_cmsPropertyDefinitions) {
             type.addPropertyDefinition(createOpenCmsPropertyDefinition(propDef));
-            type.addPropertyDefinition(createPropDef(
-                INHERITED_PREFIX + propDef.getName(),
-                propDef.getName(),
-                propDef.getName(),
-                PropertyType.STRING,
-                Cardinality.SINGLE,
-                Updatability.READONLY,
-                false,
-                false));
+            type.addPropertyDefinition(
+                createPropDef(
+                    INHERITED_PREFIX + propDef.getName(),
+                    propDef.getName(),
+                    propDef.getName(),
+                    PropertyType.STRING,
+                    Cardinality.SINGLE,
+                    Updatability.READONLY,
+                    false,
+                    false));
 
         }
         type.addPropertyDefinition(

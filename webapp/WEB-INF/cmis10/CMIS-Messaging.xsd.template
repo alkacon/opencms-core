@@ -22,7 +22,7 @@
 	jaxb:extensionBindingPrefixes="xjc" jaxb:version="2.1"
 	elementFormDefault="qualified">
 
-	<xs:import schemaLocation="CMIS-Core.xsd"
+	<xs:import schemaLocation="<%cmiscore%>"
 		namespace="http://docs.oasis-open.org/ns/cmis/core/200908/" />
 
 	<!-- exceptions -->

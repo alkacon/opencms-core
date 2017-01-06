@@ -30,6 +30,7 @@ package org.opencms.cmis;
 import java.io.File;
 import java.math.BigInteger;
 
+import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 import org.apache.chemistry.opencmis.commons.server.CallContext;
 import org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler;
 
@@ -56,6 +57,11 @@ public class CmsCmisCallContext implements CallContext {
         m_objectInfo = objectInfo;
     }
 
+    public boolean encryptTempFiles() {
+
+        return false;
+    }
+
     /**
      * @see org.apache.chemistry.opencmis.commons.server.CallContext#get(java.lang.String)
      */
@@ -72,6 +78,12 @@ public class CmsCmisCallContext implements CallContext {
         return m_context.getBinding();
     }
 
+    public CmisVersion getCmisVersion() {
+
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /**
      * @see org.apache.chemistry.opencmis.commons.server.CallContext#getLength()
      */
@@ -86,6 +98,11 @@ public class CmsCmisCallContext implements CallContext {
     public String getLocale() {
 
         return m_context.getLocale();
+    }
+
+    public long getMaxContentSize() {
+
+        return Integer.MAX_VALUE;
     }
 
     /**
