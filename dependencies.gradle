@@ -50,8 +50,8 @@ dependencies {
     
     distribution group: 'com.cybozu.labs', name: 'langdetect', version: '1.1-20120112'
     distribution group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-    distribution group: 'com.google.guava', name: 'guava', version: '19.0'
-    distribution group: 'com.google.guava', name: 'guava-gwt', version: '19.0'
+    distribution group: 'com.google.guava', name: 'guava', version: '18.0'
+    distribution group: 'com.google.guava', name: 'guava-gwt', version: '18.0'
     distribution group: 'com.google.gwt', name: 'gwt-servlet', version: '2.7.0'
     distribution group: 'org.json', name: 'json', version: '20140107'
     distribution group: 'com.google.code.findbugs', name: 'jsr305', version: '2.0.1'
