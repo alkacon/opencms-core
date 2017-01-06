@@ -122,7 +122,7 @@ div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cms
 }
 
 div.cmsFontIconButton div.html-face{
-	line-height: 16px !important;	
+	line-height: 16px;	
 }
 
 div.cmsFontIconButton.cmsButtonSmall{
@@ -130,7 +130,7 @@ div.cmsFontIconButton.cmsButtonSmall{
 }
 
 div.cmsFontIconButton.cmsButtonSmall div.html-face{
-	line-height: 12px !important;	
+	line-height: 12px;	
 }
 
 /** Set a general text color for all disabled buttons. */

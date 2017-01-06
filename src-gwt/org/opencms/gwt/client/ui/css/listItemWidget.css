@@ -1,4 +1,4 @@
-@external cms_type_icon, inlineEditable, navMode;
+@external cms_type_icon, inlineEditable, navMode, html-face;
 .itemContainer .itemAdditional{
 	display: none;
 }
@@ -22,10 +22,10 @@ li div.itemContainer.cmsHovering{
 	border: 1px solid value("constants.css.borderColor");
 }
 
-.titleRow div, .itemAdditional div {
+div.titleRow div, .itemAdditional div {
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");
-	line-height: 17px;
+	line-height: 17px !important;
 }
 
 .itemContainer .titleInput{
