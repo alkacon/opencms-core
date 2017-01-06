@@ -327,7 +327,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 ? CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale
                 : CmsContainerPageCopier.CopyMode.reuse);
                 copier.setCopyMode(mode);
-                copier.run(m_context.getResources().get(0), target);
+                copier.run(m_context.getResources().get(0), target, name);
                 m_context.finish(
                     Arrays.asList(
                         copier.getTargetFolder().getStructureId(),

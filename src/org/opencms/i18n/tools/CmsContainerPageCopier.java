@@ -425,6 +425,22 @@ public class CmsContainerPageCopier {
      */
     public void run(CmsResource source, CmsResource target) throws CmsException, NoCustomReplacementException {
 
+        run(source, target, null);
+    }
+
+    /**
+     * Starts the page copying process.<p>
+     *
+     * @param source the source (can be either a container page, or a folder whose default file is a container page)
+     * @param target the target folder
+     * @param targetName the name to give the new folder
+     *
+     * @throws CmsException if soemthing goes wrong
+     * @throws NoCustomReplacementException if a custom replacement element was not found
+     */
+    public void run(CmsResource source, CmsResource target, String targetName)
+    throws CmsException, NoCustomReplacementException {
+
         LOG.info(
             "Starting page copy process: page='"
                 + source.getRootPath()
@@ -477,9 +493,17 @@ public class CmsContainerPageCopier {
             }
 
             I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
-            String copyPath = CmsFileUtil.removeTrailingSeparator(
-                CmsStringUtil.joinPaths(target.getRootPath(), source.getName()));
-            copyPath = nameGen.getNewFileName(rootCms, copyPath + "%(number)", 4, true);
+            String copyPath;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(targetName)) {
+                copyPath = CmsStringUtil.joinPaths(target.getRootPath(), targetName);
+                if (rootCms.existsResource(copyPath)) {
+                    copyPath = nameGen.getNewFileName(rootCms, copyPath + "%(number)", 4, true);
+                }
+            } else {
+                copyPath = CmsFileUtil.removeTrailingSeparator(
+                    CmsStringUtil.joinPaths(target.getRootPath(), source.getName()));
+                copyPath = nameGen.getNewFileName(rootCms, copyPath + "%(number)", 4, true);
+            }
             Double maxNavPosObj = readMaxNavPos(target);
             double maxNavpos = maxNavPosObj == null ? 0 : maxNavPosObj.doubleValue();
             boolean hasNavpos = maxNavPosObj != null;
