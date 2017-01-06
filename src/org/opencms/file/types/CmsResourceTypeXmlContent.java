@@ -185,7 +185,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         boolean hasModelUri = false;
         CmsXmlContent newContent = null;
@@ -224,6 +225,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         if (hasModelUri) {
             CmsFile file = cms.readFile(resource);
             newContent = CmsXmlContentFactory.unmarshal(cms, file);
+            newContent.setAutoCorrectionEnabled(true);
             resource = newContent.getHandler().prepareForWrite(cms, newContent, file);
         }
 
