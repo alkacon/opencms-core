@@ -502,7 +502,7 @@ public class CmsContainerpageUtil {
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
             elementData.isNewEditorDisabled(),
-            elementData.isModelGroup(),
+            elementData.getModelGroupId(),
             elementData.isWasModelGroup(),
             elementData.getElementView());
         dragElement.setCreateNew(elementData.isCreateNew());

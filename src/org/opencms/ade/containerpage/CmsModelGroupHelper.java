@@ -606,13 +606,11 @@ public class CmsModelGroupHelper {
 
         List<CmsProperty> changedProps = new ArrayList<CmsProperty>();
         if (baseElement != null) {
-            changedProps.add(
-                new CmsProperty(
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                    Boolean.parseBoolean(baseElement.getIndividualSettings().get(CmsContainerElement.USE_AS_COPY_MODEL))
-                    ? CmsContainerElement.USE_AS_COPY_MODEL
-                    : null,
-                    null));
+            String val = Boolean.parseBoolean(
+                baseElement.getIndividualSettings().get(CmsContainerElement.USE_AS_COPY_MODEL))
+                ? CmsContainerElement.USE_AS_COPY_MODEL
+                : "";
+            changedProps.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, val, val));
         }
         m_cms.writePropertyObjects(pageResource, changedProps);
 

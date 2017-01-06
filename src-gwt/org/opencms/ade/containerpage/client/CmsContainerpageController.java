@@ -297,7 +297,7 @@ public final class CmsContainerpageController {
             element.setClientId(elementWidget.getId());
             element.setResourceType(elementWidget.getNewType());
             element.setCreateNew(elementWidget.isCreateNew());
-            element.setModelGroup(elementWidget.isModelGroup());
+            element.setModelGroupId(elementWidget.getModelGroupId());
             element.setSitePath(elementWidget.getSitePath());
             element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
             m_currentElements.add(element);
@@ -377,7 +377,7 @@ public final class CmsContainerpageController {
             element.setClientId(elementWidget.getId());
             element.setResourceType(elementWidget.getNewType());
             element.setCreateNew(elementWidget.isCreateNew());
-            element.setModelGroup(elementWidget.isModelGroup());
+            element.setModelGroupId(elementWidget.getModelGroupId());
             element.setSitePath(elementWidget.getSitePath());
             element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
             m_currentElements.add(element);

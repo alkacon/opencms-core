@@ -134,9 +134,6 @@ public class CmsContainerElement implements IsSerializable {
     /** The inheritance info for this element. */
     private CmsInheritanceInfo m_inheritanceInfo;
 
-    /** True if the element is a model group. */
-    private boolean m_isModelGroup;
-
     /** The model group always replace flag. */
     private boolean m_isModelGroupAlwaysReplace;
 
@@ -166,6 +163,9 @@ public class CmsContainerElement implements IsSerializable {
 
     /** The former copy model status. */
     private boolean m_wasModelGroup;
+
+    /** The model group id or null. */
+    private CmsUUID m_modelGroupId;
 
     /**
      * Default constructor.<p>
@@ -198,7 +198,7 @@ public class CmsContainerElement implements IsSerializable {
         result.m_subTitle = m_subTitle;
         result.m_title = m_title;
         result.m_elementView = m_elementView;
-        result.m_isModelGroup = m_isModelGroup;
+        result.m_modelGroupId = m_modelGroupId;
         result.m_wasModelGroup = m_wasModelGroup;
         result.m_isModelGroupAlwaysReplace = m_isModelGroupAlwaysReplace;
         return result;
@@ -233,6 +233,16 @@ public class CmsContainerElement implements IsSerializable {
     public CmsInheritanceInfo getInheritanceInfo() {
 
         return m_inheritanceInfo;
+    }
+
+    /**
+     * Returns the model group id.<p>
+     *
+     * @return the model group id
+     */
+    public CmsUUID getModelGroupId() {
+
+        return m_modelGroupId;
     }
 
     /**
@@ -367,7 +377,7 @@ public class CmsContainerElement implements IsSerializable {
      */
     public boolean isModelGroup() {
 
-        return m_isModelGroup;
+        return m_modelGroupId != null;
     }
 
     /**
@@ -481,13 +491,13 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Set if the element is a model group.<p>
+     * Sets the model group id.<p>
      *
-     * @param isModelGroup <code>true</code> if the element is a model group
+     * @param modelGroupId <code>true</code> if the element is a model group
      */
-    public void setModelGroup(boolean isModelGroup) {
+    public void setModelGroupId(CmsUUID modelGroupId) {
 
-        m_isModelGroup = isModelGroup;
+        m_modelGroupId = modelGroupId;
     }
 
     /**

@@ -222,8 +222,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The inheritance info for this element. */
     private CmsInheritanceInfo m_inheritanceInfo;
 
-    /** The model group status. */
-    private boolean m_modelGroup;
+    /** The model group id. */
+    private CmsUUID m_modelGroupId;
 
     /** The is new element type. */
     private String m_newType;
@@ -289,7 +289,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param disableNewEditor flag to disable the new editor for this element
-     * @param modelGroup the model group status
+     * @param modelGroupId the model group id
      * @param wasModelGroup in case of a former copy model group
      * @param elementView the element view of the element
      */
@@ -307,7 +307,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean hasWritePermission,
         boolean releasedAndNotExpired,
         boolean disableNewEditor,
-        boolean modelGroup,
+        CmsUUID modelGroupId,
         boolean wasModelGroup,
         CmsUUID elementView) {
 
@@ -321,14 +321,14 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_hasSettings = hasSettings;
         m_parent = parent;
         m_disableNewEditor = disableNewEditor;
-        m_modelGroup = modelGroup;
+        m_modelGroupId = modelGroupId;
         m_wasModelGroup = wasModelGroup;
         setViewPermission(hasViewPermission);
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
         m_elementView = elementView;
-        getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroup);
+        getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroupId != null);
         getElement().setPropertyBoolean(PROP_WAS_MODEL_GROUP, wasModelGroup);
     }
 
@@ -451,6 +451,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public CmsInheritanceInfo getInheritanceInfo() {
 
         return m_inheritanceInfo;
+    }
+
+    /**
+     * Returns the model group id.<p>
+     *
+     * @return the model group id
+     */
+    public CmsUUID getModelGroupId() {
+
+        return m_modelGroupId;
     }
 
     /**
@@ -684,7 +694,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      */
     public boolean isModelGroup() {
 
-        return m_modelGroup;
+        return m_modelGroupId != null;
     }
 
     /**
@@ -826,17 +836,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
-    }
-
-    /**
-     * Sets the model group status.<p>
-     *
-     * @param modelGroup the model group status
-     */
-    public void setModelGroup(boolean modelGroup) {
-
-        m_modelGroup = modelGroup;
-        getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroup);
     }
 
     /**

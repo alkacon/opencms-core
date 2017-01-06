@@ -222,10 +222,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
                 if (isEditableModelGroup && !elementWidget.hasModelGroupParent()) {
                     addModelGroupSettings(elementBean, elementWidget, modelGroupFieldSet);
-                } else {
+                } else if (!elementWidget.isModelGroup()) {
                     addCreateNewCheckbox(elementBean, modelGroupFieldSet);
                 }
-                fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
+                if (modelGroupFieldSet.getWidgetCount() > 0) {
+                    fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
+                }
 
             } else if (elementWidget.isModelGroup()) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();

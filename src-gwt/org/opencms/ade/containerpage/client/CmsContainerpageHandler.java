@@ -954,7 +954,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void showElementInfo(CmsContainerPageElementPanel element) {
 
-        CmsUUID structureId = element.getStructureId();
+        CmsUUID structureId;
+        if (element.isModelGroup() && !element.getModelGroupId().isNullUUID()) {
+            structureId = element.getModelGroupId();
+        } else {
+            structureId = element.getStructureId();
+        }
         CmsResourceInfoDialog.load(structureId, true, null, null);
     }
 
