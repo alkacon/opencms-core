@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.input.location;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -189,8 +190,10 @@ public class CmsLocationController {
      * @return <code>true</code>  if the google maps API is already loaded to the window context
      */
     private static native boolean isMainApiLoaded()/*-{
-		return $wnd.google !== undefined && $wnd.google.maps !== undefined
+		var result = $wnd.google !== undefined
+				&& $wnd.google.maps !== undefined
 				&& $wnd.google.maps.Map !== undefined;
+		return result;
     }-*/;
 
     /**
@@ -199,8 +202,10 @@ public class CmsLocationController {
      * @return <code>true</code>  if the google maps API is already loaded to the window context
      */
     private static native boolean isPlacesApiLoaded()/*-{
-		return $wnd.google !== undefined && $wnd.google.maps !== undefined
+		var result = $wnd.google !== undefined
+				&& $wnd.google.maps !== undefined
 				&& $wnd.google.maps.places !== undefined;
+		return result;
     }-*/;
 
     /**
@@ -292,7 +297,11 @@ public class CmsLocationController {
      */
     protected void onAddressChange(SuggestOracle.Suggestion suggestion) {
 
-        onAddressChange(suggestion.getDisplayString());
+        try {
+            onAddressChange(suggestion.getDisplayString());
+        } catch (Throwable t) {
+            CmsErrorDialog.handleException(t);
+        }
     }
 
     /**
@@ -324,9 +333,13 @@ public class CmsLocationController {
      */
     protected void onLatitudeChange(String latitude) {
 
-        m_editValue.setLatitude(latitude);
-        updateMarkerPosition();
-        updateAddress();
+        try {
+            m_editValue.setLatitude(latitude);
+            updateMarkerPosition();
+            updateAddress();
+        } catch (Throwable t) {
+            CmsErrorDialog.handleException(t);
+        }
     }
 
     /**
@@ -336,9 +349,13 @@ public class CmsLocationController {
      */
     protected void onLongitudeChange(String longitude) {
 
-        m_editValue.setLongitude(longitude);
-        updateMarkerPosition();
-        updateAddress();
+        try {
+            m_editValue.setLongitude(longitude);
+            updateMarkerPosition();
+            updateAddress();
+        } catch (Throwable t) {
+            CmsErrorDialog.handleException(t);
+        }
     }
 
     /**
@@ -428,26 +445,30 @@ public class CmsLocationController {
      * Displays the map for the current location.<p>
      */
     native void initMap() /*-{
-		if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map == null) {
-			var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
-			var type = (value.type == null || value.type == "") ? "roadmap"
-					: value.type;
-			var zoom = parseInt(value.zoom);
-			if (isNaN(zoom)) {
-				zoom = 8;
-			}
+		try {
+			if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map == null) {
+				var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
+				var type = (value.type == null || value.type == "") ? "roadmap"
+						: value.type;
+				var zoom = parseInt(value.zoom);
+				if (isNaN(zoom)) {
+					zoom = 8;
+				}
 
-			var mapOptions = {
-				zoom : zoom,
-				mapTypeId : type,
-				center : new $wnd.google.maps.LatLng(-34.397, 150.644),
-				streetViewControl : false
-			};
-			var popupContent = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_popupContent;
-			var canvas = popupContent.@org.opencms.gwt.client.ui.input.location.CmsLocationPopupContent::getMapCanvas()();
-			this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map = new $wnd.google.maps.Map(
-					canvas, mapOptions);
-			this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder = new $wnd.google.maps.Geocoder();
+				var mapOptions = {
+					zoom : zoom,
+					mapTypeId : type,
+					center : new $wnd.google.maps.LatLng(-34.397, 150.644),
+					streetViewControl : false
+				};
+				var popupContent = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_popupContent;
+				var canvas = popupContent.@org.opencms.gwt.client.ui.input.location.CmsLocationPopupContent::getMapCanvas()();
+				this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map = new $wnd.google.maps.Map(
+						canvas, mapOptions);
+				this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder = new $wnd.google.maps.Geocoder();
+			}
+		} catch (e) {
+			$wnd.console.log(e.message);
 		}
 		this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateMarkerPosition()();
     }-*/;
@@ -464,22 +485,26 @@ public class CmsLocationController {
             alert.center();
             return;
         }
-        if (m_popup == null) {
-            m_popup = new CmsPopup(Messages.get().key(Messages.GUI_LOCATION_DIALOG_TITLE_0), hasMap() ? 1020 : 420);
-            m_popupContent = new CmsLocationPopupContent(
-                this,
-                new CmsLocationSuggestOracle(this),
-                getModeItems(),
-                getTypeItems(),
-                getZoomItems());
-            setFieldVisibility();
-            m_popup.setMainContent(m_popupContent);
-            m_popup.addDialogClose(null);
+        try {
+            if (m_popup == null) {
+                m_popup = new CmsPopup(Messages.get().key(Messages.GUI_LOCATION_DIALOG_TITLE_0), hasMap() ? 1020 : 420);
+                m_popupContent = new CmsLocationPopupContent(
+                    this,
+                    new CmsLocationSuggestOracle(this),
+                    getModeItems(),
+                    getTypeItems(),
+                    getZoomItems());
+                setFieldVisibility();
+                m_popup.setMainContent(m_popupContent);
+                m_popup.addDialogClose(null);
+            }
+            m_popup.center();
+            m_popup.show();
+            initialize();
+            updateForm();
+        } catch (Throwable t) {
+            CmsErrorDialog.handleException(t);
         }
-        m_popup.center();
-        m_popup.show();
-        updateForm();
-        initialize();
     }
 
     /**
@@ -667,8 +692,8 @@ public class CmsLocationController {
     private boolean hasError() {
 
         return (CmsDomUtil.querySelector(".gm-err-content", m_picker.getMapPreview()) != null)
-            || (((m_picker.getMapPreview().getFirstChildElement() == null)
-                || CmsStringUtil.isEmptyOrWhitespaceOnly(
+                     || (((m_picker.getMapPreview().getFirstChildElement() == null)
+                     || CmsStringUtil.isEmptyOrWhitespaceOnly(
                     m_picker.getMapPreview().getFirstChildElement().getInnerHTML())));
     }
 
@@ -917,7 +942,7 @@ public class CmsLocationController {
 									self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZZ)(lat,lng,false,true);
 								});
 			} catch (e) {
-				$wnd.alert(e);
+				$wnd.alert(e.message);
 			}
 		} else {
 			marker.setPosition(pos);
