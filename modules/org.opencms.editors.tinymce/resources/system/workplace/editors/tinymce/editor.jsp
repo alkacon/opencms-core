@@ -1,5 +1,4 @@
-<%@page import="java.io.UnsupportedEncodingException"%>
-<%@ page taglibs="cms" import="
+<%@page import="java.io.UnsupportedEncodingException,
 	org.opencms.i18n.CmsEncoder,
 	org.opencms.editors.tinymce.*,
 	org.opencms.util.*,
@@ -9,7 +8,8 @@
 	org.opencms.main.*,
 	org.apache.commons.lang.StringUtils,
 	java.util.*
-"%><%
+"%><%@ 
+	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%
 
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsTinyMCE wp = new CmsTinyMCE(cms);

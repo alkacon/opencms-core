@@ -555,6 +555,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      *
      * @return the transformed JSP text
      */
+    @Deprecated
     public String processTaglibAttributes(String content) {
 
         // matches a whole page directive

@@ -1,5 +1,13 @@
-<%@page taglibs="c,cms,fmt" buffer="none" session="false" import="org.opencms.main.*,org.opencms.file.*,org.opencms.jsp.*,org.opencms.jsp.util.*,org.opencms.ade.galleries.*,org.opencms.file.types.CmsResourceTypeXmlContainerPage" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
+<%@page buffer="none" session="false" import="org.opencms.main.*,
+	org.opencms.file.*,
+	org.opencms.jsp.*,
+	org.opencms.jsp.util.*,
+	org.opencms.ade.galleries.*,
+	org.opencms.file.types.CmsResourceTypeXmlContainerPage" %><%@ 
+	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%@ 
+	taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%><%@ 
+	taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%@
+	taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%><%
 
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsObject cmsObj = cms.getCmsObject();

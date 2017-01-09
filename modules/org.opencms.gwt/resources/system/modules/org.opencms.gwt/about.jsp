@@ -1,4 +1,5 @@
-<%@page taglibs="cms" import="java.util.*,java.text.*,org.opencms.main.*,org.opencms.i18n.*"%><!DOCTYPE html>
+<%@page import="java.util.*,java.text.*,org.opencms.main.*,org.opencms.i18n.*"%><%@ 
+	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><!DOCTYPE html>
 <html>
 <head>
 <cms:jquery js="jquery" />
