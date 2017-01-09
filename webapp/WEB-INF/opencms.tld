@@ -2898,4 +2898,214 @@
             java.lang.String isSubSitemap(org.opencms.file.CmsResource)
         </function-signature>
     </function>
+    
+    <function>
+        <description>
+           Adds leading and trailing slashes to a path.
+        </description>    
+        <name>addLeadingAndTrailingSlash</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String addLeadingAndTrailingSlash(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           Changes the filename suffix.
+        </description>    
+        <name>changeFileNameSuffixToo</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String changeFileNameSuffixToo(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           Compares paths while ignoring leading / trailing slashes.
+        </description>    
+        <name>comparePaths</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            boolean comparePaths(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Replaces occurrences of special control characters in the given input with a HTML representation.
+			This method currently replaces line breaks to <br/> and special HTML chars like < > & " with their HTML entity representation.
+        </description>    
+        <name>escapeHtml</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String escapeHtml(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Escapes a String so it may be used in JavaScript String definitions.
+           	This method replaces line breaks, quotation marks and \ characters.
+        </description>    
+        <name>escapeJavaScript</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String escapeJavaScript(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Escapes a String so it may be used as a Perl5 regular expression.
+           	This method replaces the following characters in a String:
+           	{}[]()\$^.*+/
+        </description>    
+        <name>escapePattern</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String escapePattern(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Extracts the content of a <body> tag in a HTML page.
+           	This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
+        </description>    
+        <name>extractHtmlBody</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String extractHtmlBody(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Extracts the content of a <body> tag in a HTML page.
+           	This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
+        </description>    
+        <name>extractHtmlBody</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String extractHtmlBody(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Formats a resource name that it is displayed with the maximum length and path information is adjusted.
+           	In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively, starting with the second! folder. The first folder is removed as last.
+           	Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns /myfolder/.../index.html.
+        </description>    
+        <name>formatResourceName</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String formatResourceName(java.lang.String, int)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Gets the common prefix path of two paths.
+        </description>    
+        <name>getCommonPrefixPath</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String getCommonPrefixPath(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Returns the locale by suffix for the given name, including optional country code.
+           	Calls CmsResource.getName(String) first, so the given name can also be a resource root path.
+        </description>    
+        <name>getLocaleForName</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.util.Locale getLocaleForName(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Extracts the content of a <body> tag in a HTML page.
+           	This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
+        </description>    
+        <name>getLocaleSuffixForName</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String getLocaleSuffixForName(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Splits a path into its non-empty path components.
+           	If the path is the root path, an empty list will be returned.
+        </description>    
+        <name>getPathComponents</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.util.List getPathComponents(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Converts a given path to a path relative to a base folder, but only if it actually is a sub-path of the latter, otherwise null is returned.
+        </description>    
+        <name>getRelativeSubPath</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String getRelativeSubPath(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Returns true if the provided String is either null or contains only white spaces.
+        </description>    
+        <name>isEmptyOrWhitespaceOnly</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            boolean isEmptyOrWhitespaceOnly(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Checks whether one path is a prefix path of another, i.e. its path components are the initial path components of the second path.
+           	It is not enough to just use String.startsWith, because we want /foo/bar to be a prefix path of /foo/bar/baz, but not of /foo/bar42.
+        </description>    
+        <name>isPrefixPath</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            boolean isPrefixPath(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Checks if the given class name is a valid Java class name.
+        </description>    
+        <name>isValidJavaClassName</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            boolean isValidJavaClassName(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+           	Validates a value against a regular expression.
+        </description>    
+        <name>validateRegex</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            boolean validateRegex(java.lang.String, java.lang.String, boolean)
+        </function-signature>
+    </function>
 </taglib>
