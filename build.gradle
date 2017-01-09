@@ -867,6 +867,7 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         exclude '**/workplaceThemes/**'
         exclude '**/solr/**'
         exclude '**/spellcheck/**'
+        exclude 'WEB-INF/sun-jaxws.xml'
         include '**/*.html'
         include '**/*.properties'
         include '**/*.txt'
@@ -963,7 +964,6 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         include 'classes/ehcache.xml'
         include 'classes/repository.properties'
         include 'sun-jaxws.xml'
-        include 'wsdl/**'
         include 'spellcheck/**'
     }
     from ("${projectDir}/webapp/WEB-INF"){
