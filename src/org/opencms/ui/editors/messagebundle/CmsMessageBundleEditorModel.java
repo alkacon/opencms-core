@@ -55,6 +55,7 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditorState;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.KeyChangeEvent;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
@@ -1363,7 +1364,11 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                     OpenCms.getResourceManager().getResourceType(BundleType.PROPERTY.toString())))) {
                 resource = m_cms.readResource(filePath);
                 SortedProperties props = new SortedProperties();
-                props.load(new ByteArrayInputStream(m_cms.readFile(resource).getContents()));
+                CmsFile file = m_cms.readFile(resource);
+                props.load(
+                    new InputStreamReader(
+                        new ByteArrayInputStream(file.getContents()),
+                        CmsFileUtil.getEncoding(m_cms, file)));
                 m_keyset.updateKeySet(null, props.keySet());
                 m_bundleFiles.put(l, resource);
             }
