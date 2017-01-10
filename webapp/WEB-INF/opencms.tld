@@ -2867,7 +2867,7 @@
             using "UTF-8" for character encoding.</p>
             <p>JavaScript "decodeURIcomponent" can decode Strings that have been encoded using this method.</p>
         ]]></description>
-        <name>escape</name>
+        <name>encode</name>
         <function-class>org.opencms.i18n.CmsEncoder</function-class>
         <function-signature>
             java.lang.String escape(java.lang.String)
@@ -2905,7 +2905,7 @@
             using "UTF-8" for character encoding.</p>
             <p>This method can decode Strings that have been encoded in JavaScript with "encodeURIcomponent".</p>
         ]]></description>
-        <name>unescape</name>
+        <name>decode</name>
         <function-class>org.opencms.i18n.CmsEncoder</function-class>
         <function-signature>
             java.lang.String unescape(java.lang.String)
