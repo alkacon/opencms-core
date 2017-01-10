@@ -2848,7 +2848,7 @@
     <function>
         <description><![CDATA[
             <p>Encodes a String in a way similar to the JavaScript "encodeURIcomponent" function.</p>
-            <p>In order to avoid encoding hell, it's better to just use <code>${cms:escape(String)}</code> on a JSP
+            <p>In order to avoid encoding hell, it's better to just use <code>${cms:encode(String)}</code> on a JSP
             to transfer data that will be decoded using "decodeURIcomponent".</p>
             <p>JavaScript "decodeURIcomponent" can decode Strings that have been encoded using this method,
             provided "UTF-8" has been used as encoding.</p>
@@ -2886,7 +2886,7 @@
     <function>
         <description><![CDATA[
             <p>Decodes a String in a way similar to the JavaScript "decodeURIcomponent" function.</p>
-            <p>In order to avoid encoding hell, it's better to just use <code>${cms:unescape(String)}</code> on a JSP
+            <p>In order to avoid encoding hell, it's better to just use <code>${cms:decode(String)}</code> on a JSP
             to transfer data that has been encoded using "encodeURIcomponent".</p>
             <p>This method can decode Strings that have been encoded in JavaScript with "encodeURIcomponent",
             provided "UTF-8" is used as encoding.</p>
