@@ -86,44 +86,6 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Adds leading and trailing slashes to a path.<p>
-     *
-     * @param path the path
-     *
-     * @return the changed path
-     */
-    public static String addLeadingAndTrailingSlash(String path) {
-
-        return CmsStringUtil.addLeadingAndTrailingSlash(path);
-    }
-
-    /**
-     * Changes the filename suffix.<p>
-     *
-     * @param filename the file name
-     * @param suffix the suffix
-     *
-     * @return the changed file name
-     */
-    public static String changeFileNameSuffixToo(String filename, String suffix) {
-
-        return CmsStringUtil.changeFileNameSuffixTo(filename, suffix);
-    }
-
-    /**
-     * Compares paths while ignoring leading / trailing slashes.<p>
-     *
-     * @param path1 first path
-     * @param path2 second path
-     *
-     * @return <code>true</code> if the paths are equal (ignoring leading or trailing slashes)
-     */
-    public static boolean comparePaths(String path1, String path2) {
-
-        return CmsStringUtil.comparePaths(path1, path2);
-    }
-
-    /**
      * Returns an OpenCms user context created from an Object.<p>
      *
      * <ul>
@@ -375,74 +337,6 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Replaces occurrences of special control characters in the given input with a HTML representation.<p>
-     * This method currently replaces line breaks to <br/> and special HTML chars like < > & " with their HTML entity representation.<p>
-     *
-     * @param source the string to escape
-     *
-     * @return the escaped string
-     */
-    public static String escapeHtml(String source) {
-
-        return CmsStringUtil.escapeHtml(source);
-    }
-
-    /**
-     * Escapes a String so it may be used in JavaScript String definitions.<p>
-     * This method replaces line breaks, quotation marks and \ characters.<p>
-     *
-     * @param source the string to escape
-     *
-     * @return the escaped string
-     */
-    public static String escapeJavaScript(String source) {
-
-        return CmsStringUtil.escapeJavaScript(source);
-    }
-
-    /**
-     * Escapes a String so it may be used as a Perl5 regular expression.<p>
-     * This method replaces the following characters in a String:
-     * {}[]()\$^.*+/<p>
-     *
-     * @param source the string to escape
-     *
-     * @return the escaped string
-     */
-    public static String escapePattern(String source) {
-
-        return CmsStringUtil.escapePattern(source);
-    }
-
-    /**
-     * Extracts the content of a <body> tag in a HTML page.<p>
-     * This method should be pretty robust and work even if the input HTML does not contains a valid body tag.<p>
-     *
-     * @param content the content
-     *
-     * @return the body tag content
-     */
-    public static String extractHtmlBody(String content) {
-
-        return CmsStringUtil.extractHtmlBody(content);
-    }
-
-    /**
-     * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
-     * In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively, starting with the second! folder. The first folder is removed as last.<p>
-     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns /myfolder/.../index.html.<p>
-     *
-     * @param name the name to format
-     * @param maxLength the maximum length of the resource name (without leading /...)
-     *
-     * @return the formatted resource name
-     */
-    public static String formatResourceName(String name, int maxLength) {
-
-        return CmsStringUtil.formatResourceName(name, maxLength);
-    }
-
-    /**
      * Returns the current OpenCms user context from the given page context.<p>
      *
      * @param input the input to create a CmsObject from
@@ -452,19 +346,6 @@ public final class CmsJspElFunctions {
     public static CmsObject getCmsObject(Object input) {
 
         return convertCmsObject(input);
-    }
-
-    /**
-     * Gets the common prefix path of two paths.<p>
-     *
-     * @param first the first path
-     * @param second the second path
-     *
-     * @return the common prefix path
-     */
-    public static String getCommonPrefixPath(String first, String second) {
-
-        return CmsStringUtil.getCommonPrefixPath(first, second);
     }
 
     /**
@@ -480,31 +361,6 @@ public final class CmsJspElFunctions {
         }
         // input was null
         return Integer.valueOf(0);
-    }
-
-    /**
-     * Returns the locale by suffix for the given name, including optional country code.<p>
-     * Calls {@link CmsResource#getName(String)} first, so the given name can also be a resource root path.<p>
-     *
-     * @param name the name to get the locale for
-     *
-     * @return the locale
-     */
-    public static Locale getLocaleForName(String name) {
-
-        return CmsStringUtil.getLocaleForName(name);
-    }
-
-    /**
-     * Returns the locale suffix as String for a given name, null otherwise.<p>
-     *
-     * @param name the resource name
-     *
-     * @return the locale suffix
-     */
-    public static String getLocaleSuffixForName(String name) {
-
-        return CmsStringUtil.getLocaleSuffixForName(name);
     }
 
     /**
@@ -542,32 +398,6 @@ public final class CmsJspElFunctions {
             return null;
         }
         return getCmsObject(input).getRequestContext().getUri();
-    }
-
-    /**
-     * Splits a path into its non-empty path components.<p>
-     * If the path is the root path, an empty list will be returned.<p>
-     *
-     * @param path the path
-     *
-     * @return the path components
-     */
-    public static List<String> getPathComponents(String path) {
-
-        return CmsStringUtil.getPathComponents(path);
-    }
-
-    /**
-     * Converts a given path to a path relative to a base folder, but only if it actually is a sub-path of the latter, otherwise null is returned.<p>
-     *
-     * @param base the base folder path
-     * @param path the path
-     *
-     * @return 'path' converted to a path relative to 'base', or null if 'path' is not a sub-folder of 'base'
-     */
-    public static String getRelativeSubPath(String base, String path) {
-
-        return CmsStringUtil.getRelativeSubPath(base, path);
     }
 
     /**
@@ -617,32 +447,6 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Returns true if the provided String is either null or contains only white spaces.<p>
-     *
-     * @param value the value
-     *
-     * @return <code>true</code>, if the provided value is null or contains only white spaces, false otherwise
-     */
-    public static boolean isEmptyOrWhitespaceOnly(String value) {
-
-        return CmsStringUtil.isEmptyOrWhitespaceOnly(value);
-    }
-
-    /**
-     * Checks whether one path is a prefix path of another, i.e. its path components are the initial path components of the second path.<p>
-     * It is not enough to just use {@link String#startsWith(String)}, because we want /foo/bar to be a prefix path of /foo/bar/baz, but not of /foo/bar42.<p>
-     *
-     * @param firstPath the first path
-     * @param secondPath the second path
-     *
-     * @return <code>true</code> if the first path is a prefix path of the second path
-     */
-    public static boolean isPrefixPath(String firstPath, String secondPath) {
-
-        return CmsStringUtil.isPrefixPath(firstPath, secondPath);
-    }
-
-    /**
      * Returns whether the given resource is a sub sitemap folder.<p>
      *
      * @param resource the resource to check
@@ -652,18 +456,6 @@ public final class CmsJspElFunctions {
     public static boolean isSubSitemap(CmsResource resource) {
 
         return (resource != null) && CmsResourceTypeFolderSubSitemap.isSubSitemap(resource);
-    }
-
-    /**
-     * Checks if the given class name is a valid Java class name.<p>
-     *
-     * @param className the class name to check
-     *
-     * @return <code>true</code> if the given class name is a valid Java class name
-     */
-    public static boolean isValidJavaClassName(String className) {
-
-        return CmsStringUtil.isValidJavaClassName(className);
     }
 
     /**
@@ -835,12 +627,11 @@ public final class CmsJspElFunctions {
      *
      * @param value the value
      * @param regex the regex
-     * @param allowEmpty if an empty value is allowed
      *
      * @return <code>true</code> if the value satisfies the validation
      */
-    public static boolean validateRegex(String value, String regex, boolean allowEmpty) {
+    public static boolean validateRegex(String value, String regex) {
 
-        return CmsStringUtil.validateRegex(value, regex, allowEmpty);
+        return CmsStringUtil.validateRegex(value, regex, true);
     }
 }
