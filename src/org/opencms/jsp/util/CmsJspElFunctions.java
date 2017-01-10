@@ -31,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
@@ -83,6 +82,17 @@ public final class CmsJspElFunctions {
     private CmsJspElFunctions() {
 
         // NOOP
+    }
+
+    /**
+     * Extends the given list by adding the provided object.<p>
+     *
+     * @param list the list to extend
+     * @param value the value to add to the list
+     */
+    public static void addToList(List<Object> list, Object value) {
+
+        list.add(value);
     }
 
     /**
@@ -324,16 +334,16 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Encodes a String in a way that is compatible with the JavaScript escape function.
+     * Returns a newly created, empty List object.<p>
      *
-     * @param source The text to be encoded
-     * @param encoding the encoding type
+     * There is no way to create an empty list using standard JSTL methods,
+     * hence this function.<p>
      *
-     * @return The JavaScript escaped string
+     * @return a newly created, empty List object
      */
-    public static String escape(String source, String encoding) {
+    public static List<Object> createList() {
 
-        return CmsEncoder.escape(source, encoding);
+        return new ArrayList<Object>();
     }
 
     /**
@@ -380,17 +390,17 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Returns the current navigation URI.<p>
+     * Returns the current request URI.<p>
      *
-     * Which can be the request URI or the VFS resource URI.<p>
-     *
-     * In case a sitemap is used, the navigation URI will be the
-     * request URI, if not the VFS resource URI is returned.<p>
+     * For OpenCms 10.5, this is the same as using <code>${cms.requestContext.uri}</code> on a JSP.<p>
      *
      * @param input the request convertible object to get the navigation URI from
      *
      * @return the current navigation URI
+     *
+     * @deprecated On a JSP use <code>${cms.requestContext.uri}</code> instead.
      */
+    @Deprecated
     public static String getNavigationUri(Object input) {
 
         ServletRequest req = convertRequest(input);
@@ -548,7 +558,7 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Repairs the given HTML input.<p>
+     * Repairs the given HTML input by adding potentially missing closing tags.<p>
      *
      * @param input the HTML input
      *
@@ -606,20 +616,6 @@ public final class CmsJspElFunctions {
     public static String trimToSize(String input, int length) {
 
         return CmsStringUtil.trimToSize(input, length, " ...");
-    }
-
-    /**
-     * Decodes a String in a way that is compatible with the JavaScript
-     * unescape function.<p>
-     *
-     * @param source The String to be decoded
-     * @param encoding the encoding type
-     *
-     * @return The JavaScript unescaped String
-     */
-    public static String unescape(String source, String encoding) {
-
-        return CmsEncoder.unescape(source, encoding);
     }
 
     /**

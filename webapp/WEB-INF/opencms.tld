@@ -2625,11 +2625,7 @@
         </attribute>
     </tag>
 
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
     <tag>
-=======
-     <tag>
->>>>>>> 4ee8651 Using StringUtil directly.
         <description><![CDATA[
             Enables automatic parameter escaping for a Flex Request.
         ]]></description>
@@ -2722,12 +2718,8 @@
     <function>
         <description><![CDATA[
             Takes a list of Java beans as first argument and a property name for a property of these beans as second argument.
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             The function returns a list where for each given bean the specified property is returned,
             i.e., for each bean, bean.property is returned.
-=======
-            The function returns a list where for each given bean the specified property is returned, i.e., for each bean, bean.property is returned.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>convertList</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -2818,7 +2810,6 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Returns a newly created, empty List object.</p>
             <p>There is no way to create an empty list using standard JSTL methods,
             hence this function.</p>
@@ -2835,9 +2826,6 @@
             Given an URL as String, formatted for a GET request,
             as first argument and a request parameter name as second parameter,
             the value of this request parameter in the first argument is returned.
-=======
-            Given an URL as String, formatted for a GET request, as first argument and a request parameter name as second parameter, the value of this request parameter in the first argument is returned.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>getRequestParam</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -2859,16 +2847,12 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Encodes a String in a way similar to the JavaScript "encodeURIcomponent" function.</p>
             <p>In order to avoid encoding hell, it's better to just use <code>${cms:escape(String)}</code> on a JSP
             to transfer data that will be decoded using "decodeURIcomponent".</p>
             <p>JavaScript "decodeURIcomponent" can decode Strings that have been encoded using this method,
             provided "UTF-8" has been used as encoding.</p>
             <p>The 1st parameter is the String to encode, the 2nd the encoding to be used, e.g. "UTF-8".</p>
-=======
-            Encodes a String in a way that is compatible with the JavaScript escape function.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>escape</name>
         <function-class>org.opencms.i18n.CmsEncoder</function-class>
@@ -2879,7 +2863,6 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Encodes a String in a way similar to the JavaScript "encodeURIcomponent" function,
             using "UTF-8" for character encoding.</p>
             <p>JavaScript "decodeURIcomponent" can decode Strings that have been encoded using this method.</p>
@@ -2894,9 +2877,6 @@
     <function>
         <description><![CDATA[
             Converts a JSON string to a map with string keys/value pairs.
-=======
-            Converts a JSON string to a map with string keys/values.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>jsonToMap</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -2905,16 +2885,12 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Decodes a String in a way similar to the JavaScript "decodeURIcomponent" function.</p>
             <p>In order to avoid encoding hell, it's better to just use <code>${cms:unescape(String)}</code> on a JSP
             to transfer data that has been encoded using "encodeURIcomponent".</p>
             <p>This method can decode Strings that have been encoded in JavaScript with "encodeURIcomponent",
             provided "UTF-8" is used as encoding.</p>
             <p>The 1st parameter is the String to decode, the 2nd the encoding the string was encoded with, e.g. "UTF-8".</p>
-=======
-            Decodes a String in a way that is compatible with the JavaScript unescape function.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>unescape</name>
         <function-class>org.opencms.i18n.CmsEncoder</function-class>
@@ -2925,7 +2901,6 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Decodes a String in a way similar to the JavaScript "decodeURIcomponent" function,
             using "UTF-8" for character encoding.</p>
             <p>This method can decode Strings that have been encoded in JavaScript with "encodeURIcomponent".</p>
@@ -2942,11 +2917,6 @@
             <p>Returns the current request URI.</p>
             <p><b>DEPRECATED</b>
             On a JSP, use <code>${cms.requestContext.uri}</code>instead.</p>
-=======
-            Returns the current navigation URI. Which can be the request URI or the
-            VFS resource URI. In case a sitemap is used, the navigation URI will be the
-            request URI, if not the VFS resource URI is returned.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>navUri</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -2957,15 +2927,10 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Uses the 1st String as key to look up from the map that is
             passed as the 2nd String, and returns either the
             element found or the default value from the 3rd String.</p>
             <p>The map String must have the form <code>key1:value1|key2:value2</code> etc.</p>
-=======
-            Uses the 1st String as key to look up from the map that is passed as the 2nd String, and returns either the
-            element found or the default value from the 3rd String. The map String must have the form "key1:value1|key2:value2" etc.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>lookupDefault</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -2976,15 +2941,10 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Uses the 1st String as key to look up from the map that is
             passed as the 2nd String, and returns either the
             element found or the empty String.</p>
             <p>The map String must have the form <code>key1:value1|key2:value2</code> etc.</p>
-=======
-            Uses the 1st String as key to look up from the map that is passed as the 2nd String, and returns either the
-            element found or the empty String. The map String must have the form "key1:value1|key2:value2" etc.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>lookup</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -2995,11 +2955,7 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             Repairs the given HTML input by adding potentially missing closing tags.
-=======
-            Repairs the given HTML input.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>repairHtml</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -3021,12 +2977,8 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             Adds leading and trailing slashes to a path,
             if the path does not already start or end with a slash.
-=======
-            Adds leading and trailing slashes to a path.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>addLeadingAndTrailingSlash</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3037,12 +2989,8 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Changes the given filenames suffix from the current suffix to the provided suffix.</p>
             <p>The 1st parameter is the filename, the 2nd the new suffix.</p>
-=======
-            Changes the filename suffix.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>changeFileNameSuffixToo</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3053,12 +3001,8 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Compares two paths, ignoring leading and trailing slashes.</p>
             <p>Returns true if the paths are equal (ignoring leading and trailing slashes).</p>
-=======
-            Compares paths while ignoring leading / trailing slashes.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>comparePaths</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3069,13 +3013,8 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             Replaces line breaks to <code>&lt;br/&gt;</code> and HTML control characters
             like <code>&lt; &gt; &amp; &quot;</code> with their HTML entity representation.<p>
-=======
-            Replaces occurrences of special control characters in the given input with a HTML representation.
-            This method currently replaces line breaks to <br/> and special HTML chars like < > & " with their HTML entity representation.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>escapeHtml</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3086,15 +3025,10 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Escapes a String so it may be used in JavaScript String definitions.<p>
             <p>This method escapes
             line breaks (<code>\r\n,\n</code>) quotation marks (<code>".'</code>)
             and slash as well as backspace characters (<code>\,/</code>).</p>
-=======
-            Escapes a String so it may be used in JavaScript String definitions.
-            This method replaces line breaks, quotation marks and \ characters.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>escapeJavaScript</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3105,15 +3039,9 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Escapes a String so it may be used as a Perl5 regular expression.</p>
             <p>This method replaces the following characters in a String:
             <code>{}[]()\$^.*+/</code></p>
-=======
-            Escapes a String so it may be used as a Perl5 regular expression.
-            This method replaces the following characters in a String:
-            {}[]()\$^.*+/
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>escapePattern</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3124,14 +3052,9 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Extracts the content of a <code>&lt;body&gt;</code> tag in a HTML page.</p>
             <p>This method should be pretty robust and work even if the input HTML does not contains
             a valid body tag.</p>
-=======
-            Extracts the content of a <body> tag in a HTML page.
-            This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>extractHtmlBody</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3142,7 +3065,6 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Shortens a resource name or path so that it is not longer than the provided maximum length.</p>
             <p>In order to reduce the length of the resource name, only
             complete folder names are removed and replaced with ... successively,
@@ -3151,23 +3073,6 @@
             if all subfolders have been removed.</p>
             <p>Example: <code>formatResourceName("/myfolder/subfolder/index.html", 21)</code>
             returns <code>/myfolder/.../index.html</code>.</p>
-=======
-            Extracts the content of a <body> tag in a HTML page.
-            This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
-        ]]></description>
-        <name>extractHtmlBody</name>
-        <function-class>org.opencms.util.CmsStringUtil</function-class>
-        <function-signature>
-            java.lang.String extractHtmlBody(java.lang.String)
-        </function-signature>
-    </function>
-
-    <function>
-        <description><![CDATA[
-            Formats a resource name that it is displayed with the maximum length and path information is adjusted.
-            In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively, starting with the second! folder. The first folder is removed as last.
-            Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns /myfolder/.../index.html.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>formatResourceName</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3178,11 +3083,7 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
              Returns the common parent path of two paths.
-=======
-            Gets the common prefix path of two paths.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>getCommonPrefixPath</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3193,14 +3094,9 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Returns a java.util.Locale calculated from the suffix of the given String,
             or <code>null</code> if no locale suffix is found.</p>
             <p>The locale returned will include the optional country code if this was part of the suffix.</p>
-=======
-            Returns the locale by suffix for the given name, including optional country code.
-            Calls CmsResource.getName(String) first, so the given name can also be a resource root path.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>getLocaleForName</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3211,7 +3107,6 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Returns the locale suffix from the given String, or <code>null</code> if no locale suffix is found.</p>
             <p><b>Examples:</b>
             <ul>
@@ -3223,10 +3118,6 @@
             <li><code>rabbit_enr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> null</code>
             <li><code>rabbit_en.tar.gz&nbsp;&nbsp;-> null</code>
             </ul></p>
-=======
-            Extracts the content of a <body> tag in a HTML page.
-            This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>getLocaleSuffixForName</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3249,16 +3140,10 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Converts the given path to a path relative to a base folder,
             but only if it actually is a sub-path of the latter,
             otherwise <code>null</code> is returned.</p>
             <p>The 1st parameter is the path, the 2nd paramerter is the base folder.</p>
-=======
-            Converts a given path to a path relative to a base folder,
-            but only if it actually is a sub-path of the latter,
-            otherwise <code>null</code> is returned.
->>>>>>> 4ee8651 Using StringUtil directly.
         ]]></description>
         <name>getRelativeSubPath</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
@@ -3280,12 +3165,7 @@
 
     <function>
         <description><![CDATA[
-<<<<<<< Upstream, based on branch 'branch_10_5_x' of git@bitbucket.org:alkacon/opencms-core.git
             <p>Checks if the first path is a prefix of the second path..</p>
-=======
-            <p>Checks if a path is a prefix of another path.</p>
-            <p>It it checked if the first path is a prefix of the second path.</p>
->>>>>>> 4ee8651 Using StringUtil directly.
             <p>This method is different compared to <code>String#startsWith</code>,
             because it considers <code>/foo/bar</code> to
             be a prefix path of <code>/foo/bar/baz</code>, but not of <code>/foo/bar42</code>.</p>
