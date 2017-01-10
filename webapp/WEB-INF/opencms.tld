@@ -2935,7 +2935,7 @@
     <function>
         <description>
            	Replaces occurrences of special control characters in the given input with a HTML representation.
-			This method currently replaces line breaks to <br/> and special HTML chars like < > & " with their HTML entity representation.
+			This method currently replaces line breaks to &lt;br/&gt; and special HTML chars like &lt; &gt; &amp; " with their HTML entity representation.
         </description>    
         <name>escapeHtml</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -2971,21 +2971,9 @@
     
     <function>
         <description>
-           	Extracts the content of a <body> tag in a HTML page.
+           	Extracts the content of a &lt;body&gt; tag in a HTML page.
            	This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
-        </description>    
-        <name>extractHtmlBody</name>
-        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
-        <function-signature>
-            java.lang.String extractHtmlBody(java.lang.String)
-        </function-signature>
-    </function>
-    
-    <function>
-        <description>
-           	Extracts the content of a <body> tag in a HTML page.
-           	This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
-        </description>    
+        </description>
         <name>extractHtmlBody</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
@@ -3031,8 +3019,7 @@
     
     <function>
         <description>
-           	Extracts the content of a <body> tag in a HTML page.
-           	This method should be pretty robust and work even if the input HTML does not contains a valid body tag.
+           	Returns the locale suffix as String for a given name, null otherwise.
         </description>    
         <name>getLocaleSuffixForName</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
