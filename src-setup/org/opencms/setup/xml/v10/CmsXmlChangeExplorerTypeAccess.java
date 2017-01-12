@@ -78,7 +78,7 @@ public class CmsXmlChangeExplorerTypeAccess extends A_CmsSetupXmlUpdate {
                 document,
                 xpath,
                 CmsWorkplaceConfiguration.A_PRINCIPAL,
-                CmsRole.VFS_MANAGER.getRoleName());
+                "ROLE." + CmsRole.VFS_MANAGER.getRoleName());
             return true;
         }
         return false;
