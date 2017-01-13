@@ -209,27 +209,20 @@ public class CmsLruCache extends java.lang.Object {
         }
 
         // set the list pointers correct
-        if (theCacheObject.getNextLruObject() == null) {
+        boolean nextNull = (theCacheObject.getNextLruObject() == null);
+        boolean prevNull = (theCacheObject.getPreviousLruObject() == null);
+        if (prevNull && nextNull) {
+            m_listHead = null;
+            m_listTail = null;
+        } else if (nextNull) {
             // remove the object from the head pos.
             I_CmsLruCacheObject newHead = theCacheObject.getPreviousLruObject();
-
-            if (newHead != null) {
-                // if newHead is null, theCacheObject
-                // was the only object in the cache
-                newHead.setNextLruObject(null);
-            }
-
+            newHead.setNextLruObject(null);
             m_listHead = newHead;
-        } else if (theCacheObject.getPreviousLruObject() == null) {
+        } else if (prevNull) {
             // remove the object from the tail pos.
             I_CmsLruCacheObject newTail = theCacheObject.getNextLruObject();
-
-            if (newTail != null) {
-                // if newTail is null, theCacheObject
-                // was the only object in the cache
-                newTail.setPreviousLruObject(null);
-            }
-
+            newTail.setPreviousLruObject(null);
             m_listTail = newTail;
         } else {
             // remove the object from within the list
@@ -239,7 +232,6 @@ public class CmsLruCache extends java.lang.Object {
 
         // update cache stats. and notify the cached object
         decreaseCache(theCacheObject);
-
         return theCacheObject;
     }
 
@@ -313,7 +305,6 @@ public class CmsLruCache extends java.lang.Object {
             prevObj.setNextLruObject(nextObj);
             nextObj.setPreviousLruObject(prevObj);
         }
-
         // set the touched object as the new head in the linked list:
         I_CmsLruCacheObject oldHead = m_listHead;
         if (oldHead != null) {

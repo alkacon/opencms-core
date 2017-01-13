@@ -27,6 +27,7 @@
 
 package org.opencms.flex;
 
+import org.opencms.flex.CmsFlexRequestKey.PathsBean;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
@@ -42,6 +43,8 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * Key used to describe the caching behaviour of a specific resource.<p>
@@ -275,6 +278,35 @@ public class CmsFlexCacheKey {
             str.append(value);
             str.append(");");
         }
+    }
+
+    /**
+     * Gets the list of root paths for the cache key / request key combination which should be used to determine the set of flex cache buckets for the flex cache entry.<p>
+     *
+     * @param key the flex request key
+     * @return the list of paths which should be used to determine the flex cache buckets
+     */
+    public List<String> getPathsForBuckets(CmsFlexRequestKey key) {
+
+        PathsBean pathBean = key.getPaths();
+        List<String> paths = Lists.newArrayList();
+        if (m_uri != null) {
+            paths.add(pathBean.getUri());
+            paths.add(pathBean.getDetailElement());
+        }
+        if (m_element != null) {
+            paths.add(pathBean.getElement());
+        }
+
+        if (m_uri != null) {
+            paths.add(pathBean.getUri());
+        }
+
+        if (m_containerElement != null) {
+            paths.add(pathBean.getContainerElement());
+        }
+        paths.removeAll(Collections.singletonList(null));
+        return paths;
     }
 
     /**

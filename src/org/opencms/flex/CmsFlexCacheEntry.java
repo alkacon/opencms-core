@@ -29,6 +29,7 @@ package org.opencms.flex;
 
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexBucketConfiguration.BucketSet;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsLog;
@@ -80,6 +81,9 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexCacheEntry.class);
+
+    /** the assigned bucket set for this flex entry (may be null). */
+    private BucketSet m_bucketSet;
 
     /** The CacheEntry's size in bytes. */
     private int m_byteSize;
@@ -247,6 +251,16 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
     }
 
     /**
+     * Gets the bucket set for this flex cache entry (may be null).<p>
+     *
+     * @return the bucket set for this flex cache entry
+     */
+    public BucketSet getBucketSet() {
+
+        return m_bucketSet;
+    }
+
+    /**
      * Returns the expiration date of this cache entry,
      * this is set to the time when the entry becomes invalid.<p>
      *
@@ -401,6 +415,16 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
                 }
             }
         }
+    }
+
+    /**
+     * Sets the bucket set for this flex cache entry.<p>
+     *
+     * @param bucketSet the bucket set to set
+     */
+    public void setBucketSet(BucketSet bucketSet) {
+
+        m_bucketSet = bucketSet;
     }
 
     /**
@@ -586,4 +610,5 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
 
         return result;
     }
+
 }

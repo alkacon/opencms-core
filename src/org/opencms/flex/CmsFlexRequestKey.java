@@ -29,7 +29,9 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.jsp.util.CmsJspStandardContextBean.CmsContainerElementWrapper;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -44,6 +46,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.logging.Log;
 
 /**
@@ -52,6 +55,136 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0
  */
 public class CmsFlexRequestKey {
+
+    /**
+     * Contains the root paths to be used for determining the buckets of a flex cache entry.<p>
+     */
+    public static class PathsBean {
+
+        /** The container element path. */
+        private String m_containerElement;
+
+        /** The detail element path. */
+        private String m_detailElement;
+
+        /** The element path. */
+        private String m_element;
+
+        /** The site root. */
+        private String m_site;
+
+        /** The URI. */
+        private String m_uri;
+
+        /**
+         * Returns the container element.<p>
+         *
+         * @return the container element
+         */
+        public String getContainerElement() {
+
+            return m_containerElement;
+        }
+
+        /**
+         * Returns the detail element.<p>
+         *
+         * @return the detail element
+         */
+        public String getDetailElement() {
+
+            return m_detailElement;
+        }
+
+        /**
+         * Returns the element.<p>
+         *
+         * @return the element
+         */
+        public String getElement() {
+
+            return m_element;
+        }
+
+        /**
+         * Returns the site.<p>
+         *
+         * @return the site
+         */
+        public String getSite() {
+
+            return m_site;
+        }
+
+        /**
+         * Returns the uri.<p>
+         *
+         * @return the uri
+         */
+        public String getUri() {
+
+            return m_uri;
+        }
+
+        /**
+         * Sets the container element.<p>
+         *
+         * @param containerElement the container element to set
+         */
+        public void setContainerElement(String containerElement) {
+
+            m_containerElement = containerElement;
+        }
+
+        /**
+         * Sets the detail element.<p>
+         *
+         * @param detailElement the detail element to set
+         */
+        public void setDetailElement(String detailElement) {
+
+            m_detailElement = detailElement;
+        }
+
+        /**
+         * Sets the element.<p>
+         *
+         * @param element the element to set
+         */
+        public void setElement(String element) {
+
+            m_element = element;
+        }
+
+        /**
+         * Sets the site.<p>
+         *
+         * @param site the site to set
+         */
+        public void setSite(String site) {
+
+            m_site = site;
+        }
+
+        /**
+         * Sets the uri.<p>
+         *
+         * @param uri the uri to set
+         */
+        public void setUri(String uri) {
+
+            m_uri = uri;
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            return ReflectionToStringBuilder.toString(this);
+        }
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexRequestKey.class);
@@ -67,6 +200,9 @@ public class CmsFlexRequestKey {
 
     /** Stores the device this request was made with. */
     private String m_device;
+
+    /** The bean storing the paths which should be used to determine the flex cache buckets for this entry. */
+    private PathsBean m_paths = new PathsBean();
 
     /** The (Flex) Http request this key was constructed for. */
     private HttpServletRequest m_request;
@@ -114,7 +250,20 @@ public class CmsFlexRequestKey {
 
         // get the current detail view id
         m_detailViewId = standardContext.getDetailContentId();
-
+        CmsResource detailContent = standardContext.getDetailContent();
+        if (detailContent != null) {
+            m_paths.setDetailElement(detailContent.getRootPath());
+        }
+        m_paths.setSite(m_context.getSiteRoot());
+        CmsContainerElementWrapper wrapper = standardContext.getElement();
+        if (wrapper != null) {
+            CmsResource containerElementResource = wrapper.getResource();
+            if (containerElementResource != null) {
+                m_paths.setContainerElement(containerElementResource.getRootPath());
+            }
+        }
+        m_paths.setElement(getElement());
+        m_paths.setUri(m_context.addSiteRoot(m_context.getUri()));
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUESTKEY_CREATED_NEW_KEY_1, m_resource));
         }
@@ -128,6 +277,7 @@ public class CmsFlexRequestKey {
     public Map<String, Object> getAttributes() {
 
         Map<String, Object> attrs = CmsRequestUtil.getAtrributeMap(m_request);
+
         if (attrs.size() == 0) {
             return null;
         }
@@ -207,6 +357,16 @@ public class CmsFlexRequestKey {
             return null;
         }
         return params;
+    }
+
+    /**
+     * Gets the bean containing the paths which should be used to determine the flex cache buckets for this entry.<p>
+     *
+     * @return the bean with the paths for this entry
+     */
+    public PathsBean getPaths() {
+
+        return m_paths;
     }
 
     /**

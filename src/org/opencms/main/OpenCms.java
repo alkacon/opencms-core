@@ -264,6 +264,16 @@ public final class OpenCms {
     }
 
     /**
+     * Creates a string containing all current flex cache keys, for use in debugging.<p<
+     *
+     * @return a string containing all current flex cache keys
+     */
+    public static String getFlexCacheKeyDump() {
+
+        return OpenCmsCore.getInstance().getFlexCacheKeyDump();
+    }
+
+    /**
      * Returns the initialized import/export manager,
      * which contains information about how to handle imported resources.<p>
      *
@@ -714,7 +724,8 @@ public final class OpenCms {
         CmsObject cms,
         String resourceName,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsException {
+        HttpServletResponse res)
+    throws CmsException {
 
         return OpenCmsCore.getInstance().initResource(cms, resourceName, req, res);
     }

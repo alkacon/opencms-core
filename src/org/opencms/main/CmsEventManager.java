@@ -156,26 +156,6 @@ public class CmsEventManager {
     }
 
     /**
-     * Returns the map of all configured event listeners.<p>
-     *
-     * @return the map of all configured event listeners
-     */
-    protected Map<Integer, List<I_CmsEventListener>> getEventListeners() {
-
-        return m_eventListeners;
-    }
-
-    /**
-     * Initialize this event manager with all events from the given base event manager.<p>
-     *
-     * @param base the base event manager to initialize this event manager with
-     */
-    protected void initialize(CmsEventManager base) {
-
-        m_eventListeners = new HashMap<Integer, List<I_CmsEventListener>>(base.getEventListeners());
-    }
-
-    /**
      * Fires the specified event to a list of event listeners.<p>
      *
      * @param listeners the listeners to fire
@@ -248,5 +228,26 @@ public class CmsEventManager {
             }
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_COMPLETE_1, event.toString()));
         }
+    }
+
+    /**
+     * Returns the map of all configured event listeners.<p>
+     *
+     * @return the map of all configured event listeners
+     */
+    protected Map<Integer, List<I_CmsEventListener>> getEventListeners() {
+
+        return m_eventListeners;
+    }
+
+    /**
+     * Initialize this event manager with all events from the given base event manager.<p>
+     *
+     * @param base the base event manager to initialize this event manager with
+     */
+    protected void initialize(CmsEventManager base) {
+
+        m_eventListeners = new HashMap<Integer, List<I_CmsEventListener>>(base.getEventListeners());
+
     }
 }

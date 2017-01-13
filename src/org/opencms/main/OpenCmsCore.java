@@ -204,6 +204,9 @@ public final class OpenCmsCore {
     /** The set of configured export points. */
     private Set<CmsExportPoint> m_exportPoints;
 
+    /** The flex cache instance. */
+    private CmsFlexCache m_flexCache;
+
     /** The context objects for GWT services. */
     private Map<String, CmsGwtServiceContext> m_gwtServiceContexts;
 
@@ -373,6 +376,22 @@ public final class OpenCmsCore {
                     Messages.LOG_INIT_INVALID_ERROR_2,
                     new Integer(m_instance.getRunLevel()),
                     errorCondition.key()));
+        }
+    }
+
+    /**
+     * Gets a string containing all keys and variations currently in the flex cache, for debug purposes.<p>
+     *
+     * @return a debug information string with the flex cache data
+     */
+    public String getFlexCacheKeyDump() {
+
+        if (m_flexCache != null) {
+            StringBuffer buffer = new StringBuffer();
+            m_flexCache.dumpKeys(buffer);
+            return buffer.toString();
+        } else {
+            return null;
         }
     }
 
@@ -1277,6 +1296,7 @@ public final class OpenCmsCore {
             getSystemInfo().setDeviceSelector(flexCacheConfiguration.getDeviceSelector());
             // pass configuration to flex cache for initialization
             flexCache = new CmsFlexCache(flexCacheConfiguration);
+            m_flexCache = flexCache;
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_FLEX_CACHE_FINISHED_0));
             }
@@ -1383,6 +1403,10 @@ public final class OpenCmsCore {
         m_repositoryManager.initializeCms(adminCms);
         // now initialize the other managers
         try {
+            if (flexCache != null) {
+                flexCache.initializeCms(initCmsObject(adminCms));
+            }
+
             // initialize the scheduler
             m_scheduleManager.initialize(initCmsObject(adminCms));
 

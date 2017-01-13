@@ -208,7 +208,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         ServletResponse res,
         CmsFlexController controller,
         CmsObject cms,
-        CmsResource resource) throws ServletException, IOException {
+        CmsResource resource)
+    throws ServletException, IOException {
 
         // load target with the internal resource loader
         I_CmsResourceLoader loader;
@@ -264,7 +265,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         ServletResponse res,
         CmsFlexController controller,
         CmsObject cms,
-        CmsResource resource) throws ServletException, IOException {
+        CmsResource resource)
+    throws ServletException, IOException {
 
         CmsFlexCache cache = controller.getCmsCache();
 
@@ -458,7 +460,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         entry.setDateLastModified(controller.getDateLastModified());
                         entry.setDateExpires(controller.getDateExpires());
                     }
-                    cache.put(w_res.getCmsCacheKey(), entry, variation);
+                    cache.put(w_res.getCmsCacheKey(), entry, variation, w_req.getCmsCacheKey());
                 } else {
                     // result can not be cached, do not use "last modified" optimization
                     controller.updateDates(-1, controller.getDateExpires());

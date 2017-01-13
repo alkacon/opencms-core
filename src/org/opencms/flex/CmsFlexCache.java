@@ -29,25 +29,32 @@ package org.opencms.flex;
 
 import org.opencms.cache.CmsLruCache;
 import org.opencms.cache.I_CmsLruCacheObject;
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
+import org.opencms.flex.CmsFlexBucketConfiguration.BucketSet;
 import org.opencms.loader.CmsJspLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * This class implements the FlexCache.<p>
@@ -197,6 +204,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /** Trigger for clearcache event: Clear only online entries. */
     public static final int CLEAR_ONLINE_ENTRIES = 3;
 
+    /** The configuration for the Flex cache buckets. */
+    public static final String CONFIG_PATH = "/system/shared/flexconfig.properties";
+
     /** Initial cache size, this should be a power of 2 because of the Java collections implementation. */
     public static final int INITIAL_CAPACITY_CACHE = 512;
 
@@ -215,8 +225,14 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /** The LRU cache to organize the cached entries. */
     protected CmsLruCache m_variationCache;
 
+    /** The Flex bucket configuration. */
+    private CmsFlexBucketConfiguration m_bucketConfiguration;
+
     /** Indicates if offline resources should be cached or not. */
     private boolean m_cacheOffline;
+
+    /** The CMS object used for VFS operations. */
+    private CmsObject m_cmsObject;
 
     /** Indicates if the cache is enabled or not. */
     private boolean m_enabled;
@@ -265,7 +281,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
                     I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR});
         }
-        
+
         if (LOG.isInfoEnabled()) {
             LOG.info(
                 Messages.get().getBundle().key(
@@ -299,6 +315,53 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("FlexCache: Received event PUBLISH_PROJECT");
+                }
+                String publishIdStr = (String)(event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
+                if (!CmsUUID.isValidUUID(publishIdStr)) {
+                    clear();
+                } else {
+                    try {
+                        CmsUUID publishId = new CmsUUID(publishIdStr);
+                        List<CmsPublishedResource> publishedResources = m_cmsObject.readPublishedResources(publishId);
+                        boolean updateConfiguration = false;
+                        for (CmsPublishedResource res : publishedResources) {
+                            if (res.getRootPath().equals(CONFIG_PATH)) {
+                                updateConfiguration = true;
+                                break;
+                            }
+                        }
+                        CmsFlexBucketConfiguration bucketConfig = m_bucketConfiguration;
+                        if (updateConfiguration) {
+                            LOG.info("Flex bucket configuration was updated, re-initializing configuration...");
+                            try {
+                                m_bucketConfiguration = CmsFlexBucketConfiguration.loadFromVfsFile(
+                                    m_cmsObject,
+                                    CONFIG_PATH);
+                            } catch (CmsException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                            // Make sure no entries built for the old configuration remain in the cache
+                            clear();
+                        } else if (bucketConfig != null) {
+                            boolean bucketClearOk = clearBucketsForPublishList(
+                                bucketConfig,
+                                publishId,
+                                publishedResources);
+                            if (!bucketClearOk) {
+                                clear();
+                            }
+                        } else {
+                            clear();
+                        }
+
+                    } catch (CmsException e1) {
+                        LOG.error(e1.getLocalizedMessage(), e1);
+                        clear();
+                    }
+                }
+                break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_RECEIVED_EVENT_CLEAR_CACHE_0));
@@ -355,6 +418,26 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 break;
             default:
                 // no operation
+        }
+    }
+
+    /**
+     * Dumps keys and variations to a string buffer, for debug purposes.<p>
+     *
+     * @param buffer the buffer to which the key information should be written
+     */
+    public void dumpKeys(StringBuffer buffer) {
+
+        synchronized (this) {
+            for (Map.Entry<String, CmsFlexCacheVariation> entry : m_keyCache.entrySet()) {
+                String key = entry.getKey();
+                CmsFlexCacheVariation variations = entry.getValue();
+                Map<String, I_CmsLruCacheObject> variationMap = variations.m_map;
+                for (Map.Entry<String, I_CmsLruCacheObject> varEntry : variationMap.entrySet()) {
+                    String varKey = varEntry.getKey();
+                    buffer.append(key + " VAR " + varKey + "\n");
+                }
+            }
         }
     }
 
@@ -438,6 +521,29 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     public CmsLruCache getEntryLruCache() {
 
         return m_variationCache;
+    }
+
+    /**
+     * Initializes the flex cache.<p>
+     *
+     * @param adminCms a CMS context with admin privileges
+     */
+    public void initializeCms(CmsObject adminCms) {
+
+        try {
+            m_cmsObject = adminCms;
+            try {
+                String path = CONFIG_PATH;
+                if (m_cmsObject.existsResource(path)) {
+                    LOG.info("Flex configuration found at " + CONFIG_PATH + ", initializing...");
+                    m_bucketConfiguration = CmsFlexBucketConfiguration.loadFromVfsFile(m_cmsObject, path);
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
@@ -567,9 +673,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @param key the key for the new value entry
      * @param entry the CmsFlexCacheEntry to store in the cache
      * @param variation the pre-calculated variation for the entry
+     * @param requestKey the request key from which the variation was determined
      * @return true if the value was added to the cache, false otherwise
      */
-    boolean put(CmsFlexCacheKey key, CmsFlexCacheEntry entry, String variation) {
+    boolean put(CmsFlexCacheKey key, CmsFlexCacheEntry entry, String variation, CmsFlexRequestKey requestKey) {
 
         if (!isEnabled()) {
             return false;
@@ -588,6 +695,19 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                         key.getVariation()));
             }
             put(key, entry);
+            if (m_bucketConfiguration != null) {
+                try {
+                    List<String> paths = key.getPathsForBuckets(requestKey);
+                    if (paths.size() > 0) {
+                        BucketSet buckets = m_bucketConfiguration.getBucketSet(paths);
+                        entry.setBucketSet(buckets);
+                    } else {
+                        entry.setBucketSet(null); // bucket set of null means entries will be deleted for every publish job
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
             // Note that duplicates are NOT checked, it it assumed that this is done beforehand,
             // while checking if the entry is already in the cache or not.
             return true;
@@ -711,6 +831,89 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     Messages.LOG_FLEXCACHE_CLEAR_HALF_2,
                     suffix,
                     Boolean.valueOf(entriesOnly)));
+        }
+    }
+
+    /**
+     * Clears the Flex cache buckets matching the given publish list.<p>
+     *
+     * @param bucketConfig the bucket configuration to be used for checking which flex cache entry should be purged
+     * @param publishId the publish id
+     * @param publishedResources the published resources
+     *
+     * @return true if the flex buckets could be cleared successfully (if this returns false, the flex cache should fall back to the old behavior, i.e. clearing everything)
+     */
+    private boolean clearBucketsForPublishList(
+        CmsFlexBucketConfiguration bucketConfig,
+        CmsUUID publishId,
+        List<CmsPublishedResource> publishedResources) {
+
+        long startTime = System.currentTimeMillis();
+        String p = "[" + publishId + "] "; // Prefix for log messages
+        try {
+
+            LOG.debug(p + "Trying bucket-based flex entry cleanup");
+            if (bucketConfig.shouldClearAll(publishedResources)) {
+                LOG.info(p + "Clearing Flex cache completely based on Flex bucket configuration.");
+                return false;
+            } else {
+                long totalEntries = 0;
+                long removedEntries = 0;
+                List<String> paths = Lists.newArrayList();
+                for (CmsPublishedResource pubRes : publishedResources) {
+                    paths.add(pubRes.getRootPath());
+                    LOG.debug(p + "Published resource: " + pubRes.getRootPath());
+                }
+                BucketSet publishListBucketSet = bucketConfig.getBucketSet(paths);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(p + "Flex cache buckets for publish list: " + publishListBucketSet.toString());
+                }
+                synchronized (this) {
+                    List<CmsFlexCacheEntry> entriesToDelete = Lists.newArrayList();
+                    for (Map.Entry<String, CmsFlexCacheVariation> entry : m_keyCache.entrySet()) {
+                        CmsFlexCacheVariation variation = entry.getValue();
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(p + "Processing entries for " + entry.getKey());
+                        }
+                        entriesToDelete.clear();
+
+                        for (Map.Entry<String, I_CmsLruCacheObject> variationEntry : variation.m_map.entrySet()) {
+                            CmsFlexCacheEntry flexEntry = (CmsFlexCacheEntry)(variationEntry.getValue());
+                            totalEntries += 1;
+                            BucketSet entryBucketSet = flexEntry.getBucketSet();
+                            if (publishListBucketSet.matchForDeletion(entryBucketSet)) {
+                                entriesToDelete.add(flexEntry);
+                                // removing them here wouldn't work since we are currently iterating over the variation map
+                                // so we delay removal until after the loop
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(p + "Match: " + variationEntry.getKey());
+                                }
+                            } else {
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(p + "No match: " + variationEntry.getKey());
+                                }
+                            }
+                        }
+                        for (CmsFlexCacheEntry entryToDelete : entriesToDelete) {
+                            m_variationCache.remove(entryToDelete);
+                            removedEntries += 1;
+                        }
+                    }
+                    long endTime = System.currentTimeMillis();
+                    LOG.info(p
+                        + "Removed "
+                        + removedEntries
+                        + " of "
+                        + totalEntries
+                        + " Flex cache entries, took "
+                        + (endTime - startTime)
+                        + " milliseconds");
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(p + "Exception while trying to selectively purge flex cache: " + e.getLocalizedMessage(), e);
+            return false;
         }
     }
 
