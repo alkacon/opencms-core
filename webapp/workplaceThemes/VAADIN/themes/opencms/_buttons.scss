@@ -45,6 +45,10 @@
     	@include valo-menubar-menuitem-checked-style($gray-light);
     }
     
+    &.o-button-pressed{
+    	@include valo-menubar-menuitem-checked-style($gray-light);
+    }
+    
     img.v-icon {
       vertical-align: top;
     }
