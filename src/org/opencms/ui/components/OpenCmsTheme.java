@@ -57,6 +57,9 @@ public final class OpenCmsTheme {
     public static final String BUTTON_INVISIBLE = "o-button-invisible";
 
     /** CSS style name. */
+    public static final String BUTTON_PRESSED = "o-button-pressed";
+
+    /** CSS style name. */
     public static final String BUTTON_TABLE_ICON = "o-button-table-icon";
 
     /** CSS style name. */
@@ -148,14 +151,14 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String LOCK_PUBLISH = "o-lock-publish";
+
     /** CSS style name. */
     public static final String LOCK_SHARED = "o-lock-shared";
-
     /** CSS style name. */
     public static final String LOCK_USER = "o-lock-user";
+
     /** CSS style name. */
     public static final String MAIN = "o-main";
-
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
 
@@ -185,6 +188,9 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String REDUCED_SPACING = "o-reduced-spacing";
+
+    /** CSS style name. */
+    public static final String REQUIRED_BUTTON = "o-required-button";
 
     /** CSS style name. */
     public static final String RESINFO_HIDDEN_ICON = "o-resinfo-hidden-icon";
@@ -254,6 +260,9 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String TOOLBAR_CENTER = "o-toolbar-center";
+
+    /** CSS style name. */
+    public static final String TOOLBAR_FIELD = "o-toolbar-field";
 
     /** CSS style name. */
     public static final String TOOLBAR_INNER = "o-toolbar-inner";

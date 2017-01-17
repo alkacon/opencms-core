@@ -74,7 +74,7 @@ import com.vaadin.ui.Notification.Type;
  */
 @Theme("opencms")
 public class CmsAppWorkplaceUi extends A_CmsUI
-implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
+implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener, BrowserWindowResizeListener {
 
     /**
      * View which directly changes the state to the launchpad.<p>
@@ -173,6 +173,17 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
             return ((ViewChangeListener)m_currentView).beforeViewChange(event);
         }
         return true;
+    }
+
+    /**
+     * @see com.vaadin.server.Page.BrowserWindowResizeListener#browserWindowResized(com.vaadin.server.Page.BrowserWindowResizeEvent)
+     */
+    public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+        markAsDirtyRecursive();
+        if ((m_currentView != null) && (m_currentView instanceof BrowserWindowResizeListener)) {
+            ((BrowserWindowResizeListener)m_currentView).browserWindowResized(event);
+        }
     }
 
     /**
@@ -476,15 +487,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         navigator.addProvider(this);
         setNavigator(navigator);
 
-        Page.getCurrent().addBrowserWindowResizeListener(new BrowserWindowResizeListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void browserWindowResized(BrowserWindowResizeEvent event) {
-
-                markAsDirtyRecursive();
-            }
-        });
+        Page.getCurrent().addBrowserWindowResizeListener(this);
         m_history = new CmsHistoryExtension(getCurrent());
         CmsWindowCloseExtension windowClose = new CmsWindowCloseExtension(getCurrent());
         windowClose.addWindowCloseListener(this);

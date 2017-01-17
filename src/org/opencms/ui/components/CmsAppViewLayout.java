@@ -37,6 +37,8 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 
+import com.vaadin.server.Page.BrowserWindowResizeEvent;
+import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.Responsive;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -48,7 +50,7 @@ import com.vaadin.ui.declarative.Design;
 /**
  * The layout used within the app view.<p>
  */
-public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
+public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext, BrowserWindowResizeListener {
 
     /** The serial version id. */
     private static final long serialVersionUID = -290796815149968830L;
@@ -124,6 +126,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     public void addToolbarButtonRight(Component button) {
 
         m_toolbar.addButtonRight(button);
+    }
+
+    /**
+     * @see com.vaadin.server.Page.BrowserWindowResizeListener#browserWindowResized(com.vaadin.server.Page.BrowserWindowResizeEvent)
+     */
+    public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+        m_toolbar.browserWindowResized(event);
     }
 
     /**
