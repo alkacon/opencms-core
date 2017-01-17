@@ -1653,6 +1653,18 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/ui/editors/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/ui/editors/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4e766ad5-dbd1-11e6-a687-7ff2120bb7cf</uuidstructure>
+			<uuidresource>4e766ad6-dbd1-11e6-a687-7ff2120bb7cf</uuidresource>
+			<datecreated>Mon, 16 Jan 2017 09:51:09 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/ui/editors/messagebundle</destination>
 			<type>folder</type>
 			<uuidstructure>c1c81b1e-3912-11e6-87ad-e32d0a272aee</uuidstructure>

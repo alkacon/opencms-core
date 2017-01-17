@@ -303,7 +303,7 @@
 		/* big screen styles */
 		.o-toolbar{
 			.o-toolbar-items-left, .o-toolbar-items-right{
-				width: 500px;
+				width: 520px;
 			}
 		}
 		@include o-workplace-form-wide;
@@ -314,8 +314,11 @@
 		@include o-workplace-form-narrow;
  	
 		.o-toolbar{
+			.o-toolbar-inner{
+				margin: 0 5px;
+			}
 			.o-toolbar-items-left, .o-toolbar-items-right{
-				width: 250px;
+				width: 350px;
 			}
 			div.o-toolbar-center {
 				span.o-toolbar-logo{
@@ -331,7 +334,7 @@
   	
 		.o-toolbar{
 			.o-toolbar-items-left, .o-toolbar-items-right{
-				width: 350px;
+				width: 400px;
 			}
 		}
 	}

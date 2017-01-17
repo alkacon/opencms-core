@@ -36,6 +36,36 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_REPLACE_0 = "GUI_CODEMIRROR_SHORTCUT_REPLACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_0 = "GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_REPLACE_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_REPLACE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_SEARCH_0 = "GUI_CODEMIRROR_SHORTCUT_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_SEARCH_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_SEARCH_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_TO_CLIPBOARD_0 = "GUI_COPY_TO_CLIPBOARD_0";
 
     /** Message constant for key in the resource bundle. */

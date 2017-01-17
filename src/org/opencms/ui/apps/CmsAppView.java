@@ -45,6 +45,8 @@ import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Page.BrowserWindowResizeEvent;
+import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -53,7 +55,8 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Displays the selected app.<p>
  */
-public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener, I_CmsAppView, Handler {
+public class CmsAppView
+implements ViewChangeListener, I_CmsWindowCloseListener, I_CmsAppView, Handler, BrowserWindowResizeListener {
 
     /**
      * Enum representing caching status of a view.<p>
@@ -182,6 +185,16 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
             return ((ViewChangeListener)m_app).beforeViewChange(event);
         }
         return true;
+    }
+
+    /**
+     * @see com.vaadin.server.Page.BrowserWindowResizeListener#browserWindowResized(com.vaadin.server.Page.BrowserWindowResizeEvent)
+     */
+    public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+        if (m_appLayout != null) {
+            m_appLayout.browserWindowResized(event);
+        }
     }
 
     /**
