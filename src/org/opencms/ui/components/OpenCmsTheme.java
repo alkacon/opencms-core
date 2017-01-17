@@ -60,6 +60,9 @@ public final class OpenCmsTheme {
     public static final String BUTTON_PRESSED = "o-button-pressed";
 
     /** CSS style name. */
+    public static final String BUTTON_SITE = "o-button-site";
+
+    /** CSS style name. */
     public static final String BUTTON_TABLE_ICON = "o-button-table-icon";
 
     /** CSS style name. */

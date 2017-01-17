@@ -98,6 +98,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         standard
     }
 
+    public static final String N_WEBSERVERSCRIPTING_CONFIGTEMPLATE = "configtemplate";
+
+    public static final String N_WEBSERVERSCRIPTING_FILENAMEPREFIX = "filenameprefix";
+    public static final String N_WEBSERVERSCRIPTING_LOGGINGDIR = "loggingdir";
+    public static final String N_WEBSERVERSCRIPTING_SECURETEMPLATE = "securetemplate";
+    public static final String N_WEBSERVERSCRIPTING_TARGETPATH = "targetpath";
+    public static final String N_WEBSERVERSCRIPTING_WEBSERVERSCRIPT = "webserverscript";
+
     /** The attribute name for the deleted node. */
     public static final String A_DELETED = "deleted";
 
@@ -184,6 +192,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for a job class. */
     public static final String N_CLASS = "class";
+
+    /** The node name which indicates if apache should be configurable in sitemanager. */
+    public static final String N_WEBSERVERSCRIPTING = "webserver-scripting";
 
     /** The configuration node name. */
     public static final String N_CONFIGURATION = "configuration";
@@ -955,6 +966,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SITES, CmsSiteManagerImpl.class);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "setWorkplaceServer", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_DEFAULT_URI, "setDefaultUri", 0);
+
+        String configApachePath = "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WEBSERVERSCRIPTING;
+        digester.addCallMethod(configApachePath, "setWebServerScripting", 6);
+        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_WEBSERVERSCRIPT, 0);
+        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_TARGETPATH, 1);
+        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_CONFIGTEMPLATE, 2);
+        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_SECURETEMPLATE, 3);
+        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_FILENAMEPREFIX, 4);
+        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_LOGGINGDIR, 5);
+
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
         // add site configuration rule
@@ -1410,6 +1431,22 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String sharedFolder = m_siteManager.getSharedFolder();
         if (sharedFolder != null) {
             sitesElement.addElement(N_SHARED_FOLDER).addText(sharedFolder);
+        }
+        if (m_siteManager.isConfigurableWebServer()) {
+            Element configServer = sitesElement.addElement(N_WEBSERVERSCRIPTING);
+            Map<String, String> configServerMap = m_siteManager.getWebServerConfig();
+            configServer.addElement(N_WEBSERVERSCRIPTING_WEBSERVERSCRIPT).addText(
+                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_WEBSERVERSCRIPT));
+            configServer.addElement(N_WEBSERVERSCRIPTING_TARGETPATH).addText(
+                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_TARGETPATH));
+            configServer.addElement(N_WEBSERVERSCRIPTING_CONFIGTEMPLATE).addText(
+                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_CONFIGTEMPLATE));
+            configServer.addElement(N_WEBSERVERSCRIPTING_SECURETEMPLATE).addText(
+                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_SECURETEMPLATE));
+            configServer.addElement(N_WEBSERVERSCRIPTING_FILENAMEPREFIX).addText(
+                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_FILENAMEPREFIX));
+            configServer.addElement(N_WEBSERVERSCRIPTING_LOGGINGDIR).addText(
+                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_LOGGINGDIR));
         }
         Iterator<CmsSite> siteIterator = new HashSet<CmsSite>(m_siteManager.getSites().values()).iterator();
         while (siteIterator.hasNext()) {

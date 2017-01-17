@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-panel _id="m_form" caption="%(key.GUI_SITE_WEBSERVER_SETTINGS_0)">	
+			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
+				<v-text-field _id="m_fieldConfigTemplate" width="100%" enabled="false" caption="%(key.GUI_SITE_WEBSERVER_CONFIG_TEMPLATE_0)" description="%(key.GUI_SITE_WEBSERVER_CONFIG_TEMPLATE_HELP_0)" />
+				<v-text-field _id="m_fieldSecureTemplate" width="100%" enabled="false" caption="%(key.GUI_SITE_WEBSERVER_SECURE_TEMPLATE_0)" description="%(key.GUI_SITE_WEBSERVER_SECURE_TEMPLATE_HELP_0)" />
+				<v-text-field _id="m_fieldTargetPath" width="100%" enabled="false" caption="%(key.GUI_SITE_WEBSERVER_TARGETPATH_0)" description="%(key.GUI_SITE_WEBSERVER_TARGETPATH_HELP_0)" />
+				<v-text-field _id="m_fieldScript" width="100%" enabled="false" caption="%(key.GUI_SITE_WEBSERVER_SCRIPTFILE_0)" description="%(key.GUI_SITE_WEBSERVER_SCRIPTFILE_HELP_0)" />
+				<v-text-field _id="m_fieldLogging" width="100%" enabled="false" caption="%(key.GUI_SITE_WEBSERVER_LOGGING_0)" description="%(key.GUI_SITE_WEBSERVER_LOGGING_HELP_0)" />
+				<v-text-field _id="m_fieldPrefix" width="100%" enabled="false" caption="%(key.GUI_SITE_WEBSERVER_PREFIX_0)" description="%(key.GUI_SITE_WEBSERVER_PREFIX_HELP_0)" />
+			</v-form-layout>
+		</v-panel>
+		<v-panel id="m_report">	
+			<v-form-layout _id="m_threadReport">
+			</v-form-layout>
+		</v-panel>
+		<v-panel>
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_exec">%(key.GUI_DIALOG_BUTTON_EXECUTE_0)</v-button>
+					<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+				</v-horizontal-layout>
+			</v-horizontal-layout>
+		</v-panel>
+		
+	</v-vertical-layout>
+</body>
+</html>

@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.Resource;
@@ -1122,6 +1123,21 @@ public class CmsContextMenu extends AbstractExtension {
     public void open(int x, int y) {
 
         getRpcProxy(I_CmsContextMenuClientRpc.class).showContextMenu(x, y);
+    }
+
+    /**
+     * Opens the context menu of the given table.<p>
+     *
+     * @param event the click event
+     * @param itemId of clicked item
+     * @param propertyId of clicked item
+     * @param table the table
+     */
+    public void openForTable(ClickEvent event, Object itemId, Object propertyId, Table table) {
+
+        fireEvent(new ContextMenuOpenedOnTableRowEvent(this, table, itemId, propertyId));
+        open(event.getClientX(), event.getClientY());
+
     }
 
     /**

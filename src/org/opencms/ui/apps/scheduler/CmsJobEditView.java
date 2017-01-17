@@ -165,6 +165,7 @@ public class CmsJobEditView extends VerticalLayout {
     }
 
     /**
+     * TODO this is the same like CmsRemovableFormRow
      * Widget used to display a line of text and also a remove button to remove the widget.<p>
      */
     class ParamLine extends HorizontalLayout {
@@ -184,7 +185,7 @@ public class CmsJobEditView extends VerticalLayout {
             setWidth("100%");
             TextField input = new TextField();
             m_input = input;
-            setCaption("Parameter");
+            setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SCHEDULER_PARAMETER_0));
             setSpacing(true);
             input.setValue(content);
             input.setWidth("100%");

@@ -426,6 +426,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SCHEDULER_CONFIRM_EXECUTE_1 = "GUI_SCHEDULER_CONFIRM_EXECUTE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEDULER_PARAMETER_0 = "GUI_SCHEDULER_PARAMETER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SCHEDULER_REMOVE_PARAMETER_0 = "GUI_SCHEDULER_REMOVE_PARAMETER_0";
 
     /** Message constant for key in the resource bundle. */

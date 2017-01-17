@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+	<v-panel caption="%(key.GUI_SITE_CONFIGURATION_0)">	
+		<v-tab-sheet _id="m_tab">
+			<tab  caption="%(key.GUI_SITE_TAB_BASIC_0)">
+				<v-form-layout _id="m_tabSimple" margin spacing style-name="o-formlayout-workplace-main">
+					<v-text-field _id="m_simpleFieldTitle" width="100%" caption="%(key.GUI_SITE_TITLE_0)" description="%(key.GUI_SITE_TITLE_HELP_0)" />
+					<v-text-field _id="m_simpleFieldFolderName" width="100%" caption="%(key.GUI_SITE_FOLDERNAME_0)" description="%(key.GUI_SITE_FOLDERNAME_HELP_0)"/>
+					<v-text-field _id="m_simpleFieldServer" width="100%" caption="%(key.GUI_SITE_SERVER_0)" description="%(key.GUI_SITE_SERVER_HELP_0)"/>
+					<v-combo-box _id="m_simpleFieldTemplate" immediate="true"  width="100%" caption="%(key.GUI_SITE_TEMPLATE_0)" description="%(key.GUI_SITE_TEMPLATE_HELP_0)"/>
+					<v-image _id="m_fieldFavIcon" width="32px" height="32px" caption="%(key.GUI_SITE_FAVICON_0)"/>
+					<v-upload _id="m_fieldUploadFavIcon"/>
+				</v-form-layout>
+			</tab>
+			<tab caption="%(key.GUI_SITE_TAB_ADVANCED_0)">
+				<v-vertical-layout _id="m_tabAdvanced" >								
+					<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
+						<f-cms-path-select-field _id="m_fieldErrorPage"  width="100%" use-root-paths="true" caption="%(key.GUI_SITE_ERRORPAGE_0)" description="%(key.GUI_SITE_ERRORPAGE_HELP_0)"/>
+						<v-combo-box _id="m_fieldPosition" immediate="true"  width="100%" caption="%(key.GUI_SITE_POSITION_0)"/>
+						<v-check-box _id="m_fieldWebServer" caption="%(key.GUI_SITE_WEBSERVER_0)" description="%(key.GUI_SITE_WEBSERVER_HELP_0)" />
+						<v-check-box _id="m_fieldCreateOU" caption="%(key.GUI_SITE_CREATEOU_0)" description="%(key.GUI_SITE_CREATEOU_HELP_0)" />						
+						<v-text-field _id="m_fieldSecureServer" width="100%" caption="%(key.GUI_SITE_SECURESERVER_0)" description="%(key.GUI_SITE_SECURESERVER_HELP_0)" />
+						<v-check-box _id="m_fieldExclusiveURL" caption="%(key.GUI_SITE_SECURE_EXCL_URL_0)" description="%(key.GUI_SITE_SECURE_EXCL_URL_HELP_0)" />
+						<v-check-box _id="m_fieldExclusiveError" caption="%(key.GUI_SITE_SECURE_EXCLERROR_0)" description="%(key.GUI_SITE_SECURE_EXCLERROR_HELP_0)" />
+					</v-form-layout>
+					
+				</v-vertical-layout>
+			</tab>
+			<tab caption="%(key.GUI_SITE_PARAMETER_0)">
+				<v-form-layout _id="m_parameter" margin spacing style-name="o-formlayout-workplace-main">
+					<v-button _id="m_addParameter" style-name="o-button-site">%(key.GUI_SITE_ADD_PARAMETER_0)</v-button>
+				</v-form-layout>
+			</tab>
+			<tab caption="%(key.GUI_SITE_ALIAS_0)">
+				<v-form-layout _id="m_aliases" margin spacing style-name="o-formlayout-workplace-main">
+					<v-button _id="m_addAlias" style-name="o-button-site">%(key.GUI_SITE_ADD_ALIAS_0)</v-button>
+				</v-form-layout>		
+			</tab>
+		</v-tab-sheet>
+		</v-panel>
+		<v-panel>
+		<v-horizontal-layout width="100%">
+			<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+				<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</v-horizontal-layout>
+		</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>

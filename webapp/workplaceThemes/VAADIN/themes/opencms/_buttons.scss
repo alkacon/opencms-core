@@ -15,6 +15,7 @@
   		min-width: 100px;
   		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $green);
   }
+
   
   .v-button.o-button-plain {
   		min-width: 100px;
@@ -150,6 +151,10 @@
     }
   }
   
+  .o-button-site {
+  	min-width: 200px;
+  @include valo-button-style($unit-size: 30px, $font-color: $v-font-color, $font-weight: bold, $background-color: $o-medium-background-color);
+  }
   
   /* App buttons */
   .v-button.v-button-o-app-button{

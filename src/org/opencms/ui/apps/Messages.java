@@ -35,6 +35,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public class Messages extends A_CmsMessageBundle {
 
+    /** Name of the used resource bundle. */
+    public static final String ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2 = "ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPLORER_CAN_NOT_OPEN_PATH_1 = "ERR_EXPLORER_CAN_NOT_OPEN_PATH_1";
 
@@ -43,6 +46,24 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0 = "ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_EXECUTE_0 = "GUI_DIALOG_BUTTON_EXECUTE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_MODEL_DESCRIPTION_1 = "GUI_DEFAULT_MODEL_DESCRIPTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_MODEL_TITLE_1 = "GUI_DEFAULT_MODEL_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_INDEX_DESCRIPTION_1 = "GUI_DEFAULT_INDEX_DESCRIPTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_INDEX_TITLE_1 = "GUI_DEFAULT_INDEX_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
@@ -235,6 +256,261 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_QUICK_LAUNCH_TITLE_0 = "GUI_QUICK_LAUNCH_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_MANAGER_TITLE_0 = "GUI_SITE_MANAGER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ADD_0 = "GUI_SITE_ADD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ADD_DESCRIPTION_0 = "GUI_SITE_ADD_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ADD_PARAMETER_0 = "GUI_SITE_ADD_PARAMETER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ADD_ALIAS_0 = "GUI_SITE_ADD_ALIAS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALIASES_0 = "GUI_SITE_ALIASES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALIAS_0 = "GUI_SITE_ALIAS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALIAS_HELP_0 = "GUI_SITE_ALIAS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CHNAV_POS_FIRST_0 = "GUI_SITE_CHNAV_POS_FIRST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CHNAV_POS_CURRENT_0 = "GUI_SITE_CHNAV_POS_CURRENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CHNAV_POS_LAST_0 = "GUI_SITE_CHNAV_POS_LAST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CHNAV_POS_NOCHANGE_0 = "GUI_SITE_CHNAV_POS_NOCHANGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CONFIRM_DELETE_SITE_1 = "GUI_SITE_CONFIRM_DELETE_SITE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CONFIRM_DELETE_SITES_1 = "GUI_SITE_CONFIRM_DELETE_SITES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CONFIGURATION_0 = "GUI_SITE_CONFIGURATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CREATEOU_0 = "GUI_SITE_CREATEOU_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CREATEOU_HELP_0 = "GUI_SITE_CREATEOU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_DELETE_0 = "GUI_SITE_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_EDIT_0 = "GUI_SITE_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ERRORPAGE_0 = "GUI_SITE_ERRORPAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ERRORPAGE_HELP_0 = "GUI_SITE_ERRORPAGE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FAVICON_0 = "GUI_SITE_FAVICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FAVICON_CHANGE_0 = "GUI_SITE_FAVICON_CHANGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FAVICON_MIME_0 = "GUI_SITE_FAVICON_MIME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FAVICON_NEW_0 = "GUI_SITE_FAVICON_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FAVICON_SIZE_0 = "GUI_SITE_FAVICON_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FOLDERNAME_0 = "GUI_SITE_FOLDERNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FOLDERNAME_HELP_0 = "GUI_SITE_FOLDERNAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FOLDERNAME_EMPTY_0 = "GUI_SITE_FOLDERNAME_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FOLDERNAME_FORBIDDEN_1 = "GUI_SITE_FOLDERNAME_FORBIDDEN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FOLDERNAME_ALREADYUSED_1 = "GUI_SITE_FOLDERNAME_ALREADYUSED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_0 = "GUI_SITE_GLOBAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_HELP_0 = "GUI_SITE_GLOBAL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_CONFIGURATION_0 = "GUI_SITE_GLOBAL_CONFIGURATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_WORKPLACE_0 = "GUI_SITE_GLOBAL_WORKPLACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_WORKPLACE_HELP_0 = "GUI_SITE_GLOBAL_WORKPLACE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_DEFAULTURI_0 = "GUI_SITE_GLOBAL_DEFAULTURI_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_DEFAULTURI_HELP_0 = "GUI_SITE_GLOBAL_DEFAULTURI_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_SHAREDFOLDER_0 = "GUI_SITE_GLOBAL_SHAREDFOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_SHAREDFOLDER_HELP_0 = "GUI_SITE_GLOBAL_SHAREDFOLDER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SHAREDFOLDER_EXIST_1 = "GUI_SITE_SHAREDFOLDER_EXIST_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SHAREDFOLDER_PROTECTED_1 = "GUI_SITE_SHAREDFOLDER_PROTECTED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SHAREDFOLDER_ROOT_0 = "GUI_SITE_SHAREDFOLDER_ROOT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SHAREDFOLDER_WRONGFORMAT_0 = "GUI_SITE_SHAREDFOLDER_WRONGFORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVERCONFIG_0 = "GUI_SITE_WEBSERVERCONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVERCONFIG_HELP_0 = "GUI_SITE_WEBSERVERCONFIG_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_INFORMATION_0 = "GUI_SITE_INFORMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_POSITION_0 = "GUI_SITE_POSITION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SERVER_0 = "GUI_SITE_SERVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SERVER_HELP_0 = "GUI_SITE_SERVER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_TAB_ADVANCED_0 = "GUI_SITE_TAB_ADVANCED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_TAB_BASIC_0 = "GUI_SITE_TAB_BASIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_TEMPLATE_0 = "GUI_SITE_TEMPLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_TEMPLATE_HELP_0 = "GUI_SITE_TEMPLATE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_TITLE_0 = "GUI_SITE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_TITLE_HELP_0 = "GUI_SITE_TITLE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_TOGGLEWEBSERVER_0 = "GUI_SITE_TOGGLEWEBSERVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PATH_0 = "GUI_SITE_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PARAMETER_0 = "GUI_SITE_PARAMETER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PARAMETER_HELP_0 = "GUI_SITE_PARAMETER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_REMOVE_ALIAS_0 = "GUI_SITE_REMOVE_ALIAS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_REMOVE_PARAMETER_0 = "GUI_SITE_REMOVE_PARAMETER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SECURESERVER_0 = "GUI_SITE_SECURESERVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SECURESERVER_HELP_0 = "GUI_SITE_SECURESERVER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SECURE_EXCL_URL_0 = "GUI_SITE_SECURE_EXCL_URL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SECURE_EXCL_HELP_0 = "GUI_SITE_SECURE_EXCL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SECURE_EXCLERROR_0 = "GUI_SITE_SECURE_EXCLERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SECURE_EXCLERROR_HELP_0 = "GUI_SITE_SECURE_EXCLERROR_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SERVER_EMPTY_0 = "GUI_SITE_SERVER_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SERVER_ALREADYUSED_1 = "GUI_SITE_SERVER_ALREADYUSED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_0 = "GUI_SITE_WEBSERVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_HELP_0 = "GUI_SITE_WEBSERVER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_SETTINGS_0 = "GUI_SITE_WEBSERVER_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_CONFIG_TEMPLATE_0 = "GUI_SITE_WEBSERVER_CONFIG_TEMPLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_CONFIG_TEMPLATE_HELP_0 = "GUI_SITE_WEBSERVER_CONFIG_TEMPLATE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_SECURE_TEMPLATE_0 = "GUI_SITE_WEBSERVER_SECURE_TEMPLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_SECURE_TEMPLATE_HELP_0 = "GUI_SITE_WEBSERVER_SECURE_TEMPLATE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_TARGETPATH_0 = "GUI_SITE_WEBSERVER_TARGETPATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_TARGETPATH_HELP_0 = "GUI_SITE_WEBSERVER_TARGETPATH_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_SCRIPTFILE_0 = "GUI_SITE_WEBSERVER_SCRIPTFILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_SCRIPTFILE_HELP_0 = "GUI_SITE_WEBSERVER_SCRIPTFILE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_LOGGING_0 = "GUI_SITE_WEBSERVER_LOGGING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_LOGGING_HELP_0 = "GUI_SITE_WEBSERVER_LOGGING_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_PREFIX_0 = "GUI_SITE_WEBSERVER_PREFIX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_WEBSERVER_PREFIX_HELP_0 = "GUI_SITE_WEBSERVER_PREFIX_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0 = "GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0";
@@ -478,6 +754,18 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CREATING_CONFIG_FOR_SITE_2 = "RPT_CREATING_CONFIG_FOR_SITE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETING_FILE_1 = "RPT_DELETING_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_OUTPUT_WEBSERVER_1 = "RPT_OUTPUT_WEBSERVER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";
 
     /**
      * Hides the public constructor for this utility class.<p>

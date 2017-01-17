@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+				
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-panel caption="%(key.GUI_SITE_GLOBAL_CONFIGURATION_0)">	
+			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
+				<v-combo-box _id="m_fieldWorkplaceServer" immediate="true"  width="100%" caption="%(key.GUI_SITE_GLOBAL_WORKPLACE_0)" description="%(key.GUI_SITE_GLOBAL_WORKPLACE_HELP_0)"/>
+				<v-combo-box _id="m_fieldDefaultURI" immediate="true"  width="100%" caption="%(key.GUI_SITE_GLOBAL_DEFAULTURI_0)" description="%(key.GUI_SITE_GLOBAL_DEFAULTURI_HELP_0)"/>
+				<v-combo-box _id="m_fieldSharedFolder"  immediate="true"  width="100%" caption="%(key.GUI_SITE_GLOBAL_SHAREDFOLDER_0)" description="%(key.GUI_SITE_GLOBAL_SHAREDFOLDER_HELP_0)"/>
+			</v-form-layout>
+		</v-panel>	
+			<v-panel>
+		<v-horizontal-layout width="100%">
+			<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+				<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</v-horizontal-layout>
+		</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>

@@ -615,7 +615,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         m_fileTree.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         m_fileTree.setWidth("100%");
         m_fileTree.setContainerDataSource(m_treeContainer);
-        //    m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE);
+        //            m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE);
         m_fileTree.setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_TREE_CAPTION);
         //        m_fileTree.setCaptionAsHtml(true);
         m_fileTree.setHtmlContentAllowed(true);

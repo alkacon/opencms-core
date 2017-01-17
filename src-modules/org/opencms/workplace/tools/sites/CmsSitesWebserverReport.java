@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.sites;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.report.I_CmsReportThread;
+import org.opencms.ui.apps.sitemanager.CmsSitesWebserverThread;
 import org.opencms.workplace.list.A_CmsListReport;
 import org.opencms.workplace.tools.CmsToolManager;
 

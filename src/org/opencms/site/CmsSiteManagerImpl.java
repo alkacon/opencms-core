@@ -82,6 +82,20 @@ public final class CmsSiteManagerImpl {
     /** The length of the "/sites/" folder plus 1. */
     private static final int SITES_FOLDER_POS = SITES_FOLDER.length() + 1;
 
+    public static final String WEB_SERVER_CONFIG_WEBSERVERSCRIPT = "webserverscript";
+
+    public static final String WEB_SERVER_CONFIG_TARGETPATH = "targetpath";
+
+    public static final String WEB_SERVER_CONFIG_CONFIGTEMPLATE = "configtemplate";
+
+    public static final String WEB_SERVER_CONFIG_SECURETEMPLATE = "securetemplate";
+
+    public static final String WEB_SERVER_CONFIG_FILENAMEPREFIX = "filenameprefix";
+
+    public static final String WEB_SERVER_CONFIG_LOGGINGDIR = "loggingdir";
+
+    private Map<String, String> m_apacheConfig;
+
     /** A list of additional site roots, that is site roots that are not below the "/sites/" folder. */
     private List<String> m_additionalSiteRoots;
 
@@ -712,6 +726,11 @@ public final class CmsSiteManagerImpl {
         return title;
     }
 
+    public Map<String, String> getWebServerConfig() {
+
+        return m_apacheConfig;
+    }
+
     /**
      * Returns the workplace server.<p>
      *
@@ -821,6 +840,11 @@ public final class CmsSiteManagerImpl {
         } catch (CmsException e) {
             LOG.warn(e);
         }
+    }
+
+    public boolean isConfigurableWebServer() {
+
+        return m_apacheConfig != null;
     }
 
     /**
@@ -1030,6 +1054,23 @@ public final class CmsSiteManagerImpl {
         m_sharedFolder = CmsStringUtil.joinPaths("/", sharedFolder, "/");
     }
 
+    public void setWebServerScripting(
+        String webserverscript,
+        String targetpath,
+        String configtemplate,
+        String securetemplate,
+        String filenameprefix,
+        String loggingdir) {
+
+        m_apacheConfig = new HashMap<String, String>();
+        m_apacheConfig.put(WEB_SERVER_CONFIG_WEBSERVERSCRIPT, webserverscript);
+        m_apacheConfig.put(WEB_SERVER_CONFIG_TARGETPATH, targetpath);
+        m_apacheConfig.put(WEB_SERVER_CONFIG_CONFIGTEMPLATE, configtemplate);
+        m_apacheConfig.put(WEB_SERVER_CONFIG_SECURETEMPLATE, securetemplate);
+        m_apacheConfig.put(WEB_SERVER_CONFIG_FILENAMEPREFIX, filenameprefix);
+        m_apacheConfig.put(WEB_SERVER_CONFIG_LOGGINGDIR, loggingdir);
+    }
+
     /**
      * Sets the workplace server, this is only allowed during configuration.<p>
      *
@@ -1099,7 +1140,7 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Updates an existing site.<p>
+     * Updates or creates a site.<p>
      *
      * @param cms the CMS object
      * @param oldSite the site to remove if not <code>null</code>
