@@ -76,6 +76,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -113,8 +114,8 @@ public class CmsResourceTable extends CustomComponent {
          */
         public void buildColumns() {
 
-            List<CmsResourceTableProperty> visible = Lists.newArrayList();
-            List<CmsResourceTableProperty> collapsed = Lists.newArrayList();
+            Set<CmsResourceTableProperty> visible = new LinkedHashSet<CmsResourceTableProperty>();
+            Set<CmsResourceTableProperty> collapsed = new LinkedHashSet<CmsResourceTableProperty>();
             for (ColumnEntry entry : m_columnEntries) {
                 CmsResourceTableProperty prop = entry.getColumn();
                 m_container.addContainerProperty(prop, prop.getColumnType(), prop.getDefaultValue());
