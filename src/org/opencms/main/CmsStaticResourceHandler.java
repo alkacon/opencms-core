@@ -152,7 +152,7 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
 
         if (m_removePrefixRegex == null) {
             m_removePrefixRegex = "^("
-                + OpenCms.getSystemInfo().getOpenCmsContext()
+                + OpenCms.getStaticExportManager().getVfsPrefix()
                 + ")?"
                 + STATIC_RESOURCE_PREFIX
                 + "(/v-?\\d+v/)?";

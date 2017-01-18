@@ -578,7 +578,7 @@ public class CmsSystemInfo {
 
         if (m_staticResourcePathFragment == null) {
             m_staticResourcePathFragment = CmsStaticResourceHandler.getStaticResourceContext(
-                getOpenCmsContext(),
+                OpenCms.getStaticExportManager().getVfsPrefix(),
                 getVersionNumber());
         }
         return m_staticResourcePathFragment;
