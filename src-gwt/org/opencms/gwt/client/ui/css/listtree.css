@@ -5,10 +5,11 @@ li.listTreeItem {
 	list-style-type: none;
 }
 
-div.listTreeItemOpener {
+li.listTreeItem  div.listTreeItemOpener {
 	margin-left: 1px;
 	cursor: pointer;
 	outline: none;
+	height: auto !important;
 }
 
 div.listTreeItemOpener, div.listTreeItemOpener *{
