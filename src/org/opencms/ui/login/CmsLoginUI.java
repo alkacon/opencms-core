@@ -30,6 +30,7 @@ package org.opencms.ui.login;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -241,7 +242,7 @@ public class CmsLoginUI extends A_CmsUI {
         }
 
         if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
-            String target = request.getParameter("requestedResource");
+            String target = request.getParameter(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(target)) {
                 target = CmsLoginController.getLoginTarget(cms, getWorkplaceSettings(cms, request.getSession()), null);
             }

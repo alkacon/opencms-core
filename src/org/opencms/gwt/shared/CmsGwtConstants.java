@@ -123,6 +123,9 @@ public final class CmsGwtConstants {
     /** Parameter to disable direct edit. */
     public static final String PARAM_DISABLE_DIRECT_EDIT = "__disableDirectEdit";
 
+    /** Name of the request parameter used to store the redirect target after login. */
+    public static final String PARAM_LOGIN_REDIRECT = "loginRedirect";
+
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
 
