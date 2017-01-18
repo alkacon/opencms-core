@@ -178,6 +178,7 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
             if (counter != 0) {
                 resultBuffer.append("|");
             }
+            counter++;
             resultBuffer.append(project.getName()).append(":").append(projectName);
         }
         return resultBuffer.toString();
