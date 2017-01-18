@@ -281,8 +281,8 @@ public class CmsJspNavigationBean {
                             Boolean.valueOf(m_param).booleanValue());
                     } else {
                         if (m_startLevel == Integer.MIN_VALUE) {
-                            // no start level
-                            m_items = m_builder.getNavigationBreadCrumb();
+                            // default start level is zero
+                            m_items = m_builder.getNavigationBreadCrumb(0, Boolean.valueOf(m_param).booleanValue());
                         } else {
                             if (m_endLevel != Integer.MIN_VALUE) {
                                 m_items = m_builder.getNavigationBreadCrumb(m_startLevel, m_endLevel);
