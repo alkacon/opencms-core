@@ -626,12 +626,34 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
 
     /**
      * Exits the editor without saving.<p>
+     * Will ask to confirm exit on changed contents.<p>
      */
     void exit() {
 
+        if (m_changed) {
+            CmsConfirmationDialog.show(
+                CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EDITOR_CLOSE_CAPTION_0),
+                CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EDITOR_CLOSE_TEXT_0),
+                new Runnable() {
+
+                    public void run() {
+
+                        exitInternal();
+                    }
+                });
+        } else {
+            exitInternal();
+        }
+
+    }
+
+    /**
+     * Exits the editor without saving.<p>
+     */
+    void exitInternal() {
+
         clear();
         CmsEditor.openBackLink(m_backLink);
-
     }
 
     /**
