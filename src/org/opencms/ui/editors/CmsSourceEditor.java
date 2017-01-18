@@ -95,7 +95,7 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
         boolean m_closeBrackets = true;
 
         /** The font size. */
-        String m_fontSize = "14px";
+        String m_fontSize = "16px";
 
         /** The highlighting flag. */
         boolean m_highlighting = true;
@@ -405,15 +405,15 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
                 } else {
                     b.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
                 }
-                m_codeMirror.setHighlighting(pressed);
+                m_codeMirror.setHighlighting(!pressed);
             }
 
         });
         if (settings.m_highlighting) {
             m_codeMirror.setHighlighting(true);
+            toggleHighlight.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         } else {
             m_codeMirror.setHighlighting(false);
-            toggleHighlight.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         }
         context.addToolbarButtonRight(toggleHighlight);
 
@@ -433,15 +433,15 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
                 } else {
                     b.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
                 }
-                m_codeMirror.setLineWrapping(pressed);
+                m_codeMirror.setLineWrapping(!pressed);
             }
 
         });
         if (settings.m_lineWrapping) {
             m_codeMirror.setLineWrapping(true);
+            toggleLineWrap.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         } else {
             m_codeMirror.setLineWrapping(false);
-            toggleLineWrap.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         }
         context.addToolbarButtonRight(toggleLineWrap);
 
@@ -461,15 +461,15 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
                 } else {
                     b.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
                 }
-                m_codeMirror.setCloseBrackets(pressed);
+                m_codeMirror.setCloseBrackets(!pressed);
             }
 
         });
         if (settings.m_closeBrackets) {
             m_codeMirror.setCloseBrackets(true);
+            toggleBrackets.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         } else {
             m_codeMirror.setCloseBrackets(false);
-            toggleBrackets.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         }
         context.addToolbarButtonRight(toggleBrackets);
 
@@ -489,15 +489,15 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
                 } else {
                     b.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
                 }
-                m_codeMirror.setTabsVisible(pressed);
+                m_codeMirror.setTabsVisible(!pressed);
             }
 
         });
         if (settings.m_tabsVisible) {
             m_codeMirror.setTabsVisible(true);
+            toggleTabs.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         } else {
             m_codeMirror.setTabsVisible(false);
-            toggleTabs.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         }
         context.addToolbarButtonRight(toggleTabs);
 
