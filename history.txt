@@ -15,6 +15,23 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 10.5.1 - ...
+* Fixed issue where gallery dialog would not open on preselected values.
+* Fixed context menu for deleted resources in publish dialog.
+* Fixing issue where project tool tip would not be displayed in file tables.
+! Allowing access to context menu in element settings dialog.
+! Allowing configuration of element remove dialog in page editor.
+! Added improved source search tool.
+! Allowing text area widget when editing properties.
+- Improved bundle editor to store message properties in alphabetical order.
+- Improved email validation regex to allow more valid email addresses.
+- Improved touch function to use automatic XML correction.
+- Improved copy element function to use automatic XML correction.
+- Improved link generation for static resources to use VFS prefix settings.
+- Updated CMIS libraries.
+- Implemented improved source editor.
+- Improved writing of container pages to store containers and element settings in a reproducible order.
+
 OpenCms 10.5.0 Final - November 30, 2016
 ! The user interface now uses mostly font icons for better support in high resolution (retina) screens.
 ! New and improved Project Management app.
