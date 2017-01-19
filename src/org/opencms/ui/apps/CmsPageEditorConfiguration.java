@@ -28,7 +28,10 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspTagEnableAde;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -39,6 +42,8 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
@@ -53,6 +58,8 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
 
     /** The app id. */
     public static final String APP_ID = "pageeditor";
+
+    private static final Log LOG = CmsLog.getLog(CmsPageEditorConfiguration.class);
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -198,6 +205,16 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
 
         CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(session);
         String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+        if (page == null) {
+            try {
+                CmsResource mainDefaultFile = cms.readDefaultFile("/");
+                if (mainDefaultFile != null) {
+                    page = cms.getSitePath(mainDefaultFile);
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         return page;
     }
 
