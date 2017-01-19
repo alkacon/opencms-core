@@ -36,6 +36,7 @@ import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.CmsLegacyApp;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsFileUtil;
@@ -50,6 +51,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.Version;
+import com.vaadin.ui.JavaScript;
 
 /**
  * Displays the error page.<p>
@@ -150,7 +152,16 @@ public class CmsErrorUI extends A_CmsUI {
     protected void init(VaadinRequest request) {
 
         readErrorAttributes();
-        CmsErrorDialog.showErrorDialog(getErrorMessage(m_throwable), m_throwable);
+        CmsErrorDialog.showErrorDialog(getErrorMessage(m_throwable), m_throwable, new Runnable() {
+
+            public void run() {
+
+                JavaScript.eval(
+                    "if (window.parent && window.parent."
+                        + CmsLegacyApp.VAR_IS_LEGACY_APP
+                        + ") window.parent.location.reload();");
+            }
+        });
     }
 
     /**
