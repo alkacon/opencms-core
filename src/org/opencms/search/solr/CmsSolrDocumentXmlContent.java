@@ -37,6 +37,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -63,6 +64,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -251,6 +253,28 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
     public static CmsExtractionResult extractXmlContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
+        return extractXmlContent(cms, resource, index, null);
+    }
+
+    /**
+     * Extracts the content of a single XML content resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     * @param index the used index
+     * @param forceLocale if set, only the content values for the given locale will be extracted
+     *
+     * @return the extraction result
+     *
+     * @throws CmsException in case reading or unmarshalling the content fails
+     */
+    public static CmsExtractionResult extractXmlContent(
+        CmsObject cms,
+        CmsResource resource,
+        CmsSearchIndex index,
+        Locale forceLocale)
+    throws CmsException {
+
         // un-marshal the content
         CmsFile file = cms.readFile(resource);
         if (file.getLength() <= 0) {
@@ -263,12 +287,15 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         Map<Locale, LinkedHashMap<String, String>> items = new HashMap<Locale, LinkedHashMap<String, String>>();
         Map<String, String> fieldMappings = new HashMap<String, String>();
         StringBuffer locales = new StringBuffer();
-        Locale resourceLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
+        List<Locale> contentLocales = forceLocale != null
+        ? Collections.singletonList(forceLocale)
+        : xmlContent.getLocales();
+        Locale resourceLocale = index.getLocaleForResource(cms, resource, contentLocales);
 
         LinkedHashMap<String, String> localeItems = null;
 
         // loop over the locales of the content
-        for (Locale locale : xmlContent.getLocales()) {
+        for (Locale locale : contentLocales) {
             GalleryNameChooser galleryNameChooser = new GalleryNameChooser(cms, xmlContent, locale);
             localeItems = new LinkedHashMap<String, String>();
             StringBuffer textContent = new StringBuffer();
@@ -303,9 +330,6 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                     textContent.append(extracted);
                     textContent.append('\n');
                 }
-
-                // TODO: ?
-                /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
                 List<String> mappings = xmlContent.getHandler().getMappings(value.getPath());
                 if (mappings.size() > 0) {
@@ -369,8 +393,6 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             final String galleryNameValue = galleryNameChooser.getGalleryName();
             fieldMappings.put(galleryTitleFieldKey, galleryNameValue);
 
-            /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
             // handle the textual content
             if (textContent.length() > 0) {
                 // add the textual content with a localized key to the items
@@ -385,8 +407,12 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         // TODO: One could think of different indexing behavior, i.e., index only for getDefaultLocales(cms,resource)
         //       But using getAvailableLocales(cms,resource) does not work, because locale-available is set to "en" for all that content.
         if ((xmlContent instanceof CmsXmlContent) && ((CmsXmlContent)xmlContent).isLocaleIndependent()) {
-            for (Locale l : OpenCms.getLocaleManager().getAvailableLocales()) {
-                items.put(l, localeItems);
+            if (forceLocale != null) {
+                items.put(forceLocale, localeItems);
+            } else {
+                for (Locale l : OpenCms.getLocaleManager().getAvailableLocales()) {
+                    items.put(l, localeItems);
+                }
             }
         }
         // add the locales that have been indexed for this document as item and return the extraction result
@@ -406,23 +432,32 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
 
         try {
             I_CmsExtractionResult result = null;
-            if (hasDetailContainers(cms, resource)) {
-                String detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(cms.getSitePath(resource));
-                CmsResource detailContainers = cms.readResource(detailContainerPage);
-                List<I_CmsExtractionResult> ex = new ArrayList<I_CmsExtractionResult>();
+            List<I_CmsExtractionResult> ex = new ArrayList<I_CmsExtractionResult>();
+            for (CmsResource detailContainers : CmsJspTagContainer.getDetailOnlyResources(cms, resource)) {
                 CmsSolrDocumentContainerPage containerpageExtractor = new CmsSolrDocumentContainerPage("");
+                String localeTemp = detailContainers.getRootPath();
+                localeTemp = CmsResource.getParentFolder(localeTemp);
+                localeTemp = CmsResource.getName(localeTemp);
+                localeTemp = localeTemp.substring(0, localeTemp.length() - 1);
+                Locale locale = CmsLocaleManager.getLocale(localeTemp);
+                if (CmsJspTagContainer.useSingleLocaleDetailContainers(
+                    OpenCms.getSiteManager().getSiteRoot(resource.getRootPath()))
+                    && locale.equals(CmsLocaleManager.getDefaultLocale())) {
+                    // in case of single locale detail containers do not force the locale
+                    locale = null;
+                }
                 I_CmsExtractionResult containersExtractionResult = containerpageExtractor.extractContent(
                     cms,
                     detailContainers,
-                    index);
+                    index,
+                    locale);
                 // only use the locales of the resource itself, not the ones of the detail containers page
                 containersExtractionResult.getContentItems().remove(CmsSearchField.FIELD_RESOURCE_LOCALES);
+
                 ex.add(containersExtractionResult);
-                result = extractXmlContent(cms, resource, index);
-                result = result.merge(ex);
-            } else {
-                result = extractXmlContent(cms, resource, index);
             }
+            result = extractXmlContent(cms, resource, index);
+            result = result.merge(ex);
             return result;
 
         } catch (Throwable t) {
@@ -454,20 +489,6 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         }
 
         return super.getDocumentKeys(resourceTypes, mimeTypes);
-    }
-
-    /**
-     * Checks whether the resource has associated detail containers.<p>
-     *
-     * @param cms the cms context
-     * @param resource the resource
-     *
-     * @return <code>true</code> if the resource has associated detail containers
-     */
-    public boolean hasDetailContainers(CmsObject cms, CmsResource resource) {
-
-        String detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(cms.getSitePath(resource));
-        return cms.existsResource(detailContainerPage);
     }
 
     /**

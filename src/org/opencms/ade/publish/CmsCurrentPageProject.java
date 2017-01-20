@@ -34,7 +34,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
@@ -131,18 +130,7 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 Set<CmsResource> result = Sets.newHashSet();
 
                 if (res.getStructureId().toString().equals(detailId)) {
-                    String detailContentPagePath = CmsJspTagContainer.getDetailOnlyPageName(
-                        cms.getRequestContext().removeSiteRoot(res.getRootPath()));
-                    try {
-                        CmsResource detailContentPage = cms.readResource(
-                            detailContentPagePath,
-                            CmsResourceFilter.IGNORE_EXPIRATION);
-                        result.add(detailContentPage);
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // ignore
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
+                    result.addAll(CmsJspTagContainer.getDetailOnlyResources(cms, res));
                 }
                 if (res.getStructureId().toString().equals(pageId)) {
 

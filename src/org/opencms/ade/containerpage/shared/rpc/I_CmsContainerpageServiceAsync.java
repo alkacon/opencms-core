@@ -77,12 +77,13 @@ public interface I_CmsContainerpageServiceAsync {
      *
      * @param structureId the id of the container page
      * @param detailContentId the structure id of the detail content (may be null)
-     *
+     * @param contentLocale the content locale
      * @param callback the callback for the result
      */
     void checkContainerpageOrElementsChanged(
         CmsUUID structureId,
         CmsUUID detailContentId,
+        String contentLocale,
         AsyncCallback<Boolean> callback);
 
     /**
