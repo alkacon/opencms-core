@@ -669,6 +669,9 @@ public final class CmsJspStandardContextBean {
     /** Lazily initialized map from a category path to the path's category object. */
     private Map<String, CmsCategory> m_categories;
 
+    /** Lazily initialized map from a category path to all sub-categories of that category */
+    private Map<String, CmsJspCategoryAccessBean> m_allSubCategories;
+
     /** The container the currently rendered element is part of. */
     private CmsContainerBean m_container;
 
@@ -1180,6 +1183,39 @@ public final class CmsJspStandardContextBean {
             }
         };
         return CmsCollectionsGenericWrapper.createLazyMap(transformer);
+    }
+
+    /**
+     * Reads all sub-categories below the provided category.
+     * @return The map from the provided category to it's sub-categories in a {@link CmsJspCategoryAccessBean}.
+     */
+    public Map<String, CmsJspCategoryAccessBean> getReadAllSubCategories() {
+
+        if (null == m_allSubCategories) {
+            m_allSubCategories = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(Object categoryPath) {
+
+                    try {
+                        List<CmsCategory> categories = CmsCategoryService.getInstance().readCategories(
+                            m_cms,
+                            (String)categoryPath,
+                            true,
+                            m_cms.getRequestContext().getUri());
+                        CmsJspCategoryAccessBean result = new CmsJspCategoryAccessBean(
+                            categories,
+                            (String)categoryPath);
+                        return result;
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        return null;
+                    }
+                }
+
+            });
+        }
+        return m_allSubCategories;
     }
 
     /**
