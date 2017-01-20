@@ -479,9 +479,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#checkContainerpageOrElementsChanged(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#checkContainerpageOrElementsChanged(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public boolean checkContainerpageOrElementsChanged(CmsUUID structureId, CmsUUID detailContentId)
+    public boolean checkContainerpageOrElementsChanged(
+        CmsUUID structureId,
+        CmsUUID detailContentId,
+        String contentLocale)
     throws CmsRpcException {
 
         try {
@@ -494,7 +497,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                     CmsObject cms = getCmsObject();
                     CmsResource detailContentRes = cms.readResource(detailContentId, CmsResourceFilter.ALL);
-                    Optional<CmsResource> detailOnlyRes = CmsJspTagContainer.getDetailOnlyPage(cms, detailContentRes);
+                    OpenCms.getLocaleManager();
+                    Optional<CmsResource> detailOnlyRes = CmsJspTagContainer.getDetailOnlyPage(
+                        cms,
+                        detailContentRes,
+                        CmsLocaleManager.getLocale(contentLocale));
                     if (detailOnlyRes.isPresent()) {
                         detailOnlyChanged = CmsDefaultResourceStatusProvider.getContainerpageRelationTargets(
                             getCmsObject(),
@@ -1116,7 +1123,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     cms.getSitePath(detailResource));
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
-                detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(detailResource.getRootPath());
+                Locale detailContainerLocale;
+                if (CmsJspTagContainer.useSingleLocaleDetailContainers(cms.getRequestContext().getSiteRoot())) {
+                    detailContainerLocale = CmsLocaleManager.getDefaultLocale();
+                } else {
+                    detailContainerLocale = cms.getRequestContext().getLocale();
+                }
+                detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(
+                    detailResource.getRootPath(),
+                    detailContainerLocale);
                 if (rootCms.existsResource(detailContainerPage)) {
                     noEditReason = getNoEditReason(rootCms, rootCms.readResource(detailContainerPage));
                 } else {
@@ -1401,7 +1416,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 rootCms.getRequestContext().setSiteRoot("");
                 CmsResource detailResource = rootCms.readResource(detailContentId, CmsResourceFilter.IGNORE_EXPIRATION);
                 CmsResource detailContainerPage = rootCms.readResource(
-                    CmsJspTagContainer.getDetailOnlyPageName(detailResource.getRootPath()));
+                    CmsJspTagContainer.getDetailOnlyPageName(
+                        detailResource.getRootPath(),
+                        cms.getRequestContext().getLocale()));
                 ensureLock(detailContainerPage);
                 saveContainers(rootCms, detailContainerPage, detailContainerPage.getRootPath(), detailContainers);
             }

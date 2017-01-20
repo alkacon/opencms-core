@@ -79,12 +79,14 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @param structureId the structure id of the resource
      * @param detailContentId the structure id of the detail content (may be null)
+     * @param contentLocale the content locale
      *
      * @return true if there were changes in the page or its elements
      *
      * @throws CmsRpcException if the RPC call fails
      */
-    boolean checkContainerpageOrElementsChanged(CmsUUID structureId, CmsUUID detailContentId) throws CmsRpcException;
+    boolean checkContainerpageOrElementsChanged(CmsUUID structureId, CmsUUID detailContentId, String contentLocale)
+    throws CmsRpcException;
 
     /**
      * To create a new element of the given type this method will check if a model resource needs to be selected, otherwise creates the new element.

@@ -1372,11 +1372,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             path = cms.getSitePath(resource);
             cms.lockResource(path);
             cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-            // check if any detail container page resource exists to this resource
-            String detailContainers = CmsJspTagContainer.getDetailOnlyPageName(path);
-            if (cms.existsResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                deleteResource(cms.readResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION));
+            // check if any detail container page resources exist to this resource
+            List<CmsResource> detailContainers = CmsJspTagContainer.getDetailOnlyResources(cms, resource);
+            for (CmsResource detailContainer : detailContainers) {
+                deleteResource(detailContainer);
             }
         } finally {
             try {

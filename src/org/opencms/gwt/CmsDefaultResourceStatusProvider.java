@@ -178,8 +178,9 @@ public class CmsDefaultResourceStatusProvider {
         cms.getRequestContext().setLocale(locale);
         CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
         String localizedTitle = null;
+        Locale realLocale = null;
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(contentLocale)) {
-            Locale realLocale = CmsLocaleManager.getLocale(contentLocale);
+            realLocale = CmsLocaleManager.getLocale(contentLocale);
             CmsGallerySearchResult result = CmsGallerySearch.searchById(cms, structureId, realLocale);
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getTitle())) {
                 localizedTitle = result.getTitle();
@@ -339,7 +340,8 @@ public class CmsDefaultResourceStatusProvider {
                 try {
                     Optional<CmsResource> detailOnlyPage = CmsJspTagContainer.getDetailOnlyPage(
                         cms,
-                        cms.readResource(detailContentId, CmsResourceFilter.ALL));
+                        cms.readResource(detailContentId, CmsResourceFilter.ALL),
+                        realLocale);
                     if (detailOnlyPage.isPresent()) {
                         result.getRelationTargets().addAll(
                             getTargets(

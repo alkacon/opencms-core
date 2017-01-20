@@ -81,12 +81,34 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
+        return extractContent(cms, resource, index, null);
+    }
+
+    /**
+     * Extracts the content of a given index resource according to the resource file type and the
+     * configuration of the given index.<p>
+     *
+     * @param cms the cms object
+     * @param resource the resource to extract the content from
+     * @param index the index to extract the content for
+     * @param forceLocale if set, only the content values for the given locale will be extracted
+     *
+     * @return the extracted content of the resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public I_CmsExtractionResult extractContent(
+        CmsObject cms,
+        CmsResource resource,
+        CmsSearchIndex index,
+        Locale forceLocale)
+    throws CmsException {
+
         logContentExtraction(resource, index);
         I_CmsExtractionResult ex = null;
         try {
             CmsFile file = readFile(cms, resource);
             CmsXmlContainerPage containerPage = CmsXmlContainerPageFactory.unmarshal(cms, file);
-            Locale locale = index.getLocaleForResource(cms, resource, containerPage.getLocales());
 
             List<I_CmsExtractionResult> all = new ArrayList<I_CmsExtractionResult>();
             CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
@@ -102,7 +124,12 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                         && formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
-                        all.add(CmsSolrDocumentXmlContent.extractXmlContent(cms, element.getResource(), index));
+                        all.add(
+                            CmsSolrDocumentXmlContent.extractXmlContent(
+                                cms,
+                                element.getResource(),
+                                index,
+                                forceLocale));
                     }
                 }
             }
@@ -117,6 +144,9 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             for (Locale localeAvailable : localesAvailable) {
                 multilingualValues.put(localeAvailable, new LinkedHashMap<String, String>());
             }
+            Locale locale = forceLocale != null
+            ? forceLocale
+            : index.getLocaleForResource(cms, resource, containerPage.getLocales());
             ex = new CmsExtractionResult(locale, multilingualValues, fieldMappings);
             ex = ex.merge(all);
             return ex;
