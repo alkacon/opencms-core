@@ -73,7 +73,7 @@ public class CmsJspCategoryAccessBean {
      * @param categories the original categories.
      * @param mainCategoryPath path of the main category for which only sub-categories should be wrapped.
      */
-    private CmsJspCategoryAccessBean(List<CmsCategory> categories, String mainCategoryPath) {
+    CmsJspCategoryAccessBean(List<CmsCategory> categories, String mainCategoryPath) {
         m_mainCategoryPath = mainCategoryPath.isEmpty() || mainCategoryPath.endsWith("/")
         ? mainCategoryPath
         : mainCategoryPath + "/";
