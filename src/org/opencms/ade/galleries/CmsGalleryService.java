@@ -123,8 +123,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 /**
@@ -726,7 +729,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                                         title,
                                         true,
                                         isEditable(cms, resource),
-                                        null);
+                                        null,
+                                        false);
                                 }
 
                             };
@@ -863,7 +867,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 for (CmsResource res : resources) {
                     String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                    result.add(internalCreateVfsEntryBean(res, title, false, isEditable(cms, res), null));
+                    result.add(internalCreateVfsEntryBean(res, title, false, isEditable(cms, res), null, false));
                 }
             }
             return result;
@@ -874,30 +878,106 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#loadVfsEntryBean(java.lang.String)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#loadVfsEntryBean(java.lang.String, java.lang.String)
      */
-    public CmsVfsEntryBean loadVfsEntryBean(String path) throws CmsRpcException {
+    public CmsVfsEntryBean loadVfsEntryBean(String path, String filter) throws CmsRpcException {
 
         try {
-            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-            cms.getRequestContext().setSiteRoot("");
-            if (!cms.existsResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
-                String startFolder = CmsStringUtil.joinPaths(
+            if (CmsStringUtil.isEmpty(filter)) {
+
+                CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+                cms.getRequestContext().setSiteRoot("");
+                if (!cms.existsResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    String startFolder = CmsStringUtil.joinPaths(
+                        path,
+                        getWorkplaceSettings().getUserSettings().getStartFolder());
+                    if (cms.existsResource(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                        path = startFolder;
+                    }
+                }
+                CmsResource optionRes = cms.readResource(path);
+                String title = cms.readPropertyObject(
+                    optionRes,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue();
+                if (CmsStringUtil.isEmpty(title)) {
+                    title = path;
+                }
+                CmsVfsEntryBean entryBean = internalCreateVfsEntryBean(
+                    optionRes,
+                    title,
+                    true,
+                    isEditable(cms, optionRes),
+                    null,
+                    false);
+                return entryBean;
+            } else {
+                filter = filter.toLowerCase();
+                CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+                cms.getRequestContext().setSiteRoot("");
+                if (!cms.existsResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    String startFolder = CmsStringUtil.joinPaths(
+                        path,
+                        getWorkplaceSettings().getUserSettings().getStartFolder());
+                    if (cms.existsResource(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                        path = startFolder;
+                    }
+                }
+                CmsResource optionRes = cms.readResource(path);
+                List<CmsResource> folders = cms.readResources(
+                    optionRes.getRootPath(),
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
+                folders.add(optionRes);
+                Set<CmsResource> folderSet = Sets.newHashSet(folders);
+                List<CmsResource> titleResources = cms.readResourcesWithProperty(
                     path,
-                    getWorkplaceSettings().getUserSettings().getStartFolder());
-                if (cms.existsResource(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
-                    path = startFolder;
+                    CmsPropertyDefinition.PROPERTY_TITLE);
+                titleResources.retainAll(folderSet);
+                Set<CmsResource> filterMatches = Sets.newHashSet();
+                for (CmsResource folder : folderSet) {
+                    if (folder.getName().toLowerCase().contains(filter)) {
+                        filterMatches.add(folder);
+                        titleResources.remove(folder); // we don't need to check the title if the name already matched
+                    }
+                }
+                for (CmsResource titleRes : titleResources) {
+                    CmsProperty prop = cms.readPropertyObject(titleRes, CmsPropertyDefinition.PROPERTY_TITLE, false);
+                    String title = prop.getValue();
+                    if ((title != null) && title.toLowerCase().contains(filter)) {
+                        filterMatches.add(titleRes);
+                    }
+                }
+                Set<String> filterMatchAncestorPaths = Sets.newHashSet();
+                if (filterMatches.size() > 0) {
+                    for (CmsResource filterMatch : filterMatches) {
+                        String currentPath = filterMatch.getRootPath();
+                        while (currentPath != null) {
+                            filterMatchAncestorPaths.add(currentPath);
+                            currentPath = CmsResource.getParentFolder(currentPath);
+                        }
+                    }
+                    Set<CmsResource> filterMatchAncestors = Sets.newHashSet();
+                    for (CmsResource folderRes : folderSet) {
+                        if (filterMatchAncestorPaths.contains(folderRes.getRootPath())) {
+                            filterMatchAncestors.add(folderRes);
+                        }
+                    }
+                    Map<String, CmsResource> resourcesByPath = Maps.newHashMap();
+                    for (CmsResource treeRes : filterMatchAncestors) {
+                        resourcesByPath.put(treeRes.getRootPath(), treeRes);
+                    }
+                    Multimap<CmsResource, CmsResource> childMap = ArrayListMultimap.create();
+                    for (CmsResource res : filterMatchAncestors) {
+                        CmsResource parent = resourcesByPath.get(CmsResource.getParentFolder(res.getRootPath()));
+                        if (parent != null) {
+                            childMap.put(parent, res);
+                        }
+                    }
+                    return buildVfsEntryBeanForQuickSearch(optionRes, childMap, filterMatches, true);
+                } else {
+                    return null;
                 }
             }
-            CmsResource optionRes = cms.readResource(path);
-            CmsVfsEntryBean entryBean = internalCreateVfsEntryBean(
-                optionRes,
-                path,
-                true,
-                isEditable(cms, optionRes),
-                null);
-            return entryBean;
-
         } catch (Throwable e) {
             error(e);
             return null;
@@ -1187,6 +1267,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param isRoot true if this is a root entry
      * @param isEditable true if this entry is editable
      * @param children the children of the entry
+     * @param isMatch true if the VFS entry bean is a match for the quick search
      *
      * @return the created VFS entry bean
      * @throws CmsException if something goes wrong
@@ -1196,12 +1277,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         String title,
         boolean isRoot,
         boolean isEditable,
-        List<CmsVfsEntryBean> children)
+        List<CmsVfsEntryBean> children,
+        boolean isMatch)
     throws CmsException {
 
         String rootPath = resource.getRootPath();
         CmsUUID structureId = resource.getStructureId();
-        CmsVfsEntryBean result = new CmsVfsEntryBean(rootPath, structureId, title, isRoot, isEditable, children);
+        CmsVfsEntryBean result = new CmsVfsEntryBean(
+            rootPath,
+            structureId,
+            title,
+            isRoot,
+            isEditable,
+            children,
+            isMatch);
         String siteRoot = null;
         if (resource.isFolder()) {
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
@@ -1578,6 +1667,64 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Recursively builds the VFS entry bean for the quick filtering function in the folder tab.<p<
+     *
+     * @param optionRes the resource
+     * @param childMap map from parent to child resources
+     * @param filterMatches the resources matching the filter
+     * @param isRoot true if this the root node
+     *
+     * @return the VFS entry bean for the client
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private CmsVfsEntryBean buildVfsEntryBeanForQuickSearch(
+        CmsResource optionRes,
+        Multimap<CmsResource, CmsResource> childMap,
+        Set<CmsResource> filterMatches,
+        boolean isRoot)
+    throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        String title = cms.readPropertyObject(optionRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        boolean isMatch = filterMatches.contains(optionRes);
+        List<CmsVfsEntryBean> childBeans = Lists.newArrayList();
+
+        Collection<CmsResource> children = childMap.get(optionRes);
+        if (!children.isEmpty()) {
+            for (CmsResource child : children) {
+                CmsVfsEntryBean childBean = buildVfsEntryBeanForQuickSearch(child, childMap, filterMatches, false);
+                childBeans.add(childBean);
+            }
+        } else if (filterMatches.contains(optionRes)) {
+            childBeans = null;
+        }
+
+        String rootPath = optionRes.getRootPath();
+        CmsVfsEntryBean result = new CmsVfsEntryBean(
+            rootPath,
+            optionRes.getStructureId(),
+            title,
+            isRoot,
+            isEditable(cms, optionRes),
+            childBeans,
+            isMatch);
+        String siteRoot = null;
+        if (OpenCms.getSiteManager().startsWithShared(rootPath)) {
+            siteRoot = OpenCms.getSiteManager().getSharedFolder();
+        } else {
+            String tempSiteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+            if (tempSiteRoot != null) {
+                siteRoot = tempSiteRoot;
+            } else {
+                siteRoot = "";
+            }
+        }
+        result.setSiteRoot(siteRoot);
+        return result;
+    }
+
+    /**
      * Returns a list of resource types by a request parameter.<p>
      *
      * @param resourceTypes the resource types parameter
@@ -1823,7 +1970,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             title,
                             true,
                             isEditable(innerCms, innerResource),
-                            null);
+                            null,
+                            false);
                     }
                 };
                 CmsVfsEntryBean entryBean = loader.preloadData(cms, Collections.singletonList(resource));
@@ -2206,7 +2354,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         title,
                         true,
                         isEditable(getCmsObject(), rootFolderResource),
-                        null));
+                        null,
+                        false));
             }
 
         } catch (CmsException e) {

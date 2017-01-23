@@ -962,11 +962,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * Loads the root VFS entry bean for a given site selector option.<p>
      *
      * @param siteRoot the site root for which the VFS entry should be loaded
+     * @param filter the search filter
      *
      * @param asyncCallback the callback to call with the result
      */
     public void loadVfsEntryBean(
         final String siteRoot,
+        final String filter,
 
         final AsyncCallback<CmsVfsEntryBean> asyncCallback) {
 
@@ -976,7 +978,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             public void execute() {
 
                 start(200, false);
-                getGalleryService().loadVfsEntryBean(siteRoot, this);
+                getGalleryService().loadVfsEntryBean(siteRoot, filter, this);
             }
 
             @Override

@@ -95,6 +95,13 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
          *
          * @return the CSS style name
          */
+        String searchMatch();
+
+        /**
+         * Returns the CSS style name.<p>
+         *
+         * @return the CSS style name
+         */
         String table();
     }
 
@@ -246,6 +253,20 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
         getElement().getStyle().setBorderColor(I_CmsLayoutBundle.INSTANCE.constants().css().borderColor());
         getElement().getStyle().setColor(I_CmsLayoutBundle.INSTANCE.constants().css().textColorDisabled());
+    }
+
+    /**
+     * Enables / disables the 'search match' style for this widget.<p>
+     *
+     * @param isSearchMatch true if 'search match' style should be enabled
+     */
+    public void setSearchMatch(boolean isSearchMatch) {
+
+        if (isSearchMatch) {
+            addStyleName(m_style.searchMatch());
+        } else {
+            removeStyleName(m_style.searchMatch());
+        }
     }
 
     /**

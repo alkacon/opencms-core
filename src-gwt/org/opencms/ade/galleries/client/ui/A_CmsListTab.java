@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -238,6 +239,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** The ui-binder instance for this class. */
     private static I_CmsListTabUiBinder uiBinder = GWT.create(I_CmsListTabUiBinder.class);
 
+
     /** A label for displaying additional information about the tab. */
     protected HasText m_infoLabel;
 
@@ -270,6 +272,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /** The quick search handler registration. */
     private HandlerRegistration m_quickSearchRegistration;
+
+    private String m_lastQuickSearchValue;
 
     /**
      * The default constructor with drag handler.<p>
@@ -371,7 +375,10 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
                 if ((CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue()) || (event.getValue().length() >= 3))) {
                     // only act if filter length is at least 3 characters or empty
-                    scheduleQuickFilterTimer();
+                    if ((m_lastQuickSearchValue == null) || !m_lastQuickSearchValue.equals(event.getValue())) {
+                        scheduleQuickFilterTimer();
+                    }
+                    m_lastQuickSearchValue = event.getValue();
                 }
             } else {
                 checkQuickSearchStatus();
@@ -658,7 +665,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * Schedules the quick filter action.<p>
      */
     protected void scheduleQuickFilterTimer() {
-
         m_filterTimer.schedule(FILTER_DELAY);
     }
 

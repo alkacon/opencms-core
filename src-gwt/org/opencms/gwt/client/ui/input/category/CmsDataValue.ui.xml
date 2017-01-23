@@ -15,6 +15,11 @@
 		.label{
 			padding: 2px 10px 2px 2px;
 		}
+		
+		.searchMatch .label {
+			font-weight: bold; 
+		}
+		
 		.parameter{
 			padding: 2px;
 		}

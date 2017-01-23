@@ -191,8 +191,10 @@ public class CmsVfsTab extends A_CmsListTab {
 
         clear();
         for (CmsVfsEntryBean entry : entries) {
-            CmsLazyTreeItem item = createItem(entry);
-            addWidgetToList(item);
+            if (entry != null) {
+                CmsLazyTreeItem item = createItem(entry);
+                addWidgetToList(item);
+            }
         }
         if (null != selectedSiteRoot) {
             selectSite(selectedSiteRoot);
@@ -289,6 +291,9 @@ public class CmsVfsTab extends A_CmsListTab {
             CmsIconUtil.getResourceIconClasses(I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER, true),
             name,
             vfsEntry.getDisplayName());
+        if (vfsEntry.isSearchMatch()) {
+            dataValue.setSearchMatch(true);
+        }
         dataValue.setUnselectable();
         if (vfsEntry.isEditable()) {
             dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath(), true));
@@ -424,6 +429,15 @@ public class CmsVfsTab extends A_CmsListTab {
     protected CmsVfsTabHandler getTabHandler() {
 
         return m_tabHandler;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     */
+    @Override
+    protected boolean hasQuickFilter() {
+
+        return true;
     }
 
     /**
