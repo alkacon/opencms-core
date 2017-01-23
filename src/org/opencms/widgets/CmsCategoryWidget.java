@@ -96,7 +96,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     private String m_property;
 
     /** The selection type parsed from configuration string. */
-    private String m_selectiontype = "single";
+    private String m_selectiontype = "multi";
 
     /**
      * Creates a new category widget.<p>
@@ -148,6 +148,15 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             result.append("=");
             result.append(m_property);
         }
+        // append 'selectionType' to configuration
+        if (m_selectiontype != null) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_SELECTIONTYPE);
+            result.append("=");
+            result.append(m_selectiontype);
+        }
         return result.toString();
     }
 
@@ -178,8 +187,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             result.append(m_onlyLeafs);
         }
         // append 'selection type' to configuration in case of the schemaType
-        if (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)
-            || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)) {
+        if (!m_selectiontype.equals("single")
+            && (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)
+                || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME))) {
             m_selectiontype = "multi";
         } else {
             m_selectiontype = "single";
@@ -532,6 +542,16 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                     property = property.substring(0, property.indexOf('|'));
                 }
                 m_property = property;
+            }
+            int selectionTypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
+            if (selectionTypeIndex != -1) {
+                String selectionType = configuration.substring(
+                    selectionTypeIndex + CONFIGURATION_SELECTIONTYPE.length() + 1);
+                if (selectionType.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    selectionType = selectionType.substring(0, selectionType.indexOf('|'));
+                }
+                m_selectiontype = selectionType;
             }
         }
         super.setConfiguration(configuration);
