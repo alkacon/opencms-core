@@ -125,7 +125,6 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         StringBuffer result = new StringBuffer(8);
 
-        // append category to configuration
         if (m_category != null) {
             result.append(CONFIGURATION_CATEGORY);
             result.append("=");
@@ -162,7 +161,22 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        String result = getConfiguration();
+        StringBuffer result = new StringBuffer();
+
+        // NOTE: set starting category as "category=" - independently if it is set via "property" or "category" config option.
+        String startingCategory = this.getStartingCategory(cms, cms.getSitePath(resource));
+        if (startingCategory.length() > 1) {
+            result.append(CONFIGURATION_CATEGORY).append("=").append(startingCategory);
+        }
+        // append 'only leafs' to configuration
+        if (m_onlyLeafs != null) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_ONLYLEAFS);
+            result.append("=");
+            result.append(m_onlyLeafs);
+        }
         // append 'selection type' to configuration in case of the schemaType
         if (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)
             || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)) {
@@ -173,18 +187,18 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         if (m_selectiontype != null) {
             if (result.length() > 0) {
-                result += "|";
+                result.append("|");
             }
-            result += CONFIGURATION_SELECTIONTYPE;
-            result += "=";
-            result += m_selectiontype;
+            result.append(CONFIGURATION_SELECTIONTYPE);
+            result.append("=");
+            result.append(m_selectiontype);
         }
 
         if (m_parentSelection) {
             if (result.length() > 0) {
-                result += "|";
+                result.append("|");
             }
-            result += CONFIGURATION_PARENTSELECTION;
+            result.append(CONFIGURATION_PARENTSELECTION);
         }
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<String> categoriesList = catService.getCategoryRepositories(cms, cms.getSitePath(resource));
@@ -200,7 +214,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             i++;
         }
 
-        return result + catList;
+        return result.append(catList).toString();
     }
 
     /**
