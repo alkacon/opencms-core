@@ -129,9 +129,11 @@ public interface I_CmsGalleryServiceAsync {
      * Loads the root VFS entry bean for the given site root.<p>
      *
      * @param path the site root
+     * @param filter the search filter
+     *
      * @param resultCallback the callback for the result
      * */
-    void loadVfsEntryBean(String path, AsyncCallback<CmsVfsEntryBean> resultCallback);
+    void loadVfsEntryBean(String path, String filter, AsyncCallback<CmsVfsEntryBean> resultCallback);
 
     /**
      * Stores the result view type with the user.<p>

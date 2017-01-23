@@ -179,7 +179,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
                 siteRoot = m_controller.getDefaultVfsTabSiteRoot();
             }
             m_siteRoot = siteRoot;
-            m_controller.loadVfsEntryBean(siteRoot, new AsyncCallback<CmsVfsEntryBean>() {
+            m_controller.loadVfsEntryBean(siteRoot, null, new AsyncCallback<CmsVfsEntryBean>() {
 
                 public void onFailure(Throwable caught) {
 
@@ -203,7 +203,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(final String sortParams, String filter) {
 
-        m_controller.loadVfsEntryBean(sortParams, new AsyncCallback<CmsVfsEntryBean>() {
+        m_controller.loadVfsEntryBean(sortParams, filter, new AsyncCallback<CmsVfsEntryBean>() {
 
             public void onFailure(Throwable caught) {
 

@@ -150,12 +150,13 @@ public interface I_CmsGalleryService extends RemoteService {
      * Loads the root VFS entry bean for the given site root.
      *
      * @param path the site root
+     * @param filter the filter string
      *
      * @return the root VFS entry bean for the given site root
      *
      *  @throws CmsRpcException if something goes wrong
      * */
-    CmsVfsEntryBean loadVfsEntryBean(String path) throws CmsRpcException;
+    CmsVfsEntryBean loadVfsEntryBean(String path, String filter) throws CmsRpcException;
 
     /**
      * Stores the result view type with the user.<p>

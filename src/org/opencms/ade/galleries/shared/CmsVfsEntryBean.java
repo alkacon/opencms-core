@@ -61,6 +61,9 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
     /** The folder title. */
     private String m_title;
 
+    /** True if this is a filter search match. */
+    private boolean m_isSearchMatch;
+
     /**
      * Creates a new VFS entry bean.<p>
      *
@@ -70,6 +73,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
      * @param isRoot flag indicating whether this is entry should be displayed at the top level of the tree
      * @param editable <code>true</code> if the user has write permissions to the folder
      * @param preloadedChildren the preloaded child nodes
+     * @param isMatch true if this entry bean is a search match for the filter string the user entered
      */
     public CmsVfsEntryBean(
         String rootPath,
@@ -77,7 +81,8 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
         String title,
         boolean isRoot,
         boolean editable,
-        List<CmsVfsEntryBean> preloadedChildren) {
+        List<CmsVfsEntryBean> preloadedChildren,
+        boolean isMatch) {
 
         m_rootPath = rootPath;
 
@@ -85,6 +90,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
         m_isRoot = isRoot;
         m_editable = editable;
         m_title = title;
+        m_isSearchMatch = isMatch;
         m_preloadedChildren = preloadedChildren;
     }
 
@@ -185,6 +191,16 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
     public boolean isRoot() {
 
         return m_isRoot;
+    }
+
+    /**
+     * Returns true if this entry bean is a search match.<p>
+     *
+     * @return true if this is a search match
+     */
+    public boolean isSearchMatch() {
+
+        return m_isSearchMatch;
     }
 
     /**
