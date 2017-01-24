@@ -726,11 +726,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      *
      * @param rootPath the root path
      * @param isRoot <code>true</code> if the requested entry is the root entry
+     * @param filter the sitemap filter string
      * @param callback the callback to execute with the result
      */
     public void getSubEntries(
         final String rootPath,
         final boolean isRoot,
+        final String filter,
         final I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback) {
 
         CmsRpcAction<List<CmsSitemapEntryBean>> action = new CmsRpcAction<List<CmsSitemapEntryBean>>() {
@@ -739,7 +741,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             public void execute() {
 
                 start(0, false);
-                getGalleryService().getSubEntries(rootPath, isRoot, this);
+                getGalleryService().getSubEntries(rootPath, isRoot, filter, this);
             }
 
             @Override

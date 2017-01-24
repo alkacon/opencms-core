@@ -113,9 +113,14 @@ public interface I_CmsGalleryServiceAsync {
      *
      * @param rootPath the root path
      * @param isRoot <code>true</code> if the requested entry is the root entry
+     * @param filter the search filter, only relevant when isRoot is true
      * @param callback the asynchronous callback
      */
-    void getSubEntries(String rootPath, boolean isRoot, AsyncCallback<List<CmsSitemapEntryBean>> callback);
+    void getSubEntries(
+        String rootPath,
+        boolean isRoot,
+        String filter,
+        AsyncCallback<List<CmsSitemapEntryBean>> callback);
 
     /**
      * Gets the sub-folders of a folder.<p>
