@@ -34,6 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -162,22 +163,26 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        String siteRoot = cms.getRequestContext().getSiteRoot();
-        boolean active = CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot);
-        HttpServletRequest req = CmsVaadinUtils.getRequest();
-        String message = null;
-        if (active) {
-            if (req != null) {
-                // this is a VAADIN UI request
-                active = getPath(cms, req.getSession()) != null;
-                if (!active) {
-                    message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0);
+        if (OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR)) {
+            String siteRoot = cms.getRequestContext().getSiteRoot();
+            boolean active = CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot);
+            HttpServletRequest req = CmsVaadinUtils.getRequest();
+            String message = null;
+            if (active) {
+                if (req != null) {
+                    // this is a VAADIN UI request
+                    active = getPath(cms, req.getSession()) != null;
+                    if (!active) {
+                        message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0);
+                    }
                 }
+            } else {
+                message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_NOT_AVAILABLE_0);
             }
+            return new CmsAppVisibilityStatus(true, active, message);
         } else {
-            message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_NOT_AVAILABLE_0);
+            return CmsAppVisibilityStatus.INVISIBLE;
         }
-        return new CmsAppVisibilityStatus(true, active, message);
     }
 
     /**
