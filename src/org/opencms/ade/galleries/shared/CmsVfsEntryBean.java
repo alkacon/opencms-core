@@ -46,6 +46,9 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
 
+    /** True if this is a filter search match. */
+    private boolean m_isSearchMatch;
+
     /** The list of children. */
     private List<CmsVfsEntryBean> m_preloadedChildren;
 
@@ -60,9 +63,6 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
 
     /** The folder title. */
     private String m_title;
-
-    /** True if this is a filter search match. */
-    private boolean m_isSearchMatch;
 
     /**
      * Creates a new VFS entry bean.<p>

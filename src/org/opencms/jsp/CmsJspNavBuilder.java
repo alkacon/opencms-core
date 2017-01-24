@@ -84,14 +84,14 @@ public class CmsJspNavBuilder {
     /** The current CMS context. */
     protected CmsObject m_cms;
 
+    /** The locale for which the property should be read. */
+    protected Locale m_locale;
+
     /** The current request URI. */
     protected String m_requestUri;
 
     /** The current request folder. */
     protected String m_requestUriFolder;
-
-    /** The locale for which the property should be read. */
-    protected Locale m_locale;
 
     /**
      * Empty constructor, so that this bean can be initialized from a JSP.<p>
