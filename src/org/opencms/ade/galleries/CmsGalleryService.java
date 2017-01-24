@@ -958,6 +958,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             currentPath = CmsResource.getParentFolder(currentPath);
                         }
                     }
+                    Set<String> allPaths = Sets.newHashSet();
+                    Set<String> parentPaths = Sets.newHashSet();
+                    for (CmsResource folder : folderSet) {
+                        allPaths.add(folder.getRootPath());
+                        String parent = CmsResource.getParentFolder(folder.getRootPath());
+                        if (parent != null) {
+                            parentPaths.add(parent);
+                        }
+                    }
+                    parentPaths.retainAll(allPaths);
+
                     Set<CmsResource> filterMatchAncestors = Sets.newHashSet();
                     for (CmsResource folderRes : folderSet) {
                         if (filterMatchAncestorPaths.contains(folderRes.getRootPath())) {
@@ -975,7 +986,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             childMap.put(parent, res);
                         }
                     }
-                    return buildVfsEntryBeanForQuickSearch(optionRes, childMap, filterMatches, true);
+                    return buildVfsEntryBeanForQuickSearch(optionRes, childMap, filterMatches, parentPaths, true);
                 } else {
                     return null;
                 }
@@ -1697,9 +1708,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Recursively builds the VFS entry bean for the quick filtering function in the folder tab.<p<
      *
-     * @param optionRes the resource
+     * @param resource the resource
      * @param childMap map from parent to child resources
      * @param filterMatches the resources matching the filter
+     * @param parentPaths root paths of resources which are not leaves
      * @param isRoot true if this the root node
      *
      * @return the VFS entry bean for the client
@@ -1707,34 +1719,43 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @throws CmsException if something goes wrong
      */
     private CmsVfsEntryBean buildVfsEntryBeanForQuickSearch(
-        CmsResource optionRes,
+        CmsResource resource,
         Multimap<CmsResource, CmsResource> childMap,
         Set<CmsResource> filterMatches,
+        Set<String> parentPaths,
         boolean isRoot)
     throws CmsException {
 
         CmsObject cms = getCmsObject();
-        String title = cms.readPropertyObject(optionRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-        boolean isMatch = filterMatches.contains(optionRes);
+        String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        boolean isMatch = filterMatches.contains(resource);
         List<CmsVfsEntryBean> childBeans = Lists.newArrayList();
 
-        Collection<CmsResource> children = childMap.get(optionRes);
+        Collection<CmsResource> children = childMap.get(resource);
         if (!children.isEmpty()) {
             for (CmsResource child : children) {
-                CmsVfsEntryBean childBean = buildVfsEntryBeanForQuickSearch(child, childMap, filterMatches, false);
+                CmsVfsEntryBean childBean = buildVfsEntryBeanForQuickSearch(
+                    child,
+                    childMap,
+                    filterMatches,
+                    parentPaths,
+                    false);
                 childBeans.add(childBean);
             }
-        } else if (filterMatches.contains(optionRes)) {
-            childBeans = null;
+        } else if (filterMatches.contains(resource)) {
+            if (parentPaths.contains(resource.getRootPath())) {
+                childBeans = null;
+            }
+            // otherwise childBeans remains an empty list
         }
 
-        String rootPath = optionRes.getRootPath();
+        String rootPath = resource.getRootPath();
         CmsVfsEntryBean result = new CmsVfsEntryBean(
             rootPath,
-            optionRes.getStructureId(),
+            resource.getStructureId(),
             title,
             isRoot,
-            isEditable(cms, optionRes),
+            isEditable(cms, resource),
             childBeans,
             isMatch);
         String siteRoot = null;
