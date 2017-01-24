@@ -53,6 +53,9 @@ import java.util.Map;
  */
 public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
+    /** The locale for which the property should be read. */
+    protected Locale m_locale;
+
     /** The navigation position has changed flag. */
     private boolean m_changedNavPos;
 
@@ -65,6 +68,9 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     /** Flag indicating whether this is a hidden navigation entry. */
     private Boolean m_isHiddenNavigationEntry;
 
+    /** The properties accessed according to the chosen locale. */
+    private Map<String, String> m_localeProperties;
+
     /** The navigation tree level. */
     private int m_navTreeLevel = Integer.MIN_VALUE;
 
@@ -74,9 +80,6 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     /** The properties. */
     private Map<String, String> m_properties;
 
-    /** The properties accessed according to the chosen locale. */
-    private Map<String, String> m_localeProperties;
-
     /** The resource. */
     private CmsResource m_resource;
 
@@ -85,9 +88,6 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
     /** The navigation text. */
     private String m_text;
-
-    /** The locale for which the property should be read. */
-    protected Locale m_locale;
 
     /**
      * Empty constructor required for every JavaBean, does nothing.<p>
