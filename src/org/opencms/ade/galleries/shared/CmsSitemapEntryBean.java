@@ -56,6 +56,9 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
 
+    /** True if this is a search match. */
+    private boolean m_isSearchMatch;
+
     /** The root path. */
     private String m_rootPath;
 
@@ -266,6 +269,16 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
     }
 
     /**
+     * Returns true if this is a search match.<p>
+     *
+     * @return true if this is a search match
+     */
+    public boolean isSearchMatch() {
+
+        return m_isSearchMatch;
+    }
+
+    /**
      * Sets the children of this entry.<p>
      *
      * @param children the children
@@ -273,6 +286,16 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
     public void setChildren(List<CmsSitemapEntryBean> children) {
 
         m_children = children;
+    }
+
+    /**
+     * Marks this entry as a search match.<p>
+     *
+     * @param isSearchMatch true if this is a search match
+     */
+    public void setSearchMatch(boolean isSearchMatch) {
+
+        m_isSearchMatch = isSearchMatch;
     }
 
     /**

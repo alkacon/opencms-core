@@ -128,12 +128,13 @@ public interface I_CmsGalleryService extends RemoteService {
      *
      * @param rootPath the root path
      * @param isRoot <code>true</code> if the requested entry is the root entry
+     * @param filter the search filter string
      *
      * @return the sub entries
      *
      * @throws CmsRpcException if something goes wrong
      */
-    List<CmsSitemapEntryBean> getSubEntries(String rootPath, boolean isRoot) throws CmsRpcException;
+    List<CmsSitemapEntryBean> getSubEntries(String rootPath, boolean isRoot, String filter) throws CmsRpcException;
 
     /**
      * Gets the sub-folders of a folder.<p>

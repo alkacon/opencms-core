@@ -138,6 +138,15 @@ public class CmsSitemapTab extends A_CmsListTab {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     */
+    @Override
+    public boolean hasQuickFilter() {
+
+        return true;
+    }
+
+    /**
      * Returns if the tab content has been initialized.<p>
      *
      * @return <code>true</code> if the tab content has been initialized
@@ -198,6 +207,7 @@ public class CmsSitemapTab extends A_CmsListTab {
         if (sitemapEntry.isHiddenEntry()) {
             dataValue.setColor("#aaaaaa");
         }
+        dataValue.setSearchMatch(sitemapEntry.isSearchMatch());
 
         CmsLazyTreeItem result = new CmsLazyTreeItem(dataValue, true);
         result.setData(sitemapEntry);

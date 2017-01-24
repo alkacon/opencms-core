@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries;
 
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.galleries.CmsGalleryFilteredNavTreeBuilder.NavigationNode;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
@@ -839,12 +840,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubEntries(java.lang.String, boolean)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubEntries(java.lang.String, boolean, java.lang.String)
      */
-    public List<CmsSitemapEntryBean> getSubEntries(String rootPath, boolean isRoot) throws CmsRpcException {
+    public List<CmsSitemapEntryBean> getSubEntries(String rootPath, boolean isRoot, String filter)
+    throws CmsRpcException {
 
         try {
-            return getSubEntriesInternal(rootPath, isRoot);
+            return getSubEntriesInternal(rootPath, isRoot, filter);
         } catch (Throwable e) {
             error(e);
         }
@@ -1080,36 +1082,62 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      *
      * @param rootPath the root path
      * @param isRoot true if this method is used to get the root entries of a sitemap
+     * @param filter the filter string (only relevant if isRoot is true)
      * @return the list of sitemap sub-entry beans
      *
      * @throws CmsException if something goes wrong
      */
-    protected List<CmsSitemapEntryBean> getSubEntriesInternal(String rootPath, boolean isRoot) throws CmsException {
+    protected List<CmsSitemapEntryBean> getSubEntriesInternal(String rootPath, boolean isRoot, String filter)
+    throws CmsException {
 
         CmsObject rootCms = OpenCms.initCmsObject(getCmsObject());
         rootCms.getRequestContext().setSiteRoot("");
         CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(rootCms);
-        List<CmsSitemapEntryBean> result = new ArrayList<CmsSitemapEntryBean>();
-        for (CmsJspNavElement navElement : navBuilder.getNavigationForFolder(
-            rootPath,
-            Visibility.all,
-            CmsResourceFilter.ONLY_VISIBLE)) {
-            if ((navElement != null) && navElement.isInNavigation()) {
-                CmsSitemapEntryBean nextEntry = prepareSitemapEntry(rootCms, navElement, false);
-
-                result.add(nextEntry);
-            }
-        }
         if (isRoot) {
-            CmsJspNavElement navElement = navBuilder.getNavigationForResource(rootPath, CmsResourceFilter.ONLY_VISIBLE);
-            if (navElement == null) {
-                return result;
+            if (CmsStringUtil.isEmpty(filter)) {
+                List<CmsSitemapEntryBean> result = new ArrayList<CmsSitemapEntryBean>();
+                for (CmsJspNavElement navElement : navBuilder.getNavigationForFolder(
+                    rootPath,
+                    Visibility.all,
+                    CmsResourceFilter.ONLY_VISIBLE)) {
+                    if ((navElement != null) && navElement.isInNavigation()) {
+                        CmsSitemapEntryBean nextEntry = prepareSitemapEntry(rootCms, navElement, false, true);
+                        result.add(nextEntry);
+                    }
+                }
+                CmsJspNavElement navElement = navBuilder.getNavigationForResource(
+                    rootPath,
+                    CmsResourceFilter.ONLY_VISIBLE);
+                if (navElement == null) {
+                    return result;
+                }
+                CmsSitemapEntryBean root = prepareSitemapEntry(rootCms, navElement, isRoot, true);
+                root.setChildren(result);
+                return Collections.singletonList(root);
+            } else {
+                CmsGalleryFilteredNavTreeBuilder navTreeBuilder = new CmsGalleryFilteredNavTreeBuilder(
+                    rootCms,
+                    rootPath);
+                navTreeBuilder.initTree(filter);
+                if (navTreeBuilder.hasMatches()) {
+                    return Lists.newArrayList(convertNavigationTreeToBean(rootCms, navTreeBuilder.getRoot(), true));
+                } else {
+                    return Lists.newArrayList();
+                }
             }
-            CmsSitemapEntryBean root = prepareSitemapEntry(rootCms, navElement, isRoot);
-            root.setChildren(result);
-            return Collections.singletonList(root);
+        } else {
+            List<CmsSitemapEntryBean> result = new ArrayList<CmsSitemapEntryBean>();
+            for (CmsJspNavElement navElement : navBuilder.getNavigationForFolder(
+                rootPath,
+                Visibility.all,
+                CmsResourceFilter.ONLY_VISIBLE)) {
+                if ((navElement != null) && navElement.isInNavigation()) {
+                    CmsSitemapEntryBean nextEntry = prepareSitemapEntry(rootCms, navElement, false, true);
+                    result.add(nextEntry);
+                }
+            }
+            return result;
         }
-        return result;
     }
 
     /**
@@ -1256,7 +1284,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             // may be null for expired resources
             return null;
         }
-        return prepareSitemapEntry(cms, entry, false);
+        return prepareSitemapEntry(cms, entry, false, true);
     }
 
     /**
@@ -1722,6 +1750,41 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         result.setSiteRoot(siteRoot);
         return result;
+    }
+
+    /**
+     * Helper method to construct a sitemap entry bean for the sitemap tab filter functionality.<p>
+     *
+     * @param cms the CMS context
+     * @param node the root node of the filtered tree
+     * @param isRoot true if this is the root node
+     *
+     * @return the sitemap entry bean
+     */
+    private CmsSitemapEntryBean convertNavigationTreeToBean(CmsObject cms, NavigationNode node, boolean isRoot) {
+
+        CmsSitemapEntryBean bean = null;
+        try {
+            bean = prepareSitemapEntry(cms, node.getNavElement(), isRoot, false);
+            bean.setSearchMatch(node.isMatch());
+            List<NavigationNode> children = node.getChildren();
+            List<CmsSitemapEntryBean> childBeans = Lists.newArrayList();
+            if (children.size() > 0) {
+                for (NavigationNode child : children) {
+                    childBeans.add(convertNavigationTreeToBean(cms, child, false));
+                }
+            } else if (node.isLeaf()) {
+                childBeans = Lists.newArrayList();
+            } else {
+                // no children in filter result, but can still load children by clicking on tree item
+                childBeans = null;
+            }
+            bean.setChildren(childBeans);
+
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return bean;
     }
 
     /**
@@ -2524,12 +2587,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param cms the cms context
      * @param navElement the navigation element
      * @param isRoot <code>true</code> if this is a site root entry
+     * @param checkHasChildren if true, check if the entry has any children; set to false if you want to handle the list of children manually
      *
      * @return the sitemap entry
      *
      * @throws CmsException if something goes wrong reading types and resources
      */
-    private CmsSitemapEntryBean prepareSitemapEntry(CmsObject cms, CmsJspNavElement navElement, boolean isRoot)
+    private CmsSitemapEntryBean prepareSitemapEntry(
+        CmsObject cms,
+        CmsJspNavElement navElement,
+        boolean isRoot,
+        boolean checkHasChildren)
     throws CmsException {
 
         CmsResource ownResource = navElement.getResource();
@@ -2565,14 +2633,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         String childPath = navElement.getResource().getRootPath();
         boolean noChildren = true;
 
-        List<CmsJspNavElement> childNav = navBuilder.getNavigationForFolder(
-            childPath,
-            Visibility.all,
-            CmsResourceFilter.ONLY_VISIBLE);
-        for (CmsJspNavElement childNavEntry : childNav) {
-            if (childNavEntry.isInNavigation()) {
-                noChildren = false;
-                break;
+        if (checkHasChildren) {
+            List<CmsJspNavElement> childNav = navBuilder.getNavigationForFolder(
+                childPath,
+                Visibility.all,
+                CmsResourceFilter.ONLY_VISIBLE);
+            for (CmsJspNavElement childNavEntry : childNav) {
+                if (childNavEntry.isInNavigation()) {
+                    noChildren = false;
+                    break;
+                }
             }
         }
 
@@ -2587,9 +2657,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             navElement.isHiddenNavigationEntry(),
             isNavLevel);
         result.setSiteRoot(OpenCms.getSiteManager().getSiteRoot(ownResource.getRootPath()));
-        if (noChildren) {
+
+        if (checkHasChildren && noChildren) {
             result.setChildren(new ArrayList<CmsSitemapEntryBean>());
         }
+
         return result;
     }
 

@@ -126,7 +126,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         boolean isRoot,
         I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback) {
 
-        m_controller.getSubEntries(rootPath, isRoot, callback);
+        m_controller.getSubEntries(rootPath, isRoot, null, callback);
     }
 
     /**
@@ -193,7 +193,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(final String sortParams, String filter) {
 
-        m_controller.getSubEntries(sortParams, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
+        m_controller.getSubEntries(sortParams, true, filter, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
             public void execute(List<CmsSitemapEntryBean> entries) {
 
