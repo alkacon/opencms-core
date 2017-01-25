@@ -64,16 +64,6 @@ public class CmsNotificationCause implements Serializable {
     }
 
     /**
-     *
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        return m_cause + m_resourceId.hashCode();
-    }
-
-    /**
      * Returns true if the Object equals to the corresponding CmsNotificationCause, that means a notification cause
      * with the same resource and cause.
      *
@@ -86,7 +76,7 @@ public class CmsNotificationCause implements Serializable {
     @Override
     public boolean equals(Object o) {
 
-        if (!(o instanceof CmsExtendedNotificationCause) || !(o instanceof CmsNotificationCause)) {
+        if (!((o instanceof CmsExtendedNotificationCause) || (o instanceof CmsNotificationCause))) {
             return false;
         }
         return hashCode() == o.hashCode();
@@ -110,6 +100,16 @@ public class CmsNotificationCause implements Serializable {
     public CmsUUID getResourceId() {
 
         return m_resourceId;
+    }
+
+    /**
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return m_cause + m_resourceId.hashCode();
     }
 
     /**
