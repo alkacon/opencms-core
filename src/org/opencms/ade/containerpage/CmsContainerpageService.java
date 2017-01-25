@@ -1908,6 +1908,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             container.getName(),
             container.getType(),
             container.getParentInstanceId(),
+            container.isRootContainer(),
             elements);
         return result;
     }

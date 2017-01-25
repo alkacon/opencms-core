@@ -1320,6 +1320,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     cntBean.getName(),
                     cntBean.getType(),
                     cntBean.getParentInstanceId(),
+                    cntBean.isRootContainer(),
                     newElems);
                 containerBeans.add(newCntBean);
             } else {
@@ -1671,6 +1672,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 container.getName(),
                 container.getType(),
                 container.getParentInstanceId(),
+                container.isRootContainer(),
                 container.getMaxElements(),
                 updatedElements);
             updatedContainers.add(updatedContainer);

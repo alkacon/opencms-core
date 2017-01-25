@@ -174,6 +174,7 @@ public class CmsModelGroupHelper {
                             baseContainerName,
                             container.getType(),
                             container.getParentInstanceId(),
+                            container.isRootContainer(),
                             container.getElements());
                         containers.add(replacer);
                         changedContent = true;
@@ -487,6 +488,7 @@ public class CmsModelGroupHelper {
                         container.getName(),
                         container.getType(),
                         container.getParentInstanceId(),
+                        container.isRootContainer(),
                         container.getMaxElements(),
                         elements));
             } else {
@@ -542,6 +544,7 @@ public class CmsModelGroupHelper {
                         container.getName(),
                         container.getType(),
                         container.getParentInstanceId(),
+                        container.isRootContainer(),
                         container.getMaxElements(),
                         elements));
 
@@ -596,6 +599,7 @@ public class CmsModelGroupHelper {
                         container.getName(),
                         container.getType(),
                         container.getParentInstanceId(),
+                        container.isRootContainer(),
                         container.getMaxElements(),
                         elements));
             } else {
@@ -702,6 +706,7 @@ public class CmsModelGroupHelper {
                         adjustedContainerName,
                         container.getType(),
                         replaceModelId,
+                        container.isRootContainer(),
                         container.getMaxElements(),
                         elements));
             }
@@ -771,6 +776,7 @@ public class CmsModelGroupHelper {
                     container.getName(),
                     container.getType(),
                     container.getParentInstanceId(),
+                    container.isRootContainer(),
                     container.getMaxElements(),
                     updatedElements);
                 updatedContainers.add(updatedContainer);

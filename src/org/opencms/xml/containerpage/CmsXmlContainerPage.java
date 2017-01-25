@@ -98,6 +98,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Elements,
         /** Element formatter node name. */
         Formatter,
+        /** The is root container node name. */
+        IsRootContainer,
         /** Container attribute key node name. */
         Key,
         /** Container name node name. */
@@ -397,7 +399,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         while (cntIt.hasNext()) {
             CmsContainerBean container = cntIt.next();
             // check all unused nested containers if their parent element is still part of the page
-            if (!currentContainers.containsKey(container.getName()) && container.isNestedContainer()) {
+            if (!currentContainers.containsKey(container.getName())
+                && (container.isNestedContainer() && !container.isRootContainer())) {
                 boolean remove = !pageElements.containsKey(container.getParentInstanceId())
                     || container.getElements().isEmpty();
                 if (!remove) {
@@ -505,6 +508,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         addBookmarkForElement(parentInstance, locale, container, cntPath, cntDef);
                     }
 
+                    Element isRootContainer = container.element(XmlNode.IsRootContainer.name());
+                    if (isRootContainer != null) {
+                        addBookmarkForElement(isRootContainer, locale, container, cntPath, cntDef);
+                    }
+
                     List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                     // Elements
                     for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(
@@ -565,6 +573,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         name.getText(),
                         type.getText(),
                         parentInstance != null ? parentInstance.getText() : null,
+                        (isRootContainer != null) && Boolean.valueOf(isRootContainer.getText()).booleanValue(),
                         elements);
                     containers.add(newContainerBean);
                 }
@@ -623,6 +632,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
             if (container.isNestedContainer()) {
                 cntElement.addElement(XmlNode.ParentInstanceId.name()).addCDATA(container.getParentInstanceId());
+            }
+            if (container.isRootContainer()) {
+                cntElement.addElement(XmlNode.IsRootContainer.name()).addText(Boolean.TRUE.toString());
             }
 
             // the elements

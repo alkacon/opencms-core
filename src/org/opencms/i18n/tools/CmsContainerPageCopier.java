@@ -407,6 +407,7 @@ public class CmsContainerPageCopier {
                 container.getName(),
                 container.getType(),
                 container.getParentInstanceId(),
+                container.isRootContainer(),
                 newElements);
             newContainers.add(newContainer);
         }
