@@ -707,11 +707,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             //   m_quickFilter.setVisible(hasQuickFilter());
             m_quickSearch.addStyleName(DIALOG_CSS.quickFilterBox());
             m_quickSearch.setTriggerChangeOnKeyPress(true);
-            m_quickSearch.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
+            String message = hasQuickFilter()
+            ? Messages.get().key(Messages.GUI_QUICK_FINDER_FILTER_0)
+            : Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0);
+            m_quickSearch.setGhostValue(message, true);
             m_quickSearch.setGhostModeClear(true);
             m_options.insert(m_quickSearch, 0);
             m_searchButton = new CmsPushButton();
-            m_searchButton.setImageClass(I_CmsButton.SEARCH_SMALL);
+            m_searchButton.setImageClass(hasQuickFilter() ? I_CmsButton.FILTER : I_CmsButton.SEARCH_SMALL);
             m_searchButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
             m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
             m_searchButton.getElement().getStyle().setMarginTop(4, Unit.PX);
@@ -729,7 +732,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
                         onContentChange();
                     }
                 };
-                m_searchButton.setTitle(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0));
+                m_searchButton.setTitle(message);
             } else {
                 m_quickSearch.addKeyPressHandler(new KeyPressHandler() {
 

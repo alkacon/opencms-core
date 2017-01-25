@@ -280,6 +280,9 @@ public final class Messages {
     public static final String GUI_QUICK_FINDER_SEARCH_0 = "GUI_QUICK_FINDER_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_FINDER_FILTER_0 = "GUI_QUICK_FINDER_FILTER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_BUTTON_DELETE_0 = "GUI_RESULT_BUTTON_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
