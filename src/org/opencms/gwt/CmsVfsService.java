@@ -342,6 +342,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 listInfo.setStateIcon(CmsListInfoBean.StateIcon.standard);
             }
         }
+        listInfo.setIsFolder(Boolean.valueOf(resource.isFolder()));
         String resTypeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
         String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
         Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);

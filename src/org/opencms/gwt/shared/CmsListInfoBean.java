@@ -80,6 +80,9 @@ public class CmsListInfoBean implements IsSerializable {
     /** The detail resource type. */
     private String m_detailResourceType;
 
+    /** Flag which indicates whether this was generated for a folder. */
+    private Boolean m_isFolder;
+
     /** The lock icon. */
     private LockIcon m_lockIcon;
 
@@ -170,6 +173,18 @@ public class CmsListInfoBean implements IsSerializable {
     public String getDetailResourceType() {
 
         return m_detailResourceType;
+    }
+
+    /**
+     * Returns a flag which indicates whether this info bean was generated for a folder.<p>
+     *
+     * This may not be set (i.e. null).
+     *
+     * @return a Boolean indicating whether this bean was generated for a folder
+     */
+    public Boolean getIsFolder() {
+
+        return m_isFolder;
     }
 
     /**
@@ -282,6 +297,16 @@ public class CmsListInfoBean implements IsSerializable {
     public void setDetailResourceType(String detailResourceType) {
 
         m_detailResourceType = detailResourceType;
+    }
+
+    /**
+     * Sets thE 'isFolder' flag.<p>
+     *
+     * @param isFolder the new value
+     */
+    public void setIsFolder(Boolean isFolder) {
+
+        m_isFolder = isFolder;
     }
 
     /**
