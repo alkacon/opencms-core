@@ -301,10 +301,12 @@ public class CmsNotificationCandidates {
                     confirmedResourcesList.remove(o);
                 }
             }
-            contentNotification.setNotificationCauses(notificationResources);
-            // Remove notification, if resource list is empty
-            if (notificationCandidates.isEmpty()) {
+
+            if (notificationResources.isEmpty()) {
+                // Remove notification, if resource list is empty
                 contentNotifications.remove(contentNotification);
+            } else {
+                contentNotification.setNotificationCauses(notificationResources);
             }
             try {
                 m_cms.writeUser(responsible);
