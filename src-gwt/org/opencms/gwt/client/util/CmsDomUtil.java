@@ -314,6 +314,9 @@ public final class CmsDomUtil {
         position,
 
         /** CSS Property. */
+        right,
+
+        /** CSS Property. */
         textAlign,
 
         /** CSS Property. */
@@ -1321,6 +1324,29 @@ public final class CmsDomUtil {
             result.add(elements.getItem(i));
         }
         return result;
+    }
+
+    /**
+     * Returns the first direct child matching the given class name.<p>
+     *
+     * @param element the parent element
+     * @param className the class name to match
+     *
+     * @return the child element
+     */
+    public static Element getFirstChildWithClass(Element element, String className) {
+
+        NodeList<Node> children = element.getChildNodes();
+
+        for (int i = 0; i < children.getLength(); i++) {
+            if (children.getItem(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element child = (Element)children.getItem(i);
+                if (child.hasClassName(className)) {
+                    return child;
+                }
+            }
+        }
+        return null;
     }
 
     /**
