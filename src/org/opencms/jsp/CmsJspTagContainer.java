@@ -654,6 +654,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         getName(),
                         getType(),
                         m_parentElement != null ? m_parentElement.getInstanceId() : null,
+                        (m_parentContainer == null) || (m_detailOnly && !m_parentContainer.isDetailOnly()),
                         maxElements,
                         Collections.<CmsContainerElementBean> emptyList());
                 }

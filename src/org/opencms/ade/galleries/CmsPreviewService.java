@@ -135,6 +135,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                         "PREVIEW",
                         CmsFormatterBean.PREVIEW_TYPE,
                         null,
+                        true,
                         1,
                         Collections.<CmsContainerElementBean> emptyList());
                     containerBean.setWidth(String.valueOf(CmsFormatterBean.PREVIEW_WIDTH));

@@ -275,6 +275,7 @@ public final class CmsContainerpageController {
                 m_currentContainer.getParentContainerName(),
                 m_currentContainer.getParentInstanceId());
             container.setDeatilOnly(m_currentContainer.isDetailOnly());
+            container.setRootContainer(isRootContainer(m_currentContainer));
             m_resultContainers.add(container);
         }
 
@@ -344,18 +345,20 @@ public final class CmsContainerpageController {
          */
         public void endContainer() {
 
-            m_resultContainers.add(
-                new CmsContainer(
-                    m_containerName,
-                    m_currentContainer.getType(),
-                    null,
-                    m_currentContainer.getWidth(),
-                    m_currentContainer.getMaxElements(),
-                    m_currentContainer.isDetailView(),
-                    true,
-                    m_currentElements,
-                    m_currentContainer.getParentContainerName(),
-                    m_currentContainer.getParentInstanceId()));
+            CmsContainer container = new CmsContainer(
+                m_containerName,
+                m_currentContainer.getType(),
+                null,
+                m_currentContainer.getWidth(),
+                m_currentContainer.getMaxElements(),
+                m_currentContainer.isDetailView(),
+                true,
+                m_currentElements,
+                m_currentContainer.getParentContainerName(),
+                m_currentContainer.getParentInstanceId());
+
+            container.setRootContainer(isRootContainer(m_currentContainer));
+            m_resultContainers.add(container);
         }
 
         /**
@@ -3302,6 +3305,25 @@ public final class CmsContainerpageController {
             }
         }
         return hasNestedContainers;
+    }
+
+    /**
+     * Returns whether the given container is considered a root container.<p>
+     *
+     * @param container the container to check
+     *
+     * @return <code>true</code> if the given container is a root container
+     */
+    protected boolean isRootContainer(CmsContainer container) {
+
+        boolean isRoot = false;
+        if (!container.isSubContainer()) {
+            isRoot = true;
+        } else if (container.isDetailOnly()) {
+            CmsContainer parent = getContainer(container.getParentContainerName());
+            isRoot = (parent != null) && !parent.isDetailOnly();
+        }
+        return isRoot;
     }
 
     /**
