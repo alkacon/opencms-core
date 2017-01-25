@@ -247,6 +247,9 @@ public final class Messages {
     public static final String GUI_DIALOG_RESET_TITLE_0 = "GUI_DIALOG_RESET_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_ONLY_CREATE_0 = "GUI_DIRECTEDIT_ONLY_CREATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DONE_0 = "GUI_DONE_0";
 
     /** Message constant for key in the resource bundle. */

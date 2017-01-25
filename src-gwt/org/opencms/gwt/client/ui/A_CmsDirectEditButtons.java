@@ -218,6 +218,9 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
                         m_edit.disable(m_editableData.getNoEditReason());
                     }
+                } else if (m_editableData.hasNew()) {
+                    String message = Messages.get().key(Messages.GUI_DIRECTEDIT_ONLY_CREATE_0);
+                    m_edit.disable(message);
                 }
             }
 
