@@ -335,13 +335,13 @@ public class CmsDefaultResourceStatusProvider {
         sortOtherSiteRelations(cms, result);
         if (includeTargets) {
             result.getRelationTargets().addAll(getTargets(cms, contentLocale, resource, additionalStructureIds));
-            if (detailContentId != null) {
+            if ((detailContentId != null) && (realLocale != null)) {
                 // try to add detail only contents
                 try {
                     Optional<CmsResource> detailOnlyPage = CmsJspTagContainer.getDetailOnlyPage(
                         cms,
                         cms.readResource(detailContentId, CmsResourceFilter.ALL),
-                        realLocale);
+                        CmsJspTagContainer.getDetailContainerLocale(cms, realLocale.toString(), resource));
                     if (detailOnlyPage.isPresent()) {
                         result.getRelationTargets().addAll(
                             getTargets(

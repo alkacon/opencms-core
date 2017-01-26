@@ -161,6 +161,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the 'do not translate' marking in the sitemap editor. */
     public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
 
+    /** Property to mark detail pages to have locale independent detail only containers. */
+    public static final String PROPERTY_LOCALE_INDEPENDENT_DETAILS = "locale.independent-details";
+
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
 

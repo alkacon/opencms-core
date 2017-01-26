@@ -36,6 +36,8 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -44,7 +46,6 @@ import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsLoaderException;
@@ -76,9 +77,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -118,6 +121,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1228397990961282556L;
+
+    /** Use this locale string for locale independent detail only container resources. */
+    public static final String LOCALE_ALL = "ALL";
 
     /** The evaluated body content if available. */
     private String m_bodyContent;
@@ -213,6 +219,33 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
+     * Returns the detail container resource locale appropriate for the given detail page.<p>
+     *
+     * @param cms the cms context
+     * @param contentLocale the content locale
+     * @param resource the detail page resource
+     *
+     * @return the locale String
+     */
+    public static String getDetailContainerLocale(CmsObject cms, String contentLocale, CmsResource resource) {
+
+        boolean singleLocale = CmsJspTagContainer.useSingleLocaleDetailContainers(
+            cms.getRequestContext().getSiteRoot());
+        if (!singleLocale) {
+            try {
+                CmsProperty prop = cms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_LOCALE_INDEPENDENT_DETAILS,
+                    true);
+                singleLocale = Boolean.parseBoolean(prop.getValue());
+            } catch (Exception e) {
+                LOG.warn(e.getMessage(), e);
+            }
+        }
+        return singleLocale ? CmsJspTagContainer.LOCALE_ALL : contentLocale;
+    }
+
+    /**
      * Returns the path to the associated detail content.<p>
      *
      * @param detailContainersPage the detail containers page path
@@ -239,7 +272,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
     public static Optional<CmsResource> getDetailOnlyPage(
         CmsObject cms,
         CmsResource detailContent,
-        Locale contentLocale) {
+        String contentLocale) {
 
         try {
             CmsObject rootCms = OpenCms.initCmsObject(cms);
@@ -273,12 +306,11 @@ public class CmsJspTagContainer extends BodyTagSupport {
             try {
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
-                Locale locale;
-                if (useSingleLocaleDetailContainers(cms.getRequestContext().getSiteRoot())) {
-                    locale = CmsLocaleManager.getDefaultLocale();
-                } else {
-                    locale = cms.getRequestContext().getLocale();
-                }
+                String locale = getDetailContainerLocale(
+                    cms,
+                    cms.getRequestContext().getLocale().toString(),
+                    cms.readResource(cms.getRequestContext().getUri()));
+
                 String resourceName = getDetailOnlyPageName(standardContext.getDetailContent().getRootPath(), locale);
                 CmsResource resource = null;
                 if (rootCms.existsResource(resourceName)) {
@@ -314,7 +346,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
      *
      * @return the site path to the detail only container page
      */
-    public static String getDetailOnlyPageName(String detailContentSitePath, Locale contentLocale) {
+    public static String getDetailOnlyPageName(String detailContentSitePath, String contentLocale) {
 
         String result = CmsResource.getFolderPath(detailContentSitePath);
         if (contentLocale != null) {
@@ -343,24 +375,22 @@ public class CmsJspTagContainer extends BodyTagSupport {
     public static List<CmsResource> getDetailOnlyResources(CmsObject cms, CmsResource resource) {
 
         List<CmsResource> result = new ArrayList<CmsResource>();
+        Set<String> resourcePaths = new HashSet<String>();
+        String sitePath = cms.getSitePath(resource);
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
+            resourcePaths.add(getDetailOnlyPageName(sitePath, locale.toString()));
+        }
+        // in case the deprecated locale less detail container resource exists
+        resourcePaths.add(getDetailOnlyPageName(sitePath, null));
+        // add the locale independent detail container resource
+        resourcePaths.add(getDetailOnlyPageName(sitePath, LOCALE_ALL));
+        for (String path : resourcePaths) {
             try {
-                CmsResource detailContainers = cms.readResource(
-                    getDetailOnlyPageName(cms.getSitePath(resource), locale),
-                    CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsResource detailContainers = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
                 result.add(detailContainers);
             } catch (CmsException e) {
                 // will happen in case resource does not exist, ignore
             }
-        }
-        // in case the deprecated locale less detail container resource exists
-        try {
-            CmsResource detailContainers = cms.readResource(
-                getDetailOnlyPageName(cms.getSitePath(resource), null),
-                CmsResourceFilter.IGNORE_EXPIRATION);
-            result.add(detailContainers);
-        } catch (CmsException e) {
-            // will happen in case resource does not exist, ignore
         }
         return result;
     }
