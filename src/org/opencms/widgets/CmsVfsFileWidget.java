@@ -49,6 +49,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -600,13 +601,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         JSONObject config = new JSONObject();
         try {
             config.put(I_CmsGalleryProviderConstants.CONFIG_START_SITE, m_startSite);
-            String tabConfig = null;
-            if (m_includeFiles) {
-                tabConfig = "selectAll";
-            } else {
-                tabConfig = "folders";
-            }
-            config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, tabConfig);
+
             config.put(I_CmsGalleryProviderConstants.CONFIG_SHOW_SITE_SELECTOR, m_showSiteSelector);
             config.put(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH, cms.getSitePath(resource));
             config.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, contentLocale.toString());
@@ -615,6 +610,18 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_selectableTypes)) {
                 config.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, m_selectableTypes.trim());
             }
+            String tabConfig = null;
+            if (m_includeFiles) {
+                tabConfig = CmsGalleryTabConfiguration.TC_SELECT_ALL;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_selectableTypes)
+                    && !Arrays.asList(m_selectableTypes.split("[, ]+")).contains(
+                        CmsResourceTypeXmlContainerPage.getStaticTypeName())) {
+                    tabConfig = CmsGalleryTabConfiguration.TC_SELECT_ALL_NO_SITEMAP;
+                }
+            } else {
+                tabConfig = CmsGalleryTabConfiguration.TC_FOLDERS;
+            }
+            config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, tabConfig);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchTypes)) {
                 CmsMacroResolver resolver = CmsMacroResolver.newInstance();
                 resolver.addDynamicMacro(DEFAULT_SEARCH_TYPES_MACRO, new SearchTypesFactory(cms, resource));
