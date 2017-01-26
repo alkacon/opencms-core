@@ -30,6 +30,8 @@ package org.opencms.security;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Locale;
+
 /**
  * Default implementation for the validation handler.<p>
  *
@@ -56,6 +58,7 @@ public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
         if (CmsStringUtil.isNotEmpty(email)) {
             email = email.trim();
+            email = email.toLowerCase(Locale.ROOT);
         }
         if (!CmsStringUtil.validateRegex(email, EMAIL_REGEX, false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
