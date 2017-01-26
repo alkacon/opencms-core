@@ -28,6 +28,7 @@
 package org.opencms.util;
 
 import org.opencms.flex.CmsFlexRequest;
+import org.opencms.flex.CmsFlexResponse;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -826,17 +827,18 @@ public final class CmsRequestUtil {
      */
     public static void redirectPermanently(CmsJspActionElement jsp, String target) {
 
-        String newTarget = OpenCms.getLinkManager().substituteLink(jsp.getCmsObject(), target, null, true);
-        jsp.getRequest().setAttribute(
-            CmsRequestUtil.ATTRIBUTE_ERRORCODE,
-            new Integer(HttpServletResponse.SC_MOVED_PERMANENTLY));
+        target = OpenCms.getLinkManager().substituteLink(jsp.getCmsObject(), target);
         jsp.getResponse().setHeader(HEADER_CONNECTION, "close");
         try {
-            jsp.getResponse().sendRedirect(newTarget);
+            HttpServletResponse response = jsp.getResponse();
+            if (response instanceof CmsFlexResponse) {
+                ((CmsFlexResponse)jsp.getResponse()).sendRedirect(target, true);
+            } else {
+                response.setHeader("Location", target);
+                response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+            }
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_IOERROR_0), e);
-            // In case of an IOException, we send the redirect ourselves
-            jsp.getResponse().setHeader(HEADER_LOCATION, newTarget);
         }
     }
 
