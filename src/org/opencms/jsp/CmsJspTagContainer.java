@@ -131,11 +131,20 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /** The editable by tag attribute. A comma separated list of OpenCms principals. */
     private String m_editableBy;
 
+    /** Indicating that the container page editor is active for the current request. */
+    private boolean m_editableRequest;
+
     /** The maxElements attribute value. */
     private String m_maxElements;
 
     /** The name attribute value. */
     private String m_name;
+
+    /**
+     * The container name prefix to use for nested container names.
+     * If empty the element instance id of the parent element will be used.
+     **/
+    private String m_namePrefix;
 
     /** The optional container parameter. */
     private String m_param;
@@ -157,9 +166,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /** The container width as a string. */
     private String m_width;
-
-    /** Indicating that the container page editor is active for the current request. */
-    private boolean m_editableRequest;
 
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
@@ -800,16 +806,28 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
-     * Returns the name attribute value.<p>
+     * Returns the container name, in case of nested containers with a prefix to guaranty uniqueness.<p>
      *
-     * @return String the name attribute value
+     * @return String the container name
      */
     public String getName() {
 
         if (isNested()) {
-            return m_parentElement.getInstanceId() + "-" + m_name;
+            return (CmsStringUtil.isEmptyOrWhitespaceOnly(m_namePrefix)
+            ? m_parentElement.getInstanceId()
+            : m_namePrefix) + "-" + m_name;
         }
         return m_name;
+    }
+
+    /**
+     * Returns the name prefix.<p>
+     *
+     * @return the namePrefix
+     */
+    public String getNameprefix() {
+
+        return m_namePrefix;
     }
 
     /**
@@ -917,6 +935,16 @@ public class CmsJspTagContainer extends BodyTagSupport {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the name prefix.<p>
+     *
+     * @param namePrefix the name prefix to set
+     */
+    public void setNameprefix(String namePrefix) {
+
+        m_namePrefix = namePrefix;
     }
 
     /**

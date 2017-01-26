@@ -2120,6 +2120,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<description><![CDATA[
+        		The container name prefix to use for nested container names.
+     			If empty the element instance id of the parent element will be used.
+        	]]></description>
+        	<name>nameprefix</name>
+        	<required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description><![CDATA[
