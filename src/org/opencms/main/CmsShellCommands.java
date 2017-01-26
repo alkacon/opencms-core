@@ -30,6 +30,7 @@ package org.opencms.main;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsLoginMessage;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -160,6 +161,35 @@ class CmsShellCommands implements I_CmsShellCommands {
             principalName = OpenCms.getImportExportManager().translateUser(principalName);
         }
         m_cms.chacc(resourceName, principalType, principalName, permissionString);
+    }
+
+    /**
+     * Change the user settings concerned with the place where a user is taken on login
+     * @param username the name of the user for which the data should be changed
+     * @param startProject the start project
+     * @param startSite the start site
+     * @param startFolder the start folder (relative to the site root)
+     * @param startView the start view
+     *                  - Direct edit (/system/workplace/views/explorer/directEdit.jsp)
+     *                  - Explorer (/system/workplace/views/explorer/explorer_fs.jsp)
+     *                  - Administration (/system/workplace/views/admin/admin-fs.jsp)
+     * @throws CmsException thrown if user can't be read or settings can't be saved.
+     */
+    public void changeUserSettingsStartParameters(
+        String username,
+        String startProject,
+        String startSite,
+        String startFolder,
+        String startView)
+    throws CmsException {
+
+        CmsUser user = m_cms.readUser(username);
+        CmsUserSettings settings = new CmsUserSettings(user);
+        settings.setStartProject(startProject);
+        settings.setStartSite(startSite);
+        settings.setStartFolder(startFolder);
+        settings.setStartView(startView);
+        settings.save(m_cms);
     }
 
     /**
@@ -304,7 +334,8 @@ class CmsShellCommands implements I_CmsShellCommands {
         String description,
         String firstname,
         String lastname,
-        String email) throws Exception {
+        String email)
+    throws Exception {
 
         if (existsUser(name)) {
             m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_USER_ALREADY_EXISTS_1, name));
@@ -357,7 +388,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
