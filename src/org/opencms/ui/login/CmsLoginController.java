@@ -31,6 +31,7 @@ import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsResourceBundleLoader;
@@ -320,6 +321,7 @@ public class CmsLoginController {
         if (UI.getCurrent() instanceof CmsAppWorkplaceUi) {
             ((CmsAppWorkplaceUi)UI.getCurrent()).onWindowClose();
         }
+        String loggedInUser = cms.getRequestContext().getCurrentUser().getName();
         UI.getCurrent().getSession().close();
         String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
             cms,
@@ -327,6 +329,15 @@ public class CmsLoginController {
             false);
         VaadinService.getCurrentRequest().getWrappedSession().invalidate();
         Page.getCurrent().setLocation(loginLink);
+        // logout was successful
+        if (LOG.isInfoEnabled()) {
+            LOG.info(
+                org.opencms.jsp.Messages.get().getBundle().key(
+                    org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
+                    loggedInUser,
+                    "{workplace logout option}",
+                    cms.getRequestContext().getRemoteAddress()));
+        }
     }
 
     /**
@@ -341,6 +352,7 @@ public class CmsLoginController {
     public static void logout(CmsObject cms, HttpServletRequest request, HttpServletResponse response)
     throws IOException {
 
+        String loggedInUser = cms.getRequestContext().getCurrentUser().getName();
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
@@ -353,7 +365,7 @@ public class CmsLoginController {
             LOG.info(
                 org.opencms.jsp.Messages.get().getBundle().key(
                     org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
-                    cms.getRequestContext().getCurrentUser().getName(),
+                    loggedInUser,
                     cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()),
                     cms.getRequestContext().getRemoteAddress()));
         }
@@ -462,6 +474,15 @@ public class CmsLoginController {
                 return;
             }
             currentCms.loginUser(realUser, password);
+            if (LOG.isInfoEnabled()) {
+                CmsRequestContext context = currentCms.getRequestContext();
+                LOG.info(
+                    org.opencms.jsp.Messages.get().getBundle().key(
+                        org.opencms.jsp.Messages.LOG_LOGIN_SUCCESSFUL_3,
+                        context.getCurrentUser().getName(),
+                        "{workplace login dialog}",
+                        context.getRemoteAddress()));
+            }
             OpenCms.getSessionManager().updateSessionInfo(
                 currentCms,
                 (HttpServletRequest)VaadinService.getCurrentRequest());
