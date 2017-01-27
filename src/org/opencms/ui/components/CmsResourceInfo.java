@@ -31,16 +31,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsResourceIcon.IconMode;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Locale;
@@ -114,17 +110,10 @@ public class CmsResourceInfo extends CustomLayout {
         Locale locale = A_CmsUI.get().getLocale();
         CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
         resUtil.setAbbrevLength(100);
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         m_topText.setValue(resUtil.getGalleryTitle(locale));
         m_bottomText.setValue(resUtil.getPath());
 
-        m_icon.initContent(
-            resUtil,
-            CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
-            useState ? resource.getState() : null,
-            true,
-            true);
+        m_icon.initContent(resUtil, useState ? resource.getState() : null, true, true);
 
     }
 

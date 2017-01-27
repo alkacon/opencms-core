@@ -43,8 +43,6 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -742,12 +740,7 @@ public class CmsElementUtil {
                 }
                 result.setElementView(elementView);
             }
-            CmsProperty tempElementsProp = m_cms.readPropertyObject(
-                resource,
-                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                false);
-            if (tempElementsProp.isNullProperty()
-                || !CmsContainerElement.USE_AS_COPY_MODEL.equals(tempElementsProp.getValue())) {
+            if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, resource)) {
                 result.setResourceType(CmsGwtConstants.TYPE_MODELGROUP_REUSE);
             }
         } else if (typeConfig != null) {

@@ -27,11 +27,13 @@
 
 package org.opencms.file.types;
 
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -170,6 +172,47 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
         return result;
 
+    }
+
+    /**
+     * Checks whether the given resource is a model group.<p>
+     *
+     * @param resource the resource
+     *
+     * @return <code>true</code> in case the resource is a model group
+     */
+    public static boolean isModelGroup(CmsResource resource) {
+
+        return OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals(MODEL_GROUP_TYPE_NAME);
+    }
+
+    /**
+     * Checks whether the given resource is a model reuse group.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     *
+     * @return <code>true</code> in case the resource is a model reuse group
+     */
+    public static boolean isModelReuseGroup(CmsObject cms, CmsResource resource) {
+
+        boolean result = false;
+        if (isModelGroup(resource)) {
+            try {
+                CmsProperty tempElementsProp = cms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    false);
+                if (tempElementsProp.isNullProperty()
+                    || !CmsContainerElement.USE_AS_COPY_MODEL.equals(tempElementsProp.getValue())) {
+                    result = true;
+                }
+            } catch (CmsException e) {
+                LOG.warn(e.getMessage(), e);
+            }
+
+        }
+        return result;
     }
 
     /**

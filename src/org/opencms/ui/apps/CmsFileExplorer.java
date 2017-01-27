@@ -1114,12 +1114,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 String resName = parentId == null ? resource.getRootPath() : resource.getName();
                 resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(resName);
                 CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
-                String iconHTML = CmsResourceIcon.getTreeCaptionHTML(
-                    resName,
-                    resUtil,
-                    resUtil.getBigIconPath(),
-                    null,
-                    false);
+                String iconHTML = CmsResourceIcon.getTreeCaptionHTML(resName, resUtil, null, false);
                 resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(iconHTML);
                 resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
                 if (parentId != null) {
@@ -1600,7 +1595,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             Boolean.valueOf(resUtil.isInsideProject()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).setValue(
             Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
-        String iconHTML = CmsResourceIcon.getTreeCaptionHTML(resName, resUtil, resUtil.getBigIconPath(), null, false);
+        String iconHTML = CmsResourceIcon.getTreeCaptionHTML(resName, resUtil, null, false);
 
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(iconHTML);
         if (disabled) {

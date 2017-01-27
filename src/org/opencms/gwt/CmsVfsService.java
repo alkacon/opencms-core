@@ -27,7 +27,6 @@
 
 package org.opencms.gwt;
 
-import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.galleries.CmsPreviewService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -354,15 +353,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         if (CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
             listInfo.setResourceType(CmsGwtConstants.TYPE_NAVLEVEL);
         } else {
-            if (CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(resTypeName)) {
-                CmsProperty tempElementsProp = cms.readPropertyObject(
-                    resource,
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                    false);
-                if (tempElementsProp.isNullProperty()
-                    || !CmsContainerElement.USE_AS_COPY_MODEL.equals(tempElementsProp.getValue())) {
-                    resTypeName = CmsGwtConstants.TYPE_MODELGROUP_REUSE;
-                }
+            if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(cms, resource)) {
+                resTypeName = CmsGwtConstants.TYPE_MODELGROUP_REUSE;
             }
             listInfo.setResourceType(resTypeName);
             // set the default file and detail type info
