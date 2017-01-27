@@ -43,6 +43,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.I_CmsAppSettings;
 import org.opencms.ui.apps.I_CmsAppUIContext;
@@ -326,6 +327,11 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
         CmsMessages messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         context.showInfoArea(false);
         context.setAppTitle(messages.key(Messages.GUI_SOURCE_EDITOR_TITLE_0));
+        CmsAppWorkplaceUi.setWindowTitle(
+            CmsVaadinUtils.getMessageText(
+                org.opencms.ui.apps.Messages.GUI_CONTENT_EDITOR_TITLE_2,
+                resource.getName(),
+                CmsResource.getParentFolder(A_CmsUI.getCmsObject().getSitePath(resource))));
         m_backLink = backLink;
         m_codeMirror = new CmsCodeMirror();
         m_codeMirror.setSizeFull();
