@@ -86,13 +86,12 @@ public class CmsResourceIcon extends Label {
      * Constructor.<p>
      *
      * @param resUtil the resource util
-     * @param iconPath the resource icon
      * @param state the resource state
      * @param showLocks <code>true</code> to show the resource locks
      */
-    public CmsResourceIcon(CmsResourceUtil resUtil, String iconPath, CmsResourceState state, boolean showLocks) {
+    public CmsResourceIcon(CmsResourceUtil resUtil, CmsResourceState state, boolean showLocks) {
         this();
-        initContent(resUtil, iconPath, state, showLocks, true);
+        initContent(resUtil, state, showLocks, true);
     }
 
     /**
@@ -169,22 +168,17 @@ public class CmsResourceIcon extends Label {
      * Returns the icon HTML.<p>
      *
      * @param resUtil the resource util for the resource
-     * @param iconPath the icon path
      * @param state the resource state
      * @param showLocks <code>true</code> to show lock state overlay
      *
      * @return the icon HTML
      */
-    public static String getIconHTML(
-        CmsResourceUtil resUtil,
-        String iconPath,
-        CmsResourceState state,
-        boolean showLocks) {
+    public static String getIconHTML(CmsResourceUtil resUtil, CmsResourceState state, boolean showLocks) {
 
         return "<span class=\""
             + OpenCmsTheme.RESOURCE_ICON
             + "\">"
-            + getIconInnerHTML(resUtil, iconPath, state, showLocks, true)
+            + getIconInnerHTML(resUtil, state, showLocks, true)
             + "</span>";
     }
 
@@ -252,7 +246,6 @@ public class CmsResourceIcon extends Label {
      *
      * @param resourceName the resource name to display
      * @param resUtil the resource util for the resource
-     * @param iconPath the icon path
      * @param state the resource state
      * @param showLocks <code>true</code> to show lock state overlay
      *
@@ -261,14 +254,32 @@ public class CmsResourceIcon extends Label {
     public static String getTreeCaptionHTML(
         String resourceName,
         CmsResourceUtil resUtil,
-        String iconPath,
         CmsResourceState state,
         boolean showLocks) {
 
-        return CmsResourceIcon.getIconHTML(resUtil, resUtil.getBigIconPath(), null, false)
+        return CmsResourceIcon.getIconHTML(resUtil, null, false)
             + "<span class=\"o-tree-caption\">"
             + resourceName
             + "</span>";
+    }
+
+    /**
+     * Returns the icon inner HTML.<p>
+     *
+     * @param resUtil the resource util for the resource
+     * @param state the resource state
+     * @param showLocks <code>true</code> to show lock state overlay
+     * @param showDetailIcon <code>true</code> to show the detail icon overlay
+     *
+     * @return the icon inner HTML
+     */
+    private static String getIconInnerHTML(
+        CmsResourceUtil resUtil,
+        CmsResourceState state,
+        boolean showLocks,
+        boolean showDetailIcon) {
+
+        return getIconInnerHTML(resUtil, resUtil.getBigIconPath(), state, showLocks, showDetailIcon);
     }
 
     /**
@@ -290,7 +301,6 @@ public class CmsResourceIcon extends Label {
         boolean showDetailIcon) {
 
         String content = "<img src=\"" + iconPath + "\" />";
-
         if (resUtil != null) {
             if (showDetailIcon && !iconPath.endsWith(CmsIconUtil.ICON_NAV_LEVEL_BIG)) {
 
@@ -344,7 +354,6 @@ public class CmsResourceIcon extends Label {
             }
         }
         if (state != null) {
-
             String title = resUtil != null
             ? CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0)
                 + " "
@@ -398,7 +407,24 @@ public class CmsResourceIcon extends Label {
      * Initializes the content.<p>
      *
      * @param resUtil the resource util
-     * @param iconPath the resource icon
+     * @param state the resource state
+     * @param showLocks <code>true</code> to show the resource locks
+     * @param showDetailIcon <code>true</code> to show the detail icon overlay
+     */
+    public void initContent(
+        CmsResourceUtil resUtil,
+        CmsResourceState state,
+        boolean showLocks,
+        boolean showDetailIcon) {
+
+        setValue(getIconInnerHTML(resUtil, state, showLocks, showDetailIcon));
+    }
+
+    /**
+     * Initializes the content.<p>
+     *
+     * @param resUtil the resource util
+     * @param iconPath the icon path
      * @param state the resource state
      * @param showLocks <code>true</code> to show the resource locks
      * @param showDetailIcon <code>true</code> to show the detail icon overlay

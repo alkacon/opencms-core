@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.i18n.CmsMessages;
@@ -284,8 +285,12 @@ public final class CmsResourceUtil {
      */
     public String getBigIconPath() {
 
-        if (CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
+        if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
             return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_BIG);
+        }
+        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
+            return CmsWorkplace.getResourceUri(
+                CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_MODEL_GROUP_REUSE_BIG);
         }
         I_CmsResourceType type = getResourceType();
         CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
@@ -457,6 +462,13 @@ public final class CmsResourceUtil {
      */
     public String getIconPathResourceType() {
 
+        if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
+            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_SMALL);
+        }
+        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
+            return CmsWorkplace.getResourceUri(
+                CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_MODEL_GROUP_REUSE_SMALL);
+        }
         if (!isEditable()) {
             return CmsWorkplace.RES_PATH_FILETYPES
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(

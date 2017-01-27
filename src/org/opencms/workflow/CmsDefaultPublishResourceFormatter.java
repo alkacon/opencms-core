@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
@@ -424,6 +425,9 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
         String detailTypeName = null;
         if (CmsJspNavBuilder.isNavLevelFolder(m_cms, resource)) {
             typeName = CmsGwtConstants.TYPE_NAVLEVEL;
+        } else if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, resource)) {
+            typeName = CmsGwtConstants.TYPE_MODELGROUP_REUSE;
+
         } else {
             typeName = resUtil.getResourceTypeName();
             detailTypeName = CmsResourceIcon.getDefaultFileOrDetailType(m_cms, resource);

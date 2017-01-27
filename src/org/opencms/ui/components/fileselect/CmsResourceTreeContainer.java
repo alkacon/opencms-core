@@ -307,18 +307,13 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
             }
             resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT).setValue(navText);
             String folderCaption;
-            folderCaption = CmsResourceIcon.getTreeCaptionHTML(name, resUtil, resUtil.getBigIconPath(), null, false);
+            folderCaption = CmsResourceIcon.getTreeCaptionHTML(name, resUtil, null, false);
             resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(folderCaption);
             if (inNavigation) {
                 if (navText == null) {
                     navText = name;
                 }
-                String sitemapCaption = CmsResourceIcon.getTreeCaptionHTML(
-                    navText,
-                    resUtil,
-                    resUtil.getBigIconPath(),
-                    null,
-                    false);
+                String sitemapCaption = CmsResourceIcon.getTreeCaptionHTML(navText, resUtil, null, false);
                 resourceItem.getItemProperty(PROPERTY_SITEMAP_CAPTION).setValue(sitemapCaption);
             }
 

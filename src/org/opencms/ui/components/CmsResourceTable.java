@@ -347,7 +347,7 @@ public class CmsResourceTable extends CustomComponent {
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         if (resourceItem.getItemProperty(PROPERTY_TYPE_ICON) != null) {
             resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-                new CmsResourceIcon(resUtil, resUtil.getBigIconPath(), resource.getState(), true));
+                new CmsResourceIcon(resUtil, resource.getState(), true));
         }
 
         if (resourceItem.getItemProperty(PROPERTY_PROJECT) != null) {
