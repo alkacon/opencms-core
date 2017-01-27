@@ -74,9 +74,9 @@ public abstract class A_CmsPreference implements I_CmsPreference {
     }
 
     /**
-     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled()
+     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled(CmsObject)
      */
-    public boolean isDisabled() {
+    public boolean isDisabled(CmsObject cms) {
 
         return false;
     }

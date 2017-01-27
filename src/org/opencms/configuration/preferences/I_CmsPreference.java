@@ -84,10 +84,11 @@ public interface I_CmsPreference {
 
     /**
      * Returns true if the preference is disabled.<p>
+     * @param cms the current CMS context
      *
      * @return true if the preference is disabled
      */
-    boolean isDisabled();
+    boolean isDisabled(CmsObject cms);
 
     /**
      * Sets the value of the preference in a CmsDefaultUserSettings instance.<p>

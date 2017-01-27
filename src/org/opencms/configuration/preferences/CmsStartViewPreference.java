@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceView;
@@ -49,6 +50,7 @@ import org.apache.commons.logging.Log;
  */
 public class CmsStartViewPreference extends CmsBuiltinPreference {
 
+    /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStartViewPreference.class);
 
     /** The nice name. */
@@ -166,6 +168,15 @@ public class CmsStartViewPreference extends CmsBuiltinPreference {
             null//preferfolder
         );
         return prop;
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.A_CmsPreference#isDisabled(org.opencms.file.CmsObject)
+     */
+    @Override
+    public boolean isDisabled(CmsObject cms) {
+
+        return !OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_USER);
     }
 
 }
