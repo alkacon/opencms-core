@@ -93,12 +93,8 @@
     <module name="OperatorWrap">
       <property name="tokens" value="BAND, BOR, BSR, BXOR, COLON, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR"/>
     </module>
-    <module name="ParenPad">
-      <property name="tokens" value="CTOR_CALL, LPAREN, METHOD_CALL, RPAREN, SUPER_CTOR_CALL"/>
-    </module>
-    <module name="TypecastParenPad">
-      <property name="tokens" value="RPAREN, TYPECAST"/>
-    </module>
+    <module name="ParenPad" />
+    <module name="TypecastParenPad" />
     <module name="WhitespaceAfter">
       <property name="tokens" value="COMMA, SEMI"/>
     </module>
