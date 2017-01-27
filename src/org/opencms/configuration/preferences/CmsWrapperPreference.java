@@ -126,11 +126,11 @@ public class CmsWrapperPreference implements I_CmsPreference {
     }
 
     /**
-     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled()
+     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled(CmsObject)
      */
-    public boolean isDisabled() {
+    public boolean isDisabled(CmsObject cms) {
 
-        return m_wrappedPreference.isDisabled();
+        return m_wrappedPreference.isDisabled(cms);
     }
 
     /**

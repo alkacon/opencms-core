@@ -107,10 +107,10 @@ public class CmsWorkplaceModePreference extends CmsBuiltinPreference {
     }
 
     /**
-     * @see org.opencms.configuration.preferences.A_CmsPreference#isDisabled()
+     * @see org.opencms.configuration.preferences.A_CmsPreference#isDisabled(CmsObject)
      */
     @Override
-    public boolean isDisabled() {
+    public boolean isDisabled(CmsObject cms) {
 
         return !OpenCms.getModuleManager().hasModule("org.opencms.workplace.traditional");
     }

@@ -28,6 +28,7 @@
 package org.opencms.configuration.preferences;
 
 import org.opencms.configuration.CmsDefaultUserSettings;
+import org.opencms.file.CmsObject;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 /**
@@ -112,10 +113,10 @@ public class CmsEditorPreference extends A_CmsPreference {
     }
 
     /**
-     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled()
+     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled(CmsObject)
      */
     @Override
-    public boolean isDisabled() {
+    public boolean isDisabled(CmsObject cms) {
 
         return false;
     }
