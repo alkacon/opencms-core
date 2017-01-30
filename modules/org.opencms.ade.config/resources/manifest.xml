@@ -17,7 +17,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		<export-mode name="reduced"/>
 		<description><![CDATA[Configuration for OpenCms websites.<br>
 <i>&copy; 2016 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i>]]></description>
-		<version>10.5.0</version>
+		<version>10.5.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -1297,6 +1297,14 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</properties>
 			<relations/>
 			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
 				<accessentry>
 					<uuidprincipal>ALL_OTHERS</uuidprincipal>
 					<flags>132</flags>

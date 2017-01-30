@@ -71,7 +71,13 @@ public final class Messages {
     public static final String GUI_CONFIRMATION_PUBLISH_0 = "GUI_CONFIRMATION_PUBLISH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMATION_PUBLISH_NOWP_0 = "GUI_CONFIRMATION_PUBLISH_NOWP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRMATION_WORKFLOW_1 = "GUI_CONFIRMATION_WORKFLOW_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMATION_WORKFLOW_NOWP_1 = "GUI_CONFIRMATION_WORKFLOW_NOWP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRMATION_WORKPLACE_BUTTON_0 = "GUI_CONFIRMATION_WORKPLACE_BUTTON_0";
