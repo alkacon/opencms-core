@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.client.preview;
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,27 +51,48 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     /** Enumeration of image tag attribute names. */
     public enum Attribute {
         /** Image align attribute. */
-        align, /** Image alt attribute. */
-        alt, /** Image class attribute. */
-        clazz, /** Image copyright info. */
-        copyright, /** Image direction attribute. */
-        dir, /** No image selected if this attribute is present. */
-        emptySelection, /** The image hash. */
-        hash, /** Image height attribute. */
-        height, /** Image hspace attribute. */
-        hspace, /** Image id attribute. */
-        id, /** Image copyright flag. */
-        insertCopyright, /** Image link original flag. */
-        insertLinkOrig, /** Image spacing flag. */
-        insertSpacing, /** Image subtitle flag. */
-        insertSubtitle, /** Image language attribute. */
-        lang, /** Image link path. */
-        linkPath, /** Image link target. */
-        linkTarget, /** Image longDesc attribute. */
-        longDesc, /** Image style attribute. */
-        style, /** Image title attribute. */
-        title, /** Image vspace attribute. */
-        vspace, /** Image width attribute. */
+        align,
+        /** Image alt attribute. */
+        alt,
+        /** Image class attribute. */
+        clazz,
+        /** Image copyright info. */
+        copyright,
+        /** Image direction attribute. */
+        dir,
+        /** No image selected if this attribute is present. */
+        emptySelection,
+        /** The image hash. */
+        hash,
+        /** Image height attribute. */
+        height,
+        /** Image hspace attribute. */
+        hspace,
+        /** Image id attribute. */
+        id,
+        /** Image copyright flag. */
+        insertCopyright,
+        /** Image link original flag. */
+        insertLinkOrig,
+        /** Image spacing flag. */
+        insertSpacing,
+        /** Image subtitle flag. */
+        insertSubtitle,
+        /** Image language attribute. */
+        lang,
+        /** Image link path. */
+        linkPath,
+        /** Image link target. */
+        linkTarget,
+        /** Image longDesc attribute. */
+        longDesc,
+        /** Image style attribute. */
+        style,
+        /** Image title attribute. */
+        title,
+        /** Image vspace attribute. */
+        vspace,
+        /** Image width attribute. */
         width
     }
 
@@ -121,15 +143,14 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     /**
      * Returns image tag attributes to set for editor plugins.<p>
      *
-     * @return the attribute map
+     * @param callback the callback to execute
      */
-    public Map<String, String> getImageAttributes() {
+    public void getImageAttributes(I_CmsSimpleCallback<Map<String, String>> callback) {
 
         Map<String, String> result = new HashMap<String, String>();
         result.put(Attribute.hash.name(), String.valueOf(getImageIdHash()));
-        m_previewDialog.getImageAttributes(result);
         m_formatHandler.getImageAttributes(result);
-        return result;
+        m_previewDialog.getImageAttributes(result, callback);
     }
 
     /**

@@ -33,6 +33,7 @@ import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -202,38 +203,49 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
      * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#selectResource(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
     @Override
-    public void selectResource(String resourcePath, CmsUUID structureId, String title) {
+    public void selectResource(final String resourcePath, final CmsUUID structureId, final String title) {
 
-        CmsCroppingParamBean param;
         switch (getGalleryMode()) {
             case widget:
-                param = getInitialCroppingParameter(resourcePath);
-                if (getGalleryDialog().getWidgetHandler() != null) {
-                    getGalleryDialog().getWidgetHandler().setWidgetValue(resourcePath, structureId, param);
-                } else {
-                    if (CmsPreviewUtil.isAdvancedWidget()) {
-                        CmsPreviewUtil.setVfsImage(
-                            resourcePath,
-                            param.getScaleParam(),
-                            param.getFormatName(),
-                            param.getRatio() + "");
-                    } else {
-                        CmsPreviewUtil.setResourcePath(
-                            resourcePath + ((param.isCropped() || param.isScaled()) ? "?" + param.toString() : ""));
+                getInitialCroppingParameter(resourcePath, new I_CmsSimpleCallback<CmsCroppingParamBean>() {
+
+                    public void execute(CmsCroppingParamBean param) {
+
+                        if (getGalleryDialog().getWidgetHandler() != null) {
+                            getGalleryDialog().getWidgetHandler().setWidgetValue(resourcePath, structureId, param);
+                        } else {
+                            if (CmsPreviewUtil.isAdvancedWidget()) {
+                                CmsPreviewUtil.setVfsImage(
+                                    resourcePath,
+                                    param.getScaleParam(),
+                                    param.getFormatName(),
+                                    param.getRatio() + "");
+                            } else {
+                                CmsPreviewUtil.setResourcePath(
+                                    resourcePath
+                                        + ((param.isCropped() || param.isScaled()) ? "?" + param.toString() : ""));
+                            }
+                        }
                     }
-                }
+                });
+
                 break;
             case editor:
-                Map<String, String> attributes = new HashMap<String, String>();
-                attributes.put("title", title);
-                param = getInitialCroppingParameter(resourcePath);
-                attributes.put("width", String.valueOf(param.getResultingWidth()));
-                attributes.put("height", String.valueOf(param.getResultingHeight()));
-                CmsPreviewUtil.setImage(
-                    CmsCoreProvider.get().link(resourcePath)
-                        + (param.isScaled() ? "?" + param.toString() + ",c:transparent" : ""),
-                    attributes);
-                CmsPreviewUtil.closeDialog();
+                getInitialCroppingParameter(resourcePath, new I_CmsSimpleCallback<CmsCroppingParamBean>() {
+
+                    public void execute(CmsCroppingParamBean param) {
+
+                        Map<String, String> attributes = new HashMap<String, String>();
+                        attributes.put("title", title);
+                        attributes.put("width", String.valueOf(param.getResultingWidth()));
+                        attributes.put("height", String.valueOf(param.getResultingHeight()));
+                        CmsPreviewUtil.setImage(
+                            CmsCoreProvider.get().link(resourcePath)
+                                + (param.isScaled() ? "?" + param.toString() + ",c:transparent" : ""),
+                            attributes);
+                        CmsPreviewUtil.closeDialog();
+                    }
+                });
                 break;
             case ade:
             case view:
@@ -253,7 +265,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
         if (m_handler == null) {
             throw new UnsupportedOperationException("Preview handler not initialized");
         }
-        CmsCroppingParamBean croppingParam = m_handler.getCroppingParam();
+        final CmsCroppingParamBean croppingParam = m_handler.getCroppingParam();
 
         switch (getGalleryMode()) {
             case widget:
@@ -279,14 +291,20 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                 }
                 break;
             case editor:
-                Map<String, String> attributes = m_handler.getImageAttributes();
-                CmsPreviewUtil.setImage(
-                    CmsCoreProvider.get().link(
-                        m_infoBean.getResourcePath()
-                            + ((croppingParam.isCropped() || croppingParam.isScaled())
-                            ? "?" + croppingParam.toString() + ",c:transparent"
-                            : "")),
-                    attributes);
+                m_handler.getImageAttributes(new I_CmsSimpleCallback<Map<String, String>>() {
+
+                    public void execute(Map<String, String> attributes) {
+
+                        CmsPreviewUtil.setImage(
+                            CmsCoreProvider.get().link(
+                                m_infoBean.getResourcePath()
+                                    + ((croppingParam.isCropped() || croppingParam.isScaled())
+                                    ? "?" + croppingParam.toString() + ",c:transparent"
+                                    : "")),
+                            attributes);
+                    }
+                });
+
                 break;
             case ade:
             case view:
@@ -301,10 +319,9 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
      * Returns the image info bean for the given resource.<p>
      *
      * @param resourcePath the resource path
-     *
-     * @return the image info bean
+     * @param callback the calback to execute
      */
-    private CmsImageInfoBean getImageInfo(final String resourcePath) {
+    private void getImageInfo(final String resourcePath, final I_CmsSimpleCallback<CmsImageInfoBean> callback) {
 
         CmsRpcAction<CmsImageInfoBean> action = new CmsRpcAction<CmsImageInfoBean>() {
 
@@ -315,7 +332,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
             public void execute() {
 
                 start(0, true);
-                A_CmsResourcePreview.getService().syncGetImageInfo(resourcePath, getLocale(), this);
+                A_CmsResourcePreview.getService().getImageInfo(resourcePath, getLocale(), this);
 
             }
 
@@ -326,31 +343,39 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
             protected void onResponse(CmsImageInfoBean result) {
 
                 stop(false);
+                callback.execute(result);
             }
         };
-        return action.executeSync();
+        action.execute();
     }
 
     /**
      * Returns the initial cropping parameter bean for a given resource.<p>
      *
      * @param resourcePath the resource path
-     *
-     * @return the cropping parameter bean
+     * @param callback the callback to execute
      */
-    private CmsCroppingParamBean getInitialCroppingParameter(String resourcePath) {
+    private void getInitialCroppingParameter(
+        final String resourcePath,
+        final I_CmsSimpleCallback<CmsCroppingParamBean> callback) {
 
-        CmsImageInfoBean imageInfo = getImageInfo(resourcePath);
-        CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
-            getGalleryMode(),
-            getGalleryDialog(),
-            resourcePath,
-            imageInfo.getHeight(),
-            imageInfo.getWidth());
-        CmsCroppingParamBean param = formatHandler.getCroppingParam();
-        if (formatHandler.isUseFormats()) {
-            formatHandler.getFormats().values().iterator().next().adjustCroppingParam(param);
-        }
-        return param;
+        getImageInfo(resourcePath, new I_CmsSimpleCallback<CmsImageInfoBean>() {
+
+            public void execute(CmsImageInfoBean imageInfo) {
+
+                CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
+                    getGalleryMode(),
+                    getGalleryDialog(),
+                    resourcePath,
+                    imageInfo.getHeight(),
+                    imageInfo.getWidth());
+                CmsCroppingParamBean param = formatHandler.getCroppingParam();
+                if (formatHandler.isUseFormats()) {
+                    formatHandler.getFormats().values().iterator().next().adjustCroppingParam(param);
+                }
+                callback.execute(param);
+            }
+        });
+
     }
 }

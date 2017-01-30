@@ -67,17 +67,6 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
     throws CmsRpcException;
 
     /**
-     * Cancels the editing session.<p>
-     * Will unlock the resource and delete it if required.<p>
-     *
-     * @param structureId the resource structure id
-     * @param delete <code>true</code> to delete the edited resource
-     *
-     * @throws CmsRpcException if something goes wrong
-     */
-    void cancelEdit(CmsUUID structureId, boolean delete) throws CmsRpcException;
-
-    /**
      * Copies the given source locale to the target locales.<p>
      *
      * @param locales the target locales

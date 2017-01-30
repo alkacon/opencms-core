@@ -71,18 +71,6 @@ public interface I_CmsPreviewService extends RemoteService {
     CmsResourceInfoBean getResourceInfo(String resourcePath, String locale) throws CmsRpcException;
 
     /**
-     * Returns the image resource data to be displayed in the preview dialog.<p>
-     *
-     * @param resourcePath the resource path
-     * @param locale the content locale
-     *
-     * @return the image resource data
-     *
-     * @throws CmsRpcException  if something goes wrong
-     */
-    CmsImageInfoBean syncGetImageInfo(String resourcePath, String locale) throws CmsRpcException;
-
-    /**
      * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
      *
      * @param resourcePath the path to the selected resource

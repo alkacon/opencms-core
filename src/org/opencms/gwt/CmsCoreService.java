@@ -1075,36 +1075,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTempAndCheckModification(org.opencms.util.CmsUUID, long)
-     */
-    public CmsLockInfo lockTempAndCheckModification(CmsUUID structureId, long modification) throws CmsRpcException {
-
-        CmsObject cms = getCmsObject();
-        try {
-            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            if (resource.getDateLastModified() != modification) {
-                CmsUser user = cms.readUser(resource.getUserLastModified());
-                return CmsLockInfo.forChangedResource(user.getFullName());
-            }
-        } catch (Throwable e) {
-            error(e);
-        }
-        try {
-            return getLock(structureId);
-        } catch (CmsException e) {
-            return CmsLockInfo.forError(e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#ping()
-     */
-    public void ping() {
-
-        // do nothing
-    }
-
-    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#prefetch()
      */
     public CmsCoreData prefetch() {
