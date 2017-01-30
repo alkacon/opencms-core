@@ -951,6 +951,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
         boolean isCategoryManager = roleManager.hasRole(cms, CmsRole.CATEGORY_EDITOR);
+        boolean isWorkplaceUser = roleManager.hasRole(cms, CmsRole.WORKPLACE_USER);
         UserInfo userInfo = new UserInfo(
             cms.getRequestContext().getCurrentUser().getName(),
             OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
@@ -959,6 +960,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             isAdmin,
             isDeveloper,
             isCategoryManager,
+            isWorkplaceUser,
             cms.getRequestContext().getCurrentUser().isManaged());
         return userInfo;
     }
