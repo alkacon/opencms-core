@@ -417,11 +417,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID)
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID, org.opencms.gwt.client.util.I_CmsSimpleCallback)
      */
-    public boolean ensureLockOnResource(CmsUUID structureId) {
+    public void ensureLockOnResource(CmsUUID structureId, I_CmsSimpleCallback<Boolean> callback) {
 
-        return m_controller.lockContainerpage();
+        m_controller.lockContainerpage(callback);
     }
 
     /**
@@ -1017,8 +1017,13 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                  */
                 public void onAccept() {
 
-                    m_controller.syncSaveContainerpage();
-                    openPublish();
+                    m_controller.saveContainerpage(new Runnable() {
+
+                        public void run() {
+
+                            openPublish();
+                        }
+                    });
                 }
 
                 /**

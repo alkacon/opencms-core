@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.CmsVfsLinkWidget;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.util.CmsJSONMap;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -206,9 +207,13 @@ public class CmsImageAdvancedForm extends Composite {
      * Adds necessary attributes to the map.<p>
      *
      * @param attributes the attribute map
-     * @return the attribute map
+     * @param callback the callback to execute
      */
-    public Map<String, String> getImageAttributes(Map<String, String> attributes) {
+    public void getImageAttributes(
+        final Map<String, String> attributes,
+        final I_CmsSimpleCallback<Map<String, String>> callback) {
+
+        boolean requiresLink = false;
 
         for (Entry<Attribute, I_CmsFormWidget> entry : m_fields.entrySet()) {
             String val = entry.getValue().getFormValueAsString();
@@ -216,12 +221,25 @@ public class CmsImageAdvancedForm extends Composite {
                 continue;
             }
             if (entry.getKey() == Attribute.linkPath) {
-                attributes.put(entry.getKey().name(), CmsCoreProvider.get().substituteLinkForRootPath(val));
+                requiresLink = true;
             } else {
                 attributes.put(entry.getKey().name(), val);
             }
         }
-        return attributes;
+        if (requiresLink) {
+            CmsCoreProvider.get().substituteLinkForRootPath(
+                m_fields.get(Attribute.linkPath).getFormValueAsString(),
+                new I_CmsSimpleCallback<String>() {
+
+                    public void execute(String arg) {
+
+                        attributes.put(Attribute.linkPath.name(), arg);
+                        callback.execute(attributes);
+                    }
+                });
+        } else {
+            callback.execute(attributes);
+        }
     }
 
 }

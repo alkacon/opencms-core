@@ -327,26 +327,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#cancelEdit(org.opencms.util.CmsUUID, boolean)
-     */
-    public void cancelEdit(CmsUUID structureId, boolean delete) throws CmsRpcException {
-
-        try {
-            getSessionCache().uncacheXmlContent(structureId);
-            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            if (delete) {
-                ensureLock(resource);
-                getCmsObject().deleteResource(
-                    getCmsObject().getSitePath(resource),
-                    CmsResource.DELETE_PRESERVE_SIBLINGS);
-            }
-            tryUnlock(resource);
-        } catch (Throwable t) {
-            error(t);
-        }
-    }
-
-    /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#copyLocale(java.util.Collection, org.opencms.acacia.shared.CmsEntity)
      */
     public void copyLocale(Collection<String> locales, CmsEntity sourceLocale) throws CmsRpcException {

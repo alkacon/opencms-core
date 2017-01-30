@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * Handles all RPC services related to the sitemap.<p>
@@ -278,16 +277,6 @@ public interface I_CmsSitemapServiceAsync {
         List<CmsPropertyModification> propertyChanges,
         boolean editedName,
         AsyncCallback<Void> callback);
-
-    /**
-     * Save the change to the given sitemap.<p>
-     *
-     * @param sitemapUri the sitemap URI
-     * @param change the change to save
-     * @param callback the async callback
-     */
-    @SynchronizedRpcRequest
-    void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
 
     /**
      * Sets the default model page for the given sub-sitemap, returns the updated model info.<p>

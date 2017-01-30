@@ -505,27 +505,4 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     void setLastPage(CmsUUID pageId, CmsUUID detailId) throws CmsRpcException;
-
-    /**
-     * Saves the container-page in a synchronized RPC call.<p>
-     *
-     * @param pageStructureId the container page structure id
-     * @param containers the container-page's containers
-     *
-     * @throws CmsRpcException if something goes wrong processing the request
-     */
-    void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
-
-    /**
-     * Saves the detail containers.<p>
-     *
-     * @param detailId the detail content id
-     * @param detailContainerResource the detail container resource path
-     * @param containers the container-page's containers
-     *
-     * @throws CmsRpcException if something goes wrong processing the request
-     */
-    void syncSaveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
-    throws CmsRpcException;
-
 }
