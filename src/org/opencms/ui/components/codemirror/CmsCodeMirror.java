@@ -351,15 +351,19 @@ implements Property<String>, Property.ValueChangeNotifier {
         getState().m_contentValue = m_codeValue;
         CmsMessages messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         StringBuffer buffer = new StringBuffer();
-        buffer.append("<span><b>").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_SEARCH_0));
+        buffer.append("<span class=\"col1\"><b>").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_SEARCH_0));
         buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_SEARCH_HELP_0));
-        buffer.append(", </span><span><b>").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0));
+        buffer.append(" </span><span class=\"col2\"><b>").append(
+            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0));
         buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_HELP_0));
-        buffer.append(", </span><span><b>").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_0));
+        buffer.append(" </span><span class=\"col3\"><b>").append(
+            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_0));
         buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_HELP_0));
-        buffer.append(", </span><br /><span><b>").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_0));
+        buffer.append(" </span><span class=\"col1\"><b>").append(
+            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_0));
         buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_HELP_0));
-        buffer.append(", </span><span><b>").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_0));
+        buffer.append(" </span><span class=\"col2\"><b>").append(
+            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_0));
         buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_HELP_0)).append(
             "</span>");
 

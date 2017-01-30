@@ -44,7 +44,7 @@
 		.CodeMirror-shortcutinfo{
 			display: block;
 			float: right;
-			width: 50%;
+			width: 55%;
 			max-width: 780px;
 			font-family: $v-font-family !important;
 			font-size: $v-font-size !important;
@@ -55,16 +55,21 @@
 				padding: 2px 4px;
 				background: $gray-light;
 				border-radius: 2px;
+				min-width: 95px;
 			}
 			
 			span {
-				width: 250px;
+				max-width: 250px;
+				min-width: 200px;
 				display: inline-block;
 				margin-right: 10px;
+				white-space: nowrap;
 			}
 		}
 		
 		input{
+			font-family: $v-font-family !important;
+			font-size: $v-font-size !important;
 			border: valo-border();
 			border-radius: $v-border-radius !important;
 			height: 20px !important;
