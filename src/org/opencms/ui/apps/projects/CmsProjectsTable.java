@@ -393,7 +393,7 @@ public class CmsProjectsTable extends Table {
         setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_USER_GROUP_0));
         setColumnHeader(PROP_DATE_CREATED, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DATE_CREATED_0));
         setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCES_0));
-        setColumnWidth(PROP_ICON, 40);
+        setColumnWidth(null, 40);
         setColumnExpandRatio(PROP_NAME, 2);
         setColumnExpandRatio(PROP_DESCRIPTION, 2);
         setColumnExpandRatio(PROP_RESOURCES, 2);
