@@ -43,6 +43,7 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -56,6 +57,8 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.filter.Or;
+import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.ExternalResource;
@@ -311,11 +314,11 @@ public class CmsProjectsTable extends Table {
         }
     }
 
-    /** The logger for this class. */
-    protected static Log LOG = CmsLog.getLog(CmsProjectsTable.class.getName());
+    /** Project date created property. */
+    public static final String PROP_DATE_CREATED = "dateCreated";
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 1540265836332964510L;
+    /** Project description property. */
+    public static final String PROP_DESCRIPTION = "descrition";
 
     /** Project icon property. */
     public static final String PROP_ICON = "icon";
@@ -323,11 +326,11 @@ public class CmsProjectsTable extends Table {
     /** Project id property. */
     public static final String PROP_ID = "id";
 
+    /** Project manager property. */
+    public static final String PROP_MANAGER = "manager";
+
     /** Project name property. */
     public static final String PROP_NAME = "name";
-
-    /** Project description property. */
-    public static final String PROP_DESCRIPTION = "descrition";
 
     /** Project org unit property. */
     public static final String PROP_ORG_UNIT = "orgUnit";
@@ -335,29 +338,29 @@ public class CmsProjectsTable extends Table {
     /** Project owner property. */
     public static final String PROP_OWNER = "owner";
 
-    /** Project manager property. */
-    public static final String PROP_MANAGER = "manager";
+    /** Project resources property. */
+    public static final String PROP_RESOURCES = "resources";
 
     /** Project user property. */
     public static final String PROP_USER = "user";
 
-    /** Project date created property. */
-    public static final String PROP_DATE_CREATED = "dateCreated";
+    /** The logger for this class. */
+    protected static Log LOG = CmsLog.getLog(CmsProjectsTable.class.getName());
 
-    /** Project resources property. */
-    public static final String PROP_RESOURCES = "resources";
+    /** The serial version id. */
+    private static final long serialVersionUID = 1540265836332964510L;
 
     /** The data container. */
     IndexedContainer m_container;
+
+    /** The project manager instance. */
+    CmsProjectManager m_manager;
 
     /** The context menu. */
     CmsContextMenu m_menu;
 
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<CmsUUID>>> m_menuEntries;
-
-    /** The project manager instance. */
-    CmsProjectManager m_manager;
 
     /**
      * Constructor.<p>
@@ -422,6 +425,22 @@ public class CmsProjectsTable extends Table {
                 return null;
             }
         });
+    }
+
+    /**
+     * Filters the displayed projects.<p>
+     *
+     * @param filter the filter
+     */
+    public void filterTable(String filter) {
+
+        m_container.removeAllContainerFilters();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
+            m_container.addContainerFilter(
+                new Or(
+                    new SimpleStringFilter(PROP_NAME, filter, true, false),
+                    new SimpleStringFilter(PROP_DESCRIPTION, filter, true, false)));
+        }
     }
 
     /**

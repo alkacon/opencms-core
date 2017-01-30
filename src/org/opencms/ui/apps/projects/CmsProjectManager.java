@@ -93,6 +93,9 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     /** The file table filter input. */
     private TextField m_fileTableFilter;
 
+    /** The project table filter input. */
+    private TextField m_projectTableFilter;
+
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
      */
@@ -158,10 +161,32 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             m_infoLayout.removeComponent(m_fileTableFilter);
             m_fileTableFilter = null;
         }
+        if (m_projectTableFilter != null) {
+            m_infoLayout.removeComponent(m_projectTableFilter);
+            m_projectTableFilter = null;
+        }
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             m_rootLayout.setMainHeightFull(true);
-            return getProjectsTable();
+            final CmsProjectsTable table = getProjectsTable();
+            m_projectTableFilter = new TextField();
+            m_projectTableFilter.setIcon(FontOpenCms.FILTER);
+            m_projectTableFilter.setInputPrompt(
+                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+            m_projectTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+            m_projectTableFilter.setWidth("200px");
+            m_projectTableFilter.addTextChangeListener(new TextChangeListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void textChange(TextChangeEvent event) {
+
+                    table.filterTable(event.getText());
+
+                }
+            });
+            m_infoLayout.addComponent(m_projectTableFilter);
+            return table;
         } else if (state.equals(PATH_NAME_ADD)) {
             m_rootLayout.setMainHeightFull(false);
             return getNewProjectForm();
@@ -258,7 +283,7 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
      *
      * @return the projects table
      */
-    protected Component getProjectsTable() {
+    protected CmsProjectsTable getProjectsTable() {
 
         CmsProjectsTable table = new CmsProjectsTable(this);
         table.loadProjects();
