@@ -1,22 +1,34 @@
 /*
- * Copyright 2014 fatalix.
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.ui.components.codemirror;
 
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONObject;
 import org.opencms.ui.components.Messages;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -164,6 +176,9 @@ implements Property<String>, Property.ValueChangeNotifier {
 
         /** The width. */
         public String m_width = "600";
+
+        /** The code mirror localization. */
+        public String m_messages;
     }
 
     /** The available editor themes. */
@@ -350,24 +365,8 @@ implements Property<String>, Property.ValueChangeNotifier {
         getState().m_id = m_componentId;
         getState().m_contentValue = m_codeValue;
         CmsMessages messages = Messages.get().getBundle(UI.getCurrent().getLocale());
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("<span class=\"col1\"><b>").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_SEARCH_0));
-        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_SEARCH_HELP_0));
-        buffer.append(" </span><span class=\"col2\"><b>").append(
-            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0));
-        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_HELP_0));
-        buffer.append(" </span><span class=\"col3\"><b>").append(
-            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_0));
-        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_HELP_0));
-        buffer.append(" </span><span class=\"col1\"><b>").append(
-            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_0));
-        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_HELP_0));
-        buffer.append(" </span><span class=\"col2\"><b>").append(
-            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_0));
-        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_HELP_0)).append(
-            "</span>");
-
-        getState().m_shortcutsMessage = buffer.toString();
+        getState().m_shortcutsMessage = getShortcutMessages(messages);
+        getState().m_messages = getLocalizationMessages(messages);
 
         if (CSS_URIS == null) {
             CSS_URIS = new String[] {
@@ -382,7 +381,6 @@ implements Property<String>, Property.ValueChangeNotifier {
                 CmsWorkplace.getStaticResourceUri("/editors/codemirror/dist/lib/codemirror.js"),
                 CmsWorkplace.getStaticResourceUri("/editors/codemirror/dist/addon/dialog/dialog.js"),
                 CmsWorkplace.getStaticResourceUri("/editors/codemirror/dist/addon/search/searchcursor.js"),
-                CmsWorkplace.getStaticResourceUri("/editors/codemirror/js/lang-en.js"),
                 CmsWorkplace.getStaticResourceUri("/editors/codemirror/js/search.js"),
                 CmsWorkplace.getStaticResourceUri("/editors/codemirror/dist/addon/edit/closebrackets.js"),
                 CmsWorkplace.getStaticResourceUri("/editors/codemirror/dist/addon/edit/closetag.js"),
@@ -760,5 +758,60 @@ implements Property<String>, Property.ValueChangeNotifier {
         if (changed) {
             fireEvent(new ValueChangeEvent(this));
         }
+    }
+
+    /**
+     * Returns the code mirror localization JSON.<p>
+     *
+     * @param messages the message bundle to use
+     *
+     * @return the localization
+     */
+    private String getLocalizationMessages(CmsMessages messages) {
+
+        JSONObject result = new JSONObject();
+        try {
+            result.put("search", messages.key(Messages.GUI_CODEMIRROR_LANG_SEARCH_0));
+            result.put("hint", messages.key(Messages.GUI_CODEMIRROR_LANG_HINT_0));
+            result.put("replace", messages.key(Messages.GUI_CODEMIRROR_LANG_REPLACE_0));
+            result.put("replacewith", messages.key(Messages.GUI_CODEMIRROR_LANG_REPLACE_WITH_0));
+            result.put("replaceconfirm", messages.key(Messages.GUI_CODEMIRROR_LANG_REPLACE_CONFIRM_0));
+            result.put("replaceyes", messages.key(Messages.GUI_CODEMIRROR_LANG_REPLACE_YES_0));
+            result.put("replaceno", messages.key(Messages.GUI_CODEMIRROR_LANG_RELACE_NO_0));
+            result.put("replacestop", messages.key(Messages.GUI_CODEMIRROR_LANG_REPLACE_STOP_0));
+
+            result.put("fontsize", messages.key(Messages.GUI_CODEMIRROR_LANG_FONT_SIZE_0));
+        } catch (org.opencms.json.JSONException e) {
+            // should never happen
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the localized short cut messages HTML.<p>
+     *
+     * @param messages the message bundle to use
+     *
+     * @return the HTML
+     */
+    private String getShortcutMessages(CmsMessages messages) {
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<span class=\"col1\"><b>").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_SEARCH_0));
+        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_SEARCH_HELP_0));
+        buffer.append(" </span><span class=\"col2\"><b>").append(
+            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0));
+        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_HELP_0));
+        buffer.append(" </span><span class=\"col3\"><b>").append(
+            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_0));
+        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_HELP_0));
+        buffer.append(" </span><span class=\"col1\"><b>").append(
+            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_0));
+        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_HELP_0));
+        buffer.append(" </span><span class=\"col2\"><b>").append(
+            messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_0));
+        buffer.append("</b> ").append(messages.key(Messages.GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_HELP_0)).append(
+            "</span>");
+        return buffer.toString();
     }
 }

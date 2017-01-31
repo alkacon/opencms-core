@@ -36,6 +36,33 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_FONT_SIZE_0 = "GUI_CODEMIRROR_LANG_FONT_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_HINT_0 = "GUI_CODEMIRROR_LANG_HINT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_RELACE_NO_0 = "GUI_CODEMIRROR_LANG_RELACE_NO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_0 = "GUI_CODEMIRROR_LANG_REPLACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_CONFIRM_0 = "GUI_CODEMIRROR_LANG_REPLACE_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_STOP_0 = "GUI_CODEMIRROR_LANG_REPLACE_STOP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_WITH_0 = "GUI_CODEMIRROR_LANG_REPLACE_WITH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_YES_0 = "GUI_CODEMIRROR_LANG_REPLACE_YES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_SEARCH_0 = "GUI_CODEMIRROR_LANG_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0";
 
     /** Message constant for key in the resource bundle. */
