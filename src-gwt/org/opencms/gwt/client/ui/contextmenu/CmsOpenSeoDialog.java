@@ -31,7 +31,6 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.seo.CmsSeoOptionsDialog;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -66,72 +65,65 @@ public class CmsOpenSeoDialog implements I_CmsHasContextMenuCommand, I_CmsContex
         final I_CmsContextMenuHandler contextMenuHandler,
         final CmsContextMenuEntryBean bean) {
 
-        contextMenuHandler.ensureLockOnResource(structureId, new I_CmsSimpleCallback<Boolean>() {
+        if (contextMenuHandler.ensureLockOnResource(structureId)) {
 
-            public void execute(Boolean arg) {
+            CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
 
-                if (arg.booleanValue()) {
-                    CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
+                @Override
+                public void execute() {
+
+                    start(0, true);
+                    CmsCoreProvider.getVfsService().loadPropertyData(structureId, this);
+                }
+
+                @Override
+                protected void onResponse(final CmsPropertiesBean propertyData) {
+
+                    stop(false);
+                    CmsRpcAction<CmsListInfoBean> infoAction = new CmsRpcAction<CmsListInfoBean>() {
 
                         @Override
                         public void execute() {
 
-                            start(0, true);
-                            CmsCoreProvider.getVfsService().loadPropertyData(structureId, this);
+                            start(200, true);
+                            CmsCoreProvider.getVfsService().getPageInfo(structureId, this);
                         }
 
                         @Override
-                        protected void onResponse(final CmsPropertiesBean propertyData) {
+                        protected void onResponse(final CmsListInfoBean listInfoBean) {
 
                             stop(false);
-                            CmsRpcAction<CmsListInfoBean> infoAction = new CmsRpcAction<CmsListInfoBean>() {
+                            CmsSeoOptionsDialog.loadAliases(structureId, new AsyncCallback<List<CmsAliasBean>>() {
 
-                                @Override
-                                public void execute() {
+                                public void onFailure(Throwable caught) {
 
-                                    start(200, true);
-                                    CmsCoreProvider.getVfsService().getPageInfo(structureId, this);
+                                    // do nothing
                                 }
 
-                                @Override
-                                protected void onResponse(final CmsListInfoBean listInfoBean) {
+                                public void onSuccess(final List<CmsAliasBean> aliases) {
 
-                                    stop(false);
-                                    CmsSeoOptionsDialog.loadAliases(
+                                    CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(
+                                        contextMenuHandler);
+                                    handler.setPropertiesBean(propertyData);
+                                    CmsSeoOptionsDialog dialog = new CmsSeoOptionsDialog(
                                         structureId,
-                                        new AsyncCallback<List<CmsAliasBean>>() {
-
-                                            public void onFailure(Throwable caught) {
-
-                                                // do nothing
-                                            }
-
-                                            public void onSuccess(final List<CmsAliasBean> aliases) {
-
-                                                CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(
-                                                    contextMenuHandler);
-                                                handler.setPropertiesBean(propertyData);
-                                                CmsSeoOptionsDialog dialog = new CmsSeoOptionsDialog(
-                                                    structureId,
-                                                    listInfoBean,
-                                                    aliases,
-                                                    propertyData.getPropertyDefinitions(),
-                                                    handler);
-                                                dialog.centerHorizontally(50);
-                                                dialog.catchNotifications();
-                                                dialog.center();
-                                            }
-                                        });
+                                        listInfoBean,
+                                        aliases,
+                                        propertyData.getPropertyDefinitions(),
+                                        handler);
+                                    dialog.centerHorizontally(50);
+                                    dialog.catchNotifications();
+                                    dialog.center();
                                 }
-                            };
-                            infoAction.execute();
-
+                            });
                         }
                     };
-                    action.execute();
+                    infoAction.execute();
+
                 }
-            }
-        });
+            };
+            action.execute();
+        }
     }
 
     /**

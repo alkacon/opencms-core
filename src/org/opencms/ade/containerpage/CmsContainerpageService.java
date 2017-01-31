@@ -1624,6 +1624,26 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveContainerpage(org.opencms.util.CmsUUID, java.util.List)
+     */
+    public void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException {
+
+        saveContainerpage(pageStructureId, containers);
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveDetailContainers(org.opencms.util.CmsUUID, java.lang.String, java.util.List)
+     */
+    public void syncSaveDetailContainers(
+        CmsUUID detailId,
+        String detailContainerResource,
+        List<CmsContainer> containers)
+    throws CmsRpcException {
+
+        saveDetailContainers(detailId, detailContainerResource, containers);
+    }
+
+    /**
      * Gets the settings which should be updated for an element in the DND case.<p>
      *
      * @param originalSettings the original settings

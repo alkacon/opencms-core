@@ -51,7 +51,6 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsStyleVariable;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
@@ -205,7 +204,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
              */
             public void handleEdit(CmsLabel titleLabel, TextBox box) {
 
-                final CmsClientSitemapEntry editEntry = getSitemapEntry();
+                CmsClientSitemapEntry editEntry = getSitemapEntry();
                 final String newTitle = box.getText();
                 box.removeFromParent();
                 if (CmsStringUtil.isEmpty(newTitle)) {
@@ -225,8 +224,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                         true);
                     final List<CmsPropertyModification> propChanges = new ArrayList<CmsPropertyModification>();
                     propChanges.add(propMod);
-                    final CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                    CmsSitemapController controller = CmsSitemapView.getInstance().getController();
                     if (editEntry.isNew() && !editEntry.isRoot() && !oldTitle.equalsIgnoreCase(newTitle)) {
+                        String urlName = controller.ensureUniqueName(
+                            CmsResource.getParentFolder(editEntry.getSitePath()),
+                            newTitle);
                         if (oldTitle.equals(editEntry.getPropertyValue(CmsClientProperty.PROPERTY_TITLE))) {
                             CmsPropertyModification titleMod = new CmsPropertyModification(
                                 editEntry.getId(),
@@ -235,21 +237,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                                 true);
                             propChanges.add(titleMod);
                         }
-                        controller.ensureUniqueName(
-                            CmsResource.getParentFolder(editEntry.getSitePath()),
-                            newTitle,
-                            new I_CmsSimpleCallback<String>() {
-
-                                public void execute(String urlName) {
-
-                                    controller.editAndChangeName(
-                                        editEntry,
-                                        urlName,
-                                        propChanges,
-                                        true,
-                                        CmsReloadMode.reloadEntry);
-                                }
-                            });
+                        controller.editAndChangeName(editEntry, urlName, propChanges, true, CmsReloadMode.reloadEntry);
                     } else {
                         controller.edit(editEntry, propChanges, CmsReloadMode.reloadEntry);
                     }

@@ -726,9 +726,6 @@ public final class CmsContainerpageController {
     /** The gallery data update timer. */
     Timer m_galleryUpdateTimer;
 
-    /** The currently editing group-container editor. */
-    A_CmsGroupEditor m_groupEditor;
-
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
 
@@ -770,6 +767,9 @@ public final class CmsContainerpageController {
 
     /** The current element view. */
     private CmsElementViewInfo m_elementView;
+
+    /** The currently editing group-container editor. */
+    private A_CmsGroupEditor m_groupEditor;
 
     /** Flag indicating that a content element is being edited. */
     private boolean m_isContentEditing;
@@ -2241,36 +2241,29 @@ public final class CmsContainerpageController {
     /**
      * Locks the container-page.<p>
      *
-     * @param callback the callback to execute
+     * @return <code>true</code> if page was locked successfully
      */
-    public void lockContainerpage(final I_CmsSimpleCallback<Boolean> callback) {
+    public boolean lockContainerpage() {
 
         if (m_lockStatus == LockStatus.locked) {
-            callback.execute(Boolean.TRUE);
+            return true;
         }
         if (m_lockStatus == LockStatus.failed) {
-            callback.execute(Boolean.FALSE);
+            return false;
         }
-        I_CmsSimpleCallback<String> call = new I_CmsSimpleCallback<String>() {
-
-            public void execute(String lockError) {
-
-                if (lockError == null) {
-                    onLockSuccess();
-                    callback.execute(Boolean.TRUE);
-                } else {
-                    onLockFail(lockError);
-                    callback.execute(Boolean.FALSE);
-                }
-            }
-        };
-
+        String lockError;
         if (getData().getDetailContainerPage() != null) {
-            CmsCoreProvider.get().lockOrReturnError(getData().getDetailContainerPage(), call);
+            lockError = CmsCoreProvider.get().lockOrReturnError(getData().getDetailContainerPage());
         } else {
-            CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId(), call);
+            lockError = CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId());
         }
-
+        if (lockError == null) {
+            onLockSuccess();
+            return true;
+        } else {
+            onLockFail(lockError);
+            return false;
+        }
     }
 
     /**
@@ -2431,49 +2424,40 @@ public final class CmsContainerpageController {
         };
 
         if (!isGroupcontainerEditing()) {
+            CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
 
-            lockContainerpage(new I_CmsSimpleCallback<Boolean>() {
+                @Override
+                public void execute() {
 
-                public void execute(Boolean arg) {
-
-                    if (arg.booleanValue()) {
-                        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
-
-                            @Override
-                            public void execute() {
-
-                                start(500, true);
-                                getContainerpageService().saveElementSettings(
-                                    getData().getRpcContext(),
-                                    getData().getDetailId(),
-                                    getRequestParams(),
-                                    clientId,
-                                    settings,
-                                    getPageState(),
-                                    !isGroupcontainerEditing(),
-                                    getLocale(),
-                                    this);
-                            }
-
-                            @Override
-                            protected void onResponse(CmsContainerElementData result) {
-
-                                stop(false);
-                                CmsContainerpageController.get().fireEvent(
-                                    new CmsContainerpageEvent(EventType.pageSaved));
-                                setPageChanged(false, false);
-                                if (result != null) {
-                                    // cache the loaded element
-                                    m_elements.put(result.getClientId(), result);
-                                }
-                                callback.execute(result);
-                            }
-                        };
-                        action.execute();
+                    if (lockContainerpage()) {
+                        start(500, true);
+                        getContainerpageService().saveElementSettings(
+                            getData().getRpcContext(),
+                            getData().getDetailId(),
+                            getRequestParams(),
+                            clientId,
+                            settings,
+                            getPageState(),
+                            !isGroupcontainerEditing(),
+                            getLocale(),
+                            this);
                     }
                 }
-            });
 
+                @Override
+                protected void onResponse(CmsContainerElementData result) {
+
+                    stop(false);
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
+                    setPageChanged(false, false);
+                    if (result != null) {
+                        // cache the loaded element
+                        m_elements.put(result.getClientId(), result);
+                    }
+                    callback.execute(result);
+                }
+            };
+            action.execute();
         } else {
             getElementWithSettings(clientId, settings, callback);
         }
@@ -2790,7 +2774,7 @@ public final class CmsContainerpageController {
     public void saveContainerpage(final Runnable... afterSaveActions) {
 
         if (hasPageChanged()) {
-            final CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -2804,7 +2788,7 @@ public final class CmsContainerpageController {
                             getData().getDetailContainerPage(),
                             getPageContent(),
                             this);
-                    } else {
+                    } else if (lockContainerpage()) {
                         start(500, true);
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
@@ -2827,19 +2811,7 @@ public final class CmsContainerpageController {
                     }
                 }
             };
-            if (getData().getDetailContainerPage() != null) {
-                action.execute();
-            } else {
-                lockContainerpage(new I_CmsSimpleCallback<Boolean>() {
-
-                    public void execute(Boolean arg) {
-
-                        if (arg.booleanValue()) {
-                            action.execute();
-                        }
-                    }
-                });
-            }
+            action.execute();
         }
     }
 
@@ -3102,40 +3074,22 @@ public final class CmsContainerpageController {
      * @param groupContainer the group container
      * @param isElementGroup <code>true</code> if the group container is an element group and not an inheritance group
      */
-    public void startEditingGroupcontainer(
-        final CmsGroupContainerElementPanel groupContainer,
-        final boolean isElementGroup) {
+    public void startEditingGroupcontainer(CmsGroupContainerElementPanel groupContainer, boolean isElementGroup) {
 
         removeEditButtonsPositionTimer();
-        I_CmsSimpleCallback<Boolean> callback = new I_CmsSimpleCallback<Boolean>() {
-
-            public void execute(Boolean arg) {
-
-                if (arg.booleanValue()) {
-                    if (isElementGroup) {
-                        m_groupEditor = CmsGroupContainerEditor.openGroupcontainerEditor(
-                            groupContainer,
-                            CmsContainerpageController.this,
-                            m_handler);
-                    } else {
-                        m_groupEditor = CmsInheritanceContainerEditor.openInheritanceContainerEditor(
-                            groupContainer,
-                            CmsContainerpageController.this,
-                            m_handler);
-                    }
-                } else {
-                    CmsNotification.get().send(
-                        Type.WARNING,
-                        Messages.get().key(Messages.GUI_NOTIFICATION_UNABLE_TO_LOCK_0));
-                }
+        if ((m_groupEditor == null)
+            && (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getStructureId()))) {
+            if (isElementGroup) {
+                m_groupEditor = CmsGroupContainerEditor.openGroupcontainerEditor(groupContainer, this, m_handler);
+            } else {
+                m_groupEditor = CmsInheritanceContainerEditor.openInheritanceContainerEditor(
+                    groupContainer,
+                    this,
+                    m_handler);
             }
-        };
-        if ((m_groupEditor == null) && (groupContainer.isNew())) {
-            callback.execute(Boolean.TRUE);
-        } else {
-            lockContainerpage(callback);
+            return;
         }
-
+        CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_NOTIFICATION_UNABLE_TO_LOCK_0));
     }
 
     /**
@@ -3537,19 +3491,56 @@ public final class CmsContainerpageController {
         if (changed) {
             if (!m_pageChanged) {
                 m_pageChanged = changed;
-                lockContainerpage(new I_CmsSimpleCallback<Boolean>() {
-
-                    public void execute(Boolean arg) {
-
-                        // nothing to do
-                    }
-                });
+                lockContainerpage();
             }
         } else {
             m_pageChanged = changed;
             if (unlock) {
                 unlockContainerpage();
             }
+        }
+    }
+
+    /**
+     * Saves the container-page in a synchronized RPC call.<p>
+     */
+    protected void syncSaveContainerpage() {
+
+        if (hasPageChanged()) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().syncSaveDetailContainers(
+                            getData().getDetailId(),
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            this);
+                    } else {
+                        getContainerpageService().syncSaveContainerpage(
+                            CmsCoreProvider.get().getStructureId(),
+                            getPageContent(),
+                            this);
+                    }
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
+                    CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
+                    setPageChanged(false, false);
+                }
+            };
+            action.execute();
         }
     }
 

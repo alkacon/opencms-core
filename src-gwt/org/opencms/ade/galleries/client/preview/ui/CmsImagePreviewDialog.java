@@ -34,7 +34,6 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.Map;
 
@@ -158,16 +157,15 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
      * Adds necessary attributes to the map.<p>
      *
      * @param attributes the attribute map
-     * @param callback the callback to execute
+     * @return the attribute map
      */
-    public void getImageAttributes(Map<String, String> attributes, I_CmsSimpleCallback<Map<String, String>> callback) {
+    public Map<String, String> getImageAttributes(Map<String, String> attributes) {
 
         if (getGalleryMode() == GalleryMode.editor) {
             m_imageEditorFormatsTab.getImageAttributes(attributes);
-            m_imageAdvancedTab.getImageAttributes(attributes, callback);
-        } else {
-            callback.execute(attributes);
+            m_imageAdvancedTab.getImageAttributes(attributes);
         }
+        return attributes;
     }
 
     /**
