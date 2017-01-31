@@ -440,11 +440,13 @@ public final class CmsCoreProvider extends CmsCoreData {
             public void onResponse(String result) {
 
                 stop(false);
-                if (result != null) {
-                    // unable to lock
-                    final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, structureId, result);
-                    CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
+                if (result == null) {
+                    // ok
+                    return;
                 }
+                // unable to lock
+                final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, structureId, result);
+                CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
                 callback.execute(result);
             }
         };
@@ -479,11 +481,13 @@ public final class CmsCoreProvider extends CmsCoreData {
             public void onResponse(String result) {
 
                 stop(false);
-                if (result != null) {
-                    // unable to lock
-                    final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, sitePath, result);
-                    CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
+                if (result == null) {
+                    // ok
+                    return;
                 }
+                // unable to lock
+                final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, sitePath, result);
+                CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
                 callback.execute(result);
             }
         };
