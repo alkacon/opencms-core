@@ -18,7 +18,6 @@ Legend:
 OpenCms 10.5.1 - ...
 
 ! Added filter function to various tabs in the "Add content" dialog (#432).
-! Allowing to configure buckets of resources for Flex Cache purging 
 ! Allowing access to context menu in element settings dialog.
 ! Allowing configuration of element remove dialog in page editor.
 ! Added improved source search tool.
