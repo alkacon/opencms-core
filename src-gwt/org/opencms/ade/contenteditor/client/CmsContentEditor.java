@@ -504,17 +504,17 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changeScope the change scope
      */
     static native void addNativeListener(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
-		var instance = changeListener;
-		var nat = {
-			onChange : function(entity) {
-				var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
-				instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
-			}
-		}
-		var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-		if (typeof method == 'function') {
-			method(nat, changeScope);
-		}
+        var instance = changeListener;
+        var nat = {
+            onChange : function(entity) {
+                var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
+                instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
+            }
+        }
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            method(nat, changeScope);
+        }
     }-*/;
 
     /**
@@ -523,12 +523,12 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return <code>true</code> if the add entity change listener method has been exported
      */
     private static native boolean isObserverExported()/*-{
-		var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-		if (typeof method == 'function') {
-			return true;
-		} else {
-			return false;
-		}
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            return true;
+        } else {
+            return false;
+        }
     }-*/;
 
     /**
@@ -537,8 +537,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-		return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-				();
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+                ();
     }-*/;
 
     /**
@@ -755,54 +755,42 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     public void openFormEditor(
         final CmsEditorContext context,
-        final String locale,
+        String locale,
         String elementId,
-        final String newLink,
-        final CmsUUID modelFileId,
-        final String postCreateHandler,
-        final String mode,
-        final String mainLocale,
-        final Command onClose) {
+        String newLink,
+        CmsUUID modelFileId,
+        String postCreateHandler,
+        String mode,
+        String mainLocale,
+        Command onClose) {
 
         m_onClose = onClose;
         initEventPreviewHandler();
-        final CmsUUID structureId = new CmsUUID(elementId);
-
-        I_CmsSimpleCallback<Boolean> callback = new I_CmsSimpleCallback<Boolean>() {
-
-            public void execute(Boolean arg) {
-
-                if (arg.booleanValue()) {
-                    loadInitialDefinition(
-                        CmsContentDefinition.uuidToEntityId(structureId, locale),
-                        newLink,
-                        modelFileId,
-                        mode,
-                        postCreateHandler,
-                        mainLocale,
-                        new I_CmsSimpleCallback<CmsContentDefinition>() {
-
-                            public void execute(CmsContentDefinition contentDefinition) {
-
-                                if (contentDefinition.isModelInfo()) {
-                                    openModelSelectDialog(context, contentDefinition);
-                                } else {
-                                    initEditor(context, contentDefinition, null, false, null);
-                                }
-                            }
-                        });
-                } else {
-                    showLockedResourceMessage();
-                }
-
-            }
-        };
+        CmsUUID structureId = new CmsUUID(elementId);
         // make sure the resource is locked, if we are not creating a new one
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
-            callback.execute(Boolean.TRUE);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink) || CmsCoreProvider.get().lock(structureId)) {
+            loadInitialDefinition(
+                CmsContentDefinition.uuidToEntityId(structureId, locale),
+                newLink,
+                modelFileId,
+                mode,
+                postCreateHandler,
+                mainLocale,
+                new I_CmsSimpleCallback<CmsContentDefinition>() {
+
+                    public void execute(CmsContentDefinition contentDefinition) {
+
+                        if (contentDefinition.isModelInfo()) {
+                            openModelSelectDialog(context, contentDefinition);
+                        } else {
+                            initEditor(context, contentDefinition, null, false, null);
+                        }
+                    }
+                });
         } else {
-            CmsCoreProvider.get().lock(structureId, callback);
+            showLockedResourceMessage();
         }
+
     }
 
     /**
@@ -824,33 +812,27 @@ public final class CmsContentEditor extends CmsEditorBase {
         Command onClose) {
 
         initEventPreviewHandler();
-        final String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
+        String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
         m_locale = locale;
         m_onClose = onClose;
-        CmsCoreProvider.get().lock(elementId, new I_CmsSimpleCallback<Boolean>() {
+        if (CmsCoreProvider.get().lock(elementId)) {
+            loadInitialDefinition(
+                entityId,
+                null,
+                null,
+                null,
+                null,
+                mainLocale,
+                new I_CmsSimpleCallback<CmsContentDefinition>() {
 
-            public void execute(Boolean arg) {
+                    public void execute(CmsContentDefinition contentDefinition) {
 
-                if (arg.booleanValue()) {
-                    loadInitialDefinition(
-                        entityId,
-                        null,
-                        null,
-                        null,
-                        null,
-                        mainLocale,
-                        new I_CmsSimpleCallback<CmsContentDefinition>() {
-
-                            public void execute(CmsContentDefinition contentDefinition) {
-
-                                initEditor(context, contentDefinition, panel, true, mainLocale);
-                            }
-                        });
-                } else {
-                    showLockedResourceMessage();
-                }
-            }
-        });
+                        initEditor(context, contentDefinition, panel, true, mainLocale);
+                    }
+                });
+        } else {
+            showLockedResourceMessage();
+        }
     }
 
     /**
@@ -874,31 +856,23 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (definition.isModelInfo()) {
             openModelSelectDialog(context, definition);
         } else {
-            CmsCoreProvider.get().lock(
-                CmsContentDefinition.entityIdToUuid(definition.getEntityId()),
-                new I_CmsSimpleCallback<Boolean>() {
+            if (CmsCoreProvider.get().lock(CmsContentDefinition.entityIdToUuid(definition.getEntityId()))) {
 
-                    public void execute(Boolean arg) {
+                registerContentDefinition(definition);
+                // register all external widgets
+                WidgetRegistry.getInstance().registerExternalWidgets(
+                    definition.getExternalWidgetConfigurations(),
+                    new Command() {
 
-                        if (arg.booleanValue()) {
+                        public void execute() {
 
-                            registerContentDefinition(definition);
-                            // register all external widgets
-                            WidgetRegistry.getInstance().registerExternalWidgets(
-                                definition.getExternalWidgetConfigurations(),
-                                new Command() {
-
-                                    public void execute() {
-
-                                        initEditor(context, definition, null, false, null);
-                                    }
-                                });
-
-                        } else {
-                            showLockedResourceMessage();
+                            initEditor(context, definition, null, false, null);
                         }
-                    }
-                });
+                    });
+
+            } else {
+                showLockedResourceMessage();
+            }
         }
     }
 
@@ -1839,24 +1813,6 @@ public final class CmsContentEditor extends CmsEditorBase {
     }
 
     /**
-     * Shows the locked resource error message.<p>
-     */
-    void showLockedResourceMessage() {
-
-        CmsErrorDialog dialog = new CmsErrorDialog(
-            Messages.get().key(Messages.ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0),
-            null);
-        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
-
-            public void onClose(CloseEvent<PopupPanel> event) {
-
-                cancelEdit();
-            }
-        });
-        dialog.center();
-    }
-
-    /**
      * Shows the validation error dialog.<p>
      *
      * @param validationResult the validation result
@@ -2024,14 +1980,14 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Closes the editor.<p>
      */
     private native void closeEditorWidow() /*-{
-		if ($wnd.top.cms_ade_closeEditorDialog) {
-			$wnd.top.cms_ade_closeEditorDialog();
-		} else {
-			var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
-			if (backlink) {
-				$wnd.top.location.href = backlink;
-			}
-		}
+        if ($wnd.top.cms_ade_closeEditorDialog) {
+            $wnd.top.cms_ade_closeEditorDialog();
+        } else {
+            var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
+            if (backlink) {
+                $wnd.top.location.href = backlink;
+            }
+        }
     }-*/;
 
     /**
@@ -2065,18 +2021,18 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Exports the add entity change listener method.<p>
      */
     private native void exportObserver()/*-{
-		var self = this;
-		$wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-				listener, scope) {
-			var wrapper = {
-				onChange : listener.onChange
-			}
-			self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
-		}
-		$wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
-			return new $wnd.acacia.CmsEntityWrapper(
-					self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
-		}
+        var self = this;
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+                listener, scope) {
+            var wrapper = {
+                onChange : listener.onChange
+            }
+            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
+        }
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
+            return new $wnd.acacia.CmsEntityWrapper(
+                    self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
+        }
     }-*/;
 
     /**
@@ -2369,9 +2325,9 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changed if the content has been changed
      */
     private native void setEditorState(boolean changed)/*-{
-		if (typeof $wnd.cmsSetEditorChangedState === 'function') {
-			$wnd.cmsSetEditorChangedState(changed);
-		}
+        if (typeof $wnd.cmsSetEditorChangedState === 'function') {
+            $wnd.cmsSetEditorChangedState(changed);
+        }
     }-*/;
 
     /**
@@ -2381,9 +2337,27 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param locale the content locale
      */
     private native void setNativeResourceInfo(String sitePath, String locale)/*-{
-		$wnd._editResource = sitePath;
-		$wnd._editLanguage = locale;
+        $wnd._editResource = sitePath;
+        $wnd._editLanguage = locale;
     }-*/;
+
+    /**
+     * Shows the locked resource error message.<p>
+     */
+    private void showLockedResourceMessage() {
+
+        CmsErrorDialog dialog = new CmsErrorDialog(
+            Messages.get().key(Messages.ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0),
+            null);
+        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                cancelEdit();
+            }
+        });
+        dialog.center();
+    }
 
     /**
      * Updates the editor values according to the given entity.<p>

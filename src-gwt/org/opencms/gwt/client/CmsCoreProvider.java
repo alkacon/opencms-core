@@ -34,8 +34,8 @@ import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.util.CmsUniqueActiveItemContainer;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
@@ -379,47 +379,10 @@ public final class CmsCoreProvider extends CmsCoreData {
      * Locks the given resource with a temporary lock, synchronously.<p>
      *
      * @param structureId the resource structure id
-     * @param callback the callback to execute
-     */
-    public void lock(final CmsUUID structureId, final I_CmsSimpleCallback<Boolean> callback) {
-
-        CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                start(200, false);
-                getService().lockTemp(structureId, this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(String result) {
-
-                stop(false);
-                if (result != null) {
-                    // unable to lock
-                    String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, structureId, result);
-                    CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
-                }
-                callback.execute(result == null ? Boolean.TRUE : Boolean.FALSE);
-            }
-        };
-        lockAction.execute();
-    }
-
-    /**
-     * Tries to lock a resource with a given structure id and returns an error if the locking fails.<p>
      *
-     * @param structureId the structure id of the resource to lock
-     * @param callback the callback to execute
+     * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
      */
-    public void lockOrReturnError(final CmsUUID structureId, final I_CmsSimpleCallback<String> callback) {
+    public boolean lock(final CmsUUID structureId) {
 
         CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
 
@@ -447,10 +410,49 @@ public final class CmsCoreProvider extends CmsCoreData {
                 // unable to lock
                 final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, structureId, result);
                 CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
-                callback.execute(result);
             }
         };
-        lockAction.execute();
+        return lockAction.executeSync() == null;
+    }
+
+    /**
+     * Tries to lock a resource with a given structure id and returns an error if the locking fails.<p>
+     *
+     * @param structureId the structure id of the resource to lock
+     *
+     * @return the error message or null if the locking succeeded
+     */
+    public String lockOrReturnError(final CmsUUID structureId) {
+
+        CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                start(200, false);
+                getService().lockTemp(structureId, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(String result) {
+
+                stop(false);
+                if (result == null) {
+                    // ok
+                    return;
+                }
+                // unable to lock
+                final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, structureId, result);
+                CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
+            }
+        };
+        return lockAction.executeSync();
     }
 
     /**
@@ -458,9 +460,10 @@ public final class CmsCoreProvider extends CmsCoreData {
      * If the resource does not exist yet, the next existing ancestor folder will be checked if it is lockable.<p>
      *
      * @param sitePath the site path of the resource to lock
-     * @param callback the callback to execute
+     *
+     * @return the error message or null if the locking succeeded
      */
-    public void lockOrReturnError(final String sitePath, final I_CmsSimpleCallback<String> callback) {
+    public String lockOrReturnError(final String sitePath) {
 
         CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
 
@@ -488,10 +491,45 @@ public final class CmsCoreProvider extends CmsCoreData {
                 // unable to lock
                 final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, sitePath, result);
                 CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
-                callback.execute(result);
             }
         };
-        lockAction.execute();
+        return lockAction.executeSync();
+    }
+
+    /**
+     * Locks the given resource with a temporary lock, synchronously and additionally checking that
+     * the given resource has not been modified after the given timestamp.<p>
+     *
+     * @param structureId the resource structure id
+     * @param modification the timestamp to check
+     *
+     * @return <code>null</code> if successful, else an error message
+     */
+    public CmsLockInfo lockTempAndCheckModification(final CmsUUID structureId, final long modification) {
+
+        // lock the sitemap
+        CmsRpcAction<CmsLockInfo> lockAction = new CmsRpcAction<CmsLockInfo>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                start(200, false);
+                getService().lockTempAndCheckModification(structureId, modification, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(CmsLockInfo result) {
+
+                stop(false);
+            }
+        };
+        return lockAction.executeSync();
     }
 
     /**
@@ -553,9 +591,10 @@ public final class CmsCoreProvider extends CmsCoreData {
      * Returns the absolute link to the given root path.<p>
      *
      * @param rootPath the root path
-     * @param callback the callback to execute
+     *
+     * @return the absolute link
      */
-    public void substituteLinkForRootPath(final String rootPath, final I_CmsSimpleCallback<String> callback) {
+    public String substituteLinkForRootPath(final String rootPath) {
 
         CmsRpcAction<String> action = new CmsRpcAction<String>() {
 
@@ -568,10 +607,22 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             protected void onResponse(String result) {
 
-                callback.execute(result);
+                // nothing to do here
             }
         };
-        action.execute();
+        return action.executeSync();
+    }
+
+    /**
+     * Unlocks the current resource.<p>
+     *
+     * @return <code>true</code> if succeeded
+     *
+     * @see #unlock(CmsUUID)
+     */
+    public boolean unlock() {
+
+        return unlock(getStructureId());
     }
 
     /**

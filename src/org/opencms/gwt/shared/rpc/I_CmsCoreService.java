@@ -35,6 +35,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsCoreData.UserInfo;
+import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
@@ -227,6 +228,24 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     String lockTemp(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Locks the given resource with a temporary lock additionally checking that
+     * the given resource has not been modified after the given timestamp.<p>
+     *
+     * @param structureId the structure id of the resource to lock
+     * @param modification the timestamp to check
+     *
+     * @return <code>null</code> if successful, an error message if not
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsLockInfo lockTempAndCheckModification(CmsUUID structureId, long modification) throws CmsRpcException;
+
+    /**
+     * An RPC method which does nothing and is just used to keep the session alive.<p>
+     */
+    void ping();
 
     /**
      * Generates core data for prefetching in the host page.<p>

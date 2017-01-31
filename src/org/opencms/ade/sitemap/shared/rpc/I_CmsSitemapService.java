@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * Handles all RPC services related to the sitemap.<p>
@@ -316,6 +317,19 @@ public interface I_CmsSitemapService extends RemoteService {
         List<CmsPropertyModification> propertyChanges,
         boolean editedName)
     throws CmsRpcException;
+
+    /**
+     * Saves the change to the given sitemap.<p>
+     *
+     * @param sitemapUri the sitemap URI
+     * @param change the change to save
+     *
+     * @return the updated change
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    @SynchronizedRpcRequest
+    CmsSitemapChange saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 
     /**
      * Sets the default model page for the given sub-sitemap, returns the updated model info.<p>

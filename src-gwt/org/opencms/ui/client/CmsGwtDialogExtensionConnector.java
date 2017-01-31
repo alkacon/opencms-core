@@ -50,7 +50,6 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog;
 import org.opencms.gwt.client.ui.replace.CmsReplaceHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsHistoryVersion;
 import org.opencms.gwt.shared.CmsPreviewInfo;
@@ -88,11 +87,12 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     public class ContextMenuHandler implements I_CmsContextMenuHandler {
 
         /**
-         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID, org.opencms.gwt.client.util.I_CmsSimpleCallback)
+         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID)
          */
-        public void ensureLockOnResource(CmsUUID structureId, I_CmsSimpleCallback<Boolean> callback) {
+        public boolean ensureLockOnResource(CmsUUID structureId) {
 
             notImplemented();
+            return false;
         }
 
         /**
@@ -179,9 +179,9 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
         CmsEditExternalLinkDialog dialog = CmsEditExternalLinkDialog.loadAndShowDialog(new CmsUUID(pointerStructureId));
         dialog.setContextMenuHandler(new I_CmsContextMenuHandler() {
 
-            public void ensureLockOnResource(CmsUUID lockStructureId, I_CmsSimpleCallback<Boolean> callback) {
+            public boolean ensureLockOnResource(CmsUUID lockStructureId) {
 
-                // not used
+                return false;
             }
 
             public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {

@@ -24,14 +24,10 @@ import java.lang.annotation.Target;
 
 /**
  * Will change the request for the given method to be synchronized.<p>
- *
- * Using synchronized XhtmlHttpRequests is deprecated in most browsers and should not be used.<p>
- * Try using asynchronous requests whenever possible.<p>
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Deprecated
 public @interface SynchronizedRpcRequest {
     // empty
 }

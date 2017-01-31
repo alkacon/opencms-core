@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * The RPC service asynchronous interface used by the container-page editor.<p>
@@ -459,4 +460,34 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the callback
      */
     void setLastPage(CmsUUID pageId, CmsUUID detailId, AsyncCallback<Void> callback);
+
+    /**
+     * Generates request builder to make a synchronized RPC call saving the container-page.<p>
+     *
+     * @param pageStructureId the container page structure id
+     * @param containers the container-page's containers
+     * @param callback the call-back executed on response
+     */
+    @SynchronizedRpcRequest
+    void syncSaveContainerpage(
+        CmsUUID pageStructureId,
+        List<CmsContainer> containers,
+
+        AsyncCallback<Void> callback);
+
+    /**
+     * Saves the detail containers.<p>
+     *
+     * @param detailId the detail content id
+     * @param detailContainerResource the detail container resource path
+     * @param containers the container-page's containers
+     * @param callback the call-back executed on response
+     */
+    @SynchronizedRpcRequest
+    void syncSaveDetailContainers(
+        CmsUUID detailId,
+        String detailContainerResource,
+        List<CmsContainer> containers,
+        AsyncCallback<Void> callback);
+
 }

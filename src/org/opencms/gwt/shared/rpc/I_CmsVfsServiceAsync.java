@@ -386,6 +386,7 @@ public interface I_CmsVfsServiceAsync {
      * @param rootPath the root path
      * @param callback the asynchronous callback
      */
+    @SynchronizedRpcRequest
     void substituteLinkForRootPath(String currentSiteRoot, String rootPath, AsyncCallback<String> callback);
 
     /**
