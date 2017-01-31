@@ -823,7 +823,9 @@ public class CmsResourceManager {
             }
         }
         StringBuffer result = new StringBuffer(mimeType);
-        if ((encoding != null) && mimeType.startsWith("text") && (mimeType.indexOf("charset") == -1)) {
+        if ((encoding != null)
+            && (mimeType.startsWith("text") || mimeType.endsWith("javascript"))
+            && (mimeType.indexOf("charset") == -1)) {
             result.append("; charset=");
             result.append(encoding);
         }
@@ -1013,7 +1015,8 @@ public class CmsResourceManager {
         CmsObject cms,
         HttpServletRequest request,
         CmsResource resource,
-        String templateProperty) throws CmsException {
+        String templateProperty)
+    throws CmsException {
 
         String templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();
         CmsTemplateContext templateContext = null;
