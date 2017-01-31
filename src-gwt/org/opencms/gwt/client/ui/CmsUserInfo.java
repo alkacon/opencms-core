@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -56,6 +57,7 @@ public class CmsUserInfo extends A_CmsToolbarButton<I_CmsToolbarHandler> {
         super(null, null);
         addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().userInfo());
         getUpFace().setHTML("<img src=\"" + CmsCoreProvider.get().getUserInfo().getUserIcon() + "\" />");
+        setTitle(Messages.get().key(Messages.GUI_USER_INFO_0));
         m_dialogHandler = new CmsEmbeddedDialogHandler();
         addClickHandler(new ClickHandler() {
 
