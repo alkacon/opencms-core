@@ -16,13 +16,23 @@ Legend:
 - General comment
 
 OpenCms 10.5.1 - ...
-* Fixed issue where gallery dialog would not open on preselected values.
-* Fixed context menu for deleted resources in publish dialog.
-* Fixing issue where project tool tip would not be displayed in file tables.
+
+! Added filter function to various tabs in the "Add content" dialog (#432).
+! Allowing to configure buckets of resources for Flex Cache purging 
 ! Allowing access to context menu in element settings dialog.
 ! Allowing configuration of element remove dialog in page editor.
 ! Added improved source search tool.
 ! Allowing text area widget when editing properties.
+! Added multiple functions for String manipulation to the cms taglib.
+* Fixed issue #408 with permanent redirects.
+* Fixed issue #475 where dynamic functions disappeared from the containerpage.
+* Fixed double conversion of dates in search field mappings for attributes.
+* Fixed issue with order of content elements mapped to multi-valued Solr-fields
+* Fixed issue #462 where gallery dialog would not open on preselected values.
+* Fixed context menu for deleted resources in publish dialog.
+* Fixed issue where project tool tip would not be displayed in file tables.
+- Improved link tag to support various detail pages.
+- Improved handling of locales with country/variant.
 - Improved bundle editor to store message properties in alphabetical order.
 - Improved email validation regex to allow more valid email addresses.
 - Improved touch function to use automatic XML correction.
@@ -31,6 +41,12 @@ OpenCms 10.5.1 - ...
 - Updated CMIS libraries.
 - Implemented improved source editor.
 - Improved writing of container pages to store containers and element settings in a reproducible order.
+- Improved handling of model groups.
+- Enhanced Sitemap editor's copy function (#437)
+- Defined calendar mime-type for .ics files (PR #427)
+- Removed password output to console (PR #471)
+- Changed message in delete dialog if deleting resources is not allowed (PR #465)
+- Renamed copy dialog label 'Target folder' to 'Target' (PR #460)
 
 OpenCms 10.5.0 Final - November 30, 2016
 ! The user interface now uses mostly font icons for better support in high resolution (retina) screens.
