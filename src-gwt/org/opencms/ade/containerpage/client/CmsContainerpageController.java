@@ -1857,14 +1857,13 @@ public final class CmsContainerpageController {
                                         stop(true);
                                     }
                                 };
-                                nextActions = new Runnable[] {null};
-                                nextActions[0] = new Runnable() {
+                                nextActions = new Runnable[] {new Runnable() {
 
                                     public void run() {
 
                                         deleteAction.execute();
                                     }
-                                };
+                                }};
                             }
                             I_CmsDropContainer container = element.getParentTarget();
                             element.removeFromParent();
