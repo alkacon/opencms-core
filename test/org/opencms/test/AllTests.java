@@ -103,7 +103,6 @@ public final class AllTests {
         suite.addTest(org.opencms.mail.AllTests.suite());
         suite.addTest(org.opencms.main.AllTests.suite());
         suite.addTest(org.opencms.module.AllTests.suite());
-        suite.addTest(org.opencms.monitor.AllTests.suite());
         suite.addTest(org.opencms.notification.AllTests.suite());
         suite.addTest(org.opencms.publish.AllTests.suite());
         suite.addTest(org.opencms.relations.AllTests.suite());
