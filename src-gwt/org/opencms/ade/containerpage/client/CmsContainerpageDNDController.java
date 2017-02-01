@@ -96,6 +96,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The id of the dragged element. */
     protected String m_draggableId;
 
+    /** The id of the container from which an element was dragged. */
+    String m_originalContainerId;
+
+    /** The copy group id. */
+    private String m_copyGroupId;
+
     /** The current place holder index. */
     private int m_currentIndex = -1;
 
@@ -117,14 +123,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** Creating new flag. */
     private boolean m_isNew;
 
-    /** The id of the container from which an element was dragged. */
-    String m_originalContainerId;
-
     /** The original position of the draggable. */
     private int m_originalIndex;
-
-    /** The copy group id. */
-    private String m_copyGroupId;
 
     /**
      * Constructor.<p>
@@ -201,10 +201,15 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
 
         if (!m_controller.isGroupcontainerEditing()) {
-            boolean locked = m_controller.lockContainerpage();
-            if (!locked) {
-                return false;
-            }
+            m_controller.lockContainerpage(new I_CmsSimpleCallback<Boolean>() {
+
+                public void execute(Boolean arg) {
+
+                    if (!arg.booleanValue()) {
+                        handler.cancel();
+                    }
+                }
+            });
         }
 
         String containerId = null;

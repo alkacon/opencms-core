@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.contextmenu;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -61,11 +62,11 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID)
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID, org.opencms.gwt.client.util.I_CmsSimpleCallback)
      */
-    public boolean ensureLockOnResource(CmsUUID structureId) {
+    public void ensureLockOnResource(CmsUUID structureId, I_CmsSimpleCallback<Boolean> callback) {
 
-        return CmsCoreProvider.get().lock(structureId);
+        CmsCoreProvider.get().lock(structureId, callback);
     }
 
     /**

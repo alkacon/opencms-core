@@ -65,6 +65,7 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -615,9 +616,14 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
             public void onSuccess(CmsClientSitemapEntry result) {
 
-                final CmsClientSitemapEntry newEntry = makeNewEntry(parent);
-                newEntry.setResourceTypeName(sitemapFolderType);
-                createSitemapSubEntry(newEntry, parent.getId(), sitemapFolderType);
+                makeNewEntry(parent, new I_CmsSimpleCallback<CmsClientSitemapEntry>() {
+
+                    public void execute(CmsClientSitemapEntry newEntry) {
+
+                        newEntry.setResourceTypeName(sitemapFolderType);
+                        createSitemapSubEntry(newEntry, parent.getId(), sitemapFolderType);
+                    }
+                });
             }
         };
         if (item.getLoadState().equals(LoadState.UNLOADED)) {
@@ -655,8 +661,14 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
             public void onSuccess(CmsClientSitemapEntry result) {
 
-                final CmsClientSitemapEntry newEntry = makeNewEntry(parent);
-                createSubEntry(newEntry, parent.getId(), structureId);
+                makeNewEntry(parent, new I_CmsSimpleCallback<CmsClientSitemapEntry>() {
+
+                    public void execute(CmsClientSitemapEntry newEntry) {
+
+                        createSubEntry(newEntry, parent.getId(), structureId);
+                    }
+                });
+
             }
 
         };
@@ -864,12 +876,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
      *
      * @param parent the parent entry
      * @param newName the proposed name
-     *
-     * @return the unique name
+     * @param callback the callback to execute
      */
-    public String ensureUniqueName(CmsClientSitemapEntry parent, String newName) {
+    public void ensureUniqueName(CmsClientSitemapEntry parent, String newName, I_CmsSimpleCallback<String> callback) {
 
-        return ensureUniqueName(parent.getSitePath(), newName);
+        ensureUniqueName(parent.getSitePath(), newName, callback);
     }
 
     /**
@@ -877,10 +888,12 @@ public class CmsSitemapController implements I_CmsSitemapController {
      *
      * @param parentFolder the parent folder
      * @param newName the proposed name
-     *
-     * @return the unique name
+     * @param callback the callback to execute
      */
-    public String ensureUniqueName(final String parentFolder, String newName) {
+    public void ensureUniqueName(
+        final String parentFolder,
+        String newName,
+        final I_CmsSimpleCallback<String> callback) {
 
         // using lower case folder names
         final String lowerCaseName = newName.toLowerCase();
@@ -903,10 +916,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(String result) {
 
                 stop(false);
+                callback.execute(result);
             }
 
         };
-        return action.executeSync();
+        action.execute();
     }
 
     /**
@@ -2126,7 +2140,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 public void execute() {
 
                     start(0, true);
-                    getService().saveSync(getEntryPoint(), change, this);
+                    getService().save(getEntryPoint(), change, this);
 
                 }
 
@@ -2230,26 +2244,33 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * Creates a new client sitemap entry bean to use for the RPC call which actually creates the entry on the server side.<p>
      *
      * @param parent the parent entry
-     *
-     * @return the initialized client sitemap entry
+     * @param callback the callback to execute
      */
-    protected CmsClientSitemapEntry makeNewEntry(final CmsClientSitemapEntry parent) {
+    protected void makeNewEntry(
+        final CmsClientSitemapEntry parent,
+        final I_CmsSimpleCallback<CmsClientSitemapEntry> callback) {
 
-        String urlName = ensureUniqueName(parent, NEW_ENTRY_NAME);
-        final CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry();
-        //newEntry.setTitle(urlName);
-        newEntry.setName(urlName);
-        String sitePath = parent.getSitePath() + urlName + "/";
-        newEntry.setSitePath(sitePath);
-        newEntry.setVfsPath(null);
-        newEntry.setPosition(0);
-        newEntry.setNew(true);
-        newEntry.setInNavigation(true);
-        newEntry.setResourceTypeName("folder");
-        newEntry.getOwnProperties().put(
-            CmsClientProperty.PROPERTY_TITLE,
-            new CmsClientProperty(CmsClientProperty.PROPERTY_TITLE, NEW_ENTRY_NAME, NEW_ENTRY_NAME));
-        return newEntry;
+        ensureUniqueName(parent, NEW_ENTRY_NAME, new I_CmsSimpleCallback<String>() {
+
+            public void execute(String urlName) {
+
+                CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry();
+                //newEntry.setTitle(urlName);
+                newEntry.setName(urlName);
+                String sitePath = parent.getSitePath() + urlName + "/";
+                newEntry.setSitePath(sitePath);
+                newEntry.setVfsPath(null);
+                newEntry.setPosition(0);
+                newEntry.setNew(true);
+                newEntry.setInNavigation(true);
+                newEntry.setResourceTypeName("folder");
+                newEntry.getOwnProperties().put(
+                    CmsClientProperty.PROPERTY_TITLE,
+                    new CmsClientProperty(CmsClientProperty.PROPERTY_TITLE, NEW_ENTRY_NAME, NEW_ENTRY_NAME));
+                callback.execute(newEntry);
+            }
+        });
+
     }
 
     /**

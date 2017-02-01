@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -68,12 +69,11 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
     public class ContextMenuHandler implements I_CmsContextMenuHandler {
 
         /**
-         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID)
+         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID, org.opencms.gwt.client.util.I_CmsSimpleCallback)
          */
-        public boolean ensureLockOnResource(CmsUUID structureId) {
+        public void ensureLockOnResource(CmsUUID structureId, I_CmsSimpleCallback<Boolean> callback) {
 
             notImplemented();
-            return false;
         }
 
         /**

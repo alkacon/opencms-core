@@ -1067,14 +1067,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
-     */
-    public CmsSitemapChange saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
-
-        return save(entryPoint, change);
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#setDefaultModel(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
     public CmsModelInfo setDefaultModel(CmsUUID rootId, CmsUUID modelId) throws CmsRpcException {

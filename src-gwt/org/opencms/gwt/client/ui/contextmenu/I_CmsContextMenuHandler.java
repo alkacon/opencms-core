@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -44,10 +45,9 @@ public interface I_CmsContextMenuHandler extends I_CmsActionHandler {
      * If not successful a warning should be displayed.<p>
      *
      * @param structureId the structure id of the resource to lock
-     *
-     * @return <code>true</code> if successful
+     * @param callback the callback to execute
      */
-    boolean ensureLockOnResource(CmsUUID structureId);
+    void ensureLockOnResource(CmsUUID structureId, I_CmsSimpleCallback<Boolean> callback);
 
     /**
      * Returns the available context menu commands as a map by class name.<p>

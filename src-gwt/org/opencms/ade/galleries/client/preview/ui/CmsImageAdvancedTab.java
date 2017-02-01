@@ -33,6 +33,7 @@ import org.opencms.ade.galleries.client.preview.CmsPreviewUtil;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.util.CmsJSONMap;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.Map;
 
@@ -89,11 +90,13 @@ public class CmsImageAdvancedTab extends A_CmsPreviewDetailTab {
      * Adds necessary attributes to the map.<p>
      *
      * @param attributes the attribute map
-     * @return the attribute map
+     * @param callback the callback to execute
      */
-    public Map<String, String> getImageAttributes(Map<String, String> attributes) {
+    public void getImageAttributes(
+        Map<String, String> attributes,
+        final I_CmsSimpleCallback<Map<String, String>> callback) {
 
-        return m_form.getImageAttributes(attributes);
+        m_form.getImageAttributes(attributes, callback);
     }
 
     /**

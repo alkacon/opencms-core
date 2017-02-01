@@ -34,7 +34,6 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsCoreData.UserInfo;
-import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
@@ -157,7 +156,6 @@ public interface I_CmsCoreServiceAsync {
      * @param baseName the proposed file name
      * @param callback the callback which receives the result
      */
-    @SynchronizedRpcRequest
     void getUniqueFileName(String parentFolder, String baseName, AsyncCallback<String> callback);
 
     /**
@@ -199,26 +197,7 @@ public interface I_CmsCoreServiceAsync {
      * @param structureId the resource structure id
      * @param callback the async callback
      */
-    @SynchronizedRpcRequest
     void lockTemp(CmsUUID structureId, AsyncCallback<String> callback);
-
-    /**
-     * Locks the given resource with a temporary lock additionally checking that
-     * the given resource has not been modified after the given timestamp.<p>
-     *
-     * @param structureId the resource structure id
-     * @param modification the timestamp to check
-     * @param callback the async callback
-     */
-    @SynchronizedRpcRequest
-    void lockTempAndCheckModification(CmsUUID structureId, long modification, AsyncCallback<CmsLockInfo> callback);
-
-    /**
-     * A method which does nothing and is just used to keep the session alive.<p>
-     *
-     * @param callback the asynchronous callback
-     */
-    void ping(AsyncCallback<Void> callback);
 
     /**
      * Generates core data for prefetching in the host page.<p>
