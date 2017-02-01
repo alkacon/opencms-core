@@ -27,6 +27,7 @@
 
 package org.opencms.ui.dialogs;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -130,8 +131,16 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
         if ((project != null) || (siteRoot != null)) {
             String sitePath = null;
             if (siteRoot != null) {
-                sitePath = CmsQuickLaunchLocationCache.getLocationCache(
-                    A_CmsUI.get().getHttpSession()).getFileExplorerLocation(siteRoot);
+                CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(
+                    A_CmsUI.get().getHttpSession());
+                sitePath = locationCache.getPageEditorLocation(siteRoot);
+                if (sitePath == null) {
+                    sitePath = locationCache.getFileExplorerLocation(siteRoot);
+                    int index = sitePath.indexOf("/" + CmsADEManager.CONTENT_FOLDER_NAME);
+                    if (index >= 0) {
+                        sitePath = sitePath.substring(0, index);
+                    }
+                }
             } else if ((m_resources != null) && !m_resources.isEmpty()) {
                 sitePath = A_CmsUI.getCmsObject().getSitePath(m_resources.get(0));
             }
