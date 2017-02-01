@@ -673,6 +673,11 @@ allModuleNames.split(',').each{ moduleName ->
         	sourceSets[moduleName].compileClasspath+= fileTree(libFolder){ include '**/*.jar' }
         	
         }
+        def libExtFolder=file("${moduleFolder}/resources/system/modules/${moduleName}/libext")
+        if (libExtFolder.exists()){
+        	println("Detecting libext folder for module $moduleName")
+        	sourceSets[moduleName].compileClasspath+= fileTree(libExtFolder){ include '**/*.jar' }
+        }
 
         task "jar_$moduleName" (type: Jar) {
         	ext.gwtModule = gwtModule
