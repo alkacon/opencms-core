@@ -71,6 +71,9 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     /** The resource icon CSS URI. */
     private static final String ICON_CSS_URI = "/system/modules/org.opencms.gwt/resourceIcon.css";
 
+    /** The toolbar.css resource name. */
+    private static final String TOOLBAR_CSS = "css/toolbar.css";
+
     /** The current core data. */
     private CmsCoreData m_coreData;
 
@@ -308,6 +311,9 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         return exportCommon(getCmsObject(), getCoreData(), iconCssClassPrefix)
             + "\n<style type=\"text/css\">\n @import url(\""
             + getFontIconCssLink()
+            + "\");\n"
+            + " @import url(\""
+            + getToolbarCssLink()
             + "\");\n </style>\n";
     }
 
@@ -377,5 +383,15 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             + CmsWorkplace.getStaticResourceUri("gwt/opencms/opencms.nocache.js");
         result += "\"></script>\n";
         return result;
+    }
+
+    /**
+     * Returns the toolbar CSS link.<p>
+     *
+     * @return the toolbar CSS link
+     */
+    private String getToolbarCssLink() {
+
+        return CmsWorkplace.getResourceUri(TOOLBAR_CSS);
     }
 }
