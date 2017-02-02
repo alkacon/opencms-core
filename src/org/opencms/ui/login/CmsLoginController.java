@@ -48,6 +48,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -299,10 +300,12 @@ public class CmsLoginController {
             target = OpenCms.getLinkManager().substituteLink(currentCms, target);
         }
 
-        if (workplace2
-            && CmsStringUtil.isEmptyOrWhitespaceOnly(fragment)
-            && CmsWorkplace.VIEW_WORKPLACE.equals(settings.getUserSettings().getStartView())) {
-            fragment = CmsFileExplorerConfiguration.APP_ID;
+        if (workplace2 && CmsStringUtil.isEmptyOrWhitespaceOnly(fragment)) {
+            if (CmsWorkplace.VIEW_WORKPLACE.equals(settings.getUserSettings().getStartView())) {
+                fragment = CmsFileExplorerConfiguration.APP_ID;
+            } else if (CmsWorkplace.VIEW_ADMIN.equals(settings.getUserSettings().getStartView())) {
+                fragment = CmsAppHierarchyConfiguration.APP_ID;
+            }
         }
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
