@@ -2246,30 +2246,29 @@ public final class CmsContainerpageController {
 
         if (m_lockStatus == LockStatus.locked) {
             callback.execute(Boolean.TRUE);
-        }
-        if (m_lockStatus == LockStatus.failed) {
+        } else if (m_lockStatus == LockStatus.failed) {
             callback.execute(Boolean.FALSE);
-        }
-        I_CmsSimpleCallback<String> call = new I_CmsSimpleCallback<String>() {
-
-            public void execute(String lockError) {
-
-                if (lockError == null) {
-                    onLockSuccess();
-                    callback.execute(Boolean.TRUE);
-                } else {
-                    onLockFail(lockError);
-                    callback.execute(Boolean.FALSE);
-                }
-            }
-        };
-
-        if (getData().getDetailContainerPage() != null) {
-            CmsCoreProvider.get().lockOrReturnError(getData().getDetailContainerPage(), call);
         } else {
-            CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId(), call);
-        }
+            I_CmsSimpleCallback<String> call = new I_CmsSimpleCallback<String>() {
 
+                public void execute(String lockError) {
+
+                    if (lockError == null) {
+                        onLockSuccess();
+                        callback.execute(Boolean.TRUE);
+                    } else {
+                        onLockFail(lockError);
+                        callback.execute(Boolean.FALSE);
+                    }
+                }
+            };
+
+            if (getData().getDetailContainerPage() != null) {
+                CmsCoreProvider.get().lockOrReturnError(getData().getDetailContainerPage(), call);
+            } else {
+                CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId(), call);
+            }
+        }
     }
 
     /**
@@ -2796,7 +2795,8 @@ public final class CmsContainerpageController {
                  */
                 @Override
                 public void execute() {
-
+                    
+                    start(500, true);
                     if (getData().getDetailContainerPage() != null) {
                         getContainerpageService().saveDetailContainers(
                             getData().getDetailId(),
@@ -2804,7 +2804,6 @@ public final class CmsContainerpageController {
                             getPageContent(),
                             this);
                     } else {
-                        start(500, true);
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
@@ -2819,8 +2818,8 @@ public final class CmsContainerpageController {
                 protected void onResponse(Void result) {
 
                     stop(false);
-                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, false);
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     for (Runnable afterSaveAction : afterSaveActions) {
                         afterSaveAction.run();
                     }
