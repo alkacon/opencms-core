@@ -1129,14 +1129,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         cms,
                         cms.getRequestContext().getLocale().toString(),
                         containerPage));
-                if (rootCms.existsResource(detailContainerPage)) {
-                    noEditReason = getNoEditReason(rootCms, rootCms.readResource(detailContainerPage));
+                if (rootCms.existsResource(detailContainerPage, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    noEditReason = getNoEditReason(
+                        rootCms,
+                        rootCms.readResource(detailContainerPage, CmsResourceFilter.IGNORE_EXPIRATION));
                 } else {
                     String permissionFolder = CmsResource.getFolderPath(detailContainerPage);
-                    if (!rootCms.existsResource(permissionFolder)) {
+                    while (!rootCms.existsResource(permissionFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
                         permissionFolder = CmsResource.getParentFolder(permissionFolder);
                     }
-                    noEditReason = getNoEditReason(rootCms, rootCms.readResource(permissionFolder));
+                    noEditReason = getNoEditReason(
+                        rootCms,
+                        rootCms.readResource(permissionFolder, CmsResourceFilter.IGNORE_EXPIRATION));
                 }
             } else {
                 if (!isModelPage && !isEditingModelGroup) {
