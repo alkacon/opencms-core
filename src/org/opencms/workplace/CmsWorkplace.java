@@ -200,8 +200,11 @@ public abstract class CmsWorkplace {
     /** Constant for the direct edit view JSP. */
     public static final String VIEW_DIRECT_EDIT = VFS_PATH_VIEWS + "explorer/directEdit.jsp";
 
-    /** Constant for the direct edit view JSP. */
+    /** Constant for the explorer view JSP. */
     public static final String VIEW_WORKPLACE = VFS_PATH_VIEWS + "explorer/explorer_fs.jsp";
+
+    /** Constant for the admin view JSP. */
+    public static final String VIEW_ADMIN = CmsWorkplace.VFS_PATH_VIEWS + "admin/admin-fs.jsp";
 
     /** Key name for the request attribute to indicate a multipart request was already parsed. */
     protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";
