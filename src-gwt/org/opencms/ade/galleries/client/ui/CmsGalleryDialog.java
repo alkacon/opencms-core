@@ -134,14 +134,17 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
     /** Flag which indicates that the formats from this object should have priority. */
     private boolean m_overrideFormats;
 
+    /** The preview visible style. */
+    private CmsStyleVariable m_previewVisibility;
+
+    /** Flag indicating if the resource preview is visible. */
+    private boolean m_previewVisible;
+
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
 
     /** The Full-text search tab. */
     private CmsSearchTab m_searchTab;
-
-    //    /** The show preview button. */
-    //    private CmsPushButton m_showPreview;
 
     /** The sitemap tab. */
     private CmsSitemapTab m_sitemapTab;
@@ -160,12 +163,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /** The dialog width. */
     private int m_width;
-
-    /** Flag indicating if the resource preview is visible. */
-    private boolean m_previewVisible;
-
-    /** The preview visible style. */
-    private CmsStyleVariable m_previewVisibility;
 
     /**
      * The constructor.<p>

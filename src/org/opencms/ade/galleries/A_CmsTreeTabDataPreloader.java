@@ -45,8 +45,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 /**
  * Abstract class which is used to generate the data for showing an already opened tree in the gallery dialog.<p>
@@ -70,6 +72,9 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
     /** The set of resources which have already been read. */
     private Set<CmsResource> m_knownResources = new HashSet<CmsResource>();
 
+    /** Resources whose children should be loaded. */
+    private Set<CmsResource> m_mustLoadChildren = new HashSet<CmsResource>();
+
     /** The root resource. */
     private CmsResource m_rootResource;
 
@@ -78,20 +83,49 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
      *
      * @param cms the CMS context to use
      * @param openResources the resources which correspond to opened tree items
+     * @param selectedResources resources which should be part of the tree, but not opened
      *
      * @return the root tree entry bean which was created
      *
      * @throws CmsException if something goes wrong
      */
-    public T preloadData(CmsObject cms, Collection<CmsResource> openResources) throws CmsException {
+    public T preloadData(CmsObject cms, Set<CmsResource> openResources, Set<CmsResource> selectedResources)
+    throws CmsException {
 
         assert m_cms == null : "Instance can't be used more than once!";
+        if (openResources == null) {
+            openResources = Sets.newHashSet();
+        }
+        if (selectedResources == null) {
+            selectedResources = Sets.newHashSet();
+        }
+
+        boolean ignoreOpen = false;
+        if (!selectedResources.isEmpty() && !openResources.isEmpty()) {
+            // if selected and opened resources are in different sites,
+            // we do *not* want to start from the common root folder (usually '/'),
+            // so ignore the 'open' resources.
+            String siteForSelected = getCommonSite(selectedResources);
+            String siteForOpen = getCommonSite(openResources);
+            if (!Objects.equal(siteForSelected, siteForOpen)) {
+                ignoreOpen = true;
+            }
+        }
+
+        Set<CmsResource> allParamResources = Sets.newHashSet();
+        if (!ignoreOpen) {
+            allParamResources.addAll(openResources);
+        }
+        allParamResources.addAll(selectedResources);
         m_cms = OpenCms.initCmsObject(cms);
         m_cms.getRequestContext().setSiteRoot("");
         // first determine the common root of all open resources
-        findRoot(openResources);
+        findRoot(allParamResources);
+
+        m_mustLoadChildren.add(m_rootResource);
+        m_mustLoadChildren.addAll(openResources);
         // now load ancestors of all open resources
-        for (CmsResource resource : openResources) {
+        for (CmsResource resource : allParamResources) {
             loadAncestors(resource);
         }
         // ensure that all children of ancestors of open resources are loaded
@@ -114,24 +148,14 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
     /**
      * Finds the common root folder for a collection of resources.<p>
      *
-     * @param openResources the collection of open resources
+     * @param resources the collection of resources
      *
      * @throws CmsException if something goes wrong
      */
-    protected void findRoot(Collection<CmsResource> openResources) throws CmsException {
+    protected void findRoot(Collection<CmsResource> resources) throws CmsException {
 
-        String commonPath = getCommonAncestorPath(openResources);
-        CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
-        if (siteManager.startsWithShared(commonPath)) {
-            m_commonRoot = siteManager.getSharedFolder();
-        } else {
-            String siteRoot = siteManager.getSiteRoot(CmsStringUtil.joinPaths(commonPath, "/"));
-            if (siteRoot == null) {
-                m_commonRoot = "/";
-            } else {
-                m_commonRoot = siteRoot;
-            }
-        }
+        m_commonRoot = getCommonSite(resources);
+        String commonPath = getCommonAncestorPath(resources);
         try {
             m_rootResource = m_cms.readResource(m_commonRoot, m_filter);
         } catch (CmsVfsResourceNotFoundException e) {
@@ -158,6 +182,31 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
     protected List<CmsResource> getChildren(CmsResource resource) throws CmsException {
 
         return m_cms.getSubFolders(resource.getRootPath(), m_filter);
+    }
+
+    /**
+     * Gets the common site root of a set of resources.<p>
+     * @param resourceSet the resources
+     *
+     * @return the common site root (may also be the shared folder or root folder)
+     */
+    protected String getCommonSite(Collection<CmsResource> resourceSet) {
+
+        String commonPath = getCommonAncestorPath(resourceSet);
+        String result = null;
+        CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
+        if (siteManager.startsWithShared(commonPath)) {
+            result = siteManager.getSharedFolder();
+        } else {
+            String siteRoot = siteManager.getSiteRoot(CmsStringUtil.joinPaths(commonPath, "/"));
+            if (siteRoot == null) {
+                result = "/";
+            } else {
+                result = siteRoot;
+            }
+        }
+        return result;
+
     }
 
     /**
@@ -265,6 +314,10 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
                 break;
             }
             CmsResource parent = m_cms.readParentFolder(currentResource.getStructureId());
+            if (parent != null) {
+                m_mustLoadChildren.add(parent);
+
+            }
             currentResource = parent;
         }
     }
@@ -278,6 +331,9 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
 
         for (CmsResource resource : new ArrayList<CmsResource>(m_knownResources)) {
             if (resource.isFolder()) {
+                if (!m_mustLoadChildren.contains(resource)) {
+                    continue;
+                }
                 List<CmsResource> children = getChildren(resource);
                 for (CmsResource child : children) {
                     m_knownResources.add(child);

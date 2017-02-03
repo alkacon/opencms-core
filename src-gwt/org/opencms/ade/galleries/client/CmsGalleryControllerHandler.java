@@ -48,6 +48,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -243,9 +244,12 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             onReceiveSitemapPreloadData(sitemapPreloadData);
         }
         CmsVfsEntryBean vfsPreloadData = searchObj.getVfsPreloadData();
+        if (vfsPreloadData == null) {
+            vfsPreloadData = dialogBean.getVfsPreloadData();
+        }
         if (m_galleryDialog.getVfsTab() != null) {
             if (vfsPreloadData != null) {
-                onReceiveVfsPreloadData(vfsPreloadData);
+                onReceiveVfsPreloadData(vfsPreloadData, searchObj.getFolders());
             } else if ((dialogBean.getVfsRootFolders() != null)) {
                 m_galleryDialog.getVfsTab().fillInitially(
                     dialogBean.getVfsRootFolders(),
@@ -309,12 +313,16 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      * This method is called when preloaded VFS tree state data is loaded.<p>
      *
      * @param vfsPreloadData the preload data
+     * @param folders the set of selected folders
      */
-    public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
+    public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData, Set<String> folders) {
 
         CmsVfsTab vfsTab = m_galleryDialog.getVfsTab();
         if (vfsTab != null) {
             vfsTab.onReceiveVfsPreloadData(vfsPreloadData);
+            if (folders != null) {
+                vfsTab.checkFolders(folders);
+            }
         }
     }
 
@@ -483,23 +491,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         }
         if ((m_galleryDialog.getCategoriesTab() != null) && (dialogBean.getCategories() != null)) {
             setCategoriesTabContent(dialogBean.getCategories(), searchObj.getCategories());
-        }
-    }
-
-    /**
-     * Causes the preloaded tree states to be displayed in the tree tabs.<p>
-     *
-     * @param result the gallery search bean from which to take the preload data
-     */
-    protected void showPreloadDataInTabs(CmsGallerySearchBean result) {
-
-        CmsSitemapEntryBean sitemapPreloadData = result.getSitemapPreloadData();
-        if (sitemapPreloadData != null) {
-            onReceiveSitemapPreloadData(sitemapPreloadData);
-        }
-        CmsVfsEntryBean vfsPreloadData = result.getVfsPreloadData();
-        if (vfsPreloadData != null) {
-            onReceiveVfsPreloadData(vfsPreloadData);
         }
     }
 

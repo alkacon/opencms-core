@@ -319,6 +319,85 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private Locale m_wpLocale;
 
     /**
+     * Generates the pre-loaded contents for the VFS tab of the gallery dialog.<p>
+     *
+     * @param cms the current CMS context
+     * @param vfsState the saved VFS tree state (may be null)
+     * @param folders the saved search folders (may be null)
+     *
+     * @return the root tree entry for the VFS tab
+     */
+    public static CmsVfsEntryBean generateVfsPreloadData(
+        final CmsObject cms,
+        final CmsTreeOpenState vfsState,
+        final Set<String> folders) {
+
+        CmsVfsEntryBean vfsPreloadData = null;
+
+        A_CmsTreeTabDataPreloader<CmsVfsEntryBean> vfsloader = new A_CmsTreeTabDataPreloader<CmsVfsEntryBean>() {
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected CmsVfsEntryBean createEntry(CmsObject innerCms, CmsResource resource) throws CmsException {
+
+                String title = innerCms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue();
+                boolean isEditable = false;
+                try {
+                    isEditable = innerCms.hasPermissions(
+                        resource,
+                        CmsPermissionSet.ACCESS_WRITE,
+                        false,
+                        CmsResourceFilter.ALL);
+                } catch (CmsException e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
+
+                return internalCreateVfsEntryBean(innerCms, resource, title, true, isEditable, null, false);
+            }
+
+        };
+        Set<CmsResource> treeOpenResources = Sets.newHashSet();
+        if (vfsState != null) {
+
+            for (CmsUUID structureId : vfsState.getOpenItems()) {
+                try {
+                    treeOpenResources.add(cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        CmsObject rootCms = null;
+        Set<CmsResource> folderSetResources = Sets.newHashSet();
+        try {
+            rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            if (!((folders == null) || folders.isEmpty())) {
+                for (String folder : folders) {
+                    try {
+                        folderSetResources.add(rootCms.readResource(folder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+        } catch (CmsException e1) {
+            LOG.error(e1.getLocalizedMessage(), e1);
+        }
+        try {
+            vfsPreloadData = vfsloader.preloadData(cms, treeOpenResources, folderSetResources);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+        return vfsPreloadData;
+
+    }
+
+    /**
      * Returns the initial gallery settings.<p>
      *
      * @param request the current request
@@ -362,6 +441,100 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } finally {
             srv.clearThreadStorage();
         }
+        return result;
+    }
+
+    /**
+     * Gets the attribute name for a tree open state.<p>
+     *
+     * @param treeName the tree name
+     * @param treeToken the tree token
+     *
+     * @return the attribute name for the tree
+     */
+    public static String getTreeOpenStateAttributeName(String treeName, String treeToken) {
+
+        return "tree_" + treeName + "_" + treeToken;
+    }
+
+    /**
+     * Convenience method for reading the saved VFS tree state from the session.<p>
+     *
+     * @param request the current request
+     * @param treeToken the tree token (may be null)
+     *
+     * @return the saved tree open state (may be null)
+     */
+    public static CmsTreeOpenState getVfsTreeState(HttpServletRequest request, String treeToken) {
+
+        return (CmsTreeOpenState)request.getSession().getAttribute(
+            getTreeOpenStateAttributeName(I_CmsGalleryProviderConstants.TREE_VFS, treeToken));
+
+    }
+
+    /**
+     * Creates the VFS entry bean for a resource.<p>
+     *
+     * @param cms the CMS context to use
+     * @param resource the resource for which to create the VFS entry bean
+     * @param title the title
+     * @param isRoot true if this is a root entry
+     * @param isEditable true if this entry is editable
+     * @param children the children of the entry
+     * @param isMatch true if the VFS entry bean is a match for the quick search
+     *
+     * @return the created VFS entry bean
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsVfsEntryBean internalCreateVfsEntryBean(
+        CmsObject cms,
+        CmsResource resource,
+        String title,
+        boolean isRoot,
+        boolean isEditable,
+        List<CmsVfsEntryBean> children,
+        boolean isMatch)
+    throws CmsException {
+
+        String rootPath = resource.getRootPath();
+        CmsUUID structureId = resource.getStructureId();
+        CmsVfsEntryBean result = new CmsVfsEntryBean(
+            rootPath,
+            structureId,
+            title,
+            isRoot,
+            isEditable,
+            children,
+            isMatch);
+        String siteRoot = null;
+        if (resource.isFolder()) {
+            cms = OpenCms.initCmsObject(cms);
+            cms.getRequestContext().setSiteRoot("");
+            List<CmsResource> realChildren = cms.getResourcesInFolder(
+                rootPath,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            List<CmsResource> effectiveChildren = new ArrayList<CmsResource>();
+            for (CmsResource realChild : realChildren) {
+                if (realChild.isFolder()) {
+                    effectiveChildren.add(realChild);
+                }
+            }
+            if (effectiveChildren.isEmpty()) {
+                result.setChildren(new ArrayList<CmsVfsEntryBean>());
+            }
+        }
+
+        if (OpenCms.getSiteManager().startsWithShared(rootPath)) {
+            siteRoot = OpenCms.getSiteManager().getSharedFolder();
+        } else {
+            String tempSiteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+            if (tempSiteRoot != null) {
+                siteRoot = tempSiteRoot;
+            } else {
+                siteRoot = "";
+            }
+        }
+        result.setSiteRoot(siteRoot);
         return result;
     }
 
@@ -655,8 +828,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             Map<String, CmsGalleryTypeInfo> adeGalleryTypeInfos = readGalleryInfosByTypeBeans(types);
             data.setGalleries(buildGalleriesList(adeGalleryTypeInfos));
             data.setStartTab(GalleryTabId.cms_tab_types);
-            data.setStartFolderFilter(readFolderFilters());
-
+            Set<String> folderFilter = readFolderFilters();
+            data.setStartFolderFilter(folderFilter);
+            if ((folderFilter != null) && !folderFilter.isEmpty()) {
+                try {
+                    data.setVfsPreloadData(generateVfsPreloadData(getCmsObject(), null, folderFilter));
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
             CmsSiteSelectorOptionBuilder optionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
             optionBuilder.addNormalSites(true, getWorkplaceSettings().getUserSettings().getStartFolder());
             optionBuilder.addSharedSite();
@@ -713,33 +893,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             disablePreview = true;
                         }
                     } else {
-                        CmsTreeOpenState vfsState = getVfsTreeState(data.getTreeToken());
-                        if (vfsState != null) {
-                            A_CmsTreeTabDataPreloader<CmsVfsEntryBean> vfsloader = new A_CmsTreeTabDataPreloader<CmsVfsEntryBean>() {
-
-                                @Override
-                                protected CmsVfsEntryBean createEntry(CmsObject cms, CmsResource resource)
-                                throws CmsException {
-
-                                    String title = cms.readPropertyObject(
-                                        resource,
-                                        CmsPropertyDefinition.PROPERTY_TITLE,
-                                        false).getValue();
-                                    return internalCreateVfsEntryBean(
-                                        resource,
-                                        title,
-                                        true,
-                                        isEditable(cms, resource),
-                                        null,
-                                        false);
-                                }
-
-                            };
-                            vfsPreloadData = vfsloader.preloadData(
-                                getCmsObject(),
-                                readAll(vfsState.getOpenItems(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
-                            //   startTab = GalleryTabId.cms_tab_vfstree;
-                        }
                         CmsTreeOpenState sitemapState = getSitemapTreeState(data.getTreeToken());
                         if (sitemapState != null) {
                             A_CmsTreeTabDataPreloader<CmsSitemapEntryBean> sitemaploader = new A_CmsTreeTabDataPreloader<CmsSitemapEntryBean>() {
@@ -761,13 +914,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                                 }
 
                             };
+                            // in the case
                             sitemapPreloadData = sitemaploader.preloadData(
                                 getCmsObject(),
-                                readAll(sitemapState.getOpenItems(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
-
-                            //        if ((vfsState == null) || (vfsState.getTimestamp() < sitemapState.getTimestamp())) {
-                            //              startTab = GalleryTabId.cms_tab_sitemap;
-                            //       }
+                                Sets.newHashSet(
+                                    readAll(sitemapState.getOpenItems(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)),
+                                null);
                         }
                     }
                     if ((result == null) || (result.getResults() == null) || result.getResults().isEmpty()) {
@@ -869,7 +1021,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 for (CmsResource res : resources) {
                     String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                    result.add(internalCreateVfsEntryBean(res, title, false, isEditable(cms, res), null, false));
+                    result.add(
+                        internalCreateVfsEntryBean(
+                            getCmsObject(),
+                            res,
+                            title,
+                            false,
+                            isEditable(cms, res),
+                            null,
+                            false));
                 }
             }
             return result;
@@ -906,6 +1066,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     title = path;
                 }
                 CmsVfsEntryBean entryBean = internalCreateVfsEntryBean(
+                    getCmsObject(),
                     optionRes,
                     title,
                     true,
@@ -1296,70 +1457,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             return null;
         }
         return prepareSitemapEntry(cms, entry, false, true);
-    }
-
-    /**
-     * Creates the VFS entry bean for a resource.<p>
-     *
-     * @param resource the resource for which to create the VFS entry bean
-     * @param title the title
-     * @param isRoot true if this is a root entry
-     * @param isEditable true if this entry is editable
-     * @param children the children of the entry
-     * @param isMatch true if the VFS entry bean is a match for the quick search
-     *
-     * @return the created VFS entry bean
-     * @throws CmsException if something goes wrong
-     */
-    CmsVfsEntryBean internalCreateVfsEntryBean(
-        CmsResource resource,
-        String title,
-        boolean isRoot,
-        boolean isEditable,
-        List<CmsVfsEntryBean> children,
-        boolean isMatch)
-    throws CmsException {
-
-        String rootPath = resource.getRootPath();
-        CmsUUID structureId = resource.getStructureId();
-        CmsVfsEntryBean result = new CmsVfsEntryBean(
-            rootPath,
-            structureId,
-            title,
-            isRoot,
-            isEditable,
-            children,
-            isMatch);
-        String siteRoot = null;
-        if (resource.isFolder()) {
-            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-            cms.getRequestContext().setSiteRoot("");
-            List<CmsResource> realChildren = cms.getResourcesInFolder(
-                rootPath,
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-            List<CmsResource> effectiveChildren = new ArrayList<CmsResource>();
-            for (CmsResource realChild : realChildren) {
-                if (realChild.isFolder()) {
-                    effectiveChildren.add(realChild);
-                }
-            }
-            if (effectiveChildren.isEmpty()) {
-                result.setChildren(new ArrayList<CmsVfsEntryBean>());
-            }
-        }
-
-        if (OpenCms.getSiteManager().startsWithShared(rootPath)) {
-            siteRoot = OpenCms.getSiteManager().getSharedFolder();
-        } else {
-            String tempSiteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
-            if (tempSiteRoot != null) {
-                siteRoot = tempSiteRoot;
-            } else {
-                siteRoot = "";
-            }
-        }
-        result.setSiteRoot(siteRoot);
-        return result;
     }
 
     /**
@@ -2029,7 +2126,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         return getSitemapSubEntryResources(parent.getRootPath());
                     }
                 };
-                CmsSitemapEntryBean entryBean = loader.preloadData(cms, Collections.singletonList(resource));
+                CmsSitemapEntryBean entryBean = loader.preloadData(
+                    cms,
+                    Sets.newHashSet(Collections.singletonList(resource)),
+                    null);
                 initialSearchObj.setSitemapPreloadData(entryBean);
             } else if (resource.isFolder()) {
                 A_CmsTreeTabDataPreloader<CmsVfsEntryBean> loader = new A_CmsTreeTabDataPreloader<CmsVfsEntryBean>() {
@@ -2043,6 +2143,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             CmsPropertyDefinition.PROPERTY_TITLE,
                             false).getValue();
                         return internalCreateVfsEntryBean(
+                            getCmsObject(),
                             innerResource,
                             title,
                             true,
@@ -2051,7 +2152,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             false);
                     }
                 };
-                CmsVfsEntryBean entryBean = loader.preloadData(cms, Collections.singletonList(resource));
+                CmsVfsEntryBean entryBean = loader.preloadData(
+                    cms,
+                    Sets.newHashSet(Collections.singletonList(resource)),
+                    null);
                 initialSearchObj.setVfsPreloadData(entryBean);
             }
         }
@@ -2155,7 +2259,19 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
-        data.setStartFolderFilter(readFolderFilters());
+        Set<String> folderFilter = readFolderFilters();
+        data.setStartFolderFilter(folderFilter);
+        if ((folderFilter != null) && !folderFilter.isEmpty()) {
+            try {
+                data.setVfsPreloadData(
+                    generateVfsPreloadData(
+                        getCmsObject(),
+                        CmsGalleryService.getVfsTreeState(getRequest(), conf.getTreeToken()),
+                        folderFilter));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
 
         List<CmsResourceTypeBean> types = null;
@@ -2427,6 +2543,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String title = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                 rootFolders.add(
                     internalCreateVfsEntryBean(
+                        getCmsObject(),
                         rootFolderResource,
                         title,
                         true,
@@ -2439,19 +2556,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(e);
         }
         return rootFolders;
-    }
-
-    /**
-     * Gets the attribute name for a tree open state.<p>
-     *
-     * @param treeName the tree name
-     * @param treeToken the tree token
-     *
-     * @return the attribute name for the tree
-     */
-    private String getTreeOpenStateAttributeName(String treeName, String treeToken) {
-
-        return "tree_" + treeName + "_" + treeToken;
     }
 
     /**

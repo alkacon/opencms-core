@@ -121,6 +121,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The types to display in the list of available categories. */
     private List<CmsResourceTypeBean> m_types;
 
+    /** Preloaded contents for the VFS tree tab. */
+    private CmsVfsEntryBean m_vfsPreloadData;
+
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
 
@@ -370,6 +373,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
+     * Returns the vfsPreloadData.<p>
+     *
+     * @return the vfsPreloadData
+     */
+    public CmsVfsEntryBean getVfsPreloadData() {
+
+        return m_vfsPreloadData;
+    }
+
+    /**
      * Returns the list of root folders to display in the VFS tab.<p>
      *
      * @return the list root folders to display in the VFS tab
@@ -609,6 +622,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setTypes(List<CmsResourceTypeBean> types) {
 
         m_types = types;
+    }
+
+    /**
+     * Sets the vfsPreloadData.<p>
+     *
+     * @param vfsPreloadData the vfsPreloadData to set
+     */
+    public void setVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
+
+        m_vfsPreloadData = vfsPreloadData;
     }
 
     /**
