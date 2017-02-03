@@ -17,7 +17,7 @@ writeProperty '/system/workplace/locales/zh/' 'locale' 'zh']]></import-script>
 <p>Install this module if you want to use the chinese version of the OpenCms Workplace.</p>
 <p><i>《四川农村信息网》编译; 2016 http://www.scnjw.gov.cn).</i></p>
 This module is base upon opencms 9.0.1 chinese localization,it is the ressult of add new keys for 10.5 and delete unused keys]]></description>
-		<version>10.5.0</version>
+		<version>10.5.1</version>
 		<authorname><![CDATA[Rural Economic Information Center of SiChuan ,Tang liang zhao]]></authorname>
 		<authoremail><![CDATA[lztang1964@163.com]]></authoremail>
 		<datecreated/>
