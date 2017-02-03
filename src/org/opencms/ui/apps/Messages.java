@@ -321,6 +321,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_SOURCESEARCH_SERACH_TYPE_SOLR_0 = "GUI_SOURCESEARCH_SERACH_TYPE_SOLR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_SERACH_TYPE_SOLR_CONTENT_VALUES_0 = "GUI_SOURCESEARCH_SERACH_TYPE_SOLR_CONTENT_VALUES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_SERACH_TYPE_XMLCONTENT_0 = "GUI_SOURCESEARCH_SERACH_TYPE_XMLCONTENT_0";
 
     /** Message constant for key in the resource bundle. */

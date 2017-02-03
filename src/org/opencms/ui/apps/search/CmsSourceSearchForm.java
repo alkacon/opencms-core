@@ -64,12 +64,51 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
     /** The available search types. */
     public static enum SearchType {
-        /** full text search. */
-        fullText,
-        /** Search using a solr index. */
-        solr,
         /** XML content values only. */
-        xmlContent
+        contentValues(false, true),
+        /** Full text search. */
+        fullText(false, false),
+        /** Filter using a solr index, before searching for matches. */
+        solr(true, false),
+        /** Filter using a solr index, before searching for matches, XML content values only. */
+        solrContentValues(true, true);
+
+        /** The content values only flag. */
+        private boolean m_contentValuesOnly;
+
+        /** The is solr search flag. */
+        private boolean m_solrSearch;
+
+        /**
+         * Constructor.<p>
+         *
+         * @param solrSearch the is solr search flag
+         * @param contentValuesOnly the content values only flag
+         */
+        private SearchType(boolean solrSearch, boolean contentValuesOnly) {
+            m_solrSearch = solrSearch;
+            m_contentValuesOnly = contentValuesOnly;
+        }
+
+        /**
+         * Returns whether this is a content values only search type.<p>
+         *
+         * @return <code>true</code> if this is a content values only search type
+         */
+        public boolean isContentValuesOnly() {
+
+            return m_contentValuesOnly;
+        }
+
+        /**
+         * Returns whether this is a SOLR search type.<p>
+         *
+         * @return <code>true</code> if this is a SOLR search type
+         */
+        public boolean isSolrSearch() {
+
+            return m_solrSearch;
+        }
     }
 
     /** The serial version id. */
@@ -167,25 +206,17 @@ public class CmsSourceSearchForm extends VerticalLayout {
                 // nothing to do, skip setting the type
             }
         }
-        switch (settings.getType()) {
-            default:
-            case fullText:
-                m_searchPattern.setValue(settings.getSearchpattern());
+        m_searchPattern.setValue(settings.getSearchpattern());
 
-                break;
-            case xmlContent:
-                m_searchPattern.setValue(settings.getSearchpattern());
-                if (settings.getLocale() != null) {
-                    m_locale.setValue(settings.getLocale());
-                }
-                m_xPath.setValue(settings.getXpath());
-                break;
-            case solr:
-                m_solrQuery.setValue(settings.getQuery());
-                if (settings.getLocale() != null) {
-                    m_locale.setValue(settings.getLocale());
-                }
-                m_searchIndex.setValue(settings.getSource());
+        if (settings.getType().isContentValuesOnly()) {
+            if (settings.getLocale() != null) {
+                m_locale.setValue(settings.getLocale());
+            }
+            m_xPath.setValue(settings.getXpath());
+        }
+        if (settings.getType().isSolrSearch()) {
+            m_solrQuery.setValue(settings.getQuery());
+            m_searchIndex.setValue(settings.getSource());
         }
     }
 
@@ -195,21 +226,16 @@ public class CmsSourceSearchForm extends VerticalLayout {
     void changedSearchType() {
 
         SearchType type = (SearchType)m_searchType.getValue();
-        boolean solrSearch = SearchType.solr == type;
-        boolean xmlSearch = SearchType.xmlContent == type;
-
-        m_searchIndex.setVisible(solrSearch);
-        m_solrQuery.setVisible(solrSearch);
-        m_searchPattern.setVisible(!solrSearch);
-        m_replace.setVisible(!solrSearch);
+        m_searchIndex.setVisible(type.isSolrSearch());
+        m_solrQuery.setVisible(type.isSolrSearch());
         updateReplace();
-        m_xPath.setVisible(xmlSearch);
-        m_locale.setVisible(xmlSearch || solrSearch);
+        m_xPath.setVisible(type.isContentValuesOnly());
+        m_locale.setVisible(type.isContentValuesOnly());
 
         IndexedContainer types = (IndexedContainer)m_resourceType.getContainerDataSource();
         types.removeAllContainerFilters();
-        types.addContainerFilter(xmlSearch ? CmsVaadinUtils.FILTER_XML_CONTENTS : CmsVaadinUtils.FILTER_NO_FOLDERS);
-
+        types.addContainerFilter(
+            type.isContentValuesOnly() ? CmsVaadinUtils.FILTER_XML_CONTENTS : CmsVaadinUtils.FILTER_NO_FOLDERS);
     }
 
     /**
@@ -232,37 +258,20 @@ public class CmsSourceSearchForm extends VerticalLayout {
             } catch (CmsException e) {
                 // ignore
             }
+            settings.setReplacepattern(m_replacePattern.getValue());
+        }
+        settings.setSearchpattern(m_searchPattern.getValue());
+        if (settings.getType().isContentValuesOnly()) {
+            if (m_locale.getValue() != null) {
+                settings.setLocale(m_locale.getValue().toString());
+            }
+            settings.setXpath(m_xPath.getValue());
+        }
+        if (settings.getType().isSolrSearch()) {
+            settings.setQuery(m_solrQuery.getValue());
+            settings.setSource((String)m_searchIndex.getValue());
         }
 
-        switch ((SearchType)m_searchType.getValue()) {
-            default:
-            case fullText:
-                settings.setOnlyContentValues(false);
-
-                settings.setSearchpattern(m_searchPattern.getValue());
-                if (m_replace.getValue().booleanValue()) {
-                    settings.setReplacepattern(m_replacePattern.getValue());
-
-                }
-                break;
-            case xmlContent:
-                settings.setOnlyContentValues(true);
-                if (m_locale.getValue() != null) {
-                    settings.setLocale(m_locale.getValue().toString());
-                }
-                settings.setXpath(m_xPath.getValue());
-                settings.setSearchpattern(m_searchPattern.getValue());
-                if (m_replace.getValue().booleanValue()) {
-                    settings.setReplacepattern(m_replacePattern.getValue());
-                }
-                break;
-            case solr:
-                settings.setQuery(m_solrQuery.getValue());
-                if (m_locale.getValue() != null) {
-                    settings.setLocale(m_locale.getValue().toString());
-                }
-                settings.setSource((String)m_searchIndex.getValue());
-        }
         m_app.search(settings, true);
     }
 
@@ -271,7 +280,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
      */
     void updateReplace() {
 
-        boolean replace = m_replace.getValue().booleanValue() && (SearchType.solr != m_searchType.getValue());
+        boolean replace = m_replace.getValue().booleanValue();
         m_replacePattern.setVisible(replace);
         m_workProject.setVisible(replace);
     }
@@ -285,30 +294,43 @@ public class CmsSourceSearchForm extends VerticalLayout {
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
 
         m_searchType.setFilteringMode(FilteringMode.OFF);
-        m_resourceType.setNullSelectionAllowed(false);
+        m_searchType.setNullSelectionAllowed(false);
         m_searchType.addItem(SearchType.fullText);
         m_searchType.setItemCaption(
             SearchType.fullText,
             CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SERACH_TYPE_FULLTEXT_0));
-        m_searchType.addItem(SearchType.xmlContent);
+        m_searchType.addItem(SearchType.contentValues);
         m_searchType.setItemCaption(
-            SearchType.xmlContent,
+            SearchType.contentValues,
             CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SERACH_TYPE_XMLCONTENT_0));
         if (OpenCms.getSearchManager().getSolrServerConfiguration().isEnabled()) {
-            m_searchType.addItem(SearchType.solr);
-            m_searchType.setItemCaption(
-                SearchType.solr,
-                CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SERACH_TYPE_SOLR_0));
 
             m_searchIndex.setFilteringMode(FilteringMode.OFF);
             m_searchIndex.setNullSelectionAllowed(false);
-
+            String selectIndex = null;
             for (CmsSearchIndex index : OpenCms.getSearchManager().getAllSolrIndexes()) {
                 boolean offlineMode = CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode());
                 // in case the current project is offline, show offline indexes, otherwise show online indexes
                 if ((!online && offlineMode) || (online && !offlineMode)) {
                     m_searchIndex.addItem(index.getName());
+                    if (selectIndex == null) {
+                        selectIndex = index.getName();
+                    }
                 }
+            }
+            if (selectIndex != null) {
+                m_searchIndex.setValue(selectIndex);
+
+                // only add the solr search types if there is an index available
+                m_searchType.addItem(SearchType.solr);
+                m_searchType.setItemCaption(
+                    SearchType.solr,
+                    CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SERACH_TYPE_SOLR_0));
+                m_searchType.addItem(SearchType.solrContentValues);
+                m_searchType.setItemCaption(
+                    SearchType.solrContentValues,
+                    CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SERACH_TYPE_SOLR_CONTENT_VALUES_0));
+
             }
         }
         m_searchType.setValue(SearchType.fullText);
