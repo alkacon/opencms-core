@@ -33,6 +33,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -74,12 +75,6 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     /** The logger instance for the class. */
     private static final Log LOG = CmsLog.getLog(CmsGalleryNameMacroResolver.class);
 
-    /** The XML content to use for the gallery name mapping. */
-    private A_CmsXmlDocument m_content;
-
-    /** The locale in the XML content. */
-    private Locale m_contentLocale;
-
     /** Macro prefix. */
     public static final String PREFIX_VALUE = "value:";
 
@@ -95,6 +90,12 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     /** Pattern used to match the no_prefix macro. */
     public static final Pattern NO_PREFIX_PATTERN = Pattern.compile("%\\(" + NO_PREFIX + ":(.*?)\\)");
 
+    /** The XML content to use for the gallery name mapping. */
+    private A_CmsXmlDocument m_content;
+
+    /** The locale in the XML content. */
+    private Locale m_contentLocale;
+
     /**
      * Creates a new instance.<p>
      *
@@ -105,7 +106,10 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     public CmsGalleryNameMacroResolver(CmsObject cms, A_CmsXmlDocument content, Locale locale) {
 
         setCmsObject(cms);
-        setMessages(content.getContentDefinition().getContentHandler().getMessages(locale));
+        CmsMultiMessages message = new CmsMultiMessages(locale);
+        message.addMessages(OpenCms.getWorkplaceManager().getMessages(locale));
+        message.addMessages(content.getContentDefinition().getContentHandler().getMessages(locale));
+        setMessages(message);
         m_content = content;
         m_contentLocale = locale;
     }

@@ -117,7 +117,7 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         if (config != null) {
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
                 for (String typeName : formatter.getResourceTypeNames()) {
-                    String label = formatter.getNiceName()
+                    String label = formatter.getNiceName(wpLocale)
                         + " ("
                         + CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName)
                         + ")";

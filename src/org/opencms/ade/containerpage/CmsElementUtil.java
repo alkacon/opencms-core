@@ -584,7 +584,7 @@ public class CmsElementUtil {
                                 id);
                             missesFormatterSetting = false;
                         }
-                        String label = formatter.getNiceName();
+                        String label = formatter.getNiceName(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms));
                         if (formatterEntry.getKey().startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
                             label = Messages.get().getBundle().key(Messages.GUI_SCHEMA_FORMATTER_LABEL_0)
                                 + " ["
