@@ -615,7 +615,7 @@ public class CmsConfigurationReader {
                     fileName = fileName.substring(0, fileName.length() - ".properties".length());
                 }
                 String localeSuffix = CmsStringUtil.getLocaleSuffixForName(fileName);
-                if (fileName.endsWith(localeSuffix)) {
+                if ((localeSuffix != null) && fileName.endsWith(localeSuffix)) {
                     fileName = fileName.substring(0, fileName.length() - localeSuffix.length() - 1);
                 }
                 localization = fileName;
