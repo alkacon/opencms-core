@@ -387,6 +387,7 @@ public class CmsImageDndController implements I_CmsDNDController {
     protected List<ImageDropTarget> findImageTargets() {
 
         List<ImageDropTarget> result = Lists.newArrayList();
+        List<CmsContainerPageElementPanel> modelGroups = CmsContainerpageController.get().getModelGroups();
         elementLoop: for (Element element : CmsDomUtil.nodeListToList(
             CmsDomUtil.querySelectorAll("*[" + ATTR_DATA_IMAGEDND + "]", RootPanel.getBodyElement()))) {
             Optional<CmsContainerPageElementPanel> optElemWidget = CmsContainerpageController.get().getContainerElementWidgetForElement(
@@ -399,6 +400,14 @@ public class CmsImageDndController implements I_CmsDNDController {
                 String noEditReason = elemWidget.getNoEditReason();
                 if ((noEditReason != null) && !elemWidget.hasWritePermission()) {
                     continue elementLoop;
+                }
+            }
+            if (!CmsContainerpageController.get().getData().isModelGroup()) {
+                // Don't make images in model groups into drop targets, except when we are in model group editing mode
+                for (CmsContainerPageElementPanel modelGroup : modelGroups) {
+                    if (modelGroup.getElement().isOrHasChild(element)) {
+                        continue elementLoop;
+                    }
                 }
             }
             ImageDropTarget target = new ImageDropTarget(element, optElemWidget);

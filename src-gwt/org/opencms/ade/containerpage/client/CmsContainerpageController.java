@@ -1680,6 +1680,36 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Collects all container elements which are model groups.<p>
+     *
+     * @return the list of model group container elements
+     */
+    public List<CmsContainerPageElementPanel> getModelGroups() {
+
+        final List<CmsContainerPageElementPanel> result = Lists.newArrayList();
+
+        processPageContent(new I_PageContentVisitor() {
+
+            public boolean beginContainer(String name, CmsContainer container) {
+
+                return true;
+            }
+
+            public void endContainer() {
+                // do nothing
+            }
+
+            public void handleElement(CmsContainerPageElementPanel element) {
+
+                if (element.isModelGroup()) {
+                    result.add(element);
+                }
+            }
+        });
+        return result;
+    }
+
+    /**
      * Returns the element data for a resource type representing a new element.<p>
      *
      * @param resourceType the resource type name
@@ -1889,25 +1919,6 @@ public final class CmsContainerpageController {
     public boolean hasActiveSelection() {
 
         return m_handler.hasActiveSelection();
-    }
-
-    /**
-     * Returns if the given element has a model group child.<p>
-     *
-     * @param elementWidget the element
-     *
-     * @return <code>true</code> if the given element has a model group child
-     */
-    public boolean hasModelGroupChild(CmsContainerPageElementPanel elementWidget) {
-
-        boolean result = false;
-        for (CmsContainerPageElementPanel model : collectModelGroups()) {
-            if ((model != elementWidget) && elementWidget.getElement().isOrHasChild(model.getElement())) {
-                result = true;
-                break;
-            }
-        }
-        return result;
     }
 
     /**
@@ -3729,29 +3740,6 @@ public final class CmsContainerpageController {
         if (previousLevel != m_currentEditLevel) {
             CmsNotification.get().send(Type.NORMAL, message);
         }
-    }
-
-    /**
-     * Collects all present model group elements.<p>
-     *
-     * @return the model group elements
-     */
-    private List<CmsContainerPageElementPanel> collectModelGroups() {
-
-        List<CmsContainerPageElementPanel> result = new ArrayList<CmsContainerPageElementPanel>();
-        if (getData().isModelGroup()) {
-            for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
-                for (Widget w : container) {
-                    if (w instanceof CmsContainerPageElementPanel) {
-                        CmsContainerPageElementPanel element = (CmsContainerPageElementPanel)w;
-                        if (element.isModelGroup()) {
-                            result.add(element);
-                        }
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     /**
