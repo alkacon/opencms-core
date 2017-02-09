@@ -131,5 +131,17 @@ You should now be able to log into the OpenCms workplace as before.
 As the search libraries and configuration may have changed, it is necessary to rebuild all search indexes.
 Log into OpenCms and navigate to Launchpad > Search Management and rebuild all indexes.
   
- 
+
+
+9. Convert model groups [only relevant when updating from 10.0.x]
+
+The way model groups are stored has changed between OpenCms 10.0.x and 10.5.x. So if you are using model 
+groups and are updating your system from version 10.0.x, you will need to convert them to the new format.
+
+This requires the following steps:
+
+- Open the explorer, switch to the root site / "system folder" and navigate to the folder /system/modules/org.opencms.ade.config/pages.
+- Execute the JSP "updateModelGroups.jsp" in this folder
+- In the form displayed by the JSP, fill out the "base path" and "base container name" fields (they are 
+  described in the form itself) and hit the submit button.    
 
