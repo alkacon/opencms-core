@@ -1026,7 +1026,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException {
 
         if ((id == null) || !id.matches(CmsUUID.UUID_REGEX + ".*$")) {
-            return new CmsRemovedElementStatus(null, null, false);
+            return new CmsRemovedElementStatus(null, null, false, null);
         }
         try {
             CmsUUID structureId = convertToServerId(id);
@@ -1071,10 +1071,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 iter.remove();
             }
         }
+        ElementDeleteMode elementDeleteMode = null;
+        CmsResource pageResource = cms.readResource(containerpageId, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, pageResource.getRootPath());
+        CmsResourceTypeConfig typeConfig = adeConfig.getResourceType(
+            OpenCms.getResourceManager().getResourceType(elementResource).getTypeName());
+
+        if (typeConfig != null) {
+            elementDeleteMode = typeConfig.getElementDeleteMode();
+        }
+
         boolean hasNoRelations = relationsToElement.isEmpty();
         boolean deletionCandidate = hasNoRelations && hasWritePermissions && !isSystemResource;
         CmsListInfoBean elementInfo = CmsVfsService.getPageInfo(cms, elementResource);
-        return new CmsRemovedElementStatus(structureId, elementInfo, deletionCandidate);
+        return new CmsRemovedElementStatus(structureId, elementInfo, deletionCandidate, elementDeleteMode);
     }
 
     /**

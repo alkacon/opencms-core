@@ -41,6 +41,7 @@ import org.opencms.ade.containerpage.client.ui.groupeditor.A_CmsGroupEditor;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsGroupContainerEditor;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
@@ -1854,10 +1855,14 @@ public final class CmsContainerpageController {
             public void onSuccess(CmsRemovedElementStatus status) {
 
                 boolean showDeleteCheckbox = status.isDeletionCandidate();
+                ElementDeleteMode deleteMode = status.getElementDeleteMode();
+                if (deleteMode == null) {
+                    deleteMode = getData().getDeleteMode();
+                }
                 CmsConfirmRemoveDialog removeDialog = new CmsConfirmRemoveDialog(
                     status.getElementInfo(),
                     showDeleteCheckbox,
-                    getData().getDeleteMode(),
+                    deleteMode,
                     new AsyncCallback<Boolean>() {
 
                         public void onFailure(Throwable caught) {
@@ -3673,7 +3678,7 @@ public final class CmsContainerpageController {
                 protected void onResponse(CmsListInfoBean result) {
 
                     stop(false);
-                    callback.onSuccess(new CmsRemovedElementStatus(null, result, false));
+                    callback.onSuccess(new CmsRemovedElementStatus(null, result, false, null));
                 }
             };
             infoAction.execute();

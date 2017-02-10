@@ -29,6 +29,7 @@ package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -114,9 +115,6 @@ public class CmsConfigurationReader {
     /** The element view node name. */
     public static final String N_ELEMENT_VIEW = "ElementView";
 
-    /** The localization node name. */
-    public static final String N_LOCALIZATION = "Localization";
-
     /** The error node name. */
     public static final String N_ERROR = "Error";
 
@@ -140,6 +138,9 @@ public class CmsConfigurationReader {
 
     /** The JSP node name. */
     public static final String N_JSP = "Jsp";
+
+    /** The localization node name. */
+    public static final String N_LOCALIZATION = "Localization";
 
     /** The master configuration node name. */
     public static final String N_MASTER_CONFIG = "MasterConfig";
@@ -218,6 +219,9 @@ public class CmsConfigurationReader {
 
     /** The CopyInModels node name. */
     private static final String N_COPY_IN_MODELS = "CopyInModels";
+
+    /** The ElementDeleteMode node name. */
+    private static final String N_ELEMENT_DELETE_MODE = "ElementDeleteMode";
 
     /** The PageRelative node name. */
     private static final String N_PAGE_RELATIVE = "PageRelative";
@@ -635,6 +639,16 @@ public class CmsConfigurationReader {
             copyInModels = Boolean.valueOf(Boolean.parseBoolean(copyInModelsLoc.getValue().getStringValue(m_cms)));
         }
 
+        I_CmsXmlContentValueLocation elementDeleteModeLoc = node.getSubValue(N_ELEMENT_DELETE_MODE);
+        ElementDeleteMode elementDeleteMode = null;
+        if (elementDeleteModeLoc != null) {
+            try {
+                elementDeleteMode = ElementDeleteMode.valueOf(elementDeleteModeLoc.getValue().getStringValue(m_cms));
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+
         List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues(N_FORMATTER)) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
@@ -652,7 +666,8 @@ public class CmsConfigurationReader {
             localization,
             showInDefaultView,
             copyInModels,
-            order);
+            order,
+            elementDeleteMode);
         m_resourceTypeConfigs.add(typeConfig);
     }
 
