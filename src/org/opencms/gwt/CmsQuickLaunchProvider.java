@@ -58,12 +58,16 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
 
 /**
  * Provides the data for the buttons in the quick launch menu.<p>
  */
 public class CmsQuickLaunchProvider {
+
+    /** The font icon HTML format String. */
+    private static final String FONT_ICON_HTML = "fonticon:<span class=\"v-icon %1$s\" style=\"font-family: %2$s;\">&#x%3$x;</span>";
 
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsQuickLaunchProvider.class);
@@ -182,6 +186,12 @@ public class CmsQuickLaunchProvider {
                 if (icon instanceof ExternalResource) {
                     imageLink = ((ExternalResource)icon).getURL();
                     // no icon if not an external resource
+                } else if (icon instanceof FontIcon) {
+                    imageLink = String.format(
+                        FONT_ICON_HTML,
+                        config.getButtonStyle(),
+                        ((FontIcon)icon).getFontFamily(),
+                        Integer.valueOf(((FontIcon)icon).getCodepoint()));
                 }
                 String name = config.getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
                 CmsAppVisibilityStatus visibility = config.getVisibility(cms);

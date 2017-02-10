@@ -28,6 +28,7 @@
 package org.opencms.ui;
 
 import com.vaadin.server.FontIcon;
+import com.vaadin.server.GenericFontIcon;
 
 /**
  * The available OpenCms workplace icons.<p>
@@ -247,6 +248,9 @@ public enum FontOpenCms implements FontIcon {
     /** The wrap lines icon. */
     WRAP_LINES(0xe920);
 
+    /** The font family. */
+    public static final String FONT_FAMILY = "opencms-font";
+
     /** The icon code point. */
     private int m_codepoint;
 
@@ -274,7 +278,7 @@ public enum FontOpenCms implements FontIcon {
     @Override
     public String getFontFamily() {
 
-        return "opencms-font";
+        return FONT_FAMILY;
     }
 
     /**
@@ -283,11 +287,7 @@ public enum FontOpenCms implements FontIcon {
     @Override
     public String getHtml() {
 
-        return "<span class=\"v-icon\" style=\"font-family: "
-            + getFontFamily()
-            + ";\">&#x"
-            + Integer.toHexString(m_codepoint)
-            + ";</span>";
+        return GenericFontIcon.getHtml(getFontFamily(), getCodepoint());
     }
 
     /**
