@@ -119,7 +119,9 @@ public class CmsEditProjectForm extends VerticalLayout {
 
         m_manager = manager;
         m_fieldManager.setWidgetType(WidgetType.groupwidget);
+        m_fieldManager.setRealPrincipalsOnly(true);
         m_fieldUser.setWidgetType(WidgetType.groupwidget);
+        m_fieldUser.setRealPrincipalsOnly(true);
 
         try {
             CmsOrganizationalUnit ou = OpenCms.getRoleManager().getOrgUnitsForRole(

@@ -112,6 +112,9 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     /** The main layout. */
     private HorizontalLayout m_main;
 
+    /** Controls whether only real users/groups or also pseudo-principals like ALL_OTHERS should be shown. */
+    private boolean m_realOnly;
+
     /**
      * Constructor.<p>
      */
@@ -410,6 +413,16 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
+     * Controls whether only real users/groups or also pseudo-principals like ALL_OTHERS should be shown.
+     *
+     *  @param realOnly if true, only real users / groups will be shown
+     */
+    public void setRealPrincipalsOnly(boolean realOnly) {
+
+        m_realOnly = realOnly;
+    }
+
+    /**
      * @see com.vaadin.ui.Field#setRequired(boolean)
      */
     public void setRequired(boolean required) {
@@ -554,6 +567,8 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
 
         String parameters = "?type="
             + m_widgetType.name()
+            + "&realonly="
+            + m_realOnly
             + "&flags=null&action=listindependentaction&useparent=true&listaction=";
         if ((m_widgetType.equals(WidgetType.principalwidget)
             && I_CmsPrincipal.PRINCIPAL_GROUP.equals(m_principalTypeSelect.getValue()))
