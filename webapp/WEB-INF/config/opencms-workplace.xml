@@ -1665,6 +1665,15 @@
 				</menurule>
 			</menurules>
 		</explorertypes>
+		<account-infos>
+    		<account-info field="firstname" editable="false" />
+    		<account-info field="lastname" editable="false" />
+    		<account-info field="email" editable="true" />
+    		<account-info field="institution" editable="true" />
+    		<account-info field="address" editable="true" />
+    		<account-info field="zipcode" editable="true" />
+    		<account-info field="city" editable="true" />
+		</account-infos>
 		<default-preferences>
 			<preference-tab name="basic">
 				<preference name="locale" value="en"
