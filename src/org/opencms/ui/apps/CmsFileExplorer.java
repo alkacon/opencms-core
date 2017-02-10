@@ -401,6 +401,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         CmsResourceTableProperty.PROPERTY_COPYRIGHT,
         CmsResourceTableProperty.PROPERTY_CACHE);
 
+    /** The initial split position between folder tree and file table. */
+    public static final int LAYOUT_SPLIT_POSITION = 399;
+
     /** The opened paths session attribute name. */
     public static final String OPENED_PATHS = "explorer-opened-paths";
 
@@ -413,8 +416,8 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     /** The state separator string. */
     public static final String STATE_SEPARATOR = "!!";
 
-    /** The initial split position between folder tree and file table. */
-    public static final int LAYOUT_SPLIT_POSITION = 399;
+    /** Threshold for updating the complete folder after file changes. */
+    public static final int UPDATE_FOLDER_THRESHOLD = 200;
 
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
@@ -457,9 +460,6 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
-
-    /** Threshold for updating the complete folder after file changes. */
-    private static final int UPDATE_FOLDER_THRESHOLD = 200;
 
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
