@@ -108,13 +108,17 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
         } else if (state.startsWith(PATH_NAME_EDIT)) {
             String siteTitle = OpenCms.getSiteManager().getSiteForSiteRoot(getSiteRootFromState(state)).getTitle();
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_EDIT_0, siteTitle));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_EDIT_1, siteTitle));
         } else if (state.startsWith(PATH_NAME_GLOBAL)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
         } else if (state.startsWith(PATH_NAME_WEBSERVER)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));
         }
-        return crumbs;
+        if (crumbs.size() > 1) {
+            return crumbs;
+        } else {
+            return new LinkedHashMap<String, String>();
+        }
     }
 
     /**
@@ -142,6 +146,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
                 m_rootLayout.setMainHeightFull(false);
                 return new CmsWebServerConfigForm(this);
             }
+            return null;
         }
 
         final CmsSitesTable sitesTable = (CmsSitesTable)getSitesTable();

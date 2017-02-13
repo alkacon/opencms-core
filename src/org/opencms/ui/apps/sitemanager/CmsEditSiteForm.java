@@ -1088,7 +1088,7 @@ public class CmsEditSiteForm extends VerticalLayout {
             if ((m_site != null) && (m_site.getSiteRoot() != null) && m_site.getSiteRoot().equals(siteRoot)) {
                 beanList.add(
                     new PositionComboBoxElementBean(
-                        CmsVaadinUtils.getMessageText(Messages.GUI_SITE_CHNAV_POS_CURRENT_0, m_site.getTitle()),
+                        CmsVaadinUtils.getMessageText(Messages.GUI_SITE_CHNAV_POS_CURRENT_1, m_site.getTitle()),
                         -1));
             } else {
                 beanList.add(new PositionComboBoxElementBean(sites.get(i).getTitle(), newPos));

@@ -73,7 +73,6 @@ import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.ValoTheme;
@@ -210,8 +209,6 @@ public class CmsSitesTable extends Table {
         public Object generateCell(final Table source, final Object itemId, Object columnId) {
 
             Property<Object> prop = source.getItem(itemId).getItemProperty(PROP_WEBSERVER);
-            CheckBox box = new CheckBox(null, prop);
-            box.setEnabled(false);
 
             FontOpenCms resource = (boolean)prop.getValue() ? FontOpenCms.CIRCLE_CHECK : FontOpenCms.CIRCLE_PAUSE;
             Button button = CmsTableUtil.createIconButton(
