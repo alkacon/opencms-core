@@ -59,7 +59,6 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Translat
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -77,11 +76,11 @@ import com.vaadin.event.ContextClickEvent.ContextClickListener;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Component.Focusable;
 import com.vaadin.ui.CustomTable;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -521,24 +520,8 @@ I_OptionListener, I_CmsHasShortcutActions {
      */
     private void adjustFocus() {
 
-        // Try to put the focus on the "Add key" input field first
-        if (!m_options.focusAddKey()) {
-            // TODO: Find a better solution
-            // NOTE: A collection is returned, but actually it's a linked list.
-            // It's a hack, but actually I don't know how to do better here.
-            @SuppressWarnings("unchecked")
-            List<Integer> visibleItemIds = (List<Integer>)m_table.getVisibleItemIds();
-            if (!visibleItemIds.isEmpty()) {
-                Map<Integer, AbstractTextField> firstEditableCol = m_fieldFactories.get(
-                    m_model.getEditMode()).getValueFields().get(Integer.valueOf(1));
-                if (null != firstEditableCol) {
-                    AbstractTextField firstTextField = firstEditableCol.get(visibleItemIds.get(0));
-                    if (null != firstTextField) {
-                        firstTextField.focus();
-                    }
-                }
-            }
-        }
+        // Put the focus on the "Filter key" field first
+        ((Focusable)m_table.getFilterField(TableProperty.KEY)).focus();
     }
 
     /**
