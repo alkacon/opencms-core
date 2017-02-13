@@ -274,6 +274,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String moveHandle();
 
         /**
+         * Style name for uncollapsed attribute value views.<p>
+         *
+         * @return a style name
+         */
+        String noHTML();
+
+        /**
          * Returns the overlay button bar CSS class name.<p>
          *
          * @return the overlay button bar CSS class name

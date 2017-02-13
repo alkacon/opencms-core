@@ -372,6 +372,13 @@ div.mce-widget.mce-tooltip{
 	z-index: value("constants.css.zIndexPopup") !important;
 }
 
+.noHTML > p {
+	padding: 0;
+	margin: 0;
+	font-size: inherit;
+	line-height: inherit;
+}
+
 /** Help bubble styles. */
 div.helpBubble{
 	position: absolute;
