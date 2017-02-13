@@ -100,7 +100,6 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.link.Messages.get(),
             org.opencms.workplace.tools.modules.Messages.get(),
             org.opencms.workplace.tools.projects.Messages.get(),
-            org.opencms.workplace.tools.publishqueue.Messages.get(),
             org.opencms.workplace.tools.scheduler.Messages.get(),
             org.opencms.workplace.tools.searchindex.Messages.get(),
             org.opencms.workplace.tools.workplace.Messages.get(),
