@@ -550,9 +550,9 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
                 paste_as_text : true,
                 toolbar : "undo,redo",
                 menubar : false,
-                toolbar_items_size : 'small'
+                toolbar_items_size : 'small',
+                forced_root_block : false
             };
-            this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::addNoHTMLStyle()();
             options = null;
         } else {
             defaults = {
@@ -679,14 +679,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     void resetAtachedFlag() {
 
         m_hasBeenAttached = false;
-    }
-
-    /**
-     * Add the noHTML style name, used when inline editing non HTML fields.<p>
-     */
-    private void addNoHTMLStyle() {
-
-        addStyleName(I_CmsLayoutBundle.INSTANCE.form().noHTML());
     }
 
     /**
