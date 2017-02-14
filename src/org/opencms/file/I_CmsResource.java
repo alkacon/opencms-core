@@ -34,7 +34,7 @@ import java.util.Comparator;
 
 /**
  * Common ancestor interface for {@link CmsFile} and {@link CmsFolder}
- * as well as for {@Link CmsHistoryFile} and {@link org.opencms.file.history.CmsHistoryFolder}.<p>
+ * as well as for {@link org.opencms.file.history.CmsHistoryFile} and {@link org.opencms.file.history.CmsHistoryFolder}.<p>
  *
  * @since 8.0.0
  */

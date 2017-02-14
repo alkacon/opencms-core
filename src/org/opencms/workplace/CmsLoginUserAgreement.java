@@ -346,7 +346,7 @@ public class CmsLoginUserAgreement extends CmsDialog {
             } catch (Exception e) {
                 // error when trying to determine if user agreement should be shown
                 LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_USERAGREEMENT_SHOW_1,
+                        Messages.LOG_USERAGREEMENT_SHOW_1,
                     getConfigurationContent().getFile().getRootPath()), e);
             }
 
@@ -476,8 +476,6 @@ public class CmsLoginUserAgreement extends CmsDialog {
     /**
      * Initializes the 'accepted' data from the current user.<p>
      * Returns the absolute path in the OpenCms VFS to the user agreement configuration file.<p>
-     *
-     * @return the absolute path in the OpenCms VFS to the user agreement configuration file
      */
     protected void initAcceptData() {
 
