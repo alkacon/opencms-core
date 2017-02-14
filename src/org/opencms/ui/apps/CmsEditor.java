@@ -41,6 +41,7 @@ import org.opencms.util.CmsUUID;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Map;
 
@@ -97,6 +98,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      */
     public static String getEditState(CmsUUID resourceId, boolean plainText, String backLink) {
 
+        try {
+            backLink = URLEncoder.encode(backLink, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
         String state = CmsEditor.RESOURCE_ID_PREFIX
             + resourceId.toString()
             + CmsEditor.STATE_SEPARATOR

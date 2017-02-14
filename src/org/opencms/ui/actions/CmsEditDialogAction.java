@@ -35,7 +35,6 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsVfsBundleManager;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsAppView;
@@ -49,11 +48,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
 
 import com.vaadin.navigator.View;
 import com.vaadin.ui.UI;
@@ -70,29 +65,21 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
     public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
         CmsStandardVisibilityCheck.EDIT);
 
-    /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditDialogAction.class);
-
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        String backLink;
-        try {
-            String currentLocation = UI.getCurrent().getPage().getLocation().toString();
-            backLink = URLEncoder.encode(currentLocation, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            backLink = UI.getCurrent().getPage().getLocation().toString();
-        }
         View view = CmsAppWorkplaceUi.get().getCurrentView();
         if (view instanceof CmsAppView) {
             ((CmsAppView)view).setCacheStatus(CacheStatus.cacheOnce);
         }
         CmsAppWorkplaceUi.get().showApp(
             OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
-            CmsEditor.getEditState(context.getResources().get(0).getStructureId(), false, backLink));
+            CmsEditor.getEditState(
+                context.getResources().get(0).getStructureId(),
+                false,
+                UI.getCurrent().getPage().getLocation().toString()));
     }
 
     /**
