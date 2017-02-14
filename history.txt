@@ -24,6 +24,7 @@ OpenCms 10.5.1 - ...
 ! Allowing text area widget when editing properties.
 ! Added multiple functions for String manipulation to the cms taglib.
 ! Allowing locale specific detail only container contents.
+- Improved message bundle translator: Added publish button, implemented lazy locking of files, save only changed files 
 - Improved link tag to support various detail pages.
 - Improved handling of locales with country/variant.
 - Improved bundle editor to store message properties in alphabetical order.
