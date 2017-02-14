@@ -640,6 +640,8 @@ I_OptionListener, I_CmsHasShortcutActions {
             @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
+                Map<Object, Object> filters = getFilters();
+                m_table.clearFilters();
                 if (!m_model.addDescriptor()) {
                     CmsVaadinUtils.showAlert(
                         m_messages.key(Messages.ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_0),
@@ -662,6 +664,7 @@ I_OptionListener, I_CmsHasShortcutActions {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
+                setFilters(filters);
             }
         });
         return addDescriptorButton;
