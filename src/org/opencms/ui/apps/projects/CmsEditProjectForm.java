@@ -84,7 +84,7 @@ public class CmsEditProjectForm extends VerticalLayout {
          */
         public void validate(Object value) throws InvalidValueException {
 
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)value)) {
+            if (m_fieldOU.isEnabled() && CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)value)) {
                 try {
                     OpenCms.getOrgUnitManager().readOrganizationalUnit(A_CmsUI.getCmsObject(), (String)value);
                 } catch (CmsException e) {
