@@ -64,6 +64,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.data.Validator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -74,6 +75,24 @@ import com.vaadin.ui.FormLayout;
  * The publish schedule dialog.<p>
  */
 public class CmsPublishScheduledDialog extends CmsBasicDialog {
+
+    class DateValidator implements Validator {
+
+        public void validate(Object value) throws InvalidValueException {
+
+            Date date = (Date)value;
+            if (date == null) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_SCHEDULED_DATEEMPTY_0));
+            }
+            if (date.getTime() < new Date().getTime()) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_SCHEDULED_DATENOTFUTURE_0));
+            }
+
+        }
+
+    }
 
     /** The serial version id. */
     private static final long serialVersionUID = 7488454443783670970L;
@@ -146,6 +165,9 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 submit();
             }
         });
+
+        m_dateField.addValidator(new DateValidator());
+
     }
 
     /**
@@ -161,6 +183,9 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
      */
     void submit() {
 
+        if (!m_dateField.isValid()) {
+            return;
+        }
         long current = System.currentTimeMillis();
         Date dateValue = m_dateField.getValue();
         long publishTime = m_dateField.getValue().getTime();

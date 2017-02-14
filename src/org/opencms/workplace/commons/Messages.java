@@ -1424,6 +1424,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2 = "GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_DATEEMPTY_0 = "GUI_PUBLISH_SCHEDULED_DATEEMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_DATENOTFUTURE_0 = "GUI_PUBLISH_SCHEDULED_DATENOTFUTURE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_SCHEDULED_SETTINGS_1 = "GUI_PUBLISH_SCHEDULED_SETTINGS_1";
 
     /** Message constant for key in the resource bundle. */
