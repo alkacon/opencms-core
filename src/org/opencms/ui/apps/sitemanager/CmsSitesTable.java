@@ -194,6 +194,25 @@ public class CmsSitesTable extends Table {
     }
 
     /**
+     * Column with FavIcon.
+     */
+
+    class FavIconColumn implements Table.ColumnGenerator {
+
+        /**generated id.*/
+        private static final long serialVersionUID = -3772456970393398685L;
+
+        /**
+         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
+         */
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            return getImageFavIcon((String)itemId);
+        }
+
+    }
+
+    /**
      *Cloumn with icon buttons.
      */
 
@@ -232,7 +251,7 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     *
+     *  Menu Entry to toggle web server.
      */
 
     class ToggleWebServer implements I_CmsSimpleContextMenuEntry<Set<String>> {
@@ -328,9 +347,9 @@ public class CmsSitesTable extends Table {
         m_container.addContainerProperty(PROP_SECURESITES, String.class, "");
 
         setContainerDataSource(m_container);
-        setColumnHeader(PROP_FAVICON, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FAVICON_0));
+        setColumnHeader(PROP_FAVICON, "");
         setColumnHeader(PROP_ICON, "");
-        setColumnHeader(PROP_WEBSERVER, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVER_0));
+        setColumnHeader(PROP_WEBSERVER, "");
         setColumnHeader(PROP_SERVER, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_0));
         setColumnHeader(PROP_TITLE, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_TITLE_0));
         setColumnHeader(PROP_PATH, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PATH_0));
@@ -340,9 +359,13 @@ public class CmsSitesTable extends Table {
         setColumnExpandRatio(PROP_SERVER, 2);
         setColumnExpandRatio(PROP_TITLE, 2);
         setColumnExpandRatio(PROP_PATH, 2);
-        setColumnWidth(PROP_FAVICON, 70);
+        setColumnWidth(PROP_FAVICON, 40);
         setColumnWidth(PROP_ICON, 40);
-        setColumnWidth(PROP_WEBSERVER, 100);
+        setColumnWidth(PROP_WEBSERVER, 40);
+
+        setColumnAlignment(PROP_ICON, Align.CENTER);
+        setColumnAlignment(PROP_WEBSERVER, Align.CENTER);
+        setColumnAlignment(PROP_FAVICON, Align.CENTER);
         setSelectable(true);
         setMultiSelect(true);
         m_menu = new CmsContextMenu();
@@ -370,6 +393,7 @@ public class CmsSitesTable extends Table {
         });
 
         addGeneratedColumn(PROP_WEBSERVER, new IconButtonColumn());
+        addGeneratedColumn(PROP_FAVICON, new FavIconColumn());
 
         setColumnCollapsingAllowed(true);
         setColumnCollapsible(PROP_ALIASES, true);
@@ -429,7 +453,7 @@ public class CmsSitesTable extends Table {
                 item.getItemProperty(PROP_WEBSERVER).setValue(site.isWebserver());
 
                 item.getItemProperty(PROP_ICON).setValue(getImageIcon(site.getSiteRoot()));
-                item.getItemProperty(PROP_FAVICON).setValue(getImageFavIcon(site.getSiteRoot()));
+                //                item.getItemProperty(PROP_FAVICON).setValue(getImageFavIcon(site.getSiteRoot()));
                 item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
                 item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
                 item.getItemProperty(PROP_PATH).setValue(site.getSiteRoot());
@@ -439,6 +463,33 @@ public class CmsSitesTable extends Table {
                 }
             }
         }
+    }
+
+    /**
+     * Returns an favicon image with click listener on right clicks.
+     *
+     * @param itemId of row to put image in.
+     * @return Vaadin Image.
+     */
+    Image getImageFavIcon(final String itemId) {
+
+        Image favIconImage = new Image(String.valueOf(System.currentTimeMillis()), getFavIconResource(itemId));
+
+        favIconImage.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FAVICON_0));
+
+        favIconImage.addClickListener(new MouseEvents.ClickListener() {
+
+            private static final long serialVersionUID = 5954790734673665522L;
+
+            public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+
+                onItemClick(event, itemId, PROP_FAVICON);
+
+            }
+        });
+
+        return favIconImage;
+
     }
 
     /**
@@ -557,31 +608,6 @@ public class CmsSitesTable extends Table {
         } catch (@SuppressWarnings("unused") CmsException e) {
             return new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON));
         }
-    }
-
-    /**
-     * Returns an favicon image with click listener on right clicks.
-     *
-     * @param itemId of row to put image in.
-     * @return Vaadin Image.
-     */
-    private Image getImageFavIcon(final String itemId) {
-
-        Image favIconImage = new Image(String.valueOf(System.currentTimeMillis()), getFavIconResource(itemId));
-
-        favIconImage.addClickListener(new MouseEvents.ClickListener() {
-
-            private static final long serialVersionUID = 5954790734673665522L;
-
-            public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
-
-                onItemClick(event, itemId, PROP_FAVICON);
-
-            }
-        });
-
-        return favIconImage;
-
     }
 
     /**
