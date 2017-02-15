@@ -67,7 +67,7 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsProjectManager extends A_CmsWorkplaceApp {
 
     /** The small project icon path. */
-    public static final String ICON_PROJECT_SMALL = "apps/project_fileicon.png";
+    public static final String ICON_PROJECT_SMALL = "apps/projectmanager/project_fileicon.png";
 
     /** The add project path name. */
     public static final String PATH_NAME_ADD = "add";
@@ -82,10 +82,10 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     public static final String PATH_NAME_HISTORY = "history";
 
     /** The add project icon path. */
-    private static final String ICON_ADD = "apps/project_add.png";
+    private static final String ICON_ADD = "apps/projectmanager/project_add.png";
 
     /** The project history icon path. */
-    private static final String ICON_HISTORY = "apps/project_history.png";
+    private static final String ICON_HISTORY = "apps/projectmanager/project_history.png";
 
     /** The logger for this class. */
     private static Log LOG = CmsLog.getLog(CmsProjectManager.class.getName());

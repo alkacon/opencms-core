@@ -75,13 +75,13 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     public static final String ICON = "apps/sites.png";
 
     /**Icon for the global site settings. */
-    public static final String ICON_SITES_GLOBAL = "apps/sites-global.png";
+    public static final String ICON_SITES_GLOBAL = "apps/sitemanager/sites-global.png";
 
     /**Icon for the webserver configuration. */
-    public static final String ICON_SITES_WEBSERVER = "apps/sites-webserver.png";
+    public static final String ICON_SITES_WEBSERVER = "apps/sitemanager/sites-webserver.png";
 
     /**The icon for adding a new site. */
-    public static final String ICON_ADD = "apps/site-new.png";
+    public static final String ICON_ADD = "apps/sitemanager/site-new.png";
 
     /** The file table filter input. */
     private TextField m_siteTableFilter;

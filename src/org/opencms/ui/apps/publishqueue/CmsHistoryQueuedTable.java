@@ -284,16 +284,16 @@ public class CmsHistoryQueuedTable extends Table {
     private static final String STATE_WARNING = "warning";
 
     /**Icon detail. */
-    public static final String ICON_SEARCH = "apps/publish_view.png";
+    public static final String ICON_SEARCH = "apps/publishqueue/publish_view.png";
 
     /**Ok status icon. */
-    public static final String ICON_OK = "apps/state_ok.png";
+    public static final String ICON_OK = "apps/publishqueue/state_ok.png";
 
     /**Warning status icon. */
-    public static final String ICON_WARNINGS = "apps/state_warning.png";
+    public static final String ICON_WARNINGS = "apps/publishqueue/state_warning.png";
 
     /**Error status icon. */
-    public static final String ICON_ERROR = "apps/state_error.png";
+    public static final String ICON_ERROR = "apps/publishqueue/state_error.png";
 
     /**Icon for not direct publish */
     static String ICON_SCHEDULER = "scheduler/scheduler.png";

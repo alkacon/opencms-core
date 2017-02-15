@@ -271,7 +271,7 @@ public class CmsQueuedTable extends Table {
     public static final String PROP_ISDIRECT = "isdirect";
 
     /**path to icon. */
-    public static final String ICON_SEARCH = "apps/publish_view.png";
+    public static final String ICON_SEARCH = "apps/publishqueue/publish_view.png";
 
     /**Icon for not direct publish */
     static String ICON_SCHEDULER = "scheduler/scheduler.png";
