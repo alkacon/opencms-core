@@ -76,8 +76,17 @@ import com.vaadin.ui.FormLayout;
  */
 public class CmsPublishScheduledDialog extends CmsBasicDialog {
 
+    /**
+     * Validates the date input.<p>
+     */
     class DateValidator implements Validator {
 
+        /** The serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
         public void validate(Object value) throws InvalidValueException {
 
             Date date = (Date)value;
@@ -234,6 +243,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 CmsScheduledJobInfo job = new CmsScheduledJobInfo();
                 // the job name
                 String jobName = tmpProject.getName();
+                jobName = jobName.replace("&#47;", "/");
                 // set the job parameters
                 job.setJobName(jobName);
                 job.setClassName("org.opencms.scheduler.jobs.CmsPublishScheduledJob");
@@ -379,7 +389,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 CmsRole.WORKPLACE_USER.getGroupName(),
                 CmsRole.PROJECT_MANAGER.getGroupName(),
                 CmsProject.PROJECT_TYPE_TEMPORARY);
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             String resName = CmsResource.getName(rootPath);
             if (resName.length() > 64) {
                 resName = resName.substring(0, 64) + "...";
