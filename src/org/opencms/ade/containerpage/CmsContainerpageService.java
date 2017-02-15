@@ -1320,14 +1320,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 containerpage = rootCms.readResource(detailContainerResource);
             } else {
                 String parentFolder = CmsResource.getFolderPath(detailContainerResource);
+                List<String> foldersToCreate = new ArrayList<String>();
                 // ensure the parent folder exists
-                if (!rootCms.existsResource(parentFolder)) {
+                while (!rootCms.existsResource(parentFolder)) {
+                    foldersToCreate.add(0, parentFolder);
+                    parentFolder = CmsResource.getParentFolder(parentFolder);
+                }
+                for (String folderName : foldersToCreate) {
                     CmsResource parentRes = rootCms.createResource(
-                        parentFolder,
+                        folderName,
                         OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
                     // set the search exclude property on parent folder
                     rootCms.writePropertyObject(
-                        parentFolder,
+                        folderName,
                         new CmsProperty(
                             CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
                             CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
