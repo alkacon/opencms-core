@@ -320,6 +320,7 @@ public class CmsModelPageHelper {
             String modelGroupFolderPath = config.getFolderPath(m_cms, m_adeConfig.getBasePath());
             if (m_cms.existsResource(modelGroupFolderPath)) {
                 try {
+                    Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
                     List<CmsResource> modelResources = m_cms.readResources(
                         modelGroupFolderPath,
                         CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
@@ -327,7 +328,7 @@ public class CmsModelPageHelper {
                                 CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME)),
                         false);
                     for (CmsResource model : modelResources) {
-                        CmsModelPageEntry entry = createModelPageEntry(model, false, false);
+                        CmsModelPageEntry entry = createModelPageEntry(model, false, false, wpLocale);
                         if (entry != null) {
                             result.add(entry);
                         }
@@ -411,10 +412,11 @@ public class CmsModelPageHelper {
      * @param resource the model page resource
      * @param disabled if the model page is disabled
      * @param isDefault if this is the default model page
+     * @param locale the current user locale
      *
      * @return the model page entry bean
      */
-    CmsModelPageEntry createModelPageEntry(CmsResource resource, boolean disabled, boolean isDefault) {
+    CmsModelPageEntry createModelPageEntry(CmsResource resource, boolean disabled, boolean isDefault, Locale locale) {
 
         try {
             CmsModelPageEntry result = new CmsModelPageEntry();
@@ -439,7 +441,8 @@ public class CmsModelPageHelper {
             CmsProperty descProperty = m_cms.readPropertyObject(
                 resource,
                 CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-                false);
+                false,
+                locale);
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(descProperty.getValue())) {
                 infoBean.setSubTitle(descProperty.getValue());
             }
@@ -521,11 +524,16 @@ public class CmsModelPageHelper {
     private List<CmsModelPageEntry> buildModelPageList(List<CmsModelPageConfig> modelPageConfigs) {
 
         List<CmsModelPageEntry> result = Lists.newArrayList();
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         for (CmsModelPageConfig config : modelPageConfigs) {
             CmsUUID structureId = config.getResource().getStructureId();
             try {
                 CmsResource modelPage = m_cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-                CmsModelPageEntry entry = createModelPageEntry(modelPage, config.isDisabled(), config.isDefault());
+                CmsModelPageEntry entry = createModelPageEntry(
+                    modelPage,
+                    config.isDisabled(),
+                    config.isDefault(),
+                    wpLocale);
                 if (entry != null) {
                     result.add(entry);
                 }

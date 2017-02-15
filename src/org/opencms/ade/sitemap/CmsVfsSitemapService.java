@@ -466,7 +466,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResource configResource = cms.readResource(configPath);
                 helper.addModelPageToSitemapConfiguration(configResource, page, false);
             }
-            CmsModelPageEntry result = helper.createModelPageEntry(page, false, false);
+            CmsModelPageEntry result = helper.createModelPageEntry(page, false, false, getWorkplaceLocale());
             OpenCms.getADEManager().waitForCacheUpdate(false);
             return result;
         } catch (Throwable e) {
@@ -680,8 +680,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsObject cms = getCmsObject();
             String rootPath = cms.getRequestContext().addSiteRoot(entryPointUri);
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, rootPath);
-            Locale locale = getLocaleForNewResourceInfos(cms, config);
-            List<CmsNewResourceInfo> result = getNewResourceInfos(cms, config, locale);
+            List<CmsNewResourceInfo> result = getNewResourceInfos(cms, config, getWorkplaceLocale());
             return result;
         } catch (Throwable e) {
             error(e);
@@ -820,8 +819,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             boolean canEditDetailPages = false;
             boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().getCurrentProject().getUuid());
             String defaultGalleryFolder = GALLERIES_FOLDER_NAME;
-            Locale locale = getLocaleForNewResourceInfos(cms, configData);
-
             try {
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
@@ -842,7 +839,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             detailPages = new CmsDetailPageTable(configData.getAllDetailPages());
             if (!isOnlineProject) {
-                newResourceInfos = getNewResourceInfos(cms, configData, locale);
+                newResourceInfos = getNewResourceInfos(cms, configData, getWorkplaceLocale());
                 CmsResource modelResource = null;
                 if (configData.getDefaultModelPage() != null) {
                     if (cms.existsResource(configData.getDefaultModelPage().getResource().getStructureId())) {
@@ -870,9 +867,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         configData.getResourceTypes(),
                         configData.getFunctionReferences(),
                         modelResource,
-                        locale);
+                        getWorkplaceLocale());
                     try {
-                        defaultNewInfo = createNewResourceInfo(cms, modelResource, locale);
+                        defaultNewInfo = createNewResourceInfo(cms, modelResource, getWorkplaceLocale());
                     } catch (CmsException e) {
                         LOG.warn(e.getLocalizedMessage(), e);
                     }
@@ -1873,23 +1870,16 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
         int typeId = modelResource.getTypeId();
         String name = OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
-        String title = cms.readPropertyObject(modelResource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        String title = cms.readPropertyObject(
+            modelResource,
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            false,
+            locale).getValue();
         String description = cms.readPropertyObject(
             modelResource,
             CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-            false).getValue();
-
-        try {
-            CmsGallerySearchResult result = CmsGallerySearch.searchById(cms, modelResource.getStructureId(), locale);
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getTitle())) {
-                title = result.getTitle();
-            }
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getDescription())) {
-                description = result.getDescription();
-            }
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
+            false,
+            locale).getValue();
 
         boolean editable = false;
         try {
@@ -2325,29 +2315,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
         }
         return galleryTree;
-    }
-
-    /**
-     * Gets the locale to use for creating the new resource info beans.<p>
-     *
-     * @param cms the CMS context
-     * @param configData  the sitemap configuration
-     *
-     * @return the locale to use
-     */
-    private Locale getLocaleForNewResourceInfos(CmsObject cms, CmsADEConfigData configData) {
-
-        Locale locale = CmsLocaleManager.getDefaultLocale();
-        try {
-            String basePath = configData.getBasePath();
-            CmsObject rootCms = OpenCms.initCmsObject(cms);
-            rootCms.getRequestContext().setSiteRoot("");
-            CmsResource baseDir = rootCms.readResource(basePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-            locale = CmsLocaleManager.getMainLocale(cms, baseDir);
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        return locale;
     }
 
     /**
