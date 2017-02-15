@@ -498,7 +498,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                         int width = Integer.parseInt(getDetailwidth());
                         I_CmsFormatterBean formatter = config.getDetailFormatter(getDetailtype(), width);
                         jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
-                        inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineJavascript())) {
+                            inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                        }
                         requiresAllIncludes = false;
                     } catch (NumberFormatException ne) {
                         // nothing to do, we will include JavaScript for all detail containers
@@ -507,7 +509,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 if (requiresAllIncludes) {
                     for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
                         jsIncludes.addAll(getHeadIncludes(formatter, includeType));
-                        inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineJavascript())) {
+                            inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                        }
                     }
                 }
             } catch (CmsException e) {
