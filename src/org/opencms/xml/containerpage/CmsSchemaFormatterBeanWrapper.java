@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -184,11 +185,11 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getNiceName()
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getNiceName(Locale)
      */
-    public String getNiceName() {
+    public String getNiceName(Locale locale) {
 
-        return m_wrappedFormatter.getNiceName();
+        return m_wrappedFormatter.getNiceName(locale);
     }
 
     /**

@@ -203,6 +203,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
             if (CmsStringUtil.isEmpty(m_currentValue)) {
                 if (CmsStringUtil.isEmpty(m_ghostValue)) {
+                    updateTextBox("");
                     return;
                 }
                 if (!m_focus) {

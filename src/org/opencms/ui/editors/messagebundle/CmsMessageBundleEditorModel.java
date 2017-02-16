@@ -45,6 +45,10 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.ui.A_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.actions.CmsDirectPublishDialogAction;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItem;
 import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickEvent;
@@ -53,10 +57,11 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleTy
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditorState;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.KeyChangeEvent;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EntryChangeEvent;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -81,6 +86,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -88,8 +94,6 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.UI;
@@ -98,7 +102,7 @@ import com.vaadin.ui.UI;
  * The class contains the logic behind the message translation editor.
  * In particular it reads / writes the involved files and provides the contents as {@link IndexedContainer}.
  */
-public class CmsMessageBundleEditorModel implements ValueChangeListener {
+public class CmsMessageBundleEditorModel {
 
     /** Wrapper for the configurable messages for the column headers of the message bundle editor. */
     public static final class ConfigurableMessages {
@@ -423,9 +427,6 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         }
     }
 
-    /** Default serialization id, needed to implement {@link ValueChangeListener}. */
-    private static final long serialVersionUID = 1L;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorModel.class);
 
@@ -490,7 +491,10 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     private boolean m_removeDescriptorOnCancel;
 
     /** Flag, indicating if something changed. */
-    boolean m_hasChanges;
+    Set<Locale> m_changedTranslations;
+
+    /** Flag, indicating if something changed. */
+    boolean m_descriptorHasChanges;
 
     /** Flag, indicating if all localizations have already been loaded. */
     private boolean m_alreadyLoadedAllLocalizations;
@@ -519,6 +523,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
         m_bundleFiles = new HashMap<Locale, CmsResource>();
         m_lockedBundleFiles = new HashMap<Locale, LockedFile>();
+        m_changedTranslations = new HashSet<Locale>();
         m_localizations = new HashMap<Locale, SortedProperties>();
         m_keyset = new CmsMessageBundleEditorTypes.KeySet();
 
@@ -692,7 +697,8 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                     }
                 }
             }
-        } catch (@SuppressWarnings("unused") Exception e) {
+        } catch (Exception e) {
+            LOG.error(e);
             //TODO: Improve
         }
         return result;
@@ -776,20 +782,35 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     }
 
     /**
+     * Handles the change of a value in the current translation.
+     * @param propertyId the property id of the column where the value has changed.
+     */
+    public void handleChange(Object propertyId) {
+
+        if (isDescriptorProperty(propertyId)) {
+            m_descriptorHasChanges = true;
+        }
+        if (isBundleProperty(propertyId)) {
+            m_changedTranslations.add(getLocale());
+        }
+
+    }
+
+    /**
      * Handles a key change.
      *
      * @param event the key change event.
      * @param allLanguages <code>true</code> for changing the key for all languages, <code>false</code> if the key should be changed only for the current language.
      * @return result, indicating if the key change was successful.
      */
-    public KeyChangeResult handleKeyChange(KeyChangeEvent event, boolean allLanguages) {
+    public KeyChangeResult handleKeyChange(EntryChangeEvent event, boolean allLanguages) {
 
-        if (m_keyset.getKeySet().contains(event.getNewKey())) {
-            m_container.getItem(event.getItemId()).getItemProperty(TableProperty.KEY).setValue(event.getOldKey());
+        if (m_keyset.getKeySet().contains(event.getNewValue())) {
+            m_container.getItem(event.getItemId()).getItemProperty(TableProperty.KEY).setValue(event.getOldValue());
             return KeyChangeResult.FAILED_DUPLICATED_KEY;
         }
-        if (allLanguages && !renameKeyForAllLanguages(event.getOldKey(), event.getNewKey())) {
-            m_container.getItem(event.getItemId()).getItemProperty(TableProperty.KEY).setValue(event.getOldKey());
+        if (allLanguages && !renameKeyForAllLanguages(event.getOldValue(), event.getNewValue())) {
+            m_container.getItem(event.getItemId()).getItemProperty(TableProperty.KEY).setValue(event.getOldValue());
             return KeyChangeResult.FAILED_FOR_OTHER_LANGUAGE;
         }
         return KeyChangeResult.SUCCESS;
@@ -819,7 +840,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      */
     public boolean hasChanges() {
 
-        return m_hasChanges;
+        return !m_changedTranslations.isEmpty() || m_descriptorHasChanges;
     }
 
     /**
@@ -869,35 +890,63 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     }
 
     /**
+     * Publish the bundle resources directly.
+     */
+    public void publish() {
+
+        CmsDirectPublishDialogAction action = new CmsDirectPublishDialogAction();
+        List<CmsResource> resources = getBundleResources();
+        I_CmsDialogContext context = new A_CmsDialogContext("", ContextType.appToolbar, resources) {
+
+            public void focus(CmsUUID structureId) {
+                //Nothing to do.
+            }
+
+            public List<CmsUUID> getAllStructureIdsInView() {
+
+                return null;
+            }
+
+            public void updateUserInfo() {
+                //Nothing to do.
+            }
+        };
+        action.executeAction(context);
+        updateLockInformation();
+
+    }
+
+    /**
      * Saves the messages for all languages that were opened in the editor.
      *
      * @throws CmsException thrown if saving fails.
      */
     public void save() throws CmsException {
 
-        switch (m_bundleType) {
-            case PROPERTY:
-                saveLocalization();
-                saveToPropertyVfsBundle();
-                break;
+        if (hasChanges()) {
+            switch (m_bundleType) {
+                case PROPERTY:
+                    saveLocalization();
+                    saveToPropertyVfsBundle();
+                    break;
 
-            case XML:
-                saveLocalization();
-                saveToXmlVfsBundle();
+                case XML:
+                    saveLocalization();
+                    saveToXmlVfsBundle();
 
-                break;
+                    break;
 
-            case DESCRIPTOR:
-                break;
-            default:
-                throw new IllegalArgumentException();
+                case DESCRIPTOR:
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+            if (null != m_descFile) {
+                saveToBundleDescriptor();
+            }
+
+            resetChanges();
         }
-        if (null != m_descFile) {
-            saveToBundleDescriptor();
-        }
-
-        m_hasChanges = false;
-        m_container.addValueChangeListener(this);
 
     }
 
@@ -920,7 +969,8 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
                 break;
             default:
-                //TODO: throw exception? ... should never happen
+                throw new IllegalArgumentException(
+                    "The method should only be called when editing an XMLResourceBundle.");
         }
 
     }
@@ -975,14 +1025,34 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     }
 
     /**
-     * Listens to changes on the container, i.e. to any value changes.
+     * Returns all resources that belong to the bundle
+     * This includes the descriptor if one exists.
      *
-     * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
+     * @return List of the bundle resources, including the descriptor.
      */
-    public void valueChange(final ValueChangeEvent event) {
+    List<CmsResource> getBundleResources() {
 
-        m_hasChanges = true;
-        m_container.removeValueChangeListener(this);
+        List<CmsResource> resources = new ArrayList<>(m_bundleFiles.values());
+        if (m_desc != null) {
+            resources.add(m_desc);
+        }
+        return resources;
+
+    }
+
+    /**
+     * Lock a file lazily, if a value that should be written to the file has changed.
+     * @param propertyId the table column in which the value has changed (e.g., KEY, TRANSLATION, ...)
+     * @throws CmsException thrown if locking fails.
+     */
+    void lockOnChange(Object propertyId) throws CmsException {
+
+        if (isDescriptorProperty(propertyId)) {
+            lockDescriptor();
+        } else {
+            Locale l = m_bundleType.equals(BundleType.PROPERTY) ? m_locale : null;
+            lockLocalization(l);
+        }
 
     }
 
@@ -1034,9 +1104,6 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
             }
         }
         container.setItemSorter(new DefaultItemSorter(CmsCaseInsensitiveStringComparator.getInstance()));
-        if (!m_hasChanges) {
-            container.addValueChangeListener(this);
-        }
         return container;
     }
 
@@ -1246,7 +1313,6 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
         if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
             m_desc = m_resource;
-            m_descFile = LockedFile.lockResource(m_cms, m_desc);
         } else {
             m_desc = CmsMessageBundleEditorTypes.getDescriptor(m_cms, m_basename);
         }
@@ -1378,16 +1444,38 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
     /**
      * Unmarshals the XML content and adds the file to the bundle files.
-     * @throws CmsException thrown if reading the file or unmarshalling fails.
+     * @throws CmsException thrown if reading the file or unmarshaling fails.
      */
     private void initXmlBundle() throws CmsException {
 
-        LockedFile bundleFile = LockedFile.lockResource(m_cms, m_resource);
+        CmsFile file = m_cms.readFile(m_resource);
         m_bundleFiles.put(null, m_resource);
-        m_lockedBundleFiles.put(null, bundleFile);
-        m_xmlBundle = CmsXmlContentFactory.unmarshal(m_cms, bundleFile.getFile());
+        m_xmlBundle = CmsXmlContentFactory.unmarshal(m_cms, file);
         initKeySetForXmlBundle();
 
+    }
+
+    /**
+     * Check if values in the column "property" are written to the bundle files.
+     * @param property the property id of the table column.
+     * @return a flag, indicating if values of the table column are stored to the bundle files.
+     */
+    private boolean isBundleProperty(Object property) {
+
+        return (property.equals(TableProperty.KEY) || property.equals(TableProperty.TRANSLATION));
+    }
+
+    /**
+     * Check if values in the column "property" are written to the bundle descriptor.
+     * @param property the property id of the table column.
+     * @return a flag, indicating if values of the table column are stored to the bundle descriptor.
+     */
+    private boolean isDescriptorProperty(Object property) {
+
+        return (hasDescriptor()
+            && (property.equals(TableProperty.KEY)
+                || property.equals(TableProperty.DEFAULT)
+                || property.equals(TableProperty.DESCRIPTION)));
     }
 
     /**
@@ -1401,18 +1489,17 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
         if (!m_alreadyLoadedAllLocalizations) {
             // is only necessary for property bundles
             if (m_bundleType.equals(BundleType.PROPERTY)) {
-                //TODO: IMPROVE!
                 for (Locale l : m_locales) {
                     if (null == m_localizations.get(l)) {
                         CmsResource resource = m_bundleFiles.get(l);
                         if (resource != null) {
-                            LockedFile file = LockedFile.lockResource(m_cms, resource);
-                            m_lockedBundleFiles.put(l, file);
+                            CmsFile file = m_cms.readFile(resource);
+                            m_bundleFiles.put(l, file);
                             SortedProperties props = new SortedProperties();
                             props.load(
                                 new InputStreamReader(
-                                    new ByteArrayInputStream(file.getFile().getContents()),
-                                    file.getEncoding()));
+                                    new ByteArrayInputStream(file.getContents()),
+                                    CmsFileUtil.getEncoding(m_cms, file)));
                             m_localizations.put(l, props);
                         }
                     }
@@ -1442,9 +1529,9 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
         // may throw exception again
         String sitePath = m_sitepath + m_basename + "_" + locale.toString();
-        LockedFile file = null;
+        CmsResource resource = null;
         if (m_cms.existsResource(sitePath)) {
-            CmsResource resource = m_cms.readResource(sitePath);
+            resource = m_cms.readResource(sitePath);
             if (!OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals(
                 CmsMessageBundleEditorTypes.BundleType.PROPERTY.toString())) {
                 throw new CmsException(
@@ -1454,18 +1541,21 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                         locale.getDisplayName(),
                         resource.getRootPath()));
             }
-            file = LockedFile.lockResource(m_cms, resource);
         } else {
-            CmsResource res = m_cms.createResource(
+            resource = m_cms.createResource(
                 sitePath,
                 OpenCms.getResourceManager().getResourceType(
                     CmsMessageBundleEditorTypes.BundleType.PROPERTY.toString()));
-            file = LockedFile.lockResource(m_cms, res);
-            file.setCreated(true);
+            LockedFile lf = LockedFile.lockResource(m_cms, resource);
+            lf.setCreated(true);
+            m_lockedBundleFiles.put(locale, lf);
         }
-        m_lockedBundleFiles.put(locale, file);
+        m_bundleFiles.put(locale, resource);
         SortedProperties props = new SortedProperties();
-        props.load(new InputStreamReader(new ByteArrayInputStream(file.getFile().getContents()), file.getEncoding()));
+        props.load(
+            new InputStreamReader(
+                new ByteArrayInputStream(m_cms.readFile(resource).getContents()),
+                CmsFileUtil.getEncoding(m_cms, resource)));
         m_localizations.put(locale, props);
 
     }
@@ -1491,6 +1581,45 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     }
 
     /**
+     * Locks all files of the currently edited bundle (that contain the provided key if it is not null).
+     * @param key the key that must be contained in the localization to lock. If null, the files for all localizations are locked.
+     * @throws CmsException thrown if locking fails.
+     */
+    private void lockAllLocalizations(String key) throws CmsException {
+
+        for (Locale l : m_bundleFiles.keySet()) {
+            if ((null == key) || m_localizations.get(l).containsKey(key)) {
+                lockLocalization(l);
+            }
+        }
+    }
+
+    /**
+     * Locks the bundle descriptor.
+     * @throws CmsException thrown if locking fails.
+     */
+    private void lockDescriptor() throws CmsException {
+
+        if ((null == m_descFile) && (null != m_desc)) {
+            m_descFile = LockedFile.lockResource(m_cms, m_desc);
+        }
+    }
+
+    /**
+     * Locks the bundle file that contains the translation for the provided locale.
+     * @param l the locale for which the bundle file should be locked.
+     * @throws CmsException thrown if locking fails.
+     */
+    private void lockLocalization(Locale l) throws CmsException {
+
+        if (null == m_lockedBundleFiles.get(l)) {
+            LockedFile lf = LockedFile.lockResource(m_cms, m_bundleFiles.get(l));
+            m_lockedBundleFiles.put(l, lf);
+        }
+
+    }
+
+    /**
      * Remove a key for all language versions. If a descriptor is present, the key is only removed in the descriptor.
      *
      * @param key the key to remove.
@@ -1498,6 +1627,17 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      */
     private boolean removeKeyForAllLanguages(String key) {
 
+        try {
+            if (hasDescriptor()) {
+                lockDescriptor();
+            }
+            loadAllRemainingLocalizations();
+            lockAllLocalizations(key);
+        } catch (CmsException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
         if (hasDescriptor()) {
             CmsXmlContentValueSequence messages = m_descContent.getValueSequence(
                 Descriptor.N_MESSAGE,
@@ -1508,20 +1648,17 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 String k = m_descContent.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(m_cms);
                 if (k == key) {
                     m_descContent.removeValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE, 0);
+                    m_descriptorHasChanges = true;
                     break;
                 }
             }
         } else {
-            try {
-                loadAllRemainingLocalizations();
-            } catch (CmsException | IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return false;
-            }
-            for (SortedProperties localization : m_localizations.values()) {
+
+            for (Entry<Locale, SortedProperties> entry : m_localizations.entrySet()) {
+                SortedProperties localization = entry.getValue();
                 if (localization.containsKey(key)) {
                     localization.remove(key);
+                    m_changedTranslations.add(entry.getKey());
                 }
             }
         }
@@ -1549,16 +1686,22 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
         try {
             loadAllRemainingLocalizations();
+            lockAllLocalizations(oldKey);
+            if (hasDescriptor()) {
+                lockDescriptor();
+            }
         } catch (CmsException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
         }
-        for (SortedProperties localization : m_localizations.values()) {
+        for (Entry<Locale, SortedProperties> entry : m_localizations.entrySet()) {
+            SortedProperties localization = entry.getValue();
             if (localization.containsKey(oldKey)) {
                 String value = localization.getProperty(oldKey);
                 localization.remove(oldKey);
                 localization.put(newKey, value);
+                m_changedTranslations.add(entry.getKey());
             }
         }
         if (hasDescriptor()) {
@@ -1574,6 +1717,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                     break;
                 }
             }
+            m_descriptorHasChanges = true;
         }
         m_keyset.renameKey(oldKey, newKey);
         return true;
@@ -1618,6 +1762,17 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
     }
 
     /**
+     * Resets all information on changes. I.e., the editor assumes no changes are present anymore.
+     * Call this method after a successful save action.
+     */
+    private void resetChanges() {
+
+        m_changedTranslations.clear();
+        m_descriptorHasChanges = false;
+
+    }
+
+    /**
      * Saves the current translations from the container to the respective localization.
      */
     private void saveLocalization() {
@@ -1642,11 +1797,12 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      */
     private void saveToBundleDescriptor() throws CmsException {
 
-        m_removeDescriptorOnCancel = false;
-        updateBundleDescriptorContent();
-        m_descFile.getFile().setContents(m_descContent.marshal());
-        m_cms.writeFile(m_descFile.getFile());
-
+        if (null != m_descFile) {
+            m_removeDescriptorOnCancel = false;
+            updateBundleDescriptorContent();
+            m_descFile.getFile().setContents(m_descContent.marshal());
+            m_cms.writeFile(m_descFile.getFile());
+        }
     }
 
     /**
@@ -1656,10 +1812,10 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      */
     private void saveToPropertyVfsBundle() throws CmsException {
 
-        for (Locale l : m_locales) {
+        for (Locale l : m_changedTranslations) {
             SortedProperties props = m_localizations.get(l);
-            if (null != props) {
-                LockedFile f = m_lockedBundleFiles.get(l);
+            LockedFile f = m_lockedBundleFiles.get(l);
+            if ((null != props) && (null != f)) {
                 try {
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     Writer writer = new OutputStreamWriter(outputStream, f.getEncoding());
@@ -1700,31 +1856,33 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
      */
     private void saveToXmlVfsBundle() throws CmsException {
 
-        for (Locale l : m_locales) {
-            SortedProperties props = m_localizations.get(l);
-            if (null != props) {
-                if (m_xmlBundle.hasLocale(l)) {
-                    m_xmlBundle.removeLocale(l);
-                }
-                m_xmlBundle.addLocale(m_cms, l);
-                int i = 0;
-                List<Object> keys = new ArrayList<Object>(props.keySet());
-                Collections.sort(keys, CmsCaseInsensitiveStringComparator.getInstance());
-                for (Object key : keys) {
-                    if ((null != key) && !key.toString().isEmpty()) {
-                        String value = props.getProperty(key.toString());
-                        if (!value.isEmpty()) {
-                            m_xmlBundle.addValue(m_cms, "Message", l, i);
-                            i++;
-                            m_xmlBundle.getValue("Message[" + i + "]/Key", l).setStringValue(m_cms, key.toString());
-                            m_xmlBundle.getValue("Message[" + i + "]/Value", l).setStringValue(m_cms, value);
+        if (m_lockedBundleFiles.get(null) != null) { // If the file was not locked, no changes were made, i.e., storing is not necessary.
+            for (Locale l : m_locales) {
+                SortedProperties props = m_localizations.get(l);
+                if (null != props) {
+                    if (m_xmlBundle.hasLocale(l)) {
+                        m_xmlBundle.removeLocale(l);
+                    }
+                    m_xmlBundle.addLocale(m_cms, l);
+                    int i = 0;
+                    List<Object> keys = new ArrayList<Object>(props.keySet());
+                    Collections.sort(keys, CmsCaseInsensitiveStringComparator.getInstance());
+                    for (Object key : keys) {
+                        if ((null != key) && !key.toString().isEmpty()) {
+                            String value = props.getProperty(key.toString());
+                            if (!value.isEmpty()) {
+                                m_xmlBundle.addValue(m_cms, "Message", l, i);
+                                i++;
+                                m_xmlBundle.getValue("Message[" + i + "]/Key", l).setStringValue(m_cms, key.toString());
+                                m_xmlBundle.getValue("Message[" + i + "]/Value", l).setStringValue(m_cms, value);
+                            }
                         }
                     }
                 }
+                CmsFile bundleFile = m_lockedBundleFiles.get(null).getFile();
+                bundleFile.setContents(m_xmlBundle.marshal());
+                m_cms.writeFile(bundleFile);
             }
-            CmsFile bundleFile = m_lockedBundleFiles.get(null).getFile();
-            bundleFile.setContents(m_xmlBundle.marshal());
-            m_cms.writeFile(bundleFile);
         }
     }
 
@@ -1783,7 +1941,7 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
 
         if (null != m_desc) {
 
-            // unmarshall descriptor
+            // unmarshal descriptor
             m_descContent = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(m_desc));
 
             // configure messages if wanted
@@ -1838,6 +1996,16 @@ public class CmsMessageBundleEditorModel implements ValueChangeListener {
                 }
             }
         }
+
+    }
+
+    /**
+     * Clears all internal lock info.
+     */
+    private void updateLockInformation() {
+
+        m_lockedBundleFiles.clear();
+        m_descFile = null;
 
     }
 }

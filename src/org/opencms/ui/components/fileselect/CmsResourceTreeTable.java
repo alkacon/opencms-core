@@ -36,6 +36,7 @@ import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.util.I_CmsItemSorter;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -47,6 +48,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -99,19 +101,16 @@ public class CmsResourceTreeTable extends TreeTable {
                     CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                 Boolean isFolder2 = (Boolean)item2.getItemProperty(
                     CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
-                if (!isFolder1.equals(isFolder2)) {
-                    int result = isFolder1.booleanValue() ? -1 : 1;
-                    if (!sortDirection) {
-                        result = result * (-1);
-                    }
-                    return result;
-                } else {
-                    return super.compareProperty(
-                        CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
-                        sortDirection,
-                        item1,
-                        item2);
-                }
+                String name1 = (String)(item1.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).getValue());
+                name1 = CmsFileUtil.removeTrailingSeparator(name1);
+                String name2 = (String)(item2.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).getValue());
+                name2 = CmsFileUtil.removeTrailingSeparator(name2);
+                return (sortDirection ? 1 : -1)
+                    * ComparisonChain.start().compareTrueFirst(
+                        isFolder1.booleanValue(),
+                        isFolder2.booleanValue()).compare(name1, name2).result();
             } else if (CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId)
                 && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
                 int result;

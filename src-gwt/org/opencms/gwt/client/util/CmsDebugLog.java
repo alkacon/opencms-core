@@ -92,10 +92,10 @@ public final class CmsDebugLog {
      * @param message the message to log
      */
     public static native void consoleLog(String message) /*-{
-                                                         if ($wnd.console && $wnd.console.log) {
-                                                         $wnd.console.log(message);
-                                                         }
-                                                         }-*/;
+        if ($wnd.console && $wnd.console.log) {
+            $wnd.console.log(message);
+        }
+    }-*/;
 
     /**
      * Returns the debug log.<p>

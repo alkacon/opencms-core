@@ -381,7 +381,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
         try {
             detachEditor();
-        } catch (@SuppressWarnings("unused") Throwable t) {
+        } catch (Throwable t) {
             // may happen in rare cases, can be ignored
         }
         if (m_toolbarContainer != null) {
@@ -422,7 +422,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
      * Sets focus to the editor. Use only when in line editing.<p>
      */
     protected native void refocusInlineEditor() /*-{
-        var elem = $wnd.document.getElementById(this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_id);
+        var elem = $wnd.document
+                .getElementById(this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_id);
         elem.blur();
         elem.focus();
     }-*/;
@@ -526,7 +527,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
         var needsRefocus = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::shouldReceiveFocus()();
         var elementId = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_id;
         var mainElement = $wnd.document.getElementById(elementId);
-        var editorHeight = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editorHeight + "px";
+        var editorHeight = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editorHeight
+                + "px";
 
         var fireChange = function() {
             self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::fireChangeFromNative()();
@@ -548,7 +550,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
                 paste_as_text : true,
                 toolbar : "undo,redo",
                 menubar : false,
-                toolbar_items_size : 'small'
+                toolbar_items_size : 'small',
+                forced_root_block : false
             };
             options = null;
         } else {
@@ -572,11 +575,13 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
             defaults.width = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_width;
             var toolbarContainer = $wnd.document.createElement("div");
             toolbarContainer.className = @org.opencms.acacia.client.widgets.CmsTinyMCEWidget::TOOLBAR_CONTAINER;
-            toolbarContainer.innerHTML = "<div id=\"" + elementId + "_toolbarContainer\" style=\"width: "
-                    + defaults.width + "px;\"></div>";
+            toolbarContainer.innerHTML = "<div id=\"" + elementId
+                    + "_toolbarContainer\" style=\"width: " + defaults.width
+                    + "px;\"></div>";
             $wnd.document.body.appendChild(toolbarContainer);
             this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_toolbarContainer = toolbarContainer;
-            defaults.fixed_toolbar_container = "#" + elementId + "_toolbarContainer";
+            defaults.fixed_toolbar_container = "#" + elementId
+                    + "_toolbarContainer";
         } else {
             self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_currentContent = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_originalContent;
             defaults.autoresize_min_height = 100;
@@ -601,42 +606,64 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
             ed.on('SetContent', fireChange);
             ed.on('change', fireChange);
             ed.on('KeyDown', fireChange);
-            ed.on('LoadContent', function() {
-                if (!self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_inline) {
-                    // firing resize event on resize of the editor iframe
-                    ed.dom.bind(ed.getWin(), 'resize', function() {
-                        self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::fireResizeEvent()();
-                    });
-                    var content = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_originalContent;
-                    if (content != null) {
-                        ed.setContent(content);
-                    }
-                    // ensure the body height is set to 'auto', otherwise the autoresize plugin will not work
-                    ed.getDoc().body.style.height = 'auto';
-                }
-                self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_initialized = true;
-            });
+            ed
+                    .on(
+                        'LoadContent',
+                        function() {
+                            if (!self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_inline) {
+                                // firing resize event on resize of the editor iframe
+                                ed.dom
+                                        .bind(
+                                              ed.getWin(),
+                                              'resize',
+                                              function() {
+                                                  self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::fireResizeEvent()();
+                                              });
+                                var content = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_originalContent;
+                                if (content != null) {
+                                    ed.setContent(content);
+                                }
+                                // ensure the body height is set to 'auto', otherwise the autoresize plugin will not work
+                                ed.getDoc().body.style.height = 'auto';
+                            }
+                            self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_initialized = true;
+                        });
 
             if (!self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_inline) {
 
-                ed.on('Click', function(event) {
-                    self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::propagateFocusEvent()();
-                });
-                ed.on('activate', function(event) {
-                    self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::propagateFocusEvent()();
-                });
-                ed.on('focus', function(event) {
-                    self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::propagateFocusEvent()();
-                });
+                ed
+                        .on(
+                            'Click',
+                            function(event) {
+                                self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::propagateFocusEvent()();
+                            });
+                ed
+                        .on(
+                            'activate',
+                            function(event) {
+                                self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::propagateFocusEvent()();
+                            });
+                ed
+                        .on(
+                            'focus',
+                            function(event) {
+                                self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::propagateFocusEvent()();
+                            });
             } else {
                 if (needsRefocus) {
-                    ed.on('init', function() {
-                        self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::scheduleRefocus()();
-                    });
+                    ed
+                            .on(
+                                'init',
+                                function() {
+                                    self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::scheduleRefocus()();
+                                });
                 }
-                ed.on('focus', function(event) {
-                    self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::resetToolbarContainerPosition()();
-                });
+                ed
+                        .on(
+                            'focus',
+                            function(event) {
+                                self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::resetToolbarContainerPosition()();
+                            });
             }
         };
         // set default z-index for overlay ui components
@@ -682,7 +709,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
                     try {
                         fireValueChange(false);
-                    } catch (@SuppressWarnings("unused") Throwable t) {
+                    } catch (Throwable t) {
                         // this may happen when returning from full screen mode, nothing to be done
                     }
                 }

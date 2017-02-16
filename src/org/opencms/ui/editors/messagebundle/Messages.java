@@ -133,6 +133,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CONVERT_TO_PROPERTY_BUNDLE_0 = "GUI_CONVERT_TO_PROPERTY_BUNDLE_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUNDLE_EDITOR_CONTEXT_COPY_LOCALE_0 = "GUI_BUNDLE_EDITOR_CONTEXT_COPY_LOCALE_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_PUBLISH_0 = "GUI_BUTTON_PUBLISH_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EDITING_NOT_POSSIBLE_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EDITING_NOT_POSSIBLE_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EDITING_NOT_POSSIBLE_DESCRIPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EDITING_NOT_POSSIBLE_DESCRIPTION_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

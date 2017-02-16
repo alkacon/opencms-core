@@ -136,9 +136,11 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
                 sitePath = locationCache.getPageEditorLocation(siteRoot);
                 if (sitePath == null) {
                     sitePath = locationCache.getFileExplorerLocation(siteRoot);
-                    int index = sitePath.indexOf("/" + CmsADEManager.CONTENT_FOLDER_NAME);
-                    if (index >= 0) {
-                        sitePath = sitePath.substring(0, index);
+                    if (sitePath != null) {
+                        int index = sitePath.indexOf("/" + CmsADEManager.CONTENT_FOLDER_NAME);
+                        if (index >= 0) {
+                            sitePath = sitePath.substring(0, index);
+                        }
                     }
                 }
             } else if ((m_resources != null) && !m_resources.isEmpty()) {

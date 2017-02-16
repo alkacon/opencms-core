@@ -323,7 +323,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         listInfo.setResourceState(resource.getState());
 
-        String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        String title = cms.readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            false,
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).getValue();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
             listInfo.setTitle(title);
         } else {

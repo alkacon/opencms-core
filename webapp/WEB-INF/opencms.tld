@@ -2195,7 +2195,7 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                Site path to the XML content that should be rendered via the <code>&lt;cms:display&gt;</code>-tag.
+                Site path or structure id of the XML content that should be rendered via the <code>&lt;cms:display&gt;</code>-tag.
             ]]></description>
             <name>value</name>
             <required>true</required>

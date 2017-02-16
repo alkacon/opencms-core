@@ -172,6 +172,24 @@ public class CmsVfsTab extends A_CmsListTab {
     }
 
     /**
+     * Checks the check boxes for the selected folders.<p>
+     *
+     * @param folders the folders for which to check the check boxes
+     */
+    public void checkFolders(Set<String> folders) {
+
+        if (folders != null) {
+            for (String folder : folders) {
+                CmsLazyTreeItem item = m_itemsByPath.get(folder);
+                if (item != null) {
+                    item.getCheckBox().setChecked(true);
+                }
+            }
+        }
+
+    }
+
+    /**
      * Sets the initial folders in the VFS tab.<p>
      *
      * @param entries the root folders to display

@@ -47,6 +47,9 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
+import org.opencms.lock.CmsLockActionRecord;
+import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -62,6 +65,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1312,6 +1316,48 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Sleeps for a duration given in milliseconds.<p>
+     *
+     * @param sleepMillis a string containing the number of milliseconds to wait
+     *
+     * @throws NumberFormatException if the sleepMillis parameter is not a valid number
+     */
+    public void sleep(String sleepMillis) throws NumberFormatException {
+
+        try {
+            Thread.sleep(Long.parseLong(sleepMillis));
+        } catch (InterruptedException e) {
+            // ignore
+        }
+    }
+
+    /**
+     * Touches a resource and all its children.<p>
+     *
+     * This method also rewrites the content for all files in the subtree.
+     *
+     * @param resourcePath the site path of the resource
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void touchResource(String resourcePath) throws Exception {
+
+        CmsResource resource = m_cms.readResource(resourcePath);
+        CmsLockActionRecord action = CmsLockUtil.ensureLock(m_cms, resource);
+        try {
+            OpenCms.getWorkplaceManager().flushMessageCache();
+            // One important reason for touching resources via the shell is to write mapped values containing
+            // localization macros to properties, so we flush the workplace messages immediately before the touch operation
+            // in case an older version of the workplace messages (not containing the keys we need) has already been cached
+            touchSingleResource(m_cms, resourcePath, System.currentTimeMillis(), true, true, true);
+        } finally {
+            if (action.getChange() == LockChange.locked) {
+                m_cms.unlockResource(resource);
+            }
+        }
+    }
+
+    /**
      * Unlocks the current project, required before publishing.<p>
      * @throws Exception if something goes wrong
      */
@@ -1411,5 +1457,65 @@ class CmsShellCommands implements I_CmsShellCommands {
             // this will happen, if the user does not exist
         }
         return user != null;
+    }
+
+    /**
+     * Rewrites the content of the given file.<p>
+     *
+     * @param cms the CmsObject
+     * @param resource the resource to rewrite the content for
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void hardTouch(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsFile file = cms.readFile(resource);
+        cms = OpenCms.initCmsObject(cms);
+        cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+        file.setContents(file.getContents());
+        cms.writeFile(file);
+    }
+
+    /**
+     * Performs a touch operation for a single resource.<p>
+     *
+     * @param cms the CMS context
+     * @param resourceName the resource name of the resource to touch
+     * @param timeStamp the new time stamp
+     * @param recursive the flag if the touch operation is recursive
+     * @param correctDate the flag if the new time stamp is a correct date
+     * @param touchContent if the content has to be rewritten
+     *
+     * @throws CmsException if touching the resource fails
+     */
+    private void touchSingleResource(
+        CmsObject cms,
+        String resourceName,
+        long timeStamp,
+        boolean recursive,
+        boolean correctDate,
+        boolean touchContent)
+    throws CmsException {
+
+        CmsResource sourceRes = cms.readResource(resourceName, CmsResourceFilter.ALL);
+        if (!correctDate) {
+            // no date value entered, use current resource modification date
+            timeStamp = sourceRes.getDateLastModified();
+        }
+        cms.setDateLastModified(resourceName, timeStamp, recursive);
+
+        if (touchContent) {
+            if (sourceRes.isFile()) {
+                hardTouch(cms, sourceRes);
+            } else if (recursive) {
+                Iterator<CmsResource> it = cms.readResources(resourceName, CmsResourceFilter.ALL, true).iterator();
+                while (it.hasNext()) {
+                    CmsResource subRes = it.next();
+                    if (subRes.isFile()) {
+                        hardTouch(cms, subRes);
+                    }
+                }
+            }
+        }
     }
 }

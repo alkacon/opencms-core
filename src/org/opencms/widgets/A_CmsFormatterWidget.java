@@ -94,7 +94,7 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
      */
     public static CmsSelectWidgetOption getWidgetOptionForFormatter(CmsObject cms, I_CmsFormatterBean formatter) {
 
-        String name = formatter.getNiceName()
+        String name = formatter.getNiceName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms))
             + " "
             + formatter.getResourceTypeNames().toString()
             + "  "

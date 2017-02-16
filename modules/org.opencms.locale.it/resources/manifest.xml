@@ -13,7 +13,7 @@
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains the Italian language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the Italian version of the OpenCms Workplace.</p>
-<p><i>&copy; 2016 by Coranto Informatica di Antonio Cordeddu  (http://www.coranto.it).</i></p>]]></description>
+<p><i>&copy; 2017 by Coranto Informatica di Antonio Cordeddu  (http://www.coranto.it).</i></p>]]></description>
 		<version>9.5.0</version>
 		<authorname><![CDATA[Coranto Informatica]]></authorname>
 		<authoremail><![CDATA[info@coranto.it]]></authoremail>

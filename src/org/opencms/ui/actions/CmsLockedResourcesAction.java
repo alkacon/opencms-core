@@ -49,6 +49,9 @@ import com.google.common.collect.Lists;
  */
 public final class CmsLockedResourcesAction extends A_CmsWorkplaceAction {
 
+    /** The action id. */
+    public static final String ACTION_ID = "lockedresources";
+
     /** The visibility check for this action. */
     private I_CmsHasMenuItemVisibility m_visibility = new CmsMenuItemVisibilitySingleOnly(
         CmsStandardVisibilityCheck.SHOW_LOCKS);
@@ -77,7 +80,7 @@ public final class CmsLockedResourcesAction extends A_CmsWorkplaceAction {
      */
     public String getId() {
 
-        return "lockedresources";
+        return ACTION_ID;
     }
 
     /**

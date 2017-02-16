@@ -115,6 +115,10 @@
 		font-size: $v-font-size;
 	}
 	
+	.v-customcomponent-error input.v-textfield{
+		@include valo-textfield-error-style;
+	}
+	
 	/* Making scroll bars always visible on combo box selects */
 	.v-filterselect-suggestpopup{
 	 	 @include o-visible-scrollbars;

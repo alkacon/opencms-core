@@ -378,6 +378,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 if (!lock.isUnlocked()) {
                     return VISIBILITY_INVISIBLE;
                 }
+                prioritize = true;
             }
 
             if (flag(otherlock)) {
@@ -400,6 +401,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 if (!lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
                     return VISIBILITY_INVISIBLE;
                 }
+                prioritize = true;
             }
 
             if (flag(noinheritedlock)) {

@@ -88,7 +88,7 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         if (ids != null) {
             for (CmsUUID id : ids) {
                 if (id.isNullUUID()) {
-                    m_explorer.updateAll();
+                    m_explorer.updateAll(false);
                     return;
                 }
             }

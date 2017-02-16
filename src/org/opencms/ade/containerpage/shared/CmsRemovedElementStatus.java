@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 
@@ -36,6 +37,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * A bean used to store information about a container page element which was just removed.<p>
  */
 public class CmsRemovedElementStatus implements IsSerializable {
+
+    /** The element delete mode. */
+    private ElementDeleteMode m_elementDeleteMode;
 
     /** The list info bean to display. */
     private CmsListInfoBean m_elementInfo;
@@ -52,12 +56,18 @@ public class CmsRemovedElementStatus implements IsSerializable {
      * @param structureId the structure id of the removed element
      * @param elementInfo the list info bean for the removed element
      * @param deletable true if this is a possible deletion candidate
+     * @param elementDeleteMode the element delete mode
      */
-    public CmsRemovedElementStatus(CmsUUID structureId, CmsListInfoBean elementInfo, boolean deletable) {
+    public CmsRemovedElementStatus(
+        CmsUUID structureId,
+        CmsListInfoBean elementInfo,
+        boolean deletable,
+        ElementDeleteMode elementDeleteMode) {
 
         m_isDeletionCandidate = deletable;
         m_elementInfo = elementInfo;
         m_structureId = structureId;
+        m_elementDeleteMode = elementDeleteMode;
     }
 
     /**
@@ -66,6 +76,16 @@ public class CmsRemovedElementStatus implements IsSerializable {
     protected CmsRemovedElementStatus() {
 
         // empty default constructor for serialization
+    }
+
+    /**
+     * Gets the element delete mode.<p>
+     *
+     * @return the element delete mode
+     */
+    public ElementDeleteMode getElementDeleteMode() {
+
+        return m_elementDeleteMode;
     }
 
     /**

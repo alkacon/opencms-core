@@ -32,6 +32,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -132,9 +133,11 @@ public interface I_CmsFormatterBean {
     /**
      * Gets the nice name for this formatter.<p>
      *
+     * @param locale the locale
+     *
      * @return the nice name for this formatter
      */
-    String getNiceName();
+    String getNiceName(Locale locale);
 
     /**
      * Gets the rank.<p>

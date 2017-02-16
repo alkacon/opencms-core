@@ -278,6 +278,96 @@ public final class CmsMessageBundleEditorTypes {
         }
     }
 
+    /** Key change event. */
+    static class EntryChangeEvent {
+
+        /** The field via which the key was edited. */
+        private AbstractTextField m_source;
+        /** The item id of the table row in which the key was edited. */
+        private Object m_itemId;
+        /** The property id the table column in which the value was edited. */
+        private Object m_propertyId;
+        /** The value before it was edited. */
+        private String m_oldValue;
+        /** The value after it was edited. */
+        private String m_newValue;
+
+        /** Default constructor.
+         * @param source the field via which the entry was edited.
+         * @param itemId the item id of the table row in which the entry was edited.
+         * @param propertyId the property id of the table column in which the entry was edited
+         * @param oldKey the key before it was edited.
+         * @param newKey the key after it was edited.
+         */
+        public EntryChangeEvent(
+            AbstractTextField source,
+            Object itemId,
+            Object propertyId,
+            String oldKey,
+            String newKey) {
+            m_source = source;
+            m_itemId = itemId;
+            m_propertyId = propertyId;
+            m_oldValue = oldKey;
+            m_newValue = newKey;
+        }
+
+        /**
+         * Returns the item id of the table row in which the entry was edited.
+         * @return the item id of the table row in which the entry was edited.
+         */
+        public Object getItemId() {
+
+            return m_itemId;
+        }
+
+        /**
+         * Returns the value after it was edited.
+         * @return the value after it was edited.
+         */
+        public String getNewValue() {
+
+            return m_newValue;
+        }
+
+        /**
+         * Returns the value before it was edited.
+         * @return the value before it was edited.
+         */
+        public String getOldValue() {
+
+            return m_oldValue;
+        }
+
+        /**
+         * Returns the property id of the table column in which the entry was edited.
+         * @return the property id of the table column in which the entry was edited.
+         */
+        public Object getPropertyId() {
+
+            return m_propertyId;
+        }
+
+        /**
+         * Returns the field via which the entry was edited.
+         * @return the field via which the entry was edited.
+         */
+        public AbstractTextField getSource() {
+
+            return m_source;
+        }
+    }
+
+    /** Interface for a entry change handler. */
+    static interface I_EntryChangeListener {
+
+        /**
+         * Called when a entry change event is fired.
+         * @param event the entry change event.
+         */
+        void handleEntryChange(EntryChangeEvent event);
+    }
+
     /** Interface for a item deletion listener. */
     static interface I_ItemDeletionListener {
 
@@ -287,16 +377,6 @@ public final class CmsMessageBundleEditorTypes {
          * @return <code>true</code> if deletion handling was successful, <code>false</code> otherwise.
          */
         boolean handleItemDeletion(ItemDeletionEvent e);
-    }
-
-    /** Interface for a key change handler. */
-    static interface I_KeyChangeListener {
-
-        /**
-         * Called when a key change event is fired.
-         * @param event the key change event.
-         */
-        void handleKeyChange(KeyChangeEvent event);
     }
 
     /** Interface for an Listener for changes in the options. */
@@ -345,71 +425,6 @@ public final class CmsMessageBundleEditorTypes {
             return m_itemId;
         }
 
-    }
-
-    /** Key change event. */
-    static class KeyChangeEvent {
-
-        /** The field via which the key was edited. */
-        private AbstractTextField m_source;
-        /** The item id of the table row in which the key was edited. */
-        private Object m_itemId;
-        /** The key before it was edited. */
-        private String m_oldKey;
-        /** The key after it was edited. */
-        private String m_newKey;
-
-        /** Default constructor.
-         * @param source the field via which the key was edited.
-         * @param itemId the item id of the table row in which the key was edited.
-         * @param oldKey the key before it was edited.
-         * @param newKey the key after it was edited.
-         */
-        public KeyChangeEvent(AbstractTextField source, Object itemId, String oldKey, String newKey) {
-            m_source = source;
-            m_itemId = itemId;
-            m_oldKey = oldKey;
-            m_newKey = newKey;
-        }
-
-        /**
-         * Returns the item id of the table row in which the key was edited.
-         * @return the item id of the table row in which the key was edited.
-         */
-        public Object getItemId() {
-
-            return m_itemId;
-        }
-
-        /**
-         * Returns the key after it was edited.
-         * @return the key after it was edited.
-         */
-
-        public String getNewKey() {
-
-            return m_newKey;
-        }
-
-        /**
-         * Returns the key before it was edited.
-         * @return the key before it was edited.
-         */
-
-        public String getOldKey() {
-
-            return m_oldKey;
-        }
-
-        /**
-         * Returns the field via which the key was edited.
-         * @return the field via which the key was edited.
-         */
-
-        public AbstractTextField getSource() {
-
-            return m_source;
-        }
     }
 
     /** Manages the keys used in at least one locale. */
@@ -806,7 +821,7 @@ public final class CmsMessageBundleEditorTypes {
         /** Reference to the table, the factory is used for. */
         final CustomTable m_table;
         /** Registered key change listeners. */
-        private final Set<I_KeyChangeListener> m_keyChangeListeners = new HashSet<I_KeyChangeListener>();
+        private final Set<I_EntryChangeListener> m_keyChangeListeners = new HashSet<I_EntryChangeListener>();
 
         /**
          * Default constructor.
@@ -861,34 +876,31 @@ public final class CmsMessageBundleEditorTypes {
                             if (!m_table.isSelected(itemId)) {
                                 m_table.select(itemId);
                             }
-                            if (pid == TableProperty.KEY) {
-                                AbstractTextField field = (AbstractTextField)event.getComponent();
-                                // Update last value
-                                ComponentData data = (ComponentData)field.getData();
-                                data.setLastValue(field.getValue());
-                                field.setData(data);
-                            }
+                            AbstractTextField field = (AbstractTextField)event.getComponent();
+                            // Update last value
+                            ComponentData data = (ComponentData)field.getData();
+                            data.setLastValue(field.getValue());
+                            field.setData(data);
                         }
 
                     });
-                    if (pid == TableProperty.KEY) {
-                        tf.addBlurListener(new BlurListener() {
+                    tf.addBlurListener(new BlurListener() {
 
-                            public void blur(BlurEvent event) {
+                        public void blur(BlurEvent event) {
 
-                                AbstractTextField field = (AbstractTextField)event.getComponent();
-                                ComponentData data = (ComponentData)field.getData();
-                                if (!data.getLastValue().equals(field.getValue())) {
-                                    KeyChangeEvent ev = new KeyChangeEvent(
-                                        field,
-                                        data.getItemId(),
-                                        data.getLastValue(),
-                                        field.getValue());
-                                    fireKeyChangeEvent(ev);
-                                }
+                            AbstractTextField field = (AbstractTextField)event.getComponent();
+                            ComponentData data = (ComponentData)field.getData();
+                            if (!data.getLastValue().equals(field.getValue())) {
+                                EntryChangeEvent ev = new EntryChangeEvent(
+                                    field,
+                                    data.getItemId(),
+                                    pid,
+                                    data.getLastValue(),
+                                    field.getValue());
+                                fireKeyChangeEvent(ev);
                             }
-                        });
-                    }
+                        }
+                    });
                     return tf;
                 }
             }
@@ -918,7 +930,7 @@ public final class CmsMessageBundleEditorTypes {
          * Register a key change listener.
          * @param listener the listener to register.
          */
-        public void registerKeyChangeListener(final I_KeyChangeListener listener) {
+        public void registerKeyChangeListener(final I_EntryChangeListener listener) {
 
             m_keyChangeListeners.add(listener);
         }
@@ -927,10 +939,10 @@ public final class CmsMessageBundleEditorTypes {
          * Called to fire a key change event.
          * @param ev the event to fire.
          */
-        void fireKeyChangeEvent(final KeyChangeEvent ev) {
+        void fireKeyChangeEvent(final EntryChangeEvent ev) {
 
-            for (I_KeyChangeListener listener : m_keyChangeListeners) {
-                listener.handleKeyChange(ev);
+            for (I_EntryChangeListener listener : m_keyChangeListeners) {
+                listener.handleEntryChange(ev);
             }
         }
     }

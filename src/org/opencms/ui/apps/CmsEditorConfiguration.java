@@ -38,6 +38,9 @@ import com.vaadin.server.Resource;
  */
 public class CmsEditorConfiguration extends A_CmsWorkplaceAppConfiguration {
 
+    /** The app id. */
+    public static final String APP_ID = "editor";
+
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getAppCategory()
      */
@@ -69,7 +72,7 @@ public class CmsEditorConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public String getId() {
 
-        return "editor";
+        return APP_ID;
     }
 
     /**

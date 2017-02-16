@@ -494,73 +494,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The principal list separator. */
     private static final String PRINCIPAL_LIST_SEPARATOR = ",";
 
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
+    /** The title property individual mapping key. */
+    private static final String TITLE_PROPERTY_INDIVIDUAL_MAPPING = MAPTO_PROPERTY_INDIVIDUAL
+        + CmsPropertyDefinition.PROPERTY_TITLE;
 
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
+    /** The title property mapping key. */
+    private static final String TITLE_PROPERTY_MAPPING = MAPTO_PROPERTY + CmsPropertyDefinition.PROPERTY_TITLE;
 
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
+    /** The title property shared mapping key. */
+    private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
+        + CmsPropertyDefinition.PROPERTY_TITLE;
 
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
@@ -685,6 +628,74 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -1075,6 +1086,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             String xpath = m_titleMappings.get(0);
             // currently just use the first mapping found, unsure if multiple "Title" mappings would make sense anyway
             result = document.getStringValue(cms, xpath, locale);
+            if ((result == null)
+                && (isMappingUsingDefault(xpath, TITLE_PROPERTY_MAPPING)
+                    || isMappingUsingDefault(xpath, TITLE_PROPERTY_SHARED_MAPPING)
+                    || isMappingUsingDefault(xpath, TITLE_PROPERTY_INDIVIDUAL_MAPPING))) {
+                result = getDefault(cms, document.getFile(), null, xpath, locale);
+            }
+            if (result != null) {
+                try {
+                    CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(
+                        createRootCms(cms),
+                        document,
+                        locale);
+                    resolver.setKeepEmptyMacros(true);
+                    result = resolver.resolveMacros(result);
+                } catch (Exception e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
         }
         return result;
     }

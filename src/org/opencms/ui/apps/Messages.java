@@ -249,6 +249,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROJECTS_MANAGER_GROUP_HELP_0 = "GUI_PROJECTS_MANAGER_GROUP_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_MANAGER_GROUP_VALIDATION_0 = "GUI_PROJECTS_MANAGER_GROUP_VALIDATION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_MANAGER_HELP_0 = "GUI_PROJECTS_MANAGER_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -259,6 +262,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_NAME_HELP_0 = "GUI_PROJECTS_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_NAME_VALIDATION_0 = "GUI_PROJECTS_NAME_VALIDATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_ORG_UNIT_0 = "GUI_PROJECTS_ORG_UNIT_0";
@@ -288,6 +294,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROJECTS_RESOURCE_HELP_0 = "GUI_PROJECTS_RESOURCE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_RESOURCE_OU_VALIDATION_2 = "GUI_PROJECTS_RESOURCE_OU_VALIDATION_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_RESOURCES_0 = "GUI_PROJECTS_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -301,6 +310,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_USER_GROUP_HELP_0 = "GUI_PROJECTS_USER_GROUP_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_USER_GROUP_VALIDATION_0 = "GUI_PROJECTS_USER_GROUP_VALIDATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_BUTTON_TITLE_0 = "GUI_PUBLISH_BUTTON_TITLE_0";
@@ -664,6 +676,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_SERACH_TYPE_SOLR_0 = "GUI_SOURCESEARCH_SERACH_TYPE_SOLR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_SERACH_TYPE_SOLR_CONTENT_VALUES_0 = "GUI_SOURCESEARCH_SERACH_TYPE_SOLR_CONTENT_VALUES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_SERACH_TYPE_XMLCONTENT_0 = "GUI_SOURCESEARCH_SERACH_TYPE_XMLCONTENT_0";

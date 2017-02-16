@@ -344,7 +344,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             QueryResponse res = m_solr.query(query);
             if (res != null) {
                 SolrDocumentList sdl = m_solr.query(query).getResults();
-                if ((sdl.getNumFound() == 1L) && (sdl.get(0) != null)) {
+                if ((sdl.getNumFound() > 0L) && (sdl.get(0) != null)) {
                     return new CmsSolrDocument(sdl.get(0));
                 }
             }

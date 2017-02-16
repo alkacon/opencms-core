@@ -206,6 +206,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         formValues.put("backlink", backlink);
         formValues.put("redirect", "true");
         formValues.put("directedit", "true");
+        formValues.put("nofoot", "1");
         formValues.put("editcontext", CmsCoreProvider.get().getUri());
         String postCreateHandler = m_editableData.getPostCreateHandler();
         if (postCreateHandler != null) {

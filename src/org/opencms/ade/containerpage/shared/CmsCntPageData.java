@@ -100,9 +100,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** The editor back-link URI. */
     private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
 
-    /** The xml-content editor URI. */
-    private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
-
     /** The detail view container resource path. */
     private String m_detailContainerPage;
 
@@ -317,16 +314,6 @@ public final class CmsCntPageData implements IsSerializable {
     public CmsUUID getDetailId() {
 
         return m_detailId;
-    }
-
-    /**
-     * Returns the xml-content editor URI.<p>
-     *
-     * @return the xml-content editor URI
-     */
-    public String getEditorUri() {
-
-        return EDITOR_URI;
     }
 
     /**

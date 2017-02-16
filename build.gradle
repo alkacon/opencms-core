@@ -1564,6 +1564,7 @@ tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
     if (JavaVersion.current().isJava8Compatible()) {
     	options.addStringOption("Xdoclint:none", "-quiet")
+    	options.addBooleanOption("-allow-script-in-comments",true);
     }
     options.addBooleanOption("-allow-script-in-comments",true);
 }

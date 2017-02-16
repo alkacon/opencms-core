@@ -59,6 +59,7 @@ import org.opencms.ade.galleries.CmsGalleryService;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.sitemap.CmsVfsSitemapService;
 import org.opencms.file.CmsFile;
@@ -928,18 +929,26 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     search.getOriginalGalleryData().getContextParameters().get("searchStoreKey"))) {
                     if (hasCompatibleSearchData(search.getOriginalGalleryData(), data, search)) {
 
+                        CmsVfsEntryBean preloadData = null;
+                        if (search.getFolders() != null) {
+                            preloadData = CmsGalleryService.generateVfsPreloadData(
+                                getCmsObject(),
+                                CmsGalleryService.getVfsTreeState(getRequest(), data.getTreeToken()),
+                                search.getFolders());
+                        }
+
                         // only restore last result list if the search was performed in a 'similar' context
                         search.setTabId(GalleryTabId.cms_tab_results.toString());
                         search.setPage(1);
                         search.setLastPage(0);
                         data.setStartTab(GalleryTabId.cms_tab_results);
                         search = srv.getSearch(search);
+                        data.setVfsPreloadData(preloadData);
                         data.setIncludeExpiredDefault(search.isIncludeExpired());
                         result.setGallerySearch(search);
                     }
                 }
             }
-
             result.setGalleryData(data);
             return result;
 
@@ -1017,7 +1026,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException {
 
         if ((id == null) || !id.matches(CmsUUID.UUID_REGEX + ".*$")) {
-            return new CmsRemovedElementStatus(null, null, false);
+            return new CmsRemovedElementStatus(null, null, false, null);
         }
         try {
             CmsUUID structureId = convertToServerId(id);
@@ -1062,10 +1071,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 iter.remove();
             }
         }
+        ElementDeleteMode elementDeleteMode = null;
+        CmsResource pageResource = cms.readResource(containerpageId, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, pageResource.getRootPath());
+        CmsResourceTypeConfig typeConfig = adeConfig.getResourceType(
+            OpenCms.getResourceManager().getResourceType(elementResource).getTypeName());
+
+        if (typeConfig != null) {
+            elementDeleteMode = typeConfig.getElementDeleteMode();
+        }
+
         boolean hasNoRelations = relationsToElement.isEmpty();
         boolean deletionCandidate = hasNoRelations && hasWritePermissions && !isSystemResource;
         CmsListInfoBean elementInfo = CmsVfsService.getPageInfo(cms, elementResource);
-        return new CmsRemovedElementStatus(structureId, elementInfo, deletionCandidate);
+        return new CmsRemovedElementStatus(structureId, elementInfo, deletionCandidate, elementDeleteMode);
     }
 
     /**
@@ -1301,14 +1320,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 containerpage = rootCms.readResource(detailContainerResource);
             } else {
                 String parentFolder = CmsResource.getFolderPath(detailContainerResource);
+                List<String> foldersToCreate = new ArrayList<String>();
                 // ensure the parent folder exists
-                if (!rootCms.existsResource(parentFolder)) {
+                while (!rootCms.existsResource(parentFolder)) {
+                    foldersToCreate.add(0, parentFolder);
+                    parentFolder = CmsResource.getParentFolder(parentFolder);
+                }
+                for (String folderName : foldersToCreate) {
                     CmsResource parentRes = rootCms.createResource(
-                        parentFolder,
+                        folderName,
                         OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
                     // set the search exclude property on parent folder
                     rootCms.writePropertyObject(
-                        parentFolder,
+                        folderName,
                         new CmsProperty(
                             CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
                             CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
@@ -2456,7 +2480,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Checks if results for the stored gallery data can be restored for the new gallery data
+     * Checks if results for the stored gallery data can be restored for the new gallery data.<p>
      *
      * @param originalGalleryData the original gallery data
      * @param data the new gallery data

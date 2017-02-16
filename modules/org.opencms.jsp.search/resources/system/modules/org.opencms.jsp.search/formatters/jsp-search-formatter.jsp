@@ -176,10 +176,13 @@
 								</fmt:message>
 							</p>
 						</c:when>
+						<c:when test="${not common.config.searchForEmptyQueryParam && empty common.state.query}">
+							<h3><fmt:message key="search.noquery" /></h3>
+						</c:when>
 						<c:when test="${empty search.searchResults && empty search.exception}">
 							<h3>
 							<c:choose>
-							<c:when test="${not empty controllers.didYouMean.config}" >
+							<c:when test="${not empty controllers.didYouMean.config && not empty search.didYouMeanSuggestion}" >
 								<c:set var="suggestion" value="${search.didYouMeanSuggestion}" />
 								<c:choose>
 								<c:when test="${controllers.didYouMean.config.collate}">

@@ -263,6 +263,41 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
+        String buttonColorBlue();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorCyan();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorGray();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorOrange();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorRed();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
         String colorError();
 
         /**

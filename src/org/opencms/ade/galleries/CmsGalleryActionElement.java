@@ -48,6 +48,7 @@ import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -249,6 +250,10 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {
             search = CmsGalleryService.getSearch(getRequest(), data);
+        }
+        Set<String> folderFilter = data.getStartFolderFilter();
+        if ((folderFilter != null) && !folderFilter.isEmpty()) {
+            data.setVfsPreloadData(CmsGalleryService.generateVfsPreloadData(getCmsObject(), null, folderFilter));
         }
         if ((search != null) && (search.getScope() != null) && (search.getScope() != data.getScope())) {
             // default selected scope option should be the one for which the search has been actually performed

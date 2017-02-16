@@ -32,7 +32,6 @@ import org.opencms.ade.sitemap.client.hoverbar.CmsEditModelPageMenuEntry;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
-import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -253,19 +252,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
      */
     private CmsListItemWidget createListWidget(final CmsModelPageEntry modelPage) {
 
-        String title;
-        if (modelPage.getOwnProperties().containsKey(CmsClientProperty.PROPERTY_TITLE)) {
-            title = modelPage.getOwnProperties().get(CmsClientProperty.PROPERTY_TITLE).getStructureValue();
-        } else {
-            title = CmsResource.getName(modelPage.getRootPath());
-            if (title.endsWith("/")) {
-                title = title.substring(0, title.length() - 1);
-            }
-        }
-        CmsListInfoBean infoBean = modelPage.getListInfoBean();
-
-        infoBean.setTitle(title);
-        CmsListItemWidget result = new CmsModelPageListItemWidget(infoBean);
+        CmsListItemWidget result = new CmsModelPageListItemWidget(modelPage.getListInfoBean());
         if (modelPage.isDefault()) {
             Widget label = result.getShortExtraInfoLabel();
             label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());

@@ -897,7 +897,7 @@ public class CmsModelGroupHelper {
         if (containerByParent.containsKey(modelInstanceId)) {
             modelContainers = collectModelStructure(modelInstanceId, localInstanceId, containerByParent);
         } else {
-            modelContainers = Collections.emptyList();
+            modelContainers = new ArrayList<CmsContainerBean>();
         }
         return modelContainers;
     }

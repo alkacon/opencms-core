@@ -45,6 +45,7 @@ import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
 import org.opencms.ui.report.CmsReportOverlay;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -166,30 +167,18 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             if (project != null) {
                 settings.setProject(project);
             }
-            String locale = A_CmsWorkplaceApp.getParamFromState(state, LOCALE);
-            switch (type) {
-                default:
-                case fullText:
-                    settings.setOnlyContentValues(false);
-
-                    settings.setSearchpattern(A_CmsWorkplaceApp.getParamFromState(state, SEARCH_PATTERN));
-
-                    break;
-                case xmlContent:
-                    settings.setOnlyContentValues(true);
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(locale)) {
-                        settings.setLocale(locale);
-                    }
-                    settings.setXpath(A_CmsWorkplaceApp.getParamFromState(state, XPATH));
-                    settings.setSearchpattern(A_CmsWorkplaceApp.getParamFromState(state, SEARCH_PATTERN));
-                    break;
-                case solr:
-                    settings.setQuery(A_CmsWorkplaceApp.getParamFromState(state, QUERY));
-
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(locale)) {
-                        settings.setLocale(locale);
-                    }
-                    settings.setSource(A_CmsWorkplaceApp.getParamFromState(state, INDEX));
+            settings.setSearchpattern(A_CmsWorkplaceApp.getParamFromState(state, SEARCH_PATTERN));
+            if (type.isContentValuesOnly()) {
+                settings.setOnlyContentValues(true);
+                String locale = A_CmsWorkplaceApp.getParamFromState(state, LOCALE);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(locale)) {
+                    settings.setLocale(locale);
+                }
+                settings.setXpath(A_CmsWorkplaceApp.getParamFromState(state, XPATH));
+            }
+            if (type.isSolrSearch()) {
+                settings.setQuery(A_CmsWorkplaceApp.getParamFromState(state, QUERY));
+                settings.setSource(A_CmsWorkplaceApp.getParamFromState(state, INDEX));
             }
         }
         return settings;
@@ -208,9 +197,15 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
      */
     public void onRestoreFromCache() {
 
-        if (m_currentResources != null) {
-            for (CmsResource res : m_currentResources) {
-                m_resultTable.update(res.getStructureId(), false);
+        if (m_resultTable.getItemCount() < CmsFileExplorer.UPDATE_FOLDER_THRESHOLD) {
+            for (CmsUUID id : m_resultTable.getAllIds()) {
+                m_resultTable.update(id, false);
+            }
+        } else {
+            if (m_currentResources != null) {
+                for (CmsResource res : m_currentResources) {
+                    m_resultTable.update(res.getStructureId(), false);
+                }
             }
         }
     }

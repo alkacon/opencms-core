@@ -104,7 +104,7 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
         assertNotNull("Configured map of sites must not be null", mapOfSites);
 
         List<CmsSite> sites = new ArrayList<CmsSite>(mapOfSites.values());
-        assertTrue("Expected 6 configured sites but found " + sites.size(), sites.size() == 6);
+        assertTrue("Expected 8 configured sites but found " + sites.size(), sites.size() == 8);
 
         for (CmsSite site : sites) {
             echo("Found configured site: " + site);

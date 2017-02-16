@@ -379,15 +379,17 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void editElementSettings(final CmsContainerPageElementPanel elementWidget) {
 
-        final String id = elementWidget.getId();
-
         m_controller.getElementSettingsConfig(
-            id,
+            elementWidget.getId(),
             elementWidget.getParentTarget().getContainerId(),
             new I_CmsSimpleCallback<CmsContainerElementData>() {
 
                 public void execute(final CmsContainerElementData elementBean) {
 
+                    if (!elementBean.getClientId().equals(elementWidget.getId())) {
+                        // the client id may have changed, update the element widget
+                        elementWidget.setId(elementBean.getClientId());
+                    }
                     CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(
                         m_controller,
                         elementWidget,

@@ -814,8 +814,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
-    <<<<<<< branch_10_0_x
-    =======
      * Required to be called when the content has changed.<p>
      */
     protected void onResize() {
@@ -824,7 +822,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
-    >>>>>>> 6a741b3 Improved error handling in case of deleted resources would be overwritten by uploaded files.
      * Decides how to go on depending on the information of the server response.<p>
      *
      * Shows a warning if there is another upload process active (inside the same session).<p>

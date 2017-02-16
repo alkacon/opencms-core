@@ -77,6 +77,28 @@
 				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*/resources/.*</regex>
 			</resourcestorender>
+			<rfs-rules>
+		        <rfs-rule>
+		            <name>site-one</name>
+		            <description>This is the rfs-rule for site one</description>
+		            <source>/sites/site-one/.*</source>
+		            <rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
+		            <exportpath>/apache/site-one</exportpath>
+		            <userelativelinks>true</userelativelinks>
+		            <related-system-res>
+		            </related-system-res>
+		        </rfs-rule>
+		        <rfs-rule>
+		            <name>site-two</name>
+		            <description>This is the rfs-rule for site two</description>
+		            <source>/sites/site-two/.*</source>
+		            <rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
+		            <exportpath>/apache/site-two</exportpath>
+		            <userelativelinks>true</userelativelinks>            
+		            <related-system-res>
+		            </related-system-res>
+		        </rfs-rule>
+			</rfs-rules>
 		</rendersettings>
 	</staticexport>
 	<usercsvexport>
