@@ -51,6 +51,12 @@ public class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_EXECUTE_0 = "GUI_DIALOG_BUTTON_EXECUTE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -160,6 +166,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PQUEUE_PQUEUE_HIST_0 = "GUI_PQUEUE_PQUEUE_HIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PQUEUE_HELP_0 = "GUI_PQUEUE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PQUEUE_HISTORY_0 = "GUI_PQUEUE_HISTORY_0";
@@ -340,6 +349,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_MANAGER_TITLE_0 = "GUI_SITE_MANAGER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_MANAGER_HELP_0 = "GUI_SITE_MANAGER_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_ADD_0 = "GUI_SITE_ADD_0";
