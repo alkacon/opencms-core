@@ -51,25 +51,24 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- *Class for the Publish queue app.
+ *Class for the Publish queue app.<p>
  */
-
 public class CmsPublishQueue extends A_CmsWorkplaceApp {
 
-    /**Path for report. */
-    public static final String PATH_REPORT = "report";
-
-    /**Path for history table*/
-    public static final String PATH_HISTORY = "history";
-
-    /**Path for showing published resources.*/
-    public static final String PATH_RESOURCE = "resource";
+    /**The icon for history. */
+    public static final String ICON_HISTORY = "apps/publish_queue.png";
 
     /**job id. */
     public static final String JOB_ID = "jobId";
 
-    /**The icon for history. */
-    public static final String ICON_HISTORY = "apps/publish_queue.png";
+    /**Path for history table*/
+    public static final String PATH_HISTORY = "history";
+
+    /**Path for report. */
+    public static final String PATH_REPORT = "report";
+
+    /**Path for showing published resources.*/
+    public static final String PATH_RESOURCE = "resource";
 
     /** The file table filter input. */
     private TextField m_siteTableFilter;
@@ -187,7 +186,6 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
             m_infoLayout.addComponent(m_siteTableFilter);
             return table;
         }
-
         return null;
     }
 
@@ -224,7 +222,6 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
      * Returns the job id from the given state.<p>
      *
      * @param state the state
-     *
      * @return the site root
      */
     private String getJobIdFromState(String state) {
@@ -233,7 +230,7 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
     }
 
     /**
-     * Reads project from given state.
+     * Reads project from given state.<p>
      *
      * @param state state to be read
      * @return project name
@@ -245,8 +242,8 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
     }
 
     /**
-     * Reads user from given state.
-     * 
+     * Reads user from given state.<p>
+     *
      * @param state state to be read
      * @return user name
      */

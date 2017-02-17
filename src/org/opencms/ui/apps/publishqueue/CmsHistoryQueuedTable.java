@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.publishqueue;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobFinished;
 import org.opencms.security.CmsRole;
@@ -51,6 +52,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
@@ -69,36 +72,42 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * Class for Vaadin Table showing history queue elements.
+ * Class for Vaadin Table showing history queue elements.<p>
  */
-
 public class CmsHistoryQueuedTable extends Table {
 
     /**
-     *Cloumn with icon buttons.
+     *Cloumn with icon buttons.<p>
      */
-
     class DirectPublishColumn implements Table.ColumnGenerator {
 
-        /**generated id. */
+        /**vaadin serial id. */
         private static final long serialVersionUID = 7732640709644021017L;
 
         /**
          * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
          */
-        @SuppressWarnings("boxing")
         public Object generateCell(final Table source, final Object itemId, Object columnId) {
 
             Property<Object> prop = source.getItem(itemId).getItemProperty(PROP_ISDIRECT);
 
-            Resource resource = (boolean)prop.getValue()
-            ? null
-            : new ExternalResource(OpenCmsTheme.getImageLink(ICON_SCHEDULER));
+            String resourceLink = "";
+            String description = "";
+            if (((Boolean)prop.getValue()).booleanValue()) {
+                resourceLink = OpenCmsTheme.getImageLink(ICON_PUBLISH_DIRECT);
+                description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_DIRECT_0);
+            } else {
+                resourceLink = OpenCmsTheme.getImageLink(ICON_PUBLISH_NOT_DIRECT);
+                description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_NOT_DIRECT_0);
+            }
+
+            Resource resource = new ExternalResource(resourceLink);
+
             Image image = new Image(String.valueOf(System.currentTimeMillis()), resource);
-            image.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_SCHEDULED_0));
+            image.setDescription(description);
             image.addClickListener(new ClickListener() {
 
-                /**generated id.*/
+                /**vaadin serial id. */
                 private static final long serialVersionUID = -8476526927157799166L;
 
                 public void click(ClickEvent event) {
@@ -109,11 +118,10 @@ public class CmsHistoryQueuedTable extends Table {
             });
             return image;
         }
-
     }
 
     /**
-     *Menu entry for showing report.
+     *Menu entry for showing report.<p>
      */
     class EntryReport implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
@@ -157,7 +165,7 @@ public class CmsHistoryQueuedTable extends Table {
     }
 
     /**
-     * Menu entry for showing resources.
+     * Menu entry for showing resources.<p>
      */
     class EntryResources implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
@@ -170,7 +178,6 @@ public class CmsHistoryQueuedTable extends Table {
             m_manager.openSubView(
                 A_CmsWorkplaceApp.addParamToState(CmsPublishQueue.PATH_RESOURCE, CmsPublishQueue.JOB_ID, jobid),
                 true);
-
         }
 
         /**
@@ -190,15 +197,14 @@ public class CmsHistoryQueuedTable extends Table {
             ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
             : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
-
     }
 
     /**
-     * Column for status.
+     * Column for status.<p>
      */
     class StatusColumn implements Table.ColumnGenerator {
 
-        /**generated id.*/
+        /**vaadin serial id. */
         private static final long serialVersionUID = -7953703707788778747L;
 
         /**
@@ -212,35 +218,17 @@ public class CmsHistoryQueuedTable extends Table {
 
     }
 
-    /**generated id.*/
-    private static final long serialVersionUID = 7507300060974348158L;
+    /**Error status icon. */
+    public static final String ICON_ERROR = "apps/publishqueue/state_error.png";
 
-    /**table column. */
-    public static final String PROP_PROJECT = "project";
+    /**Ok status icon. */
+    public static final String ICON_OK = "apps/publishqueue/state_ok.png";
 
-    /**table column. */
-    public static final String PROP_START = "start";
+    /**Icon for open detail view. */
+    public static final String ICON_SEARCH = "apps/publishqueue/publish_view.png";
 
-    /**table column. */
-    public static final String PROP_STOP = "stop";
-
-    /**table column. */
-    public static final String PROP_USER = "user";
-
-    /**table column. */
-    public static final String PROP_ISDIRECT = "direct";
-
-    /**table column. */
-    public static final String PROP_FILESCOUNT = "files";
-
-    /**table column. */
-    public static final String PROP_ICON = "icon";
-
-    /**table column. */
-    public static final String PROP_STATUS = "status";
-
-    /**resources column.*/
-    public static final String PROP_RESOURCES = "resources";
+    /**Warning status icon. */
+    public static final String ICON_WARNINGS = "apps/publishqueue/state_warning.png";
 
     /** list action id constant. */
     public static final String LIST_ACTION_COUNT = "ac";
@@ -266,13 +254,53 @@ public class CmsHistoryQueuedTable extends Table {
     /** list id constant. */
     public static final String LIST_ID = "lppq";
 
+    /**Icon for direct publish */
+    static String ICON_PUBLISH_DIRECT = "apps/publishqueue/publish_direct.png";
+
+    /**Icon for not direct publish */
+    static String ICON_PUBLISH_NOT_DIRECT = "apps/publishqueue/publish_not_direct.png";
+
     /** list column id constant. */
     private static final String LIST_COLUMN_ERRORS = "cse";
 
     /** list column id constant. */
     private static final String LIST_COLUMN_STATE = "ct";
+
     /** list column id constant. */
     private static final String LIST_COLUMN_WARNINGS = "csw";
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsHistoryQueuedTable.class.getName());
+
+    /**table column. */
+    private static final String PROP_FILESCOUNT = "files";
+
+    /**table column. */
+    private static final String PROP_ICON = "icon";
+
+    /**table column. */
+    private static final String PROP_ISDIRECT = "direct";
+
+    /**table column. */
+    private static final String PROP_PROJECT = "project";
+
+    /**resources column.*/
+    private static final String PROP_RESOURCES = "resources";
+
+    /**table column. */
+    private static final String PROP_START = "start";
+
+    /**table column. */
+    private static final String PROP_STATUS = "status";
+
+    /**table column. */
+    private static final String PROP_STOP = "stop";
+
+    /**table column. */
+    private static final String PROP_USER = "user";
+
+    /**vaadin serial id. */
+    private static final long serialVersionUID = 7507300060974348158L;
 
     /** Publish job state constant. */
     private static final String STATE_ERROR = "error";
@@ -283,26 +311,11 @@ public class CmsHistoryQueuedTable extends Table {
     /** Publish job state constant. */
     private static final String STATE_WARNING = "warning";
 
-    /**Icon detail. */
-    public static final String ICON_SEARCH = "apps/publishqueue/publish_view.png";
-
-    /**Ok status icon. */
-    public static final String ICON_OK = "apps/publishqueue/state_ok.png";
-
-    /**Warning status icon. */
-    public static final String ICON_WARNINGS = "apps/publishqueue/state_warning.png";
-
-    /**Error status icon. */
-    public static final String ICON_ERROR = "apps/publishqueue/state_error.png";
-
-    /**Icon for not direct publish */
-    static String ICON_SCHEDULER = "scheduler/scheduler.png";
+    /**Container. */
+    IndexedContainer m_container;
 
     /**Instance of calling class.*/
     CmsPublishQueue m_manager;
-
-    /**Container. */
-    IndexedContainer m_container;
 
     /** The context menu. */
     CmsContextMenu m_menu;
@@ -311,10 +324,10 @@ public class CmsHistoryQueuedTable extends Table {
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
     /**
-     * Default constructor.
+     * Default constructor.<p>
+     *
      * @param manager instance of calling class
      */
-    @SuppressWarnings("boxing")
     public CmsHistoryQueuedTable(CmsPublishQueue manager) {
         m_manager = manager;
         setSizeFull();
@@ -335,7 +348,7 @@ public class CmsHistoryQueuedTable extends Table {
         m_container.addContainerProperty(PROP_USER, String.class, "");
         m_container.addContainerProperty(PROP_FILESCOUNT, Integer.class, Integer.valueOf(1));
         m_container.addContainerProperty(PROP_RESOURCES, List.class, null);
-        m_container.addContainerProperty(PROP_ISDIRECT, Boolean.class, true);
+        m_container.addContainerProperty(PROP_ISDIRECT, Boolean.class, Boolean.valueOf(true));
 
         setContainerDataSource(m_container);
         setItemIconPropertyId(PROP_ICON);
@@ -363,7 +376,7 @@ public class CmsHistoryQueuedTable extends Table {
 
         addItemClickListener(new ItemClickListener() {
 
-            /**Generated id.*/
+            /**vaadin serial id. */
             private static final long serialVersionUID = -7394790444104979594L;
 
             public void itemClick(ItemClickEvent event) {
@@ -382,10 +395,10 @@ public class CmsHistoryQueuedTable extends Table {
     }
 
     /**
-     * Filters the table according to given search string.
+     * Filters the table according to given search string.<p>
+     *
      * @param search string to be looked for.
      */
-
     public void filterTable(String search) {
 
         m_container.removeAllContainerFilters();
@@ -399,7 +412,8 @@ public class CmsHistoryQueuedTable extends Table {
     }
 
     /**
-     * Returns image for given state.
+     * Returns image for given state.<p>
+     *
      * @param state state
      * @param itemId item id
      * @return image
@@ -429,9 +443,7 @@ public class CmsHistoryQueuedTable extends Table {
             public void click(ClickEvent event) {
 
                 onItemClick(event, itemId, PROP_STATUS);
-
             }
-
         });
         return ret;
     }
@@ -480,14 +492,12 @@ public class CmsHistoryQueuedTable extends Table {
                     ((CmsUUID)itemId).getStringValue()),
                 true);
         }
-
     }
 
     /**
      * Returns the state of the given publish job.<p>
      *
      * @param publishJob the publish job to get the state for
-     *
      * @return the state of the given publish job
      */
     private Map<String, Object> getState(CmsPublishJobFinished publishJob) {
@@ -496,7 +506,7 @@ public class CmsHistoryQueuedTable extends Table {
         byte[] reportBytes = null;
         try {
             reportBytes = OpenCms.getPublishManager().getReportContents(publishJob);
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             result.put(LIST_COLUMN_STATE, STATE_OK);
         }
         if ((reportBytes != null) && (result.get(LIST_COLUMN_STATE) == null)) {
@@ -519,21 +529,18 @@ public class CmsHistoryQueuedTable extends Table {
                 result.put(LIST_COLUMN_STATE, STATE_OK);
             }
         }
-
         if (result.get(LIST_COLUMN_WARNINGS) == null) {
             result.put(LIST_COLUMN_WARNINGS, new Integer(0));
         }
         if (result.get(LIST_COLUMN_ERRORS) == null) {
             result.put(LIST_COLUMN_ERRORS, new Integer(0));
         }
-
         return result;
     }
 
     /**
-     * fills the table with finished publish jobs.
+     * Fills the table with finished publish jobs.<p>
      */
-    @SuppressWarnings("boxing")
     private void loadJobs() {
 
         setVisibleColumns(
@@ -561,11 +568,11 @@ public class CmsHistoryQueuedTable extends Table {
                 item.getItemProperty(PROP_RESOURCES).setValue(
                     A_CmsUI.getCmsObject().readPublishedResources(job.getPublishHistoryId()));
             } catch (com.vaadin.data.Property.ReadOnlyException | CmsException e) {
-                e.printStackTrace();
+                LOG.error("Error while read published Resources", e);
             }
             item.getItemProperty(PROP_STATUS).setValue(state.get(LIST_COLUMN_STATE));
             item.getItemProperty(PROP_START).setValue(new Date(job.getStartTime()));
-            item.getItemProperty(PROP_ISDIRECT).setValue(job.isDirectPublish());
+            item.getItemProperty(PROP_ISDIRECT).setValue(Boolean.valueOf(job.isDirectPublish()));
             item.getItemProperty(PROP_STOP).setValue(new Date(job.getFinishTime()));
             item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
             item.getItemProperty(PROP_FILESCOUNT).setValue(Integer.valueOf(job.getSize()));
@@ -574,5 +581,4 @@ public class CmsHistoryQueuedTable extends Table {
         //Sort table according to start time of jobs
         m_container.sort(new String[] {PROP_START}, new boolean[] {false});
     }
-
 }

@@ -53,26 +53,14 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class CmsSiteManager extends A_CmsWorkplaceApp {
 
-    /**path attribute to transmit root of a site to be edited. */
-    public static final String SITE_ROOT = "siteRoot";
-
-    /** The edit project path name. */
-    public static final String PATH_NAME_EDIT = "edit";
-
-    /** The add project path name. */
-    public static final String PATH_NAME_ADD = "add";
-
-    /**The global settings path name. */
-    public static final String PATH_NAME_GLOBAL = "global";
-
-    /**The webserver setting path name.  */
-    public static final String PATH_NAME_WEBSERVER = "webserver";
-
     /**Constant.*/
     public static final String FAVICON = "favicon.ico";
 
     /** The site icon path. */
     public static final String ICON = "apps/sites.png";
+
+    /**The icon for adding a new site. */
+    public static final String ICON_ADD = "apps/sitemanager/site-new.png";
 
     /**Icon for the global site settings. */
     public static final String ICON_SITES_GLOBAL = "apps/sitemanager/sites-global.png";
@@ -80,8 +68,23 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     /**Icon for the webserver configuration. */
     public static final String ICON_SITES_WEBSERVER = "apps/sitemanager/sites-webserver.png";
 
-    /**The icon for adding a new site. */
-    public static final String ICON_ADD = "apps/sitemanager/site-new.png";
+    /** The add project path name. */
+    public static final String PATH_NAME_ADD = "add";
+
+    /** The edit project path name. */
+    public static final String PATH_NAME_EDIT = "edit";
+
+    /**The global settings path name. */
+    public static final String PATH_NAME_GLOBAL = "global";
+
+    /**The webserver setting path name.  */
+    public static final String PATH_NAME_WEBSERVER = "webserver";
+
+    /**path attribute to transmit root of a site to be edited. */
+    public static final String SITE_ROOT = "siteRoot";
+
+    /**Path to the sites folder.*/
+    static final String PATH_SITES = "/sites/";
 
     /** The file table filter input. */
     private TextField m_siteTableFilter;
@@ -165,7 +168,6 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             public void textChange(TextChangeEvent event) {
 
                 sitesTable.filterTable(event.getText());
-
             }
         });
         m_infoLayout.addComponent(m_siteTableFilter);

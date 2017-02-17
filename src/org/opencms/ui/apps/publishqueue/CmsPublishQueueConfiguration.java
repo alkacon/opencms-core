@@ -42,7 +42,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * Configuration class for the publish queue app.
+ * Configuration class for the publish queue app.<p>
  */
 public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration {
 
@@ -111,5 +111,4 @@ public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration
         : CmsAppVisibilityStatus.INVISIBLE;
         return status;
     }
-
 }

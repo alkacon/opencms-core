@@ -42,8 +42,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * Configuration class for the site management app.
- *
+ * Configuration class for the site management app.<p>
  */
 
 public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
@@ -52,19 +51,10 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     public static final String APP_ID = "site-management";
 
     /**
-     * empty constructor.
-     */
-    public CmsSiteManagerConfiguration() {
-        // TODO Auto-generated constructor stub
-
-    }
-
-    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        // TODO Auto-generated method stub
         return new CmsSiteManager();
     }
 

@@ -30,6 +30,7 @@ package org.opencms.ui.apps.publishqueue;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobEnqueued;
@@ -40,6 +41,8 @@ import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -48,30 +51,31 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Class for the published resources dialog.
+ * Class for the published resources dialog.<p>
  */
-
 public class CmsPublishResources extends VerticalLayout {
 
-    /**generated id.*/
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsPublishResources.class.getName());
+
+    /**vaadin serial id.*/
     private static final long serialVersionUID = -3197777771233458574L;
 
     /**Calling object.*/
-    CmsPublishQueue m_manager;
-
-    /**Vaddin component.*/
-    public VerticalLayout m_panel;
+    final CmsPublishQueue m_manager;
 
     /**Vaadin component.*/
-    public Button m_cancel;
+    private Button m_cancel;
+
+    /**Vaddin component.*/
+    private VerticalLayout m_panel;
 
     /**
-     * public constructor.
+     * Public constructor.<p>
      *
      * @param manager calling manager object
      * @param id job-id
      */
-
     public CmsPublishResources(CmsPublishQueue manager, String id) {
 
         m_manager = manager;
@@ -83,9 +87,8 @@ public class CmsPublishResources extends VerticalLayout {
 
         try {
             resourcesHTML = getResourcesHTML(job);
-
         } catch (NumberFormatException | CmsException e) {
-            e.printStackTrace();
+            LOG.error("Error reading publish resources", e);
         }
 
         Label label = new Label();
@@ -106,21 +109,17 @@ public class CmsPublishResources extends VerticalLayout {
                 } else {
                     m_manager.openSubView(CmsPublishQueue.PATH_HISTORY, true);
                 }
-
             }
-
         });
-
     }
 
     /**
-     * Get String with list of resources from given job formatted in HTML
+     * Get String with list of resources from given job formatted in HTML.<p>
      *
      * @param job CmsPublishJobBase
      * @return String
      * @throws CmsException exception
      */
-
     private String getResourcesHTML(CmsPublishJobBase job) throws CmsException {
 
         String ret = "";

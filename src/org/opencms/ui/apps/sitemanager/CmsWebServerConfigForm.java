@@ -45,52 +45,50 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Class for the Web server configuration form and execution of script.
- *
  */
-
 public class CmsWebServerConfigForm extends VerticalLayout {
 
-    /**generated id. */
+    /**vaadin serial id. */
     private static final long serialVersionUID = 6872090597762705805L;
 
     /**Vaadin component. */
-    Button m_cancel;
+    private Button m_cancel;
 
     /**Vaadin component. */
-    Button m_exec;
+    private Button m_exec;
 
     /**Vaadin component. */
-    TextField m_fieldConfigTemplate;
+    private TextField m_fieldConfigTemplate;
 
     /**Vaadin component. */
-    TextField m_fieldSecureTemplate;
+    private TextField m_fieldLogging;
 
     /**Vaadin component. */
-    TextField m_fieldTargetPath;
+    private TextField m_fieldPrefix;
 
     /**Vaadin component. */
-    TextField m_fieldScript;
+    private TextField m_fieldScript;
 
     /**Vaadin component. */
-    TextField m_fieldLogging;
+    private TextField m_fieldSecureTemplate;
 
     /**Vaadin component. */
-    TextField m_fieldPrefix;
+    private TextField m_fieldTargetPath;
 
     /**Vaadin component. */
-    FormLayout m_threadReport;
-
-    /**Vaadin component. */
-    Panel m_report;
-
-    /**Vaadin component. */
-    Panel m_form;
+    private Panel m_form;
 
     /**Site Manager instance. */
     private CmsSiteManager m_manager;
 
+    /**Vaadin component. */
+    private Panel m_report;
+
+    /**Vaadin component. */
+    private FormLayout m_threadReport;
+
     /**
-     * public Constructor.
+     * Public Constructor.<p>
      *
      * @param manager sitemanager instance
      */
@@ -105,9 +103,7 @@ public class CmsWebServerConfigForm extends VerticalLayout {
             public void buttonClick(ClickEvent event) {
 
                 cancel();
-
             }
-
         });
 
         m_exec.addClickListener(new ClickListener() {
@@ -116,37 +112,17 @@ public class CmsWebServerConfigForm extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                m_report.setVisible(true);
-                m_form.setVisible(false);
-
-                m_exec.setEnabled(false);
-
-                Map<String, String> webconfig = OpenCms.getSiteManager().getWebServerConfig();
-                CmsSitesWebserverThread thread = new CmsSitesWebserverThread(
-                    A_CmsUI.getCmsObject(),
-                    webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_TARGETPATH),
-                    webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_CONFIGTEMPLATE),
-                    webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_WEBSERVERSCRIPT),
-                    webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_FILENAMEPREFIX),
-                    webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_LOGGINGDIR),
-                    webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_SECURETEMPLATE));
-                thread.start();
-                CmsReportWidget report = new CmsReportWidget(thread);
-                m_threadReport.addComponent(report);
-
+                runScript();
             }
-
         });
 
         Map<String, String> webconfig = OpenCms.getSiteManager().getWebServerConfig();
-
         m_fieldConfigTemplate.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_CONFIGTEMPLATE));
         m_fieldSecureTemplate.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_SECURETEMPLATE));
         m_fieldTargetPath.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_TARGETPATH));
         m_fieldScript.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_WEBSERVERSCRIPT));
         m_fieldLogging.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_LOGGINGDIR));
         m_fieldPrefix.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_FILENAMEPREFIX));
-
     }
 
     /**
@@ -157,4 +133,27 @@ public class CmsWebServerConfigForm extends VerticalLayout {
         m_manager.openSubView("", true);
     }
 
+    /**
+     * Executes script.<p>
+     */
+    void runScript() {
+
+        //Show report field and hide form fields
+        m_report.setVisible(true);
+        m_form.setVisible(false);
+        m_exec.setEnabled(false);
+
+        Map<String, String> webconfig = OpenCms.getSiteManager().getWebServerConfig();
+        CmsSitesWebserverThread thread = new CmsSitesWebserverThread(
+            A_CmsUI.getCmsObject(),
+            webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_TARGETPATH),
+            webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_CONFIGTEMPLATE),
+            webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_WEBSERVERSCRIPT),
+            webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_FILENAMEPREFIX),
+            webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_LOGGINGDIR),
+            webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_SECURETEMPLATE));
+        thread.start();
+        CmsReportWidget report = new CmsReportWidget(thread);
+        m_threadReport.addComponent(report);
+    }
 }

@@ -35,19 +35,20 @@ import java.util.List;
 import com.vaadin.ui.Table;
 
 /**
-*   Table column generator for published-resources. Shows list as comma separated string of setted maximal length.
-*   The Value of property have to be of type List<CmsResource> or List<CmsPublishedResource>.
+*   Table column generator for published-resources. Shows list as comma separated string of setted maximal length.<p>
+*   The Value of property have to be of type List<CmsResource> or List<CmsPublishedResource>.<p>
 */
 class CmsResourcesCellGenerator implements Table.ColumnGenerator {
 
-    /**generated id.*/
+    /**vaadin serial id.*/
     private static final long serialVersionUID = -3349782291910407616L;
 
-    /**limit for the string to be shown*/
+    /**limit size for the string to be shown*/
     private int m_charLimit;
 
     /**
-     * default public constructor.
+     * Default public constructor.<p>
+     *
      * @param charLimit maximal chars to output ".." instead of next list item.
      */
     public CmsResourcesCellGenerator(int charLimit) {
@@ -76,7 +77,8 @@ class CmsResourcesCellGenerator implements Table.ColumnGenerator {
     }
 
     /**
-     * Reads path of given resource.
+     * Reads path of given resource.<p>
+     *
      * @param resource CmsResource or CmsPublishedResource to get path of
      * @return path
      */

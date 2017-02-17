@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
@@ -38,6 +39,8 @@ import org.opencms.ui.CmsVaadinUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.AbstractSelect.NewItemHandler;
@@ -49,16 +52,15 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  *Class for the Global configuration dialog.<p>
- *
  */
 
 public class CmsGlobalForm extends VerticalLayout {
 
-    /**generated id.*/
-    private static final long serialVersionUID = -3553152729226102382L;
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsGlobalForm.class.getName());
 
-    /**Site manager instance. */
-    private CmsSiteManager m_manager;
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = -3553152729226102382L;
 
     /** Forbidden folder names.*/
     List<String> m_forbiddenFolder = new ArrayList<String>() {
@@ -72,22 +74,26 @@ public class CmsGlobalForm extends VerticalLayout {
     };
 
     /**Vaadin field.*/
-    ComboBox m_fieldWorkplaceServer;
+    private Button m_cancel;
 
     /**Vaadin field.*/
-    ComboBox m_fieldDefaultURI;
+    private ComboBox m_fieldDefaultURI;
 
     /**Vaadin field.*/
-    ComboBox m_fieldSharedFolder;
+    private ComboBox m_fieldSharedFolder;
 
     /**Vaadin field.*/
-    Button m_ok;
+    private ComboBox m_fieldWorkplaceServer;
+
+    /**Site manager instance. */
+    private CmsSiteManager m_manager;
 
     /**Vaadin field.*/
-    Button m_cancel;
+    private Button m_ok;
 
     /**
-     * Constructor.
+     * Constructor.<p>
+     *
      * @param manager CmsSiteManager instance
      */
     public CmsGlobalForm(CmsSiteManager manager) {
@@ -125,7 +131,6 @@ public class CmsGlobalForm extends VerticalLayout {
                 submit();
                 cancel();
                 return;
-
             }
 
         });
@@ -151,7 +156,17 @@ public class CmsGlobalForm extends VerticalLayout {
     }
 
     /**
-     * Save results.
+     * Selects given item of ComboBox.<p>
+     *
+     * @param site to be selected
+     */
+    void selectNewWorkplaceServer(CmsSite site) {
+
+        m_fieldWorkplaceServer.select(site);
+    }
+
+    /**
+     * Save results.<p>
      */
     void submit() {
 
@@ -166,14 +181,15 @@ public class CmsGlobalForm extends VerticalLayout {
             }
             // write the system configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             //
         }
 
     }
 
     /**
-     * Set up of combo box for default uri.
+     * Set up of combo box for default uri.<p>
+     *
      * @param allSites alls available sites
      */
     private void setUpDefaultUriComboBox(List<CmsSite> allSites) {
@@ -185,18 +201,16 @@ public class CmsGlobalForm extends VerticalLayout {
         m_fieldDefaultURI.setItemCaptionPropertyId("title");
 
         //set value
-
         String siteRoot = OpenCms.getSiteManager().getDefaultUri();
         if (siteRoot.endsWith("/")) {
             siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
         }
         CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
         m_fieldDefaultURI.setValue(site);
-
     }
 
     /**
-     * Set up of combo box for shared folder.
+     * Set up of combo box for shared folder.<p>
      */
     private void setUpSharedFolderComboBox() {
 
@@ -212,15 +226,14 @@ public class CmsGlobalForm extends VerticalLayout {
                     m_fieldSharedFolder.addItem(folder.getRootPath().replace("/", ""));
                 }
             }
-
         } catch (CmsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Error reading resource.", e);
         }
     }
 
     /**
-     * Sets the combo box for workplace.
+     * Sets the combo box for workplace.<p>
+     *
      * @param allSites alls available sites
      */
     private void setUpWorkplaceComboBox(List<CmsSite> allSites) {
@@ -233,7 +246,6 @@ public class CmsGlobalForm extends VerticalLayout {
             if (defaultURL.equals(site.getUrl())) {
                 siteWithDefaultURL = site;
             }
-
         }
         if (siteWithDefaultURL == null) {
             siteWithDefaultURL = new CmsSite("dummy", defaultURL);
@@ -254,11 +266,8 @@ public class CmsGlobalForm extends VerticalLayout {
 
                 CmsSite newItem = new CmsSite("dummy", newItemCaption);
                 objects.addBean(newItem);
-                m_fieldWorkplaceServer.select(newItem);
-
+                selectNewWorkplaceServer(newItem);
             }
         });
-
     }
-
 }

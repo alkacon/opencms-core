@@ -78,9 +78,8 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- *  Class to create Vaadin Table object with all available sites.
+ *  Class to create Vaadin Table object with all available sites.<p>
  */
-
 public class CmsSitesTable extends Table {
 
     /**
@@ -99,7 +98,6 @@ public class CmsSitesTable extends Table {
                 sitesToDelete.add(OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot));
             }
             if (sitesToDelete.size() == 1) {
-                //                Item item = m_container.getItem(data.iterator().next());
                 message = CmsVaadinUtils.getMessageText(
                     Messages.GUI_SITE_CONFIRM_DELETE_SITE_1,
                     sitesToDelete.get(0).getTitle());
@@ -194,12 +192,11 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     * Column with FavIcon.
+     * Column with FavIcon.<p>
      */
-
     class FavIconColumn implements Table.ColumnGenerator {
 
-        /**generated id.*/
+        /**vaadin serial id.*/
         private static final long serialVersionUID = -3772456970393398685L;
 
         /**
@@ -209,27 +206,26 @@ public class CmsSitesTable extends Table {
 
             return getImageFavIcon((String)itemId);
         }
-
     }
 
     /**
-     *Cloumn with icon buttons.
+     * Column with icon buttons.<p>
      */
-
     class IconButtonColumn implements Table.ColumnGenerator {
 
-        /**generated id. */
+        /**vaadin serial id. */
         private static final long serialVersionUID = 7732640709644021017L;
 
         /**
          * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
          */
-        @SuppressWarnings("boxing")
         public Object generateCell(final Table source, final Object itemId, Object columnId) {
 
             Property<Object> prop = source.getItem(itemId).getItemProperty(PROP_WEBSERVER);
 
-            FontOpenCms resource = (boolean)prop.getValue() ? FontOpenCms.CIRCLE_CHECK : FontOpenCms.CIRCLE_PAUSE;
+            FontOpenCms resource = ((Boolean)prop.getValue()).booleanValue()
+            ? FontOpenCms.CIRCLE_CHECK
+            : FontOpenCms.CIRCLE_PAUSE;
             Button button = CmsTableUtil.createIconButton(
                 resource,
                 CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVER_HELP_0));
@@ -241,19 +237,15 @@ public class CmsSitesTable extends Table {
 
                     String siteRoot = (String)itemId;
                     updateWebserver(siteRoot);
-
                 }
-
             });
             return button;
         }
-
     }
 
     /**
-     *  Menu Entry to toggle web server.
+     *  Menu Entry to toggle web server.<p>
      */
-
     class ToggleWebServer implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
         /**
@@ -263,7 +255,6 @@ public class CmsSitesTable extends Table {
 
             String siteRoot = data.iterator().next();
             updateWebserver(siteRoot);
-
         }
 
         /**
@@ -286,47 +277,52 @@ public class CmsSitesTable extends Table {
     }
 
     /** The logger for this class. */
-    protected static Log LOG = CmsLog.getLog(CmsSitesTable.class.getName());
-    /**generated id.*/
-    private static final long serialVersionUID = 4655464609332605219L;
-    /** Favicon property. */
-    private static final String PROP_FAVICON = "favicon";
-    /**Site icon property. */
-    private static final String PROP_ICON = "icon";
-    /**Site server property.*/
-    private static final String PROP_SERVER = "server";
-    /**Site title property.*/
-    private static final String PROP_TITLE = "title";
-    /**Site path property  (is id for site row in table).*/
-    private static final String PROP_PATH = "path";
-
-    /**webserver-boolean property.*/
-    private static final String PROP_WEBSERVER = "webserver";
+    static Log LOG = CmsLog.getLog(CmsSitesTable.class.getName());
 
     /**Site aliases property.*/
     private static final String PROP_ALIASES = "aliases";
 
+    /** Favicon property. */
+    private static final String PROP_FAVICON = "favicon";
+
+    /**Site icon property. */
+    private static final String PROP_ICON = "icon";
+
+    /**Site path property  (is id for site row in table).*/
+    private static final String PROP_PATH = "path";
+
     /**Site securesites property.*/
     private static final String PROP_SECURESITES = "securesites";
 
-    /** The data container. */
-    IndexedContainer m_container;
+    /**Site server property.*/
+    private static final String PROP_SERVER = "server";
 
-    /** The context menu. */
-    CmsContextMenu m_menu;
+    /**Site title property.*/
+    private static final String PROP_TITLE = "title";
 
-    /** The available menu entries. */
-    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
+    /**webserver-boolean property.*/
+    private static final String PROP_WEBSERVER = "webserver";
+
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 4655464609332605219L;
 
     /** The project manager instance. */
     CmsSiteManager m_manager;
+
+    /** The data container. */
+    private IndexedContainer m_container;
+
+    /** The context menu. */
+    private CmsContextMenu m_menu;
+
+    /** The available menu entries. */
+    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
     /**
      * Constructor.<p>
      *
      * @param manager the project manager
      */
-    @SuppressWarnings("boxing")
     public CmsSitesTable(CmsSiteManager manager) {
         m_manager = manager;
 
@@ -339,7 +335,7 @@ public class CmsSitesTable extends Table {
             PROP_FAVICON,
             Image.class,
             new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON))));
-        m_container.addContainerProperty(PROP_WEBSERVER, Boolean.class, false);
+        m_container.addContainerProperty(PROP_WEBSERVER, Boolean.class, new Boolean(false));
         m_container.addContainerProperty(PROP_SERVER, String.class, "");
         m_container.addContainerProperty(PROP_TITLE, String.class, "");
         m_container.addContainerProperty(PROP_PATH, String.class, "");
@@ -408,10 +404,10 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     * Filters the table according to given search string.
+     * Filters the table according to given search string.<p>
+     *
      * @param search string to be looked for.
      */
-
     public void filterTable(String search) {
 
         m_container.removeAllContainerFilters();
@@ -425,9 +421,8 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     *
+     *  Reads sites from Site Manager and adds them to tabel.<p>
      */
-    @SuppressWarnings("boxing")
     public void loadSites() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
@@ -450,10 +445,8 @@ public class CmsSitesTable extends Table {
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
                 Item item = m_container.addItem(site.getSiteRoot());
-                item.getItemProperty(PROP_WEBSERVER).setValue(site.isWebserver());
-
+                item.getItemProperty(PROP_WEBSERVER).setValue(new Boolean(site.isWebserver()));
                 item.getItemProperty(PROP_ICON).setValue(getImageIcon(site.getSiteRoot()));
-                //                item.getItemProperty(PROP_FAVICON).setValue(getImageFavIcon(site.getSiteRoot()));
                 item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
                 item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
                 item.getItemProperty(PROP_PATH).setValue(site.getSiteRoot());
@@ -466,7 +459,7 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     * Returns an favicon image with click listener on right clicks.
+     * Returns an favicon image with click listener on right clicks.<p>
      *
      * @param itemId of row to put image in.
      * @return Vaadin Image.
@@ -489,7 +482,6 @@ public class CmsSitesTable extends Table {
         });
 
         return favIconImage;
-
     }
 
     /**
@@ -541,11 +533,10 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     * Changes the boolean isWebserver of CmsSite triggered by click on IconButton or Menu entry.
+     * Changes the boolean isWebserver of CmsSite triggered by click on IconButton or Menu entry.<p>
+     *
      * @param siteRoot of site to be updated.
      */
-
-    @SuppressWarnings("boxing")
     void updateWebserver(String siteRoot) {
 
         CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
@@ -555,20 +546,20 @@ public class CmsSitesTable extends Table {
         newSite.setWebserver(!site.isWebserver());
         try {
             OpenCms.getSiteManager().updateSite(A_CmsUI.getCmsObject(), site, newSite);
-            getItem(siteRoot).getItemProperty(PROP_WEBSERVER).setValue(newSite.isWebserver());
+            getItem(siteRoot).getItemProperty(PROP_WEBSERVER).setValue(new Boolean(newSite.isWebserver()));
             refreshRowCache();
         } catch (CmsException e) {
-            e.printStackTrace();
+            LOG.error("Error on updating Site.", e);
         }
     }
 
     /**
-     * Checks value of table and sets it new if needed:
-     * if multiselect: new itemId is in current Value? -> no change of value
-     * no multiselect and multiselect, but new item not selected before: set value to new item
+     * Checks value of table and sets it new if needed:<p>
+     * if multiselect: new itemId is in current Value? -> no change of value<p>
+     * no multiselect and multiselect, but new item not selected before: set value to new item<p>
+     *
      * @param itemId if of clicked item
      */
-
     private void changeValueIfNotMultiSelect(Object itemId) {
 
         @SuppressWarnings("unchecked")
@@ -582,11 +573,11 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     * Loads the FavIcon of a given site.
+     * Loads the FavIcon of a given site.<p>
+     *
      * @param siteRoot of the given site.
      * @return the favicon as resource or default image if no faicon was found.
      */
-
     private Resource getFavIconResource(String siteRoot) {
 
         try {
@@ -605,17 +596,16 @@ public class CmsSitesTable extends Table {
 
                 }
             }, String.valueOf(System.currentTimeMillis()));
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             return new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON));
         }
     }
 
     /**
-     * Returns an image with default resource and with a click listener to open CmsContextMenu on left and right click.
+     * Returns an image with default resource and with a click listener to open CmsContextMenu on left and right click.<p>
      *
      * @param itemId of considered row in table.
      * @return vaadin image.
-     *
      */
     private Image getImageIcon(final Object itemId) {
 
@@ -628,7 +618,6 @@ public class CmsSitesTable extends Table {
             public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
 
                 onItemClick(event, itemId, PROP_ICON);
-
             }
 
         });
@@ -636,7 +625,7 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     * Makes a String from aliases (comma separated).
+     * Makes a String from aliases (comma separated).<p>
      *
      * @param aliases List of aliases.
      * @return nice string.

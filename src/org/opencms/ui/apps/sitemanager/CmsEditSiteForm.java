@@ -44,6 +44,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
@@ -70,6 +71,8 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator;
@@ -94,17 +97,13 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * Class for the Form to edit or add a site.
- *
+ * Class for the Form to edit or add a site.<p>
  */
-
 public class CmsEditSiteForm extends VerticalLayout {
 
     /**
-     *  Bean for the ComboBox to edit the position.
-     *
+     *  Bean for the ComboBox to edit the position.<p>
      */
-
     public class PositionComboBoxElementBean {
 
         /**Position of site in List. */
@@ -114,7 +113,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         private String m_title;
 
         /**
-         * Constructor.
+         * Constructor. <p>
          *
          * @param title of site
          * @param position of site
@@ -125,7 +124,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         }
 
         /**
-         * Getter for position.
+         * Getter for position.<p>
          *
          * @return float position
          */
@@ -135,7 +134,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         }
 
         /**
-         * Getter for title.
+         * Getter for title.<p>
          *
          * @return String title
          */
@@ -146,12 +145,11 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Receiver class for upload of favicon.
-     *
+     * Receiver class for upload of favicon.<p>
      */
     class FavIconReceiver implements Receiver, SucceededListener {
 
-        /**Generated id. */
+        /**vaadin serial id. */
         private static final long serialVersionUID = 688021741970679734L;
 
         /**
@@ -163,7 +161,6 @@ public class CmsEditSiteForm extends VerticalLayout {
             if (!mimeType.startsWith("image")) {
                 return new ByteArrayOutputStream(0);
             }
-
             return m_os;
         }
 
@@ -188,20 +185,15 @@ public class CmsEditSiteForm extends VerticalLayout {
             }
             m_imageCounter++;
             setCurrentFavIcon(m_os.toByteArray());
-
         }
-
     }
 
     /**
-     *
-     *
-     *
+     *Validator for Folder Name field.<p>
      */
-
     class FolderNameValidator implements Validator {
 
-        /**generated id.*/
+        /**vaadin serial id.*/
         private static final long serialVersionUID = 2269520781911597613L;
 
         /**
@@ -221,18 +213,15 @@ public class CmsEditSiteForm extends VerticalLayout {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_ALREADYUSED_1, enteredName));
             }
-
         }
-
     }
 
     /**
-     *
-     *
+     *Validator for server field.<p>
      */
     class ServerValidator implements Validator {
 
-        /**generated id.*/
+        /**vaadin serial id.*/
         private static final long serialVersionUID = 9014118214418269697L;
 
         /**
@@ -248,33 +237,14 @@ public class CmsEditSiteForm extends VerticalLayout {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_ALREADYUSED_1, enteredServer));
             }
-
         }
-
     }
-
-    /**generated id.*/
-    private static final long serialVersionUID = -1011525709082939562L;
 
     /** The module name constant. */
     public static final String MODULE_NAME = "org.opencms.ui.apps.sitemanager";
 
     /** Module parameter constant for the web server script. */
     public static final String PARAM_OU_DESCRIPTION = "oudescription";
-
-    /** Constant. */
-    private static final String NEW = ".templates/";
-    /** Constant. */
-    private static final String BLANK_HTML = "blank.html";
-
-    /** Constant. */
-    private static final String MODEL_PAGE = "ModelPage";
-
-    /**default index.html which gets created.*/
-    private static final String INDEX_HTML = "index.html";
-
-    /** Constant. */
-    private static final String MODEL_PAGE_PAGE = "ModelPage/Page";
 
     /**List of all forbidden folder names as new site-roots.*/
     static final List<String> FORBIDDEN_FOLDER_NAMES = new ArrayList<String>() {
@@ -284,9 +254,29 @@ public class CmsEditSiteForm extends VerticalLayout {
         {
             add("system");
             add(OpenCms.getSiteManager().getSharedFolder().replaceAll("/", ""));
-            add("forbiddenName");
         }
     };
+
+    /** Constant. */
+    private static final String BLANK_HTML = "blank.html";
+
+    /**default index.html which gets created.*/
+    private static final String INDEX_HTML = "index.html";
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsEditSiteForm.class.getName());
+
+    /** Constant. */
+    private static final String MODEL_PAGE = "ModelPage";
+
+    /** Constant. */
+    private static final String MODEL_PAGE_PAGE = "ModelPage/Page";
+
+    /** Constant. */
+    private static final String NEW = ".templates/";
+
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = -1011525709082939562L;
 
     /**List of all folder names already used for sites. */
     List<String> m_alreadyUsedFolderNames = new ArrayList<String>();
@@ -294,32 +284,62 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**List of all urls already used for sites.*/
     List<CmsSiteMatcher> m_alreadyUsedURL = new ArrayList<CmsSiteMatcher>();
 
-    /** CmsSiteManager which calls Form.*/
-    private CmsSiteManager m_manager;
+    /**vaadin component. */
+    Upload m_fieldUploadFavIcon;
 
-    /**current site which is supposed to be edited, null if site should be added.*/
-    private CmsSite m_site;
+    /**Needed to check if favicon was changed. */
+    int m_imageCounter;
+
+    /**OutputStream to store the uploaded favicon temporarily. */
+    ByteArrayOutputStream m_os = new ByteArrayOutputStream(5500);
 
     /**vaadin component.*/
     TabSheet m_tab;
 
-    /**button to add parameter.*/
-    private Button m_addParameter;
-
     /**button to add aliases.*/
     private Button m_addAlias;
 
+    /**button to add parameter.*/
+    private Button m_addParameter;
+
     /**vaadin component.*/
-    private Button m_ok;
+    private FormLayout m_aliases;
 
     /**vaadin component.*/
     private Button m_cancel;
 
     /**vaadin component.*/
-    private ComboBox m_simpleFieldTemplate;
+    private CheckBox m_fieldCreateOU;
 
     /**vaadin component.*/
-    private TextField m_simpleFieldTitle;
+    private CmsPathSelectField m_fieldErrorPage;
+
+    /**vaadin component.*/
+    private CheckBox m_fieldExclusiveError;
+
+    /**vaadin component.*/
+    private CheckBox m_fieldExclusiveURL;
+
+    /**vaadin component. */
+    private Image m_fieldFavIcon;
+
+    /**vaadin component.*/
+    private ComboBox m_fieldPosition;
+
+    /**vaadin component.*/
+    private TextField m_fieldSecureServer;
+
+    /**vaadin component.*/
+    private CheckBox m_fieldWebServer;
+
+    /** CmsSiteManager which calls Form.*/
+    private CmsSiteManager m_manager;
+
+    /**vaadin component.*/
+    private Button m_ok;
+
+    /**vaadin component.*/
+    private FormLayout m_parameter;
 
     /**vaadin component.*/
     private TextField m_simpleFieldFolderName;
@@ -328,43 +348,13 @@ public class CmsEditSiteForm extends VerticalLayout {
     private TextField m_simpleFieldServer;
 
     /**vaadin component.*/
-    TextField m_fieldSecureServer;
+    private ComboBox m_simpleFieldTemplate;
 
     /**vaadin component.*/
-    private CmsPathSelectField m_fieldErrorPage;
+    private TextField m_simpleFieldTitle;
 
-    /**vaadin component.*/
-    private CheckBox m_fieldWebServer;
-
-    /**vaadin component.*/
-    CheckBox m_fieldExclusiveURL;
-
-    /**vaadin component.*/
-    CheckBox m_fieldExclusiveError;
-
-    /**vaadin component.*/
-    private CheckBox m_fieldCreateOU;
-
-    /**vaadin component.*/
-    private ComboBox m_fieldPosition;
-
-    /**vaadin component. */
-    Image m_fieldFavIcon;
-
-    /**vaadin component. */
-    Upload m_fieldUploadFavIcon;
-
-    /**vaadin component.*/
-    FormLayout m_parameter;
-
-    /**vaadin component.*/
-    FormLayout m_aliases;
-
-    /**Needed to check if favicon was changed. */
-    int m_imageCounter;
-
-    /**OutputStream to store the uploaded favicon temporarily. */
-    ByteArrayOutputStream m_os = new ByteArrayOutputStream(5500);
+    /**current site which is supposed to be edited, null if site should be added.*/
+    private CmsSite m_site;
 
     /**
      * Constructor.<p>
@@ -393,7 +383,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                addParameter(m_parameter, null);
+                addParameter(null);
 
             }
         });
@@ -404,7 +394,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                addAlias(m_aliases, null);
+                addAlias(null);
 
             }
 
@@ -448,14 +438,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             public void valueChange(ValueChangeEvent event) {
 
-                if (m_fieldSecureServer.isEmpty()) {
-                    m_fieldExclusiveURL.setEnabled(false);
-                    m_fieldExclusiveError.setEnabled(false);
-                    return;
-                }
-                m_fieldExclusiveURL.setEnabled(true);
-                m_fieldExclusiveError.setEnabled(true);
-
+                toggleSecureServer();
             }
         });
         m_fieldExclusiveURL.setEnabled(false);
@@ -477,7 +460,6 @@ public class CmsEditSiteForm extends VerticalLayout {
      * @param manager the manager instance
      * @param siteRoot of site to edit
      */
-    @SuppressWarnings("boxing")
     public CmsEditSiteForm(CmsSiteManager manager, String siteRoot) {
         this(manager);
 
@@ -500,18 +482,18 @@ public class CmsEditSiteForm extends VerticalLayout {
         if (m_site.getErrorPage() != null) {
             m_fieldErrorPage.setValue(m_site.getErrorPage());
         }
-        m_fieldWebServer.setValue(m_site.isWebserver());
-        m_fieldExclusiveURL.setValue(m_site.isExclusiveUrl());
-        m_fieldExclusiveError.setValue(m_site.isExclusiveError());
+        m_fieldWebServer.setValue(new Boolean(m_site.isWebserver()));
+        m_fieldExclusiveURL.setValue(new Boolean(m_site.isExclusiveUrl()));
+        m_fieldExclusiveError.setValue(new Boolean(m_site.isExclusiveError()));
 
         Map<String, String> siteParameters = m_site.getParameters();
         for (Entry<String, String> parameter : siteParameters.entrySet()) {
-            addParameter(m_parameter, getParameterString(parameter));
+            addParameter(getParameterString(parameter));
         }
 
         List<CmsSiteMatcher> siteAliases = m_site.getAliases();
         for (CmsSiteMatcher siteMatcher : siteAliases) {
-            addAlias(m_aliases, siteMatcher.getUrl());
+            addAlias(siteMatcher.getUrl());
         }
 
         try {
@@ -523,7 +505,7 @@ public class CmsEditSiteForm extends VerticalLayout {
             } else {
                 m_simpleFieldTemplate.setValue(template.getStructureValue());
             }
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             m_simpleFieldTemplate.setValue(null);
         }
         setUpComboBoxPosition();
@@ -532,29 +514,26 @@ public class CmsEditSiteForm extends VerticalLayout {
             m_fieldExclusiveURL.setEnabled(true);
             m_fieldExclusiveError.setEnabled(true);
         }
-
         setFaviconIfExist();
-
     }
 
     /**
-     * Returns a Folder Name for a given site-root.
+     * Returns a Folder Name for a given site-root.<p>
      *
      * @param siteRoot site root of a site
      * @return Folder Name
      */
     static String getFolderNameFromSiteRoot(String siteRoot) {
 
-        return siteRoot.substring("/sites/".length()); //TOOO replace "sites" by static String
+        return siteRoot.substring(CmsSiteManager.PATH_SITES.length());
     }
 
     /**
-     * Adds a given alias String to the aliase-Vaadin form.
+     * Adds a given alias String to the aliase-Vaadin form.<p>
      *
-     * @param aliases FormLayout to add alias to.
      * @param aliasString alias string which should be added.
      */
-    void addAlias(FormLayout aliases, String aliasString) {
+    void addAlias(String aliasString) {
 
         TextField textField = new TextField();
         if (aliasString != null) {
@@ -565,28 +544,27 @@ public class CmsEditSiteForm extends VerticalLayout {
             CmsVaadinUtils.getMessageText(Messages.GUI_SITE_REMOVE_ALIAS_0));
         row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_0));
         row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_HELP_0));
-        aliases.addComponent(row);
+        m_aliases.addComponent(row);
 
     }
 
     /**
-     * Add a given parameter to the form layout.
+     * Add a given parameter to the form layout.<p>
      *
-     * @param parameter form layout to add parameter to.
-     * @param parameter2 parameter to add to form
+     * @param parameter parameter to add to form
      */
-    void addParameter(FormLayout parameter, String parameter2) {
+    void addParameter(String parameter) {
 
         TextField textField = new TextField();
-        if (parameter2 != null) {
-            textField.setValue(parameter2);
+        if (parameter != null) {
+            textField.setValue(parameter);
         }
         CmsRemovableFormRow<TextField> row = new CmsRemovableFormRow<TextField>(
             textField,
             CmsVaadinUtils.getMessageText(Messages.GUI_SITE_REMOVE_PARAMETER_0));
         row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARAMETER_0));
         row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARAMETER_HELP_0));
-        parameter.addComponent(row);
+        m_parameter.addComponent(row);
     }
 
     /**
@@ -598,7 +576,7 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Checks if all required fields are set correctly.
+     * Checks if all required fields are set correctly.<p>
      *
      * @return true if all inputs are valid.
      */
@@ -609,11 +587,10 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Sets a new uploaded favicon and changes the caption of the upload button.
+     * Sets a new uploaded favicon and changes the caption of the upload button.<p>
      *
      * @param imageData holdings byte array of favicon
      */
-
     void setCurrentFavIcon(final byte[] imageData) {
 
         m_fieldFavIcon.setVisible(true);
@@ -628,11 +605,10 @@ public class CmsEditSiteForm extends VerticalLayout {
             }
         }, String.valueOf(System.currentTimeMillis())));
         m_fieldFavIcon.setImmediate(true);
-
     }
 
     /**
-     * Tries to read and show the favicon of the site.
+     * Tries to read and show the favicon of the site.<p>
      */
     void setFaviconIfExist() {
 
@@ -640,16 +616,15 @@ public class CmsEditSiteForm extends VerticalLayout {
             CmsObject cms = A_CmsUI.getCmsObject();
             CmsResource favicon = cms.readResource(m_site.getSiteRoot() + "/" + CmsSiteManager.FAVICON);
             setCurrentFavIcon(cms.readFile(favicon).getContents()); //FavIcon was found -> give it to the UI
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             //no favicon, do nothing
         }
     }
 
     /**
-     * Saves the entered site-data as a CmsSite object.
-     * Code is copied from workplace-tool.
+     * Saves the entered site-data as a CmsSite object.<p>
+     * Code is copied from workplace-tool.<p>
      */
-    @SuppressWarnings("boxing")
     void submit() {
 
         try {
@@ -670,7 +645,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                 // take the existing site and do not perform any OU related actions
                 siteRootResource = cms.readResource(siteRoot);
                 sitePath = cms.getSitePath(siteRootResource); //? siteroot should be ""..
-            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+            } catch (CmsVfsResourceNotFoundException e) {
                 // not create a new site folder and the according OU if option is checked checked
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(
                     CmsResourceTypeFolder.RESOURCE_TYPE_NAME);
@@ -705,7 +680,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             String ouDescription = "OU for: %(site)"; //ToDo don't know what is exactly supposed to be done..
 
-            if (m_fieldCreateOU.isVisible() & m_fieldCreateOU.getValue()) {
+            if (m_fieldCreateOU.isVisible() & (m_fieldCreateOU.getValue()).booleanValue()) {
                 OpenCms.getOrgUnitManager().createOrganizationalUnit(
                     cms,
                     "/" + siteRootResource.getName(),
@@ -744,7 +719,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                         val.setStringValue(cms, modelPage.getRootPath());
                         file.setContents(con.marshal());
                         cms.writeFile(file);
-                    } catch (@SuppressWarnings("unused") CmsException e) {
+                    } catch (CmsException e) {
                         //                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
@@ -765,8 +740,22 @@ public class CmsEditSiteForm extends VerticalLayout {
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error while saving site.", e);
         }
+    }
+
+    /**
+     * Toogles secure server options.<p>
+     */
+    void toggleSecureServer() {
+
+        if (m_fieldSecureServer.isEmpty()) {
+            m_fieldExclusiveURL.setEnabled(false);
+            m_fieldExclusiveError.setEnabled(false);
+            return;
+        }
+        m_fieldExclusiveURL.setEnabled(true);
+        m_fieldExclusiveError.setEnabled(true);
     }
 
     /**
@@ -774,9 +763,7 @@ public class CmsEditSiteForm extends VerticalLayout {
     *
     * @param cms the current CMS context
     * @param subSitemapFolder the sub-sitemap folder in which the .content folder should be created
-    *
     * @return the created folder
-    *
     * @throws CmsException if something goes wrong
     * @throws CmsLoaderException if something goes wrong
     */
@@ -816,9 +803,7 @@ public class CmsEditSiteForm extends VerticalLayout {
      * also ensures that it ends with a '/' and doesn't start with '/'.<p>
      *
      * @param resourcename folder name to check (complete path)
-     *
      * @return the validated folder name
-     *
      * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
      */
     private String ensureFoldername(String resourcename) throws CmsIllegalArgumentException {
@@ -837,7 +822,8 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Reads out all aliases from the form.
+     * Reads out all aliases from the form.<p>
+     *
      * @return a List of CmsSiteMatcher
      */
     private List<CmsSiteMatcher> getAliases() {
@@ -849,22 +835,22 @@ public class CmsEditSiteForm extends VerticalLayout {
                 ret.add(new CmsSiteMatcher(((String)((CmsRemovableFormRow<?>)c).getInput().getValue())));
             }
         }
-
         return ret;
     }
 
     /**
-     * Returns the value of the site-folder.
+     * Returns the value of the site-folder.<p>
+     *
      * @return String of folder path.
      */
     private String getFieldFolder() {
 
         return m_simpleFieldFolderName.getValue();
-
     }
 
     /**
-     * Reads server field.
+     * Reads server field.<p>
+     *
      * @return server as string
      */
     private String getFieldServer() {
@@ -873,7 +859,8 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Reads ComboBox with Template information.
+     * Reads ComboBox with Template information.<p>
+     *
      * @return string of chosen template path.
      */
     private String getFieldTemplate() {
@@ -882,17 +869,18 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Reads title field.
+     * Reads title field.<p>
+     *
      * @return title as string.
      */
     private String getFieldTitle() {
 
         return m_simpleFieldTitle.getValue();
-
     }
 
     /**
-     * Reads parameter from form.
+     * Reads parameter from form.<p>
+     *
      * @return a Map with Parameter information.
      */
     private Map<String, String> getParameter() {
@@ -908,7 +896,8 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Map entry of parameter to String representation.
+     * Map entry of parameter to String representation.<p>
+     *
      * @param parameter Entry holding parameter info.
      * @return the parameter formatted as string
      */
@@ -918,7 +907,8 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Reads out all forms and creates a site object.
+     * Reads out all forms and creates a site object.<p>
+     *
      * @return the site object.
      */
     private CmsSite getSiteFromForm() {
@@ -937,7 +927,6 @@ public class CmsEditSiteForm extends VerticalLayout {
         ? m_fieldErrorPage.getValue()
         : null;
         List<CmsSiteMatcher> aliases = getAliases();
-        @SuppressWarnings("boxing")
         CmsSite ret = new CmsSite(
             siteRoot,
             uuid,
@@ -948,9 +937,9 @@ public class CmsEditSiteForm extends VerticalLayout {
             : String.valueOf(((PositionComboBoxElementBean)m_fieldPosition.getValue()).getPosition()),
             errorPage,
             matcher,
-            m_fieldExclusiveURL.getValue(),
-            m_fieldExclusiveError.getValue(),
-            m_fieldWebServer.getValue(),
+            m_fieldExclusiveURL.getValue().booleanValue(),
+            m_fieldExclusiveError.getValue().booleanValue(),
+            m_fieldWebServer.getValue().booleanValue(),
             aliases);
         ret.setParameters((SortedMap<String, String>)getParameter());
 
@@ -958,11 +947,11 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Saves outputstream of favicon as resource.
+     * Saves outputstream of favicon as resource.<p>
+     *
      * @param cms cms object.
      * @param siteRoot site root of considered site.
      */
-
     private void saveIcon(CmsObject cms, String siteRoot) {
 
         CmsResource favicon = null;
@@ -970,14 +959,14 @@ public class CmsEditSiteForm extends VerticalLayout {
             favicon = cms.createResource(
                 siteRoot + CmsSiteManager.FAVICON,
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()));
-        } catch (@SuppressWarnings("unused") CmsVfsResourceAlreadyExistsException e) {
+        } catch (CmsVfsResourceAlreadyExistsException e) {
             //Resource already there
             try {
                 favicon = cms.readResource(siteRoot + CmsSiteManager.FAVICON);
-            } catch (@SuppressWarnings("unused") CmsException e2) {
+            } catch (CmsException e2) {
                 //should never happen
             }
-        } catch (@SuppressWarnings("unused") CmsIllegalArgumentException | CmsException e) {
+        } catch (CmsIllegalArgumentException | CmsException e) {
             // should never happen
         }
         try {
@@ -986,46 +975,45 @@ public class CmsEditSiteForm extends VerticalLayout {
             faviconFile.setContents(m_os.toByteArray());
             cms.writeFile(faviconFile);
             cms.unlockResource(siteRoot + CmsSiteManager.FAVICON);
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             // should not happen
         }
 
     }
 
     /**
-     * Sets the folder field.
+     * Sets the folder field.<p>
+     *
      * @param newValue value of the field
      */
-
     private void setFieldFolder(String newValue) {
 
         m_simpleFieldFolderName.setValue(newValue);
-
     }
 
     /**
-     * Sets the server field.
+     * Sets the server field.<p>
+     *
      * @param newValue value of the field.
      */
     private void setFieldServer(String newValue) {
 
         m_simpleFieldServer.setValue(newValue);
-
     }
 
     /**
-     * Sets the title field.
+     * Sets the title field.<p>
+     *
      * @param newValue value of the field.
      */
     private void setFieldTitle(String newValue) {
 
         m_simpleFieldTitle.setValue(newValue);
-
     }
 
     /**
-     * Set the combo box for the position.
-     * Copied from workplace tool.
+     * Set the combo box for the position.<p>
+     * Copied from workplace tool.<p>
      */
     private void setUpComboBoxPosition() {
 
@@ -1048,7 +1036,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         if (sites.size() > 0) {
             try {
                 maxValue = sites.get(0).getPosition();
-            } catch (@SuppressWarnings("unused") Exception e) {
+            } catch (Exception e) {
                 // should usually never happen
             }
         }
@@ -1092,7 +1080,6 @@ public class CmsEditSiteForm extends VerticalLayout {
                         -1));
             } else {
                 beanList.add(new PositionComboBoxElementBean(sites.get(i).getTitle(), newPos));
-
             }
         }
 
@@ -1101,8 +1088,8 @@ public class CmsEditSiteForm extends VerticalLayout {
             CmsVaadinUtils.getMessageText(Messages.GUI_SITE_CHNAV_POS_LAST_0),
             maxValue + 1);
         beanList.add(lastEntry);
-        // add the entry: no change
 
+        // add the entry: no change
         beanList.add(
             new PositionComboBoxElementBean(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_CHNAV_POS_NOCHANGE_0), -1));
 
@@ -1119,9 +1106,8 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Sets the combobox for the template.
+     * Sets the combobox for the template.<p>
      */
-
     private void setUpComboBoxTemplate() {
 
         try {
@@ -1137,7 +1123,7 @@ public class CmsEditSiteForm extends VerticalLayout {
             m_simpleFieldTemplate.setValue(templates.get(0).getRootPath());
             m_simpleFieldTemplate.setNullSelectionAllowed(false);
 
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             // should not happen
         }
     }

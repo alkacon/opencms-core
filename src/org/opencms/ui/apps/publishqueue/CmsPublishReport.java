@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.publishqueue;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobFinished;
@@ -37,6 +38,8 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsUUID;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -45,16 +48,22 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Vertical Layout showing a publish report of a publish job.
+ * Vertical Layout showing a publish report of a publish job.<p>
  */
 
 public class CmsPublishReport extends VerticalLayout {
 
-    /**generated id. */
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsPublishReport.class.getName());
+
+    /**vaadin serial id. */
     private static final long serialVersionUID = -1630983150603283505L;
 
     /**object which calls table.*/
     CmsPublishQueue m_manager;
+
+    /**vaadin component.*/
+    private Button m_cancel;
 
     /**job id.*/
     private CmsUUID m_jobId;
@@ -62,11 +71,9 @@ public class CmsPublishReport extends VerticalLayout {
     /**vaadin component.*/
     private VerticalLayout m_panel;
 
-    /**vaadin component.*/
-    private Button m_cancel;
-
     /**
-     * public constructor.
+     * public constructor.<p>
+     *
      * @param queue calling object
      * @param jobId of chosen job
      */
@@ -95,7 +102,7 @@ public class CmsPublishReport extends VerticalLayout {
             try {
                 reportHTML = new String(OpenCms.getPublishManager().getReportContents((CmsPublishJobFinished)job));
             } catch (CmsException e) {
-                e.printStackTrace();
+                LOG.error("Error reading Report content of publish job.", e);
             }
             Label label = new Label();
             label.setValue(reportHTML);
@@ -116,10 +123,7 @@ public class CmsPublishReport extends VerticalLayout {
                 } else {
                     m_manager.openSubView(CmsPublishQueue.PATH_HISTORY, true);
                 }
-
             }
-
         });
     }
-
 }

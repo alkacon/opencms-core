@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.publishqueue;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobEnqueued;
@@ -50,6 +51,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
@@ -66,52 +69,54 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * Vaadin Table showing current jobs in queue.
+ * Vaadin Table showing current jobs in queue.<p>
  */
-
 public class CmsQueuedTable extends Table {
 
     /**
-     *Cloumn with icon buttons.
+     *Cloumn with icon buttons.<p>
      */
-
     class DirectPublishColumn implements Table.ColumnGenerator {
 
-        /**generated id. */
+        /**vaadin serial id. */
         private static final long serialVersionUID = 7732640709644021017L;
 
         /**
          * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
          */
-        @SuppressWarnings("boxing")
         public Object generateCell(final Table source, final Object itemId, Object columnId) {
 
             Property<Object> prop = source.getItem(itemId).getItemProperty(PROP_ISDIRECT);
 
-            Resource resource = (boolean)prop.getValue()
-            ? null
-            : new ExternalResource(OpenCmsTheme.getImageLink(ICON_SCHEDULER));
+            String resourceLink = "";
+            String description = "";
+            if (((Boolean)prop.getValue()).booleanValue()) {
+                resourceLink = OpenCmsTheme.getImageLink(ICON_PUBLISH_DIRECT);
+                description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_DIRECT_0);
+            } else {
+                resourceLink = OpenCmsTheme.getImageLink(ICON_PUBLISH_NOT_DIRECT);
+                description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_NOT_DIRECT_0);
+            }
+
+            Resource resource = new ExternalResource(resourceLink);
 
             Image image = new Image(String.valueOf(System.currentTimeMillis()), resource);
-            image.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_SCHEDULED_0));
+            image.setDescription(description);
             image.addClickListener(new ClickListener() {
 
-                /**generated id.*/
                 private static final long serialVersionUID = -8476526927157799166L;
 
                 public void click(ClickEvent event) {
 
                     onItemClick(event, itemId, PROP_ISDIRECT);
-
                 }
             });
             return image;
         }
-
     }
 
     /**
-    * Menu entry for show-report option.
+    * Menu entry for show-report option.<p>
     */
     class EntryReport implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
@@ -151,11 +156,10 @@ public class CmsQueuedTable extends Table {
             ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
             : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
-
     }
 
     /**
-    * Menu entry for show resources option.
+    * Menu entry for show resources option.<p>
     */
     class EntryResources implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
@@ -168,7 +172,6 @@ public class CmsQueuedTable extends Table {
             m_manager.openSubView(
                 A_CmsWorkplaceApp.addParamToState(CmsPublishQueue.PATH_RESOURCE, CmsPublishQueue.JOB_ID, jobid),
                 true);
-
         }
 
         /**
@@ -188,13 +191,11 @@ public class CmsQueuedTable extends Table {
             ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
             : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
-
     }
 
     /**
-     * Menu entry for option to abort publish job.
+     * Menu entry for option to abort publish job.<p>
      */
-
     class EntryStop implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
         /**
@@ -212,10 +213,9 @@ public class CmsQueuedTable extends Table {
                         true);
                     CmsAppWorkplaceUi.get().reload();
                 } catch (CmsException e) {
-                    e.printStackTrace();
+                    LOG.error("Error on aborting publish job.", e);
                 }
             }
-
         }
 
         /**
@@ -246,8 +246,26 @@ public class CmsQueuedTable extends Table {
 
     }
 
-    /**generated id.*/
-    private static final long serialVersionUID = -2229660370686867919L;
+    /**path to icon. */
+    public static final String ICON_SEARCH = "apps/publishqueue/publish_view.png";
+
+    /**File-count column id.*/
+    public static final String PROP_FILESCOUNT = "files";
+
+    /**icon property. */
+    public static final String PROP_ICON = "icon";
+
+    /**Is direct column id.*/
+    public static final String PROP_ISDIRECT = "isdirect";
+
+    /**job type property. */
+    public static final String PROP_ISRUNNING = "runjob";
+
+    /**project column id.*/
+    public static final String PROP_PROJECT = "project";
+
+    /**resources column.*/
+    public static final String PROP_RESOURCES = "resources";
 
     /**Start column id.*/
     public static final String PROP_START = "start";
@@ -255,47 +273,36 @@ public class CmsQueuedTable extends Table {
     /**user column id.*/
     public static final String PROP_USER = "user";
 
-    /**resources column.*/
-    public static final String PROP_RESOURCES = "resources";
-
-    /**icon property. */
-    public static final String PROP_ICON = "icon";
-
-    /**job type property. */
-    public static final String PROP_ISRUNNING = "runjob";
-
-    /**File-count column id.*/
-    public static final String PROP_FILESCOUNT = "files";
-
-    /**Is direct column id.*/
-    public static final String PROP_ISDIRECT = "isdirect";
-
-    /**path to icon. */
-    public static final String ICON_SEARCH = "apps/publishqueue/publish_view.png";
+    /**Icon for direct publish */
+    static String ICON_PUBLISH_DIRECT = "apps/publishqueue/publish_direct.png";
 
     /**Icon for not direct publish */
-    static String ICON_SCHEDULER = "scheduler/scheduler.png";
+    static String ICON_PUBLISH_NOT_DIRECT = "apps/publishqueue/publish_not_direct.png";
 
-    /**project column id.*/
-    public static final String PROP_PROJECT = "project";
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsQueuedTable.class.getName());
 
-    /** object which has called table.*/
-    CmsPublishQueue m_manager;
+    /**generated id.*/
+    private static final long serialVersionUID = -2229660370686867919L;
 
     /**indexed container. */
     IndexedContainer m_container;
 
-    /**list of all current jobs.*/
-    private List<CmsPublishJobBase> m_jobs;
+    /** object which has called table.*/
+    CmsPublishQueue m_manager;
 
     /** The context menu. */
     CmsContextMenu m_menu;
+
+    /**list of all current jobs.*/
+    private List<CmsPublishJobBase> m_jobs;
 
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
     /**
-     * public constructor.
+     * Public constructor.<p>
+     *
      * @param manager object called this class
      */
     public CmsQueuedTable(CmsPublishQueue manager) {
@@ -321,15 +328,13 @@ public class CmsQueuedTable extends Table {
             iniTable();
             addItemClickListener(new ItemClickListener() {
 
-                /**gererated id.*/
+                /**vaadin serial id.*/
                 private static final long serialVersionUID = -7394790444104979594L;
 
                 public void itemClick(ItemClickEvent event) {
 
                     onItemClick(event, event.getItemId(), event.getPropertyId());
-
                 }
-
             });
             loadJobs();
         } else {
@@ -343,14 +348,13 @@ public class CmsQueuedTable extends Table {
      *
      * @return the menu entries
      */
-    @SuppressWarnings("boxing")
     List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
 
         m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
-        if ((boolean)(getItem(getValue()).getItemProperty(PROP_ISRUNNING).getValue())) {
-            m_menuEntries.add(new EntryReport()); //Option for Report
+        if (((Boolean)(getItem(getValue()).getItemProperty(PROP_ISRUNNING).getValue())).booleanValue()) {
+            m_menuEntries.add(new EntryReport()); //Option for Report (only if job is running, not enqueued)
         } else {
-            m_menuEntries.add(new EntryStop()); //Option for abort job
+            m_menuEntries.add(new EntryStop()); //Option for abort job (only if enqueued, not running)
         }
         m_menuEntries.add(new EntryResources()); //Option for Resources
 
@@ -364,7 +368,6 @@ public class CmsQueuedTable extends Table {
      * @param itemId of the clicked row
      * @param propertyId column id
      */
-    @SuppressWarnings("boxing")
     void onItemClick(MouseEvents.ClickEvent event, Object itemId, Object propertyId) {
 
         setValue(null);
@@ -387,7 +390,8 @@ public class CmsQueuedTable extends Table {
             //Left click on Project column -> show report
         } else if (event.getButton().equals(MouseButton.LEFT)
             && PROP_PROJECT.equals(propertyId)
-            && (boolean)(CmsQueuedTable.this.getItem(itemId).getItemProperty(PROP_ISRUNNING).getValue())) {
+            && ((Boolean)(CmsQueuedTable.this.getItem(itemId).getItemProperty(
+                PROP_ISRUNNING).getValue())).booleanValue()) {
             m_manager.openSubView(
                 A_CmsWorkplaceApp.addParamToState(
                     CmsPublishQueue.PATH_REPORT,
@@ -398,7 +402,7 @@ public class CmsQueuedTable extends Table {
     }
 
     /**
-     * init table in case of a empty queue.
+     * Init table in case of a empty queue.<p>
      */
     private void iniDummyTable() {
 
@@ -416,13 +420,11 @@ public class CmsQueuedTable extends Table {
 
         Item item = m_container.addItem("dummy");
         item.getItemProperty(PROP_PROJECT).setValue(CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_NOJOB_0));
-
     }
 
     /**
-     * init table in case of having running jobs.
+     * Init table in case of having running jobs.<p>
      */
-    @SuppressWarnings("boxing")
     private void iniTable() {
 
         m_container = new IndexedContainer();
@@ -435,8 +437,8 @@ public class CmsQueuedTable extends Table {
         m_container.addContainerProperty(PROP_USER, String.class, "");
         m_container.addContainerProperty(PROP_RESOURCES, List.class, null);
         m_container.addContainerProperty(PROP_FILESCOUNT, Integer.class, Integer.valueOf(1));
-        m_container.addContainerProperty(PROP_ISDIRECT, Boolean.class, true);
-        m_container.addContainerProperty(PROP_ISRUNNING, Boolean.class, false);
+        m_container.addContainerProperty(PROP_ISDIRECT, Boolean.class, Boolean.TRUE);
+        m_container.addContainerProperty(PROP_ISRUNNING, Boolean.class, Boolean.FALSE);
 
         setContainerDataSource(m_container);
         setItemIconPropertyId(PROP_ICON);
@@ -461,9 +463,8 @@ public class CmsQueuedTable extends Table {
     }
 
     /**
-     * Interates through all jobs in the queue and display them in the table.
+     * Interates through all jobs in the queue and display them in the table.<p>
      */
-    @SuppressWarnings("boxing")
     private void loadJobs() {
 
         setVisibleColumns(PROP_ISDIRECT, PROP_PROJECT, PROP_START, PROP_USER, PROP_RESOURCES, PROP_FILESCOUNT);
@@ -477,18 +478,15 @@ public class CmsQueuedTable extends Table {
                 item.getItemProperty(PROP_RESOURCES).setValue(
                     ((CmsPublishJobRunning)job).getPublishList().getAllResources());
                 item.getItemProperty(PROP_START).setValue(new Date(((CmsPublishJobRunning)job).getStartTime()));
-                item.getItemProperty(PROP_ISRUNNING).setValue(true);
+                item.getItemProperty(PROP_ISRUNNING).setValue(new Boolean(true));
             } else {
                 item.getItemProperty(PROP_RESOURCES).setValue(
                     ((CmsPublishJobEnqueued)job).getPublishList().getAllResources());
-                item.getItemProperty(PROP_ISRUNNING).setValue(false);
+                item.getItemProperty(PROP_ISRUNNING).setValue(new Boolean(false));
             }
             item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
             item.getItemProperty(PROP_FILESCOUNT).setValue(Integer.valueOf(job.getSize()));
-            item.getItemProperty(PROP_ISDIRECT).setValue(job.isDirectPublish());
-
+            item.getItemProperty(PROP_ISDIRECT).setValue(new Boolean(job.isDirectPublish()));
         }
-
     }
-
 }
