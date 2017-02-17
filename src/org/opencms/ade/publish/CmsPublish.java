@@ -48,7 +48,7 @@ import org.opencms.publish.CmsPublishManager;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationPublishValidator;
 import org.opencms.relations.CmsRelationValidatorInfoEntry;
-import org.opencms.report.CmsHtmlReport;
+import org.opencms.report.CmsWorkplaceReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.components.CmsResourceIcon;
@@ -309,9 +309,10 @@ public class CmsPublish {
     public void publishResources(List<CmsResource> resources) throws CmsException {
 
         CmsObject cms = m_cms;
-        I_CmsReport report = new CmsHtmlReport(
+        I_CmsReport report = new CmsWorkplaceReport(
             cms.getRequestContext().getLocale(),
-            cms.getRequestContext().getSiteRoot());
+            cms.getRequestContext().getSiteRoot(),
+            null);
         CmsPublishManager publishManager = OpenCms.getPublishManager();
         CmsPublishList publishList = publishManager.getPublishListAll(m_cms, resources, false, true);
         OpenCms.getPublishManager().publishProject(m_cms, report, publishList);

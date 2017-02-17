@@ -29,7 +29,6 @@ package org.opencms.report;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -154,6 +153,18 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
     public abstract String getReportUpdate();
 
     /**
+     * Gets the report update content using the specified report update formatter.<p>
+     *
+     * @param formatter the report update formatter
+     *
+     * @return the report output
+     */
+    public String getReportUpdate(I_CmsReportUpdateFormatter formatter) {
+
+        return getReport().getReportUpdate(formatter);
+    }
+
+    /**
      * Returns the time this report has been running.<p>
      *
      * @return the time this report has been running
@@ -243,10 +254,7 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      */
     protected void initHtmlReport(Locale locale) {
 
-        boolean isVaadin = A_CmsUI.get() != null;
-        m_report = isVaadin
-        ? new CmsVaadinHtmlReport(locale, m_cms.getRequestContext().getSiteRoot(), getLogChannel())
-        : new CmsHtmlReport(locale, m_cms.getRequestContext().getSiteRoot());
+        m_report = new CmsWorkplaceReport(locale, m_cms.getRequestContext().getSiteRoot(), getLogChannel());
     }
 
     /**
@@ -255,13 +263,13 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      * This method is reserved for older report threads that still use
      * XML templates to generate their output.<p>
      *
+     * <em>This report type will not work correctly with the new workplace, so don't use it anymore.</em>
+     *
      * @param locale the locale for the report output messages
      */
+    @Deprecated
     protected void initOldHtmlReport(Locale locale) {
 
-        boolean isVaadin = A_CmsUI.get() != null;
-        m_report = isVaadin
-        ? new CmsVaadinHtmlReport(locale, m_cms.getRequestContext().getSiteRoot(), true, false, getLogChannel())
-        : new CmsHtmlReport(locale, m_cms.getRequestContext().getSiteRoot(), true, false);
+        m_report = new CmsHtmlReport(locale, m_cms.getRequestContext().getSiteRoot(), true, false);
     }
 }

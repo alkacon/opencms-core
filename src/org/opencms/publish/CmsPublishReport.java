@@ -31,6 +31,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.CmsPrintStreamReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.report.I_CmsReportUpdateFormatter;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -79,7 +80,6 @@ public class CmsPublishReport extends CmsPrintStreamReport {
 
         super(new PrintStream(outputStream), locale, true);
         init(locale, null);
-
         m_outputStream = outputStream;
     }
 
@@ -176,6 +176,18 @@ public class CmsPublishReport extends CmsPrintStreamReport {
             return m_report.getReportUpdate();
         }
         return super.getReportUpdate();
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#getReportUpdate(org.opencms.report.I_CmsReportUpdateFormatter)
+     */
+    @Override
+    public synchronized String getReportUpdate(I_CmsReportUpdateFormatter formatter) {
+
+        if (m_report != null) {
+            return m_report.getReportUpdate(formatter);
+        }
+        return super.getReportUpdate(formatter);
     }
 
     /**

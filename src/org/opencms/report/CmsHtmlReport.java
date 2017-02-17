@@ -45,13 +45,13 @@ import java.util.StringTokenizer;
 public class CmsHtmlReport extends A_CmsReport {
 
     /** Constant for a HTML linebreak with added "real" line break. */
-    protected static final String LINEBREAK = "<br>";
+    public static final String LINEBREAK = "<br>";
 
     /**
      * Constant for a HTML linebreak with added "real" line break-
      * traditional style for report threads that still use XML templates for their output.
      */
-    protected static final String LINEBREAK_TRADITIONAL = "<br>\\n";
+    public static final String LINEBREAK_TRADITIONAL = "<br>\\n";
 
     /** The list of report objects e.g. String, CmsPageLink, Exception ... */
     private List<Object> m_content;

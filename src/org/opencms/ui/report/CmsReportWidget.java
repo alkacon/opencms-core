@@ -28,6 +28,7 @@
 package org.opencms.ui.report;
 
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.report.CmsVaadinHtmlReportUpdateFormatter;
 import org.opencms.ui.shared.components.CmsReportWidgetState;
 import org.opencms.ui.shared.rpc.I_CmsReportClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsReportServerRpc;
@@ -45,6 +46,9 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** The report update formatter. */
+    private CmsVaadinHtmlReportUpdateFormatter m_formatter = new CmsVaadinHtmlReportUpdateFormatter();
 
     /** Handlers to execute when the report finishes while displaying the report widget. */
     private List<Runnable> m_reportFinishedHandlers = Lists.newArrayList();
@@ -106,8 +110,7 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
         String reportUpdate = null;
         if (!m_threadFinished && (m_thread != null)) {
             // if thread is not alive at this point, there may still be report updates
-            reportUpdate = m_thread.getReportUpdate();
-
+            reportUpdate = m_thread.getReportUpdate(m_formatter);
             if (!m_thread.isAlive()) {
                 m_threadFinished = true;
                 for (Runnable handler : m_reportFinishedHandlers) {

@@ -113,6 +113,14 @@ public abstract class A_CmsReport implements I_CmsReport {
     }
 
     /**
+     * @see org.opencms.report.I_CmsReport#getReportUpdate(org.opencms.report.I_CmsReportUpdateFormatter)
+     */
+    public String getReportUpdate(I_CmsReportUpdateFormatter formatter) {
+
+        return getReportUpdate();
+    }
+
+    /**
      * @see org.opencms.report.I_CmsReport#getRuntime()
      */
     public long getRuntime() {

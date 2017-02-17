@@ -50,15 +50,6 @@ public interface I_CmsReport {
     /** Indicates headline formatting. */
     int FORMAT_HEADLINE = 2;
 
-    /** Names of the report format constants. */
-    public static final String[] FORMAT_NAMES = {
-        "FORMAT_DEFAULT",
-        "FORMAT_WARNING",
-        "FORMAT_HEADLINE",
-        "FORMAT_NOTE",
-        "FORMAT_OK",
-        "FORMAT_NOTE"};
-
     /** Indicates note formatting. */
     int FORMAT_NOTE = 3;
 
@@ -128,6 +119,15 @@ public interface I_CmsReport {
      * @return new elements that have been added to the report and not yet processed.
      */
     String getReportUpdate();
+
+    /**
+     * Fetches the report update for this report since the last time this method was called.<p>
+     *
+     * @param formatter the formatter to use for formatting the report output
+     *
+     * @return the output for report elements that have been added to the report and not yet processed
+     */
+    String getReportUpdate(I_CmsReportUpdateFormatter formatter);
 
     /**
      * Returns the time this report has been running.<p>
