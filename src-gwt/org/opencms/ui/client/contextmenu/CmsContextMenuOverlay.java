@@ -7,6 +7,8 @@ import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
@@ -214,7 +216,13 @@ class CmsContextMenuOverlay extends VOverlay {
     public void setPopupPositionAndShow(PositionCallback callback) {
 
         super.setPopupPositionAndShow(callback);
-        normalizeItemWidths();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                normalizeItemWidths();
+            }
+        });
     }
 
     /**
