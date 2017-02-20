@@ -44,6 +44,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -189,22 +190,40 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             locale = CmsLocaleManager.getDefaultLocale();
         }
 
-        String effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(
+        // For title and description, try various fields and use the first which is not empty
+
+        String mainTitleField = CmsSearchFieldConfiguration.getLocaleExtendedName(
             CmsSearchField.FIELD_TITLE_UNSTORED,
             locale.toString()) + "_s";
-        m_title = doc.getFieldValueAsString(effFieldName);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_title)) {
-            m_title = doc.getFieldValueAsString(
-                CmsPropertyDefinition.PROPERTY_TITLE + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT);
+        String localizedTitlePropertyField = CmsSearchFieldConfiguration.getLocaleExtendedName(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            locale.toString()) + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT + "_s";
+        String titlePropertyField = CmsPropertyDefinition.PROPERTY_TITLE
+            + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT
+            + "_s";
+
+        for (String fieldName : Arrays.asList(mainTitleField, localizedTitlePropertyField, titlePropertyField)) {
+            m_title = doc.getFieldValueAsString(fieldName);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_title)) {
+                break;
+            }
         }
 
-        effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(
+        String mainDescField = CmsSearchFieldConfiguration.getLocaleExtendedName(
             CmsSearchField.FIELD_DESCRIPTION,
             locale.toString()) + "_s";
-        m_description = doc.getFieldValueAsString(effFieldName);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_description)) {
-            m_description = doc.getFieldValueAsString(
-                CmsPropertyDefinition.PROPERTY_DESCRIPTION + CmsSearchField.FIELD_DYNAMIC_PROPERTIES);
+        String localizedDescPropertyField = CmsSearchFieldConfiguration.getLocaleExtendedName(
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            locale.toString()) + CmsSearchField.FIELD_DYNAMIC_PROPERTIES + "_s";
+        String descPropertyField = CmsPropertyDefinition.PROPERTY_DESCRIPTION
+            + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+            + "_s";
+
+        for (String fieldName : Arrays.asList(mainDescField, localizedDescPropertyField, descPropertyField)) {
+            m_description = doc.getFieldValueAsString(fieldName);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_description)) {
+                break;
+            }
         }
 
         m_resourceType = doc.getFieldValueAsString(CmsSearchField.FIELD_TYPE);
