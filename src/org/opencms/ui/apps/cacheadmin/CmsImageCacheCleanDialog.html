@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="package-mapping" content="o:org.opencms.ui.components" />
+	</head>
+	<body>
+		<o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout size-full style-name="o-error-dialog">
+  					<v-horizontal-layout height="70px" width="100%">
+						<v-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
+						<v-label _id="m_label" :expand style-name="o-error-message" :middle>%(key.GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0)</v-label>
+					</v-horizontal-layout>
+					<v-form-layout>
+					<o-cms-date-field _id="m_dateField" caption="%(key.GUI_CACHE_IMAGE_CLEAR_TIME_0)" description="%(key.GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0)" />
+		  			</v-form-layout>
+		  		</v-vertical-layout>
+			</content>
+			<buttons>
+  				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+  				<v-button _id="m_cancelButton">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+	</body>
+</html>

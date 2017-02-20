@@ -63,7 +63,67 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_CLEAN_0 = "GUI_CACHE_CLEAN_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_CLEAN_CONFIRM_0 = "GUI_CACHE_CLEAN_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_HELP_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_HELP_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_HELP_0 = "GUI_CACHE_CLEAN_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_FLEX_0 = "GUI_CACHE_FLEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGE_0 = "GUI_CACHE_IMAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGE_CLEAR_TIME_0 = "GUI_CACHE_IMAGE_CLEAR_TIME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0 = "GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_0 = "GUI_CACHE_JAVA_HEAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_FREE_0 = "GUI_CACHE_JAVA_HEAP_FREE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_FREE_HELP_0 = "GUI_CACHE_JAVA_HEAP_FREE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_MAX_0 = "GUI_CACHE_JAVA_HEAP_MAX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_MAX_HELP_0 = "GUI_CACHE_JAVA_HEAP_MAX_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_TOTAL_0 = "GUI_CACHE_JAVA_HEAP_TOTAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_TOTAL_HELP_0 = "GUI_CACHE_JAVA_HEAP_TOTAL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_USED_0 = "GUI_CACHE_JAVA_HEAP_USED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_JAVA_HEAP_USED_HELP_0 = "GUI_CACHE_JAVA_HEAP_USED_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_FLEX_0 = "GUI_CACHE_VIEW_FLEX_0";
@@ -72,13 +132,31 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_VIEW_FLEX_HELP_0 = "GUI_CACHE_VIEW_FLEX_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_VIEW_FLEX_VARIATIONS_1 = "GUI_CACHE_VIEW_FLEX_VARIATIONS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_IMAGE_0 = "GUI_CACHE_VIEW_IMAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_IMAGE_HELP_0 = "GUI_CACHE_VIEW_IMAGE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_VIEW_IMAGE_VARIATIONS_1 = "GUI_CACHE_VIEW_IMAGE_VARIATIONS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTENT_EDITOR_TITLE_2 = "GUI_CONTENT_EDITOR_TITLE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CORECACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_CORECACHE_CLEAN_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_INDEX_DESCRIPTION_1 = "GUI_DEFAULT_INDEX_DESCRIPTION_1";
@@ -120,6 +198,60 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_TITLE_0 = "GUI_EXPLORER_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_CLEAN_MODE_ALL_0 = "GUI_FLEXCACHE_CLEAN_MODE_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_CLEAN_MODE_VARIATIONS_0 = "GUI_FLEXCACHE_CLEAN_MODE_VARIATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0 = "GUI_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_MEMORY_AVGSIZE_HELP_0 = "GUI_FLEXCACHE_LABEL_MEMORY_AVGSIZE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_MEMORY_BLOCK_0 = "GUI_FLEXCACHE_LABEL_MEMORY_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_MEMORY_CURSIZE_0 = "GUI_FLEXCACHE_LABEL_MEMORY_CURSIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_MEMORY_CURSIZE_HELP_0 = "GUI_FLEXCACHE_LABEL_MEMORY_CURSIZE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_MEMORY_MAXSIZE_0 = "GUI_FLEXCACHE_LABEL_MEMORY_MAXSIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_MEMORY_MAXSIZE_HELP_0 = "GUI_FLEXCACHE_LABEL_MEMORY_MAXSIZE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_STATS_BLOCK_0 = "GUI_FLEXCACHE_LABEL_STATS_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_STATS_KEYS_0 = "GUI_FLEXCACHE_LABEL_STATS_KEYS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_STATS_KEYS_HELP_0 = "GUI_FLEXCACHE_LABEL_STATS_KEYS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_0 = "GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0 = "GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FLEXCACHE_LIST_COLS_KEY_0 = "GUI_FLEXCACHE_LIST_COLS_KEY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -127,6 +259,42 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FLEXCACHE_LIST_COLS_RESOURCE_0 = "GUI_FLEXCACHE_LIST_COLS_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGECACHE_LABEL_MEMORY_BLOCK_0 = "GUI_IMAGECACHE_LABEL_MEMORY_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGECACHE_LIST_COLS_LENGTH_0 = "GUI_IMAGECACHE_LIST_COLS_LENGTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGECACHE_LIST_COLS_RESOURCE_0 = "GUI_IMAGECACHE_LIST_COLS_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGECACHE_LIST_COLS_SIZE_0 = "GUI_IMAGECACHE_LIST_COLS_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JSP_REPOSITORY_ADMIN_TOOL_CONF_0 = "GUI_JSP_REPOSITORY_ADMIN_TOOL_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JSP_REPOSITORY_ADMIN_TOOL_GROUP_0 = "GUI_JSP_REPOSITORY_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JSP_REPOSITORY_ADMIN_TOOL_HELP_0 = "GUI_JSP_REPOSITORY_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JSP_REPOSITORY_ADMIN_TOOL_NAME_0 = "GUI_JSP_REPOSITORY_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LAUNCHPAD_HELP_0 = "GUI_LAUNCHPAD_HELP_0";

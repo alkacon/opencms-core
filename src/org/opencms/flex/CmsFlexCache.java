@@ -180,6 +180,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
     }
 
+    /**Constant for distinguish cache action.*/
+    public static final String CACHE_ACTION = "action";
+
     /** Suffix to append to online cache entries. */
     public static final String CACHE_OFFLINESUFFIX = " [offline]";
 
@@ -385,7 +388,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 }
                 Integer it = null;
                 try {
-                    it = (Integer)m.get("action");
+                    it = (Integer)m.get(CACHE_ACTION);
                 } catch (Exception e) {
                     // it will be null
                 }

@@ -526,6 +526,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Gets the flex cache.
+     * @return CmsFlexCache
+     */
+
+    protected CmsFlexCache getFlexCache() {
+
+        return m_flexCache;
+    }
+
+    /**
      * Returns the initialized import/export manager,
      * which contains information about the Cms import/export.<p>
      *

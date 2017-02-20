@@ -149,7 +149,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
             OpenCms.fireCmsEvent(
                 new CmsEvent(
                     I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                    Collections.<String, Object> singletonMap("action", new Integer(action))));
+                    Collections.<String, Object> singletonMap(CmsFlexCache.CACHE_ACTION, new Integer(action))));
         } catch (Exception e) {
             setCommitErrors(Collections.singletonList((Throwable)e));
         }
@@ -359,10 +359,11 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
                 MODE_VARIATIONS,
                 getMode().equals(MODE_VARIATIONS),
                 key(Messages.GUI_FLEXCACHE_CLEAN_MODE_VARIATIONS_0)));
-        ret.add(new CmsSelectWidgetOption(
-            MODE_ALL,
-            getMode().equals(MODE_ALL),
-            key(Messages.GUI_FLEXCACHE_CLEAN_MODE_ALL_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                MODE_ALL,
+                getMode().equals(MODE_ALL),
+                key(Messages.GUI_FLEXCACHE_CLEAN_MODE_ALL_0)));
 
         return ret;
     }

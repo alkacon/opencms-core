@@ -36,6 +36,7 @@ import org.opencms.db.CmsSqlManager;
 import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
@@ -261,6 +262,16 @@ public final class OpenCms {
     public static Set<CmsExportPoint> getExportPoints() {
 
         return OpenCmsCore.getInstance().getExportPoints();
+    }
+
+    /**
+     * Returns the flex cache.<p>
+     * @return the current CmsFlexCache object
+     */
+
+    public static CmsFlexCache getFlexCache() {
+
+        return OpenCmsCore.getInstance().getFlexCache();
     }
 
     /**

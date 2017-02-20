@@ -29,6 +29,7 @@ package org.opencms.workplace.tools.cache;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.ui.apps.cacheadmin.CmsImageCacheHelper;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;

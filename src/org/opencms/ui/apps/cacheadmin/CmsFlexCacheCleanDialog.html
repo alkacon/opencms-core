@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="package-mapping" content="o:org.opencms.ui.components" />
+	</head>
+	<body>
+		<o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout size-full style-name="o-error-dialog">
+  					<v-horizontal-layout height="70px" width="100%">
+						<v-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
+						<v-label _id="m_label" :expand style-name="o-error-message" :middle>%(key.GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0)</v-label>
+					</v-horizontal-layout>
+					<v-horizontal-layout width="100%">
+						<v-vertical-layout width="50%">
+							<v-check-box _id="m_Offline" caption="%(key.GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0)" description="%(key.GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0)" />
+							<v-check-box _id="m_Online" caption="%(key.GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_0)" description="%(key.GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_HELP_0)" />
+						</v-vertical-layout>
+						<v-vertical-layout width="50%">
+							<v-option-group _id="m_mode" caption="%(key.GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_0)" description="%(key.GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_HELP_0)">
+								<option item-id="variationsOnly">%(key.GUI_FLEXCACHE_CLEAN_MODE_VARIATIONS_0)</option>
+								<option item-id="keysAndVariations">%(key.GUI_FLEXCACHE_CLEAN_MODE_ALL_0)</option>
+							</v-option-group>
+						</v-vertical-layout>
+					</v-horizontal-layout>
+		  		</v-vertical-layout>
+			</content>
+			<buttons>
+  				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+  				<v-button _id="m_cancelButton">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+	</body>
+</html>

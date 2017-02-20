@@ -28,6 +28,7 @@
 package org.opencms.workplace.tools.cache;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.ui.apps.cacheadmin.CmsImageCacheHelper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
