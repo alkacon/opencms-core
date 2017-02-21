@@ -666,11 +666,11 @@ public final class CmsJspStandardContextBean {
     /** OpenCms user context. */
     protected CmsObject m_cms;
 
+    /** Lazily initialized map from a category path to all sub-categories of that category. */
+    private Map<String, CmsJspCategoryAccessBean> m_allSubCategories;
+
     /** Lazily initialized map from a category path to the path's category object. */
     private Map<String, CmsCategory> m_categories;
-
-    /** Lazily initialized map from a category path to all sub-categories of that category */
-    private Map<String, CmsJspCategoryAccessBean> m_allSubCategories;
 
     /** The container the currently rendered element is part of. */
     private CmsContainerBean m_container;
@@ -1204,6 +1204,7 @@ public final class CmsJspStandardContextBean {
                             true,
                             m_cms.getRequestContext().getUri());
                         CmsJspCategoryAccessBean result = new CmsJspCategoryAccessBean(
+                            m_cms,
                             categories,
                             (String)categoryPath);
                         return result;
@@ -1239,10 +1240,11 @@ public final class CmsJspStandardContextBean {
                 public Object transform(Object categoryPath) {
 
                     try {
-                        return CmsCategoryService.getInstance().readCategory(
+                        CmsCategoryService catService = CmsCategoryService.getInstance();
+                        return catService.localizeCategory(
                             m_cms,
-                            (String)categoryPath,
-                            getRequestContext().getUri());
+                            catService.readCategory(m_cms, (String)categoryPath, getRequestContext().getUri()),
+                            m_cms.getRequestContext().getLocale());
                     } catch (CmsException e) {
                         LOG.warn(e.getLocalizedMessage(), e);
                         return null;
@@ -1290,7 +1292,10 @@ public final class CmsJspStandardContextBean {
                             result.add(category);
                         }
                     }
-                    return result;
+                    return CmsCategoryService.getInstance().localizeCategories(
+                        m_cms,
+                        result,
+                        m_cms.getRequestContext().getLocale());
                 }
 
             });

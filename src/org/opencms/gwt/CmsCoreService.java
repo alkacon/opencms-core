@@ -184,20 +184,24 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         List<CmsCategoryTreeEntry> result;
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<CmsCategory> categories;
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         // get the categories
         if (null == localCategoryRepositoryPath) {
             categories = catService.readCategories(cms, "", true, sitePath);
+            categories = catService.localizeCategories(cms, categories, wpLocale);
             result = buildCategoryTree(cms, categories);
         } else {
             List<String> repositories = catService.getCategoryRepositories(cms, sitePath);
             repositories.remove(localCategoryRepositoryPath);
             categories = catService.readCategoriesForRepositories(cms, "", true, repositories);
+            categories = catService.localizeCategories(cms, categories, wpLocale);
             result = buildCategoryTree(cms, categories);
             categories = catService.readCategoriesForRepositories(
                 cms,
                 "",
                 true,
                 Collections.singletonList(localCategoryRepositoryPath));
+            categories = catService.localizeCategories(cms, categories, wpLocale);
             List<CmsCategoryTreeEntry> localCategories = buildCategoryTree(cms, categories);
             result.addAll(localCategories);
         }
@@ -832,6 +836,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 fromPath,
                 includeSubCats,
                 repositories);
+            categories = catService.localizeCategories(
+                cms,
+                categories,
+                OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
             result = buildCategoryTree(cms, categories);
         } catch (Throwable e) {
             error(e);

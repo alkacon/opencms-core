@@ -32,6 +32,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsStringUtil;
@@ -179,6 +180,10 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
         Map<String, CmsListItem> ret = new HashMap<String, CmsListItem>();
         Map<String, Boolean> isLeaf = new HashMap<String, Boolean>();
         List<CmsCategory> cats = getCategories();
+        cats = CmsCategoryService.getInstance().localizeCategories(
+            getCms(),
+            cats,
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(getCms()));
         Iterator<CmsCategory> itCategories = cats.iterator();
         while (itCategories.hasNext()) {
             CmsCategory category = itCategories.next();

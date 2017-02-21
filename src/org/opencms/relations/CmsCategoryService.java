@@ -39,15 +39,19 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * Provides several simplified methods for manipulating category relations.<p>
@@ -173,7 +177,8 @@ public class CmsCategoryService {
         String name,
         String title,
         String description,
-        String referencePath) throws CmsException {
+        String referencePath)
+    throws CmsException {
 
         List<CmsProperty> properties = new ArrayList<CmsProperty>();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
@@ -344,6 +349,57 @@ public class CmsCategoryService {
     }
 
     /**
+     * Localizes a list of categories by reading locale-specific properties for their title and description, if possible.<p>
+     *
+     * This method does not modify its input list of categories, or the categories in it.
+     *
+     * @param cms the CMS context to use for reading resources
+     * @param categories the list of categories
+     * @param locale the locale to use
+     *
+     * @return the list of localized categories
+     */
+    public List<CmsCategory> localizeCategories(CmsObject cms, List<CmsCategory> categories, Locale locale) {
+
+        List<CmsCategory> result = Lists.newArrayList();
+        for (CmsCategory category : categories) {
+            result.add(localizeCategory(cms, category, locale));
+        }
+        return result;
+    }
+
+    /**
+     * Localizes a single category by reading its locale-specific properties for title and description, if possible.<p>
+     *
+     * @param cms the CMS context to use for reading resources
+     * @param category the category to localize
+     * @param locale the locale to use
+     *
+     * @return the localized category
+     */
+    public CmsCategory localizeCategory(CmsObject cms, CmsCategory category, Locale locale) {
+
+        try {
+            CmsUUID id = category.getId();
+            CmsResource categoryRes = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+            String title = cms.readPropertyObject(
+                categoryRes,
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false,
+                locale).getValue();
+            String description = cms.readPropertyObject(
+                categoryRes,
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                false,
+                locale).getValue();
+            return new CmsCategory(category, title, description);
+        } catch (Exception e) {
+            LOG.error("Could not read localized category: " + e.getLocalizedMessage(), e);
+            return category;
+        }
+    }
+
+    /**
      * Renames/Moves a category from the old path to the new one.<p>
      *
      * This method will keep all categories in their original repository.<p>
@@ -387,7 +443,8 @@ public class CmsCategoryService {
         CmsObject cms,
         String parentCategoryPath,
         boolean includeSubCats,
-        String referencePath) throws CmsException {
+        String referencePath)
+    throws CmsException {
 
         List<String> repositories = getCategoryRepositories(cms, referencePath);
         return readCategoriesForRepositories(cms, parentCategoryPath, includeSubCats, repositories);
@@ -407,7 +464,8 @@ public class CmsCategoryService {
         CmsObject cms,
         String parentCategoryPath,
         boolean includeSubCats,
-        List<String> repositories) throws CmsException {
+        List<String> repositories)
+    throws CmsException {
 
         String catPath = parentCategoryPath;
         if (catPath == null) {
@@ -477,7 +535,8 @@ public class CmsCategoryService {
         CmsObject cms,
         String categoryPath,
         boolean recursive,
-        String referencePath) throws CmsException {
+        String referencePath)
+    throws CmsException {
 
         return readCategoryResources(cms, categoryPath, recursive, referencePath, CmsResourceFilter.DEFAULT);
     }
@@ -500,7 +559,8 @@ public class CmsCategoryService {
         String categoryPath,
         boolean recursive,
         String referencePath,
-        CmsResourceFilter resFilter) throws CmsException {
+        CmsResourceFilter resFilter)
+    throws CmsException {
 
         Set<CmsResource> resources = new HashSet<CmsResource>();
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.CATEGORY);

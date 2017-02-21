@@ -52,10 +52,15 @@ public class CmsJspCategoryAccessBean {
 
     /** The wrapped list of categories. */
     List<CmsCategory> m_categories;
+
     /** The path of the main category. All categories of {@link #m_categories} are sub-categories of the main category. */
     String m_mainCategoryPath;
+
     /** Map from the path of a main category to wrappers that hold only the sub-categories of that main category. */
     Map<String, CmsJspCategoryAccessBean> m_subCategories;
+
+    /** The CMS context to use. */
+    private CmsObject m_cms;
 
     /**
      * Default constructor.
@@ -64,16 +69,18 @@ public class CmsJspCategoryAccessBean {
      * @param resource the resource for which the categories should be read.
      */
     public CmsJspCategoryAccessBean(CmsObject cms, CmsResource resource) {
-        this(getCategories(cms, resource), "");
+        this(cms, getCategories(cms, resource), "");
     }
 
     /**
      * Internal constructor for creating wrappers with a subset of the categories.
      *
+     * @param cms the CMS context to use
      * @param categories the original categories.
      * @param mainCategoryPath path of the main category for which only sub-categories should be wrapped.
      */
-    CmsJspCategoryAccessBean(List<CmsCategory> categories, String mainCategoryPath) {
+    CmsJspCategoryAccessBean(CmsObject cms, List<CmsCategory> categories, String mainCategoryPath) {
+        m_cms = cms;
         m_mainCategoryPath = mainCategoryPath.isEmpty() || mainCategoryPath.endsWith("/")
         ? mainCategoryPath
         : mainCategoryPath + "/";
@@ -90,7 +97,10 @@ public class CmsJspCategoryAccessBean {
             }
             m_categories = filteredCategories;
         }
-
+        m_categories = CmsCategoryService.getInstance().localizeCategories(
+            cms,
+            m_categories,
+            cms.getRequestContext().getLocale());
     }
 
     /**
@@ -173,7 +183,7 @@ public class CmsJspCategoryAccessBean {
                 @SuppressWarnings("synthetic-access")
                 public Object transform(Object pathPrefix) {
 
-                    return new CmsJspCategoryAccessBean(m_categories, (String)pathPrefix);
+                    return new CmsJspCategoryAccessBean(m_cms, m_categories, (String)pathPrefix);
                 }
 
             });

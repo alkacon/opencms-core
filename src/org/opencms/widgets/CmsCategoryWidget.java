@@ -288,6 +288,10 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                 startingCat,
                 true,
                 referencePath);
+            cats = CmsCategoryService.getInstance().localizeCategories(
+                cms,
+                cats,
+                OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
             int baseLevel;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(startingCat)) {
                 baseLevel = 0;

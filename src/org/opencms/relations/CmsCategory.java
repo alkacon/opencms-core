@@ -75,6 +75,23 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
     private String m_title;
 
     /**
+     * Creates a new category based on another one, keeping everything except title and description, which are passed in separately.<p>
+     *
+     * @param other the other category to copy fields from
+     * @param title the new title
+     * @param description the new description
+     */
+    public CmsCategory(CmsCategory other, String title, String description) {
+        m_basePath = other.m_basePath;
+
+        m_path = other.m_path;
+        m_rootPath = other.m_rootPath;
+        m_structureId = other.m_structureId;
+        m_description = description != null ? description : other.m_description;
+        m_title = title != null ? title : other.m_title;
+    }
+
+    /**
      * Default constructor.<p>
      *
      * @param structureId the structure id of the resource that this category represents
