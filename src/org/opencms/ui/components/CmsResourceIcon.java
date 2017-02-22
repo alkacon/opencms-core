@@ -40,6 +40,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.ui.CmsVaadinUtils;
@@ -50,6 +51,8 @@ import org.opencms.workplace.list.Messages;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -69,6 +72,9 @@ public class CmsResourceIcon extends Label {
         /** sitemap selection mode. */
         sitemapSelect;
     }
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceIcon.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 5031544534869165777L;
@@ -307,14 +313,18 @@ public class CmsResourceIcon extends Label {
                 if (resUtil.getResource().isFolder()) {
                     String detailType = getDefaultFileOrDetailType(resUtil.getCms(), resUtil.getResource());
                     if (detailType != null) {
-                        content += "<img src=\"" + getSmallTypeIconURI(detailType) + "\" class=\"o-icon-overlay\" />";
+                        String smallIconUri = getSmallTypeIconURI(detailType);
+                        if (smallIconUri != null) {
+                            content += "<img src=\"" + smallIconUri + "\" class=\"o-icon-overlay\" />";
+                        }
                     }
                 } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resUtil.getResource())) {
                     String detailType = getDefaultFileOrDetailType(resUtil.getCms(), resUtil.getResource());
                     if (detailType != null) {
-                        content += "<img src=\""
-                            + getSmallTypeIconURI(detailType)
-                            + "\" class=\"o-page-icon-overlay\" />";
+                        String smallIconUri = getSmallTypeIconURI(detailType);
+                        if (smallIconUri != null) {
+                            content += "<img src=\"" + smallIconUri + "\" class=\"o-page-icon-overlay\" />";
+                        }
                     }
 
                 }
@@ -399,8 +409,13 @@ public class CmsResourceIcon extends Label {
      */
     private static String getSmallTypeIconURI(String type) {
 
-        return CmsWorkplace.getResourceUri(
-            CmsWorkplace.RES_PATH_FILETYPES + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type).getIcon());
+        CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
+        if ((typeSettings == null) && LOG.isWarnEnabled()) {
+            LOG.warn("Could not read explorer type settings for " + type);
+        }
+        return typeSettings != null
+        ? CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSettings.getIcon())
+        : null;
     }
 
     /**

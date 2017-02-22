@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 
     /**
-     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#addVfsPrefix(org.opencms.file.CmsObject, java.lang.String, org.opencms.site.CmsSite)
+     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#addVfsPrefix(org.opencms.file.CmsObject, java.lang.String, org.opencms.site.CmsSite, java.lang.String)
      */
     @Override
     protected CmsPair<String, String> addVfsPrefix(
