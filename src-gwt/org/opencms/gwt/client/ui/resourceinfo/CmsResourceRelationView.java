@@ -212,14 +212,6 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
             item.add(new Label(getEmptyMessage()));
             m_list.add(item);
         } else {
-            if ((m_mode == Mode.sources) && !m_statusBean.getOtherSiteRelationSources().isEmpty()) {
-                m_otherSitesList = createList(Messages.get().key(Messages.GUI_RESOURCEINFO_OTHERSITES_LEGEND_0));
-                for (CmsResourceStatusRelationBean relationBean : m_statusBean.getOtherSiteRelationSources()) {
-                    CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
-                    CmsListItem item = new CmsListItem(itemWidget);
-                    m_otherSitesList.add(item);
-                }
-            }
             for (CmsResourceStatusRelationBean relationBean : relationBeans) {
                 CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                 CmsListItem item = new CmsListItem(itemWidget);
@@ -293,6 +285,14 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                     }
                 }
                 m_list.add(item);
+            }
+        }
+        if ((m_mode == Mode.sources) && !m_statusBean.getOtherSiteRelationSources().isEmpty()) {
+            m_otherSitesList = createList(Messages.get().key(Messages.GUI_RESOURCEINFO_OTHERSITES_LEGEND_0));
+            for (CmsResourceStatusRelationBean relationBean : m_statusBean.getOtherSiteRelationSources()) {
+                CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
+                CmsListItem item = new CmsListItem(itemWidget);
+                m_otherSitesList.add(item);
             }
         }
 
