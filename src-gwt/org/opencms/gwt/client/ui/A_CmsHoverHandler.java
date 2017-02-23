@@ -76,7 +76,7 @@ public abstract class A_CmsHoverHandler implements MouseOutHandler, MouseOverHan
                 onHoverIn(event);
             }
         };
-        m_timer.schedule(200);
+        m_timer.schedule(100);
     }
 
     /**

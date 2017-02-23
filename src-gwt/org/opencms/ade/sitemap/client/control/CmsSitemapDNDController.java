@@ -401,6 +401,8 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                             entry.isNew(),
                             CmsReloadMode.none);
                         m_controller.move(entry, m_insertPath + uniqueName + "/", m_insertIndex);
+                    } else {
+                        m_controller.move(entry, m_insertPath + entry.getName() + "/", m_insertIndex);
                     }
                 }
             });
