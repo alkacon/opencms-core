@@ -1,0 +1,28 @@
+########################
+### Available Macros ###
+########################
+# CONFIG_FILENAME         $CONFIG_FILENAME$        Filename of this file beginning with the configured prefix flowwed by the server and the server port if existent e.g. "opencms_www.example.tld" or "ocms_localhost_8080".
+# LOGGING_DIRECTORY       $LOGGING_DIRECTORY$      Directory used for log files.
+#
+# WEBAPP_NAME             $WEBAPP_NAME$            Web application name, e.g. "opencms" or "ROOT" (no leading or trailing "/").
+# DOCUMENT_ROOT           $DOCUMENT_ROOT$          Absolute path to the web application e.g. "/usr/local/tomcat/webapps/ROOT".
+# CONTEXT_PATH            $CONTEXT_PATH$           Web application context path, e.g. "" (empty String) if the web application is the default web application (usually "ROOT"), or "/opencms" if the web application is called "opencms".
+# SERVLET_PATH            $SERVLET_PATH$           Servlet path of OpenCms, e.g. "/opencms".
+# DEFAULT_ENCODING        $DEFAULT_ENCODING$       Default character encoding used by OpenCms.
+#
+# SERVER_URL              $SERVER_URL$             Server URL e.g. "http://www.example.tld".
+# SERVER_NAME_WITH_PORT   $SERVER_NAME_WITH_PORT$  Servers adress without protocol, but with the server port if existent e.g. "www.example.tld:1234".
+# SERVER_PROTOCOL         $SERVER_PROTOCOL$        Server protocol of the site e.g. "http", "https".
+# SERVER_NAME             $SERVER_NAME$            Server hostname of the site e.g. "localhost".
+# SERVER_PORT             $SERVER_PORT$            Server port e.g. "80".
+# SERVER_ALIASES          $SERVER_ALIASES$         Server alises (space separated) e.g. "*.example.tld example.com".
+#
+# SECURE_URL              $SECURE_URL$             Secure server URL if existent "https://www.example.tld".
+# SECURE_SERVER_NAME      $SECURE_SERVER_NAME$     Secure server name e.g "example.tld".
+# SECURE_SRV_WITH_PORT    $SECURE_SRV_WITH_PORT$   Secure server name with port info.
+# SECURE_SERVER_PORT      $SECURE_SERVER_PORT$     Secure server port e.g. "443".
+# SECURE_SERVER_PROTOCOL  $SECURE_SERVER_PROTOCOL$ Secure server protocol "https".
+# ALIAS_DIRECTIVE         $ALIAS_DIRECTIVE$        Apache server alias directive, always: "ServerAlias".
+# SITE_TITLE              $SITE_TITLE$             OpenCms title of this site e.g. "Default site".
+# ERROR_PAGE              $ERROR_PAGE$             OpenCms internal URI used as error page e.g. "/sites/default/error.html".
+########################

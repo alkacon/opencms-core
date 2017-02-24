@@ -108,15 +108,17 @@ public class CmsGlobalForm extends VerticalLayout {
             false,
             A_CmsUI.getCmsObject().getRequestContext().getOuFqn());
 
-        List<CmsSite> siteToRemove = new ArrayList<CmsSite>();
         for (CmsSite site : allSites) {
             if ((site.getSiteRoot() == null) || site.getSiteRoot().equals("") || site.getSiteRoot().equals("/")) {
 
-                siteToRemove.add(site);
+                if (allSites.indexOf(site) == (allSites.size() - 1)) {
+                    allSites.remove(site);
+                    break;
+                } else {
+                    allSites.remove(site);
+                }
             }
         }
-        allSites.removeAll(siteToRemove);
-
         setUpWorkplaceComboBox(allSites);
         setUpDefaultUriComboBox(allSites);
         setUpSharedFolderComboBox();

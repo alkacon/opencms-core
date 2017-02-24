@@ -102,6 +102,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.projects.Messages.get(),
             org.opencms.workplace.tools.scheduler.Messages.get(),
             org.opencms.workplace.tools.searchindex.Messages.get(),
+            org.opencms.workplace.tools.sites.Messages.get(),
             org.opencms.workplace.tools.workplace.Messages.get(),
             org.opencms.workplace.tools.workplace.broadcast.Messages.get(),
             org.opencms.workplace.tools.workplace.rfsfile.Messages.get()};

@@ -1,0 +1,54 @@
+<VirtualHost *:443>
+
+  DocumentRoot "$DOCUMENT_ROOT$"
+  ServerName $SECURE_SERVER_NAME$
+  ServerAdmin webmaster@$SERVER_NAME_WITH_PORT$
+
+  # Allow accessing the document root directory
+  <Directory $DOCUMENT_ROOT$>
+    Options FollowSymlinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  # Logging
+  LogFormat "%h %l %u %t \"%r\" %>s %b" common
+  CustomLog $LOGGING_DIRECTORY$access_secure_$CONFIG_FILENAME$.log common
+  ErrorLog $LOGGING_DIRECTORY$error_secure_$CONFIG_FILENAME$.log
+  RewriteLog $LOGGING_DIRECTORY$rewrite_secure_$CONFIG_FILENAME$.log
+  RewriteLogLevel 1
+
+  # Do not forward the request if the requested URI is located in the resources folder or is static content
+  SetEnvIfNoCase Request_URI ^$CONTEXT_PATH$/resources/.*\$ no-jk
+  SetEnvIfNoCase Request_URI ^/export/.*\$ no-jk
+
+  # Turn rewriting on and define the rules
+  RewriteEngine On
+
+  # Deny access to php files in order to prevent reading resources
+  RewriteCond %{REQUEST_FILENAME} (.+)\.php(.*)
+  RewriteRule (.*) / [F]
+
+  # If the requested URI is NOT located in the resources folder and is not static:
+  # Prepend an $CONTEXT_PATH$$SERVLET_PATH$ to everything that does not already starts with it
+  # and force the result to be handled by the next URI-handler ([PT]) (JkMount in this case)
+  RewriteCond %{REQUEST_URI} !^$CONTEXT_PATH$/resources/.*\$
+  RewriteCond %{REQUEST_URI} !^/export/.*
+  RewriteRule !^$CONTEXT_PATH$$SERVLET_PATH$/(.*)\$ $CONTEXT_PATH$$SERVLET_PATH$%{REQUEST_URI} [PT]
+  
+  # These are the settings for static export. If the requested resource is not already
+  # statically exported create a new request to the opencms404 handler. This has to be
+  # a new request, because the current would not get through mod_jk because of the "no-jk".
+  RewriteCond %{REQUEST_URI} ^/export/.*\$
+  RewriteCond "%{DOCUMENT_ROOT}%{REQUEST_FILENAME}" !-f
+  RewriteCond "%{DOCUMENT_ROOT}%{REQUEST_FILENAME}/index_export.html" !-f
+  RewriteRule .* $CONTEXT_PATH$$SERVLET_PATH$/handle404?exporturi=%{REQUEST_URI}&%{QUERY_STRING} [P]
+
+  # If the request starts with $CONTEXT_PATH$/resources, substitute the $CONTEXT_PATH$ prefix
+  RewriteCond %{REQUEST_URI} ^$CONTEXT_PATH$/resources/.*\$
+  RewriteRule ^$CONTEXT_PATH$/(.*)\$ /\$1
+
+  JkMount /* ocms
+
+</VirtualHost>
