@@ -41,7 +41,6 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Window;
@@ -64,13 +63,7 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog {
     private OptionGroup m_mode;
 
     /**Vaadin component.*/
-    private CheckBox m_Offline;
-
-    /**Vaadin component.*/
     private Button m_okButton;
-
-    /**Vaadin component.*/
-    private CheckBox m_Online;
 
     /**
      * Public constructor.<p>
@@ -111,31 +104,13 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog {
     void submit() {
 
         int action = -1;
-        if (isOnline() && isOffline()) {
-            if (isModeAll()) {
-                action = CmsFlexCache.CLEAR_ALL;
-            } else {
-                action = CmsFlexCache.CLEAR_ENTRIES;
-            }
-        } else if (isOnline()) {
-            if (isModeAll()) {
-                action = CmsFlexCache.CLEAR_ONLINE_ALL;
-            } else {
-                action = CmsFlexCache.CLEAR_ONLINE_ENTRIES;
-            }
-        } else if (isOffline()) {
-            if (isModeAll()) {
-                action = CmsFlexCache.CLEAR_OFFLINE_ALL;
-            } else {
-                action = CmsFlexCache.CLEAR_OFFLINE_ENTRIES;
-            }
+
+        if (isModeAll()) {
+            action = CmsFlexCache.CLEAR_ONLINE_ALL;
         } else {
-            if (isModeAll()) {
-                action = CmsFlexCache.CLEAR_ALL;
-            } else {
-                action = CmsFlexCache.CLEAR_ENTRIES;
-            }
+            action = CmsFlexCache.CLEAR_ONLINE_ENTRIES;
         }
+
         OpenCms.fireCmsEvent(
             new CmsEvent(
                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
@@ -153,26 +128,6 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog {
     }
 
     /**
-     * Reads out CheckBox for Offline caches.<p>
-     *
-     * @return true if offline should be cleared
-     */
-    private boolean isOffline() {
-
-        return m_Offline.getValue().booleanValue();
-    }
-
-    /**
-     * Reads out CheckBox for Online caches.<p>
-     *
-     * @return true if online caches should be cleared
-     */
-    private boolean isOnline() {
-
-        return m_Online.getValue().booleanValue();
-    }
-
-    /**
      * Set defautl values to vaadin components.<p>
      */
     private void setDefaultValues() {
@@ -180,13 +135,6 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog {
         //Setup icon
         m_icon.setContentMode(ContentMode.HTML);
         m_icon.setValue(FontOpenCms.WARNING.getHtml());
-
-        //Setup Checkboxes
-        m_Online.setValue(new Boolean(true));
-        CmsFlexCache cache = OpenCms.getFlexCache();
-        if (!cache.cacheOffline()) {
-            m_Offline.setVisible(false);
-        }
 
         //Set Mode option.
         m_mode.setValue("keysAndVariations");
