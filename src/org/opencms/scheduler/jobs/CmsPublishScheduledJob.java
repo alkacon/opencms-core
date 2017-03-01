@@ -35,7 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.notification.CmsPublishNotification;
-import org.opencms.report.CmsLogReport;
+import org.opencms.report.CmsWorkplaceReport;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.I_CmsScheduledJob;
 
@@ -85,7 +85,10 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
         String linkcheck = parameters.get(PARAM_LINKCHECK);
         String jobName = parameters.get(PARAM_JOBNAME);
         CmsProject project = cms.getRequestContext().getCurrentProject();
-        CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishScheduledJob.class);
+        CmsWorkplaceReport report = new CmsWorkplaceReport(
+            cms.getRequestContext().getLocale(),
+            cms.getRequestContext().getSiteRoot(),
+            CmsPublishScheduledJob.class);
 
         try {
 
