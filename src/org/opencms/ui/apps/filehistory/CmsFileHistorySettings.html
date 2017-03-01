@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-panel _id="m_statusPanel">
+		</v-panel>
+		<v-panel caption="%(key.GUI_FILEHISTORY_SETTINGS_CAPTION_0)">	
+			<v-form-layout  margin spacing style-name="o-formlayout-workplace-main">
+				<v-combo-box _id="m_numberVersions" immediate="true"  width="100%" caption="%(key.GUI_FILEHISTORY_SETTINGS_VERSION_NAME_0)"/>
+				<v-option-group _id="m_mode" caption="%(key.GUI_FILEHISTORY_SETTINGS_MODE_NAME_0)">
+					<option item-id="disabled">%(key.GUI_FILEHISTORY_SETTINGS_MODE_DISABLED_0)</option>
+					<option item-id="withoutversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0)</option>
+					<option item-id="withversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0)</option>
+				</v-option-group>			
+			</v-form-layout>			
+		</v-panel>
+		<v-panel>
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_edit">%(key.GUI_DIALOG_BUTTON_EDIT_0)</v-button>
+				</v-horizontal-layout>
+			</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>

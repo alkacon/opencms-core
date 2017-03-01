@@ -41,6 +41,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
+import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
@@ -582,6 +583,7 @@ public class CmsWorkplaceAppManager {
                 new CmsTraditionalWorkplaceConfiguration(),
                 new CmsProjectManagerConfiguration(),
                 new CmsCacheAdminConfiguration(),
+                new CmsFileHistoryConfiguration(),
                 new CmsSourceSearchAppConfiguration(),
                 new CmsSiteManagerConfiguration(),
                 new CmsPublishQueueConfiguration()));

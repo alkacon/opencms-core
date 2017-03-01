@@ -147,6 +147,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DIALOG_BUTTON_EDIT_0 = "GUI_DIALOG_BUTTON_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_EXECUTE_0 = "GUI_DIALOG_BUTTON_EXECUTE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_OK_0 = "GUI_DIALOG_BUTTON_OK_0";
 
     /** Message constant for key in the resource bundle. */

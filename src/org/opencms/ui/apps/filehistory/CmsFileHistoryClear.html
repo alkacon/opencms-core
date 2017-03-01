@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-panel _id="m_reportPanel" visible="false">
+		</v-panel>
+		<v-panel _id="m_optionPanel" caption="%(key.GUI_FILEHISTORY_DELETE_CAPTION_0)">	
+			<v-form-layout  margin spacing style-name="o-formlayout-workplace-main">
+				<v-label _id="m_settedVersions">Test</v-label>
+				<v-combo-box _id="m_numberVersionsToKeep" immediate="true"  width="100%" caption="%(key.GUI_FILEHISTORY_DELETE_KEEPVERSIONS_0)"/>
+				<v-option-group _id="m_mode" caption="%(key.GUI_FILEHISTORY_DELETE_CLEARDELETEMODE_0)">
+					<option item-id="disabled">%(key.GUI_FILEHISTORY_SETTINGS_MODE_DISABLED_0)</option>
+					<option item-id="withoutversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0)</option>
+					<option item-id="withversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0)</option>
+				</v-option-group>	
+				<o-cms-date-field _id="m_dateField" caption="%(key.GUI_FILEHISTORY_DELETE_CLEARODERTHAN_0)" />		
+			</v-form-layout>			
+		</v-panel>
+		<v-panel>
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_EXECUTE_0)</v-button>
+					<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+				</v-horizontal-layout>
+			</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>

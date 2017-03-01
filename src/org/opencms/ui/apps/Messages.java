@@ -171,9 +171,6 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_DEFAULT_MODEL_TITLE_1 = "GUI_DEFAULT_MODEL_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_BUTTON_EXECUTE_0 = "GUI_DIALOG_BUTTON_EXECUTE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CLOSE_CAPTION_0 = "GUI_EDITOR_CLOSE_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -196,6 +193,84 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_TITLE_0 = "GUI_EXPLORER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_CAPTION_0 = "GUI_FILEHISTORY_DELETE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_CLEARDELETEMODE_0 = "GUI_FILEHISTORY_DELETE_CLEARDELETEMODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_CLEARODERTHAN_0 = "GUI_FILEHISTORY_DELETE_CLEARODERTHAN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_DELETEALL_0 = "GUI_FILEHISTORY_DELETE_DELETEALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_DELETENONE_0 = "GUI_FILEHISTORY_DELETE_DELETENONE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_INVALID_SETTINGS_0 = "GUI_FILEHISTORY_DELETE_INVALID_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_KEEPRESTORE_0 = "GUI_FILEHISTORY_DELETE_KEEPRESTORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_KEEPVERSIONS_0 = "GUI_FILEHISTORY_DELETE_KEEPVERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_THREAD_NAME_1 = "GUI_FILEHISTORY_DELETE_THREAD_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_TOOL_NAME_0 = "GUI_FILEHISTORY_DELETE_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_TOOL_NAME_HELP_0 = "GUI_FILEHISTORY_DELETE_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_VERSION_SELECT_0 = "GUI_FILEHISTORY_DELETE_VERSION_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_DELETE_VERSIONINFO_1 = "GUI_FILEHISTORY_DELETE_VERSIONINFO_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_CAPTION_0 = "GUI_FILEHISTORY_SETTINGS_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_INVALID_0 = "GUI_FILEHISTORY_SETTINGS_INVALID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_MODE_DISABLED_0 = "GUI_FILEHISTORY_SETTINGS_MODE_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0 = "GUI_FILEHISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0 = "GUI_FILEHISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_MODE_NAME_0 = "GUI_FILEHISTORY_SETTINGS_MODE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_TOOL_NAME_0 = "GUI_FILEHISTORY_SETTINGS_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_TOOL_NAME_HELP_0 = "GUI_FILEHISTORY_SETTINGS_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_VERSION_NAME_0 = "GUI_FILEHISTORY_SETTINGS_VERSION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_VERSIONS_DISABLED_0 = "GUI_FILEHISTORY_SETTINGS_VERSIONS_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_SETTINGS_VERSIONS_UNLIMITED_0 = "GUI_FILEHISTORY_SETTINGS_VERSIONS_UNLIMITED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_TOOL_NAME_0 = "GUI_FILEHISTORY_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_TOOL_NAME_HELP_0 = "GUI_FILEHISTORY_TOOL_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0";
@@ -937,6 +1012,12 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATING_CONFIG_FOR_SITE_2 = "RPT_CREATING_CONFIG_FOR_SITE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_FILEHISTORY_BEGIN_0 = "RPT_DELETE_FILEHISTORY_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_FILEHISTORY_END_0 = "RPT_DELETE_FILEHISTORY_END_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETING_FILE_1 = "RPT_DELETING_FILE_1";
