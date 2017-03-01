@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.sitemanager;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.ui.A_CmsUI;
@@ -34,6 +35,8 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.report.CmsReportWidget;
 
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -50,6 +53,9 @@ public class CmsWebServerConfigForm extends VerticalLayout {
 
     /**vaadin serial id. */
     private static final long serialVersionUID = 6872090597762705805L;
+
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsWebServerConfigForm.class.getName());
 
     /**Vaadin component. */
     private Button m_cancel;
@@ -153,6 +159,7 @@ public class CmsWebServerConfigForm extends VerticalLayout {
             webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_LOGGINGDIR),
             webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_SECURETEMPLATE));
         thread.start();
+
         CmsReportWidget report = new CmsReportWidget(thread);
         m_threadReport.addComponent(report);
     }

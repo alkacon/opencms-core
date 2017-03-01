@@ -32,6 +32,7 @@
 package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
@@ -50,6 +51,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
 
 import org.antlr.stringtemplate.StringTemplate;
 
@@ -65,6 +67,9 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /** Constant for the "https" port. */
     private static final int PORT_HTTPS = 443;
+
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsSitesWebserverThread.class.getName());
 
     /** The file path. */
     private String m_filePrefix;
@@ -133,13 +138,19 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
     @Override
     public void run() {
 
+        LOG.info(
+            "INFO thread for run of server script started from User: "
+                + getCms().getRequestContext().getCurrentUser().getName());
         try {
             deleteAllWebserverConfigs(m_filePrefix);
             createAllWebserverConfigs();
             executeScript();
+            LOG.info("INFO server script finished successfully");
         } catch (Exception e) {
+            LOG.error("Exception on run CmsSitesWebserverThread", e);
             getReport().println(e);
         }
+        LOG.info("INFO server script thread closed");
     }
 
     /**
