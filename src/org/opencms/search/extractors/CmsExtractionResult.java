@@ -86,12 +86,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         ? removeNullEntries(multilingualContentItems)
         : new HashMap<Locale, LinkedHashMap<String, String>>(1);
 
-        // ensure that a version for the default locale is present
-        if (null == m_contentItems.get(m_defaultLocale)) {
-            m_contentItems.put(m_defaultLocale, new LinkedHashMap<String, String>());
-        }
-        m_fieldMappings = null != fieldMappings ? fieldMappings : new HashMap<String, String>();
-
         // set the locales
         m_locales = new HashSet<Locale>();
         for (Locale locale : m_contentItems.keySet()) {
@@ -99,6 +93,12 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
                 m_locales.add(locale);
             }
         }
+
+        // ensure that a version for the default locale is present just to prevent null-checks
+        if (null == m_contentItems.get(m_defaultLocale)) {
+            m_contentItems.put(m_defaultLocale, new LinkedHashMap<String, String>());
+        }
+        m_fieldMappings = null != fieldMappings ? fieldMappings : new HashMap<String, String>();
 
     }
 
@@ -270,8 +270,8 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
 
         //prepare copy
         Map<Locale, LinkedHashMap<String, String>> contentItems = new HashMap<Locale, LinkedHashMap<String, String>>(
-            m_contentItems.size());
-        for (Locale locale : m_contentItems.keySet()) {
+            m_locales.size());
+        for (Locale locale : m_locales) {
             LinkedHashMap<String, String> originalLocalValues = m_contentItems.get(locale);
             LinkedHashMap<String, String> localeValues = new LinkedHashMap<String, String>(originalLocalValues);
             contentItems.put(locale, localeValues);
@@ -283,7 +283,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         }
 
         //merge content from the other extraction results
-        for (Locale locale : contentItems.keySet()) {
+        for (Locale locale : m_locales) {
             Map<String, String> localeValues = contentItems.get(locale);
             for (I_CmsExtractionResult result : extractionResults) {
                 if (result.getLocales().contains(locale)) {

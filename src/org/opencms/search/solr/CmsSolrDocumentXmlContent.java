@@ -286,7 +286,6 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         // initialize some variables
         Map<Locale, LinkedHashMap<String, String>> items = new HashMap<Locale, LinkedHashMap<String, String>>();
         Map<String, String> fieldMappings = new HashMap<String, String>();
-        StringBuffer locales = new StringBuffer();
         List<Locale> contentLocales = forceLocale != null
         ? Collections.singletonList(forceLocale)
         : xmlContent.getLocales();
@@ -300,8 +299,6 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             localeItems = new LinkedHashMap<String, String>();
             StringBuffer textContent = new StringBuffer();
             // store the locales of the content as space separated field
-            locales.append(locale.toString());
-            locales.append(' ');
             // loop over the available element paths of the current content locale
             List<String> paths = xmlContent.getNames(locale);
             for (String xpath : paths) {
