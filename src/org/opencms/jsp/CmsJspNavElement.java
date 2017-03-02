@@ -474,6 +474,32 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
      * @param properties the properties of the resource read from the vfs
      * @param navTreeLevel tree level of this resource, for building
      *     navigation trees
+     *
+     * @see CmsJspNavBuilder#getNavigationForResource()
+     */
+    public void init(String resource, Map<String, String> properties, int navTreeLevel) {
+
+        init(resource, properties, navTreeLevel, null);
+    }
+
+    /**
+     * Initialized the member variables of this bean with the values
+     * provided.<p>
+     *
+     * A resource will be in the navigation if at least one of the two properties
+     * <code>I_CmsConstants.PROPERTY_NAVTEXT</code> or
+     * <code>I_CmsConstants.PROPERTY_NAVPOS</code> is set. Otherwise
+     * it will be ignored.<p>
+     *
+     * This bean does provides static methods to create a new instance
+     * from the context of a current CmsObject. Call these static methods
+     * in order to get a properly initialized bean.<p>
+     *
+     * @param resource the name of the resource to extract the navigation
+     *     information from
+     * @param properties the properties of the resource read from the vfs
+     * @param navTreeLevel tree level of this resource, for building
+     *     navigation trees
      * @param locale The locale for which properties should be accessed.
      *
      * @see CmsJspNavBuilder#getNavigationForResource()
