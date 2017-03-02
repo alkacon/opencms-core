@@ -49,8 +49,6 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -212,18 +210,6 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
         initButtons();
         m_copyMode.setNullSelectionAllowed(false);
         setContent(initContent());
-        m_targetSelect.addValueChangeListener(new ValueChangeListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @SuppressWarnings("synthetic-access")
-            public void valueChange(ValueChangeEvent event) {
-
-                TargetInfo info = new TargetInfo(m_context.getCms(), (String)(event.getProperty().getValue()));
-                m_okButton.setEnabled(info.isValid());
-            }
-        });
-
     }
 
     /**
@@ -270,7 +256,8 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
             TargetInfo info = new TargetInfo(m_context.getCms(), m_targetSelect.getValue());
             if (!info.isValid()) {
                 Type type = Type.ERROR_MESSAGE;
-                Notification.show("Invalid target selected", type);
+                String error = CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_INVALID_TARGET_0);
+                Notification.show(error, type);
                 return;
             }
             CmsResource targetFolder = info.getTargetFolder();
