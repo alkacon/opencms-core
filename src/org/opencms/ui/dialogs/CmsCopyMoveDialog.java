@@ -587,6 +587,10 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                     CmsResource folder = m_context.getResources().get(0);
                     m_hasContainerPageDefaultFile = hasContainerPageDefaultFile(folder);
                     if (m_hasContainerPageDefaultFile) {
+                        m_actionCombo.addItem(Action.container_page_automatic);
+                        m_actionCombo.setItemCaption(
+                            Action.container_page_automatic,
+                            CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_AUTOMATIC_0));
                         m_actionCombo.addItem(Action.container_page_copy);
                         m_actionCombo.setItemCaption(
                             Action.container_page_copy,
@@ -734,6 +738,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                     m_defaultActions.add(Action.copy_sibling_mixed);
                     if (m_hasContainerPageDefaultFile) {
                         m_defaultActions.clear();
+                        m_defaultActions.add(Action.container_page_automatic);
                         m_defaultActions.add(Action.container_page_copy);
                         m_defaultActions.add(Action.container_page_reuse);
                     }
