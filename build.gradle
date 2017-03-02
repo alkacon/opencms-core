@@ -1566,5 +1566,4 @@ tasks.withType(Javadoc) {
     	options.addStringOption("Xdoclint:none", "-quiet")
     	options.addBooleanOption("-allow-script-in-comments",true);
     }
-    options.addBooleanOption("-allow-script-in-comments",true);
 }
