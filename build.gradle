@@ -175,16 +175,20 @@ task copyCompileDeps(type: Copy) {
 	into "${buildDir}/deps"
 }
 
-task enhance << {
-    ant.taskdef(
-    name      : 'openjpaenhancer',
-    classpath : sourceSets.modules.compileClasspath.asPath,
-    classname : 'org.apache.openjpa.ant.PCEnhancerTask'
-    )
+task enhance {
+    doLast {
+        ant.taskdef(
+                name: 'openjpaenhancer',
+                classpath: sourceSets.modules.compileClasspath.asPath,
+                classname: 'org.apache.openjpa.ant.PCEnhancerTask'
+        )
 
-    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
-        fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
-        config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
+        ant.openjpaenhancer(classpath: sourceSets.modules.compileClasspath.asPath) {
+            fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence") {
+                exclude(name: '*$*.class')
+            }
+            config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
+        }
     }
 }
 
@@ -836,10 +840,12 @@ tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
     }
 }
 
-task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')||task.name.startsWith('jar_')}) << {
-    println '======================================================'
-    println 'Done building modules'
-    println '======================================================'
+task allModules(dependsOn: tasks.matching { Task task -> task.name.startsWith('dist_') || task.name.startsWith('jar_') }) {
+    doLast {
+        println '======================================================'
+        println 'Done building modules'
+        println '======================================================'
+    }
 }
 
 task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
