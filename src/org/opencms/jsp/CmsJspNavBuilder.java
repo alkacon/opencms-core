@@ -652,6 +652,16 @@ public class CmsJspNavBuilder {
      * Initializes this bean.<p>
      *
      * @param cms the current cms context
+     */
+    public void init(CmsObject cms) {
+
+        init(cms, null);
+    }
+
+    /**
+     * Initializes this bean.<p>
+     *
+     * @param cms the current cms context
      * @param locale the locale for which properties should be read
      */
     public void init(CmsObject cms, Locale locale) {

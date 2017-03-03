@@ -152,6 +152,26 @@ public class CmsJspNavigationBean {
      * @param endLevel the optional end level
      * @param resource the optional resource for the navigation
      * @param param the optional parameter for the navigation
+     */
+    public CmsJspNavigationBean(
+        CmsObject cms,
+        CmsJspTagNavigation.Type type,
+        int startLevel,
+        int endLevel,
+        String resource,
+        String param) {
+        this(cms, type, startLevel, endLevel, resource, param, null);
+    }
+
+    /**
+     * Base constructor.<p>
+     *
+     * @param cms the current users OpenCms context to build the navigation for
+     * @param type the navigation type to generate
+     * @param startLevel the optional start level
+     * @param endLevel the optional end level
+     * @param resource the optional resource for the navigation
+     * @param param the optional parameter for the navigation
      * @param locale the locale, for which Properties should be read.
      */
     public CmsJspNavigationBean(

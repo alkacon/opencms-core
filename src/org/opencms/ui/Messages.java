@@ -96,6 +96,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_COPYPAGE_DIALOG_TITLE_0 = "GUI_COPYPAGE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYPAGE_INVALID_TARGET_0 = "GUI_COPYPAGE_INVALID_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYPAGE_MODE_AUTO_0 = "GUI_COPYPAGE_MODE_AUTO_0";
 
     /** Message constant for key in the resource bundle. */
