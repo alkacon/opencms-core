@@ -40,6 +40,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -186,8 +187,18 @@ public class CmsImageCacheTable extends Table {
         m_menu = new CmsContextMenu();
         m_menu.setAsTableContextMenu(this);
 
-        //Setup container
-        m_container = new IndexedContainer();
+        //Setup container, sortable only for Name because other properties are loaded in background
+        m_container = new IndexedContainer() {
+
+            private static final long serialVersionUID = -8679153149897733835L;
+
+            @Override
+            public Collection<?> getSortableContainerPropertyIds() {
+
+                return Collections.singleton(PROP_NAME);
+            }
+        };
+
         m_container.addContainerProperty(
             PROP_ICON,
             Resource.class,
@@ -195,7 +206,6 @@ public class CmsImageCacheTable extends Table {
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DIMENSIONS, String.class, "");
         m_container.addContainerProperty(PROP_SIZE, String.class, "");
-
         //ini Table
         setContainerDataSource(m_container);
         setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_IMAGECACHE_LIST_COLS_RESOURCE_0));
