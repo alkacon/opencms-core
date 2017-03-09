@@ -207,8 +207,21 @@
 		}
 	}
 
+	
+
+
+	
 	div.v-window {
+	
 		max-height: 95%;
+		
+		&.o-jspwindow {
+	   		background-color: transparent;
+	   		
+	   		.v-window-outerheader{
+				display: none;
+			}
+		}
 		.v-window-header, .v-window-closebox, .v-window-maximizebox, .v-window-restorebox {
 			background-color: transparent;
 			font-weight: bold;
@@ -225,7 +238,7 @@
 				border: none;
 			}
 		}
- 	 
+		
 		.o-dialog > .v-spacing, .o-dialog > .v-expand> .v-spacing {
 			height: $o-layout-window-margin;
 		}
