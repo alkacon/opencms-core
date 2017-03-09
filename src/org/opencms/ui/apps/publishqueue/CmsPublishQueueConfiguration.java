@@ -46,8 +46,8 @@ import com.vaadin.server.Resource;
  */
 public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration {
 
-    /**ID of the app. */
-    public final static String APP_ID = "publish-queue";
+    /** ID of the app. */
+    public static final String APP_ID = "publishqueue";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()

@@ -28,21 +28,19 @@
 package org.opencms.ui.actions;
 
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
 
 /**
  * The publish queue dialog action.<p>
  */
 public class CmsPublishQueueDialogAction extends A_CmsToolbarAction {
 
-    /** The action id. */
-    public static final String ACTION_ID = "publishqueue";
-
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        context.navigateTo("/" + ACTION_ID);
+        context.navigateTo(CmsPublishQueueConfiguration.APP_ID);
     }
 
     /**
@@ -50,7 +48,7 @@ public class CmsPublishQueueDialogAction extends A_CmsToolbarAction {
      */
     public String getId() {
 
-        return ACTION_ID;
+        return CmsPublishQueueConfiguration.APP_ID;
     }
 
     /**
