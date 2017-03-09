@@ -347,6 +347,30 @@
 				}
 			}
 		}
+		.o-app-info{
+			padding: 0;
+		}
+		.v-margin-left{
+			padding-left: $o-layout-window-margin;
+		}
+		.v-margin-right{
+			padding-right: $o-layout-window-margin;
+		}
+		.v-margin-bottom{
+			padding-bottom: $o-layout-window-margin;
+		}
+		.v-margin-top{
+			padding-top: $o-layout-window-margin;
+		}
+		
+		.o-workplace-maxwidth {
+			&.v-margin-left{
+				padding-left: $o-layout-window-margin;
+			}
+			&.v-margin-right{
+				padding-right: $o-layout-window-margin;
+			}
+		}
 	}
   
 	.o-responsive[width-range~="984px-1240px"]{
@@ -789,6 +813,13 @@
 
 	.o-workplace-maxwidth {
 		max-width: 1200px; 
+		
+		&.v-margin-left{
+			padding-left: $toolbar-padding;
+		}
+		&.v-margin-right{
+			padding-right: $toolbar-padding;
+		}
 	}
 		
 	.o-resource-info:hover .o-resinfo-hidden-icon {
