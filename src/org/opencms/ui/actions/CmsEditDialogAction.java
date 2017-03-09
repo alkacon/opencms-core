@@ -41,6 +41,8 @@ import org.opencms.ui.apps.CmsAppView;
 import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.apps.CmsEditorConfiguration;
+import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -74,12 +76,21 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
         if (view instanceof CmsAppView) {
             ((CmsAppView)view).setCacheStatus(CacheStatus.cacheOnce);
         }
-        CmsAppWorkplaceUi.get().showApp(
-            OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
-            CmsEditor.getEditState(
-                context.getResources().get(0).getStructureId(),
-                false,
-                UI.getCurrent().getPage().getLocation().toString()));
+        CmsResource resource = context.getResources().get(0);
+        String editState = CmsEditor.getEditState(
+            resource.getStructureId(),
+            false,
+            UI.getCurrent().getPage().getLocation().toString());
+
+        if (OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals("listconfig")) {
+            CmsAppWorkplaceUi.get().showApp(
+                OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsListManagerConfiguration.APP_ID),
+                editState);
+        } else {
+            CmsAppWorkplaceUi.get().showApp(
+                OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsEditorConfiguration.APP_ID),
+                editState);
+        }
     }
 
     /**

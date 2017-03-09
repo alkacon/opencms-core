@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+</head>
+<body>
+	<v-accordion height="100%" style-name="borderless">
+		<tab caption="Configuration">
+	<v-vertical-layout :center margin spacing>
+		<v-form-layout _id="m_formLayout" margin spacing style-name="o-formlayout-narrow">
+				<v-text-field _id="m_title" width="100%" caption="%(key.GUI_LISTMANAGER_PARAM_TITLE_0)" description="%(key.GUI_LISTMANAGER_PARAM_TITLE_0)" required requiredError="The title should not be empty." />
+				<v-vertical-layout _id="m_types" width="100%" />
+				<v-button _id="m_addType" style-name="o-button-plain">%(key.GUI_LISTMANAGER_ADD_TYPE_0)</v-button>
+				<v-vertical-layout _id="m_folders" width="100%" visible="false"/>
+				<v-button _id="m_addFolder" style-name="o-button-plain" >%(key.GUI_LISTMANAGER_ADD_FOLDER_0)</v-button>
+					
+			</v-form-layout>
+			<v-horizontal-layout :right margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_save">%(key.GUI_LISTMANAGER_SAVE_0)</v-button>
+					<v-button _id="m_saveNew">%(key.GUI_LISTMANAGER_SAVE_AS_NEW_0)</v-button>
+					<v-button _id="m_search">%(key.GUI_LISTMANAGER_SEARCH_0)</v-button>
+				</v-horizontal-layout>
+	</v-vertical-layout>
+	</tab>
+	<tab caption="Facets"><v-vertical-layout _id="m_facetsLayout" :center margin spacing /></tab>
+	</v-accordion>
+</body>
+</html>

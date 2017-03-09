@@ -269,8 +269,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             Integer count = parseOptionalIntValue(didYouMean, JSON_KEY_DIDYOUMEAN_COUNT);
             return new CmsSearchConfigurationDidYouMean(param, collate, count);
 
-        } catch (@SuppressWarnings("unused") final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0));
+        } catch (JSONException e) {
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0), e);
             return null;
         }
 
@@ -331,8 +331,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 formatter,
                 fragmenter,
                 useFastVectorHighlighting);
-        } catch (@SuppressWarnings("unused") final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0));
+        } catch (JSONException e) {
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0), e);
             return null;
         }
     }
@@ -378,7 +378,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                     e);
                 return null;
             }
-        } catch (@SuppressWarnings("unused") final JSONException e) {
+        } catch (JSONException e) {
             // nothing to do, configuration is optional
             return null;
         }
@@ -445,7 +445,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             I_CmsSearchConfigurationFacet.SortOrder order;
             try {
                 order = I_CmsSearchConfigurationFacet.SortOrder.valueOf(sorder);
-            } catch (@SuppressWarnings("unused") final Exception e) {
+            } catch (Exception e) {
                 order = null;
             }
             final String filterQueryModifier = parseOptionalStringValue(

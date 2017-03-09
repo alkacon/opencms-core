@@ -330,6 +330,25 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/bundledescriptor.xsd
 				</param>
 			</type>			
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="listconfig" id="321">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>				
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/list_config.xsd
+				</param>
+			</type>	
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap" icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
@@ -600,6 +619,18 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					uri="newresource_xmlcontent.jsp?newresourcetype=bundledescriptor"
 					order="29" autosetnavigation="false" autosettitle="false"
 					info="desc.bundledescriptor" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="listconfig" key="fileicon.listconfig"
+				icon="localization_descriptor.png" bigicon="localization_descriptor_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=listconfig"
+					order="29" autosetnavigation="false" autosettitle="false"
+					info="desc.listconfig" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER"
 						permissions="+r+v+w+c" />

@@ -33,7 +33,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Message bundle class.<p>
  */
-public class Messages extends A_CmsMessageBundle {
+public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
     public static final String ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2 = "ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2";
@@ -376,6 +376,129 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LAUNCHPAD_TITLE_0 = "GUI_LAUNCHPAD_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_ADD_FOLDER_0 = "GUI_LISTMANAGER_ADD_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_ADD_TYPE_0 = "GUI_LISTMANAGER_ADD_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_DESCRIPTION_0 = "GUI_LISTMANAGER_DESCRIPTION_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_LISTMANAGER_FOLDER_0 = "GUI_LISTMANAGER_FOLDER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_LISTMANAGER_FOLDER_HELP_0 = "GUI_LISTMANAGER_FOLDER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_OVERVIEW_0 = "GUI_LISTMANAGER_OVERVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_CATEGORY_0 = "GUI_LISTMANAGER_PARAM_CATEGORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_0 = "GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_HELP_0 = "GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_CATEGORY_HELP_0 = "GUI_LISTMANAGER_PARAM_CATEGORY_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_DISPLAY_TYPE_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_DISPLAY_TYPE_HELP_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_TYPE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_FILTER_QUERY_0 = "GUI_LISTMANAGER_PARAM_FILTER_QUERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_FILTER_QUERY_HELP_0 = "GUI_LISTMANAGER_PARAM_FILTER_QUERY_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_FULL_CATEGORY_PATHS_0 = "GUI_LISTMANAGER_PARAM_FULL_CATEGORY_PATHS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_FULL_CATEGORY_PATHS_HELP_0 = "GUI_LISTMANAGER_PARAM_FULL_CATEGORY_PATHS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_LEAFS_ONLY_0 = "GUI_LISTMANAGER_PARAM_LEAFS_ONLY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_LEAFS_ONLY_HELP_0 = "GUI_LISTMANAGER_PARAM_LEAFS_ONLY_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_PREOPEN_ARCHIVE_0 = "GUI_LISTMANAGER_PARAM_PREOPEN_ARCHIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_PREOPEN_ARCHIVE_HELP_0 = "GUI_LISTMANAGER_PARAM_PREOPEN_ARCHIVE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_PREOPEN_CATEGORIES_0 = "GUI_LISTMANAGER_PARAM_PREOPEN_CATEGORIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_PREOPEN_CATEGORIES_HELP_0 = "GUI_LISTMANAGER_PARAM_PREOPEN_CATEGORIES_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_SEARCH_FOLDER_0 = "GUI_LISTMANAGER_PARAM_SEARCH_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_SEARCH_FOLDER_HELP_0 = "GUI_LISTMANAGER_PARAM_SEARCH_FOLDER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_SHOW_DATE_0 = "GUI_LISTMANAGER_PARAM_SHOW_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_SHOW_DATE_HELP_0 = "GUI_LISTMANAGER_PARAM_SHOW_DATE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_SHOW_EXPIRED_0 = "GUI_LISTMANAGER_PARAM_SHOW_EXPIRED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_SHOW_EXPIRED_HELP_0 = "GUI_LISTMANAGER_PARAM_SHOW_EXPIRED_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_SORT_ORDER_0 = "GUI_LISTMANAGER_PARAM_SORT_ORDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_SORT_ORDER_HELP_0 = "GUI_LISTMANAGER_PARAM_SORT_ORDER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_TITLE_0 = "GUI_LISTMANAGER_PARAM_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_PARAM_TITLE_HELP_0 = "GUI_LISTMANAGER_PARAM_TITLE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_REMOVE_TYPE_0 = "GUI_LISTMANAGER_REMOVE_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SAVE_0 = "GUI_LISTMANAGER_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SAVE_AS_NEW_0 = "GUI_LISTMANAGER_SAVE_AS_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SEARCH_0 = "GUI_LISTMANAGER_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_TITLE_0 = "GUI_LISTMANAGER_TITLE_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_LISTMANAGER_TYPE_0 = "GUI_LISTMANAGER_TYPE_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_LISTMANAGER_TYPE_HELP_0 = "GUI_LISTMANAGER_TYPE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MENU_TITLE_0 = "GUI_MENU_TITLE_0";

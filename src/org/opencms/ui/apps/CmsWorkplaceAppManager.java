@@ -42,6 +42,7 @@ import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
+import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
@@ -216,7 +217,9 @@ public class CmsWorkplaceAppManager {
     /**
      * Constructor for testing only.<p>
      */
-    protected CmsWorkplaceAppManager() {}
+    protected CmsWorkplaceAppManager() {
+        // nothing to do
+    }
 
     /**
      * Returns the app configuration with the given id.<p>
@@ -585,6 +588,7 @@ public class CmsWorkplaceAppManager {
                 new CmsCacheAdminConfiguration(),
                 new CmsFileHistoryConfiguration(),
                 new CmsSourceSearchAppConfiguration(),
+                new CmsListManagerConfiguration(),
                 new CmsSiteManagerConfiguration(),
                 new CmsPublishQueueConfiguration()));
 

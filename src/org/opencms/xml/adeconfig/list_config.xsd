@@ -1,0 +1,41 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:element name="ListConfigs" type="OpenCmsListConfigs" />
+    
+    <xsd:complexType name="OpenCmsListConfigs">
+        <xsd:sequence>
+            <xsd:element name="ListConfig" type="OpenCmsListConfig" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsListConfig">
+        <xsd:sequence>    
+        <xsd:element name="Title" type="OpenCmsString" />
+        <xsd:element name="TypesToCollect" type="OpenCmsDisplayFormatter" minOccurs="1" maxOccurs="unbounded"/>
+      	<xsd:element name="SearchFolder" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="unbounded" />
+		<xsd:element name="Category" type="OpenCmsCategory" />
+		<xsd:element name="SortOrder" type="OpenCmsString" />
+		<xsd:element name="FilterQueries" type="OpenCmsString" minOccurs="0" />
+		<xsd:element name="ShowDate" type="OpenCmsBoolean" minOccurs="0" />
+		<xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
+		<xsd:element name="DisplayOptions" type="OpenCmsString" minOccurs="0" />
+		<xsd:element name="CategoryFilters" type="OpenCmsString" minOccurs="0" />
+		<xsd:element name="CategoryFullPath" type="OpenCmsBoolean" minOccurs="0" />
+		<xsd:element name="CategoryOnlyLeafs" type="OpenCmsBoolean" minOccurs="0" />
+		<xsd:element name="PreopenCategories" type="OpenCmsBoolean" minOccurs="0" />
+		<xsd:element name="PreopenArchive" type="OpenCmsBoolean" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+      <xsd:annotation>
+        <xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" useDefault="true" />
+			</mappings>
+			<layouts>
+				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
+			</layouts>
+        </xsd:appinfo>
+    </xsd:annotation>
+</xsd:schema>

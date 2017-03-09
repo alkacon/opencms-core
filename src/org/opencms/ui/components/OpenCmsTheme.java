@@ -157,19 +157,22 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String LOCK_SHARED = "o-lock-shared";
+
     /** CSS style name. */
     public static final String LOCK_USER = "o-lock-user";
-
     /** CSS style name. */
     public static final String MAIN = "o-main";
+
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
-
     /** CSS style name. */
     public static final String NO_TRANSLATION_ICON = "o-notranslation";
 
     /** Path to the OpenCms logo theme resource. */
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
+
+    /** CSS style name. */
+    public static final String PADDING_HORIZONTAL = "o-padding-horizontal";
 
     /** CSS style name. */
     public static final String POINTER = "o-pointer";

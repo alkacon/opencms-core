@@ -171,9 +171,5 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
         for (I_CmsSearchConfigurationFacet facetConfig : facetConfigs) {
             facetConfig.propagateAllFacetNames(facetNames);
         }
-        for (I_CmsSearchConfigurationFacet facetConfig : m_rangeFacets.values()) {
-            facetConfig.propagateAllFacetNames(facetNames);
-        }
-
     }
 }

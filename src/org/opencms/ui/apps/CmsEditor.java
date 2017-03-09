@@ -57,29 +57,26 @@ import com.vaadin.server.Page;
 public class CmsEditor
 implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions {
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 7503052469189004387L;
-
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditor.class);
-
-    /** The resource id state prefix.  */
-    public static final String RESOURCE_ID_PREFIX = "resourceId:";
-
-    /** The resource id state prefix.  */
-    public static final String RESOURCE_PATH_PREFIX = "resourcePath:";
+    /** The back link prefix. */
+    public static final String BACK_LINK_PREFIX = "backLink";
 
     /** The back link prefix. */
-    public static final String BACK_LINK_PREFIX = "backLink:";
+    public static final String PLAIN_TEXT_PREFIX = "plainText";
 
-    /** The back link prefix. */
-    public static final String PLAIN_TEXT_PREFIX = "plainText:";
+    /** The resource id state prefix.  */
+    public static final String RESOURCE_ID_PREFIX = "resourceId";
+
+    /** The resource id state prefix.  */
+    public static final String RESOURCE_PATH_PREFIX = "resourcePath";
 
     /** The state separator. */
     public static final String STATE_SEPARATOR = ";;";
 
-    /** The UUID length. */
-    private static final int UUID_LENGTH = CmsUUID.getNullUUID().toString().length();
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditor.class);
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 7503052469189004387L;
 
     /** The UI context. */
     private I_CmsAppUIContext m_context;
@@ -103,14 +100,10 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         } catch (UnsupportedEncodingException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        String state = CmsEditor.RESOURCE_ID_PREFIX
-            + resourceId.toString()
-            + CmsEditor.STATE_SEPARATOR
-            + CmsEditor.PLAIN_TEXT_PREFIX
-            + plainText
-            + CmsEditor.STATE_SEPARATOR
-            + CmsEditor.BACK_LINK_PREFIX
-            + backLink;
+        String state = "";
+        state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.RESOURCE_ID_PREFIX, resourceId.toString());
+        state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.PLAIN_TEXT_PREFIX, String.valueOf(plainText));
+        state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.BACK_LINK_PREFIX, backLink);
         return state;
     }
 
@@ -242,17 +235,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      */
     private String getBackLinkFromState(String state) {
 
-        String result = null;
-        int index = state.indexOf(BACK_LINK_PREFIX);
-        if (index >= 0) {
-            result = state.substring(index + BACK_LINK_PREFIX.length());
-            index = result.indexOf(STATE_SEPARATOR);
-            if (index > 0) {
-                result = result.substring(0, index);
-            }
-
-        }
-        return result;
+        return A_CmsWorkplaceApp.getParamFromState(state, BACK_LINK_PREFIX);
     }
 
     /**
@@ -265,15 +248,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     private CmsUUID getResourceIdFromState(String state) {
 
         CmsUUID result = null;
-        int index = state.indexOf(RESOURCE_ID_PREFIX);
-        if (index >= 0) {
-            String id = state.substring(
-                index + RESOURCE_ID_PREFIX.length(),
-                index + RESOURCE_ID_PREFIX.length() + UUID_LENGTH);
-            if (CmsUUID.isValidUUID(id)) {
-                result = new CmsUUID(id);
-            }
+        String id = A_CmsWorkplaceApp.getParamFromState(state, RESOURCE_ID_PREFIX);
+        if (CmsUUID.isValidUUID(id)) {
+            result = new CmsUUID(id);
         }
+
         return result;
     }
 
@@ -286,17 +265,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      */
     private String getResourcePathFromState(String state) {
 
-        String result = null;
-        int index = state.indexOf(RESOURCE_PATH_PREFIX);
-        if (index >= 0) {
-            result = state.substring(index + RESOURCE_PATH_PREFIX.length());
-            index = result.indexOf(STATE_SEPARATOR);
-            if (index > 0) {
-                result = result.substring(0, index);
-            }
-
-        }
-        return result;
+        return A_CmsWorkplaceApp.getParamFromState(state, RESOURCE_PATH_PREFIX);
     }
 
     /**
@@ -308,7 +277,8 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      */
     private boolean isPlainText(String state) {
 
-        return state.indexOf(PLAIN_TEXT_PREFIX + Boolean.TRUE.toString()) >= 0;
+        String val = A_CmsWorkplaceApp.getParamFromState(state, PLAIN_TEXT_PREFIX);
+        return Boolean.parseBoolean(val);
     }
 
 }

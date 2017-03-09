@@ -2633,6 +2633,82 @@
             <type>java.lang.Integer</type>
         </attribute>
     </tag>
+    
+    <tag>
+          <description><![CDATA[
+            <p>This tag provides support to generate search forms and result lists for a server-side handled Solr search.
+            It takes an (XML or JSON) configuration file or a JSON configuration String and essentially exposes an object with the search results
+            and also the necessary information to suitably build up your search form.
+            It supports facets and highlighting.</p>
+            <p>If you do not specify a search index explicitly, the tag uses "Solr Offline" and "Solr Online",
+            depending on the current project.</p>
+            <p>To get detailed information on the configuraiton options,
+                just have a look at an XML content of type <code>jsp-search-form</code> or look up the JavaDoc of the JSON configuration parser
+                <code>org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser</code>.
+           ]]></description>
+        <name>simplesearch</name>
+        <tag-class>org.opencms.jsp.CmsJspTagSimpleSearch</tag-class>
+        <body-content>JSP</body-content>
+        <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>org.opencms.jsp.search.result.I_CmsSearchResultWrapper</variable-class>
+            <declare>true</declare>
+            <scope>NESTED</scope>
+        </variable>
+        <attribute>
+              <description><![CDATA[The name of the variable that exposes an object of type <code>org.opencms.jsp.search.result.I_CmsSearchResultWrapper</code>,
+              which gives you access to the search results and to a search form controller.
+               ]]></description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>org.opencms.jsp.search.result.I_CmsSearchResultWrapper</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                VFS-URI of the search form configuration file of type <code>listconfig</code>.
+            ]]></description>
+            <name>configFile</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Override settings in the configuration file by using a JSON config string.
+            ]]></description>
+            <name>configString</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>The tag allows for detection of changes on resources collected by the
+              search tag  (editing, creation, deletion). If <code>addContentInfo</code> is set to true, these changes are taken into account when publishing
+              changes for the current web page.</p>
+              <p>This feature makes only sense if you use the tag to display (editable) lists of contents. By default,
+              at most (the first) 200 list items are checked for changes. The default can be altered using the attribute
+              <code>contentInfoMaxItems</code></p>
+              <em>Default: <code>false</code></em>.
+              <p><em>Hint:</em>The attribute is ignored if <code>contentInfoMaxItems</code> is specified.</p>
+            ]]></description>
+            <name>addContentInfo</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Enables detection of changed resources as described for <code>addContentInfo</code>. Additionally, sets
+                the maximal number of investigated resources to the provided value.
+            ]]></description>
+            <name>contentInfoMaxItems</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Integer</type>
+        </attribute>
+    </tag>
 
     <tag>
         <description><![CDATA[

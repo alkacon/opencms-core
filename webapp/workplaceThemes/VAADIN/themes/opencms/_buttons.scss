@@ -16,6 +16,9 @@
   		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $green);
   }
 
+  .v-button.bold{
+  	font-weight: bold;
+  }
   
   .v-button.o-button-plain {
   		min-width: 100px;

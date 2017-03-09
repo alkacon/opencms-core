@@ -80,7 +80,7 @@ public class CmsBrowserFrame extends BrowserFrame {
     }
 
     /**
-     * Returns the iFrame name attribute
+     * Returns the iFrame name attribute.<p>
      *
      * @param name the iFrame name attribute
      */
@@ -95,7 +95,6 @@ public class CmsBrowserFrame extends BrowserFrame {
     @Override
     protected CmsBrowserFrameState getState() {
 
-        // TODO Auto-generated method stub
         return (CmsBrowserFrameState)super.getState();
     }
 
@@ -105,7 +104,6 @@ public class CmsBrowserFrame extends BrowserFrame {
     @Override
     protected CmsBrowserFrameState getState(boolean markAsDirty) {
 
-        // TODO Auto-generated method stub
         return (CmsBrowserFrameState)super.getState(markAsDirty);
     }
 }

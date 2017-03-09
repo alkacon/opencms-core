@@ -556,6 +556,19 @@ public class CmsResourceTable extends CustomComponent {
      */
     public void fillTable(CmsObject cms, List<CmsResource> resources, boolean clearFilter) {
 
+        fillTable(cms, resources, clearFilter, true);
+    }
+
+    /**
+     * Fills the resource table.<p>
+     *
+     * @param cms the current CMS context
+     * @param resources the resources which should be displayed in the table
+     * @param clearFilter <code>true</code> to clear the search filter
+     * @param sort <code>true</code> to sort the table entries
+     */
+    public void fillTable(CmsObject cms, List<CmsResource> resources, boolean clearFilter, boolean sort) {
+
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         m_container.removeAllItems();
         if (clearFilter) {
@@ -564,7 +577,9 @@ public class CmsResourceTable extends CustomComponent {
         for (CmsResource resource : resources) {
             fillItem(cms, resource, wpLocale);
         }
-        m_fileTable.sort();
+        if (sort) {
+            m_fileTable.sort();
+        }
         clearSelection();
     }
 
