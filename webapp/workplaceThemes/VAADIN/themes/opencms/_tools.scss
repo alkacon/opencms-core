@@ -13,7 +13,8 @@
 			overflow: hidden;
 			border-radius: $v-border-radius;
 		}
-		a, span {
+		
+		* {
 			text-decoration: none;
 			outline: none;
 			display: block;
@@ -21,11 +22,21 @@
 			font-size: $v-font-size;
 			font-weight: 600;
 			line-height: $breadcrumb-height;
+			white-space: nowrap;
+		}
+		
+		> div > a, > div > span {
+			
 			padding: 0 10px 0 26px;
 			position: relative;
 			background: $breadcrumb-background;
 			color: $breadcrumb-color;
 			transition: all 0.5s;
+			
+			span {
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
 			
 			&:first-child {
 				padding-left: 13px;

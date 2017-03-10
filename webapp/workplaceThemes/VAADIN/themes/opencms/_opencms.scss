@@ -330,6 +330,31 @@
 				}
 			}
 		}
+		.o-app-info{
+			padding: 0;
+			height: 42px;
+		}
+		.v-margin-left{
+			padding-left: $o-layout-window-margin;
+		}
+		.v-margin-right{
+			padding-right: $o-layout-window-margin;
+		}
+		.v-margin-bottom{
+			padding-bottom: $o-layout-window-margin;
+		}
+		.v-margin-top{
+			padding-top: $o-layout-window-margin;
+		}
+		
+		.o-workplace-maxwidth {
+			&.v-margin-left{
+				padding-left: $o-layout-window-margin;
+			}
+			&.v-margin-right{
+				padding-right: $o-layout-window-margin;
+			}
+		}
 	}
   
 	.o-responsive[width-range~="984px-1240px"]{
@@ -407,7 +432,7 @@
 	.o-app-info{
 		display: block;
 		width: 100%;
-		height: 45px;
+		height: 48px;
 		padding: 0 12px;
 		border-bottom: valo-border($border: $v-border, $color: $v-app-background-color, $strength: 1);
 	}

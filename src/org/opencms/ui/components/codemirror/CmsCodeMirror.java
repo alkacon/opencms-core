@@ -139,10 +139,10 @@ implements Property<String>, Property.ValueChangeNotifier {
         public String[] m_cssURIs;
 
         /** The search and replace enabled flag. */
-        public boolean m_enableSearchReplace = false;
+        public boolean m_enableSearchReplace;
 
         /** The undo redo enabled flag. */
-        public boolean m_enableUndoRedo = false;
+        public boolean m_enableUndoRedo;
 
         /** The font size. */
         public String m_fontSize = "14px";
@@ -312,16 +312,16 @@ implements Property<String>, Property.ValueChangeNotifier {
     private static final Method BLUR_METHOD;
 
     /** The required CSS stylesheet URIs. */
-    private static String[] CSS_URIS = null;
+    private static String[] CSS_URIS;
 
     /** The HTML id prefix. */
     private static final String HTML_ID_PREFIX = "cm-addon-";
 
     /** The required JavaScript resource URIs. */
-    private static String[] JAVASCRIPT_URIS = null;
+    private static String[] JAVASCRIPT_URIS;
 
     /** The code mirror component count, used as HTML ids. */
-    private static long m_componentCount = 0;
+    private static long m_componentCount;
 
     /** The serial version id. */
     private static final long serialVersionUID = -4921119175861329688L;
@@ -544,7 +544,7 @@ implements Property<String>, Property.ValueChangeNotifier {
     }
 
     /**
-     * Registers the given buttons as undo redo buttons
+     * Registers the given buttons as undo redo buttons.<p>
      *
      * @param undo the undo button
      * @param redo the redo button
