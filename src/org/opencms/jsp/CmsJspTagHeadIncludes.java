@@ -427,9 +427,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 "\n<link rel=\"stylesheet\" href=\""
                     + CmsJspTagLink.linkTagAction(cssUri.trim(), req)
                     + generateReqParams()
-                    + "\" type=\"text/css\">");
+                    + "\" type=\"text/css\" ");
             if (shouldCloseTags()) {
-                pageContext.getOut().print("</link>");
+                pageContext.getOut().print("/>");
+            } else {
+                pageContext.getOut().print(">");
             }
         }
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
