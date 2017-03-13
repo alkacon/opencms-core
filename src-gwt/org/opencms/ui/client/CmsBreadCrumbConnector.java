@@ -198,9 +198,13 @@ public class CmsBreadCrumbConnector extends AbstractComponentConnector implement
     private void appendBreadCrumbEntry(StringBuffer buffer, String target, String label) {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(target)) {
-            buffer.append("<a href=\"#!").append(target).append("\"><span>").append(label).append("</span></a>");
+            buffer.append("<a href=\"#!").append(target).append(
+                "\" title=\"" + CmsDomUtil.escapeXml(label) + "\"><span>").append(label).append("</span></a>");
         } else {
-            buffer.append("<span class=\"o-tools-breadcrumb-active\"><span>").append(label).append("</span></span>");
+            buffer.append(
+                "<span class=\"o-tools-breadcrumb-active\" title=\""
+                    + CmsDomUtil.escapeXml(label)
+                    + "\"><span>").append(label).append("</span></span>");
         }
     }
 
