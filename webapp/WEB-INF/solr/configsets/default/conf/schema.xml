@@ -282,6 +282,7 @@
    <dynamicField name="*_dprop"      type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
    <dynamicField name="*_s"          type="string"       indexed="true"  stored="true"/>
+   <dynamicField name="*_mvs"        type="string"       indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_l"          type="long"         indexed="true"  stored="true"/>
    <dynamicField name="*_t"          type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_txt"        type="text_general" indexed="true"  stored="true" multiValued="true"/>
