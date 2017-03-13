@@ -31,17 +31,20 @@ function inArray(key, arr)
 
 	tinymce = parent.tinymce;
 	editor = tinymce.activeEditor;
-	var i, userSettings = editor.settings.codemirror ? editor.settings.codemirror : null;
+	var i, userSettings = editor.settings.codemirror ? editor.settings.codemirror : {};
 	CMsettings = {
-		path: userSettings.path || 'CodeMirror',
+		path: userSettings.path || 'codemirror-4.8',
 		indentOnInit: userSettings.indentOnInit || false,
 		config: {// Default config
 			mode: 'htmlmixed',
+			theme: 'default',
 			lineNumbers: true,
 			lineWrapping: true,
-			indentUnit: 1,
-			tabSize: 1,
+			indentUnit: 2,
+			tabSize: 2,
+			indentWithTabs: true,
 			matchBrackets: true,
+            saveCursorPosition: true,
 			styleActiveLine: true
 		},
 		jsFiles: [// Default JS files
@@ -62,11 +65,16 @@ function inArray(key, arr)
 		]
 	};
 
+	if (userSettings.fullscreen) {
+		CMsettings.jsFiles.push('addon/display/fullscreen.js');
+		CMsettings.cssFiles.push('addon/display/fullscreen.css');
+	}
+
 	// Merge config
 	for (i in userSettings.config) {
 		CMsettings.config[i] = userSettings.config[i];
 	}
-	
+
 	// Merge jsFiles
 	for (i in userSettings.jsFiles) {
 		if (!inArray(userSettings.jsFiles[i], CMsettings.jsFiles)) {
@@ -96,6 +104,13 @@ function inArray(key, arr)
 		document.write('<scr'+'ipt type="text/javascript" src="' + CMsettings.path + CMsettings.jsFiles[i] + '"></scr'+'ipt>');
 	}
 
+	// Borrowed from codemirror.js themeChanged function. Sets the theme's class names to the html element.
+	// Without this, the background color outside of the codemirror wrapper element remains white.
+    // [TMP] commented temporary, cause JS error: Uncaught TypeError: Cannot read property 'replace' of undefined
+    if(CMsettings.config.theme) {
+    	document.documentElement.className += CMsettings.config.theme.replace(/(^|\s)\s*/g, " cm-s-");
+    }
+
 	window.onload = start;
 }());
 
@@ -113,22 +128,25 @@ function start()
 		div = parent.document.createElement('div'),
 		td1 = '<td style="font-size:11px;background:#777;color:#fff;padding:0 4px">',
 		td2 = '<td style="font-size:11px;padding-right:5px">';
-	div.innerHTML = '<table cellspacing="0" cellpadding="0" style="border-spacing:4px"><tr>'
-		+ td1 + (isMac ? '&#8984;-F' : 'Ctrl-F</td>') + td2 + tinymce.translate('Start search') + '</td>'
-		+ td1 + (isMac ? '&#8984;-G' : 'Ctrl-G') + '</td>' + td2 + tinymce.translate('Find next') + '</td>'
-		+ td1 + (isMac ? 'Shift-&#8984;-G' : 'Shift-Ctrl-G') + '</td>' + td2 + tinymce.translate('Find previous') + '</td></tr>' + '<tr>'
-		+ td1 + (isMac ? '&#8984;-Alt-F' : 'Shift-Ctrl-F') + '</td>' + td2 + tinymce.translate('Replace') + '</td>'
-		+ td1 + (isMac ? 'Shift-&#8984;-Alt-F' : 'Shift-Ctrl-R') +'</td>' + td2 + tinymce.translate('Replace all') + '</td></tr></table>';
+	div.innerHTML = '<table cellspacing="0" cellpadding="0" style="border-spacing:4px"><tr>' + td1 + (isMac ? '&#8984;-F' : 'Ctrl-F</td>') + td2 + tinymce.translate('Start search') + '</td>' + td1 + (isMac ? '&#8984;-G' : 'Ctrl-G') + '</td>' + td2 + tinymce.translate('Find next') + '</td>' + td1 + (isMac ? '&#8984;-Alt-F' : 'Shift-Ctrl-F') + '</td>' + td2 + tinymce.translate('Find previous') + '</td></tr>' + '<tr>' + td1 + (isMac ? '&#8984;-Alt-F' : 'Shift-Ctrl-F') + '</td>' + td2 + tinymce.translate('Replace') + '</td>' + td1 + (isMac ? 'Shift-&#8984;-Alt-F' : 'Shift-Ctrl-R') +'</td>' + td2 + tinymce.translate('Replace all') + '</td></tr></table>';
 	div.style.position = 'absolute';
 	div.style.left = div.style.bottom = '5px';
 	head.appendChild(div);
 
-	// Set CodeMirror cursor to same position as cursor was in TinyMCE:
+	// Set CodeMirror cursor and bookmark to same position as cursor was in TinyMCE:
 	var html = editor.getContent({source_view: true});
-	html = html.replace(/<span\s+class="CmCaReT"([^>]*)>([^<]*)<\/span>/gm, String.fromCharCode(chr));
-	editor.dom.remove(editor.dom.select('.CmCaReT'));
 
-	CodeMirror.defineInitHook(function(inst) 
+    // [FIX] #6 z-index issue with table panel and source code dialog
+    //	editor.selection.getBookmark();
+    
+	html = html.replace(/<span\s+style="display: none;"\s+class="CmCaReT"([^>]*)>([^<]*)<\/span>/gm, String.fromCharCode(chr));
+	editor.dom.remove(editor.dom.select('.CmCaReT'));
+    
+    // Hide TinyMCE toolbar panels, [FIX] #6 z-index issue with table panel and source code dialog
+    // https://github.com/christiaan/tinymce-codemirror/issues/6
+    tinymce.each(editor.contextToolbars, function(toolbar) { if (toolbar.panel) { toolbar.panel.hide(); } });
+    
+	CodeMirror.defineInitHook(function(inst)
 	{
 		// Move cursor to correct position:
 		inst.focus();
@@ -137,7 +155,7 @@ function start()
 			inst.setCursor(cursor.to());
 			cursor.replace('');
 		}
-		
+
 		// Indent all code, if so requested:
 		if (editor.settings.codemirror.indentOnInit) {
 			var last = inst.lineCount();
@@ -164,10 +182,11 @@ function findDepth(haystack, needle)
 	"use strict";
 
 	var idx = haystack.indexOf(needle), depth = 0, x;
-	for (x = idx; x >= 0; x--) {
+	for (x = idx -1; x >= 0; x--) {
 		switch(haystack.charAt(x)) {
 			case '<': depth--; break;
 			case '>': depth++; break;
+			case '&': depth++; break;
 		}
 	}
 	return depth;
@@ -177,7 +196,7 @@ function findDepth(haystack, needle)
 function submit()
 {
 	"use strict";
-		
+
 	var cc = '&#x0;', isDirty = codemirror.isDirty, doc = codemirror.doc;
 
 	if (doc.somethingSelected()) {
@@ -198,24 +217,21 @@ function submit()
 	}
 
 	// Submit HTML to TinyMCE:
-	editor.setContent(codemirror.getValue().replace(cc, '<span id="CmCaReT"></span>'));
+    // [FIX] Cursor position inside JS, style or &nbps;
+    // Workaround to fix cursor position if inside script tag
+    var code = codemirror.getValue();
+    
+    // CHANGED: We will not try to set the curser position in TinyMCE to the same as in CodeMirror, as the HTML may get modified in the process
+    editor.setContent(codemirror.getValue().replace(cc, ''));
+
 	editor.isNotDirty = !isDirty;
 	if (isDirty) {
 		editor.nodeChanged();
-	}
-
-	// Set cursor:
-	var el = editor.dom.select('span#CmCaReT')[0];
-	if (el) {
-		editor.selection.scrollIntoView(el);
-		editor.selection.setCursorLocation(el,0);
-		editor.dom.remove(el);
 	}
 }
 
 </script>
 <style type="text/css">
-
 body {
 	margin: 0;
 }
@@ -224,13 +240,17 @@ body {
 	height: 100%;
 	font-size: 12px;
 	line-height: 18px;
-	position: absolute;
 }
 
 .CodeMirror-activeline-background {
 	background: #e8f2ff !important;
 }
 
+.cm-trailingspace {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==);
+	background-position: bottom left;
+	background-repeat: repeat-x;
+}
 </style>
 </head>
 <body></body>
