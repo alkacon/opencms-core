@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsUpdateListener;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
@@ -118,9 +119,11 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         remove();
         if (reinitUI) {
             A_CmsUI.get().reload();
-        }
-        if (m_updateListener != null) {
-            m_updateListener.onUpdate(new ArrayList<String>());
+        } else {
+            CmsAppWorkplaceUi.get().enableGlobalShortcuts();
+            if (m_updateListener != null) {
+                m_updateListener.onUpdate(new ArrayList<String>());
+            }
         }
     }
 
@@ -137,6 +140,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
                 // ignore
             }
         }
+        CmsAppWorkplaceUi.get().enableGlobalShortcuts();
         if (m_updateListener != null) {
             m_updateListener.onUpdate(changedStructureIds);
         }
