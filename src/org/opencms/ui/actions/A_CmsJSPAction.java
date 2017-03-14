@@ -32,6 +32,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.extensions.CmsJSPBrowserFrameExtension;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 
@@ -62,12 +63,20 @@ public abstract class A_CmsJSPAction implements I_CmsWorkplaceAction {
     public abstract String getJSPPath();
 
     /**
+     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        return getVisibility(context.getCms(), context.getResources());
+    }
+
+    /**
      * Creates string for get—request with given list of resources.<p>
      *
      * @param resources to be transmitted
      * @return valid string for get-request
      */
-    private String getRequestString(List<CmsResource> resources) {
+    protected String getRequestString(List<CmsResource> resources) {
 
         String res = "?";
 

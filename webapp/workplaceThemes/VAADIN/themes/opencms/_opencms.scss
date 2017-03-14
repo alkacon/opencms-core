@@ -217,7 +217,10 @@
 		
 		&.o-jspwindow {
 	   		background-color: transparent;
-	   		
+
+	   		.v-browserframe {	
+	   		position: fixed !important;
+	   		}
 	   		.v-window-outerheader{
 				display: none;
 			}
