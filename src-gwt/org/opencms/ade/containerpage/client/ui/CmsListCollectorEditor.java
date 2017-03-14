@@ -136,17 +136,19 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             // if the highlighted area has a lesser height than the buttons, center vertically
             top -= (24 - m_position.getHeight()) / 2;
         }
+
         if (top < 25) {
             // check if there is a parent option bar element present
             Element parentOptionBar = CmsDomUtil.getFirstChildWithClass(
-                parent,
+                containerElement,
                 I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar());
-            if (parentOptionBar != null) {
-                int optBarTop = CmsDomUtil.getCurrentStyleInt(parentOptionBar, CmsDomUtil.Style.top);
-                int optBarRight = CmsDomUtil.getCurrentStyleInt(parentOptionBar, CmsDomUtil.Style.right);
-                if ((Math.abs(optBarRight - right) < 25) && (Math.abs(optBarTop - top) < 25)) {
+            if ((parentOptionBar != null) && !getElement().equals(parentOptionBar)) {
+                int optBarTop = parentOptionBar.getAbsoluteTop();
+                int optBarLeft = parentOptionBar.getAbsoluteLeft() + 22;
+                if ((Math.abs(optBarLeft - (m_position.getLeft() + m_position.getWidth())) < 25)
+                    && (Math.abs(optBarTop - m_position.getTop()) < 25)) {
                     // in case the edit buttons overlap, move to the left
-                    right = optBarRight + 25;
+                    right = ((parent.getOffsetWidth() + parent.getAbsoluteLeft()) - optBarLeft) + 25;
                 }
             }
         }
