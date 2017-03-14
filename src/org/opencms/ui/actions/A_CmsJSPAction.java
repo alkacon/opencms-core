@@ -32,7 +32,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.extensions.CmsJSPBrowserFrameExtension;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ import java.util.List;
  * -GET request parameter "resource" returns an array of UUIDs as String.<p>
  * -JavaScript function "window.parent.changedResources(resources);" closes the window and returns the String array "resources" to the server<p>
  */
-public abstract class A_CmsJSPAction implements I_CmsWorkplaceAction {
+public abstract class A_CmsJSPAction extends A_CmsWorkplaceAction {
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -61,14 +60,6 @@ public abstract class A_CmsJSPAction implements I_CmsWorkplaceAction {
      * @return path of jsp file
      */
     public abstract String getJSPPath();
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.ui.I_CmsDialogContext)
-     */
-    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
-
-        return getVisibility(context.getCms(), context.getResources());
-    }
 
     /**
      * Creates string for get—request with given list of resources.<p>
