@@ -309,6 +309,23 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
 
+    /** Compares the VFS entry beans. */
+    private static final Comparator<CmsVfsEntryBean> VFS_COMPARATOR = new Comparator<CmsVfsEntryBean>() {
+
+        public int compare(CmsVfsEntryBean o1, CmsVfsEntryBean o2) {
+
+            String o1Path = o1.getRootPath();
+            String o2Path = o2.getRootPath();
+            if (o1Path.endsWith("/")) {
+                o1Path = o1Path.substring(0, o1Path.length() - 1);
+            }
+            if (o2Path.endsWith("/")) {
+                o2Path = o2Path.substring(0, o2Path.length() - 1);
+            }
+            return o1Path.compareTo(o2Path);
+        }
+    };
+
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
 
@@ -1032,6 +1049,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             false));
                 }
             }
+            Collections.<CmsVfsEntryBean> sort(result, VFS_COMPARATOR);
             return result;
         } catch (Throwable e) {
             error(e);
