@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
@@ -40,6 +41,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
@@ -60,17 +62,23 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
 import org.opencms.xml.containerpage.CmsDynamicFunctionParser;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.CmsMetaMapping;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +89,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.LocaleUtils;
@@ -654,6 +663,60 @@ public final class CmsJspStandardContextBean {
 
     }
 
+    /**
+     * The meta mappings transformer.<p>
+     */
+    class MetaLookupTranformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object arg0) {
+
+            String result = null;
+            if (m_metaMappings.containsKey(arg0)) {
+                MetaMapping mapping = m_metaMappings.get(arg0);
+                try {
+                    CmsResource res = m_cms.readResource(mapping.m_contentId);
+                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, res, m_request);
+                    if (content.hasLocale(getLocale())) {
+                        I_CmsXmlContentValue val = content.getValue(mapping.m_elementXPath, getLocale());
+                        if (val != null) {
+                            result = val.getStringValue(m_cms);
+                        }
+                    }
+
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+                if (result == null) {
+                    result = mapping.m_defaultValue;
+                }
+            }
+            return result;
+        }
+
+    }
+
+    /** The meta mapping data. */
+    class MetaMapping {
+
+        /** The mapping key. */
+        String m_key;
+
+        /** The mapping value xpath. */
+        String m_elementXPath;
+
+        /** The mapping order. */
+        int m_order;
+
+        /** The mapping content structure id. */
+        CmsUUID m_contentId;
+
+        /** The default value. */
+        String m_defaultValue;
+    }
+
     /** The attribute name of the cms object.*/
     public static final String ATTRIBUTE_CMS_OBJECT = "__cmsObject";
 
@@ -718,7 +781,7 @@ public final class CmsJspStandardContextBean {
     private Map<String, List<CmsCategory>> m_pathCategories;
 
     /** The current request. */
-    private ServletRequest m_request;
+    ServletRequest m_request;
 
     /** Lazily initialized map from the root path of a resource to all categories assigned to the resource. */
     private Map<String, CmsJspCategoryAccessBean> m_resourceCategories;
@@ -731,6 +794,9 @@ public final class CmsJspStandardContextBean {
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
+
+    /** The meta mapping configuration. */
+    Map<String, MetaMapping> m_metaMappings;
 
     /**
      * Creates an empty instance.<p>
@@ -1096,6 +1162,17 @@ public final class CmsJspStandardContextBean {
     public Locale getMainLocale() {
 
         return getResourceWrapperForPage().getMainLocale();
+    }
+
+    /**
+     * Returns the meta mappings map.<p>
+     *
+     * @return the meta mappings
+     */
+    public Map<String, String> getMeta() {
+
+        initMetaMappings();
+        return CmsCollectionsGenericWrapper.createLazyMap(new MetaLookupTranformer());
     }
 
     /**
@@ -1482,6 +1559,34 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Initializes the requested container page.<p>
+     *
+     * @param cms the cms context
+     * @param req the current request
+     *
+     * @throws CmsException in case reading the requested resource fails
+     */
+    public void initPage(CmsObject cms, HttpServletRequest req) throws CmsException {
+
+        if (m_page == null) {
+            String requestUri = cms.getRequestContext().getUri();
+            // get the container page itself, checking the history first
+            CmsResource pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
+            if (pageResource == null) {
+                pageResource = cms.readResource(requestUri);
+            }
+            CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
+            m_page = xmlContainerPage.getContainerPage(cms);
+            CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
+                cms,
+                OpenCms.getADEManager().lookupConfiguration(cms, cms.getRequestContext().getRootUri()),
+                CmsJspTagEditable.isEditableRequest(req) ? CmsADESessionCache.getCache(req, cms) : null,
+                CmsContainerpageService.isEditingModelGroups(cms, pageResource));
+            m_page = modelHelper.readModelGroups(xmlContainerPage.getContainerPage(cms));
+        }
+    }
+
+    /**
      * Returns <code>true</code in case a detail page is available for the current element.<p>
      *
      * @return <code>true</code in case a detail page is available for the current element
@@ -1787,6 +1892,35 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Adds the mappings of the given formatter configuration.<p>
+     *
+     * @param formatterBean the formatter bean
+     * @param elementId the element content structure id
+     * @param resolver The macro resolver used on key and default value of the mappings
+     */
+    private void addMappingsForFormatter(
+        I_CmsFormatterBean formatterBean,
+        CmsUUID elementId,
+        CmsMacroResolver resolver) {
+
+        if ((formatterBean != null) && (formatterBean.getMetaMappings() != null)) {
+            for (CmsMetaMapping map : formatterBean.getMetaMappings()) {
+                String key = map.getKey();
+                key = resolver.resolveMacros(key);
+                if (!m_metaMappings.containsKey(key) || (m_metaMappings.get(key).m_order < map.getOrder())) {
+                    MetaMapping mapping = new MetaMapping();
+                    mapping.m_key = key;
+                    mapping.m_elementXPath = map.getElement();
+                    mapping.m_defaultValue = resolver.resolveMacros(map.getDefaultValue());
+                    mapping.m_order = map.getOrder();
+                    mapping.m_contentId = elementId;
+                    m_metaMappings.put(key, mapping);
+                }
+            }
+        }
+    }
+
+    /**
      * Clears the page element data.<p>
      */
     private void clearPageData() {
@@ -1842,6 +1976,57 @@ public final class CmsJspStandardContextBean {
         }
         m_resourceWrapper = new CmsJspResourceWrapper(m_cms, getContainerPage());
         return m_resourceWrapper;
+    }
+
+    /**
+     * Initializes the mapping configuration.<p>
+     */
+    private void initMetaMappings() {
+
+        if (m_metaMappings == null) {
+            try {
+                initPage(m_cms, (HttpServletRequest)m_request);
+                CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setCmsObject(m_cms);
+                resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(getLocale()));
+                m_metaMappings = new HashMap<String, MetaMapping>();
+                for (CmsContainerBean container : m_page.getContainers().values()) {
+                    for (CmsContainerElementBean element : container.getElements()) {
+                        String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
+                        String formatterConfigId = element.getSettings().get(settingsKey);
+                        I_CmsFormatterBean formatterBean = null;
+                        if (CmsUUID.isValidUUID(formatterConfigId)) {
+                            formatterBean = OpenCms.getADEManager().getCachedFormatters(
+                                m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                                    new CmsUUID(formatterConfigId));
+                        }
+                        addMappingsForFormatter(formatterBean, element.getId(), resolver);
+
+                    }
+                }
+                if (getDetailContentId() != null) {
+                    try {
+                        CmsResource detailContent = m_cms.readResource(
+                            getDetailContentId(),
+                            CmsResourceFilter.ignoreExpirationOffline(m_cms));
+                        CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
+                            m_cms,
+                            m_cms.getRequestContext().getRootUri()).getFormatters(m_cms, detailContent);
+                        for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
+                            addMappingsForFormatter(formatter, getDetailContentId(), resolver);
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                                getDetailContentId()),
+                            e);
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**

@@ -4,6 +4,7 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_headinclude_js.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/formatter_settings.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_type_width.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/meta_mapping.xsd" />
     <xsd:element name="NewFormatters" type="OpenCmsNewFormatters" />
     
     <xsd:complexType name="OpenCmsNewFormatters">
@@ -29,6 +30,7 @@
         	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
         	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
+        	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -51,6 +53,7 @@
         <tabs>
 			<tab element="NiceName" name="TabBasic" collapse="false" />
 			<tab element="Setting" name="TabSettings" collapse="false" />
+			<tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
 		</tabs>
         </xsd:appinfo> 
     </xsd:annotation>    

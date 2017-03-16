@@ -177,6 +177,14 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getMetaMappings()
+     */
+    public List<CmsMetaMapping> getMetaMappings() {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getMinWidth()
      */
     public int getMinWidth() {

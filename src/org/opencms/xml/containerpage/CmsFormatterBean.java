@@ -139,6 +139,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Indicating if this formatter will always render all nested containers. */
     private boolean m_strictContainers;
 
+    /** The meta mappings. */
+    private List<CmsMetaMapping> m_metaMappings;
+
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
      *
@@ -165,6 +168,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param isDisplay the display flag
      * @param nestedContainers <code>true</code> if this formatter has nested containers
      * @param strictContainers <code>true</code> if this formatter will always render all nested containers
+     * @param metaMappings the meta mappings
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -189,7 +193,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean isDetail,
         boolean isDisplay,
         boolean nestedContainers,
-        boolean strictContainers) {
+        boolean strictContainers,
+        List<CmsMetaMapping> metaMappings) {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
@@ -216,6 +221,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_isDisplay = isDisplay;
         m_nestedContainers = nestedContainers;
         m_strictContainers = strictContainers;
+        m_metaMappings = metaMappings;
     }
 
     /**
@@ -263,7 +269,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             true,
             false,
             false,
-            false);
+            false,
+            null);
 
     }
 
@@ -301,12 +308,12 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
             try {
                 m_minWidth = Integer.parseInt(minWidthStr);
-            } catch (@SuppressWarnings("unused") NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 //ignore; width will be -1
             }
             try {
                 m_maxWidth = Integer.parseInt(maxWidthStr);
-            } catch (@SuppressWarnings("unused") NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 //ignore; maxWidth will be max. integer
             }
         }
@@ -354,7 +361,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             true,
             false,
             false,
-            false);
+            false,
+            null);
         m_matchAll = true;
     }
 
@@ -472,6 +480,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public int getMaxWidth() {
 
         return m_maxWidth;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getMetaMappings()
+     */
+    public List<CmsMetaMapping> getMetaMappings() {
+
+        return m_metaMappings;
     }
 
     /**

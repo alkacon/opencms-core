@@ -122,6 +122,13 @@ public interface I_CmsFormatterBean {
     int getMaxWidth();
 
     /**
+     * Returns the meta mappings.<p>
+     *
+     * @return the meta mappings
+     */
+    List<CmsMetaMapping> getMetaMappings();
+
+    /**
      * Returns the minimum formatter width.<p>
      *
      * If this is not set, then <code>-1</code> is returned.<p>

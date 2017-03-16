@@ -34,6 +34,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -85,6 +86,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
      * @param placeholderMacroInput the placeholder macro input
      * @param referencedFormatters the referenced formatters
      * @param online if this is the online version
+     * @param metaMappings the meta mappings
      */
     public CmsMacroFormatterBean(
         Set<String> containerTypes,
@@ -107,7 +109,8 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
         String macroInput,
         String placeholderMacroInput,
         Map<String, CmsUUID> referencedFormatters,
-        boolean online) {
+        boolean online,
+        List<CmsMetaMapping> metaMappings) {
         super(
             containerTypes,
             jspRootPath,
@@ -131,7 +134,8 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             isDetail,
             isDisplay,
             false,
-            false);
+            false,
+            metaMappings);
         m_macroInput = macroInput;
         m_placeholderMacroInput = placeholderMacroInput;
         m_referencedFormatters = Collections.unmodifiableMap(referencedFormatters);

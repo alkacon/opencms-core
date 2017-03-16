@@ -30,7 +30,6 @@ package org.opencms.jsp;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsElementUtil;
-import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
@@ -42,7 +41,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
@@ -647,25 +645,11 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 String requestUri = cms.getRequestContext().getUri();
                 Locale locale = cms.getRequestContext().getLocale();
                 CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
+                standardContext.initPage(cms, (HttpServletRequest)req);
                 m_editableRequest = standardContext.getIsEditMode();
                 m_parentElement = standardContext.getElement();
                 m_parentContainer = standardContext.getContainer();
                 CmsContainerPageBean containerPage = standardContext.getPage();
-                if (containerPage == null) {
-                    // get the container page itself, checking the history first
-                    CmsResource pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
-                    if (pageResource == null) {
-                        pageResource = cms.readResource(requestUri);
-                    }
-                    CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-                    CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
-                        cms,
-                        OpenCms.getADEManager().lookupConfiguration(cms, cms.getRequestContext().getRootUri()),
-                        getSessionCache(cms),
-                        CmsContainerpageService.isEditingModelGroups(cms, pageResource));
-                    containerPage = modelHelper.readModelGroups(xmlContainerPage.getContainerPage(cms));
-                    standardContext.setPage(containerPage);
-                }
                 CmsResource detailContent = standardContext.getDetailContent();
                 // get the container
                 CmsContainerBean container = null;

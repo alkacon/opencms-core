@@ -42,6 +42,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsMacroFormatterBean;
+import org.opencms.xml.containerpage.CmsMetaMapping;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -115,6 +116,21 @@ public class CmsFormatterBeanParser {
 
     /** Content value node name. */
     public static final String N_DISPLAY = "Display";
+
+    /** Content value node name. */
+    public static final String N_META_MAPPING = "MetaMapping";
+
+    /** Content value node name. */
+    public static final String N_KEY = "Key";
+
+    /** Content value node name. */
+    public static final String N_ELEMENT = "Element";
+
+    /** Content value node name. */
+    public static final String N_ORDER = "Order";
+
+    /** Content value node name. */
+    public static final String N_DEFAULT = "Default";
 
     /** Node name. */
     public static final String N_FORMATTER = "Formatter";
@@ -313,6 +329,8 @@ public class CmsFormatterBeanParser {
 
         parseMatch(root);
 
+        List<CmsMetaMapping> mappings = parseMetaMappings(root);
+
         boolean hasNestedContainers;
         CmsFormatterBean formatterBean;
         if (isMacroFromatter) {
@@ -355,7 +373,8 @@ public class CmsFormatterBeanParser {
                 macroInput,
                 placeholderMacroInput,
                 referencedFormatters,
-                m_cms.getRequestContext().getCurrentProject().isOnlineProject());
+                m_cms.getRequestContext().getCurrentProject().isOnlineProject(),
+                mappings);
         } else {
             I_CmsXmlContentValueLocation jspLoc = root.getSubValue(N_JSP);
             CmsXmlVfsFileValue jspValue = (CmsXmlVfsFileValue)(jspLoc.getValue());
@@ -399,7 +418,8 @@ public class CmsFormatterBeanParser {
                 isDetail,
                 isDisplay,
                 hasNestedContainers,
-                isStrictContainers);
+                isStrictContainers,
+                mappings);
         }
 
         return formatterBean;
@@ -522,6 +542,35 @@ public class CmsFormatterBeanParser {
         } else {
             throw new ParseException("Neither container types nor container widths defined!");
         }
+    }
+
+    /**
+     * Parses the mappings.<p>
+     *
+     * @param formatterLoc the formatter value location
+     *
+     * @return the mappings
+     */
+    private List<CmsMetaMapping> parseMetaMappings(I_CmsXmlContentLocation formatterLoc) {
+
+        List<CmsMetaMapping> mappings = new ArrayList<CmsMetaMapping>();
+        for (I_CmsXmlContentValueLocation mappingLoc : formatterLoc.getSubValues(N_META_MAPPING)) {
+            String key = CmsConfigurationReader.getString(m_cms, mappingLoc.getSubValue(N_KEY));
+            String element = CmsConfigurationReader.getString(m_cms, mappingLoc.getSubValue(N_ELEMENT));
+            String defaultValue = CmsConfigurationReader.getString(m_cms, mappingLoc.getSubValue(N_DEFAULT));
+            String orderStr = CmsConfigurationReader.getString(m_cms, mappingLoc.getSubValue(N_ORDER));
+            int order = 1000;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(orderStr)) {
+                try {
+                    order = Integer.parseInt(orderStr);
+                } catch (NumberFormatException e) {
+                    // nothing to do
+                }
+            }
+            CmsMetaMapping mapping = new CmsMetaMapping(key, element, order, defaultValue);
+            mappings.add(mapping);
+        }
+        return mappings;
     }
 
     /**

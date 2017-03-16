@@ -28,12 +28,9 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.containerpage.CmsContainerpageService;
-import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
@@ -45,13 +42,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
-import org.opencms.xml.containerpage.CmsXmlContainerPage;
-import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.io.IOException;
@@ -218,10 +212,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsObject cms = controller.getCmsObject();
         try {
             if (TYPE_CSS.equals(m_type)) {
-                tagCssAction(cms, req);
+                tagCssAction(cms, (HttpServletRequest)req);
             }
             if (TYPE_JAVASCRIPT.equals(m_type)) {
-                tagJSAction(cms, req);
+                tagJSAction(cms, (HttpServletRequest)req);
             }
         } catch (Exception e) {
             throw new JspException(e);
@@ -357,7 +351,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
      * @throws CmsException if something goes wrong reading the resources
      * @throws IOException if something goes wrong writing to the response out
      */
-    public void tagCssAction(CmsObject cms, ServletRequest req) throws CmsException, IOException {
+    public void tagCssAction(CmsObject cms, HttpServletRequest req) throws CmsException, IOException {
 
         String includeType = TYPE_CSS;
 
@@ -463,7 +457,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
      * @throws CmsException if something goes wrong reading the resources
      * @throws IOException if something goes wrong writing to the response out
      */
-    public void tagJSAction(CmsObject cms, ServletRequest req) throws CmsException, IOException {
+    public void tagJSAction(CmsObject cms, HttpServletRequest req) throws CmsException, IOException {
 
         CmsJspStandardContextBean standardContext = getStandardContext(cms, req);
         CmsContainerPageBean containerPage = standardContext.getPage();
@@ -802,29 +796,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
      *
      * @throws CmsException if something goes wrong
      */
-    private CmsJspStandardContextBean getStandardContext(CmsObject cms, ServletRequest req) throws CmsException {
+    private CmsJspStandardContextBean getStandardContext(CmsObject cms, HttpServletRequest req) throws CmsException {
 
-        String requestUri = cms.getRequestContext().getUri();
         CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
-        CmsContainerPageBean containerPage = standardContext.getPage();
-        if (containerPage == null) {
-            // get the container page itself, checking the history first
-            CmsResource pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
-            if (pageResource == null) {
-                pageResource = cms.readResource(requestUri);
-            }
-            CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-            containerPage = xmlContainerPage.getContainerPage(cms);
-            CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
-                cms,
-                OpenCms.getADEManager().lookupConfiguration(cms, cms.getRequestContext().getRootUri()),
-                CmsJspTagEditable.isEditableRequest(req)
-                ? CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms)
-                : null,
-                CmsContainerpageService.isEditingModelGroups(cms, pageResource));
-            containerPage = modelHelper.readModelGroups(xmlContainerPage.getContainerPage(cms));
-            standardContext.setPage(containerPage);
-        }
+        standardContext.initPage(cms, req);
         return standardContext;
     }
 

@@ -590,7 +590,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isDetail,
             false,
             hasNestedContainers,
-            false);
+            false,
+            null);
 
         return result;
 
@@ -689,7 +690,6 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             preview,
             searchContent,
             location,
-
             cssHeadIncludes,
             inlineCss,
             javascriptHeadIncludes,
@@ -704,7 +704,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isDetail,
             false,
             hasNestedContainers,
-            false);
+            false,
+            null);
 
         return result;
     }
@@ -750,7 +751,6 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             preview,
             searchContent,
             location,
-
             cssHeadIncludes,
             inlineCss,
             javascriptHeadIncludes,
@@ -765,7 +765,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isDetail,
             false,
             hasNestedContainers,
-            false);
+            false,
+            null);
         return result;
     }
 

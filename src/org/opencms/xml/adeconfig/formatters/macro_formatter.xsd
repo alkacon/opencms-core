@@ -3,6 +3,7 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_type_width.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/macro_formatter_formatters.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/formatter_settings.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/meta_mapping.xsd" />
     <xsd:element name="MacroFormatters" type="OpenCmsMacroFormatters" />
     
     <xsd:complexType name="OpenCmsMacroFormatters">
@@ -25,6 +26,7 @@
         	<xsd:element name="PlaceholderMacro" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
+        	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -49,6 +51,7 @@
 			<tab element="Macro" name="TabMacro" collapse="false" />
 			<tab element="PlaceholderMacro" name="NewContent" collapse="false" />
 			<tab element="Setting" name="TabSettings" collapse="false" />
+			<tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
 		</tabs>
         </xsd:appinfo> 
     </xsd:annotation>    
