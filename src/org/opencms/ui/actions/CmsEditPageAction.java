@@ -30,8 +30,6 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -40,32 +38,16 @@ import java.util.List;
 /**
  * The edit page action. Available for container pages.<p>
  */
-public class CmsEditPageAction extends A_CmsWorkplaceAction implements I_CmsDefaultAction {
+public class CmsEditPageAction extends CmsDisplayAction {
 
     /** The action id. */
+    @SuppressWarnings("hiding")
     public static final String ACTION_ID = "editpage";
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
-     */
-    public void executeAction(I_CmsDialogContext context) {
-
-        if ((context.getResources().size() == 1)
-            && CmsResourceTypeXmlContainerPage.isContainerPage(context.getResources().get(0))) {
-            String link = OpenCms.getLinkManager().substituteLink(
-                A_CmsUI.getCmsObject(),
-                context.getResources().get(0));
-            if (context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
-                A_CmsUI.get().openPageOrWarn(link, CmsDisplayAction.ONLINE_WINDOW_NAME);
-            } else {
-                A_CmsUI.get().getPage().setLocation(link);
-            }
-        }
-    }
 
     /**
      * @see org.opencms.ui.actions.I_CmsDefaultAction#getDefaultActionRank(org.opencms.ui.I_CmsDialogContext)
      */
+    @Override
     public int getDefaultActionRank(I_CmsDialogContext context) {
 
         return 30;
@@ -74,6 +56,7 @@ public class CmsEditPageAction extends A_CmsWorkplaceAction implements I_CmsDefa
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
+    @Override
     public String getId() {
 
         return ACTION_ID;
@@ -82,6 +65,7 @@ public class CmsEditPageAction extends A_CmsWorkplaceAction implements I_CmsDefa
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
      */
+    @Override
     public String getTitle() {
 
         return getWorkplaceMessage(org.opencms.ui.Messages.GUI_ACTION_OPEN_PAGE_0);
@@ -90,6 +74,7 @@ public class CmsEditPageAction extends A_CmsWorkplaceAction implements I_CmsDefa
     /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
+    @Override
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         if ((resources.size() == 1) && CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))) {
