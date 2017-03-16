@@ -953,7 +953,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         // add site configuration rule
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SITES, CmsSiteManagerImpl.class);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "setWorkplaceServer", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "addWorkplaceServer", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_DEFAULT_URI, "setDefaultUri", 0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
