@@ -34,6 +34,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessageException;
@@ -1314,9 +1315,13 @@ public class CmsMessageBundleEditorModel {
         if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
             m_desc = m_resource;
         } else {
-            m_desc = CmsMessageBundleEditorTypes.getDescriptor(m_cms, m_basename);
+            //First try to read from same folder like resource, if it fails use CmsMessageBundleEditorTypes.getDescriptor()
+            try {
+                m_desc = m_cms.readResource(m_sitepath + m_basename + CmsMessageBundleEditorTypes.Descriptor.POSTFIX);
+            } catch (CmsVfsResourceNotFoundException e) {
+                m_desc = CmsMessageBundleEditorTypes.getDescriptor(m_cms, m_basename);
+            }
         }
-
         unmarshalDescriptor();
 
     }
