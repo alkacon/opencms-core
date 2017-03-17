@@ -1897,17 +1897,22 @@ public final class CmsJspStandardContextBean {
      * @param formatterBean the formatter bean
      * @param elementId the element content structure id
      * @param resolver The macro resolver used on key and default value of the mappings
+     * @param isDetailContent in case of a detail content
      */
     private void addMappingsForFormatter(
         I_CmsFormatterBean formatterBean,
         CmsUUID elementId,
-        CmsMacroResolver resolver) {
+        CmsMacroResolver resolver,
+        boolean isDetailContent) {
 
         if ((formatterBean != null) && (formatterBean.getMetaMappings() != null)) {
             for (CmsMetaMapping map : formatterBean.getMetaMappings()) {
                 String key = map.getKey();
                 key = resolver.resolveMacros(key);
-                if (!m_metaMappings.containsKey(key) || (m_metaMappings.get(key).m_order < map.getOrder())) {
+                // the detail content mapping overrides other mappings
+                if (isDetailContent
+                    || !m_metaMappings.containsKey(key)
+                    || (m_metaMappings.get(key).m_order <= map.getOrder())) {
                     MetaMapping mapping = new MetaMapping();
                     mapping.m_key = key;
                     mapping.m_elementXPath = map.getElement();
@@ -1993,14 +1998,16 @@ public final class CmsJspStandardContextBean {
                 for (CmsContainerBean container : m_page.getContainers().values()) {
                     for (CmsContainerElementBean element : container.getElements()) {
                         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
-                        String formatterConfigId = element.getSettings().get(settingsKey);
+                        String formatterConfigId = element.getSettings() != null
+                        ? element.getSettings().get(settingsKey)
+                        : null;
                         I_CmsFormatterBean formatterBean = null;
                         if (CmsUUID.isValidUUID(formatterConfigId)) {
                             formatterBean = OpenCms.getADEManager().getCachedFormatters(
                                 m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
                                     new CmsUUID(formatterConfigId));
                         }
-                        addMappingsForFormatter(formatterBean, element.getId(), resolver);
+                        addMappingsForFormatter(formatterBean, element.getId(), resolver, false);
 
                     }
                 }
@@ -2013,7 +2020,7 @@ public final class CmsJspStandardContextBean {
                             m_cms,
                             m_cms.getRequestContext().getRootUri()).getFormatters(m_cms, detailContent);
                         for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
-                            addMappingsForFormatter(formatter, getDetailContentId(), resolver);
+                            addMappingsForFormatter(formatter, getDetailContentId(), resolver, true);
                         }
                     } catch (CmsException e) {
                         LOG.error(
