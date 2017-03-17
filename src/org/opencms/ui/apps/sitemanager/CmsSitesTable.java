@@ -37,15 +37,16 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.ui.apps.CmsPageEditorConfiguration;
+import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.CmsConfirmationDialog;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
-import org.opencms.ui.util.table.CmsTableUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -59,7 +60,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
@@ -70,11 +70,10 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -92,43 +91,11 @@ public class CmsSitesTable extends Table {
          */
         public void executeAction(final Set<String> data) {
 
-            String message;
-            final List<CmsSite> sitesToDelete = new ArrayList<CmsSite>();
-            for (String siteRoot : data) {
-                sitesToDelete.add(OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot));
-            }
-            if (sitesToDelete.size() == 1) {
-                message = CmsVaadinUtils.getMessageText(
-                    Messages.GUI_SITE_CONFIRM_DELETE_SITE_1,
-                    sitesToDelete.get(0).getTitle());
-            } else {
-                message = "";
-                for (CmsSite site : sitesToDelete) {
-                    if (message.length() > 0) {
-                        message += ", ";
-                    }
-                    message += site.getTitle();
-                }
-                message = CmsVaadinUtils.getMessageText(Messages.GUI_SITE_CONFIRM_DELETE_SITES_1, message);
-            }
-
-            CmsConfirmationDialog.show(
-                CmsVaadinUtils.getMessageText(Messages.GUI_SITE_DELETE_0),
-                message,
-                new Runnable() {
-
-                    public void run() {
-
-                        try {
-                            for (CmsSite site : sitesToDelete) {
-                                OpenCms.getSiteManager().removeSite(A_CmsUI.getCmsObject(), site);
-                            }
-                            CmsAppWorkplaceUi.get().reload();
-                        } catch (CmsException e) {
-                            LOG.error("Error deleting site " + sitesToDelete.get(0).getTitle(), e);
-                        }
-                    }
-                });
+            final Window window = CmsBasicDialog.prepareWindow();
+            CmsDeleteSiteDialog flushDialog = new CmsDeleteSiteDialog(m_clonedCms, window, data);
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_DELETE_0));
+            window.setContent(flushDialog);
+            UI.getCurrent().addWindow(window);
         }
 
         /**
@@ -192,6 +159,48 @@ public class CmsSitesTable extends Table {
     }
 
     /**
+     * The menu entry to switch to the explorer of concerning site.<p>
+     */
+    class ExplorerEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> data) {
+
+            String siteRoot = data.iterator().next();
+            A_CmsUI.getCmsObject().getRequestContext().setSiteRoot(siteRoot);
+            CmsAppWorkplaceUi.get().getNavigator().navigateTo(
+                CmsFileExplorerConfiguration.APP_ID
+                    + "/"
+                    + A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid()
+                    + "!!"
+                    + siteRoot
+                    + "!!");
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_TITLE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            return (data != null) && (data.size() == 1)
+            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
+            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
+    }
+
+    /**
      * Column with FavIcon.<p>
      */
     class FavIconColumn implements Table.ColumnGenerator {
@@ -209,44 +218,9 @@ public class CmsSitesTable extends Table {
     }
 
     /**
-     * Column with icon buttons.<p>
+     * The menu entry to switch to the page editor of concerning site.<p>
      */
-    class IconButtonColumn implements Table.ColumnGenerator {
-
-        /**vaadin serial id. */
-        private static final long serialVersionUID = 7732640709644021017L;
-
-        /**
-         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
-         */
-        public Object generateCell(final Table source, final Object itemId, Object columnId) {
-
-            Property<Object> prop = source.getItem(itemId).getItemProperty(PROP_WEBSERVER);
-
-            FontOpenCms resource = ((Boolean)prop.getValue()).booleanValue()
-            ? FontOpenCms.CIRCLE_CHECK
-            : FontOpenCms.CIRCLE_PAUSE;
-            Button button = CmsTableUtil.createIconButton(
-                resource,
-                CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVER_HELP_0));
-            button.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 2665896145238141105L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    String siteRoot = (String)itemId;
-                    updateWebserver(siteRoot);
-                }
-            });
-            return button;
-        }
-    }
-
-    /**
-     *  Menu Entry to toggle web server.<p>
-     */
-    class ToggleWebServer implements I_CmsSimpleContextMenuEntry<Set<String>> {
+    class PageEditorEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
@@ -254,7 +228,11 @@ public class CmsSitesTable extends Table {
         public void executeAction(Set<String> data) {
 
             String siteRoot = data.iterator().next();
-            updateWebserver(siteRoot);
+            A_CmsUI.get().changeSite(siteRoot);
+
+            CmsPageEditorConfiguration pageeditorApp = new CmsPageEditorConfiguration();
+            pageeditorApp.getAppLaunchCommand().run();
+
         }
 
         /**
@@ -262,7 +240,7 @@ public class CmsSitesTable extends Table {
          */
         public String getTitle(Locale locale) {
 
-            return CmsVaadinUtils.getMessageText(Messages.GUI_SITE_TOGGLEWEBSERVER_0);
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PAGEEDITOR_TITLE_0);
         }
 
         /**
@@ -274,6 +252,44 @@ public class CmsSitesTable extends Table {
             ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
             : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
+
+    }
+
+    /**
+     * The menu entry to switch to the sitemap editor of concerning site.<p>
+     */
+    class SitemapEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> data) {
+
+            String siteRoot = data.iterator().next();
+            A_CmsUI.get().changeSite(siteRoot);
+
+            CmsSitemapEditorConfiguration sitemapApp = new CmsSitemapEditorConfiguration();
+            sitemapApp.getAppLaunchCommand().run();
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_TITLE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            return (data != null) && (data.size() == 1)
+            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
+            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
     }
 
     /** The logger for this class. */
@@ -288,6 +304,9 @@ public class CmsSitesTable extends Table {
     /**Site icon property. */
     private static final String PROP_ICON = "icon";
 
+    /**boolean property for webserver option. Used for style generator.*/
+    private static final String PROP_IS_WEBSERVER = "isweb";
+
     /**Site path property  (is id for site row in table).*/
     private static final String PROP_PATH = "path";
 
@@ -300,11 +319,11 @@ public class CmsSitesTable extends Table {
     /**Site title property.*/
     private static final String PROP_TITLE = "title";
 
-    /**webserver-boolean property.*/
-    private static final String PROP_WEBSERVER = "webserver";
-
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4655464609332605219L;
+
+    /**Cloned cms object.*/
+    CmsObject m_clonedCms;
 
     /** The project manager instance. */
     CmsSiteManager m_manager;
@@ -324,6 +343,12 @@ public class CmsSitesTable extends Table {
      * @param manager the project manager
      */
     public CmsSitesTable(CmsSiteManager manager) {
+
+        try {
+            m_clonedCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+        } catch (CmsException e) {
+            LOG.error("Error while cloning CmsObject", e);
+        }
         m_manager = manager;
 
         m_container = new IndexedContainer();
@@ -331,13 +356,10 @@ public class CmsSitesTable extends Table {
             PROP_ICON,
             Image.class,
             new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON))));
-        m_container.addContainerProperty(
-            PROP_FAVICON,
-            Image.class,
-            new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON))));
-        m_container.addContainerProperty(PROP_WEBSERVER, Boolean.class, new Boolean(false));
+        m_container.addContainerProperty(PROP_FAVICON, Image.class, new Image("", null));
         m_container.addContainerProperty(PROP_SERVER, String.class, "");
         m_container.addContainerProperty(PROP_TITLE, String.class, "");
+        m_container.addContainerProperty(PROP_IS_WEBSERVER, Boolean.class, new Boolean(true));
         m_container.addContainerProperty(PROP_PATH, String.class, "");
         m_container.addContainerProperty(PROP_ALIASES, String.class, "");
         m_container.addContainerProperty(PROP_SECURESITES, String.class, "");
@@ -345,7 +367,6 @@ public class CmsSitesTable extends Table {
         setContainerDataSource(m_container);
         setColumnHeader(PROP_FAVICON, "");
         setColumnHeader(PROP_ICON, "");
-        setColumnHeader(PROP_WEBSERVER, "");
         setColumnHeader(PROP_SERVER, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_0));
         setColumnHeader(PROP_TITLE, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_TITLE_0));
         setColumnHeader(PROP_PATH, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PATH_0));
@@ -357,10 +378,8 @@ public class CmsSitesTable extends Table {
         setColumnExpandRatio(PROP_PATH, 2);
         setColumnWidth(PROP_FAVICON, 40);
         setColumnWidth(PROP_ICON, 40);
-        setColumnWidth(PROP_WEBSERVER, 40);
 
         setColumnAlignment(PROP_ICON, Align.CENTER);
-        setColumnAlignment(PROP_WEBSERVER, Align.CENTER);
         setColumnAlignment(PROP_FAVICON, Align.CENTER);
         setSelectable(true);
         setMultiSelect(true);
@@ -384,11 +403,14 @@ public class CmsSitesTable extends Table {
                 if (PROP_SERVER.equals(propertyId)) {
                     return OpenCmsTheme.HOVER_COLUMN;
                 }
+                if (PROP_TITLE.equals(propertyId)
+                    & ((Boolean)source.getItem(itemId).getItemProperty(PROP_IS_WEBSERVER).getValue()).booleanValue()) {
+                    return " " + OpenCmsTheme.IN_NAVIGATION;
+                }
                 return null;
             }
         });
 
-        addGeneratedColumn(PROP_WEBSERVER, new IconButtonColumn());
         addGeneratedColumn(PROP_FAVICON, new FavIconColumn());
 
         setColumnCollapsingAllowed(true);
@@ -398,7 +420,6 @@ public class CmsSitesTable extends Table {
         setColumnCollapsible(PROP_SERVER, false);
         setColumnCollapsible(PROP_TITLE, false);
         setColumnCollapsible(PROP_FAVICON, false);
-        setColumnCollapsible(PROP_WEBSERVER, false);
         setColumnCollapsible(PROP_ICON, false);
 
     }
@@ -425,30 +446,21 @@ public class CmsSitesTable extends Table {
      */
     public void loadSites() {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
         m_container.removeAllItems();
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(m_clonedCms, true);
 
-        setVisibleColumns(
-            PROP_ICON,
-            PROP_FAVICON,
-            PROP_WEBSERVER,
-            PROP_SERVER,
-            PROP_TITLE,
-            PROP_PATH,
-            PROP_SECURESITES,
-            PROP_ALIASES);
+        setVisibleColumns(PROP_ICON, PROP_FAVICON, PROP_SERVER, PROP_TITLE, PROP_PATH, PROP_SECURESITES, PROP_ALIASES);
 
         setColumnCollapsed(PROP_ALIASES, true);
         setColumnCollapsed(PROP_SECURESITES, true);
 
-        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
                 Item item = m_container.addItem(site.getSiteRoot());
-                item.getItemProperty(PROP_WEBSERVER).setValue(new Boolean(site.isWebserver()));
                 item.getItemProperty(PROP_ICON).setValue(getImageIcon(site.getSiteRoot()));
                 item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
                 item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
+                item.getItemProperty(PROP_IS_WEBSERVER).setValue(new Boolean(site.isWebserver()));
                 item.getItemProperty(PROP_PATH).setValue(site.getSiteRoot());
                 item.getItemProperty(PROP_ALIASES).setValue(getNiceStringFormList(site.getAliases()));
                 if (site.hasSecureServer()) {
@@ -466,22 +478,29 @@ public class CmsSitesTable extends Table {
      */
     Image getImageFavIcon(final String itemId) {
 
-        Image favIconImage = new Image(String.valueOf(System.currentTimeMillis()), getFavIconResource(itemId));
+        Resource resource = getFavIconResource(itemId);
 
-        favIconImage.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FAVICON_0));
+        if (resource != null) {
 
-        favIconImage.addClickListener(new MouseEvents.ClickListener() {
+            Image favIconImage = new Image(String.valueOf(System.currentTimeMillis()), resource);
 
-            private static final long serialVersionUID = 5954790734673665522L;
+            favIconImage.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FAVICON_0));
 
-            public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+            favIconImage.addClickListener(new MouseEvents.ClickListener() {
 
-                onItemClick(event, itemId, PROP_FAVICON);
+                private static final long serialVersionUID = 5954790734673665522L;
 
-            }
-        });
+                public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
 
-        return favIconImage;
+                    onItemClick(event, itemId, PROP_FAVICON);
+
+                }
+            });
+
+            return favIconImage;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -494,8 +513,10 @@ public class CmsSitesTable extends Table {
         if (m_menuEntries == null) {
             m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
             m_menuEntries.add(new EditEntry());
-            m_menuEntries.add(new ToggleWebServer());
             m_menuEntries.add(new DeleteEntry());
+            m_menuEntries.add(new ExplorerEntry());
+            //            m_menuEntries.add(new SitemapEntry()); //TODO add when sitemap issue fixed
+            m_menuEntries.add(new PageEditorEntry());
         }
         return m_menuEntries;
     }
@@ -520,8 +541,7 @@ public class CmsSitesTable extends Table {
                 m_menu.setEntries(getMenuEntries(), (Set<String>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
             } else if (event.getButton().equals(MouseButton.LEFT) && PROP_SERVER.equals(propertyId)) {
-                Item item = ((ItemClickEvent)event).getItem();
-                String siteRoot = (String)item.getItemProperty(PROP_PATH).getValue();
+                String siteRoot = (String)itemId;
                 m_manager.openSubView(
                     A_CmsWorkplaceApp.addParamToState(
                         CmsSiteManager.PATH_NAME_EDIT,
@@ -529,27 +549,7 @@ public class CmsSitesTable extends Table {
                         siteRoot),
                     true);
             }
-        }
-    }
 
-    /**
-     * Changes the boolean isWebserver of CmsSite triggered by click on IconButton or Menu entry.<p>
-     *
-     * @param siteRoot of site to be updated.
-     */
-    void updateWebserver(String siteRoot) {
-
-        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
-
-        CmsSite newSite = (CmsSite)site.clone();
-        newSite.setParameters(site.getParameters());
-        newSite.setWebserver(!site.isWebserver());
-        try {
-            OpenCms.getSiteManager().updateSite(A_CmsUI.getCmsObject(), site, newSite);
-            getItem(siteRoot).getItemProperty(PROP_WEBSERVER).setValue(new Boolean(newSite.isWebserver()));
-            refreshRowCache();
-        } catch (CmsException e) {
-            LOG.error("Error on updating Site.", e);
         }
     }
 
@@ -581,10 +581,9 @@ public class CmsSitesTable extends Table {
     private Resource getFavIconResource(String siteRoot) {
 
         try {
-            final CmsObject cms = A_CmsUI.getCmsObject();
-            cms.getRequestContext().setSiteRoot("");
-            CmsResource favicon = cms.readResource(siteRoot + "/" + CmsSiteManager.FAVICON);
-            CmsFile faviconFile = cms.readFile(favicon);
+            m_clonedCms.getRequestContext().setSiteRoot("");
+            CmsResource favicon = m_clonedCms.readResource(siteRoot + "/" + CmsSiteManager.FAVICON);
+            CmsFile faviconFile = m_clonedCms.readFile(favicon);
             final byte[] imageData = faviconFile.getContents();
             return new StreamResource(new StreamResource.StreamSource() {
 
@@ -597,7 +596,7 @@ public class CmsSitesTable extends Table {
                 }
             }, String.valueOf(System.currentTimeMillis()));
         } catch (CmsException e) {
-            return new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON));
+            return null;
         }
     }
 
@@ -609,7 +608,9 @@ public class CmsSitesTable extends Table {
      */
     private Image getImageIcon(final Object itemId) {
 
-        Image imageIcon = new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON)));
+        Image imageIcon;
+
+        imageIcon = new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON)));
         imageIcon.setResponsive(false);
         imageIcon.addClickListener(new com.vaadin.event.MouseEvents.ClickListener() {
 
@@ -641,4 +642,5 @@ public class CmsSitesTable extends Table {
         }
         return ret.substring(0, ret.length() - ", ".length());
     }
+
 }

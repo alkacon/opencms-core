@@ -62,17 +62,23 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     /**The icon for adding a new site. */
     public static final String ICON_ADD = "apps/sitemanager/site-new.png";
 
+    /**Icon for site folder.*/
+    public static final String ICON_FOLDER = "apps/sitemanager/folder.png";
+
     /**Icon for the global site settings. */
     public static final String ICON_SITES_GLOBAL = "apps/sitemanager/sites-global.png";
 
     /**Icon for the webserver configuration. */
     public static final String ICON_SITES_WEBSERVER = "apps/sitemanager/sites-webserver.png";
 
+    /** Name of the macros folder for site templates.*/
+    public static final String MACRO_FOLDER = ".macros";
+
     /** The add project path name. */
-    public static final String PATH_NAME_ADD = "add";
+    public static final String PATH_NAME_ADD = "newSite";
 
     /** The edit project path name. */
-    public static final String PATH_NAME_EDIT = "edit";
+    public static final String PATH_NAME_EDIT = "editSite";
 
     /**The global settings path name. */
     public static final String PATH_NAME_GLOBAL = "global";

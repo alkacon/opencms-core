@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -91,6 +92,9 @@ public class CmsGlobalForm extends VerticalLayout {
     /**Vaadin field.*/
     private Button m_ok;
 
+    /**CmsObject.*/
+    private CmsObject m_cms;
+
     /**
      * Constructor.<p>
      *
@@ -98,20 +102,27 @@ public class CmsGlobalForm extends VerticalLayout {
      */
     public CmsGlobalForm(CmsSiteManager manager) {
         m_manager = manager;
+        try {
+            m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+        } catch (CmsException e) {
+            LOG.error("Error on cloning CmsObject", e);
+        }
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
-        A_CmsUI.getCmsObject().getRequestContext().setSiteRoot("/");
+        m_cms.getRequestContext().setSiteRoot("/");
 
-        List<CmsSite> allSites = OpenCms.getSiteManager().getAvailableSites(
-            A_CmsUI.getCmsObject(),
+        List<CmsSite> allSites_temp = OpenCms.getSiteManager().getAvailableSites(
+            m_cms,
             true,
             false,
-            A_CmsUI.getCmsObject().getRequestContext().getOuFqn());
+            m_cms.getRequestContext().getOuFqn());
 
-        for (CmsSite site : allSites) {
+        List<CmsSite> allSites = new ArrayList<CmsSite>(allSites_temp);
+
+        for (CmsSite site : allSites_temp) {
             if ((site.getSiteRoot() == null) || site.getSiteRoot().equals("") || site.getSiteRoot().equals("/")) {
 
-                if (allSites.indexOf(site) == (allSites.size() - 1)) {
+                if (allSites_temp.indexOf(site) == (allSites_temp.size() - 1)) {
                     allSites.remove(site);
                     break;
                 } else {
@@ -119,6 +130,7 @@ public class CmsGlobalForm extends VerticalLayout {
                 }
             }
         }
+        allSites_temp.clear();
         setUpWorkplaceComboBox(allSites);
         setUpDefaultUriComboBox(allSites);
         setUpSharedFolderComboBox();
@@ -174,7 +186,7 @@ public class CmsGlobalForm extends VerticalLayout {
 
         try {
             OpenCms.getSiteManager().updateGeneralSettings(
-                A_CmsUI.getCmsObject(),
+                m_cms,
                 ((CmsSite)m_fieldDefaultURI.getValue()).getSiteRoot(),
                 ((CmsSite)m_fieldWorkplaceServer.getValue()).getUrl(),
                 "/" + (String)m_fieldSharedFolder.getValue() + "/");
@@ -219,10 +231,7 @@ public class CmsGlobalForm extends VerticalLayout {
         m_fieldSharedFolder.setNullSelectionAllowed(false);
         m_fieldSharedFolder.setTextInputAllowed(false);
         try {
-            List<CmsResource> folderUnderRoot = A_CmsUI.getCmsObject().readResources(
-                "/",
-                CmsResourceFilter.DEFAULT_FOLDERS,
-                false);
+            List<CmsResource> folderUnderRoot = m_cms.readResources("/", CmsResourceFilter.DEFAULT_FOLDERS, false);
             for (CmsResource folder : folderUnderRoot) {
                 if (!m_forbiddenFolder.contains(folder.getRootPath())) {
                     m_fieldSharedFolder.addItem(folder.getRootPath().replace("/", ""));

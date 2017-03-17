@@ -798,6 +798,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_DELETE_0 = "GUI_SITE_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_DELETE_RESOURCES_0 = "GUI_SITE_DELETE_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_DELETE_RESOURCES_HELP_0 = "GUI_SITE_DELETE_RESOURCES_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_EDIT_1 = "GUI_SITE_EDIT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -837,6 +843,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_FOLDERNAME_HELP_0 = "GUI_SITE_FOLDERNAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FOLDERNAME_WRONGPARENT_0 = "GUI_SITE_FOLDERNAME_WRONGPARENT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_GLOBAL_0 = "GUI_SITE_GLOBAL_0";
 
     /** Message constant for key in the resource bundle. */
@@ -867,6 +876,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_INFORMATION_0 = "GUI_SITE_INFORMATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_LOAD_SITETEMPLATE_0 = "GUI_SITE_LOAD_SITETEMPLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_LOAD_SITETEMPLATE_HELP_0 = "GUI_SITE_LOAD_SITETEMPLATE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_MANAGER_HELP_0 = "GUI_SITE_MANAGER_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -877,6 +892,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_PARAMETER_HELP_0 = "GUI_SITE_PARAMETER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PARENTFOLDER_NOT_EXIST_0 = "GUI_SITE_PARENTFOLDER_NOT_EXIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PARENTFOLDERNAME_0 = "GUI_SITE_PARENTFOLDERNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PARENTFOLDERNAME_HELP_0 = "GUI_SITE_PARENTFOLDERNAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_PATH_0 = "GUI_SITE_PATH_0";
@@ -909,6 +933,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_SECURESERVER_HELP_0 = "GUI_SITE_SECURESERVER_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SELECT_FILE_0 = "GUI_SITE_SELECT_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SELECT_OU_0 = "GUI_SITE_SELECT_OU_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SELECT_OU_HELP_0 = "GUI_SITE_SELECT_OU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_SERVER_0 = "GUI_SITE_SERVER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -933,6 +966,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_SHAREDFOLDER_WRONGFORMAT_0 = "GUI_SITE_SHAREDFOLDER_WRONGFORMAT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SITETEMPLATE_0 = "GUI_SITE_SITETEMPLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SITETEMPLATE_INVALID_0 = "GUI_SITE_SITETEMPLATE_INVALID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SITETEMPLATE_OVERWRITE_0 = "GUI_SITE_SITETEMPLATE_OVERWRITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SITETEMPLATE_READ_0 = "GUI_SITE_SITETEMPLATE_READ_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_TAB_ADVANCED_0 = "GUI_SITE_TAB_ADVANCED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -946,6 +991,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_TITLE_0 = "GUI_SITE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_TITLE_EMPTY_0 = "GUI_SITE_TITLE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_TITLE_HELP_0 = "GUI_SITE_TITLE_HELP_0";

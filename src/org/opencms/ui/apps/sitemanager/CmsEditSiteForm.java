@@ -38,14 +38,18 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.A_CmsUI;
@@ -53,10 +57,13 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentValueSequence;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayInputStream;
@@ -64,10 +71,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -77,6 +87,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
@@ -191,7 +203,7 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**
      *Validator for Folder Name field.<p>
      */
-    class FolderNameValidator implements Validator {
+    class FolderPathValidator implements Validator {
 
         /**vaadin serial id.*/
         private static final long serialVersionUID = 2269520781911597613L;
@@ -202,18 +214,50 @@ public class CmsEditSiteForm extends VerticalLayout {
         public void validate(Object value) throws InvalidValueException {
 
             String enteredName = (String)value;
-            if (enteredName.isEmpty()) {
-                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_EMPTY_0));
-            }
             if (FORBIDDEN_FOLDER_NAMES.contains(enteredName)) {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_FORBIDDEN_1, enteredName));
             }
-            if (m_alreadyUsedFolderNames.contains(enteredName)) {
+
+            if (m_alreadyUsedFolderPath.contains(getParentFolder() + enteredName)) {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_ALREADYUSED_1, enteredName));
             }
+            try {
+                CmsResource.checkResourceName(enteredName);
+            } catch (CmsIllegalArgumentException e) {
+                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_EMPTY_0));
+            }
         }
+    }
+
+    /**
+     * Validator for the parent field.<p>
+     */
+    class ParentFolderValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = 5217828150841769662L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            try {
+                m_clonedCms.getRequestContext().setSiteRoot("");
+                m_clonedCms.readResource(getParentFolder());
+            } catch (CmsException e) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARENTFOLDER_NOT_EXIST_0));
+            }
+
+            if (!(getParentFolder()).startsWith(CmsSiteManager.PATH_SITES)) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_WRONGPARENT_0));
+            }
+        }
+
     }
 
     /**
@@ -240,6 +284,67 @@ public class CmsEditSiteForm extends VerticalLayout {
         }
     }
 
+    /**
+     * Validator for Site Template selection field.<p>
+     */
+    class SiteTemplateValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = -8730991818750657154L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            String pathToCheck = (String)value;
+            if (pathToCheck == null) {
+                return;
+            }
+            if (pathToCheck.isEmpty()) { //Empty -> no template chosen, ok
+                return;
+            }
+            if (!getParentFolder().isEmpty() & !getFieldFolder().isEmpty()) {
+                String rootPath = "/" + ensureFoldername(getParentFolder()) + ensureFoldername(getFieldFolder());
+
+                if (m_clonedCms.existsResource(rootPath)) {
+                    throw new InvalidValueException(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SITETEMPLATE_OVERWRITE_0));
+                }
+            }
+            try {
+                m_clonedCms.readResource(pathToCheck + CmsADEManager.CONTENT_FOLDER_NAME);
+                //                m_clonedCms.readResource(pathToCheck + CmsSiteManager.MACRO_FOLDER);
+            } catch (CmsException e) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SITETEMPLATE_INVALID_0));
+            }
+
+        }
+
+    }
+
+    /**
+     * Validator for the title field.<p>
+     */
+    class TitleValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = 7878441125879949490L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if (((String)value).isEmpty()) {
+                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_TITLE_EMPTY_0));
+            }
+
+        }
+
+    }
+
     /** The module name constant. */
     public static final String MODULE_NAME = "org.opencms.ui.apps.sitemanager";
 
@@ -257,14 +362,14 @@ public class CmsEditSiteForm extends VerticalLayout {
         }
     };
 
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsEditSiteForm.class.getName());
+
     /** Constant. */
     private static final String BLANK_HTML = "blank.html";
 
     /**default index.html which gets created.*/
     private static final String INDEX_HTML = "index.html";
-
-    /** The logger for this class. */
-    private static Log LOG = CmsLog.getLog(CmsEditSiteForm.class.getName());
 
     /** Constant. */
     private static final String MODEL_PAGE = "ModelPage";
@@ -279,10 +384,13 @@ public class CmsEditSiteForm extends VerticalLayout {
     private static final long serialVersionUID = -1011525709082939562L;
 
     /**List of all folder names already used for sites. */
-    List<String> m_alreadyUsedFolderNames = new ArrayList<String>();
+    List<String> m_alreadyUsedFolderPath = new ArrayList<String>();
 
     /**List of all urls already used for sites.*/
     List<CmsSiteMatcher> m_alreadyUsedURL = new ArrayList<CmsSiteMatcher>();
+
+    /**cloned cms obejct.*/
+    CmsObject m_clonedCms;
 
     /**vaadin component. */
     Upload m_fieldUploadFavIcon;
@@ -292,6 +400,9 @@ public class CmsEditSiteForm extends VerticalLayout {
 
     /**OutputStream to store the uploaded favicon temporarily. */
     ByteArrayOutputStream m_os = new ByteArrayOutputStream(5500);
+
+    /**current site which is supposed to be edited, null if site should be added.*/
+    CmsSite m_site;
 
     /**vaadin component.*/
     TabSheet m_tab;
@@ -304,6 +415,15 @@ public class CmsEditSiteForm extends VerticalLayout {
 
     /**vaadin component.*/
     private FormLayout m_aliases;
+
+    /**automatic setted folder name.*/
+    private String m_autoSetFolderName;
+
+    /**Map to connect vaadin text fields with bundle keys.*/
+    private Map<TextField, String> m_bundleComponentKeyMap;
+
+    /**vaadin component.*/
+    private FormLayout m_bundleValues;
 
     /**vaadin component.*/
     private Button m_cancel;
@@ -324,13 +444,22 @@ public class CmsEditSiteForm extends VerticalLayout {
     private Image m_fieldFavIcon;
 
     /**vaadin component.*/
+    private CmsPathSelectField m_fieldLoadSiteTemplate;
+
+    /**vaadin component.*/
     private ComboBox m_fieldPosition;
 
     /**vaadin component.*/
     private TextField m_fieldSecureServer;
 
     /**vaadin component.*/
+    private ComboBox m_fieldSelectOU;
+
+    /**vaadin component.*/
     private CheckBox m_fieldWebServer;
+
+    /**boolean indicates if folder name was changed by user.*/
+    private boolean m_isFolderNameTouched;
 
     /** CmsSiteManager which calls Form.*/
     private CmsSiteManager m_manager;
@@ -345,6 +474,9 @@ public class CmsEditSiteForm extends VerticalLayout {
     private TextField m_simpleFieldFolderName;
 
     /**vaadin component.*/
+    private CmsPathSelectField m_simpleFieldParentFolderName;
+
+    /**vaadin component.*/
     private TextField m_simpleFieldServer;
 
     /**vaadin component.*/
@@ -353,9 +485,6 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**vaadin component.*/
     private TextField m_simpleFieldTitle;
 
-    /**current site which is supposed to be edited, null if site should be added.*/
-    private CmsSite m_site;
-
     /**
      * Constructor.<p>
      * Use this to create a new site.<p>
@@ -363,17 +492,33 @@ public class CmsEditSiteForm extends VerticalLayout {
      * @param manager the site manager instance
      */
     public CmsEditSiteForm(CmsSiteManager manager) {
-
-        List<CmsSite> allSites = OpenCms.getSiteManager().getAvailableSites(A_CmsUI.getCmsObject(), true);
+        m_isFolderNameTouched = false;
+        m_autoSetFolderName = "";
+        try {
+            m_clonedCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+        } catch (CmsException e) {
+            LOG.error("Error cloning cms object", e);
+        }
+        List<CmsSite> allSites = OpenCms.getSiteManager().getAvailableSites(m_clonedCms, true);
 
         for (CmsSite site : allSites) {
             if (site.getSiteMatcher() != null) {
-                m_alreadyUsedFolderNames.add(getFolderNameFromSiteRoot(site.getSiteRoot()));
+                m_alreadyUsedFolderPath.add(site.getSiteRoot());
                 m_alreadyUsedURL.add(site.getSiteMatcher());
             }
         }
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        if (!OpenCms.getSiteManager().isConfigurableWebServer()) {
+            m_fieldWebServer.setVisible(false);
+            m_fieldWebServer.setValue(new Boolean(true));
+
+        }
+
+        m_simpleFieldParentFolderName.setValue(CmsSiteManager.PATH_SITES);
+        m_simpleFieldParentFolderName.setUseRootPaths(true);
+        m_simpleFieldParentFolderName.setResourceFilter(CmsResourceFilter.requireType(new CmsResourceTypeFolder()));
 
         m_manager = manager;
 
@@ -384,7 +529,6 @@ public class CmsEditSiteForm extends VerticalLayout {
             public void buttonClick(ClickEvent event) {
 
                 addParameter(null);
-
             }
         });
 
@@ -406,9 +550,14 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                if (isValidInput()) {
+                setupValidators();
+                if (isValidInputSimple() & isValidInputSiteTemplate()) {
                     submit();
                     cancel();
+                    return;
+                }
+                if (isValidInputSimple()) {
+                    m_tab.setSelectedTab(2);
                     return;
                 }
                 m_tab.setSelectedTab(0);
@@ -425,13 +574,24 @@ public class CmsEditSiteForm extends VerticalLayout {
             }
         });
 
+        m_fieldCreateOU.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = -2837270577662919541L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                toggleSelectOU();
+
+            }
+        });
+
         m_tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
         m_tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 
         setUpComboBoxPosition();
         setUpComboBoxTemplate();
-        m_simpleFieldFolderName.addValidator(new FolderNameValidator());
-        m_simpleFieldServer.addValidator(new ServerValidator());
+        setUpOUComboBox();
+
         m_fieldSecureServer.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = -2837270577662919541L;
@@ -445,12 +605,60 @@ public class CmsEditSiteForm extends VerticalLayout {
         m_fieldExclusiveError.setEnabled(false);
         Receiver uploadReceiver = new FavIconReceiver();
 
+        m_fieldWebServer.setValue(new Boolean(true));
+
         m_fieldUploadFavIcon.setReceiver(uploadReceiver);
-        m_fieldUploadFavIcon.setButtonCaption("Select file");
+        m_fieldUploadFavIcon.setButtonCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SELECT_FILE_0));
         m_fieldUploadFavIcon.setImmediate(true);
         m_fieldUploadFavIcon.addSucceededListener((SucceededListener)uploadReceiver);
         m_fieldUploadFavIcon.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FAVICON_NEW_0));
         m_fieldFavIcon.setVisible(false);
+
+        m_simpleFieldTitle.addBlurListener(new BlurListener() {
+
+            private static final long serialVersionUID = -4147179568264310325L;
+
+            public void blur(BlurEvent event) {
+
+                if (!isFolderNameTouched()) {
+                    String niceName = OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
+                        m_clonedCms,
+                        "/sites",
+                        getFieldTitle());
+                    setFolderNameState(niceName);
+                    setFieldFolder(niceName);
+                }
+
+            }
+        });
+
+        m_simpleFieldFolderName.addBlurListener(new BlurListener() {
+
+            private static final long serialVersionUID = 2080245499551324408L;
+
+            public void blur(BlurEvent event) {
+
+                setFolderNameState(null);
+
+            }
+        });
+
+        m_fieldLoadSiteTemplate.addValidator(new SiteTemplateValidator());
+
+        m_fieldLoadSiteTemplate.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = -5859547073423161234L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                clearMessageBundle();
+                loadMessageBundle();
+
+            }
+        });
+
+        m_fieldLoadSiteTemplate.setUseRootPaths(true);
+        m_fieldLoadSiteTemplate.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
     }
 
     /**
@@ -463,11 +671,20 @@ public class CmsEditSiteForm extends VerticalLayout {
     public CmsEditSiteForm(CmsSiteManager manager, String siteRoot) {
         this(manager);
 
+        m_tab.removeTab(m_tab.getTab(2));
+        m_simpleFieldTitle.removeTextChangeListener(null);
+
+        m_simpleFieldParentFolderName.setEnabled(false);
+        m_simpleFieldParentFolderName.setValue(
+            siteRoot.substring(0, siteRoot.length() - siteRoot.split("/")[siteRoot.split("/").length - 1].length()));
+
         m_simpleFieldFolderName.removeAllValidators(); //can not be changed
 
         m_fieldCreateOU.setVisible(false);
 
         m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+
+        unableOUComboBox();
 
         m_alreadyUsedURL.remove(m_alreadyUsedURL.indexOf(m_site.getSiteMatcher())); //Remove current url to avoid validation problem
 
@@ -497,9 +714,12 @@ public class CmsEditSiteForm extends VerticalLayout {
         }
 
         try {
-            CmsObject cms = A_CmsUI.getCmsObject();
-            cms.getRequestContext().setSiteRoot("");
-            CmsProperty template = cms.readPropertyObject(siteRoot, CmsPropertyDefinition.PROPERTY_TEMPLATE, false);
+
+            m_clonedCms.getRequestContext().setSiteRoot("");
+            CmsProperty template = m_clonedCms.readPropertyObject(
+                siteRoot,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                false);
             if (template.isNullProperty()) {
                 m_simpleFieldTemplate.setValue(null);
             } else {
@@ -525,7 +745,7 @@ public class CmsEditSiteForm extends VerticalLayout {
      */
     static String getFolderNameFromSiteRoot(String siteRoot) {
 
-        return siteRoot.substring(CmsSiteManager.PATH_SITES.length());
+        return siteRoot.split("/")[siteRoot.split("/").length - 1];
     }
 
     /**
@@ -576,14 +796,174 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Checks if all required fields are set correctly.<p>
+     * Clears the message bundle and removes related text fields from UI.<p>
+     */
+    void clearMessageBundle() {
+
+        if (m_bundleComponentKeyMap != null) {
+            Set<TextField> setBundles = m_bundleComponentKeyMap.keySet();
+
+            for (TextField field : setBundles) {
+                m_bundleValues.removeComponent(field);
+            }
+            m_bundleComponentKeyMap.clear();
+        }
+    }
+
+    /**
+     * Checks if there are at least one character in the folder name,
+     * also ensures that it ends with a '/' and doesn't start with '/'.<p>
+     *
+     * @param resourcename folder name to check (complete path)
+     * @return the validated folder name
+     * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
+     */
+    String ensureFoldername(String resourcename) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmpty(resourcename)) {
+            throw new CmsIllegalArgumentException(
+                org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1, resourcename));
+        }
+        if (!CmsResource.isFolder(resourcename)) {
+            resourcename = resourcename.concat("/");
+        }
+        if (resourcename.charAt(0) == '/') {
+            resourcename = resourcename.substring(1);
+        }
+        return resourcename;
+    }
+
+    /**
+     * Returns the value of the site-folder.<p>
+     *
+     * @return String of folder path.
+     */
+    String getFieldFolder() {
+
+        return m_simpleFieldFolderName.getValue();
+    }
+
+    /**
+     * Reads title field.<p>
+     *
+     * @return title as string.
+     */
+    String getFieldTitle() {
+
+        return m_simpleFieldTitle.getValue();
+    }
+
+    /**
+     * Returns parent folder.<p>
+     *
+     * @return parent folder as string
+     */
+    String getParentFolder() {
+
+        return m_simpleFieldParentFolderName.getValue();
+    }
+
+    /**
+     * Checks if folder name was touched.<p>
+     *
+     * Considered as touched if side is edited or value of foldername was changed by user.<p>
+     *
+     * @return boolean true means Folder value was set by user or existing site and should not be changed by title-listener
+     */
+    boolean isFolderNameTouched() {
+
+        if (m_site != null) {
+            return true;
+        }
+        if (m_autoSetFolderName.equals(getFieldFolder())) {
+            return false;
+        }
+        return m_isFolderNameTouched;
+    }
+
+    /**
+     * Checks if all required fields are set correctly at first Tab.<p>
      *
      * @return true if all inputs are valid.
      */
-    boolean isValidInput() {
+    boolean isValidInputSimple() {
 
-        return (m_simpleFieldFolderName.isValid() & m_simpleFieldServer.isValid());
+        return (m_simpleFieldFolderName.isValid()
+            & m_simpleFieldServer.isValid()
+            & m_simpleFieldTitle.isValid()
+            & m_simpleFieldParentFolderName.isValid());
+    }
 
+    /**
+     * Checks if all required fields are set correctly at site template tab.<p>
+     *
+     * @return true if all inputs are valid.
+     */
+    boolean isValidInputSiteTemplate() {
+
+        return (m_fieldLoadSiteTemplate.isValid());
+    }
+
+    /**
+     * Loads message bundle from bundle defined inside the site-template which is used to create new site.<p>
+     */
+    void loadMessageBundle() {
+
+        //Check if chosen site template is valid and not empty
+        if (!m_fieldLoadSiteTemplate.isValid()
+            | m_fieldLoadSiteTemplate.isEmpty()
+            | !m_clonedCms.existsResource(m_fieldLoadSiteTemplate.getValue() + CmsSiteManager.MACRO_FOLDER)) {
+            return;
+        }
+        try {
+            m_bundleComponentKeyMap = new HashMap<TextField, String>();
+
+            //Get resource of the descriptor.
+            CmsResource descriptor = m_clonedCms.readResource(
+                m_fieldLoadSiteTemplate.getValue()
+                    + CmsSiteManager.MACRO_FOLDER
+                    + "/"
+                    + getResourceName(m_fieldLoadSiteTemplate.getValue())
+                    + "_desc");
+
+            //Read XML content of descriptor
+            CmsXmlContent xmlContentDesc = CmsXmlContentFactory.unmarshal(
+                m_clonedCms,
+                m_clonedCms.readFile(descriptor));
+            CmsXmlContentValueSequence messages = xmlContentDesc.getValueSequence(
+                Descriptor.N_MESSAGE,
+                Descriptor.LOCALE);
+
+            //Read related bundle
+            //Name of the bundle of a template-site has to match to the name of the site folder!
+            ResourceBundle resourceBundle = CmsResourceBundleLoader.getBundle(
+                getResourceName(m_fieldLoadSiteTemplate.getValue()),
+                m_clonedCms.getRequestContext().getLocale());
+
+            //Iterate through content
+            for (int i = 0; i < messages.getElementCount(); i++) {
+
+                //Read key and default text from descriptor, label from bundle (localized)
+                String prefix = messages.getValue(i).getPath() + "/";
+                String key = xmlContentDesc.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(
+                    m_clonedCms);
+                String label = resourceBundle.getString(key);
+                String defaultText = xmlContentDesc.getValue(
+                    prefix + Descriptor.N_DESCRIPTION,
+                    Descriptor.LOCALE).getStringValue(m_clonedCms);
+
+                //Create TextField
+                TextField field = new TextField();
+                field.setCaption(label);
+                field.setValue(defaultText);
+
+                //Add vaadin component to UI and keep related key in HashMap
+                m_bundleValues.addComponent(field);
+                m_bundleComponentKeyMap.put(field, key);
+            }
+        } catch (CmsException e) {
+            LOG.error("Error reading bundle", e);
+        }
     }
 
     /**
@@ -613,131 +993,125 @@ public class CmsEditSiteForm extends VerticalLayout {
     void setFaviconIfExist() {
 
         try {
-            CmsObject cms = A_CmsUI.getCmsObject();
-            CmsResource favicon = cms.readResource(m_site.getSiteRoot() + "/" + CmsSiteManager.FAVICON);
-            setCurrentFavIcon(cms.readFile(favicon).getContents()); //FavIcon was found -> give it to the UI
+            CmsResource favicon = m_clonedCms.readResource(m_site.getSiteRoot() + "/" + CmsSiteManager.FAVICON);
+            setCurrentFavIcon(m_clonedCms.readFile(favicon).getContents()); //FavIcon was found -> give it to the UI
         } catch (CmsException e) {
             //no favicon, do nothing
         }
     }
 
     /**
+     * Sets the folder field.<p>
+     *
+     * @param newValue value of the field
+     */
+    void setFieldFolder(String newValue) {
+
+        m_simpleFieldFolderName.setValue(newValue);
+    }
+
+    /**
+     * Sets the folder Name state to recognize if folder field was touched.<p>
+     *
+     * @param setFolderName name of folder set by listener from title.
+     */
+    void setFolderNameState(String setFolderName) {
+
+        if (setFolderName == null) {
+            if (m_simpleFieldFolderName.getValue().isEmpty()) {
+                m_isFolderNameTouched = false;
+                return;
+            }
+            m_isFolderNameTouched = true;
+        } else {
+            m_autoSetFolderName = setFolderName;
+        }
+    }
+
+    /**
+     * Setup validators which get called on click.<p>
+     * Site-template gets validated separately.<p>
+     */
+    void setupValidators() {
+
+        if (m_simpleFieldServer.getValidators().size() == 0) {
+            if (m_site == null) {
+                m_simpleFieldFolderName.addValidator(new FolderPathValidator());
+                m_simpleFieldParentFolderName.addValidator(new ParentFolderValidator());
+            }
+            m_simpleFieldServer.addValidator(new ServerValidator());
+            m_simpleFieldTitle.addValidator(new TitleValidator());
+        }
+    }
+
+    /**
      * Saves the entered site-data as a CmsSite object.<p>
-     * Code is copied from workplace-tool.<p>
      */
     void submit() {
 
         try {
+            // switch to root site
+            m_clonedCms.getRequestContext().setSiteRoot("");
 
-            // validate the dialog form
-            validateDialog();
-
-            // create a root site clone of the current CMS object.
-            CmsObject cms = A_CmsUI.getCmsObject();
-            cms.getRequestContext().setSiteRoot("");
             // create the site root path
-            String siteRoot = "/sites/" + getFieldFolder();
+            String siteRoot = "/" + ensureFoldername(getParentFolder()) + ensureFoldername(getFieldFolder());
 
             CmsResource siteRootResource = null;
-            String sitePath = null;
-            // check if the site root already exists
-            try {
-                // take the existing site and do not perform any OU related actions
-                siteRootResource = cms.readResource(siteRoot);
-                sitePath = cms.getSitePath(siteRootResource); //? siteroot should be ""..
-            } catch (CmsVfsResourceNotFoundException e) {
-                // not create a new site folder and the according OU if option is checked checked
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(
-                    CmsResourceTypeFolder.RESOURCE_TYPE_NAME);
-                siteRootResource = cms.createResource(siteRoot, type);
-                CmsProperty folderTitle = new CmsProperty(
-                    CmsPropertyDefinition.PROPERTY_TITLE,
-                    getFieldTitle(),
-                    getFieldTitle());
-                cms.writePropertyObject(siteRoot, folderTitle);
-                sitePath = cms.getSitePath(siteRootResource);
 
-                //Create index.html
-                I_CmsResourceType containerType = OpenCms.getResourceManager().getResourceType(
-                    org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME);
-                cms.createResource(siteRoot + INDEX_HTML, containerType);
+            if (m_fieldLoadSiteTemplate.getValue().isEmpty()) {
 
-            }
-            cms.lockResource(siteRootResource);
-            // add template  property
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getFieldTemplate())) {
-                CmsProperty prop = new CmsProperty(
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                    getFieldTemplate(),
-                    getFieldTemplate());
-                cms.writePropertyObject(siteRoot, prop);
-            }
-            cms.unlockResource(siteRootResource);
+                siteRootResource = createSiteRootIfNeeded(siteRoot);
+                String sitePath = m_clonedCms.getSitePath(siteRootResource);
 
-            if (m_imageCounter > 0) {
-                saveIcon(cms, siteRoot);
-            }
-
-            String ouDescription = "OU for: %(site)"; //ToDo don't know what is exactly supposed to be done..
-
-            if (m_fieldCreateOU.isVisible() & (m_fieldCreateOU.getValue()).booleanValue()) {
-                OpenCms.getOrgUnitManager().createOrganizationalUnit(
-                    cms,
-                    "/" + siteRootResource.getName(),
-                    ouDescription.replace("%(site)", getFieldTitle() + " [" + siteRoot + "]"),
-                    0,
-                    siteRootResource.getRootPath());
-            }
-
-            // create sitemap configuration
-            String contentFolder = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
-            String sitemapConfig = CmsStringUtil.joinPaths(contentFolder, CmsADEManager.CONFIG_FILE_NAME);
-            if (!cms.existsResource(sitemapConfig)) {
-                CmsResource config = createSitemapContentFolder(cms, siteRootResource);
-                if (config != null) {
-                    try {
-                        CmsResource newFolder = cms.createResource(
-                            contentFolder + NEW,
-                            OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME));
-                        I_CmsResourceType containerType = OpenCms.getResourceManager().getResourceType(
-                            org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME);
-                        CmsResource modelPage = cms.createResource(newFolder.getRootPath() + BLANK_HTML, containerType);
-                        String defTitle = Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
-                            Messages.GUI_DEFAULT_MODEL_TITLE_1,
-                            getFieldTitle());
-                        String defDes = Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
-                            Messages.GUI_DEFAULT_MODEL_DESCRIPTION_1,
-                            getFieldTitle());
-                        CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, defTitle, defTitle);
-                        cms.writePropertyObject(modelPage.getRootPath(), prop);
-                        prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, defDes, defDes);
-                        cms.writePropertyObject(modelPage.getRootPath(), prop);
-                        CmsFile file = cms.readFile(config);
-                        CmsXmlContent con = CmsXmlContentFactory.unmarshal(cms, file);
-                        con.addValue(cms, MODEL_PAGE, Locale.ENGLISH, 0);
-                        I_CmsXmlContentValue val = con.getValue(MODEL_PAGE_PAGE, Locale.ENGLISH);
-                        val.setStringValue(cms, modelPage.getRootPath());
-                        file.setContents(con.marshal());
-                        cms.writeFile(file);
-                    } catch (CmsException e) {
-                        //                        LOG.error(e.getLocalizedMessage(), e);
-                    }
+                // create sitemap configuration
+                String contentFolder = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
+                String sitemapConfig = CmsStringUtil.joinPaths(contentFolder, CmsADEManager.CONFIG_FILE_NAME);
+                if (!m_clonedCms.existsResource(sitemapConfig)) {
+                    createSitemapContentFolder(m_clonedCms, siteRootResource, contentFolder);
                 }
+                createIndexHTML(siteRoot);
+            } else {
+                Map<String, String> bundle = getBundleMap();
+                CmsMacroResolver.copyAndResolveMacro(
+                    m_clonedCms,
+                    m_fieldLoadSiteTemplate.getValue(),
+                    siteRoot,
+                    bundle,
+                    true);
+                if (m_clonedCms.existsResource(siteRoot + CmsSiteManager.MACRO_FOLDER)) {
+                    m_clonedCms.deleteResource(
+                        siteRoot + CmsSiteManager.MACRO_FOLDER,
+                        CmsResource.CmsResourceDeleteMode.valueOf(-1));
+                }
+                siteRootResource = m_clonedCms.readResource(siteRoot);
+
+                adjustFolderType(siteRootResource);
             }
+
+            setTemplate(siteRootResource);
+
+            saveFavIcon(siteRoot);
+
+            handleOU(siteRootResource);
 
             // update the site manager state
             CmsSite newSite = getSiteFromForm();
-            OpenCms.getSiteManager().updateSite(cms, m_site, newSite);
+            OpenCms.getSiteManager().updateSite(m_clonedCms, m_site, newSite);
             // update the workplace server if the changed site was the workplace server
             if ((m_site != null) && m_site.getUrl().equals(OpenCms.getSiteManager().getWorkplaceServer())) {
                 OpenCms.getSiteManager().updateGeneralSettings(
-                    cms,
+                    m_clonedCms,
                     OpenCms.getSiteManager().getDefaultUri(),
                     newSite.getUrl(),
                     OpenCms.getSiteManager().getSharedFolder());
             }
             // write the system configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            try {
+                m_clonedCms.unlockResource(siteRootResource);
+            } catch (CmsLockException e) {
+                LOG.info("Unlock resource failed", e);
+            }
 
         } catch (Exception e) {
             LOG.error("Error while saving site.", e);
@@ -759,15 +1133,66 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
+     * Toogles the select OU combo box depending on create ou check box.<p>
+     */
+    void toggleSelectOU() {
+
+        boolean create = m_fieldCreateOU.getValue().booleanValue();
+
+        m_fieldSelectOU.setEnabled(!create);
+        m_fieldSelectOU.select(null);
+    }
+
+    /**
+     * Changes the folder type if necessary:<p>
+     *
+     * Type Folder -> Type SubsitemapFolder.<p>
+     * others -> no change.<p>
+     *
+     * @param siteRootResource resource to be changed
+     * @throws CmsLoaderException exception
+     * @throws CmsException exception
+     */
+    private void adjustFolderType(CmsResource siteRootResource) throws CmsLoaderException, CmsException {
+
+        if (OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeFolder.RESOURCE_TYPE_NAME) == OpenCms.getResourceManager().getResourceType(
+                siteRootResource)) {
+
+            siteRootResource.setType(
+                OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP).getTypeId());
+            m_clonedCms.writeResource(siteRootResource);
+        }
+    }
+
+    /**
+     * Creates new index html if no one was found.<p>
+     *
+     * @param siteRoot of new site
+     * @throws CmsIllegalArgumentException exception
+     * @throws CmsException exception
+     */
+    private void createIndexHTML(String siteRoot) throws CmsIllegalArgumentException, CmsException {
+
+        if (!m_clonedCms.existsResource(siteRoot + INDEX_HTML)) {
+            //Create index.html
+            I_CmsResourceType containerType = OpenCms.getResourceManager().getResourceType(
+                org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME);
+            m_clonedCms.createResource(siteRoot + INDEX_HTML, containerType);
+        }
+    }
+
+    /**
     * Helper method for creating the .content folder of a sub-sitemap.<p>
     *
     * @param cms the current CMS context
     * @param subSitemapFolder the sub-sitemap folder in which the .content folder should be created
-    * @return the created folder
+    * @param contentFolder the content folder path
     * @throws CmsException if something goes wrong
     * @throws CmsLoaderException if something goes wrong
     */
-    private CmsResource createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder)
+    private void createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder, String contentFolder)
     throws CmsException, CmsLoaderException {
 
         CmsResource configFile = null;
@@ -795,30 +1220,67 @@ public class CmsEditSiteForm extends VerticalLayout {
                 sitemapConfigName,
                 OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE));
         }
-        return configFile;
+
+        if (configFile != null) {
+            try {
+                CmsResource newFolder = m_clonedCms.createResource(
+                    contentFolder + NEW,
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME));
+                I_CmsResourceType containerType = OpenCms.getResourceManager().getResourceType(
+                    org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME);
+                CmsResource modelPage = m_clonedCms.createResource(newFolder.getRootPath() + BLANK_HTML, containerType);
+                String defTitle = Messages.get().getBundle(m_clonedCms.getRequestContext().getLocale()).key(
+                    Messages.GUI_DEFAULT_MODEL_TITLE_1,
+                    getFieldTitle());
+                String defDes = Messages.get().getBundle(m_clonedCms.getRequestContext().getLocale()).key(
+                    Messages.GUI_DEFAULT_MODEL_DESCRIPTION_1,
+                    getFieldTitle());
+                CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, defTitle, defTitle);
+                m_clonedCms.writePropertyObject(modelPage.getRootPath(), prop);
+                prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, defDes, defDes);
+                m_clonedCms.writePropertyObject(modelPage.getRootPath(), prop);
+                CmsFile file = m_clonedCms.readFile(configFile);
+                CmsXmlContent con = CmsXmlContentFactory.unmarshal(m_clonedCms, file);
+                con.addValue(m_clonedCms, MODEL_PAGE, Locale.ENGLISH, 0);
+                I_CmsXmlContentValue val = con.getValue(MODEL_PAGE_PAGE, Locale.ENGLISH);
+                val.setStringValue(m_clonedCms, modelPage.getRootPath());
+                file.setContents(con.marshal());
+                m_clonedCms.writeFile(file);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**
-     * Checks if there are at least one character in the folder name,
-     * also ensures that it ends with a '/' and doesn't start with '/'.<p>
+     * Creates root-folder for the new site.<p>
+     * If folder exist, the existing one will be returned.<p>
      *
-     * @param resourcename folder name to check (complete path)
-     * @return the validated folder name
-     * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
+     * @param siteRoot path to be created resp. read.
+     * @return site root folder
+     * @throws CmsException exception
      */
-    private String ensureFoldername(String resourcename) throws CmsIllegalArgumentException {
+    private CmsResource createSiteRootIfNeeded(String siteRoot) throws CmsException {
 
-        if (CmsStringUtil.isEmpty(resourcename)) {
-            throw new CmsIllegalArgumentException(
-                org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1, resourcename));
+        CmsResource siteRootResource;
+
+        // check if the site root already exists
+        try {
+            // take the existing site and do not perform any OU related actions
+            siteRootResource = m_clonedCms.readResource(siteRoot);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // not create a new site folder and the according OU if option is checked checked
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP);
+            siteRootResource = m_clonedCms.createResource(siteRoot, type);
+            CmsProperty folderTitle = new CmsProperty(
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                getFieldTitle(),
+                getFieldTitle());
+            m_clonedCms.writePropertyObject(siteRoot, folderTitle);
+
         }
-        if (!CmsResource.isFolder(resourcename)) {
-            resourcename = resourcename.concat("/");
-        }
-        if (resourcename.charAt(0) == '/') {
-            resourcename = resourcename.substring(1);
-        }
-        return resourcename;
+        return siteRootResource;
     }
 
     /**
@@ -839,13 +1301,22 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Returns the value of the site-folder.<p>
+     * Reads out bundle values from UI and stores keys with values in HashMap.<p>
      *
-     * @return String of folder path.
+     * @return hash map
      */
-    private String getFieldFolder() {
+    private Map<String, String> getBundleMap() {
 
-        return m_simpleFieldFolderName.getValue();
+        Map<String, String> bundles = new HashMap<String, String>();
+
+        if (m_bundleComponentKeyMap != null) {
+            Set<TextField> fields = m_bundleComponentKeyMap.keySet();
+
+            for (TextField field : fields) {
+                bundles.put(m_bundleComponentKeyMap.get(field), field.getValue());
+            }
+        }
+        return bundles;
     }
 
     /**
@@ -866,16 +1337,6 @@ public class CmsEditSiteForm extends VerticalLayout {
     private String getFieldTemplate() {
 
         return (String)m_simpleFieldTemplate.getValue();
-    }
-
-    /**
-     * Reads title field.<p>
-     *
-     * @return title as string.
-     */
-    private String getFieldTitle() {
-
-        return m_simpleFieldTitle.getValue();
     }
 
     /**
@@ -907,13 +1368,27 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
+     * Returns the name of a given resource by path.<p>
+     *
+     * @param path of the resource (root-path)
+     * @return name
+     */
+    private String getResourceName(String path) {
+
+        if (!path.endsWith("/")) {
+            path += "/";
+        }
+        return path.split("/")[path.split("/").length - 1];
+    }
+
+    /**
      * Reads out all forms and creates a site object.<p>
      *
      * @return the site object.
      */
     private CmsSite getSiteFromForm() {
 
-        String siteRoot = "/sites/" + getFieldFolder();
+        String siteRoot = "/" + ensureFoldername(getParentFolder()) + ensureFoldername(getFieldFolder());
         siteRoot = siteRoot.endsWith("/") ? siteRoot.substring(0, siteRoot.length() - 1) : siteRoot;
         CmsSiteMatcher matcher = CmsStringUtil.isNotEmpty(m_fieldSecureServer.getValue())
         ? new CmsSiteMatcher(m_fieldSecureServer.getValue())
@@ -944,6 +1419,50 @@ public class CmsEditSiteForm extends VerticalLayout {
         ret.setParameters((SortedMap<String, String>)getParameter());
 
         return ret;
+    }
+
+    /**
+     * Handles OU related operations.<p>
+     * Creates OU, adds site root to existing OU or does nothing.<p>
+     *
+     * @param siteRootResource Resource representing root folder
+     * @throws CmsException exception
+     */
+    private void handleOU(CmsResource siteRootResource) throws CmsException {
+
+        String ouDescription = "OU for: %(site)";
+
+        if (m_fieldCreateOU.isVisible() & (m_fieldCreateOU.getValue()).booleanValue()) {
+            OpenCms.getOrgUnitManager().createOrganizationalUnit(
+                m_clonedCms,
+                "/" + siteRootResource.getName(),
+                ouDescription.replace("%(site)", getFieldTitle() + " [" + siteRootResource.getRootPath() + "]"),
+                0,
+                siteRootResource.getRootPath());
+        }
+
+        if (m_fieldSelectOU.isEnabled() & (m_fieldSelectOU.getValue() != null)) {
+            try {
+                OpenCms.getOrgUnitManager().addResourceToOrgUnit(
+                    m_clonedCms,
+                    (String)m_fieldSelectOU.getValue(),
+                    siteRootResource.getRootPath());
+            } catch (CmsException e) {
+                LOG.error("Error on adding resource to OU", e);
+            }
+        }
+    }
+
+    /**
+     * Saves the favicon if one was uploaded.<p>
+     *
+     * @param siteRoot of site
+     */
+    private void saveFavIcon(String siteRoot) {
+
+        if (m_imageCounter > 0) {
+            saveIcon(m_clonedCms, siteRoot);
+        }
     }
 
     /**
@@ -982,16 +1501,6 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Sets the folder field.<p>
-     *
-     * @param newValue value of the field
-     */
-    private void setFieldFolder(String newValue) {
-
-        m_simpleFieldFolderName.setValue(newValue);
-    }
-
-    /**
      * Sets the server field.<p>
      *
      * @param newValue value of the field.
@@ -1012,6 +1521,26 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
+     * Sets the selected template as property to site root folder.<p>
+     *
+     * @param siteRootResource Resource representing root folder
+     * @throws CmsException exception
+     */
+    private void setTemplate(CmsResource siteRootResource) throws CmsException {
+
+        m_clonedCms.lockResource(siteRootResource);
+        // add template  property
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getFieldTemplate())) {
+            CmsProperty prop = new CmsProperty(
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                getFieldTemplate(),
+                getFieldTemplate());
+            m_clonedCms.writePropertyObject(siteRootResource.getRootPath(), prop);
+        }
+        m_clonedCms.unlockResource(siteRootResource);
+    }
+
+    /**
      * Set the combo box for the position.<p>
      * Copied from workplace tool.<p>
      */
@@ -1019,10 +1548,9 @@ public class CmsEditSiteForm extends VerticalLayout {
 
         m_fieldPosition.removeAllItems();
 
-        CmsObject cms = A_CmsUI.getCmsObject();
         List<CmsSite> sites = new ArrayList<CmsSite>();
         List<PositionComboBoxElementBean> beanList = new ArrayList<PositionComboBoxElementBean>();
-        for (CmsSite site : OpenCms.getSiteManager().getAvailableSites(cms, true)) {
+        for (CmsSite site : OpenCms.getSiteManager().getAvailableSites(m_clonedCms, true)) {
             if (site.getSiteMatcher() != null) {
                 sites.add(site);
             }
@@ -1113,8 +1641,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         try {
             I_CmsResourceType templateType = OpenCms.getResourceManager().getResourceType(
                 CmsResourceTypeJsp.getContainerPageTemplateTypeName());
-            CmsObject cms = A_CmsUI.getCmsObject();
-            List<CmsResource> templates = cms.readResources(
+            List<CmsResource> templates = m_clonedCms.readResources(
                 "/system/",
                 CmsResourceFilter.DEFAULT.addRequireType(templateType));
             for (CmsResource res : templates) {
@@ -1129,18 +1656,50 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Validates the dialog before the commit action is performed.<p>
-     *
-     * @throws Exception if sth. goes wrong
+     * Fill ComboBox for OU selection.<p>
      */
-    private void validateDialog() throws Exception {
+    private void setUpOUComboBox() {
 
-        CmsResource.checkResourceName(getFieldFolder()); //throws Exception
-        setFieldFolder(ensureFoldername(getFieldFolder()));
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getFieldFolder())) {
-            // the server's URL must not be empty or null
-            throw new CmsException(Messages.get().container(Messages.ERR_SERVER_URL_NOT_EMPTY_0));
+        try {
+            m_clonedCms.getRequestContext().setSiteRoot("");
+            List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
+                m_clonedCms,
+                "/",
+                true);
+            for (CmsOrganizationalUnit ou : ous) {
+                m_fieldSelectOU.addItem(ou.getName());
+            }
+            m_fieldSelectOU.setNewItemsAllowed(false);
+        } catch (CmsException e) {
+            LOG.error("Error on reading OUs", e);
         }
     }
 
+    /**
+     * Selects the OU of the site (if site has an OU), and disables the ComboBox.<p>
+     */
+    private void unableOUComboBox() {
+
+        try {
+            m_clonedCms.getRequestContext().setSiteRoot("");
+            List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
+                m_clonedCms,
+                "/",
+                true);
+            for (CmsOrganizationalUnit ou : ous) {
+                List<CmsResource> res = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                    m_clonedCms,
+                    ou.getName());
+                for (CmsResource resource : res) {
+                    if (resource.getRootPath().equals(m_site.getSiteRoot() + "/")) {
+                        m_fieldSelectOU.select(ou.getName());
+                    }
+                }
+            }
+
+        } catch (CmsException e) {
+            LOG.error("Error on reading OUs", e);
+        }
+        m_fieldSelectOU.setEnabled(false);
+    }
 }
