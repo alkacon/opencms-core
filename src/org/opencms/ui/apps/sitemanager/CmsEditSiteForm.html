@@ -27,20 +27,13 @@
 					<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
 						<f-cms-path-select-field _id="m_fieldErrorPage"  width="100%" use-root-paths="true" caption="%(key.GUI_SITE_ERRORPAGE_0)" description="%(key.GUI_SITE_ERRORPAGE_HELP_0)"/>
 						<v-combo-box _id="m_fieldPosition" immediate="true"  width="100%" caption="%(key.GUI_SITE_POSITION_0)"/>
-						<v-check-box _id="m_fieldWebServer" caption="%(key.GUI_SITE_WEBSERVER_0)" description="%(key.GUI_SITE_WEBSERVER_HELP_0)" />
-						<v-check-box _id="m_fieldCreateOU" caption="%(key.GUI_SITE_CREATEOU_0)" description="%(key.GUI_SITE_CREATEOU_HELP_0)" />						
-						<v-combo-box _id="m_fieldSelectOU" caption="%(key.GUI_SITE_SELECT_OU_0)" description="%(key.GUI_SITE_SELECT_OU_HELP_0)"/>
+						<v-combo-box _id="m_fieldSelectOU" width="100%" caption="%(key.GUI_SITE_SELECT_OU_0)" description="%(key.GUI_SITE_SELECT_OU_HELP_0)"/>
 						<v-text-field _id="m_fieldSecureServer" width="100%" caption="%(key.GUI_SITE_SECURESERVER_0)" description="%(key.GUI_SITE_SECURESERVER_HELP_0)" />
 						<v-check-box _id="m_fieldExclusiveURL" caption="%(key.GUI_SITE_SECURE_EXCL_URL_0)" description="%(key.GUI_SITE_SECURE_EXCL_HELP_0)" />
 						<v-check-box _id="m_fieldExclusiveError" caption="%(key.GUI_SITE_SECURE_EXCLERROR_0)" description="%(key.GUI_SITE_SECURE_EXCLERROR_HELP_0)" />
 					</v-form-layout>
 					
 				</v-vertical-layout>
-			</tab>
-			<tab caption="%(key.GUI_SITE_SITETEMPLATE_0)">
-				<v-form-layout _id="m_bundleValues" margin spacing style-name="o-formlayout-workplace-main">
-					<f-cms-path-select-field _id="m_fieldLoadSiteTemplate" width="100%" caption="%(key.GUI_SITE_LOAD_SITETEMPLATE_0)" description="%(key.GUI_SITE_LOAD_SITETEMPLATE_HELP_0)"/>
-				</v-form-layout>		
 			</tab>
 			<tab caption="%(key.GUI_SITE_PARAMETER_0)">
 				<v-form-layout _id="m_parameter" margin spacing style-name="o-formlayout-workplace-main">
@@ -50,6 +43,13 @@
 			<tab caption="%(key.GUI_SITE_ALIAS_0)">
 				<v-form-layout _id="m_aliases" margin spacing style-name="o-formlayout-workplace-main">
 					<v-button _id="m_addAlias" style-name="o-button-site">%(key.GUI_SITE_ADD_ALIAS_0)</v-button>
+				</v-form-layout>		
+			</tab>
+			<tab caption="%(key.GUI_SITE_CREATE_NEW_OPTIONS_0)">
+				<v-form-layout _id="m_bundleValues" margin spacing style-name="o-formlayout-workplace-main">
+					<v-check-box _id="m_fieldWebServer" caption="%(key.GUI_SITE_WEBSERVER_0)" description="%(key.GUI_SITE_WEBSERVER_HELP_0)" />
+					<v-check-box _id="m_fieldCreateOU" caption="%(key.GUI_SITE_CREATEOU_0)" description="%(key.GUI_SITE_CREATEOU_HELP_0)" />						
+					<f-cms-path-select-field _id="m_fieldLoadSiteTemplate" width="100%" caption="%(key.GUI_SITE_LOAD_SITETEMPLATE_0)" description="%(key.GUI_SITE_LOAD_SITETEMPLATE_HELP_0)"/>
 				</v-form-layout>		
 			</tab>
 		</v-tab-sheet>

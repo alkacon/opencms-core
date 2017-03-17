@@ -789,6 +789,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_CONFIRM_DELETE_SITES_1 = "GUI_SITE_CONFIRM_DELETE_SITES_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CREATE_NEW_OPTIONS_0 = "GUI_SITE_CREATE_NEW_OPTIONS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_CREATEOU_0 = "GUI_SITE_CREATEOU_0";
 
     /** Message constant for key in the resource bundle. */

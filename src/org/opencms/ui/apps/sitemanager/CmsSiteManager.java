@@ -56,6 +56,9 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     /**Constant.*/
     public static final String FAVICON = "favicon.ico";
 
+    /**Bundel name for the sites which are used as templates for new sites.*/
+    public static final String BUNDLE_NAME = "siteMacroBundle";
+
     /** The site icon path. */
     public static final String ICON = "apps/sites.png";
 

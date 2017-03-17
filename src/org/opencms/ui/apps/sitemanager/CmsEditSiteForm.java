@@ -42,7 +42,7 @@ import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.i18n.CmsResourceBundleLoader;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
@@ -68,15 +68,18 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
+import java.util.Properties;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -101,6 +104,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
@@ -557,7 +561,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                     return;
                 }
                 if (isValidInputSimple()) {
-                    m_tab.setSelectedTab(2);
+                    m_tab.setSelectedTab(4);
                     return;
                 }
                 m_tab.setSelectedTab(0);
@@ -671,7 +675,7 @@ public class CmsEditSiteForm extends VerticalLayout {
     public CmsEditSiteForm(CmsSiteManager manager, String siteRoot) {
         this(manager);
 
-        m_tab.removeTab(m_tab.getTab(2));
+        m_tab.removeTab(m_tab.getTab(4));
         m_simpleFieldTitle.removeTextChangeListener(null);
 
         m_simpleFieldParentFolderName.setEnabled(false);
@@ -923,7 +927,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                 m_fieldLoadSiteTemplate.getValue()
                     + CmsSiteManager.MACRO_FOLDER
                     + "/"
-                    + getResourceName(m_fieldLoadSiteTemplate.getValue())
+                    + CmsSiteManager.BUNDLE_NAME
                     + "_desc");
 
             //Read XML content of descriptor
@@ -936,9 +940,13 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             //Read related bundle
             //Name of the bundle of a template-site has to match to the name of the site folder!
-            ResourceBundle resourceBundle = CmsResourceBundleLoader.getBundle(
-                getResourceName(m_fieldLoadSiteTemplate.getValue()),
-                m_clonedCms.getRequestContext().getLocale());
+
+            //            CmsPropertyResourceBundle resourceBundle = new CmsPropertyResourceBundle(
+            //                new ByteArrayInputStream(
+            //                    m_clonedCms.readFile(bundleResource).getContents(),
+            //                    CmsLocaleManager.getResourceEncoding(m_clonedCms, bundleResource)));
+
+            Properties resourceBundle = getLocalizedBundle();
 
             //Iterate through content
             for (int i = 0; i < messages.getElementCount(); i++) {
@@ -947,7 +955,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                 String prefix = messages.getValue(i).getPath() + "/";
                 String key = xmlContentDesc.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(
                     m_clonedCms);
-                String label = resourceBundle.getString(key);
+                String label = resourceBundle.getProperty(key);
                 String defaultText = xmlContentDesc.getValue(
                     prefix + Descriptor.N_DESCRIPTION,
                     Descriptor.LOCALE).getStringValue(m_clonedCms);
@@ -956,12 +964,13 @@ public class CmsEditSiteForm extends VerticalLayout {
                 TextField field = new TextField();
                 field.setCaption(label);
                 field.setValue(defaultText);
+                field.setWidth("100%");
 
                 //Add vaadin component to UI and keep related key in HashMap
                 m_bundleValues.addComponent(field);
                 m_bundleComponentKeyMap.put(field, key);
             }
-        } catch (CmsException e) {
+        } catch (CmsException | IOException e) {
             LOG.error("Error reading bundle", e);
         }
     }
@@ -1153,6 +1162,7 @@ public class CmsEditSiteForm extends VerticalLayout {
      * @throws CmsLoaderException exception
      * @throws CmsException exception
      */
+    @SuppressWarnings("deprecation")
     private void adjustFolderType(CmsResource siteRootResource) throws CmsLoaderException, CmsException {
 
         if (OpenCms.getResourceManager().getResourceType(
@@ -1301,6 +1311,30 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
+     * Returns the correct varaint of a resource name accoreding to locale.<p>
+     *
+     * @param path where the considered resource is.
+     * @param baseName of the resource
+     * @return localized name of resource
+     */
+    private String getAvailableLocalVariant(String path, String baseName) {
+
+        A_CmsUI.get();
+        List<String> localVariations = CmsLocaleManager.getLocaleVariants(
+            baseName,
+            UI.getCurrent().getLocale(),
+            false,
+            true);
+
+        for (String name : localVariations) {
+            if (m_clonedCms.existsResource(path + name)) {
+                return name;
+            }
+        }
+        return null; //TODO throw exception
+    }
+
+    /**
      * Reads out bundle values from UI and stores keys with values in HashMap.<p>
      *
      * @return hash map
@@ -1340,6 +1374,32 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
+     * Gets localized property object.<p>
+     *
+     * @return Properties object
+     * @throws CmsException exception
+     * @throws IOException exception
+     */
+    private Properties getLocalizedBundle() throws CmsException, IOException {
+
+        CmsResource bundleResource = m_clonedCms.readResource(
+            m_fieldLoadSiteTemplate.getValue()
+                + CmsSiteManager.MACRO_FOLDER
+                + "/"
+                + getAvailableLocalVariant(
+                    m_fieldLoadSiteTemplate.getValue() + CmsSiteManager.MACRO_FOLDER + "/",
+                    CmsSiteManager.BUNDLE_NAME));
+
+        Properties ret = new Properties();
+        InputStreamReader reader = new InputStreamReader(
+            new ByteArrayInputStream(m_clonedCms.readFile(bundleResource).getContents()),
+            StandardCharsets.UTF_8);
+        ret.load(reader);
+
+        return ret;
+    }
+
+    /**
      * Reads parameter from form.<p>
      *
      * @return a Map with Parameter information.
@@ -1365,20 +1425,6 @@ public class CmsEditSiteForm extends VerticalLayout {
     private String getParameterString(Entry<String, String> parameter) {
 
         return parameter.getKey() + "=" + parameter.getValue();
-    }
-
-    /**
-     * Returns the name of a given resource by path.<p>
-     *
-     * @param path of the resource (root-path)
-     * @return name
-     */
-    private String getResourceName(String path) {
-
-        if (!path.endsWith("/")) {
-            path += "/";
-        }
-        return path.split("/")[path.split("/").length - 1];
     }
 
     /**
