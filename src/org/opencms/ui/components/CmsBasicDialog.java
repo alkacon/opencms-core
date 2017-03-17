@@ -261,6 +261,32 @@ public class CmsBasicDialog extends VerticalLayout {
         }
     }
 
+    public void displayResourceInfoDirectly(List<CmsResourceInfo> resourceInfos) {
+
+        if (m_infoComponent != null) {
+            m_mainPanel.removeComponent(m_infoComponent);
+            m_infoComponent = null;
+        }
+        if ((resourceInfos != null) && !resourceInfos.isEmpty()) {
+            if (resourceInfos.size() == 1) {
+                m_infoComponent = resourceInfos.get(0);
+                m_mainPanel.addComponent(m_infoComponent, 0);
+            } else {
+                m_infoComponent = createResourceListPanelDirectly(
+                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_RESOURCE_INFO_0),
+                    resourceInfos);
+                m_mainPanel.addComponent(m_infoComponent, 0);
+                m_mainPanel.setExpandRatio(m_infoComponent, 1);
+
+                // reset expand ratio of the content panel
+                m_contentPanel.setSizeUndefined();
+                m_contentPanel.setWidth("100%");
+                m_mainPanel.setExpandRatio(m_contentPanel, 0);
+            }
+
+        }
+    }
+
     /**
      * Gets the resources for which the resource info boxes should be displayed.<p>
      *
@@ -420,6 +446,23 @@ public class CmsBasicDialog extends VerticalLayout {
         resourcePanel.setMargin(true);
         for (CmsResource resource : resources) {
             resourcePanel.addComponent(new CmsResourceInfo(resource));
+        }
+        return result;
+    }
+
+    protected Panel createResourceListPanelDirectly(String caption, List<CmsResourceInfo> resourceInfo) {
+
+        Panel result = new Panel(caption);
+        result.addStyleName("v-scrollable");
+        result.setSizeFull();
+        VerticalLayout resourcePanel = new VerticalLayout();
+        result.setContent(resourcePanel);
+        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_MARGIN);
+        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
+        resourcePanel.setSpacing(true);
+        resourcePanel.setMargin(true);
+        for (CmsResourceInfo resource : resourceInfo) {
+            resourcePanel.addComponent(resource);
         }
         return result;
     }
