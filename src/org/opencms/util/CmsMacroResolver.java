@@ -28,9 +28,14 @@
 package org.opencms.util;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
@@ -40,9 +45,12 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -196,14 +204,69 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** The messages resource bundle to resolve localized keys with. */
     protected CmsMessages m_messages;
 
-    /** The resource name to use for resolving macros. */
-    protected String m_resourceName;
-
     /** The request parameter map, used for better compatibility with multi part requests. */
     protected Map<String, String[]> m_parameterMap;
 
+    /** The resource name to use for resolving macros. */
+    protected String m_resourceName;
+
     /** A map from names of dynamic macros to the factories which generate their values. */
     private Map<String, Factory> m_factories;
+
+    /**
+     * Copies resources, adjust internal links (if adjustLinks==true) and resolves macros (if keyValue map is set).<p>
+     *
+     * @param cms CmsObject
+     * @param source path
+     * @param destination path
+     * @param keyValue map to be used for macro resolver
+     * @param adjustLinks boolean, true means internal links get adjusted.
+     * @throws CmsException exception
+     */
+    public static void copyAndResolveMacro(
+        CmsObject cms,
+        String source,
+        String destination,
+        Map<String, String> keyValue,
+        boolean adjustLinks)
+    throws CmsException {
+
+        cms.copyResource(source, destination);
+
+        if (adjustLinks) {
+            cms.adjustLinks(source, destination);
+        }
+
+        //Guards to check if keyValue is set correctly, otherwise no adjustment is done
+        if (keyValue == null) {
+            return;
+        }
+        if (keyValue.isEmpty()) {
+            return;
+        }
+
+        CmsMacroResolver macroResolver = new CmsMacroResolver();
+        for (String key : keyValue.keySet()) {
+
+            macroResolver.addMacro(key, keyValue.get(key));
+        }
+
+        //Collect all resources to loop over
+        List<CmsResource> resoucesToCopy = cms.readResources(destination, CmsResourceFilter.ALL, true);
+        for (CmsResource resource : resoucesToCopy) {
+            if (resource.isFile()
+                && (resource.getTypeId() != CmsResourceTypeBinary.getStaticTypeId())
+                && (resource.getTypeId() != CmsResourceTypeImage.getStaticTypeId())) {
+                CmsFile file = cms.readFile(resource);
+                CmsMacroResolver.updateFile(cms, file, macroResolver);
+            }
+            CmsMacroResolver.updateProperties(cms, resource, macroResolver);
+        }
+
+        // apply macro to the folder itself
+        CmsResource resource = cms.readResource(destination, CmsResourceFilter.ALL);
+        CmsMacroResolver.updateProperties(cms, resource, macroResolver);
+    }
 
     /**
      * Adds macro delimiters to the given input,
@@ -486,6 +549,72 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return input.substring(2, input.length() - 1);
         }
         return null;
+    }
+
+    /**
+     * Updates a single file with the given macro resolver.<p>
+     *
+     * @param cms the cms context
+     * @param file the file to update
+     * @param macroResolver the macro resolver to update with
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private static void updateFile(CmsObject cms, CmsFile file, CmsMacroResolver macroResolver) throws CmsException {
+
+        String encoding = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
+            OpenCms.getSystemInfo().getDefaultEncoding());
+        String content;
+        try {
+            content = macroResolver.resolveMacros(new String(file.getContents(), encoding));
+        } catch (UnsupportedEncodingException e) {
+            try {
+                content = macroResolver.resolveMacros(
+                    new String(file.getContents(), Charset.defaultCharset().toString()));
+            } catch (UnsupportedEncodingException e1) {
+                content = macroResolver.resolveMacros(new String(file.getContents()));
+            }
+        }
+        // update the content
+        try {
+            file.setContents(content.getBytes(encoding));
+        } catch (UnsupportedEncodingException e) {
+            try {
+                file.setContents(content.getBytes(Charset.defaultCharset().toString()));
+            } catch (UnsupportedEncodingException e1) {
+                file.setContents(content.getBytes());
+            }
+        }
+        // write the target file
+        cms.writeFile(file);
+    }
+
+    /**
+     * Updates all properties of the given resource with the given macro resolver.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource to update the properties for
+     * @param macroResolver the macro resolver to use
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private static void updateProperties(CmsObject cms, CmsResource resource, CmsMacroResolver macroResolver)
+    throws CmsException {
+
+        Iterator<CmsProperty> it = cms.readPropertyObjects(resource, false).iterator();
+        while (it.hasNext()) {
+            CmsProperty property = it.next();
+            String resValue = null;
+            if (property.getResourceValue() != null) {
+                resValue = macroResolver.resolveMacros(property.getResourceValue());
+            }
+            String strValue = null;
+            if (property.getStructureValue() != null) {
+                strValue = macroResolver.resolveMacros(property.getStructureValue());
+            }
+            CmsProperty newProperty = new CmsProperty(property.getName(), strValue, resValue);
+            cms.writePropertyObject(cms.getSitePath(resource), newProperty);
+        }
     }
 
     /**
@@ -987,4 +1116,5 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             }
         };
     }
+
 }
