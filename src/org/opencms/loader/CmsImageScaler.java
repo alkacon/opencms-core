@@ -168,6 +168,9 @@ public class CmsImageScaler {
     /** The target width (required). */
     private int m_width;
 
+    /** Indicates if this image scaler was only used to read the image properties. */
+    private boolean m_isOriginalScaler;
+
     /**
      * Creates a new, empty image scaler object.<p>
      */
@@ -223,6 +226,7 @@ public class CmsImageScaler {
     public CmsImageScaler(CmsObject cms, CmsResource res) {
 
         init();
+        m_isOriginalScaler = true;
         String sizeValue = null;
         if ((cms != null) && (res != null)) {
             try {
@@ -659,6 +663,20 @@ public class CmsImageScaler {
     }
 
     /**
+     * Creates a request parameter configured with the values from this image scaler, also
+     * appends a <code>'?'</code> char as a prefix so that this may be directly appended to an image URL.<p>
+     *
+     * This can be appended to an image request in order to apply image scaling parameters.<p>
+     *
+     * @return a request parameter configured with the values from this image scaler
+     * @see #toRequestParam()
+     */
+    public String getRequestParam() {
+
+        return toRequestParam();
+    }
+
+    /**
      * Returns a new image scaler that is a rescaler from <code>this</code> scaler
      * size to the given target scaler size.<p>
      *
@@ -917,6 +935,18 @@ public class CmsImageScaler {
         }
 
         return (width > downWidth) || (height > downHeight);
+    }
+
+    /**
+     * Returns <code>true</code> if the image scaler was
+     * only used to read image properties from the VFS.
+     *
+     * @return <code>true</code> if the image scaler was
+     * only used to read image properties from the VFS
+     */
+    public boolean isOriginalScaler() {
+
+        return m_isOriginalScaler;
     }
 
     /**
@@ -1550,6 +1580,7 @@ public class CmsImageScaler {
         m_color = Color.WHITE;
         m_filters = new ArrayList<String>();
         m_maxBlurSize = CmsImageLoader.getMaxBlurSize();
+        m_isOriginalScaler = false;
     }
 
     /**
@@ -1600,5 +1631,6 @@ public class CmsImageScaler {
         m_cropWidth = source.m_cropWidth;
         m_cropX = source.m_cropX;
         m_cropY = source.m_cropY;
+        m_isOriginalScaler = source.m_isOriginalScaler;
     }
 }
