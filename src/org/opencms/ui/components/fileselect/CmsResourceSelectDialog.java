@@ -125,6 +125,8 @@ public class CmsResourceSelectDialog extends CustomComponent {
     /** Boolean flag indicating whether the tree is currently filtered. */
     private boolean m_isSitemapView = true;
 
+    private CmsObject m_cms;
+
     /** The site root. */
     private String m_siteRoot;
 
@@ -140,9 +142,19 @@ public class CmsResourceSelectDialog extends CustomComponent {
      */
     public CmsResourceSelectDialog(CmsResourceFilter filter)
     throws CmsException {
-        m_filter = filter;
+        this(filter, A_CmsUI.getCmsObject());
+    }
 
-        CmsObject cms = A_CmsUI.getCmsObject();
+    /**
+     * public constructor with given CmsObject.<p>
+     *
+     * @param filter filter the resource filter to use
+     * @param cms CmsObejct to use
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResourceSelectDialog(CmsResourceFilter filter, CmsObject cms)
+    throws CmsException {
+        m_filter = filter;
         setCompositionRoot(new CmsResourceSelectDialogContents());
         getSiteSelector().setContainerDataSource(CmsVaadinUtils.getAvailableSitesContainer(cms, PROPERTY_SITE_CAPTION));
         m_siteRoot = cms.getRequestContext().getSiteRoot();

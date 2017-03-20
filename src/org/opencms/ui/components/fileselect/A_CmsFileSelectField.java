@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components.fileselect;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -73,6 +74,9 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     /** The text field containing the selected path. */
     protected TextField m_textField;
 
+    /**CmsObject instance, doesn't have to be set. In normal case this is null.*/
+    protected CmsObject m_cms;
+
     /**
      * Creates a new instance.<p>
      */
@@ -80,6 +84,16 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
         m_textField = new TextField();
         m_textField.setWidth("100%");
         m_filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED;
+    }
+
+    /**
+     * Method to set cms object to make it possible to user other site context.<p>
+     *
+     * @param cms Object to use
+     */
+    public void setCmsObject(CmsObject cms) {
+
+        m_cms = cms;
     }
 
     /**
@@ -156,7 +170,14 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
                 ? m_fileSelectCaption
                 : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
             A_CmsUI.get().addWindow(window);
-            CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
+            CmsResourceSelectDialog fileSelect;
+
+            //Switch if cms object was set.
+            if (m_cms == null) {
+                fileSelect = new CmsResourceSelectDialog(m_filter);
+            } else {
+                fileSelect = new CmsResourceSelectDialog(m_filter, m_cms);
+            }
             fileSelect.showSitemapView(m_startWithSitemapView);
 
             T value = getValue();
