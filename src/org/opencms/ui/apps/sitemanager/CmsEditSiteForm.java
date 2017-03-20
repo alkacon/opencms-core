@@ -500,6 +500,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         m_autoSetFolderName = "";
         try {
             m_clonedCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            m_clonedCms.getRequestContext().setSiteRoot("");
         } catch (CmsException e) {
             LOG.error("Error cloning cms object", e);
         }
@@ -522,6 +523,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
         m_simpleFieldParentFolderName.setValue(CmsSiteManager.PATH_SITES);
         m_simpleFieldParentFolderName.setUseRootPaths(true);
+        m_simpleFieldParentFolderName.setCmsObject(m_clonedCms);
         m_simpleFieldParentFolderName.setResourceFilter(CmsResourceFilter.requireType(new CmsResourceTypeFolder()));
 
         m_manager = manager;
@@ -662,6 +664,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         });
 
         m_fieldLoadSiteTemplate.setUseRootPaths(true);
+        m_fieldLoadSiteTemplate.setCmsObject(m_clonedCms);
         m_fieldLoadSiteTemplate.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
     }
 
@@ -718,8 +721,6 @@ public class CmsEditSiteForm extends VerticalLayout {
         }
 
         try {
-
-            m_clonedCms.getRequestContext().setSiteRoot("");
             CmsProperty template = m_clonedCms.readPropertyObject(
                 siteRoot,
                 CmsPropertyDefinition.PROPERTY_TEMPLATE,
