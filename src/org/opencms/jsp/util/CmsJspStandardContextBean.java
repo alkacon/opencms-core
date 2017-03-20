@@ -677,7 +677,10 @@ public final class CmsJspStandardContextBean {
             if (m_metaMappings.containsKey(arg0)) {
                 MetaMapping mapping = m_metaMappings.get(arg0);
                 try {
-                    CmsResource res = m_cms.readResource(mapping.m_contentId);
+                    CmsResourceFilter filter = getIsEditMode()
+                    ? CmsResourceFilter.IGNORE_EXPIRATION
+                    : CmsResourceFilter.DEFAULT;
+                    CmsResource res = m_cms.readResource(mapping.m_contentId, filter);
                     CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, res, m_request);
                     if (content.hasLocale(getLocale())) {
                         I_CmsXmlContentValue val = content.getValue(mapping.m_elementXPath, getLocale());
@@ -1994,6 +1997,9 @@ public final class CmsJspStandardContextBean {
                 CmsMacroResolver resolver = new CmsMacroResolver();
                 resolver.setCmsObject(m_cms);
                 resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(getLocale()));
+                CmsResourceFilter filter = getIsEditMode()
+                ? CmsResourceFilter.IGNORE_EXPIRATION
+                : CmsResourceFilter.DEFAULT;
                 m_metaMappings = new HashMap<String, MetaMapping>();
                 for (CmsContainerBean container : m_page.getContainers().values()) {
                     for (CmsContainerElementBean element : container.getElements()) {
@@ -2007,7 +2013,9 @@ public final class CmsJspStandardContextBean {
                                 m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
                                     new CmsUUID(formatterConfigId));
                         }
-                        addMappingsForFormatter(formatterBean, element.getId(), resolver, false);
+                        if ((formatterBean != null) && m_cms.existsResource(element.getId(), filter)) {
+                            addMappingsForFormatter(formatterBean, element.getId(), resolver, false);
+                        }
 
                     }
                 }
