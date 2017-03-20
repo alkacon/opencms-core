@@ -85,6 +85,12 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_WRITER_DOC_UPDATE_3 = "LOG_SOLR_WRITER_DOC_UPDATE_3";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_ERR_MAPPING_TO_INTERNALLY_USED_FIELD_2 = "LOG_SOLR_ERR_MAPPING_TO_INTERNALLY_USED_FIELD_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_ERR_MAPPING_TO_INTERNALLY_USED_FIELD_3 = "LOG_SOLR_ERR_MAPPING_TO_INTERNALLY_USED_FIELD_3";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.search.solr.messages";
 
