@@ -261,6 +261,11 @@ public class CmsBasicDialog extends VerticalLayout {
         }
     }
 
+    /**
+     * Displays the resource info panel.<p>
+     *
+     * @param resourceInfos to display
+     */
     public void displayResourceInfoDirectly(List<CmsResourceInfo> resourceInfos) {
 
         if (m_infoComponent != null) {
@@ -450,6 +455,13 @@ public class CmsBasicDialog extends VerticalLayout {
         return result;
     }
 
+    /**
+     * Creates a resource list panel.<p>
+     *
+     * @param caption the caption to use
+     * @param resourceInfo the resource-infos
+     * @return the panel
+     */
     protected Panel createResourceListPanelDirectly(String caption, List<CmsResourceInfo> resourceInfo) {
 
         Panel result = new Panel(caption);

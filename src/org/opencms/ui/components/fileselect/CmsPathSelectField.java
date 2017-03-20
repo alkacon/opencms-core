@@ -40,11 +40,11 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** Flag indicating if only root paths are used. */
-    private boolean m_useRootPaths;
-
     /** Flag to indicate whether we are currently setting the internal value. */
     private boolean m_settingInternalValue;
+
+    /** Flag indicating if only root paths are used. */
+    private boolean m_useRootPaths;
 
     /**
      * Creates a new instance.<p>

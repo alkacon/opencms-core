@@ -125,8 +125,6 @@ public class CmsResourceSelectDialog extends CustomComponent {
     /** Boolean flag indicating whether the tree is currently filtered. */
     private boolean m_isSitemapView = true;
 
-    private CmsObject m_cms;
-
     /** The site root. */
     private String m_siteRoot;
 
