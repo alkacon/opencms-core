@@ -41,9 +41,16 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.apps.sitemanager.CmsSiteManager;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
+import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentValueSequence;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -51,8 +58,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.jsp.PageContext;
 
@@ -231,7 +240,31 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         boolean adjustLinks)
     throws CmsException {
 
-        cms.copyResource(source, destination);
+        copyAndResolveMacro(cms, source, destination, keyValue, adjustLinks, CmsResource.COPY_AS_NEW);
+    }
+
+    /**
+     * Copies resources, adjust internal links (if adjustLinks==true) and resolves macros (if keyValue map is set).<p>
+     *
+     * @param cms CmsObject
+     * @param source path
+     * @param destination path
+     * @param keyValue map to be used for macro resolver
+     * @param adjustLinks boolean, true means internal links get adjusted.
+     * @param copyMode copyMode
+     * @throws CmsException exception
+     */
+
+    public static void copyAndResolveMacro(
+        CmsObject cms,
+        String source,
+        String destination,
+        Map<String, String> keyValue,
+        boolean adjustLinks,
+        CmsResource.CmsResourceCopyMode copyMode)
+    throws CmsException {
+
+        cms.copyResource(source, destination, copyMode);
 
         if (adjustLinks) {
             cms.adjustLinks(source, destination);
@@ -246,6 +279,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         }
 
         CmsMacroResolver macroResolver = new CmsMacroResolver();
+        macroResolver.setKeepEmptyMacros(true);
         for (String key : keyValue.keySet()) {
 
             macroResolver.addMacro(key, keyValue.get(key));
@@ -265,7 +299,14 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         // apply macro to the folder itself
         CmsResource resource = cms.readResource(destination, CmsResourceFilter.ALL);
+
         CmsMacroResolver.updateProperties(cms, resource, macroResolver);
+
+        if (cms.existsResource(ensureFoldername(destination) + CmsSiteManager.MACRO_FOLDER)) {
+            cms.deleteResource(
+                ensureFoldername(destination) + CmsSiteManager.MACRO_FOLDER,
+                CmsResource.CmsResourceDeleteMode.valueOf(-1));
+        }
     }
 
     /**
@@ -284,6 +325,45 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         result.append(input);
         result.append(I_CmsMacroResolver.MACRO_END);
         return result.toString();
+    }
+
+    /**
+     * Reads a bundle (key, value, descriptor) from Descriptor Resource and property resource.<p>
+     *
+     * @param resourceBundle property resource
+     * @param descriptor resource
+     * @param clonedCms cms instance
+     * @return Map <key, [value, descriptor]>
+     * @throws CmsXmlException exception
+     * @throws CmsException exception
+     */
+    public static Map<String, String[]> getBundleMapFromResources(
+        Properties resourceBundle,
+        CmsResource descriptor,
+        CmsObject clonedCms)
+    throws CmsXmlException, CmsException {
+
+        Map<String, String[]> ret = new LinkedHashMap<String, String[]>();
+
+        //Read XML content of descriptor
+        CmsXmlContent xmlContentDesc = CmsXmlContentFactory.unmarshal(clonedCms, clonedCms.readFile(descriptor));
+        CmsXmlContentValueSequence messages = xmlContentDesc.getValueSequence(Descriptor.N_MESSAGE, Descriptor.LOCALE);
+
+        //Iterate through content
+        for (int i = 0; i < messages.getElementCount(); i++) {
+
+            //Read key and default text from descriptor, label from bundle (localized)
+            String prefix = messages.getValue(i).getPath() + "/";
+            String key = xmlContentDesc.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(
+                clonedCms);
+            String label = resourceBundle.getProperty(key);
+            String defaultText = xmlContentDesc.getValue(
+                prefix + Descriptor.N_DESCRIPTION,
+                Descriptor.LOCALE).getStringValue(clonedCms);
+
+            ret.put(key, new String[] {label, defaultText});
+        }
+        return ret;
     }
 
     /**
@@ -549,6 +629,29 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return input.substring(2, input.length() - 1);
         }
         return null;
+    }
+
+    /**
+     * Checks if there are at least one character in the folder name,
+     * also ensures that it ends with a '/' and doesn't start with '/'.<p>
+     *
+     * @param resourcename folder name to check (complete path)
+     * @return the validated folder name
+     * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
+     */
+    private static String ensureFoldername(String resourcename) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmpty(resourcename)) {
+            throw new CmsIllegalArgumentException(
+                org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1, resourcename));
+        }
+        if (!CmsResource.isFolder(resourcename)) {
+            resourcename = resourcename.concat("/");
+        }
+        if (resourcename.charAt(0) == '/') {
+            resourcename = resourcename.substring(1);
+        }
+        return resourcename;
     }
 
     /**
@@ -1116,5 +1219,4 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             }
         };
     }
-
 }

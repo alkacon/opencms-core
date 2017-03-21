@@ -57,13 +57,11 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.content.CmsXmlContentValueSequence;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayInputStream;
@@ -930,41 +928,20 @@ public class CmsEditSiteForm extends VerticalLayout {
                     + "/"
                     + CmsSiteManager.BUNDLE_NAME
                     + "_desc");
-
-            //Read XML content of descriptor
-            CmsXmlContent xmlContentDesc = CmsXmlContentFactory.unmarshal(
-                m_clonedCms,
-                m_clonedCms.readFile(descriptor));
-            CmsXmlContentValueSequence messages = xmlContentDesc.getValueSequence(
-                Descriptor.N_MESSAGE,
-                Descriptor.LOCALE);
-
             //Read related bundle
-            //Name of the bundle of a template-site has to match to the name of the site folder!
-
-            //            CmsPropertyResourceBundle resourceBundle = new CmsPropertyResourceBundle(
-            //                new ByteArrayInputStream(
-            //                    m_clonedCms.readFile(bundleResource).getContents(),
-            //                    CmsLocaleManager.getResourceEncoding(m_clonedCms, bundleResource)));
 
             Properties resourceBundle = getLocalizedBundle();
+            Map<String, String[]> bundleKeyDescriptorMap = CmsMacroResolver.getBundleMapFromResources(
+                resourceBundle,
+                descriptor,
+                m_clonedCms);
 
-            //Iterate through content
-            for (int i = 0; i < messages.getElementCount(); i++) {
-
-                //Read key and default text from descriptor, label from bundle (localized)
-                String prefix = messages.getValue(i).getPath() + "/";
-                String key = xmlContentDesc.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(
-                    m_clonedCms);
-                String label = resourceBundle.getProperty(key);
-                String defaultText = xmlContentDesc.getValue(
-                    prefix + Descriptor.N_DESCRIPTION,
-                    Descriptor.LOCALE).getStringValue(m_clonedCms);
+            for (String key : bundleKeyDescriptorMap.keySet()) {
 
                 //Create TextField
                 TextField field = new TextField();
-                field.setCaption(label);
-                field.setValue(defaultText);
+                field.setCaption(bundleKeyDescriptorMap.get(key)[0]);
+                field.setValue(bundleKeyDescriptorMap.get(key)[1]);
                 field.setWidth("100%");
 
                 //Add vaadin component to UI and keep related key in HashMap
@@ -1088,11 +1065,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                     siteRoot,
                     bundle,
                     true);
-                if (m_clonedCms.existsResource(siteRoot + CmsSiteManager.MACRO_FOLDER)) {
-                    m_clonedCms.deleteResource(
-                        siteRoot + CmsSiteManager.MACRO_FOLDER,
-                        CmsResource.CmsResourceDeleteMode.valueOf(-1));
-                }
+
                 siteRootResource = m_clonedCms.readResource(siteRoot);
 
                 adjustFolderType(siteRootResource);
