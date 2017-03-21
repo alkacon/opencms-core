@@ -1344,7 +1344,11 @@ public class CmsEditSiteForm extends VerticalLayout {
      */
     private String getFieldTemplate() {
 
-        return (String)m_simpleFieldTemplate.getValue();
+        Object value = m_simpleFieldTemplate.getValue();
+        if (value != null) {
+            return (String)value;
+        }
+        return "";
     }
 
     /**
@@ -1667,7 +1671,9 @@ public class CmsEditSiteForm extends VerticalLayout {
             for (CmsResource res : templates) {
                 m_simpleFieldTemplate.addItem(res.getRootPath());
             }
-            m_simpleFieldTemplate.setValue(templates.get(0).getRootPath());
+            if (!templates.isEmpty()) {
+                m_simpleFieldTemplate.setValue(templates.get(0).getRootPath());
+            }
             m_simpleFieldTemplate.setNullSelectionAllowed(false);
 
         } catch (CmsException e) {
