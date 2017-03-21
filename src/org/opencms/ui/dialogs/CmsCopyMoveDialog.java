@@ -47,11 +47,14 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.sitemanager.CmsSiteManager;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsMacroResolverDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -154,6 +157,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** The resources to update after dialog close. */
     private Set<CmsUUID> m_updateResources;
 
+    /**Dialog for editing key value pairs used as macros. Only used for sitemap folder*/
+    private CmsMacroResolverDialog m_macroDialog;
+
     /**
      * Constructor.<p>
      *
@@ -176,7 +182,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                submit(false);
+                submit(false, null);
             }
         });
         addButton(m_okButton);
@@ -205,7 +211,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             @Override
             protected void ok() {
 
-                submit(false);
+                submit(false, null);
             }
         });
     }
@@ -243,16 +249,32 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     }
 
     /**
+     * Get bunle values from dialog.<p>
+     *
+     * @return map of key-value pairs to be resolved as macro. if null or empty, then ignored
+     */
+    protected Map<String, String> getMacroMap() {
+
+        return m_macroDialog.getMacroMap();
+    }
+
+    /**
      * Performs the single resource operation.<p>
      *
      * @param source the source
      * @param target the target
      * @param action the action
      * @param overwrite if existing resources should be overwritten
+     * @param makroMap map of key-value pairs to be resolved as macro. if null or empty, then ignored
      *
      * @throws CmsException in case the operation fails
      */
-    protected void performSingleOperation(CmsResource source, CmsResource target, Action action, boolean overwrite)
+    protected void performSingleOperation(
+        CmsResource source,
+        CmsResource target,
+        Action action,
+        boolean overwrite,
+        Map<String, String> makroMap)
     throws CmsException {
 
         String name;
@@ -268,7 +290,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         } else {
             name = source.getName();
         }
-        performSingleOperation(source, target, name, action, overwrite);
+        performSingleOperation(source, target, name, action, overwrite, makroMap);
     }
 
     /**
@@ -279,6 +301,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
      * @param name the target resource name
      * @param action the action
      * @param overwrite if existing resources should be overwritten
+     * @param macroMap map of key-value pairs to be resolved as macro. if null or empty, then ignored
      *
      * @throws CmsException in case the operation fails
      */
@@ -287,7 +310,8 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         CmsResource target,
         String name,
         Action action,
-        boolean overwrite)
+        boolean overwrite,
+        Map<String, String> macroMap)
     throws CmsException {
 
         // add new parent and source to the update resources
@@ -356,11 +380,17 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                     copyMode = CmsResource.COPY_PRESERVE_SIBLING;
             }
 
-            getRootCms().copyResource(source.getRootPath(), finalTarget, copyMode);
-            if (action == Action.sub_sitemap) {
-                getRootCms().adjustLinks(source.getRootPath(), finalTarget);
-            }
+            //Copies resources. Adjust links if action==Action.sub_sitemap, resolves macro if marcoMap if not null or empty
+            CmsMacroResolver.copyAndResolveMacro(
+                getRootCms(),
+                source.getRootPath(),
+                finalTarget,
+                macroMap,
+                action == Action.sub_sitemap,
+                copyMode);
+
             getRootCms().unlockResource(finalTarget);
+
             CmsResource copyResource = getRootCms().readResource(finalTarget);
             m_updateResources.add(copyResource.getStructureId());
         }
@@ -378,8 +408,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
      * Submits the dialog action.<p>
      *
      * @param overwrite to forcefully overwrite existing files
+     * @param makroMap map of key-value pairs to be resolved as macro. if null or empty, then ignored
      */
-    void submit(boolean overwrite) {
+    void submit(boolean overwrite, Map<String, String> makroMap) {
 
         try {
             CmsResource targetFolder;
@@ -417,10 +448,18 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             }
             Action action = m_actionCombo != null ? (Action)m_actionCombo.getValue() : Action.move;
             Map<CmsResource, CmsException> errors = new HashMap<CmsResource, CmsException>();
+
+            //Check if dialog for macro resolver has to be shown: action correct?, makroMap==null (default, not set by dialog yet)
+            if ((action == Action.sub_sitemap) & (makroMap == null)) {
+                if (CmsSiteManager.isFolderWithMacros(getRootCms(), m_context.getResources().get(0).getRootPath())) {
+                    showMacroResolverDialog(m_context.getResources().get(0));
+                    return;
+                }
+            }
             if (targetName == null) {
                 for (CmsResource source : m_context.getResources()) {
                     try {
-                        performSingleOperation(source, targetFolder, action, overwrite);
+                        performSingleOperation(source, targetFolder, action, overwrite, makroMap);
                     } catch (CmsException e) {
                         errors.put(source, e);
                         LOG.error(
@@ -435,7 +474,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 // this will only be the case in a single resource scenario
                 CmsResource source = m_context.getResources().get(0);
                 try {
-                    performSingleOperation(source, targetFolder, targetName, action, overwrite);
+                    performSingleOperation(source, targetFolder, targetName, action, overwrite, makroMap);
                 } catch (CmsException e) {
                     errors.put(source, e);
                     LOG.error(
@@ -694,14 +733,14 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
         final Window window = CmsBasicDialog.prepareWindow();
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONFIRM_OVERWRITE_TITLE_0));
-        CmsConfirmationDialog dialog = new CmsConfirmationDialog(
+        final CmsConfirmationDialog dialog = new CmsConfirmationDialog(
             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_CONFIRM_OVERWRITE_MESSAGE_0),
             new Runnable() {
 
                 public void run() {
 
                     window.close();
-                    submit(true);
+                    submit(true, null);
                 }
             },
             new Runnable() {
@@ -714,6 +753,36 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             });
         dialog.displayResourceInfo(collidingResources);
         window.setContent(dialog);
+        UI.getCurrent().addWindow(window);
+    }
+
+    /**
+     * Displays the resolve macro dialog.<p>
+     *
+     * @param resource to be copied.
+     */
+    private void showMacroResolverDialog(CmsResource resource) {
+
+        final Window window = CmsBasicDialog.prepareWindow();
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SET_MACRO_VALUES_TITLE_0));
+        m_macroDialog = new CmsMacroResolverDialog(new Runnable() {
+
+            public void run() {
+
+                Map<String, String> map = getMacroMap();
+                window.close();
+                submit(true, map); //Overwrite true because this was checked first. If no overwrite, window is closed and this code isn't called
+            }
+        }, new Runnable() {
+
+            public void run() {
+
+                window.close();
+                cancel();
+            }
+        }, resource);
+        m_macroDialog.displayResourceInfo(Collections.singletonList(resource));
+        window.setContent(m_macroDialog);
         UI.getCurrent().addWindow(window);
     }
 
