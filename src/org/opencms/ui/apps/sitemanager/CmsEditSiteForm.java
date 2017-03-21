@@ -915,7 +915,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         //Check if chosen site template is valid and not empty
         if (!m_fieldLoadSiteTemplate.isValid()
             | m_fieldLoadSiteTemplate.isEmpty()
-            | !m_clonedCms.existsResource(m_fieldLoadSiteTemplate.getValue() + CmsSiteManager.MACRO_FOLDER)) {
+            | !CmsSiteManager.isFolderWithMacros(m_clonedCms, m_fieldLoadSiteTemplate.getValue())) {
             return;
         }
         try {

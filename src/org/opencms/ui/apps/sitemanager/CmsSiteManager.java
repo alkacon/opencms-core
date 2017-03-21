@@ -27,6 +27,9 @@
 
 package org.opencms.ui.apps.sitemanager;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
@@ -97,6 +100,27 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
 
     /** The file table filter input. */
     private TextField m_siteTableFilter;
+
+    /**
+     * Method to check if a folder under given path contains a bundle for macro resolving.<p>
+     *
+     * @param cms CmsObject
+     * @param folderPathRoot root path of folder
+     * @return true if macros bundle found
+     */
+    public static boolean isFolderWithMacros(CmsObject cms, String folderPathRoot) {
+
+        if (!CmsResource.isFolder(folderPathRoot)) {
+            folderPathRoot = folderPathRoot.concat("/");
+        }
+        try {
+            cms.readResource(folderPathRoot + MACRO_FOLDER);
+            cms.readResource(folderPathRoot + MACRO_FOLDER + "/" + BUNDLE_NAME + "_desc");
+        } catch (CmsException e) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
