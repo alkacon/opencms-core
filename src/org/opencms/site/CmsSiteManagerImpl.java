@@ -73,6 +73,24 @@ public final class CmsSiteManagerImpl {
     /** A placeholder for the title of the shared folder. */
     public static final String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
 
+    /** Path to config template. */
+    public static final String WEB_SERVER_CONFIG_CONFIGTEMPLATE = "configtemplate";
+
+    /**prefix for files. */
+    public static final String WEB_SERVER_CONFIG_FILENAMEPREFIX = "filenameprefix";
+
+    /**Path to write logs to. */
+    public static final String WEB_SERVER_CONFIG_LOGGINGDIR = "loggingdir";
+
+    /** Path to secure template. */
+    public static final String WEB_SERVER_CONFIG_SECURETEMPLATE = "securetemplate";
+
+    /** Path to target. */
+    public static final String WEB_SERVER_CONFIG_TARGETPATH = "targetpath";
+
+    /** Path of webserver script.*/
+    public static final String WEB_SERVER_CONFIG_WEBSERVERSCRIPT = "webserverscript";
+
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManagerImpl.class);
 
@@ -82,20 +100,6 @@ public final class CmsSiteManagerImpl {
     /** The length of the "/sites/" folder plus 1. */
     private static final int SITES_FOLDER_POS = SITES_FOLDER.length() + 1;
 
-    public static final String WEB_SERVER_CONFIG_WEBSERVERSCRIPT = "webserverscript";
-
-    public static final String WEB_SERVER_CONFIG_TARGETPATH = "targetpath";
-
-    public static final String WEB_SERVER_CONFIG_CONFIGTEMPLATE = "configtemplate";
-
-    public static final String WEB_SERVER_CONFIG_SECURETEMPLATE = "securetemplate";
-
-    public static final String WEB_SERVER_CONFIG_FILENAMEPREFIX = "filenameprefix";
-
-    public static final String WEB_SERVER_CONFIG_LOGGINGDIR = "loggingdir";
-
-    private Map<String, String> m_apacheConfig;
-
     /** A list of additional site roots, that is site roots that are not below the "/sites/" folder. */
     private List<String> m_additionalSiteRoots;
 
@@ -103,6 +107,9 @@ public final class CmsSiteManagerImpl {
      * The list of aliases for the site that is configured at the moment,
      * needed for the sites added during configuration. */
     private List<CmsSiteMatcher> m_aliases;
+
+    /**Map with webserver scripting parameter. */
+    private Map<String, String> m_apacheConfig;
 
     /** The default site root. */
     private CmsSite m_defaultSite;
@@ -122,6 +129,9 @@ public final class CmsSiteManagerImpl {
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
 
+    /** Temporary store for site parameter values. */
+    private SortedMap<String, String> m_siteParams;
+
     /** Maps site roots to sites. */
     private Map<String, CmsSite> m_siteRootSites;
 
@@ -130,9 +140,6 @@ public final class CmsSiteManagerImpl {
 
     /** The site matcher that matches the workplace site. */
     private CmsSiteMatcher m_workplaceSiteMatcher;
-
-    /** Temporary store for site parameter values. */
-    private SortedMap<String, String> m_siteParams;
 
     /**
      * Creates a new CmsSiteManager.<p>
@@ -726,6 +733,11 @@ public final class CmsSiteManagerImpl {
         return title;
     }
 
+    /**
+     * Get web server scripting configurations.<p>
+     *
+     * @return Map with configuration data
+     */
     public Map<String, String> getWebServerConfig() {
 
         return m_apacheConfig;
@@ -842,6 +854,11 @@ public final class CmsSiteManagerImpl {
         }
     }
 
+    /**
+     * Checks if web server scripting is enabled.<p>
+     *
+     * @return true if web server scripting is set to available
+     */
     public boolean isConfigurableWebServer() {
 
         return m_apacheConfig != null;
@@ -1054,6 +1071,17 @@ public final class CmsSiteManagerImpl {
         m_sharedFolder = CmsStringUtil.joinPaths("/", sharedFolder, "/");
     }
 
+    /**
+     * Set webserver script configuration.<p>
+     *
+     *
+     * @param webserverscript path
+     * @param targetpath path
+     * @param configtemplate path
+     * @param securetemplate path
+     * @param filenameprefix to add to files
+     * @param loggingdir path
+     */
     public void setWebServerScripting(
         String webserverscript,
         String targetpath,
