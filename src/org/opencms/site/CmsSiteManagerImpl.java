@@ -830,7 +830,7 @@ public final class CmsSiteManagerImpl {
 
             // store additional site roots to optimize lookups later
             for (String root : m_siteRootSites.keySet()) {
-                if (!root.startsWith(SITES_FOLDER)) {
+                if (!root.startsWith(SITES_FOLDER) || (root.split("/").length >= 4)) {
                     m_additionalSiteRoots.add(root);
                 }
             }
