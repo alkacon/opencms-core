@@ -61,7 +61,7 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
     /**job id. */
     public static final String JOB_ID = "jobId";
 
-    /**Path for history table*/
+    /**Path for history table.*/
     public static final String PATH_HISTORY = "history";
 
     /**Path for report. */

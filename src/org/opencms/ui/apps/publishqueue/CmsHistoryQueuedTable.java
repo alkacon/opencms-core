@@ -257,7 +257,7 @@ public class CmsHistoryQueuedTable extends Table {
     /**Icon for direct publish */
     static String ICON_PUBLISH_DIRECT = "apps/publishqueue/publish_direct.png";
 
-    /**Icon for not direct publish */
+    /**Icon for not direct publish. */
     static String ICON_PUBLISH_NOT_DIRECT = "apps/publishqueue/publish_not_direct.png";
 
     /** list column id constant. */
@@ -387,6 +387,20 @@ public class CmsHistoryQueuedTable extends Table {
 
         });
 
+        setCellStyleGenerator(new CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                if (PROP_PROJECT.equals(propertyId)) {
+                    return OpenCmsTheme.HOVER_COLUMN;
+                }
+
+                return null;
+            }
+        });
+
         addGeneratedColumn(PROP_RESOURCES, new CmsResourcesCellGenerator(50));
         addGeneratedColumn(PROP_ISDIRECT, new DirectPublishColumn());
         addGeneratedColumn(PROP_STATUS, new StatusColumn());
@@ -491,6 +505,13 @@ public class CmsHistoryQueuedTable extends Table {
                     CmsPublishQueue.JOB_ID,
                     ((CmsUUID)itemId).getStringValue()),
                 true);
+        } else if (event.getButton().equals(MouseButton.LEFT) && PROP_PROJECT.equals(propertyId)) {
+            m_manager.openSubView(
+                A_CmsWorkplaceApp.addParamToState(
+                    CmsPublishQueue.PATH_REPORT,
+                    CmsPublishQueue.JOB_ID,
+                    ((CmsUUID)itemId).getStringValue()),
+                true);
         }
     }
 
@@ -569,6 +590,9 @@ public class CmsHistoryQueuedTable extends Table {
                     A_CmsUI.getCmsObject().readPublishedResources(job.getPublishHistoryId()));
             } catch (com.vaadin.data.Property.ReadOnlyException | CmsException e) {
                 LOG.error("Error while read published Resources", e);
+            }
+            if (!state.get(LIST_COLUMN_STATE).equals("ok")) {
+                System.out.println(state.get(LIST_COLUMN_STATE));
             }
             item.getItemProperty(PROP_STATUS).setValue(state.get(LIST_COLUMN_STATE));
             item.getItemProperty(PROP_START).setValue(new Date(job.getStartTime()));

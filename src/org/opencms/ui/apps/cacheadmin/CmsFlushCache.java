@@ -54,16 +54,16 @@ import com.vaadin.ui.Window;
 public class CmsFlushCache extends VerticalLayout {
 
     /**Icon for clean flex cache.*/
-    private final static String ICON_CLEAN_CORE = "apps/cacheAdmin/core.png";
+    private static final String ICON_CLEAN_CORE = "apps/cacheAdmin/core.png";
 
     /**Icon for clean flex cache.*/
-    private final static String ICON_CLEAN_FLEX = "apps/cacheAdmin/flexcache_clean.png";
+    private static final String ICON_CLEAN_FLEX = "apps/cacheAdmin/flexcache_clean.png";
 
     /**Icon for clean flex cache.*/
-    private final static String ICON_CLEAN_IMAGE = "apps/cacheAdmin/images_flush.png";
+    private static final String ICON_CLEAN_IMAGE = "apps/cacheAdmin/images_flush.png";
 
     /**Icon for clean flex cache.*/
-    private final static String ICON_CLEAN_REPOSITORY = "apps/cacheAdmin/jsp_repository.png";
+    private static final String ICON_CLEAN_REPOSITORY = "apps/cacheAdmin/jsp_repository.png";
 
     /**Vaadin serial id.*/
     private static final long serialVersionUID = -8868998646787654217L;

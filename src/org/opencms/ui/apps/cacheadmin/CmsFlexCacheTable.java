@@ -27,12 +27,16 @@
 
 package org.opencms.ui.apps.cacheadmin;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexCache;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -56,6 +60,8 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -75,12 +81,7 @@ public class CmsFlexCacheTable extends Table {
         public void executeAction(Set<String> data) {
 
             String resource = data.iterator().next();
-            m_app.openSubView(
-                A_CmsWorkplaceApp.addParamToState(
-                    CmsCacheAdminApp.PATH_VIEW_FLEX_VARIATIONS,
-                    CmsCacheAdminApp.RESOURCE,
-                    resource),
-                true);
+            showVariationsWindow(resource);
         }
 
         /**
@@ -125,8 +126,14 @@ public class CmsFlexCacheTable extends Table {
     /**Column for resource-name.*/
     private static final String PROP_RESOURCENAME = "name";
 
+    /**Column for variation count.*/
+    private static final String PROP_VARIATIONS = "variations";
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = 836377854954208442L;
+
+    /**CmsObject at root.*/
+    private CmsObject m_rootCms;
 
     /**Instance of calling class.*/
     CmsCacheAdminApp m_app;
@@ -165,17 +172,20 @@ public class CmsFlexCacheTable extends Table {
         m_container.addContainerProperty(PROP_RESOURCENAME, String.class, "");
         m_container.addContainerProperty(PROP_PROJECT, String.class, "");
         m_container.addContainerProperty(PROP_KEY, String.class, "");
+        m_container.addContainerProperty(PROP_VARIATIONS, Integer.class, new Integer(0));
 
         setContainerDataSource(m_container);
 
         setColumnHeader(PROP_RESOURCENAME, CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LIST_COLS_RESOURCE_0));
         setColumnHeader(PROP_PROJECT, CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LIST_COLS_PROJECT_0));
         setColumnHeader(PROP_KEY, CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LIST_COLS_KEY_0));
+        setColumnHeader(PROP_VARIATIONS, CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LIST_COLS_VARCOUNT_0));
 
         setItemIconPropertyId(PROP_ICON);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
 
         setColumnWidth(null, 40);
+        setColumnWidth(PROP_VARIATIONS, 90);
 
         setSelectable(true);
 
@@ -195,6 +205,24 @@ public class CmsFlexCacheTable extends Table {
                     m_menu.setEntries(getMenuEntries(), Collections.singleton(((String)getValue())));
                     m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsFlexCacheTable.this);
                 }
+
+                if (event.getButton().equals(MouseButton.LEFT) & PROP_RESOURCENAME.equals(event.getPropertyId())) {
+                    showVariationsWindow((String)getValue());
+                }
+            }
+        });
+
+        setCellStyleGenerator(new CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                if (PROP_RESOURCENAME.equals(propertyId)) {
+                    return OpenCmsTheme.HOVER_COLUMN;
+                }
+
+                return null;
             }
         });
     }
@@ -230,11 +258,59 @@ public class CmsFlexCacheTable extends Table {
     }
 
     /**
+     * Returns a cms object at root-site.<p>
+     *
+     * @return cmsobject
+     */
+    CmsObject getRootCms() {
+
+        try {
+            if (m_rootCms == null) {
+
+                m_rootCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                m_rootCms.getRequestContext().setSiteRoot("");
+            }
+        } catch (CmsException e) {
+            //
+        }
+        return m_rootCms;
+
+    }
+
+    /**
+     * Shows dialog for variations of given resource.<p>
+     *
+     * @param resource to show variations for
+     */
+    void showVariationsWindow(String resource) {
+
+        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        CmsVariationsDialog variationsDialog = new CmsVariationsDialog(resource, new Runnable() {
+
+            public void run() {
+
+                window.close();
+
+            }
+
+        }, m_app, CmsVariationsDialog.MODE_FLEX);
+        try {
+            CmsResource resourceObject = getRootCms().readResource(resource);
+            variationsDialog.displayResourceInfo(Collections.singletonList(resourceObject));
+        } catch (CmsException e) {
+            //
+        }
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_VARIATIONS_1, resource));
+        window.setContent(variationsDialog);
+        UI.getCurrent().addWindow(window);
+    }
+
+    /**
      * Reads flex cache entries and puts them to table.<p>
      */
     private void loadTableEntries() {
 
-        setVisibleColumns(PROP_RESOURCENAME, PROP_PROJECT, PROP_KEY);
+        setVisibleColumns(PROP_RESOURCENAME, PROP_PROJECT, PROP_KEY, PROP_VARIATIONS);
 
         Iterator<String> itResources = new ArrayList<String>(
             m_cache.getCachedResources(A_CmsUI.getCmsObject())).iterator();
@@ -257,6 +333,8 @@ public class CmsFlexCacheTable extends Table {
             item.getItemProperty(PROP_RESOURCENAME).setValue(resName);
             item.getItemProperty(PROP_PROJECT).setValue(project);
             item.getItemProperty(PROP_KEY).setValue(key);
+            item.getItemProperty(PROP_VARIATIONS).setValue(
+                new Integer(m_cache.getCachedVariations(resource, A_CmsUI.getCmsObject()).size()));
         }
     }
 }

@@ -27,12 +27,16 @@
 
 package org.opencms.ui.apps.cacheadmin;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -58,6 +62,8 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -100,12 +106,7 @@ public class CmsImageCacheTable extends Table {
         public void executeAction(Set<String> data) {
 
             String resource = data.iterator().next();
-            m_app.openSubView(
-                A_CmsWorkplaceApp.addParamToState(
-                    CmsCacheAdminApp.PATH_VIEW_IMAGE_VARIATIONS,
-                    CmsCacheAdminApp.RESOURCE,
-                    resource),
-                true);
+            showVariationsWindow(resource);
         }
 
         /**
@@ -164,6 +165,9 @@ public class CmsImageCacheTable extends Table {
 
     /** The context menu. */
     CmsContextMenu m_menu;
+
+    /**CmsObject at root.*/
+    private CmsObject m_rootCms;
 
     /**Indexed container.*/
     private IndexedContainer m_container;
@@ -237,6 +241,24 @@ public class CmsImageCacheTable extends Table {
                         Collections.singleton((m_cacheHelper.getFilePath((String)getValue()))));
                     m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsImageCacheTable.this);
                 }
+
+                if (event.getButton().equals(MouseButton.LEFT) & PROP_NAME.equals(event.getPropertyId())) {
+                    showVariationsWindow((m_cacheHelper.getFilePath((String)getValue())));
+                }
+            }
+        });
+
+        setCellStyleGenerator(new CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                if (PROP_NAME.equals(propertyId)) {
+                    return OpenCmsTheme.HOVER_COLUMN;
+                }
+
+                return null;
             }
         });
         loadTable();
@@ -270,6 +292,54 @@ public class CmsImageCacheTable extends Table {
     }
 
     /**
+     * Returns a cms object at root-site.<p>
+     *
+     * @return cmsobject
+     */
+    CmsObject getRootCms() {
+
+        try {
+            if (m_rootCms == null) {
+
+                m_rootCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                m_rootCms.getRequestContext().setSiteRoot("");
+            }
+        } catch (CmsException e) {
+            //
+        }
+        return m_rootCms;
+
+    }
+
+    /**
+     * Shows dialog for variations of given resource.<p>
+     *
+     * @param resource to show variations for
+     */
+    void showVariationsWindow(String resource) {
+
+        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        CmsVariationsDialog variationsDialog = new CmsVariationsDialog(resource, new Runnable() {
+
+            public void run() {
+
+                window.close();
+
+            }
+
+        }, m_app, CmsVariationsDialog.MODE_IMAGE);
+        try {
+            CmsResource resourceObject = getRootCms().readResource(resource);
+            variationsDialog.displayResourceInfo(Collections.singletonList(resourceObject));
+        } catch (CmsException e) {
+            //
+        }
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_VARIATIONS_1, resource));
+        window.setContent(variationsDialog);
+        UI.getCurrent().addWindow(window);
+    }
+
+    /**
      * Fills table with entries from image cache helper.<p>
      */
     private void loadTable() {
@@ -284,4 +354,5 @@ public class CmsImageCacheTable extends Table {
             item.getItemProperty(PROP_SIZE).setValue(m_cacheHelper.getLength(res));
         }
     }
+
 }

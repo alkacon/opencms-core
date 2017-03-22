@@ -273,10 +273,10 @@ public class CmsQueuedTable extends Table {
     /**user column id.*/
     public static final String PROP_USER = "user";
 
-    /**Icon for direct publish */
+    /**Icon for direct publish.*/
     static String ICON_PUBLISH_DIRECT = "apps/publishqueue/publish_direct.png";
 
-    /**Icon for not direct publish */
+    /**Icon for not direct publish.*/
     static String ICON_PUBLISH_NOT_DIRECT = "apps/publishqueue/publish_not_direct.png";
 
     /** The logger for this class. */
@@ -341,6 +341,20 @@ public class CmsQueuedTable extends Table {
             //No jobs there -> show empty table with message
             iniDummyTable();
         }
+        setCellStyleGenerator(new CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                if (PROP_PROJECT.equals(propertyId)) {
+                    return OpenCmsTheme.HOVER_COLUMN;
+                }
+
+                return null;
+            }
+        });
+
     }
 
     /**

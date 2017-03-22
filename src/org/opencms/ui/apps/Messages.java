@@ -336,6 +336,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_FLEXCACHE_LIST_COLS_RESOURCE_0 = "GUI_FLEXCACHE_LIST_COLS_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FLEXCACHE_LIST_COLS_VARCOUNT_0 = "GUI_FLEXCACHE_LIST_COLS_VARCOUNT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0";
 
     /** Message constant for key in the resource bundle. */

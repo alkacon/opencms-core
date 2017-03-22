@@ -43,7 +43,7 @@ class CmsResourcesCellGenerator implements Table.ColumnGenerator {
     /**vaadin serial id.*/
     private static final long serialVersionUID = -3349782291910407616L;
 
-    /**limit size for the string to be shown*/
+    /**limit size for the string to be shown.*/
     private int m_charLimit;
 
     /**

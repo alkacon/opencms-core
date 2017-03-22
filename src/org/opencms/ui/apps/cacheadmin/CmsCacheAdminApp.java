@@ -62,14 +62,8 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
     /**Path to flex cache view.*/
     static final String PATH_VIEW_FLEX = "viewflex";
 
-    /**Path to view variations of flex. */
-    static final String PATH_VIEW_FLEX_VARIATIONS = "flexvariations";
-
     /**Path to image cache view.*/
     static final String PATH_VIEW_IMAGE = "viewimage";
-
-    /**Path to view variations of image.*/
-    static final String PATH_VIEW_IMAGE_VARIATIONS = "imagevariations";
 
     /**Width of the progressbars to show current memory usage.*/
     static final String PROGRESSBAR_WIDTH = "200px";
@@ -114,24 +108,6 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
         //View Flex Cache
         if (state.startsWith(PATH_VIEW_FLEX)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_0));
-        } else if (state.startsWith(PATH_VIEW_FLEX_VARIATIONS)) {
-            crumbs.put(
-                CmsCacheAdminConfiguration.APP_ID + "/" + PATH_VIEW_FLEX,
-                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_0));
-            crumbs.put(
-                "",
-                CmsVaadinUtils.getMessageText(
-                    Messages.GUI_CACHE_VIEW_FLEX_VARIATIONS_1,
-                    getResourceNameFromState(state)));
-        } else if (state.startsWith(PATH_VIEW_IMAGE_VARIATIONS)) {
-            crumbs.put(
-                CmsCacheAdminConfiguration.APP_ID + "/" + PATH_VIEW_IMAGE,
-                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_IMAGE_0));
-            crumbs.put(
-                "",
-                CmsVaadinUtils.getMessageText(
-                    Messages.GUI_CACHE_VIEW_IMAGE_VARIATIONS_1,
-                    getImagePathFromState(state)));
         } else if (state.startsWith(PATH_VIEW_IMAGE)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_IMAGE_0));
         } else if (state.startsWith(PATH_CLEAN)) {
@@ -161,10 +137,7 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
             m_rootLayout.setMainHeightFull(true);
             return getFlexViewComponent();
         }
-        if (state.startsWith(PATH_VIEW_FLEX_VARIATIONS) | state.startsWith(PATH_VIEW_IMAGE_VARIATIONS)) {
-            m_rootLayout.setMainHeightFull(false);
-            return new CmsVariationsList(this, state);
-        }
+
         if (state.startsWith(PATH_VIEW_IMAGE)) {
             m_rootLayout.setMainHeightFull(true);
             return getImageViewComponent();
@@ -188,32 +161,30 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
     @Override
     protected List<NavEntry> getSubNavEntries(String state) {
 
-        if (!state.startsWith(PATH_VIEW_FLEX_VARIATIONS)) {
-            List<NavEntry> subNav = new ArrayList<NavEntry>();
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_HELP_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_VIEW_FLEX)),
-                    PATH_VIEW_FLEX));
+        List<NavEntry> subNav = new ArrayList<NavEntry>();
+        subNav.add(
+            new NavEntry(
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_HELP_0),
+                new ExternalResource(OpenCmsTheme.getImageLink(ICON_VIEW_FLEX)),
+                PATH_VIEW_FLEX));
 
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_IMAGE_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_IMAGE_HELP_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_VIEW_IMAGE)),
-                    PATH_VIEW_IMAGE));
+        subNav.add(
+            new NavEntry(
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_IMAGE_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_IMAGE_HELP_0),
+                new ExternalResource(OpenCmsTheme.getImageLink(ICON_VIEW_IMAGE)),
+                PATH_VIEW_IMAGE));
 
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CLEAN_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CLEAN_HELP_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_CLEAN)),
-                    PATH_CLEAN));
+        subNav.add(
+            new NavEntry(
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CLEAN_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CLEAN_HELP_0),
+                new ExternalResource(OpenCmsTheme.getImageLink(ICON_CLEAN)),
+                PATH_CLEAN));
 
-            return subNav;
-        }
-        return null;
+        return subNav;
+
     }
 
     /**
