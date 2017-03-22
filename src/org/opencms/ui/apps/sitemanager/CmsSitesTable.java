@@ -355,7 +355,7 @@ public class CmsSitesTable extends Table {
         m_container.addContainerProperty(
             PROP_ICON,
             Image.class,
-            new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON))));
+            new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.TABLE_ICON))));
         m_container.addContainerProperty(PROP_FAVICON, Image.class, new Image("", null));
         m_container.addContainerProperty(PROP_SERVER, String.class, "");
         m_container.addContainerProperty(PROP_TITLE, String.class, "");
@@ -401,7 +401,7 @@ public class CmsSitesTable extends Table {
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 if (PROP_SERVER.equals(propertyId)) {
-                    return OpenCmsTheme.HOVER_COLUMN;
+                    return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
                 if (PROP_TITLE.equals(propertyId)
                     & ((Boolean)source.getItem(itemId).getItemProperty(PROP_IS_WEBSERVER).getValue()).booleanValue()) {
@@ -610,7 +610,7 @@ public class CmsSitesTable extends Table {
 
         Image imageIcon;
 
-        imageIcon = new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON)));
+        imageIcon = new Image("", new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.TABLE_ICON)));
         imageIcon.setResponsive(false);
         imageIcon.addClickListener(new com.vaadin.event.MouseEvents.ClickListener() {
 

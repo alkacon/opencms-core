@@ -51,9 +51,6 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     /** The app id. */
     public static final String APP_ID = "file-history";
 
-    /**App icon path.*/
-    private static final String ICON = "apps/history.png";
-
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
@@ -94,7 +91,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(ICON));
+        return new ExternalResource(OpenCmsTheme.getImageLink(CmsFileHistoryApp.ICON));
     }
 
     /**

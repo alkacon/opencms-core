@@ -75,8 +75,8 @@ public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
     /**Icon for delete option.*/
     private static final String ICON_DELETE = "apps/filehistory/history_clear.png";
 
-    /**Icon for settings.*/
-    private static final String ICON_SETTINGS = "apps/filehistory/history_settings.png";
+    /**App icon path.*/
+    public static final String ICON = "apps/filehistory/history.png";
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -87,16 +87,19 @@ public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
         LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
 
         //Deeper path
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state) | state.startsWith(PATH_SETTINGS)) {
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_TOOL_NAME_0));
+            return crumbs;
+        }
+
         crumbs.put(
             CmsFileHistoryConfiguration.APP_ID,
             CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_TOOL_NAME_0));
+        if (state.startsWith(PATH_DELETE)) {
 
-        //View Flex Cache
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state) | state.startsWith(PATH_SETTINGS)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_SETTINGS_TOOL_NAME_0));
-        } else if (state.startsWith(PATH_DELETE)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_DELETE_TOOL_NAME_0));
         }
+
         if (crumbs.size() > 1) {
             return crumbs;
         } else {
@@ -128,12 +131,6 @@ public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
     protected List<NavEntry> getSubNavEntries(String state) {
 
         List<NavEntry> subNav = new ArrayList<NavEntry>();
-        subNav.add(
-            new NavEntry(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_SETTINGS_TOOL_NAME_0),
-                CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_SETTINGS_TOOL_NAME_HELP_0),
-                new ExternalResource(OpenCmsTheme.getImageLink(ICON_SETTINGS)),
-                PATH_SETTINGS));
 
         subNav.add(
             new NavEntry(

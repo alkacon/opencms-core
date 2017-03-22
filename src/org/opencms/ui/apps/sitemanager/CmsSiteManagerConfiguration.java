@@ -72,7 +72,7 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/sites.png"));
+        return new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON));
     }
 
     /**

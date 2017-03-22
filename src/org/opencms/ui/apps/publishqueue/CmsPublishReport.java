@@ -109,6 +109,7 @@ public class CmsPublishReport extends VerticalLayout {
             label.setContentMode(ContentMode.HTML);
             label.setHeight("700px");
             label.addStyleName("v-scrollable");
+            label.addStyleName("o-report");
             m_panel.addComponent(label);
         }
 

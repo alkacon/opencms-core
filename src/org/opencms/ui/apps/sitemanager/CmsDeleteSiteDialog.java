@@ -221,7 +221,7 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
         if (iconResource != null) {
             return OpenCms.getLinkManager().getPermalink(m_cms, iconResource.getRootPath());
         }
-        return OpenCmsTheme.getImageLink(CmsSiteManager.ICON);
+        return OpenCmsTheme.getImageLink(CmsSiteManager.TABLE_ICON);
     }
 
     /**

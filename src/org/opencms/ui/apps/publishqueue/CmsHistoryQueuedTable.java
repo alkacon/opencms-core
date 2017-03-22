@@ -224,9 +224,6 @@ public class CmsHistoryQueuedTable extends Table {
     /**Ok status icon. */
     public static final String ICON_OK = "apps/publishqueue/state_ok.png";
 
-    /**Icon for open detail view. */
-    public static final String ICON_SEARCH = "apps/publishqueue/publish_view.png";
-
     /**Warning status icon. */
     public static final String ICON_WARNINGS = "apps/publishqueue/state_warning.png";
 
@@ -254,7 +251,7 @@ public class CmsHistoryQueuedTable extends Table {
     /** list id constant. */
     public static final String LIST_ID = "lppq";
 
-    /**Icon for direct publish */
+    /**Icon for direct publish. */
     static String ICON_PUBLISH_DIRECT = "apps/publishqueue/publish_direct.png";
 
     /**Icon for not direct publish. */
@@ -340,7 +337,7 @@ public class CmsHistoryQueuedTable extends Table {
         m_container.addContainerProperty(
             PROP_ICON,
             Resource.class,
-            new ExternalResource(OpenCmsTheme.getImageLink(ICON_SEARCH)));
+            new ExternalResource(OpenCmsTheme.getImageLink(CmsPublishQueue.TABLE_ICON)));
         m_container.addContainerProperty(PROP_STATUS, String.class, null);
         m_container.addContainerProperty(PROP_PROJECT, String.class, "");
         m_container.addContainerProperty(PROP_START, Date.class, null);
@@ -394,7 +391,7 @@ public class CmsHistoryQueuedTable extends Table {
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 if (PROP_PROJECT.equals(propertyId)) {
-                    return OpenCmsTheme.HOVER_COLUMN;
+                    return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
 
                 return null;
@@ -590,9 +587,6 @@ public class CmsHistoryQueuedTable extends Table {
                     A_CmsUI.getCmsObject().readPublishedResources(job.getPublishHistoryId()));
             } catch (com.vaadin.data.Property.ReadOnlyException | CmsException e) {
                 LOG.error("Error while read published Resources", e);
-            }
-            if (!state.get(LIST_COLUMN_STATE).equals("ok")) {
-                System.out.println(state.get(LIST_COLUMN_STATE));
             }
             item.getItemProperty(PROP_STATUS).setValue(state.get(LIST_COLUMN_STATE));
             item.getItemProperty(PROP_START).setValue(new Date(job.getStartTime()));

@@ -56,6 +56,12 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
 
+    /**App icon path.*/
+    public static final String ICON = "apps/cacheAdmin/cache.png";
+
+    /**App icon path.*/
+    public static final String TABLE_ICON = "apps/cache.png";
+
     /**Path to clean cash options.*/
     static final String PATH_CLEAN = "clean";
 

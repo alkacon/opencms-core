@@ -63,7 +63,10 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     public static final String BUNDLE_NAME = "siteMacroBundle";
 
     /** The site icon path. */
-    public static final String ICON = "apps/sites.png";
+    public static final String ICON = "apps/sitemanager/sites.png";
+
+    /** The site icon path. */
+    public static final String TABLE_ICON = "apps/sites.png";
 
     /**The icon for adding a new site. */
     public static final String ICON_ADD = "apps/sitemanager/site-new.png";
@@ -72,7 +75,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     public static final String ICON_FOLDER = "apps/sitemanager/folder.png";
 
     /**Icon for the global site settings. */
-    public static final String ICON_SITES_GLOBAL = "apps/sitemanager/sites-global.png";
+    public static final String ICON_SITES_GLOBAL = "apps/sitemanager/site-global.png";
 
     /**Icon for the webserver configuration. */
     public static final String ICON_SITES_WEBSERVER = "apps/sitemanager/sites-webserver.png";
@@ -132,19 +135,18 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
 
         //Check if state is empty -> start
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_MANAGER_TITLE_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_MANAGER_TITLE_SHORT_0));
             return crumbs;
         }
 
         //Deeper path
         crumbs.put(
             CmsSiteManagerConfiguration.APP_ID,
-            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_MANAGER_TITLE_0));
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_MANAGER_TITLE_SHORT_0));
         if (state.equals(PATH_NAME_ADD)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
         } else if (state.startsWith(PATH_NAME_EDIT)) {
-            String siteTitle = OpenCms.getSiteManager().getSiteForSiteRoot(getSiteRootFromState(state)).getTitle();
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_EDIT_1, siteTitle));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_EDIT_0));
         } else if (state.startsWith(PATH_NAME_GLOBAL)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
         } else if (state.startsWith(PATH_NAME_WEBSERVER)) {

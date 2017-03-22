@@ -56,7 +56,13 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsPublishQueue extends A_CmsWorkplaceApp {
 
     /**The icon for history. */
-    public static final String ICON_HISTORY = "apps/publish_queue.png";
+    public static final String ICON_HISTORY = "apps/publishqueue/publish_queue_history.png";
+
+    /**The icon for history. */
+    public static final String ICON = "apps/publishqueue/publish_queue.png";
+
+    /**The icon for history. */
+    public static final String TABLE_ICON = "apps/publish_queue.png";
 
     /**job id. */
     public static final String JOB_ID = "jobId";
@@ -201,7 +207,7 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
                 new NavEntry(
                     CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_CURRENT_QUEUE_0),
                     CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_CURRENT_QUEUE_DESCRIPTION_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_HISTORY)),
+                    new ExternalResource(OpenCmsTheme.getImageLink(ICON)),
                     ""));
 
             subNav.add(

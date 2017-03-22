@@ -51,9 +51,6 @@ public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
     /** The app id. */
     public static final String APP_ID = "cache-admin";
 
-    /**App icon path.*/
-    private static final String ICON = "apps/cache.png";
-
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
@@ -94,7 +91,7 @@ public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(ICON));
+        return new ExternalResource(OpenCmsTheme.getImageLink(CmsCacheAdminApp.ICON));
     }
 
     /**

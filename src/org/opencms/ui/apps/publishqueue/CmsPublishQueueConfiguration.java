@@ -71,7 +71,7 @@ public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/publish_queue.png"));
+        return new ExternalResource(OpenCmsTheme.getImageLink(CmsPublishQueue.ICON));
     }
 
     /**

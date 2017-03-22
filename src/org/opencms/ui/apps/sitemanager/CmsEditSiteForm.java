@@ -100,6 +100,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Image;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -469,6 +470,9 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**vaadin component.*/
     private Button m_ok;
 
+    /**main Panel.*/
+    private Panel m_panel;
+
     /**vaadin component.*/
     private FormLayout m_parameter;
 
@@ -675,6 +679,8 @@ public class CmsEditSiteForm extends VerticalLayout {
      */
     public CmsEditSiteForm(CmsSiteManager manager, String siteRoot) {
         this(manager);
+        m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+        m_panel.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_CONFIGURATION_EDIT_1, m_site.getTitle()));
 
         m_tab.removeTab(m_tab.getTab(4));
         m_simpleFieldTitle.removeTextChangeListener(null);
@@ -686,8 +692,6 @@ public class CmsEditSiteForm extends VerticalLayout {
         m_simpleFieldFolderName.removeAllValidators(); //can not be changed
 
         m_fieldCreateOU.setVisible(false);
-
-        m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
 
         unableOUComboBox();
 

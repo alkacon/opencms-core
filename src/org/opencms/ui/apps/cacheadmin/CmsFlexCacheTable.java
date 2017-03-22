@@ -111,9 +111,6 @@ public class CmsFlexCacheTable extends Table {
         }
     }
 
-    /**icon for first column.*/
-    private static final String ICON = "apps/cacheAdmin/cache_table.png";
-
     /**Column for icon.*/
     private static final String PROP_ICON = "icon";
 
@@ -168,7 +165,7 @@ public class CmsFlexCacheTable extends Table {
         m_container.addContainerProperty(
             PROP_ICON,
             Resource.class,
-            new ExternalResource(OpenCmsTheme.getImageLink(ICON)));
+            new ExternalResource(OpenCmsTheme.getImageLink(CmsCacheAdminApp.TABLE_ICON)));
         m_container.addContainerProperty(PROP_RESOURCENAME, String.class, "");
         m_container.addContainerProperty(PROP_PROJECT, String.class, "");
         m_container.addContainerProperty(PROP_KEY, String.class, "");
@@ -219,7 +216,7 @@ public class CmsFlexCacheTable extends Table {
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 if (PROP_RESOURCENAME.equals(propertyId)) {
-                    return OpenCmsTheme.HOVER_COLUMN;
+                    return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
 
                 return null;

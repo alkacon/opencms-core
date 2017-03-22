@@ -139,9 +139,6 @@ public class CmsImageCacheTable extends Table {
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsImageCacheTable.class.getName());
 
-    /**icon for first column.*/
-    private static final String ICON = "apps/cacheAdmin/cache_table.png";
-
     /**column for image dimension.*/
     private static final String PROP_DIMENSIONS = "dimensions";
 
@@ -206,7 +203,7 @@ public class CmsImageCacheTable extends Table {
         m_container.addContainerProperty(
             PROP_ICON,
             Resource.class,
-            new ExternalResource(OpenCmsTheme.getImageLink(ICON)));
+            new ExternalResource(OpenCmsTheme.getImageLink(CmsCacheAdminApp.TABLE_ICON)));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DIMENSIONS, String.class, "");
         m_container.addContainerProperty(PROP_SIZE, String.class, "");
@@ -255,7 +252,7 @@ public class CmsImageCacheTable extends Table {
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 if (PROP_NAME.equals(propertyId)) {
-                    return OpenCmsTheme.HOVER_COLUMN;
+                    return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
 
                 return null;

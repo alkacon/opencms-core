@@ -348,7 +348,7 @@ public class CmsQueuedTable extends Table {
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 if (PROP_PROJECT.equals(propertyId)) {
-                    return OpenCmsTheme.HOVER_COLUMN;
+                    return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
 
                 return null;
