@@ -313,7 +313,7 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
             entries.putAll(breadCrumbEntries);
         } else {
             entries.put(
-                "empty",
+                "",
                 OpenCms.getWorkplaceAppManager().getAppConfiguration(m_uiContext.getAppId()).getName(
                     UI.getCurrent().getLocale()));
         }

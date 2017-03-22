@@ -30,16 +30,17 @@ package org.opencms.ui.apps.lists;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -73,7 +74,7 @@ public class CmsListManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_CYAN;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
     }
 
     /**
@@ -90,7 +91,7 @@ public class CmsListManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
      */
     public Resource getIcon() {
 
-        return FontOpenCms.CLIPBOARD;
+        return new ExternalResource(OpenCmsTheme.getImageLink("apps/list_manager.png"));
     }
 
     /**
