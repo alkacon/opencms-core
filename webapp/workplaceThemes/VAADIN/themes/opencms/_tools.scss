@@ -125,6 +125,10 @@
 				height: 100%;
 				float: left;
 				border-right: 1px solid first-color(valo-border($strength: 1));
+				
+				.o-app-button{
+					margin-top: 10px;
+				}
 			}
 			
 			.o-tools-main{

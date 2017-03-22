@@ -104,23 +104,19 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
 
         LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
         } else if (state.equals(PATH_NAME_ADD)) {
-            crumbs.put(
-                CmsProjectManagerConfiguration.APP_ID,
-                CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
+            crumbs.put(CmsProjectManagerConfiguration.APP_ID, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_0));
         } else if (state.equals(PATH_NAME_HISTORY)) {
-            crumbs.put(
-                CmsProjectManagerConfiguration.APP_ID,
-                CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
+            crumbs.put(CmsProjectManagerConfiguration.APP_ID, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_HISTORY_0));
         } else if (state.startsWith(PATH_NAME_EDIT)) {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
                 crumbs.put(
                     CmsProjectManagerConfiguration.APP_ID,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
                 try {
                     crumbs.put(
                         "",
@@ -136,7 +132,7 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             if (projectId != null) {
                 crumbs.put(
                     CmsProjectManagerConfiguration.APP_ID,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_MANAGER_TITLE_0));
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
                 try {
                     crumbs.put(
                         "",

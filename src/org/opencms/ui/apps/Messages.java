@@ -600,6 +600,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PQUEUE_USER_0 = "GUI_PQUEUE_USER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_0 = "GUI_PROJECTS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_ADD_0 = "GUI_PROJECTS_ADD_0";
 
     /** Message constant for key in the resource bundle. */
