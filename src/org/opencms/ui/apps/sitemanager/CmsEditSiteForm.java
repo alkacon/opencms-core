@@ -72,6 +72,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1089,7 +1090,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                 OpenCms.getSiteManager().updateGeneralSettings(
                     m_clonedCms,
                     OpenCms.getSiteManager().getDefaultUri(),
-                    newSite.getUrl(),
+                    Collections.singletonList(newSite.getUrl()),
                     OpenCms.getSiteManager().getSharedFolder());
             }
             // write the system configuration

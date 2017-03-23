@@ -45,6 +45,7 @@ import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -100,7 +101,11 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
     public void actionCommit() {
 
         try {
-            OpenCms.getSiteManager().updateGeneralSettings(getCms(), m_defaultUri, m_workplaceServer, m_sharedFolder);
+            OpenCms.getSiteManager().updateGeneralSettings(
+                getCms(),
+                m_defaultUri,
+                Collections.singletonList(m_workplaceServer),
+                m_sharedFolder);
         } catch (CmsException e) {
             addCommitError(e);
         }
@@ -179,9 +184,10 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
 
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
-        result.append(dialogBlockStart(
-            Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
-                Messages.GUI_SITES_GENERAL_SETTINGS_0)));
+        result.append(
+            dialogBlockStart(
+                Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                    Messages.GUI_SITES_GENERAL_SETTINGS_0)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, 2));
         result.append(createWidgetTableEnd());

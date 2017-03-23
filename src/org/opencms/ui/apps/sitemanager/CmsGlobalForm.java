@@ -39,6 +39,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -188,7 +189,7 @@ public class CmsGlobalForm extends VerticalLayout {
             OpenCms.getSiteManager().updateGeneralSettings(
                 m_cms,
                 ((CmsSite)m_fieldDefaultURI.getValue()).getSiteRoot(),
-                ((CmsSite)m_fieldWorkplaceServer.getValue()).getUrl(),
+                Collections.singletonList(((CmsSite)m_fieldWorkplaceServer.getValue()).getUrl()),
                 "/" + (String)m_fieldSharedFolder.getValue() + "/");
             if (!CmsEditSiteForm.FORBIDDEN_FOLDER_NAMES.isEmpty()) {
                 CmsEditSiteForm.FORBIDDEN_FOLDER_NAMES.set(1, (String)m_fieldSharedFolder.getValue());

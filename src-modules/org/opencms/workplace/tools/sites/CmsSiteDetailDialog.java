@@ -70,6 +70,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -262,7 +263,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 OpenCms.getSiteManager().updateGeneralSettings(
                     getCms(),
                     OpenCms.getSiteManager().getDefaultUri(),
-                    newSite.getUrl(),
+                    Collections.singletonList(newSite.getUrl()),
                     OpenCms.getSiteManager().getSharedFolder());
             }
             // write the system configuration

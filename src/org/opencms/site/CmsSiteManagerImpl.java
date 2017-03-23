@@ -844,17 +844,7 @@ public final class CmsSiteManagerImpl {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
                 }
             }
-            if (!m_workplaceServers.isEmpty()) {
-                for (String server : m_workplaceServers) {
-                    CmsSiteMatcher matcher = new CmsSiteMatcher(server);
-                    m_workplaceMatchers.add(matcher);
-                    if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, matcher));
-                    }
-                }
-            } else if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
-            }
+            initWorkplaceMatchers();
 
             // set site lists to unmodifiable
             setSiteMatcherSites(m_siteMatcherSites);
@@ -1135,12 +1125,16 @@ public final class CmsSiteManagerImpl {
      *
      * @param cms the cms to use
      * @param defaulrUri the default URI
-     * @param workplaceServer the workplace server URL
+     * @param workplaceServers the workplace server URLs
      * @param sharedFolder the shared folder URI
      *
      * @throws CmsException if something goes wrong
      */
-    public void updateGeneralSettings(CmsObject cms, String defaulrUri, String workplaceServer, String sharedFolder)
+    public void updateGeneralSettings(
+        CmsObject cms,
+        String defaulrUri,
+        List<String> workplaceServers,
+        String sharedFolder)
     throws CmsException {
 
         CmsObject clone = OpenCms.initCmsObject(cms);
@@ -1160,6 +1154,8 @@ public final class CmsSiteManagerImpl {
         m_frozen = false;
         setDefaultUri(clone.readResource(defaulrUri).getRootPath());
         setSharedFolder(clone.readResource(sharedFolder).getRootPath());
+        m_workplaceServers = new ArrayList<String>(workplaceServers);
+        initWorkplaceMatchers();
         m_frozen = true;
     }
 
@@ -1241,6 +1237,26 @@ public final class CmsSiteManagerImpl {
             return matcher;
         }
         return m_siteMatchers.get(index);
+    }
+
+    /**
+     * Initializes the workplace matchers.<p>
+     */
+    private void initWorkplaceMatchers() {
+
+        List<CmsSiteMatcher> matchers = new ArrayList<CmsSiteMatcher>();
+        if (!m_workplaceServers.isEmpty()) {
+            for (String server : m_workplaceServers) {
+                CmsSiteMatcher matcher = new CmsSiteMatcher(server);
+                matchers.add(matcher);
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, matcher));
+                }
+            }
+        } else if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
+        }
+        m_workplaceMatchers = matchers;
     }
 
     /**
