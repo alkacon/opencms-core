@@ -66,12 +66,16 @@ public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefau
     public void executeAction(I_CmsDialogContext context) {
 
         if (context.getResources().size() == 1) {
-            String link = OpenCms.getLinkManager().substituteLink(context.getCms(), context.getResources().get(0));
+
             HttpServletRequest req = CmsVaadinUtils.getRequest();
             CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
             if (context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
+                String link = OpenCms.getLinkManager().getOnlineLink(
+                    context.getCms(),
+                    context.getCms().getSitePath(context.getResources().get(0)));
                 A_CmsUI.get().openPageOrWarn(link, ONLINE_WINDOW_NAME);
             } else {
+                String link = OpenCms.getLinkManager().substituteLink(context.getCms(), context.getResources().get(0));
                 A_CmsUI.get().getPage().setLocation(link);
             }
         }

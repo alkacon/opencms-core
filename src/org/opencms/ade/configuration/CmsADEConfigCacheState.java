@@ -420,7 +420,7 @@ public class CmsADEConfigCacheState {
             try {
                 folder = getCms().readResource(CmsResource.getParentFolder(resource.getRootPath()));
             } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+                LOG.debug(e.getLocalizedMessage(), e);
                 return false;
             }
         } else {

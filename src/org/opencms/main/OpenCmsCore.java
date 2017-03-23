@@ -1071,7 +1071,7 @@ public final class OpenCmsCore {
         String siteroot = null;
 
         // a dedicated workplace site is configured
-        if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
+        if (getSiteManager().isWorkplaceRequest(req)) {
             // if no dedicated workplace site is configured,
             // or for the dedicated workplace site, use the site root from the session attribute
             siteroot = sessionInfo.getSiteRoot();

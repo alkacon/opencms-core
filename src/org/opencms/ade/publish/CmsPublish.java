@@ -329,10 +329,7 @@ public class CmsPublish {
      */
     public CmsPublishResource relationToBean(CmsRelation relation) throws CmsException {
 
-        CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
-            m_cms,
-            relation.getTarget(m_cms, CmsResourceFilter.ALL),
-            null);
+        CmsPermissionInfo permissionInfo = new CmsPermissionInfo(true, false, "");
         return new CmsPublishResource(
             relation.getTargetId(),
             relation.getTargetPath(),
