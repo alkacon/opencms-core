@@ -33,7 +33,14 @@ import com.vaadin.ui.Label;
 /**
  * Class with static methods to create Labels for statistics.<p>
  */
-class CmsCacheStatisticElements {
+final class CmsCacheStatisticElements {
+
+    /**
+     * empty private constructor.<p>
+     */
+    private CmsCacheStatisticElements() {
+        //
+    }
 
     /**
      * Creates Label used as entry for Statistic Panel.<p>
@@ -47,7 +54,7 @@ class CmsCacheStatisticElements {
 
         Label ret = new Label();
         ret.setContentMode(ContentMode.HTML);
-        ret.setValue("<p>" + title + ": " + value + "</p>");
+        ret.setValue("<p style='margin:5px;'>" + title + ": " + value + "</p>");
         ret.setDescription(description);
         return ret;
 

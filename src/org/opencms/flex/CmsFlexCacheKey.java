@@ -262,6 +262,21 @@ public class CmsFlexCacheKey {
     }
 
     /**
+     * Returns resource name from given key name.<p>
+     *
+     * @param keyName given name of key.
+     * @return name of resource if key is valid, otherwise ""
+     */
+    public static String getResourceName(String keyName) {
+
+        if (keyName.endsWith(CmsFlexCache.CACHE_OFFLINESUFFIX) | keyName.endsWith(CmsFlexCache.CACHE_ONLINESUFFIX)) {
+            return keyName.split(" ")[0];
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Appends a flex cache key value to the given buffer.<p>
      *
      * @param str the buffer to append to

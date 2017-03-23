@@ -67,13 +67,15 @@ public class CmsJavaHeapInfoLayout extends HorizontalLayout {
         CmsMemoryStatus memory = OpenCms.getMemoryMonitor().getMemoryStatus();
 
         Panel ret = new Panel();
+
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
+
         layout.setSpacing(false);
 
         layout.addComponent(
             CmsCacheStatisticElements.getTitelElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_MEMORY_BLOCK_0)));
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0)));
 
         ProgressBar memoryBar = new ProgressBar(memory.getUsage() / 100);
         memoryBar.setWidth(CmsCacheAdminApp.PROGRESSBAR_WIDTH);

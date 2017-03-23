@@ -54,17 +54,13 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -72,48 +68,6 @@ import com.vaadin.ui.themes.ValoTheme;
  * Vaadin Table showing current jobs in queue.<p>
  */
 public class CmsQueuedTable extends Table {
-
-    /**
-     *Cloumn with icon buttons.<p>
-     */
-    class DirectPublishColumn implements Table.ColumnGenerator {
-
-        /**vaadin serial id. */
-        private static final long serialVersionUID = 7732640709644021017L;
-
-        /**
-         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
-         */
-        public Object generateCell(final Table source, final Object itemId, Object columnId) {
-
-            Property<Object> prop = source.getItem(itemId).getItemProperty(PROP_ISDIRECT);
-
-            String resourceLink = "";
-            String description = "";
-            if (((Boolean)prop.getValue()).booleanValue()) {
-                resourceLink = OpenCmsTheme.getImageLink(ICON_PUBLISH_DIRECT);
-                description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_DIRECT_0);
-            } else {
-                resourceLink = OpenCmsTheme.getImageLink(ICON_PUBLISH_NOT_DIRECT);
-                description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_NOT_DIRECT_0);
-            }
-
-            Resource resource = new ExternalResource(resourceLink);
-
-            Image image = new Image(String.valueOf(System.currentTimeMillis()), resource);
-            image.setDescription(description);
-            image.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = -8476526927157799166L;
-
-                public void click(ClickEvent event) {
-
-                    onItemClick(event, itemId, PROP_ISDIRECT);
-                }
-            });
-            return image;
-        }
-    }
 
     /**
     * Menu entry for show-report option.<p>
@@ -246,17 +200,11 @@ public class CmsQueuedTable extends Table {
 
     }
 
-    /**path to icon. */
-    public static final String ICON_SEARCH = "apps/publishqueue/publish_view.png";
-
     /**File-count column id.*/
     public static final String PROP_FILESCOUNT = "files";
 
     /**icon property. */
     public static final String PROP_ICON = "icon";
-
-    /**Is direct column id.*/
-    public static final String PROP_ISDIRECT = "isdirect";
 
     /**job type property. */
     public static final String PROP_ISRUNNING = "runjob";
@@ -272,12 +220,6 @@ public class CmsQueuedTable extends Table {
 
     /**user column id.*/
     public static final String PROP_USER = "user";
-
-    /**Icon for direct publish.*/
-    static String ICON_PUBLISH_DIRECT = "apps/publishqueue/publish_direct.png";
-
-    /**Icon for not direct publish.*/
-    static String ICON_PUBLISH_NOT_DIRECT = "apps/publishqueue/publish_not_direct.png";
 
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsQueuedTable.class.getName());
@@ -347,7 +289,7 @@ public class CmsQueuedTable extends Table {
 
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
-                if (PROP_PROJECT.equals(propertyId)) {
+                if (PROP_PROJECT.equals(propertyId) | PROP_RESOURCES.equals(propertyId)) {
                     return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
 
@@ -445,33 +387,28 @@ public class CmsQueuedTable extends Table {
         m_container.addContainerProperty(
             PROP_ICON,
             Resource.class,
-            new ExternalResource(OpenCmsTheme.getImageLink(ICON_SEARCH)));
+            new ExternalResource(OpenCmsTheme.getImageLink(CmsPublishQueue.TABLE_ICON)));
         m_container.addContainerProperty(PROP_PROJECT, String.class, "");
         m_container.addContainerProperty(PROP_START, Date.class, null);
         m_container.addContainerProperty(PROP_USER, String.class, "");
         m_container.addContainerProperty(PROP_RESOURCES, List.class, null);
         m_container.addContainerProperty(PROP_FILESCOUNT, Integer.class, Integer.valueOf(1));
-        m_container.addContainerProperty(PROP_ISDIRECT, Boolean.class, Boolean.TRUE);
         m_container.addContainerProperty(PROP_ISRUNNING, Boolean.class, Boolean.FALSE);
 
         setContainerDataSource(m_container);
         setItemIconPropertyId(PROP_ICON);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
 
+        setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_RESOURCES_0));
         setColumnHeader(PROP_PROJECT, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_PROJECT_0));
         setColumnHeader(PROP_START, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_STARTDATE_0));
         setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_USER_0));
         setColumnHeader(PROP_FILESCOUNT, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_SIZE_0));
-        setColumnHeader(PROP_ISDIRECT, "");
 
-        setColumnWidth(PROP_ISDIRECT, 40);
         setColumnWidth(null, 40);
         setColumnWidth(PROP_USER, 350);
 
-        setColumnAlignment(PROP_ISDIRECT, Align.CENTER);
-
         addGeneratedColumn(PROP_RESOURCES, new CmsResourcesCellGenerator(120));
-        addGeneratedColumn(PROP_ISDIRECT, new DirectPublishColumn());
 
         setSelectable(true);
     }
@@ -481,7 +418,7 @@ public class CmsQueuedTable extends Table {
      */
     private void loadJobs() {
 
-        setVisibleColumns(PROP_ISDIRECT, PROP_PROJECT, PROP_START, PROP_USER, PROP_RESOURCES, PROP_FILESCOUNT);
+        setVisibleColumns(PROP_PROJECT, PROP_START, PROP_USER, PROP_RESOURCES, PROP_FILESCOUNT);
         for (CmsPublishJobBase job : m_jobs) {
 
             Item item = m_container.addItem(job.getPublishHistoryId());
@@ -500,7 +437,6 @@ public class CmsQueuedTable extends Table {
             }
             item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
             item.getItemProperty(PROP_FILESCOUNT).setValue(Integer.valueOf(job.getSize()));
-            item.getItemProperty(PROP_ISDIRECT).setValue(new Boolean(job.isDirectPublish()));
         }
     }
 }

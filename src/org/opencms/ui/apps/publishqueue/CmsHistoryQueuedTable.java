@@ -77,50 +77,6 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsHistoryQueuedTable extends Table {
 
     /**
-     *Cloumn with icon buttons.<p>
-     */
-    class DirectPublishColumn implements Table.ColumnGenerator {
-
-        /**vaadin serial id. */
-        private static final long serialVersionUID = 7732640709644021017L;
-
-        /**
-         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
-         */
-        public Object generateCell(final Table source, final Object itemId, Object columnId) {
-
-            Property<Object> prop = source.getItem(itemId).getItemProperty(PROP_ISDIRECT);
-
-            String resourceLink = "";
-            String description = "";
-            if (((Boolean)prop.getValue()).booleanValue()) {
-                resourceLink = OpenCmsTheme.getImageLink(ICON_PUBLISH_DIRECT);
-                description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_DIRECT_0);
-            } else {
-                resourceLink = OpenCmsTheme.getImageLink(ICON_PUBLISH_NOT_DIRECT);
-                description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_NOT_DIRECT_0);
-            }
-
-            Resource resource = new ExternalResource(resourceLink);
-
-            Image image = new Image(String.valueOf(System.currentTimeMillis()), resource);
-            image.setDescription(description);
-            image.addClickListener(new ClickListener() {
-
-                /**vaadin serial id. */
-                private static final long serialVersionUID = -8476526927157799166L;
-
-                public void click(ClickEvent event) {
-
-                    onItemClick(event, itemId, PROP_ISDIRECT);
-
-                }
-            });
-            return image;
-        }
-    }
-
-    /**
      *Menu entry for showing report.<p>
      */
     class EntryReport implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
@@ -251,12 +207,6 @@ public class CmsHistoryQueuedTable extends Table {
     /** list id constant. */
     public static final String LIST_ID = "lppq";
 
-    /**Icon for direct publish. */
-    static String ICON_PUBLISH_DIRECT = "apps/publishqueue/publish_direct.png";
-
-    /**Icon for not direct publish. */
-    static String ICON_PUBLISH_NOT_DIRECT = "apps/publishqueue/publish_not_direct.png";
-
     /** list column id constant. */
     private static final String LIST_COLUMN_ERRORS = "cse";
 
@@ -274,9 +224,6 @@ public class CmsHistoryQueuedTable extends Table {
 
     /**table column. */
     private static final String PROP_ICON = "icon";
-
-    /**table column. */
-    private static final String PROP_ISDIRECT = "direct";
 
     /**table column. */
     private static final String PROP_PROJECT = "project";
@@ -345,26 +292,22 @@ public class CmsHistoryQueuedTable extends Table {
         m_container.addContainerProperty(PROP_USER, String.class, "");
         m_container.addContainerProperty(PROP_FILESCOUNT, Integer.class, Integer.valueOf(1));
         m_container.addContainerProperty(PROP_RESOURCES, List.class, null);
-        m_container.addContainerProperty(PROP_ISDIRECT, Boolean.class, Boolean.valueOf(true));
 
         setContainerDataSource(m_container);
         setItemIconPropertyId(PROP_ICON);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setColumnHeader(PROP_STATUS, "");
-        setColumnHeader(PROP_ISDIRECT, "");
-        setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PATH_0));
+        setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_RESOURCES_0));
         setColumnHeader(PROP_PROJECT, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_PROJECT_0));
         setColumnHeader(PROP_START, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_STARTDATE_0));
         setColumnHeader(PROP_STOP, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_ENDDATE_0));
         setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_USER_0));
         setColumnHeader(PROP_FILESCOUNT, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_SIZE_0));
 
-        setColumnAlignment(PROP_ISDIRECT, Align.CENTER);
         setColumnAlignment(PROP_STATUS, Align.CENTER);
 
         setColumnWidth(null, 40);
         setColumnWidth(PROP_STATUS, 40);
-        setColumnWidth(PROP_ISDIRECT, 40);
         setColumnWidth(PROP_START, 200);
         setColumnWidth(PROP_STOP, 200);
         setColumnWidth(PROP_RESOURCES, 550);
@@ -390,7 +333,7 @@ public class CmsHistoryQueuedTable extends Table {
 
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
-                if (PROP_PROJECT.equals(propertyId)) {
+                if (PROP_PROJECT.equals(propertyId) | PROP_RESOURCES.equals(propertyId)) {
                     return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
 
@@ -399,7 +342,6 @@ public class CmsHistoryQueuedTable extends Table {
         });
 
         addGeneratedColumn(PROP_RESOURCES, new CmsResourcesCellGenerator(50));
-        addGeneratedColumn(PROP_ISDIRECT, new DirectPublishColumn());
         addGeneratedColumn(PROP_STATUS, new StatusColumn());
 
         loadJobs();
@@ -561,15 +503,7 @@ public class CmsHistoryQueuedTable extends Table {
      */
     private void loadJobs() {
 
-        setVisibleColumns(
-            PROP_STATUS,
-            PROP_ISDIRECT,
-            PROP_PROJECT,
-            PROP_START,
-            PROP_STOP,
-            PROP_USER,
-            PROP_RESOURCES,
-            PROP_FILESCOUNT);
+        setVisibleColumns(PROP_STATUS, PROP_PROJECT, PROP_START, PROP_STOP, PROP_USER, PROP_RESOURCES, PROP_FILESCOUNT);
 
         List<CmsPublishJobFinished> publishJobs;
         if (OpenCms.getRoleManager().hasRole(A_CmsUI.getCmsObject(), CmsRole.ROOT_ADMIN)) {
@@ -590,7 +524,6 @@ public class CmsHistoryQueuedTable extends Table {
             }
             item.getItemProperty(PROP_STATUS).setValue(state.get(LIST_COLUMN_STATE));
             item.getItemProperty(PROP_START).setValue(new Date(job.getStartTime()));
-            item.getItemProperty(PROP_ISDIRECT).setValue(Boolean.valueOf(job.isDirectPublish()));
             item.getItemProperty(PROP_STOP).setValue(new Date(job.getFinishTime()));
             item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
             item.getItemProperty(PROP_FILESCOUNT).setValue(Integer.valueOf(job.getSize()));

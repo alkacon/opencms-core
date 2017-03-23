@@ -102,20 +102,20 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
 
         // Check if state is empty -> start
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_ADMIN_TOOL_NAME_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0));
             return crumbs;
         }
 
         //Deeper path
         crumbs.put(
             CmsCacheAdminConfiguration.APP_ID,
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_ADMIN_TOOL_NAME_0));
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0));
 
         //View Flex Cache
         if (state.startsWith(PATH_VIEW_FLEX)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
         } else if (state.startsWith(PATH_VIEW_IMAGE)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_IMAGE_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
         } else if (state.startsWith(PATH_CLEAN)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CLEAN_0));
         }
@@ -312,42 +312,35 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
      */
     private Component getStartComponent() {
 
-        VerticalLayout layout = new VerticalLayout();
+        VerticalLayout outer = new VerticalLayout();
+        HorizontalLayout layout = new HorizontalLayout();
 
-        layout.setWidth("100%");
-        layout.setHeightUndefined();
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 
         //Statistic about heap space
         Panel java = new Panel();
-        java.setWidthUndefined();
+        //        java.setWidth("400px");
         java.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_0));
         java.setContent(new CmsJavaHeapInfoLayout());
 
         layout.addComponent(java);
 
-        //Statistic about Flex cache and Image Cache
-        HorizontalLayout hlayout = new HorizontalLayout();
-
-        hlayout.setSpacing(true);
-
-        Component flexCacheStatistics = new CmsFlexCacheInfoLayout();
         Panel flex = new Panel();
-        flex.setContent(flexCacheStatistics);
+        //        flex.setWidth("400px");
+        flex.setContent(new CmsFlexCacheInfoLayout());
         flex.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
-        hlayout.addComponent(flex);
-        Component imageCacheStatistics = new CmsImageCacheInfoLayout();
+
+        layout.addComponent(flex);
 
         Panel image = new Panel();
-
-        image.setContent(imageCacheStatistics);
+        //        image.setWidth("400px");
+        image.setContent(new CmsImageCacheInfoLayout());
         image.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
-        hlayout.addComponent(image);
-        layout.addComponent(hlayout);
-        layout.setComponentAlignment(java, com.vaadin.ui.Alignment.TOP_CENTER);
-        layout.setComponentAlignment(hlayout, com.vaadin.ui.Alignment.TOP_CENTER);
 
-        return layout;
+        layout.addComponent(image);
+        outer.addComponent(layout);
+        return outer;
     }
 }

@@ -57,7 +57,6 @@ public class CmsFlexCacheInfoLayout extends HorizontalLayout {
     public CmsFlexCacheInfoLayout() {
 
         m_cache = OpenCms.getFlexCache();
-        addComponent(getStatisticsPanel());
 
         CmsLruCache entryLruCache = m_cache.getEntryLruCache();
 
@@ -87,30 +86,42 @@ public class CmsFlexCacheInfoLayout extends HorizontalLayout {
 
         layout.addComponent(
             CmsCacheStatisticElements.getTitelElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_MEMORY_BLOCK_0)));
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0)));
         layout.addComponent(memoryBar);
 
         layout.addComponent(
             CmsCacheStatisticElements.getStatisticElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_MEMORY_MAXSIZE_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_0),
+                String.valueOf(m_cache.keySize()),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_HELP_0)));
+
+        layout.addComponent(
+            CmsCacheStatisticElements.getStatisticElement(
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0),
+                String.valueOf(m_cache.size()),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0)));
+
+        layout.addComponent(
+            CmsCacheStatisticElements.getStatisticElement(
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_MAXSIZE_0),
                 CmsFileUtil.formatFilesize(
                     entryLruCache.getMaxCacheCosts(),
                     A_CmsUI.getCmsObject().getRequestContext().getLocale()),
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_MEMORY_MAXSIZE_HELP_0)));
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_MAXSIZE_HELP_0)));
         layout.addComponent(
             CmsCacheStatisticElements.getStatisticElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0),
                 CmsFileUtil.formatFilesize(
                     entryLruCache.getAvgCacheCosts(),
                     A_CmsUI.getCmsObject().getRequestContext().getLocale()),
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_MEMORY_AVGSIZE_HELP_0)));
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_HELP_0)));
         layout.addComponent(
             CmsCacheStatisticElements.getStatisticElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_MEMORY_CURSIZE_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_CURSIZE_0),
                 CmsFileUtil.formatFilesize(
                     entryLruCache.getObjectCosts(),
                     A_CmsUI.getCmsObject().getRequestContext().getLocale()),
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_MEMORY_CURSIZE_HELP_0)));
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_CURSIZE_HELP_0)));
 
         ret.setContent(layout);
         ret.setWidth(CmsCacheAdminApp.STATISTIC_INFOBOX_WIDTH);
@@ -118,38 +129,4 @@ public class CmsFlexCacheInfoLayout extends HorizontalLayout {
         return ret;
     }
 
-    /**
-     * Panel showing information about memory settings and current use of memory. <p>
-     *
-     * @return vaadin component
-     */
-    private Panel getStatisticsPanel() {
-
-        Panel ret = new Panel();
-        VerticalLayout layout = new VerticalLayout();
-        layout.setMargin(true);
-        layout.setSpacing(false);
-
-        layout.addComponent(
-            CmsCacheStatisticElements.getTitelElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_BLOCK_0)));
-
-        layout.addComponent(
-            CmsCacheStatisticElements.getStatisticElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_KEYS_0),
-                String.valueOf(m_cache.keySize()),
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_KEYS_HELP_0)));
-
-        layout.addComponent(
-            CmsCacheStatisticElements.getStatisticElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_0),
-                String.valueOf(m_cache.size()),
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0)));
-
-        ret.setContent(layout);
-        ret.setWidth("300px");
-        ret.setHeight("100%");
-
-        return ret;
-    }
 }

@@ -34,7 +34,9 @@ import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobFinished;
 import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsUUID;
 
@@ -45,6 +47,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -71,6 +74,9 @@ public class CmsPublishReport extends VerticalLayout {
     /**vaadin component.*/
     private VerticalLayout m_panel;
 
+    /**Vaadin component.*/
+    private Panel m_panelComp;
+
     /**
      * public constructor.<p>
      *
@@ -85,6 +91,12 @@ public class CmsPublishReport extends VerticalLayout {
 
         //Obtain job and fill panel with CmsReportWidget
         final CmsPublishJobBase job = OpenCms.getPublishManager().getJobByPublishHistoryId(m_jobId);
+
+        m_panelComp.setCaption(
+            CmsVaadinUtils.getMessageText(
+                Messages.GUI_PQUEUE_REPORT_2,
+                job.getProjectName(),
+                job.getUserName(A_CmsUI.getCmsObject())));
         //switch for job type
         if (job instanceof CmsPublishJobRunning) {
             //Running job

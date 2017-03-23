@@ -30,6 +30,7 @@ package org.opencms.ui.apps.cacheadmin;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexCache;
+import org.opencms.flex.CmsFlexCacheKey;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
@@ -97,7 +98,7 @@ public class CmsFlexCacheTable extends Table {
          */
         public String getTitle(Locale locale) {
 
-            return CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_0);
+            return CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0);
         }
 
         /**
@@ -153,6 +154,7 @@ public class CmsFlexCacheTable extends Table {
      * @param app calling instance
      */
     public CmsFlexCacheTable(CmsCacheAdminApp app) {
+
         m_app = app;
 
         m_cache = OpenCms.getFlexCache();
@@ -173,10 +175,14 @@ public class CmsFlexCacheTable extends Table {
 
         setContainerDataSource(m_container);
 
-        setColumnHeader(PROP_RESOURCENAME, CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LIST_COLS_RESOURCE_0));
-        setColumnHeader(PROP_PROJECT, CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LIST_COLS_PROJECT_0));
-        setColumnHeader(PROP_KEY, CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LIST_COLS_KEY_0));
-        setColumnHeader(PROP_VARIATIONS, CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LIST_COLS_VARCOUNT_0));
+        setColumnHeader(
+            PROP_RESOURCENAME,
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LIST_COLS_RESOURCE_0));
+        setColumnHeader(PROP_PROJECT, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LIST_COLS_PROJECT_0));
+        setColumnHeader(PROP_KEY, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LIST_COLS_KEY_0));
+        setColumnHeader(
+            PROP_VARIATIONS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LIST_COLS_VARCOUNT_0));
 
         setItemIconPropertyId(PROP_ICON);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
@@ -292,7 +298,7 @@ public class CmsFlexCacheTable extends Table {
 
         }, m_app, CmsVariationsDialog.MODE_FLEX);
         try {
-            CmsResource resourceObject = getRootCms().readResource(resource);
+            CmsResource resourceObject = getRootCms().readResource(CmsFlexCacheKey.getResourceName(resource));
             variationsDialog.displayResourceInfo(Collections.singletonList(resourceObject));
         } catch (CmsException e) {
             //

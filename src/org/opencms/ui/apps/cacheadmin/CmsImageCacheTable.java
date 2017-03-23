@@ -29,6 +29,7 @@ package org.opencms.ui.apps.cacheadmin;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -41,6 +42,8 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
@@ -122,7 +125,7 @@ public class CmsImageCacheTable extends Table {
          */
         public String getTitle(Locale locale) {
 
-            return CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_0);
+            return CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0);
         }
 
         /**
@@ -163,14 +166,14 @@ public class CmsImageCacheTable extends Table {
     /** The context menu. */
     CmsContextMenu m_menu;
 
-    /**CmsObject at root.*/
-    private CmsObject m_rootCms;
-
     /**Indexed container.*/
     private IndexedContainer m_container;
 
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
+
+    /**CmsObject at root.*/
+    private CmsObject m_rootCms;
 
     /**
      * public constructor.<p>
@@ -178,6 +181,8 @@ public class CmsImageCacheTable extends Table {
      * @param app instance of calling app.
      */
     public CmsImageCacheTable(CmsCacheAdminApp app) {
+
+        CmsVariationsDialog.resetHandler();
 
         m_app = app;
 
@@ -200,18 +205,15 @@ public class CmsImageCacheTable extends Table {
             }
         };
 
-        m_container.addContainerProperty(
-            PROP_ICON,
-            Resource.class,
-            new ExternalResource(OpenCmsTheme.getImageLink(CmsCacheAdminApp.TABLE_ICON)));
+        m_container.addContainerProperty(PROP_ICON, Resource.class, new ExternalResource(getImageFileTypeIcon()));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DIMENSIONS, String.class, "");
         m_container.addContainerProperty(PROP_SIZE, String.class, "");
         //ini Table
         setContainerDataSource(m_container);
-        setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_IMAGECACHE_LIST_COLS_RESOURCE_0));
-        setColumnHeader(PROP_SIZE, CmsVaadinUtils.getMessageText(Messages.GUI_IMAGECACHE_LIST_COLS_LENGTH_0));
-        setColumnHeader(PROP_DIMENSIONS, CmsVaadinUtils.getMessageText(Messages.GUI_IMAGECACHE_LIST_COLS_SIZE_0));
+        setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0));
+        setColumnHeader(PROP_SIZE, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0));
+        setColumnHeader(PROP_DIMENSIONS, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_SIZE_0));
 
         setItemIconPropertyId(PROP_ICON);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
@@ -233,14 +235,12 @@ public class CmsImageCacheTable extends Table {
 
                 //Right click or click on icon column (=null) -> show menu
                 if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
-                    m_menu.setEntries(
-                        getMenuEntries(),
-                        Collections.singleton((m_cacheHelper.getFilePath((String)getValue()))));
+                    m_menu.setEntries(getMenuEntries(), Collections.singleton((String)getValue()));
                     m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsImageCacheTable.this);
                 }
 
                 if (event.getButton().equals(MouseButton.LEFT) & PROP_NAME.equals(event.getPropertyId())) {
-                    showVariationsWindow((m_cacheHelper.getFilePath((String)getValue())));
+                    showVariationsWindow(((String)getValue()));
                 }
             }
         });
@@ -334,6 +334,24 @@ public class CmsImageCacheTable extends Table {
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_VARIATIONS_1, resource));
         window.setContent(variationsDialog);
         UI.getCurrent().addWindow(window);
+    }
+
+    /**
+     * Returns the path of the icon of the resource type image.<p>
+     *
+     * @return path to icon
+     */
+    private String getImageFileTypeIcon() {
+
+        String result = "";
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            CmsResourceTypeImage.getStaticTypeName());
+        if (settings != null) {
+            result = CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable();
+        }
+
+        return CmsWorkplace.getResourceUri(result);
+
     }
 
     /**

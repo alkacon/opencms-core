@@ -99,8 +99,8 @@ public class CmsFlushCache extends VerticalLayout {
     private Button getCleanCoreButton() {
 
         Button ret = CmsDefaultAppButtonProvider.createIconButton(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0),
-            CmsVaadinUtils.getMessageText(Messages.GUI_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0),
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0),
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0),
             new ExternalResource(OpenCmsTheme.getImageLink(ICON_CLEAN_CORE)));
 
         ret.addClickListener(new ClickListener() {
@@ -111,7 +111,7 @@ public class CmsFlushCache extends VerticalLayout {
 
                 final Window window = CmsBasicDialog.prepareWindow();
                 CmsConfirmSimpleFlushDialog flushDialog = new CmsConfirmSimpleFlushDialog(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0),
+                    CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0),
                     new Runnable() {
 
                         public void run() {
@@ -144,8 +144,8 @@ public class CmsFlushCache extends VerticalLayout {
     private Button getCleanFlexButton() {
 
         Button ret = CmsDefaultAppButtonProvider.createIconButton(
-            CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0),
-            CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0),
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0),
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0),
             new ExternalResource(OpenCmsTheme.getImageLink(ICON_CLEAN_FLEX)));
         ret.addClickListener(new ClickListener() {
 
@@ -171,8 +171,8 @@ public class CmsFlushCache extends VerticalLayout {
     private Button getCleanImageButton() {
 
         Button ret = CmsDefaultAppButtonProvider.createIconButton(
-            CmsVaadinUtils.getMessageText(Messages.GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0),
-            CmsVaadinUtils.getMessageText(Messages.GUI_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0),
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0),
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0),
             new ExternalResource(OpenCmsTheme.getImageLink(ICON_CLEAN_IMAGE)));
 
         ret.addClickListener(new ClickListener() {
@@ -200,8 +200,8 @@ public class CmsFlushCache extends VerticalLayout {
     private Button getCleanRepoButton() {
 
         Button ret = CmsDefaultAppButtonProvider.createIconButton(
-            CmsVaadinUtils.getMessageText(Messages.GUI_JSP_REPOSITORY_ADMIN_TOOL_NAME_0),
-            CmsVaadinUtils.getMessageText(Messages.GUI_JSP_REPOSITORY_ADMIN_TOOL_HELP_0),
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_NAME_0),
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_HELP_0),
             new ExternalResource(OpenCmsTheme.getImageLink(ICON_CLEAN_REPOSITORY)));
         ret.addClickListener(new ClickListener() {
 
@@ -211,7 +211,7 @@ public class CmsFlushCache extends VerticalLayout {
 
                 final Window window = CmsBasicDialog.prepareWindow();
                 CmsConfirmSimpleFlushDialog flushDialog = new CmsConfirmSimpleFlushDialog(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_JSP_REPOSITORY_ADMIN_TOOL_CONF_0),
+                    CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_CONF_0),
                     new Runnable() {
 
                         public void run() {

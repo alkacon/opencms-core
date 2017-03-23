@@ -87,30 +87,6 @@ public class CmsImageCacheHelper {
     }
 
     /**
-     * Public constructor for loading a single image resource.<p>
-     *
-     * @param resPath uri of the image
-     * @param cms CmsObject
-     * @param withVariations if also variations should be read
-     * @param showSize if it is needed to compute the image size
-     * @param statsOnly if only statistical information should be retrieved
-     */
-    public CmsImageCacheHelper(
-        String resPath,
-        CmsObject cms,
-        boolean withVariations,
-        boolean showSize,
-        boolean statsOnly) {
-
-        File file = new File(resPath);
-        try {
-            visitImage(getClonedCmsObject(cms), file, withVariations, showSize, statsOnly);
-        } catch (CmsException e) {
-            //should not happen
-        }
-    }
-
-    /**
      * Returns all cached images.<p>
      *
      * @return a list of root paths

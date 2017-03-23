@@ -48,7 +48,7 @@ public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog {
     /**Vaadin button.*/
     private Button m_cancelButton;
 
-    /**Vaadin label*/
+    /**Vaadin label.*/
     private Label m_icon;
 
     /**Vaadin label.*/

@@ -103,19 +103,14 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
                 new CmsUUID(getJobIdFromState(state))) instanceof CmsPublishJobFinished) {
                 crumbs.put(
                     CmsPublishQueueConfiguration.APP_ID + "/" + PATH_HISTORY,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_0));
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_QUEUE_0));
             }
-            crumbs.put(
-                "",
-                CmsVaadinUtils.getMessageText(
-                    Messages.GUI_PQUEUE_REPORT_2,
-                    getProjectFromState(state),
-                    getUserFromState(state)));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_REPORT_0));
         }
 
         //History
         if (state.startsWith(PATH_HISTORY)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_QUEUE_0));
         }
 
         //Resources
@@ -125,14 +120,9 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
                 new CmsUUID(getJobIdFromState(state))) instanceof CmsPublishJobFinished) {
                 crumbs.put(
                     CmsPublishQueueConfiguration.APP_ID + "/" + PATH_HISTORY,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_0));
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_QUEUE_0));
             }
-            crumbs.put(
-                "",
-                CmsVaadinUtils.getMessageText(
-                    Messages.GUI_PQUEUE_RESOURCES_2,
-                    getProjectFromState(state),
-                    getUserFromState(state)));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_RESOURCES_0));
         }
 
         if (crumbs.size() > 1) {
@@ -203,12 +193,6 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
 
         List<NavEntry> subNav = new ArrayList<NavEntry>();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state) | state.startsWith(PATH_HISTORY)) {
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_CURRENT_QUEUE_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_CURRENT_QUEUE_DESCRIPTION_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON)),
-                    ""));
 
             subNav.add(
                 new NavEntry(

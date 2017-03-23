@@ -43,23 +43,47 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 
+/**
+ * Class for the dialog to show variations of flex cache and image cache.<p>
+ */
 public class CmsVariationsDialog extends CmsBasicDialog {
 
-    protected static int MODE_FLEX = 0;
+    /**Mode to display Flex cache.*/
+    protected static int MODE_FLEX = 2;
 
+    /**Mode to display Image cache.*/
     protected static int MODE_IMAGE = 1;
 
+    /**Helper instance to read variations of images.*/
+    private static CmsImageCacheHelper HELPER;
+
+    /**generated vaadin id.*/
+    private static final long serialVersionUID = -7346908393288365974L;
+
+    /**vaadin component.*/
     private Button m_cancelButton;
 
-    private Panel m_panel;
-
+    /**vaadin component.*/
     private FormLayout m_layout;
 
+    /**vaadin component.*/
+    private Panel m_panel;
+
+    /**
+     * public constructor.<p>
+     *
+     * @param resource to show variations for.
+     * @param cancel runnable
+     * @param app calling app instance
+     * @param mode mode
+     */
     public CmsVariationsDialog(String resource, final Runnable cancel, CmsCacheAdminApp app, int mode) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_cancelButton.addClickListener(new Button.ClickListener() {
+
+            private static final long serialVersionUID = -4321889329235244258L;
 
             public void buttonClick(ClickEvent event) {
 
@@ -67,7 +91,7 @@ public class CmsVariationsDialog extends CmsBasicDialog {
             }
         });
 
-        Iterator<String> variationsIterator;
+        Iterator<String> variationsIterator = null;
 
         if (mode == MODE_FLEX) {
             //For FlexCache
@@ -75,9 +99,10 @@ public class CmsVariationsDialog extends CmsBasicDialog {
             Set<String> variations = cache.getCachedVariations(resource, A_CmsUI.getCmsObject());
             variationsIterator = variations.iterator();
         } else {
-            //For image Cache
-            CmsImageCacheHelper helper = new CmsImageCacheHelper(resource, A_CmsUI.getCmsObject(), true, false, false);
-            List<String> variations = helper.getVariations(helper.getAllCachedImages().get(0).toString());
+            if (HELPER == null) {
+                HELPER = new CmsImageCacheHelper(A_CmsUI.getCmsObject(), true, false, false);
+            }
+            List<String> variations = HELPER.getVariations(resource);
             variationsIterator = variations.iterator();
         }
         m_panel.setSizeFull();
@@ -89,6 +114,15 @@ public class CmsVariationsDialog extends CmsBasicDialog {
         while (variationsIterator.hasNext()) {
             m_layout.addComponent(new Label(variationsIterator.next()));
         }
+
+    }
+
+    /**
+     * Resets the image handler.<p>
+     */
+    public static void resetHandler() {
+
+        HELPER = null;
 
     }
 

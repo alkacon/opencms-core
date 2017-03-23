@@ -76,23 +76,23 @@ public class CmsImageCacheInfoLayout extends HorizontalLayout {
 
         layout.addComponent(
             CmsCacheStatisticElements.getTitelElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_BLOCK_0)));
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_BLOCK_0)));
 
         //Statistics
 
         layout.addComponent(
             CmsCacheStatisticElements.getStatisticElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_KEYS_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_0),
                 String.valueOf(m_imageCache.getFilesCount()),
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_KEYS_HELP_0)));
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_HELP_0)));
         layout.addComponent(
             CmsCacheStatisticElements.getStatisticElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0),
                 String.valueOf(m_imageCache.getVariationsCount()),
-                CmsVaadinUtils.getMessageText(Messages.GUI_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0)));
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0)));
         layout.addComponent(
             CmsCacheStatisticElements.getStatisticElement(
-                CmsVaadinUtils.getMessageText(Messages.GUI_IMAGECACHE_LABEL_MEMORY_BLOCK_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0),
                 CmsFileUtil.formatFilesize(
                     m_imageCache.getVariationsSize(),
                     A_CmsUI.getCmsObject().getRequestContext().getLocale()),

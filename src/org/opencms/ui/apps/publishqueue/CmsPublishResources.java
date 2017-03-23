@@ -37,6 +37,7 @@ import org.opencms.publish.CmsPublishJobEnqueued;
 import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -48,6 +49,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -67,8 +69,11 @@ public class CmsPublishResources extends VerticalLayout {
     /**Vaadin component.*/
     private Button m_cancel;
 
-    /**Vaddin component.*/
+    /**Vaadin component.*/
     private VerticalLayout m_panel;
+
+    /**Vaadin component.*/
+    private Panel m_panelComp;
 
     /**
      * Public constructor.<p>
@@ -83,6 +88,12 @@ public class CmsPublishResources extends VerticalLayout {
 
         final CmsPublishJobBase job = OpenCms.getPublishManager().getJobByPublishHistoryId(new CmsUUID(id));
 
+        m_panelComp.setCaption(
+            CmsVaadinUtils.getMessageText(
+                Messages.GUI_PQUEUE_RESOURCES_2,
+                job.getProjectName(),
+                job.getUserName(A_CmsUI.getCmsObject())));
+
         String resourcesHTML = "";
 
         try {
@@ -96,6 +107,7 @@ public class CmsPublishResources extends VerticalLayout {
         label.setContentMode(ContentMode.HTML);
         label.setHeight("700px");
         label.addStyleName("v-scrollable");
+        label.addStyleName("o-report");
         m_panel.addComponent(label);
 
         m_cancel.addClickListener(new ClickListener() {
