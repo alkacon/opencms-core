@@ -32,6 +32,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
+import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -56,6 +57,15 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new CmsSiteManager();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
+    @Override
+    public String getButtonStyle() {
+
+        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
     }
 
     /**

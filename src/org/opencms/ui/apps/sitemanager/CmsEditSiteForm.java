@@ -527,7 +527,7 @@ public class CmsEditSiteForm extends VerticalLayout {
         m_simpleFieldParentFolderName.setValue(CmsSiteManager.PATH_SITES);
         m_simpleFieldParentFolderName.setUseRootPaths(true);
         m_simpleFieldParentFolderName.setCmsObject(m_clonedCms);
-        m_simpleFieldParentFolderName.setResourceFilter(CmsResourceFilter.requireType(new CmsResourceTypeFolder()));
+        m_simpleFieldParentFolderName.setResourceFilter(CmsResourceFilter.DEFAULT_FOLDERS);
 
         m_manager = manager;
 
