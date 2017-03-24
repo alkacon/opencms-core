@@ -771,6 +771,16 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Returns the configured worklace servers.<p>
+     *
+     * @return the workplace servers
+     */
+    public List<String> getWorkplaceServers() {
+
+        return Collections.unmodifiableList(m_workplaceServers);
+    }
+
+    /**
      * Returns the site matcher that matches the workplace site.<p>
      *
      * @return the site matcher that matches the workplace site
