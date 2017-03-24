@@ -182,7 +182,11 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
     public static String getResourceTypeName(Locale locale, String name) {
 
         // try to find the localized key
-        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name).getKey();
+        CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name);
+        if (typeSettings == null) {
+            return name;
+        }
+        String key = typeSettings.getKey();
         return OpenCms.getWorkplaceManager().getMessages(locale).keyDefault(key, name);
     }
 
