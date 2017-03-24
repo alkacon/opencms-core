@@ -445,6 +445,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
             getSessionCache().clearDynamicValues();
+            getSessionCache().uncacheXmlContent(structureId);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
                 result = readContentDefnitionForNew(
                     newLink,

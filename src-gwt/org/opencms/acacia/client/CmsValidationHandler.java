@@ -119,11 +119,18 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
     /**
      * Destroys the current handler instance.<p>
      */
-    public void destroy() {
+    public void clear() {
 
         if (m_handlerRegistration != null) {
             m_handlerRegistration.removeHandler();
             m_handlerRegistration = null;
+        }
+        m_validationContext = null;
+        m_paused = false;
+        m_validating = false;
+        if (m_validationTimer != null) {
+            m_validationTimer.cancel();
+            m_validationTimer = null;
         }
     }
 
