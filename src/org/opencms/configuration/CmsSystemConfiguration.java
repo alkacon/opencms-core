@@ -1405,7 +1405,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         // create <sites> node
         Element sitesElement = systemElement.addElement(N_SITES);
-        sitesElement.addElement(N_WORKPLACE_SERVER).addText(m_siteManager.getWorkplaceServer());
+        for (String server : m_siteManager.getWorkplaceServers()) {
+            sitesElement.addElement(N_WORKPLACE_SERVER).addText(server);
+        }
         sitesElement.addElement(N_DEFAULT_URI).addText(m_siteManager.getDefaultUri());
         String sharedFolder = m_siteManager.getSharedFolder();
         if (sharedFolder != null) {
