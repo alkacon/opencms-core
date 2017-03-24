@@ -419,7 +419,7 @@ public class CmsSessionManager {
     public String switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
 
         // only user with root administrator role are allowed to switch the user
-        OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN.forOrgUnit(user.getOuFqn()));
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn()));
         CmsSessionInfo info = getSessionInfo(req);
         HttpSession session = req.getSession(false);
         if ((info == null) || (session == null)) {
@@ -679,12 +679,11 @@ public class CmsSessionManager {
             m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
             m_sessionCountTotal++;
             if (LOG.isInfoEnabled()) {
-                LOG.info(
-                    tid
-                        + Messages.get().getBundle().key(
-                            Messages.LOG_SESSION_CREATED_2,
-                            new Integer(m_sessionCountTotal),
-                            new Integer(m_sessionCountCurrent)));
+                LOG.info(tid
+                    + Messages.get().getBundle().key(
+                        Messages.LOG_SESSION_CREATED_2,
+                        new Integer(m_sessionCountTotal),
+                        new Integer(m_sessionCountCurrent)));
             }
         }
 
