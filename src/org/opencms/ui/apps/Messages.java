@@ -885,6 +885,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_GLOBAL_WORKPLACE_0 = "GUI_SITE_GLOBAL_WORKPLACE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_GLOBAL_WORKPLACE_DOUBLE_1 = "GUI_SITE_GLOBAL_WORKPLACE_DOUBLE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_GLOBAL_WORKPLACE_HELP_0 = "GUI_SITE_GLOBAL_WORKPLACE_HELP_0";
 
     /** Message constant for key in the resource bundle. */

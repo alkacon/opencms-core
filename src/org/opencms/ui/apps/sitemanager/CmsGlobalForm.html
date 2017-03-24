@@ -10,11 +10,14 @@
 				
 	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
 		<v-panel caption="%(key.GUI_SITE_GLOBAL_CONFIGURATION_0)">	
+			<v-vertical-layout>
+			<v-form-layout _id="m_serverLayout" margin spacing style-name="o-formlayout-workplace-main">
+			</v-form-layout>
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
-				<v-combo-box _id="m_fieldWorkplaceServer" immediate="true"  width="100%" caption="%(key.GUI_SITE_GLOBAL_WORKPLACE_0)" description="%(key.GUI_SITE_GLOBAL_WORKPLACE_HELP_0)"/>
 				<v-combo-box _id="m_fieldDefaultURI" immediate="true"  width="100%" caption="%(key.GUI_SITE_GLOBAL_DEFAULTURI_0)" description="%(key.GUI_SITE_GLOBAL_DEFAULTURI_HELP_0)"/>
 				<v-combo-box _id="m_fieldSharedFolder"  immediate="true"  width="100%" caption="%(key.GUI_SITE_GLOBAL_SHAREDFOLDER_0)" description="%(key.GUI_SITE_GLOBAL_SHAREDFOLDER_HELP_0)"/>
 			</v-form-layout>
+			</v-vertical-layout>
 		</v-panel>	
 			<v-panel>
 		<v-horizontal-layout width="100%">
