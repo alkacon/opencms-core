@@ -50,6 +50,8 @@ public class CmsRemovableFormRow<T extends AbstractField<?>> extends HorizontalL
     /** The text input field. */
     private T m_input;
 
+    private Runnable m_remove;
+
     /**
      * Constructor.<p>
      *
@@ -73,10 +75,7 @@ public class CmsRemovableFormRow<T extends AbstractField<?>> extends HorizontalL
 
             public void buttonClick(ClickEvent event) {
 
-                HasComponents parent = CmsRemovableFormRow.this.getParent();
-                if (parent instanceof ComponentContainer) {
-                    ((ComponentContainer)parent).removeComponent(CmsRemovableFormRow.this);
-                }
+                removeRow();
             }
         });
         addComponent(deleteButton);
@@ -91,4 +90,39 @@ public class CmsRemovableFormRow<T extends AbstractField<?>> extends HorizontalL
 
         return m_input;
     }
+
+    /**
+     * Enables or diables the remove button.<p>
+     *
+     * @param enabled true -> remove is clickable
+     */
+    public void setEnabledRemoveOption(boolean enabled) {
+
+        getComponent(1).setEnabled(enabled);
+    }
+
+    /**
+     * Sets a runnable, which runs when row gets removed.<p>
+     *
+     * @param remove runnable
+     */
+    public void setRemoveRunnable(Runnable remove) {
+
+        m_remove = remove;
+    }
+
+    /**
+     * Method to remove row.<p>
+     */
+    void removeRow() {
+
+        HasComponents parent = CmsRemovableFormRow.this.getParent();
+        if (parent instanceof ComponentContainer) {
+            ((ComponentContainer)parent).removeComponent(CmsRemovableFormRow.this);
+        }
+        if (m_remove != null) {
+            m_remove.run();
+        }
+    }
+
 }
