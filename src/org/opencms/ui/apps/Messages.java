@@ -849,6 +849,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_FOLDERNAME_EMPTY_0 = "GUI_SITE_FOLDERNAME_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_FOLDERNAME_EQUAL_SITETEMPLATE_0 = "GUI_SITE_FOLDERNAME_EQUAL_SITETEMPLATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_FOLDERNAME_FORBIDDEN_1 = "GUI_SITE_FOLDERNAME_FORBIDDEN_1";
 
     /** Message constant for key in the resource bundle. */

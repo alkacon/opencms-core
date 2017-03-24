@@ -260,6 +260,12 @@ public class CmsEditSiteForm extends VerticalLayout {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_WRONGPARENT_0));
             }
+
+            if (ensureFoldername(getParentFolder()).equals(ensureFoldername(getSiteTemplatePath()))) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_EQUAL_SITETEMPLATE_0));
+            }
+
         }
 
     }
@@ -323,7 +329,6 @@ public class CmsEditSiteForm extends VerticalLayout {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SITETEMPLATE_INVALID_0));
             }
-
         }
 
     }
@@ -869,6 +874,16 @@ public class CmsEditSiteForm extends VerticalLayout {
     String getParentFolder() {
 
         return m_simpleFieldParentFolderName.getValue();
+    }
+
+    /**
+     * Returns the value of the site template field.<p>
+     *
+     * @return string root path
+     */
+    String getSiteTemplatePath() {
+
+        return m_fieldLoadSiteTemplate.getValue();
     }
 
     /**
