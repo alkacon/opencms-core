@@ -261,9 +261,11 @@ public class CmsEditSiteForm extends VerticalLayout {
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_WRONGPARENT_0));
             }
 
-            if (ensureFoldername(getParentFolder()).equals(ensureFoldername(getSiteTemplatePath()))) {
-                throw new InvalidValueException(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_EQUAL_SITETEMPLATE_0));
+            if (!getSiteTemplatePath().isEmpty()) {
+                if (ensureFoldername(getParentFolder()).equals(ensureFoldername(getSiteTemplatePath()))) {
+                    throw new InvalidValueException(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_EQUAL_SITETEMPLATE_0));
+                }
             }
 
         }
@@ -831,11 +833,10 @@ public class CmsEditSiteForm extends VerticalLayout {
      * @return the validated folder name
      * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
      */
-    String ensureFoldername(String resourcename) throws CmsIllegalArgumentException {
+    String ensureFoldername(String resourcename) {
 
         if (CmsStringUtil.isEmpty(resourcename)) {
-            throw new CmsIllegalArgumentException(
-                org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1, resourcename));
+            return "";
         }
         if (!CmsResource.isFolder(resourcename)) {
             resourcename = resourcename.concat("/");
