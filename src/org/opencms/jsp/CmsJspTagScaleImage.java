@@ -285,8 +285,8 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
         }
 
         String imageSrc = cms.getSitePath(imageRes);
-        if (m_scaler.isValid()) {
-            // now append the scaler parameters
+        if (m_scaler.isValid() && !m_scaler.isOriginalScaler()) {
+            // now append the scaler parameters if required
             imageSrc += m_scaler.toRequestParam();
         }
 
