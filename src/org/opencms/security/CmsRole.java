@@ -119,33 +119,6 @@ public final class CmsRole {
     /** The list of system roles. */
     private static final List<CmsRole> SYSTEM_ROLES;
 
-    /** The child roles of this role. */
-    private final List<CmsRole> m_children = new ArrayList<CmsRole>();
-
-    /** The distinct group names of this role. */
-    private List<String> m_distictGroupNames = new ArrayList<String>();
-
-    /** The name of the group this role is mapped to in the OpenCms database.*/
-    private final String m_groupName;
-
-    /** The id of the role, does not differentiate for organizational units. */
-    private final CmsUUID m_id;
-
-    /** Indicates if this role is organizational unit dependent. */
-    private boolean m_ouDependent;
-
-    /** The organizational unit this role applies to. */
-    private String m_ouFqn;
-
-    /** The parent role of this role. */
-    private final CmsRole m_parentRole;
-
-    /** The name of this role. */
-    private final String m_roleName;
-
-    /** Indicates if this role is a system role or a user defined role. */
-    private boolean m_systemRole;
-
     /** Prefix for individual user confirmation runtime property. */
     public static final String CONFIRM_ROLE_PREFIX = "confirm.role.";
 
@@ -202,6 +175,33 @@ public final class CmsRole {
         }
     }
 
+    /** The child roles of this role. */
+    private final List<CmsRole> m_children = new ArrayList<CmsRole>();
+
+    /** The distinct group names of this role. */
+    private List<String> m_distictGroupNames = new ArrayList<String>();
+
+    /** The name of the group this role is mapped to in the OpenCms database.*/
+    private final String m_groupName;
+
+    /** The id of the role, does not differentiate for organizational units. */
+    private final CmsUUID m_id;
+
+    /** Indicates if this role is organizational unit dependent. */
+    private boolean m_ouDependent;
+
+    /** The organizational unit this role applies to. */
+    private String m_ouFqn;
+
+    /** The parent role of this role. */
+    private final CmsRole m_parentRole;
+
+    /** The name of this role. */
+    private final String m_roleName;
+
+    /** Indicates if this role is a system role or a user defined role. */
+    private boolean m_systemRole;
+
     /**
      * Creates a user defined role.<p>
      *
@@ -226,7 +226,7 @@ public final class CmsRole {
     private CmsRole(CmsRole role) {
 
         m_roleName = role.m_roleName;
-        m_id = CmsUUID.getConstantUUID(m_roleName);
+        m_id = role.m_id;
         m_groupName = role.m_groupName;
         m_parentRole = role.m_parentRole;
         m_systemRole = role.m_systemRole;
