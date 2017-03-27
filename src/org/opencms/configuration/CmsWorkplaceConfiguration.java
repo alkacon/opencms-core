@@ -293,6 +293,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the editor handler node. */
     public static final String N_EDITORHANDLER = "editorhandler";
 
+    /** The name of the editor handler node. */
+    public static final String N_POSTUPLOADHANDLER = "postuploadhandler";
+
     /** The name of the editorprecondition node. */
     public static final String N_EDITORPRECONDITION = "editorprecondition";
 
@@ -981,6 +984,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, A_CLASS, CmsConfigurationException.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, "setEditorHandler");
 
+        // add rules for editor handler
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_POSTUPLOADHANDLER,
+            A_CLASS,
+            CmsConfigurationException.class);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_POSTUPLOADHANDLER, "setPostUploadHandler");
+
         // add rules for editor action handler
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, A_CLASS, CmsConfigurationException.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");
@@ -1138,6 +1148,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         workplaceElement.addElement(N_EDITORACTION).addAttribute(
             A_CLASS,
             m_workplaceManager.getEditorActionHandler().getClass().getName());
+
+        if (m_workplaceManager.getPostUploadHandler() != null) {
+            workplaceElement.addElement(N_POSTUPLOADHANDLER).addAttribute(
+                A_CLASS,
+                m_workplaceManager.getPostUploadHandler().getClass().getName());
+        }
 
         if (m_workplaceManager.getEditorCssHandlers().size() > 0) {
             Element editorCssHandlers = workplaceElement.addElement(N_EDITORCSSHANDLERS);

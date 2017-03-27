@@ -237,7 +237,7 @@ public class CmsUploadBean extends CmsJspBean {
      * @param listener the listener
      *
      * @throws CmsException if something goes wrong
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException in case the encoding is not supported
      */
     private void createResources(CmsUploadListener listener) throws CmsException, UnsupportedEncodingException {
 
@@ -305,6 +305,7 @@ public class CmsUploadBean extends CmsJspBean {
      * @throws CmsLoaderException if something goes wrong
      * @throws CmsDbSqlException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     private CmsResource createSingleResource(CmsObject cms, String fileName, String targetFolder, byte[] content)
     throws CmsException, CmsLoaderException, CmsDbSqlException {
 

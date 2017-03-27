@@ -165,9 +165,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
     }
 
-    /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
-
     /** The default encoding for the workplace (UTF-8). */
     public static final String DEFAULT_WORKPLACE_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
@@ -191,8 +188,14 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         new CmsAccountInfo(Field.email, null, false),
         new CmsAccountInfo(Field.institution, null, false)};
 
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
+
     /** Value of the acacia-unlock configuration option (may be null if not set). */
     private String m_acaciaUnlock;
+
+    /** The configured account infos. */
+    private List<CmsAccountInfo> m_accountInfos;
 
     /** The admin cms context. */
     private CmsObject m_adminCms;
@@ -238,6 +241,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The editor manager. */
     private CmsWorkplaceEditorManager m_editorManager;
+
+    /** The element delete mode. */
+    private ElementDeleteMode m_elementDeleteMode;
 
     /** The flag if switching tabs in the advanced property dialog is enabled. */
     private boolean m_enableAdvancedPropertyTabs;
@@ -305,6 +311,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured multi context menu. */
     private CmsExplorerContextMenu m_multiContextMenu;
 
+    /** The post upload handler. */
+    private I_CmsPostUploadDialogHandler m_postUploadHandler;
+
     /** The condition definitions for the resource types  which are triggered before opening the editor. */
     private List<I_CmsPreEditorActionDefinition> m_preEditorConditionDefinitions;
 
@@ -337,12 +346,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
-
-    /** The configured account infos. */
-    private List<CmsAccountInfo> m_accountInfos;
-
-    /** The element delete mode. */
-    private ElementDeleteMode m_elementDeleteMode;
 
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -1382,6 +1385,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns the post upload handler.<p>
+     *
+     * @return the post upload handler
+     */
+    public I_CmsPostUploadDialogHandler getPostUploadHandler() {
+
+        return m_postUploadHandler;
+    }
+
+    /**
      * Returns the condition definition for the given resource type that is triggered before opening the editor.<p>
      *
      * @param resourceType the resource type
@@ -1506,6 +1519,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     public String getUploadHook(CmsObject cms, String uploadFolder) {
 
+        if (m_postUploadHandler != null) {
+            return m_postUploadHandler.getUploadHook(cms, uploadFolder);
+        }
         I_CmsDialogHandler handler = getDialogHandler(CmsDialogSelector.DIALOG_PROPERTY);
         if ((handler != null) && (handler instanceof I_CmsPostUploadDialogHandler)) {
             return ((I_CmsPostUploadDialogHandler)handler).getUploadHook(cms, uploadFolder);
@@ -2107,6 +2123,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         multiContextMenu.setMultiMenu(true);
         m_multiContextMenu = multiContextMenu;
+    }
+
+    /**
+     * Sets the post upload dialog handler.<p>
+     *
+     * @param uploadHandler the post upload handler
+     */
+    public void setPostUploadHandler(I_CmsPostUploadDialogHandler uploadHandler) {
+
+        m_postUploadHandler = uploadHandler;
     }
 
     /**

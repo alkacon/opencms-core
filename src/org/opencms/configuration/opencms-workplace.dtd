@@ -13,6 +13,7 @@
 	defaultlocale,
 	localizedfolders,
 	dialoghandlers, 
+	postuploadhandler?,
 	editorhandler, 
 	editoraction,
 	editorcsshandlers?,
@@ -172,6 +173,12 @@
 <!ELEMENT dialoghandlers (dialoghandler+)>
 <!ELEMENT dialoghandler (param*)>
 <!ATTLIST dialoghandler class CDATA #REQUIRED>
+
+<!--
+# Returns the dialog called once a file upload is complete.
+-->
+<!ELEMENT postuploadhandler EMPTY>
+<!ATTLIST postuploadhandler class CDATA #REQUIRED>
 
 <!--
 # Using editor handler and editor action classes you can
