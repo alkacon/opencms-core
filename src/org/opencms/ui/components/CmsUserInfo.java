@@ -228,7 +228,7 @@ public class CmsUserInfo extends VerticalLayout {
 
         CmsUser user = cms.getRequestContext().getCurrentUser();
         StringBuffer infoHtml = new StringBuffer(128);
-        infoHtml.append("<p>").append(CmsStringUtil.escapeHtml(user.getName())).append("</p>");
+        infoHtml.append("<p>").append(CmsStringUtil.escapeHtml(user.getSimpleName())).append("</p>");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getFirstname())) {
             infoHtml.append(CmsStringUtil.escapeHtml(user.getFirstname())).append("&nbsp;");
         }
@@ -253,6 +253,9 @@ public class CmsUserInfo extends VerticalLayout {
         StringBuffer infoHtml = new StringBuffer(128);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getEmail())) {
             infoHtml.append(CmsStringUtil.escapeHtml(user.getEmail())).append(LINE_BREAK);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getOuFqn())) {
+            infoHtml.append(CmsStringUtil.escapeHtml(user.getOuFqn())).append(LINE_BREAK);
         }
         for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
             if (!info.getField().equals(Field.firstname)
