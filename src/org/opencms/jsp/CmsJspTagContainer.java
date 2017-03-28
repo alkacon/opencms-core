@@ -210,8 +210,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
             }
             element.getSettings().put(settingsKey, formatterConfigId);
             element.setFormatterId(formatterBean.getJspStructureId());
-        } else {
-            element.setFormatterId(null);
         }
         return formatterBean;
     }
@@ -1577,14 +1575,16 @@ public class CmsJspTagContainer extends BodyTagSupport {
                             formatter = cms.getSitePath(formatterResource);
                         } catch (CmsVfsResourceNotFoundException ex) {
                             LOG.debug("Formatter JSP not found by id, try using path.", ex);
-                            formatter = cms.getRequestContext().removeSiteRoot(formatterConfig.getJspRootPath());
+                            if (cms.existsResource(
+                                cms.getRequestContext().removeSiteRoot(formatterConfig.getJspRootPath()))) {
+                                formatter = cms.getRequestContext().removeSiteRoot(formatterConfig.getJspRootPath());
+                            }
                         }
-                        formatter = cms.getSitePath(cms.readResource(formatterConfig.getJspStructureId()));
                     } else {
                         formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
                     }
                 } catch (CmsException e) {
-                    LOG.debug("Formatter resource can not be found, try reading it form the configuration.", e);
+                    LOG.debug("Formatter resource can not be found, try reading it from the configuration.", e);
                     // the formatter resource can not be found, try reading it form the configuration
                     CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
                     I_CmsFormatterBean elementFormatterBean = elementFormatters.getDefaultFormatter(
