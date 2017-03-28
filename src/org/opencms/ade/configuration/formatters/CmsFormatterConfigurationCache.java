@@ -170,25 +170,31 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
      */
     public synchronized void reload() {
 
+        m_idsToUpdate.clear();
+        List<CmsResource> formatterResources = new ArrayList<CmsResource>();
         try {
-            m_idsToUpdate.clear();
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_FORMATTER_CONFIG);
             CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
-            List<CmsResource> formatterResources = new ArrayList<CmsResource>(m_cms.readResources("/", filter));
-            type = OpenCms.getResourceManager().getResourceType(TYPE_MACRO_FORMATTER);
-            filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
             formatterResources.addAll(m_cms.readResources("/", filter));
-            Map<CmsUUID, I_CmsFormatterBean> newFormatters = Maps.newHashMap();
-            for (CmsResource formatterResource : formatterResources) {
-                I_CmsFormatterBean formatterBean = readFormatter(formatterResource.getStructureId());
-                if (formatterBean != null) {
-                    newFormatters.put(formatterResource.getStructureId(), formatterBean);
-                }
-            }
-            m_state = new CmsFormatterConfigurationCacheState(newFormatters);
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
+        try {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_MACRO_FORMATTER);
+            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
+            formatterResources.addAll(m_cms.readResources("/", filter));
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        Map<CmsUUID, I_CmsFormatterBean> newFormatters = Maps.newHashMap();
+        for (CmsResource formatterResource : formatterResources) {
+            I_CmsFormatterBean formatterBean = readFormatter(formatterResource.getStructureId());
+            if (formatterBean != null) {
+                newFormatters.put(formatterResource.getStructureId(), formatterBean);
+            }
+        }
+        m_state = new CmsFormatterConfigurationCacheState(newFormatters);
+
     }
 
     /**
