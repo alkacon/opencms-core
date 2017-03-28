@@ -1606,6 +1606,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_searchObject.setSortOrder(searchObj.getSortOrder());
                     m_searchObject.setPage(searchObj.getPage());
                     m_searchObject.setLastPage(searchObj.getLastPage());
+                    m_searchObject.setNoUploadReason(searchObj.getNoUploadReason());
                     m_handler.onResultTabSelection(m_searchObject);
 
                 }

@@ -2079,8 +2079,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         boolean found = false;
         searchObj.setPage(currentPage);
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
+        CmsObject searchCms = getSearchCms(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
-        searchBean.init(getSearchCms(searchObj));
+        searchBean.init(searchCms);
         searchBean.setIndex(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
         CmsGallerySearchResultList searchResults = null;
         CmsGallerySearchResultList totalResults = new CmsGallerySearchResultList();
@@ -2120,7 +2121,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             initialSearchObj.setTabId(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name());
             initialSearchObj.setResourcePath(resName + query);
             initialSearchObj.setResourceType(resType);
-
+            updateNoUploadReason(searchCms, searchObj);
         } else {
             log("could not find selected resource");
         }
@@ -2943,7 +2944,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 cache.setLastPageEditorGallerySearch(searchObj);
             }
         }
-
+        updateNoUploadReason(searchCms, searchObjBean);
         return searchObjBean;
     }
 
@@ -2998,6 +2999,30 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             getCmsObject().writeUser(user);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Checks the current users permissions on the upload target folder to update the no upload reason.<p>
+     *
+     * @param searchCms the cms context
+     * @param searchObj the search data
+     */
+    private void updateNoUploadReason(CmsObject searchCms, CmsGallerySearchBean searchObj) {
+
+        if ((searchObj.getGalleries().size() + searchObj.getFolders().size()) == 1) {
+            String target = !searchObj.getGalleries().isEmpty()
+            ? searchObj.getGalleries().get(0)
+            : searchObj.getFolders().iterator().next();
+            try {
+                CmsResource targetRes = searchCms.readResource(target, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                searchObj.setNoUploadReason(
+                    new CmsResourceUtil(searchCms, targetRes).getNoEditReason(getWorkplaceLocale(), true));
+            } catch (CmsException e) {
+                searchObj.setNoUploadReason(e.getLocalizedMessage(getWorkplaceLocale()));
+            }
+        } else {
+            searchObj.setNoUploadReason(null);
         }
     }
 }

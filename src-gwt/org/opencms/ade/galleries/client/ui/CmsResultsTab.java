@@ -52,6 +52,7 @@ import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -824,7 +825,13 @@ public class CmsResultsTab extends A_CmsListTab {
                 if (m_createNewButton != null) {
                     m_createNewButton.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().resultTabUpload());
                     m_tab.insert(m_createNewButton, 0);
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchObj.getNoUploadReason())) {
+                        m_createNewButton.enable();
+                    } else {
+                        m_createNewButton.disable(searchObj.getNoUploadReason());
+                    }
                 }
+
                 m_uploadButton.getElement().getStyle().setDisplay(Display.NONE);
             } else {
                 String uploadTarget = targets.iterator().next();
@@ -834,8 +841,12 @@ public class CmsResultsTab extends A_CmsListTab {
                     // in case the upload target is a folder the root path is used
                     ((CmsDialogUploadButtonHandler)handler).setIsTargetRootPath(searchObj.getFolders().size() == 1);
                 }
-                m_uploadButton.enable();
-                m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, uploadTarget));
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchObj.getNoUploadReason())) {
+                    m_uploadButton.enable();
+                    m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, uploadTarget));
+                } else {
+                    m_uploadButton.disable(searchObj.getNoUploadReason());
+                }
             }
         } else {
             m_uploadButton.disable(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0));

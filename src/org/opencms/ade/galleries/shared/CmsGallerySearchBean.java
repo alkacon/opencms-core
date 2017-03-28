@@ -110,6 +110,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The number of search results to be display pro page. */
     private int m_matchesPerPage;
 
+    /** The reason why an upload to the current target folder is not allowed. */
+    private String m_noUploadReason;
+
     /** The original gallery data for which this search bean was created. */
     private CmsGalleryDataBean m_originalGalleryData;
 
@@ -430,6 +433,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public int getMatchesPerPage() {
 
         return m_matchesPerPage;
+    }
+
+    /**
+     * Returns the reason why an upload to the current target folder is not allowed.<p>
+     *
+     * @return the reason why an upload to the current target folder is not allowed
+     */
+    public String getNoUploadReason() {
+
+        return m_noUploadReason;
     }
 
     /**
@@ -878,6 +891,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setMatchesPerPage(int matchesPerPage) {
 
         m_matchesPerPage = matchesPerPage;
+    }
+
+    /**
+     * Sets the reason why an upload to the current target folder is not allowed.<p>
+     *
+     * @param noUploadReason the reason why an upload to the current target folder is not allowed to set
+     */
+    public void setNoUploadReason(String noUploadReason) {
+
+        m_noUploadReason = noUploadReason;
     }
 
     /**
