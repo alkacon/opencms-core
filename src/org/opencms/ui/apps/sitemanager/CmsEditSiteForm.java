@@ -29,6 +29,7 @@ package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -1471,19 +1472,32 @@ public class CmsEditSiteForm extends VerticalLayout {
      * Creates OU, adds site root to existing OU or does nothing.<p>
      *
      * @param siteRootResource Resource representing root folder
-     * @throws CmsException exception
      */
-    private void handleOU(CmsResource siteRootResource) throws CmsException {
+    private void handleOU(CmsResource siteRootResource) {
 
         String ouDescription = "OU for: %(site)";
 
         if (m_fieldCreateOU.isVisible() & (m_fieldCreateOU.getValue()).booleanValue()) {
-            OpenCms.getOrgUnitManager().createOrganizationalUnit(
-                m_clonedCms,
-                "/" + siteRootResource.getName(),
-                ouDescription.replace("%(site)", getFieldTitle() + " [" + siteRootResource.getRootPath() + "]"),
-                0,
-                siteRootResource.getRootPath());
+            try {
+                OpenCms.getOrgUnitManager().createOrganizationalUnit(
+                    m_clonedCms,
+                    "/" + siteRootResource.getName(),
+                    ouDescription.replace("%(site)", getFieldTitle() + " [" + siteRootResource.getRootPath() + "]"),
+                    0,
+                    siteRootResource.getRootPath());
+            } catch (CmsDataAccessException e) {
+                LOG.info("Can't create OU, an OU with same name exists. The existing OU is chosen for the new site");
+                try {
+                    OpenCms.getOrgUnitManager().addResourceToOrgUnit(
+                        m_clonedCms,
+                        "/" + siteRootResource.getName(),
+                        siteRootResource.getRootPath());
+                } catch (CmsException e2) {
+                    LOG.info("Resource is already added to OU");
+                }
+            } catch (CmsException e) {
+                LOG.error("Error on creating new OU", e);
+            }
         }
 
         if (m_fieldSelectOU.isEnabled() & (m_fieldSelectOU.getValue() != null)) {
@@ -1569,20 +1583,23 @@ public class CmsEditSiteForm extends VerticalLayout {
      * Sets the selected template as property to site root folder.<p>
      *
      * @param siteRootResource Resource representing root folder
-     * @throws CmsException exception
      */
-    private void setTemplate(CmsResource siteRootResource) throws CmsException {
+    private void setTemplate(CmsResource siteRootResource) {
 
-        m_clonedCms.lockResource(siteRootResource);
-        // add template  property
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getFieldTemplate())) {
-            CmsProperty prop = new CmsProperty(
-                CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                getFieldTemplate(),
-                getFieldTemplate());
-            m_clonedCms.writePropertyObject(siteRootResource.getRootPath(), prop);
+        try {
+            m_clonedCms.lockResource(siteRootResource);
+            // add template  property
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getFieldTemplate())) {
+                CmsProperty prop = new CmsProperty(
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                    getFieldTemplate(),
+                    getFieldTemplate());
+                m_clonedCms.writePropertyObject(siteRootResource.getRootPath(), prop);
+            }
+            m_clonedCms.unlockResource(siteRootResource);
+        } catch (CmsException e) {
+            LOG.error("Error on adding template", e);
         }
-        m_clonedCms.unlockResource(siteRootResource);
     }
 
     /**
