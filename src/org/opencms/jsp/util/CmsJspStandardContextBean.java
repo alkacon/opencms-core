@@ -61,6 +61,7 @@ import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -1432,6 +1433,16 @@ public final class CmsJspStandardContextBean {
     public CmsRequestContext getRequestContext() {
 
         return m_cms.getRequestContext();
+    }
+
+    /**
+     * Returns the current site.<p>
+     *
+     * @return the current site
+     */
+    public CmsSite getSite() {
+
+        return OpenCms.getSiteManager().getSiteForSiteRoot(m_cms.getRequestContext().getSiteRoot());
     }
 
     /**
