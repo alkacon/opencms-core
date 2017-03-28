@@ -909,10 +909,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_MANAGER_TITLE_SHORT_0 = "GUI_SITE_MANAGER_TITLE_SHORT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_OU_INVALID_0 = "GUI_SITE_OU_INVALID_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_PARAMETER_0 = "GUI_SITE_PARAMETER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_PARAMETER_HELP_0 = "GUI_SITE_PARAMETER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PARENT_OU_0 = "GUI_SITE_PARENT_OU_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PARENT_OU_HELP_0 = "GUI_SITE_PARENT_OU_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_PARENTFOLDER_NOT_EXIST_0 = "GUI_SITE_PARENTFOLDER_NOT_EXIST_0";
@@ -922,6 +931,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_PARENTFOLDERNAME_HELP_0 = "GUI_SITE_PARENTFOLDERNAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_PARENTOU_INVALID_0 = "GUI_SITE_PARENTOU_INVALID_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_PATH_0 = "GUI_SITE_PATH_0";

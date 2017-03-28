@@ -275,6 +275,102 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
+     * Validator for parent OU.<p>
+     */
+    class SelectOUValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = -911831798529729185L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            String OU = (String)value;
+            if (OU.equals("/")) {
+                return; //ok
+            }
+
+            if (OU.split("/").length < 2) {
+                return; //ou is under root
+            }
+
+            OU = OU.split("/")[0] + "/";
+
+            if (getParentFolder().isEmpty() | getFieldFolder().isEmpty()) {
+                return; //not ok, but gets catched in an other validator
+            }
+
+            String rootPath = "/" + ensureFoldername(getParentFolder()) + ensureFoldername(getFieldFolder());
+
+            boolean ok = false;
+
+            try {
+                List<CmsResource> res = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(m_clonedCms, OU);
+                for (CmsResource resource : res) {
+                    if (rootPath.startsWith(resource.getRootPath())) {
+                        ok = true;
+                    }
+                }
+
+            } catch (CmsException e) {
+                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_OU_INVALID_0));
+            }
+            if (!ok) {
+                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_OU_INVALID_0));
+            }
+        }
+
+    }
+
+    /**
+     * Validator for parent OU.<p>
+     */
+    class SelectParentOUValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = -911831798529729185L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            String parentOU = (String)value;
+            if (parentOU.equals("/")) {
+                return; //ok
+            }
+
+            if (getParentFolder().isEmpty() | getFieldFolder().isEmpty()) {
+                return; //not ok, but gets catched in an other validator
+            }
+
+            String rootPath = "/" + ensureFoldername(getParentFolder()) + ensureFoldername(getFieldFolder());
+
+            boolean ok = false;
+
+            try {
+                List<CmsResource> res = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                    m_clonedCms,
+                    parentOU);
+                for (CmsResource resource : res) {
+                    if (rootPath.startsWith(resource.getRootPath())) {
+                        ok = true;
+                    }
+                }
+
+            } catch (CmsException e) {
+                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARENTOU_INVALID_0));
+            }
+            if (!ok) {
+                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARENTOU_INVALID_0));
+            }
+        }
+
+    }
+
+    /**
      *Validator for server field.<p>
      */
     class ServerValidator implements Validator {
@@ -468,6 +564,9 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**vaadin component.*/
     private ComboBox m_fieldSelectOU;
 
+    /**vaadin coponent.*/
+    private ComboBox m_fieldSelectParentOU;
+
     /**vaadin component.*/
     private CheckBox m_fieldWebServer;
 
@@ -608,7 +707,8 @@ public class CmsEditSiteForm extends VerticalLayout {
 
         setUpComboBoxPosition();
         setUpComboBoxTemplate();
-        setUpOUComboBox();
+        setUpOUComboBox(m_fieldSelectOU);
+        setUpOUComboBox(m_fieldSelectParentOU);
 
         m_fieldSecureServer.addValueChangeListener(new ValueChangeListener() {
 
@@ -678,6 +778,9 @@ public class CmsEditSiteForm extends VerticalLayout {
         m_fieldLoadSiteTemplate.setUseRootPaths(true);
         m_fieldLoadSiteTemplate.setCmsObject(m_clonedCms);
         m_fieldLoadSiteTemplate.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
+
+        m_fieldSelectParentOU.setEnabled(false);
+
     }
 
     /**
@@ -917,7 +1020,8 @@ public class CmsEditSiteForm extends VerticalLayout {
         return (m_simpleFieldFolderName.isValid()
             & m_simpleFieldServer.isValid()
             & m_simpleFieldTitle.isValid()
-            & m_simpleFieldParentFolderName.isValid());
+            & m_simpleFieldParentFolderName.isValid()
+            & m_fieldSelectOU.isValid());
     }
 
     /**
@@ -927,7 +1031,7 @@ public class CmsEditSiteForm extends VerticalLayout {
      */
     boolean isValidInputSiteTemplate() {
 
-        return (m_fieldLoadSiteTemplate.isValid());
+        return (m_fieldLoadSiteTemplate.isValid() & m_fieldSelectParentOU.isValid());
     }
 
     /**
@@ -1051,6 +1155,10 @@ public class CmsEditSiteForm extends VerticalLayout {
             }
             m_simpleFieldServer.addValidator(new ServerValidator());
             m_simpleFieldTitle.addValidator(new TitleValidator());
+            m_fieldSelectOU.addValidator(new SelectOUValidator());
+            if (m_fieldCreateOU.getValue().booleanValue()) {
+                m_fieldSelectParentOU.addValidator(new SelectParentOUValidator());
+            }
         }
     }
 
@@ -1146,7 +1254,8 @@ public class CmsEditSiteForm extends VerticalLayout {
         boolean create = m_fieldCreateOU.getValue().booleanValue();
 
         m_fieldSelectOU.setEnabled(!create);
-        m_fieldSelectOU.select(null);
+        m_fieldSelectParentOU.setEnabled(create);
+        m_fieldSelectOU.select("/");
     }
 
     /**
@@ -1483,29 +1592,29 @@ public class CmsEditSiteForm extends VerticalLayout {
             try {
                 OpenCms.getOrgUnitManager().createOrganizationalUnit(
                     m_clonedCms,
-                    "/" + siteRootResource.getName(),
+                    (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName(),
                     ouDescription.replace("%(site)", getFieldTitle() + " [" + siteRootResource.getRootPath() + "]"),
                     0,
                     siteRootResource.getRootPath());
-                ouName = "/" + siteRootResource.getName();
+                ouName = (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName();
             } catch (CmsDataAccessException e) {
                 LOG.info("Can't create OU, an OU with same name exists. The existing OU is chosen for the new site");
                 try {
                     OpenCms.getOrgUnitManager().addResourceToOrgUnit(
                         m_clonedCms,
-                        "/" + siteRootResource.getName(),
+                        (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName(),
                         siteRootResource.getRootPath());
-                    ouName = "/" + siteRootResource.getName();
+                    ouName = (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName();
                 } catch (CmsException e2) {
                     LOG.info("Resource is already added to OU");
-                    ouName = "/" + siteRootResource.getName();
+                    ouName = (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName();
                 }
             } catch (CmsException e) {
                 LOG.error("Error on creating new OU", e);
             }
         }
 
-        if (m_fieldSelectOU.isEnabled() & (m_fieldSelectOU.getValue() != null)) {
+        if (m_fieldSelectOU.isEnabled() & (m_fieldSelectOU.getValue() != "/")) {
             try {
                 OpenCms.getOrgUnitManager().addResourceToOrgUnit(
                     m_clonedCms,
@@ -1754,21 +1863,26 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**
      * Fill ComboBox for OU selection.<p>
      */
-    private void setUpOUComboBox() {
+    private void setUpOUComboBox(ComboBox combo) {
 
+        combo.addItem("/");
         try {
             m_clonedCms.getRequestContext().setSiteRoot("");
             List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
                 m_clonedCms,
                 "/",
                 true);
+
             for (CmsOrganizationalUnit ou : ous) {
-                m_fieldSelectOU.addItem(ou.getName());
+                combo.addItem(ou.getName());
             }
-            m_fieldSelectOU.setNewItemsAllowed(false);
+            combo.setNewItemsAllowed(false);
         } catch (CmsException e) {
             LOG.error("Error on reading OUs", e);
         }
+        combo.setNullSelectionAllowed(false);
+        combo.setNewItemsAllowed(false);
+        combo.select("/");
     }
 
     /**
