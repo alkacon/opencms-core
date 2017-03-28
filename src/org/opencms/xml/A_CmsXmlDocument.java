@@ -42,6 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -137,9 +138,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             copyLocale(source, destination);
         } else {
             // no matching locale has been found
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_LOCALE_NOT_AVAILABLE_1,
-                CmsLocaleManager.getLocaleNames(possibleSources)));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_LOCALE_NOT_AVAILABLE_1,
+                    CmsLocaleManager.getLocaleNames(possibleSources)));
         }
     }
 
@@ -205,6 +207,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                 schema.setValue(translatedSchema);
             }
         }
+        updateLocaleNodeSorting();
 
         // iterate over all locales
         Iterator<Locale> i = m_locales.iterator();
@@ -886,6 +889,57 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         }
         // remove the bookmark and return the removed element
         return m_bookmarks.remove(getBookmarkName(path, locale));
+    }
+
+    /**
+     * Updates the order of the locale nodes if required.<p>
+     */
+    protected void updateLocaleNodeSorting() {
+
+        // check if the locale nodes require sorting
+        List<Locale> locales = new ArrayList<Locale>(m_locales);
+        Collections.sort(locales, new Comparator<Locale>() {
+
+            public int compare(Locale o1, Locale o2) {
+
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        List<Element> localeNodes = new ArrayList<Element>(m_document.getRootElement().elements());
+        boolean sortRequired = false;
+        if (localeNodes.size() != locales.size()) {
+            sortRequired = true;
+        } else {
+            int i = 0;
+            for (Element el : localeNodes) {
+                if (!locales.get(i).toString().equals(el.attributeValue("language"))) {
+                    sortRequired = true;
+                    break;
+                }
+                i++;
+            }
+        }
+
+        if (sortRequired) {
+            // do the actual node sorting, by removing the nodes first
+            for (Element el : localeNodes) {
+                m_document.getRootElement().remove(el);
+            }
+
+            Collections.sort(localeNodes, new Comparator<Object>() {
+
+                public int compare(Object o1, Object o2) {
+
+                    String locale1 = ((Element)o1).attributeValue("language");
+                    String locale2 = ((Element)o2).attributeValue("language");
+                    return locale1.compareTo(locale2);
+                }
+            });
+            // re-adding the nodes in alphabetical order
+            for (Element el : localeNodes) {
+                m_document.getRootElement().add(el);
+            }
+        }
     }
 
     /**
