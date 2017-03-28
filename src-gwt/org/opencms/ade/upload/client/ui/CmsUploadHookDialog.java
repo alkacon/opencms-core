@@ -32,6 +32,7 @@ import org.opencms.gwt.client.ui.CmsFrameDialog;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
 import org.opencms.util.CmsUUID;
 
@@ -102,7 +103,7 @@ public final class CmsUploadHookDialog {
                 }
             });
             String dialogId = hookUri.substring(1);
-            handler.openDialog(dialogId, "explorer", resourceIds);
+            handler.openDialog(dialogId, CmsGwtConstants.CONTEXT_TYPE_FILE_TABLE, resourceIds);
 
         } else {
             Map<String, String> parameters = new HashMap<String, String>();
