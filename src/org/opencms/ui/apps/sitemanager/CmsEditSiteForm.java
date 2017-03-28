@@ -51,6 +51,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.A_CmsUI;
@@ -1475,6 +1476,7 @@ public class CmsEditSiteForm extends VerticalLayout {
      */
     private void handleOU(CmsResource siteRootResource) {
 
+        String ouName = null;
         String ouDescription = "OU for: %(site)";
 
         if (m_fieldCreateOU.isVisible() & (m_fieldCreateOU.getValue()).booleanValue()) {
@@ -1485,6 +1487,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                     ouDescription.replace("%(site)", getFieldTitle() + " [" + siteRootResource.getRootPath() + "]"),
                     0,
                     siteRootResource.getRootPath());
+                ouName = "/" + siteRootResource.getName();
             } catch (CmsDataAccessException e) {
                 LOG.info("Can't create OU, an OU with same name exists. The existing OU is chosen for the new site");
                 try {
@@ -1492,8 +1495,10 @@ public class CmsEditSiteForm extends VerticalLayout {
                         m_clonedCms,
                         "/" + siteRootResource.getName(),
                         siteRootResource.getRootPath());
+                    ouName = "/" + siteRootResource.getName();
                 } catch (CmsException e2) {
                     LOG.info("Resource is already added to OU");
+                    ouName = "/" + siteRootResource.getName();
                 }
             } catch (CmsException e) {
                 LOG.error("Error on creating new OU", e);
@@ -1506,9 +1511,36 @@ public class CmsEditSiteForm extends VerticalLayout {
                     m_clonedCms,
                     (String)m_fieldSelectOU.getValue(),
                     siteRootResource.getRootPath());
+                ouName = ((String)m_fieldSelectOU.getValue()).substring(
+                    0,
+                    ((String)m_fieldSelectOU.getValue()).length() - 1);
             } catch (CmsException e) {
                 LOG.error("Error on adding resource to OU", e);
             }
+        }
+
+        try {
+            m_clonedCms.lockResource(siteRootResource);
+        } catch (CmsException e) {
+            LOG.error("unable to lock resource", e);
+        }
+
+        if (ouName != null) {
+            try {
+
+                m_clonedCms.chacc(
+                    siteRootResource.getRootPath(),
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    ouName + "/Users",
+                    "+r+w+v+c+i+o+d");
+            } catch (CmsException e) {
+                LOG.error("Error on setting permission for OU.", e);
+            }
+        }
+        try {
+            m_clonedCms.unlockResource(siteRootResource);
+        } catch (CmsException e) {
+            LOG.error("unable to unlock resource");
         }
     }
 

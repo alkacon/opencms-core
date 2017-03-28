@@ -151,6 +151,10 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
             for (CmsSite site : m_sitesToDelete) {
                 try {
                     m_cms.lockResource(site.getSiteRoot());
+                } catch (CmsException e) {
+                    LOG.error("unable to lock resource");
+                }
+                try {
                     m_cms.deleteResource(site.getSiteRoot(), CmsResource.DELETE_PRESERVE_SIBLINGS);
                     try {
                         m_cms.unlockResource(site.getSiteRoot());
@@ -158,7 +162,7 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
                         LOG.info("Unlock failed.", e);
                     }
                 } catch (CmsException e) {
-                    LOG.error("Error deleting resources of folder", e);
+                    //ok, resource was not published and can not be unlocked anymore..
                 }
             }
         }
