@@ -1256,6 +1256,23 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Returns a map with key property as key and item as value.<p>
+     *
+     * @return HashMap
+     */
+    private Map<String, Item> getKeyItemMap() {
+
+        Map<String, Item> ret = new HashMap<String, Item>();
+        for (Object itemId : m_container.getItemIds()) {
+            ret.put(
+                m_container.getItem(itemId).getItemProperty(TableProperty.KEY).getValue().toString(),
+                m_container.getItem(itemId));
+        }
+        return ret;
+
+    }
+
+    /**
      * Reads the current properties for a language. If not already done, the properties are read from the respective file.
      * @param locale the locale for which the localization should be returned.
      * @return the properties.
@@ -1960,32 +1977,35 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
-     * Update the descriptor content with values from the editor.
-     * @throws CmsXmlException thrown if update fails due to a wrong XML structure (should never happen)
-     */
+    * Update the descriptor content with values from the editor.
+    * @throws CmsXmlException thrown if update fails due to a wrong XML structure (should never happen)
+    */
     private void updateBundleDescriptorContent() throws CmsXmlException {
 
         if (m_descContent.hasLocale(Descriptor.LOCALE)) {
             m_descContent.removeLocale(Descriptor.LOCALE);
         }
         m_descContent.addLocale(m_cms, Descriptor.LOCALE);
-        String key;
+
+        int i = 0;
         Property<Object> descProp;
         String desc;
         Property<Object> defaultValueProp;
         String defaultValue;
-        int i = 0;
-        for (Object itemId : m_container.getItemIds()) {
-            Item item = m_container.getItem(itemId);
-            key = item.getItemProperty(TableProperty.KEY).getValue().toString();
-            if (!key.isEmpty()) {
+        Map<String, Item> keyItemMap = getKeyItemMap();
+        List<String> keys = new ArrayList<String>(keyItemMap.keySet());
+        Collections.sort(keys, CmsCaseInsensitiveStringComparator.getInstance());
+        for (Object key : keys) {
+            if ((null != key) && !key.toString().isEmpty()) {
+
                 m_descContent.addValue(m_cms, Descriptor.N_MESSAGE, Descriptor.LOCALE, i);
                 i++;
                 String messagePrefix = Descriptor.N_MESSAGE + "[" + i + "]/";
 
-                m_descContent.getValue(messagePrefix + Descriptor.N_KEY, Descriptor.LOCALE).setStringValue(m_cms, key);
-
-                descProp = item.getItemProperty(TableProperty.DESCRIPTION);
+                m_descContent.getValue(messagePrefix + Descriptor.N_KEY, Descriptor.LOCALE).setStringValue(
+                    m_cms,
+                    (String)key);
+                descProp = keyItemMap.get(key).getItemProperty(TableProperty.DESCRIPTION);
                 if ((null != descProp) && (null != descProp.getValue())) {
                     desc = descProp.getValue().toString();
                     m_descContent.getValue(messagePrefix + Descriptor.N_DESCRIPTION, Descriptor.LOCALE).setStringValue(
@@ -1993,13 +2013,14 @@ public class CmsMessageBundleEditorModel {
                         desc);
                 }
 
-                defaultValueProp = item.getItemProperty(TableProperty.DEFAULT);
+                defaultValueProp = keyItemMap.get(key).getItemProperty(TableProperty.DEFAULT);
                 if ((null != defaultValueProp) && (null != defaultValueProp.getValue())) {
                     defaultValue = defaultValueProp.getValue().toString();
                     m_descContent.getValue(messagePrefix + Descriptor.N_DEFAULT, Descriptor.LOCALE).setStringValue(
                         m_cms,
                         defaultValue);
                 }
+
             }
         }
 
