@@ -882,28 +882,33 @@ public class CmsUpdateBean extends CmsSetupBean {
         // 5) because the setup bean implements I_CmsShellCommands, the shell constructor can pass the shell's CmsObject back to the setup bean
         // 6) thus, the setup bean can do things with the Cms
 
-        if ((m_cms != null) && (m_installModules != null)) {
+        if (m_cms != null) {
+
             I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
 
-            Set<String> utdModules = new HashSet<String>(getUptodateModules());
+            // remove obsolete modules in any case
             for (String moduleToRemove : getModulesToDelete()) {
                 removeModule(moduleToRemove, report);
             }
 
-            List<String> installList = Lists.newArrayList(m_installModules);
-            for (String name : installList) {
-                if (!utdModules.contains(name)) {
-                    String filename = m_moduleFilenames.get(name);
-                    try {
-                        updateModule(name, filename, report);
-                    } catch (Exception e) {
-                        // log a exception during module import, but make sure the next module is still imported
-                        e.printStackTrace(System.err);
+            // check if there are any modules to install
+            if (m_installModules != null) {
+                Set<String> utdModules = new HashSet<String>(getUptodateModules());
+                List<String> installList = Lists.newArrayList(m_installModules);
+                for (String name : installList) {
+                    if (!utdModules.contains(name)) {
+                        String filename = m_moduleFilenames.get(name);
+                        try {
+                            updateModule(name, filename, report);
+                        } catch (Exception e) {
+                            // log a exception during module import, but make sure the next module is still imported
+                            e.printStackTrace(System.err);
+                        }
+                    } else {
+                        report.println(
+                            Messages.get().container(Messages.RPT_MODULE_UPTODATE_1, name),
+                            I_CmsReport.FORMAT_HEADLINE);
                     }
-                } else {
-                    report.println(
-                        Messages.get().container(Messages.RPT_MODULE_UPTODATE_1, name),
-                        I_CmsReport.FORMAT_HEADLINE);
                 }
             }
         }
@@ -1036,11 +1041,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     protected List<String> getModulesToDelete() {
 
         List<String> result = new ArrayList<String>();
-        if (m_installModules.contains("org.opencms.ade.config")) {
-            for (int i = 0; i < OBSOLETE_MODULES.length; i++) {
-                if (OpenCms.getModuleManager().hasModule(OBSOLETE_MODULES[i])) {
-                    result.add(OBSOLETE_MODULES[i]);
-                }
+        for (int i = 0; i < OBSOLETE_MODULES.length; i++) {
+            if (OpenCms.getModuleManager().hasModule(OBSOLETE_MODULES[i])) {
+                result.add(OBSOLETE_MODULES[i]);
             }
         }
         return result;
