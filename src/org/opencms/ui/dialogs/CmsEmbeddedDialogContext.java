@@ -60,7 +60,7 @@ import com.vaadin.ui.Window.CloseListener;
 public class CmsEmbeddedDialogContext extends AbstractExtension implements I_CmsDialogContext {
 
     /** Pattern to check if a given server link starts with with a protocol string. */
-    private static Pattern PROTOCOL_PATTERN = Pattern.compile("^http?://.*");
+    private static Pattern PROTOCOL_PATTERN = Pattern.compile("^http.?://.*");
 
     /** The serial version id. */
     private static final long serialVersionUID = -7446784547935775629L;
