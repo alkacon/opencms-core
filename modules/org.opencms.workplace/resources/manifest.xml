@@ -66,7 +66,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 			<resource uri="/system/workplace/commons/style/"/>
 			<resource uri="/system/workplace/commons/template/"/>
 			<resource uri="/system/workplace/galleries/"/>
-			<resource uri="/system/workplace/locales/de/readme.txt"/>
 			<resource uri="/system/workplace/resources/buttons/apply.png"/>
 			<resource uri="/system/workplace/resources/buttons/apply_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/calendar.png"/>
@@ -4188,40 +4187,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 			<destination>system/workplace/locales</destination>
 			<type>folder</type>
 			<properties/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/de</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<source>system/workplace/locales/de/readme.txt</source>
-			<destination>system/workplace/locales/de/readme.txt</destination>
-			<type>plain</type>
-			<uuidstructure>82ba5b6b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>20f0cab2-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/en</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<source>system/workplace/locales/en/readme.txt</source>
-			<destination>system/workplace/locales/en/readme.txt</destination>
-			<type>plain</type>
-			<uuidstructure>82bf165f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>20fefb8d-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/buttons</destination>

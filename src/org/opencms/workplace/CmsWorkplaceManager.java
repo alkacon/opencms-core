@@ -87,10 +87,13 @@ import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.workplace.tools.CmsToolManager;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -99,6 +102,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -167,6 +171,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The default encoding for the workplace (UTF-8). */
     public static final String DEFAULT_WORKPLACE_ENCODING = CmsEncoder.ENCODING_UTF_8;
+
+    /** The workplace localization manifest attribute name. */
+    public static final String LOCALIZATION_ATTRIBUTE_NAME = "OpenCms-Localization";
+
+    /** The manifest file resource name. */
+    public static final String MANIFEST_RESOURCE_NAME = "META-INF/MANIFEST.MF";
 
     /** The id of the "requestedResource" parameter for the OpenCms login form. */
     public static final String PARAM_LOGIN_REQUESTED_RESOURCE = "requestedResource";
@@ -2422,26 +2432,59 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     private List<Locale> initWorkplaceLocales(CmsObject cms) {
 
         Set<Locale> locales = new HashSet<Locale>();
-        List<CmsResource> localeFolders;
-        try {
-            localeFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_LOCALES);
-        } catch (CmsException e) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1, CmsWorkplace.VFS_PATH_LOCALES),
-                e);
-            // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
-            localeFolders = new ArrayList<CmsResource>();
+
+        // collect locales from the VFS
+        if (cms.existsResource(CmsWorkplace.VFS_PATH_LOCALES)) {
+            List<CmsResource> localeFolders;
+            try {
+                localeFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_LOCALES);
+            } catch (CmsException e) {
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1,
+                        CmsWorkplace.VFS_PATH_LOCALES),
+                    e);
+                // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
+                localeFolders = new ArrayList<CmsResource>();
+            }
+            Iterator<CmsResource> i = localeFolders.iterator();
+            while (i.hasNext()) {
+                CmsFolder folder = (CmsFolder)i.next();
+                Locale locale = CmsLocaleManager.getLocale(folder.getName());
+                // add locale
+                locales.add(locale);
+                // add less specialized locale
+                locales.add(new Locale(locale.getLanguage(), locale.getCountry()));
+                // add even less specialized locale
+                locales.add(new Locale(locale.getLanguage()));
+            }
         }
-        Iterator<CmsResource> i = localeFolders.iterator();
-        while (i.hasNext()) {
-            CmsFolder folder = (CmsFolder)i.next();
-            Locale locale = CmsLocaleManager.getLocale(folder.getName());
-            // add locale
-            locales.add(locale);
-            // add less specialized locale
-            locales.add(new Locale(locale.getLanguage(), locale.getCountry()));
-            // add even less specialized locale
-            locales.add(new Locale(locale.getLanguage()));
+        // collect locales from JAR manifests
+        try {
+            Enumeration<URL> resources = getClass().getClassLoader().getResources(MANIFEST_RESOURCE_NAME);
+
+            while (resources.hasMoreElements()) {
+                URL resUrl = resources.nextElement();
+                try {
+                    Manifest manifest = new Manifest(resUrl.openStream());
+                    String localeString = manifest.getMainAttributes().getValue(LOCALIZATION_ATTRIBUTE_NAME);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(localeString)) {
+                        Locale locale = CmsLocaleManager.getLocale(localeString);
+                        // add locale
+                        locales.add(locale);
+                        // add less specialized locale
+                        locales.add(new Locale(locale.getLanguage(), locale.getCountry()));
+                        // add even less specialized locale
+                        locales.add(new Locale(locale.getLanguage()));
+                    }
+                } catch (IOException e) {
+                    LOG.warn(
+                        "Error reading manifest from " + resUrl + " while evaluating available workplace localization.",
+                        e);
+                }
+            }
+        } catch (IOException e) {
+            LOG.error("Error evaluating available workplace localization from JAR manifests.", e);
         }
 
         // sort the result
