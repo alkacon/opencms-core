@@ -450,15 +450,22 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 }
             }
 
+            Action action = m_actionCombo != null ? (Action)m_actionCombo.getValue() : Action.move;
+
             overwrite = overwrite || isOverwriteExisting();
-            if (!overwrite) {
+            if (!overwrite || action.equals(Action.move)) {
                 List<CmsResource> collidingResources = getExistingFileCollisions(targetFolder, targetName);
                 if (collidingResources != null) {
-                    showConfirmOverwrite(collidingResources);
-                    return;
+                    if (action.equals(Action.move)) {
+                        throw new CmsVfsException(
+                            org.opencms.workplace.commons.Messages.get().container(
+                                org.opencms.workplace.commons.Messages.ERR_MOVE_FORCES_OVERWRITE_EXISTING_RESOURCE_0));
+                    } else {
+                        showConfirmOverwrite(collidingResources);
+                        return;
+                    }
                 }
             }
-            Action action = m_actionCombo != null ? (Action)m_actionCombo.getValue() : Action.move;
             Map<CmsResource, CmsException> errors = new HashMap<CmsResource, CmsException>();
             if (targetName == null) {
                 for (CmsResource source : m_context.getResources()) {

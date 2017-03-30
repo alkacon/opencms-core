@@ -107,6 +107,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MOVE_FAILED_TARGET_EXISTS_2 = "ERR_MOVE_FAILED_TARGET_EXISTS_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_MOVE_FORCES_OVERWRITE_EXISTING_RESOURCE_0 = "ERR_MOVE_FORCES_OVERWRITE_EXISTING_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_MULTI_0 = "ERR_MOVE_MULTI_0";
 
     /** Message constant for key in the resource bundle. */
