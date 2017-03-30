@@ -327,9 +327,13 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         }
         finalTarget = CmsStringUtil.joinPaths(finalTarget, name);
         // delete existing target resource if selected or confirmed by the user
-        if (overwrite && getRootCms().existsResource(finalTarget)) {
-            CmsLockUtil.ensureLock(getRootCms(), getRootCms().readResource(finalTarget));
-            getRootCms().deleteResource(finalTarget, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        if (overwrite && getRootCms().existsResource(finalTarget, CmsResourceFilter.ONLY_VISIBLE)) {
+            CmsLockUtil.ensureLock(
+                getRootCms(),
+                getRootCms().readResource(finalTarget, CmsResourceFilter.ONLY_VISIBLE));
+            if (getRootCms().existsResource(finalTarget, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                getRootCms().deleteResource(finalTarget, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            }
         }
         // copy the resource
         if (action == Action.move) {
