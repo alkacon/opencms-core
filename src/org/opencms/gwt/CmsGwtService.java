@@ -190,7 +190,32 @@ public class CmsGwtService extends RemoteServiceServlet {
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
 
         try {
-            response.setCharacterEncoding(request.getCharacterEncoding());
+            String characterEncoding = request.getCharacterEncoding();
+            if (null == characterEncoding) {
+                // If the response's character encoding has not been specified, update it to
+                // the default(*) to avoid ambiguous interpretations of the Servlet
+                // spec from different servlet containers.
+                // This complies with the Servlet spec.
+                // See for example the "Java Servlet Specification Version 3.0":
+                // "Servlets should set the locale and the character encoding of a response.
+                // [...]
+                // If the servlet does not specify a character encoding before the getWriter
+                // method of the ServletResponse interface is called or the response is committed,
+                // the default ISO-8859-1 is used."
+                // (*): the OpenCms configured encoding (defaulting to UTF-8) is favoured over
+                // ISO-8859-1 to allow for a wider charset support.
+                characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                LOG.debug("CmsGwtService.service: request didn't set char encoding.");
+            }
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("CmsGwtService.service: setting response charset="
+                        + characterEncoding,
+                        new Throwable("Stacktrace created for debugging"));
+            } else {
+                LOG.debug("CmsGwtService.service: setting response charset="
+                        + characterEncoding);
+            }
+            response.setCharacterEncoding(characterEncoding);
             super.service(request, response);
         } finally {
             clearThreadStorage();
