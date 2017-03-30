@@ -116,6 +116,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MOVE_ONTO_ITSELF_1 = "ERR_MOVE_ONTO_ITSELF_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_COPY_TARGET_PARENT_FOLDER_MISSING_1 = "ERR_COPY_TARGET_PARENT_FOLDER_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_PARSE_EXPIREDATE_1 = "ERR_PARSE_EXPIREDATE_1";
 
     /** Message constant for key in the resource bundle. */

@@ -242,7 +242,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             updateDefaultActions(resource.getRootPath());
         } else {
             throw new CmsIllegalArgumentException(
-                Messages.get().container(
+                org.opencms.workplace.commons.Messages.get().container(
                     org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
                     A_CmsUI.getCmsObject().getSitePath(resource)));
         }
@@ -321,7 +321,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         String finalTarget = target.getRootPath();
         if (finalTarget.equals(source.getRootPath()) || finalTarget.startsWith(source.getRootPath())) {
             throw new CmsVfsException(
-                Messages.get().container(org.opencms.workplace.commons.Messages.ERR_COPY_ONTO_ITSELF_1, finalTarget));
+                org.opencms.workplace.commons.Messages.get().container(
+                    org.opencms.workplace.commons.Messages.ERR_COPY_ONTO_ITSELF_1,
+                    finalTarget));
         }
         finalTarget = CmsStringUtil.joinPaths(finalTarget, name);
         // delete existing target resource if selected or confirmed by the user
@@ -413,9 +415,10 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     void submit(boolean overwrite, Map<String, String> makroMap) {
 
         try {
-            CmsResource targetFolder;
+            CmsResource targetFolder = null;
             String targetName = null;
             String target = m_targetPath.getValue();
+            boolean isSingleResource = m_context.getResources().size() == 1;
             // resolve relative paths
             target = CmsLinkManager.getAbsoluteUri(
                 target,
@@ -424,23 +427,59 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             // check if the given path is a root path
             CmsObject cms = OpenCms.getSiteManager().getSiteForRootPath(target) != null ? getRootCms() : getCms();
 
-            if (cms.existsResource(target)) {
+            if (cms.existsResource(target, CmsResourceFilter.ALL.addRequireFolder())) {
+                // The target is an existing folder
+                // always copy files into that folder
                 targetFolder = cms.readResource(target);
-
+            } else if (cms.existsResource(target, CmsResourceFilter.ALL.addRequireFile())) {
+                // The target is an existing file
+                if (isSingleResource) {
+                    // Replace the file with the resource copied, if it is just a single resource
+                    if (target.equals(m_context.getResources().get(0).getRootPath())) {
+                        throw new CmsVfsException(
+                            org.opencms.workplace.commons.Messages.get().container(
+                                org.opencms.workplace.commons.Messages.ERR_COPY_ONTO_ITSELF_1,
+                                target));
+                    }
+                    targetName = CmsResource.getName(target);
+                    targetFolder = cms.readResource(CmsResource.getParentFolder(target));
+                } else {
+                    // Throw an error if a single file should be replaced with multiple resources
+                    // since we cannot copy multiple resources to a single file
+                    throw new CmsVfsException(
+                        org.opencms.workplace.commons.Messages.get().container(
+                            org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
+                            target));
+                }
             } else {
-                targetName = CmsResource.getName(target);
-                targetFolder = cms.readResource(CmsResource.getParentFolder(target));
+                // The target does not exist
+                if (isSingleResource) {
+                    // If we have a single resource, we could possible create the target as copy of that resource
+                    if (cms.existsResource(
+                        CmsResource.getParentFolder(target),
+                        CmsResourceFilter.ALL.addRequireFolder())) {
+                        targetName = CmsResource.getName(target);
+                        targetFolder = cms.readResource(CmsResource.getParentFolder(target));
+                    } else {
+                        // If the parent folder of the resource does not exist, we will not create it automatically.
+                        // Thus we need to throw an exception.
+                        throw new CmsVfsException(
+                            org.opencms.workplace.commons.Messages.get().container(
+                                org.opencms.workplace.commons.Messages.ERR_COPY_TARGET_PARENT_FOLDER_MISSING_1,
+                                target));
+                    }
+                } else {
+                    // We cannot copy multiple resources to a single resource
+                    throw new CmsVfsException(
+                        org.opencms.workplace.commons.Messages.get().container(
+                            org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
+                            target));
+                }
             }
 
-            if (targetFolder.isFile()) {
-                throw new CmsVfsException(
-                    Messages.get().container(
-                        org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
-                        targetFolder));
-            }
             overwrite = overwrite || isOverwriteExisting();
             if (!overwrite) {
-                List<CmsResource> collidingResources = getExistingFileCollisions(targetFolder);
+                List<CmsResource> collidingResources = getExistingFileCollisions(targetFolder, targetName);
                 if (collidingResources != null) {
                     showConfirmOverwrite(collidingResources);
                     return;
@@ -515,12 +554,14 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
      * Returns the resources that collide with already existing resources.<p>
      *
      * @param targetFolder the target folder
+     * @param targetName name of the target if a single file's copy should be named differently
      *
      * @return the colliding resources or <code>null</code> if no collisions found
      *
      * @throws CmsException in case the checking the resources fails
      */
-    private List<CmsResource> getExistingFileCollisions(CmsResource targetFolder) throws CmsException {
+    private List<CmsResource> getExistingFileCollisions(CmsResource targetFolder, String targetName)
+    throws CmsException {
 
         List<CmsResource> collidingResources = new ArrayList<CmsResource>();
 
@@ -528,14 +569,21 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         if (!finalTarget.endsWith("/")) {
             finalTarget += "/";
         }
-        for (CmsResource source : m_context.getResources()) {
-            if (finalTarget.equals(CmsResource.getParentFolder(source.getRootPath()))) {
-                // copying to the same folder, a new name will be generated
-                return null;
+        if (targetName == null) {
+            for (CmsResource source : m_context.getResources()) {
+                if (finalTarget.equals(CmsResource.getParentFolder(source.getRootPath()))) {
+                    // copying to the same folder, a new name will be generated
+                    return null;
+                }
+                String fileName = finalTarget + source.getName();
+                if (getRootCms().existsResource(fileName, CmsResourceFilter.ALL)) {
+                    collidingResources.add(source);
+                }
             }
-            String fileName = finalTarget + source.getName();
+        } else {
+            String fileName = finalTarget + targetName;
             if (getRootCms().existsResource(fileName, CmsResourceFilter.ALL)) {
-                collidingResources.add(source);
+                collidingResources.add(getRootCms().readResource(fileName, CmsResourceFilter.ALL));
             }
         }
         return collidingResources.isEmpty() ? null : collidingResources;
