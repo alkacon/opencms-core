@@ -265,11 +265,6 @@ I_OptionListener, I_CmsHasShortcutActions {
 
         if (m_model.hasDescriptor()
             | m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
-            try {
-                m_model.lockOnChange(TableProperty.DESCRIPTION);
-            } catch (CmsException e) {
-                //
-            }
             handleChange(TableProperty.KEY);
             handleChange(TableProperty.DESCRIPTION);
         }
@@ -282,41 +277,30 @@ I_OptionListener, I_CmsHasShortcutActions {
      */
     public void handleEntryChange(EntryChangeEvent event) {
 
-        try {
-            m_model.lockOnChange(event.getPropertyId());
-
-            if (event.getPropertyId().equals(TableProperty.KEY)) {
-                KeyChangeResult result = m_model.handleKeyChange(event, true);
-                String captionKey = null;
-                String descriptionKey = null;
-                switch (result) {
-                    case SUCCESS:
-                        handleChange(event.getPropertyId());
-                        return;
-                    case FAILED_DUPLICATED_KEY:
-                        captionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_CAPTION_0;
-                        descriptionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_DESCRIPTION_0;
-                        break;
-                    case FAILED_FOR_OTHER_LANGUAGE:
-                        captionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_CAPTION_0;
-                        descriptionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_DESCRIPTION_0;
-                        break;
-                    default:
-                        throw new IllegalArgumentException();
-                }
-                CmsMessageBundleEditorTypes.showWarning(m_messages.key(captionKey), m_messages.key(descriptionKey));
-                event.getSource().focus();
+        if (event.getPropertyId().equals(TableProperty.KEY)) {
+            KeyChangeResult result = m_model.handleKeyChange(event, true);
+            String captionKey = null;
+            String descriptionKey = null;
+            switch (result) {
+                case SUCCESS:
+                    handleChange(event.getPropertyId());
+                    return;
+                case FAILED_DUPLICATED_KEY:
+                    captionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_CAPTION_0;
+                    descriptionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_DESCRIPTION_0;
+                    break;
+                case FAILED_FOR_OTHER_LANGUAGE:
+                    captionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_CAPTION_0;
+                    descriptionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_DESCRIPTION_0;
+                    break;
+                default:
+                    throw new IllegalArgumentException();
             }
-            handleChange(event.getPropertyId());
-
-        } catch (CmsException e) {
-            // TODO: Localize
-            LOG.debug(e);
-            CmsMessageBundleEditorTypes.showWarning(
-                m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EDITING_NOT_POSSIBLE_0),
-                m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EDITING_NOT_POSSIBLE_DESCRIPTION_0));
-            event.getSource().setValue(event.getOldValue());
+            CmsMessageBundleEditorTypes.showWarning(m_messages.key(captionKey), m_messages.key(descriptionKey));
+            event.getSource().focus();
         }
+        handleChange(event.getPropertyId());
+
     }
 
     /**
@@ -330,11 +314,6 @@ I_OptionListener, I_CmsHasShortcutActions {
         if (m_model.handleKeyDeletion(key)) {
             if (m_model.hasDescriptor()
                 | m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
-                try {
-                    m_model.lockOnChange(TableProperty.DESCRIPTION);
-                } catch (CmsException e2) {
-                    //
-                }
                 handleChange(TableProperty.DESCRIPTION);
             }
             handleChange(TableProperty.KEY);
