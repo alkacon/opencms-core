@@ -788,6 +788,11 @@ public class CmsMessageBundleEditorModel {
      */
     public void handleChange(Object propertyId) {
 
+        try {
+            lockOnChange(propertyId);
+        } catch (CmsException e) {
+            LOG.debug(e);
+        }
         if (isDescriptorProperty(propertyId)) {
             m_descriptorHasChanges = true;
         }
@@ -1038,22 +1043,6 @@ public class CmsMessageBundleEditorModel {
             resources.add(m_desc);
         }
         return resources;
-
-    }
-
-    /**
-     * Lock a file lazily, if a value that should be written to the file has changed.
-     * @param propertyId the table column in which the value has changed (e.g., KEY, TRANSLATION, ...)
-     * @throws CmsException thrown if locking fails.
-     */
-    void lockOnChange(Object propertyId) throws CmsException {
-
-        if (isDescriptorProperty(propertyId)) {
-            lockDescriptor();
-        } else {
-            Locale l = m_bundleType.equals(BundleType.PROPERTY) ? m_locale : null;
-            lockLocalization(l);
-        }
 
     }
 
@@ -1638,6 +1627,22 @@ public class CmsMessageBundleEditorModel {
         if (null == m_lockedBundleFiles.get(l)) {
             LockedFile lf = LockedFile.lockResource(m_cms, m_bundleFiles.get(l));
             m_lockedBundleFiles.put(l, lf);
+        }
+
+    }
+
+    /**
+     * Lock a file lazily, if a value that should be written to the file has changed.
+     * @param propertyId the table column in which the value has changed (e.g., KEY, TRANSLATION, ...)
+     * @throws CmsException thrown if locking fails.
+     */
+    private void lockOnChange(Object propertyId) throws CmsException {
+
+        if (isDescriptorProperty(propertyId)) {
+            lockDescriptor();
+        } else {
+            Locale l = m_bundleType.equals(BundleType.PROPERTY) ? m_locale : null;
+            lockLocalization(l);
         }
 
     }
