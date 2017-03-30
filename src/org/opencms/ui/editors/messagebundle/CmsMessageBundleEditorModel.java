@@ -1657,25 +1657,10 @@ public class CmsMessageBundleEditorModel {
             loadAllRemainingLocalizations();
             lockAllLocalizations(key);
         } catch (CmsException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.warn("Not able lock all localications for bundle.", e);
             return false;
         }
-        if (hasDescriptor()) {
-            CmsXmlContentValueSequence messages = m_descContent.getValueSequence(
-                Descriptor.N_MESSAGE,
-                Descriptor.LOCALE);
-            for (int i = 0; i < messages.getElementCount(); i++) {
-
-                String prefix = messages.getValue(i).getPath() + "/";
-                String k = m_descContent.getValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE).getStringValue(m_cms);
-                if (k == key) {
-                    m_descContent.removeValue(prefix + Descriptor.N_KEY, Descriptor.LOCALE, 0);
-                    m_descriptorHasChanges = true;
-                    break;
-                }
-            }
-        } else {
+        if (!hasDescriptor()) {
 
             for (Entry<Locale, SortedProperties> entry : m_localizations.entrySet()) {
                 SortedProperties localization = entry.getValue();

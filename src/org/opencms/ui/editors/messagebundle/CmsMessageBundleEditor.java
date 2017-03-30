@@ -262,6 +262,18 @@ I_OptionListener, I_CmsHasShortcutActions {
             copyEntry.getItemProperty(TableProperty.KEY).setValue(newKey);
         }
         setFilters(filters);
+
+        if (m_model.hasDescriptor()
+            | m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
+            try {
+                m_model.lockOnChange(TableProperty.DESCRIPTION);
+            } catch (CmsException e) {
+                //
+            }
+            handleChange(TableProperty.KEY);
+            handleChange(TableProperty.DESCRIPTION);
+        }
+
         return canAdd;
     }
 
@@ -316,6 +328,16 @@ I_OptionListener, I_CmsHasShortcutActions {
         Property<?> keyProp = it.getItemProperty(TableProperty.KEY);
         String key = (String)keyProp.getValue();
         if (m_model.handleKeyDeletion(key)) {
+            if (m_model.hasDescriptor()
+                | m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
+                try {
+                    m_model.lockOnChange(TableProperty.DESCRIPTION);
+                } catch (CmsException e2) {
+                    //
+                }
+                handleChange(TableProperty.DESCRIPTION);
+            }
+            handleChange(TableProperty.KEY);
             return true;
         }
         CmsMessageBundleEditorTypes.showWarning(
