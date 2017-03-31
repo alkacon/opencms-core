@@ -473,7 +473,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     protected void init(VaadinRequest req) {
 
         super.init(req);
-        if (!OpenCms.getRoleManager().hasRole(getCmsObject(), CmsRole.WORKPLACE_USER)) {
+        if (!OpenCms.getRoleManager().hasRole(getCmsObject(), CmsRole.EDITOR)) {
             Notification.show(
                 CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_TITLE_0),
                 CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_MESSAGE_0),
