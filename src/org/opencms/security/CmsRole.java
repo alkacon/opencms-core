@@ -98,6 +98,9 @@ public final class CmsRole {
     /** The "GALLERY_EDITOR" role. */
     public static final CmsRole GALLERY_EDITOR;
 
+    /** The "LIST_EDITOR" role. */
+    public static final CmsRole LIST_EDITOR;
+
     /** Identifier for role principals. */
     public static final String PRINCIPAL_ROLE = "ROLE";
 
@@ -145,12 +148,14 @@ public final class CmsRole {
         PROJECT_MANAGER.m_children.add(WORKPLACE_USER);
         ACCOUNT_MANAGER.m_children.add(WORKPLACE_USER);
 
+        LIST_EDITOR = new CmsRole("LIST_EDITOR", CmsRole.WORKPLACE_USER, "RoleListEditor");
         GALLERY_EDITOR = new CmsRole("GALLERY_EDITOR", CmsRole.WORKPLACE_USER, "RoleGalleryEditor");
         CATEGORY_EDITOR = new CmsRole("CATEGORY_EDITOR", CmsRole.WORKPLACE_USER, "RoleCategoryEditor");
         EDITOR = new CmsRole("EDITOR", CmsRole.GALLERY_EDITOR, "RoleEditor");
 
         // the category editor role also includes the editor role
         CATEGORY_EDITOR.m_children.add(EDITOR);
+        LIST_EDITOR.m_children.add(EDITOR);
 
         ELEMENT_AUTHOR = new CmsRole("ELEMENT_AUTHOR", CmsRole.EDITOR, "RoleElementAuthor");
 
@@ -167,6 +172,7 @@ public final class CmsRole {
                     VFS_MANAGER,
                     DEVELOPER,
                     WORKPLACE_USER,
+                    LIST_EDITOR,
                     GALLERY_EDITOR,
                     CATEGORY_EDITOR,
                     EDITOR,

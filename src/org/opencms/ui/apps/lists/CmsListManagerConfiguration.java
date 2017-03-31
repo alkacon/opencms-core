@@ -126,7 +126,7 @@ public class CmsListManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.GALLERY_EDITOR)
+        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.LIST_EDITOR)
         ? CmsAppVisibilityStatus.ACTIVE
         : CmsAppVisibilityStatus.INVISIBLE;
         return status;

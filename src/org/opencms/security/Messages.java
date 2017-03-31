@@ -173,6 +173,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLE_DESCRIPTION_GALLERY_EDITOR_0 = "GUI_ROLE_DESCRIPTION_GALLERY_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_LIST_EDITOR_0 = "GUI_ROLE_DESCRIPTION_LIST_EDITOR_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_PROJECT_MANAGER_0 = "GUI_ROLE_DESCRIPTION_PROJECT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -210,6 +213,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_GALLERY_EDITOR_0 = "GUI_ROLENAME_GALLERY_EDITOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLENAME_LIST_EDITOR_0 = "GUI_ROLENAME_LIST_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_PROJECT_MANAGER_0 = "GUI_ROLENAME_PROJECT_MANAGER_0";
