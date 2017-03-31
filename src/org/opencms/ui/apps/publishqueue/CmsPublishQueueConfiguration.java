@@ -116,7 +116,7 @@ public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.PROJECT_MANAGER)
+        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR)
         ? CmsAppVisibilityStatus.ACTIVE
         : CmsAppVisibilityStatus.INVISIBLE;
         return status;
