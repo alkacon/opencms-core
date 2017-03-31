@@ -92,7 +92,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/scheduler.png"));
+        return new ExternalResource(OpenCmsTheme.getImageLink("scheduler/scheduler.png"));
     }
 
     /**
