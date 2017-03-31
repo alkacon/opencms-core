@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsBreadCrumb;
 import org.opencms.ui.components.CmsToolLayout;
 
@@ -305,10 +306,11 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
     protected void updateBreadCrumb(Map<String, String> breadCrumbEntries) {
 
         LinkedHashMap<String, String> entries = new LinkedHashMap<String, String>();
-        entries.put(
-            CmsAppHierarchyConfiguration.APP_ID,
-            OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsAppHierarchyConfiguration.APP_ID).getName(
-                UI.getCurrent().getLocale()));
+        I_CmsWorkplaceAppConfiguration launchpadConfig = OpenCms.getWorkplaceAppManager().getAppConfiguration(
+            CmsAppHierarchyConfiguration.APP_ID);
+        if (launchpadConfig.getVisibility(A_CmsUI.getCmsObject()).isActive()) {
+            entries.put(CmsAppHierarchyConfiguration.APP_ID, launchpadConfig.getName(UI.getCurrent().getLocale()));
+        }
         if ((breadCrumbEntries != null) && !breadCrumbEntries.isEmpty()) {
             entries.putAll(breadCrumbEntries);
         } else {
