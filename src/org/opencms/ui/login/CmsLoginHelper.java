@@ -38,6 +38,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -437,6 +439,27 @@ public class CmsLoginHelper extends CmsJspLoginBean {
     }
 
     /**
+     * Returns the start view.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return the start view
+     */
+    public static String getStartView(CmsObject cms) {
+
+        CmsUserSettings settings = new CmsUserSettings(cms);
+        String targetView = getDirectEditPath(cms, settings, false);
+        if (targetView == null) {
+            if (CmsWorkplace.VIEW_WORKPLACE.equals(settings.getStartView())) {
+                targetView = "#" + CmsFileExplorerConfiguration.APP_ID;
+            } else if (CmsWorkplace.VIEW_ADMIN.equals(settings.getStartView())) {
+                targetView = "#" + CmsAppHierarchyConfiguration.APP_ID;
+            }
+        }
+        return targetView;
+    }
+
+    /**
      * Gets the window title for a given locale.<p>
      *
      * @param locale the locale
@@ -556,6 +579,60 @@ public class CmsLoginHelper extends CmsJspLoginBean {
     }
 
     /**
+     * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
+     *
+     * @param request the current request
+     * @param name the name of the cookie
+     *
+     * @return the cookie
+     */
+    protected static Cookie getCookie(HttpServletRequest request, String name) {
+
+        Cookie[] cookies = request.getCookies();
+        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
+            if (name.equalsIgnoreCase(cookies[i].getName())) {
+                return cookies[i];
+            }
+        }
+        return new Cookie(name, "");
+    }
+
+    /**
+     * Sets the cookie in the response.<p>
+     *
+     * @param cookie the cookie to set
+     * @param delete flag to determine if the cookir should be deleted
+     * @param request the current request
+     * @param response the current response
+     */
+    protected static void setCookie(
+        Cookie cookie,
+        boolean delete,
+        HttpServletRequest request,
+        HttpServletResponse response) {
+
+        if (request.getAttribute(PARAM_PREDEF_OUFQN) != null) {
+            // prevent the use of cookies if using a direct ou login url
+            return;
+        }
+        int maxAge = 0;
+        if (!delete) {
+            // set the expiration date of the cookie to six months from today
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.add(Calendar.MONTH, 6);
+            maxAge = (int)((cal.getTimeInMillis() - System.currentTimeMillis()) / 1000);
+        }
+        cookie.setMaxAge(maxAge);
+        // set the path
+        cookie.setPath(
+            CmsStringUtil.joinPaths(
+                OpenCms.getStaticExportManager().getVfsPrefix(),
+                CmsWorkplaceLoginHandler.LOGIN_HANDLER));
+        // set the cookie
+        response.addCookie(cookie);
+    }
+
+    /**
      * Returns the locale for the given request.<p>
      *
      * @param req the request
@@ -624,59 +701,5 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             request.setAttribute(CmsLoginHelper.PARAM_PREDEF_OUFQN, oufqn);
         }
         return (String)request.getAttribute(PARAM_PREDEF_OUFQN);
-    }
-
-    /**
-     * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
-     *
-     * @param request the current request
-     * @param name the name of the cookie
-     *
-     * @return the cookie
-     */
-    protected static Cookie getCookie(HttpServletRequest request, String name) {
-
-        Cookie[] cookies = request.getCookies();
-        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
-            if (name.equalsIgnoreCase(cookies[i].getName())) {
-                return cookies[i];
-            }
-        }
-        return new Cookie(name, "");
-    }
-
-    /**
-     * Sets the cookie in the response.<p>
-     *
-     * @param cookie the cookie to set
-     * @param delete flag to determine if the cookir should be deleted
-     * @param request the current request
-     * @param response the current response
-     */
-    protected static void setCookie(
-        Cookie cookie,
-        boolean delete,
-        HttpServletRequest request,
-        HttpServletResponse response) {
-
-        if (request.getAttribute(PARAM_PREDEF_OUFQN) != null) {
-            // prevent the use of cookies if using a direct ou login url
-            return;
-        }
-        int maxAge = 0;
-        if (!delete) {
-            // set the expiration date of the cookie to six months from today
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.add(Calendar.MONTH, 6);
-            maxAge = (int)((cal.getTimeInMillis() - System.currentTimeMillis()) / 1000);
-        }
-        cookie.setMaxAge(maxAge);
-        // set the path
-        cookie.setPath(
-            CmsStringUtil.joinPaths(
-                OpenCms.getStaticExportManager().getVfsPrefix(),
-                CmsWorkplaceLoginHandler.LOGIN_HANDLER));
-        // set the cookie
-        response.addCookie(cookie);
     }
 }

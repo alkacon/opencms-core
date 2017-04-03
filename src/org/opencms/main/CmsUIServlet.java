@@ -86,7 +86,7 @@ import com.vaadin.ui.UI;
 public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvider, SessionInitListener {
 
     /** The bootstrap listener. */
-    static final BootstrapListener bootstrapListener = new BootstrapListener() {
+    static final BootstrapListener BOOTSTRAP_LISTENER = new BootstrapListener() {
 
         private static final long serialVersionUID = -6249561809984101044L;
 
@@ -140,8 +140,23 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
     /** The static log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsUIServlet.class);
 
+    /** The login UI provider, overrides the default UI to display the login dialog when required. */
+    static final UIProvider LOGIN_UI_PROVIDER = new UIProvider() {
+
+        private static final long serialVersionUID = 9154828335594149982L;
+
+        @Override
+        public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
+
+            if (shouldShowLogin()) {
+                return CmsLoginUI.class;
+            }
+            return null;
+        }
+    };
+
     /** The login redirect handler. */
-    static final RequestHandler loginRedirectHandler = new RequestHandler() {
+    static final RequestHandler REQUEST_AUTHORIZATION_HANDLER = new RequestHandler() {
 
         private static final long serialVersionUID = 1L;
 
@@ -153,28 +168,19 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
                 String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                     ((CmsUIServlet)getCurrent()).getCmsObject(),
                     CmsWorkplaceLoginHandler.LOGIN_FORM);
-                link += "?"
-                    + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
-                    + URLEncoder.encode(((HttpServletRequest)request).getRequestURI(), "UTF-8");
-                ((HttpServletResponse)response).sendRedirect(link);
+                String requestedUri = ((HttpServletRequest)request).getRequestURI();
+                if (!requestedUri.endsWith(OpenCms.getSystemInfo().getWorkplaceContext())) {
+                    link += "?"
+                        + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
+                        + URLEncoder.encode(requestedUri, "UTF-8");
+                }
+                OpenCms.getAuthorizationHandler().requestAuthorization(
+                    (HttpServletRequest)request,
+                    (HttpServletResponse)response,
+                    link);
                 return true;
             }
             return false;
-        }
-    };
-
-    /** The login UI provider, overrides the default UI to display the login dialog when required. */
-    static final UIProvider loginUiProvider = new UIProvider() {
-
-        private static final long serialVersionUID = 9154828335594149982L;
-
-        @Override
-        public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
-
-            if (shouldShowLogin()) {
-                return CmsLoginUI.class;
-            }
-            return null;
         }
     };
 
@@ -232,9 +238,9 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
         // set the locale to the users workplace locale
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
         event.getSession().setLocale(wpLocale);
-        event.getSession().addRequestHandler(loginRedirectHandler);
-        event.getSession().addUIProvider(loginUiProvider);
-        event.getSession().addBootstrapListener(bootstrapListener);
+        event.getSession().addRequestHandler(REQUEST_AUTHORIZATION_HANDLER);
+        event.getSession().addUIProvider(LOGIN_UI_PROVIDER);
+        event.getSession().addBootstrapListener(BOOTSTRAP_LISTENER);
     }
 
     /**
@@ -301,6 +307,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
             OpenCmsCore.getInstance().initCmsContextForUI(request, response, this);
             super.service(request, response);
             OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), request);
+
         } catch (CmsRoleViolationException rv) {
             // don't log these into the error channel
             LOG.debug(rv.getLocalizedMessage(), rv);

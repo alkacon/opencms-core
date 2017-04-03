@@ -2732,7 +2732,9 @@ public final class OpenCmsCore {
                     contextInfo.setUserName(principal);
                     CmsObject newCms = initCmsObject(m_adminCms, contextInfo);
 
-                    if (contextInfo.getRequestedUri().startsWith("/system/workplace/")
+                    if ((contextInfo.getRequestedUri().startsWith("/system/workplace/")
+                        // also check for new workplace
+                        || request.getRequestURI().startsWith(OpenCms.getSystemInfo().getWorkplaceContext()))
                         && getRoleManager().hasRole(newCms, CmsRole.ELEMENT_AUTHOR)) {
                         // set the default project of the user for workplace users
                         CmsUserSettings settings = new CmsUserSettings(newCms);
@@ -2753,6 +2755,7 @@ public final class OpenCmsCore {
                         }
                     }
                     m_adminCms.updateLastLoginDate(user);
+
                     // fire the login user event
                     OpenCms.fireCmsEvent(
                         I_CmsEventListener.EVENT_LOGIN_USER,
