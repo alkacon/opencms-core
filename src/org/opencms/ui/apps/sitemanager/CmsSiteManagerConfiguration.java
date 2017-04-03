@@ -117,7 +117,7 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR)
+        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)
         ? CmsAppVisibilityStatus.ACTIVE
         : CmsAppVisibilityStatus.INVISIBLE;
         return status;
