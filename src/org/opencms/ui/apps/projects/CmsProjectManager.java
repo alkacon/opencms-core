@@ -31,6 +31,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
@@ -103,7 +105,13 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
 
         LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+        if (!OpenCms.getRoleManager().hasRole(A_CmsUI.getCmsObject(), CmsRole.PROJECT_MANAGER)) {
+            crumbs.put(
+                "",
+                CmsVaadinUtils.getMessageText(
+                    Messages.GUI_PROJECTS_FILES_1,
+                    A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName()));
+        } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
         } else if (state.equals(PATH_NAME_ADD)) {
             crumbs.put(CmsProjectManagerConfiguration.APP_ID, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
@@ -153,74 +161,59 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
-        if (m_fileTableFilter != null) {
-            m_infoLayout.removeComponent(m_fileTableFilter);
-            m_fileTableFilter = null;
-        }
-        if (m_projectTableFilter != null) {
-            m_infoLayout.removeComponent(m_projectTableFilter);
-            m_projectTableFilter = null;
-        }
+        if (!OpenCms.getRoleManager().hasRole(A_CmsUI.getCmsObject(), CmsRole.PROJECT_MANAGER)) {
+            return prepareProjectFilesTable(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid());
+        } else {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            m_rootLayout.setMainHeightFull(true);
-            final CmsProjectsTable table = getProjectsTable();
-            m_projectTableFilter = new TextField();
-            m_projectTableFilter.setIcon(FontOpenCms.FILTER);
-            m_projectTableFilter.setInputPrompt(
-                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-            m_projectTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-            m_projectTableFilter.setWidth("200px");
-            m_projectTableFilter.addTextChangeListener(new TextChangeListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void textChange(TextChangeEvent event) {
-
-                    table.filterTable(event.getText());
-
-                }
-            });
-            m_infoLayout.addComponent(m_projectTableFilter);
-            return table;
-        } else if (state.equals(PATH_NAME_ADD)) {
-            m_rootLayout.setMainHeightFull(false);
-            return getNewProjectForm();
-        } else if (state.equals(PATH_NAME_HISTORY)) {
-            m_rootLayout.setMainHeightFull(true);
-            return new CmsProjectHistoryTable();
-        } else if (state.startsWith(PATH_NAME_EDIT)) {
-            CmsUUID projectId = getIdFromState(state);
-            if (projectId != null) {
-                m_rootLayout.setMainHeightFull(false);
-                return new CmsEditProjectForm(this, projectId);
+            if (m_fileTableFilter != null) {
+                m_infoLayout.removeComponent(m_fileTableFilter);
+                m_fileTableFilter = null;
             }
-        } else if (state.startsWith(PATH_NAME_FILES)) {
-            CmsUUID projectId = getIdFromState(state);
-            if (projectId != null) {
+            if (m_projectTableFilter != null) {
+                m_infoLayout.removeComponent(m_projectTableFilter);
+                m_projectTableFilter = null;
+            }
+
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
                 m_rootLayout.setMainHeightFull(true);
-                final CmsFileTable fileTable = getProjectFiles(projectId);
-                m_fileTableFilter = new TextField();
-                m_fileTableFilter.setIcon(FontOpenCms.FILTER);
-                m_fileTableFilter.setInputPrompt(
+                final CmsProjectsTable table = getProjectsTable();
+                m_projectTableFilter = new TextField();
+                m_projectTableFilter.setIcon(FontOpenCms.FILTER);
+                m_projectTableFilter.setInputPrompt(
                     Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-                m_fileTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-                m_fileTableFilter.setWidth("200px");
-                m_fileTableFilter.addTextChangeListener(new TextChangeListener() {
+                m_projectTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+                m_projectTableFilter.setWidth("200px");
+                m_projectTableFilter.addTextChangeListener(new TextChangeListener() {
 
                     private static final long serialVersionUID = 1L;
 
                     public void textChange(TextChangeEvent event) {
 
-                        fileTable.filterTable(event.getText());
+                        table.filterTable(event.getText());
 
                     }
                 });
-                m_infoLayout.addComponent(m_fileTableFilter);
-                return fileTable;
+                m_infoLayout.addComponent(m_projectTableFilter);
+                return table;
+            } else if (state.equals(PATH_NAME_ADD)) {
+                m_rootLayout.setMainHeightFull(false);
+                return getNewProjectForm();
+            } else if (state.equals(PATH_NAME_HISTORY)) {
+                m_rootLayout.setMainHeightFull(true);
+                return new CmsProjectHistoryTable();
+            } else if (state.startsWith(PATH_NAME_EDIT)) {
+                CmsUUID projectId = getIdFromState(state);
+                if (projectId != null) {
+                    m_rootLayout.setMainHeightFull(false);
+                    return new CmsEditProjectForm(this, projectId);
+                }
+            } else if (state.startsWith(PATH_NAME_FILES)) {
+                CmsUUID projectId = getIdFromState(state);
+                if (projectId != null) {
+                    return prepareProjectFilesTable(projectId);
+                }
             }
         }
-
         return null;
     }
 
@@ -292,7 +285,8 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     @Override
     protected List<NavEntry> getSubNavEntries(String state) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)
+            && OpenCms.getRoleManager().hasRole(A_CmsUI.getCmsObject(), CmsRole.PROJECT_MANAGER)) {
             List<NavEntry> subNav = new ArrayList<NavEntry>();
             subNav.add(
                 new NavEntry(
@@ -326,5 +320,36 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             result = new CmsUUID(temp);
         }
         return result;
+    }
+
+    /**
+     * Prepares the view to show the project files table.<p>
+     *
+     * @param projectId the project id
+     *
+     * @return the project file table
+     */
+    private CmsFileTable prepareProjectFilesTable(CmsUUID projectId) {
+
+        m_rootLayout.setMainHeightFull(true);
+        final CmsFileTable fileTable = getProjectFiles(projectId);
+        m_fileTableFilter = new TextField();
+        m_fileTableFilter.setIcon(FontOpenCms.FILTER);
+        m_fileTableFilter.setInputPrompt(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+        m_fileTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        m_fileTableFilter.setWidth("200px");
+        m_fileTableFilter.addTextChangeListener(new TextChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void textChange(TextChangeEvent event) {
+
+                fileTable.filterTable(event.getText());
+
+            }
+        });
+        m_infoLayout.addComponent(m_fileTableFilter);
+        return fileTable;
     }
 }

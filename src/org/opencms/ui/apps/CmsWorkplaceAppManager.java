@@ -43,6 +43,7 @@ import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
+import org.opencms.ui.apps.projects.CmsProjectOverviewConfiguration;
 import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
 import org.opencms.ui.apps.search.CmsSourceSearchAppConfiguration;
@@ -158,7 +159,16 @@ public class CmsWorkplaceAppManager {
 
     /** Legacy apps explicitly hidden from new workplace. */
     private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(
-        Arrays.asList("/git", "/scheduler", "/galleryoverview", "/projects", "/history", "/sites", "/cache"));
+        Arrays.asList(
+            "/git",
+            "/scheduler",
+            "/galleryoverview",
+            "/projects",
+            "/project_overview",
+            "/history",
+            "/sites",
+            "/cache",
+            "/publishqueue"));
 
     /** The standard quick launch apps. */
     private static final String[] STANDARD_APPS = new String[] {
@@ -584,6 +594,7 @@ public class CmsWorkplaceAppManager {
                 new CmsQuickLaunchEditorConfiguration(),
                 new CmsTraditionalWorkplaceConfiguration(),
                 new CmsProjectManagerConfiguration(),
+                new CmsProjectOverviewConfiguration(),
                 new CmsCacheAdminConfiguration(),
                 new CmsFileHistoryConfiguration(),
                 new CmsSourceSearchAppConfiguration(),

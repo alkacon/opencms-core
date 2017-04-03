@@ -44,12 +44,12 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * The project manager app configuration.<p>
+ * The project overview app configuration. Available for workplace users that do not have the project manager role.<p>
  */
-public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsProjectOverviewConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
-    public static final String APP_ID = "project-management";
+    public static final String APP_ID = "project-overview";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -83,7 +83,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_PROJECTS_MANAGER_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_PROJECTS_OVERVIEW_HELP_0);
     }
 
     /**
@@ -108,7 +108,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_PROJECTS_MANAGER_TITLE_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_PROJECTS_OVERVIEW_TITLE_0);
     }
 
     /**
@@ -126,9 +126,10 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.PROJECT_MANAGER)
-        ? CmsAppVisibilityStatus.ACTIVE
-        : CmsAppVisibilityStatus.INVISIBLE;
+        CmsAppVisibilityStatus status = !OpenCms.getRoleManager().hasRole(cms, CmsRole.PROJECT_MANAGER)
+            && OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_USER)
+            ? CmsAppVisibilityStatus.ACTIVE
+            : CmsAppVisibilityStatus.INVISIBLE;
         return status;
     }
 }
