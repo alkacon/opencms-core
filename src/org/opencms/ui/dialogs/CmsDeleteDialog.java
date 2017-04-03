@@ -29,6 +29,7 @@ package org.opencms.ui.dialogs;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.lock.CmsLockActionRecord;
@@ -48,6 +49,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.commons.Messages;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,12 +61,14 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -82,10 +86,10 @@ public class CmsDeleteDialog extends CmsBasicDialog {
     private VerticalLayout m_resourceBox;
 
     // private AbstractComponent m_container;
-    
-    /** Message if deleting resources is allowed or not */
+
+    /** Message if deleting resources is allowed or not. */
     private Label m_deleteResource;
-    
+
     /** Label for the links. */
     private Label m_linksLabel;
 
@@ -98,6 +102,9 @@ public class CmsDeleteDialog extends CmsBasicDialog {
     /** The dialog context. */
     private I_CmsDialogContext m_context;
 
+    /** The delete siblings check box group. */
+    private OptionGroup m_deleteSiblings;
+
     /**
      * Creates a new instance.<p>
      *
@@ -106,6 +113,25 @@ public class CmsDeleteDialog extends CmsBasicDialog {
     public CmsDeleteDialog(I_CmsDialogContext context) {
         m_context = context;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        m_deleteSiblings.addItem(CmsResource.DELETE_PRESERVE_SIBLINGS);
+        m_deleteSiblings.setItemCaption(
+            CmsResource.DELETE_PRESERVE_SIBLINGS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_DELETE_PRESERVE_SIBLINGS_0));
+        m_deleteSiblings.addItem(CmsResource.DELETE_REMOVE_SIBLINGS);
+        m_deleteSiblings.setItemCaption(
+            CmsResource.DELETE_REMOVE_SIBLINGS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_DELETE_ALL_SIBLINGS_0));
+        m_deleteSiblings.setValue(CmsResource.DELETE_PRESERVE_SIBLINGS);
+        m_deleteSiblings.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                displayBrokenLinks();
+            }
+        });
+        m_deleteSiblings.setVisible(hasSiblings());
         displayResourceInfo(m_context.getResources());
 
         m_cancelButton.addClickListener(new ClickListener() {
@@ -130,37 +156,7 @@ public class CmsDeleteDialog extends CmsBasicDialog {
             }
         });
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        boolean canIgnoreBrokenLinks = OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-            || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
-        try {
-            Multimap<CmsResource, CmsResource> brokenLinks = getBrokenLinks(cms, m_context.getResources());
-            m_deleteResource.setValue(
-                CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_DELETE_MULTI_CONFIRMATION_0));
-            if (brokenLinks.isEmpty()) {
-                m_linksLabel.setVisible(false);
-                String noLinksBroken = CmsVaadinUtils.getMessageText(
-                    org.opencms.workplace.commons.Messages.GUI_DELETE_RELATIONS_NOT_BROKEN_0);
-                m_resourceBox.addComponent(new Label(noLinksBroken));
-            } else {
-                if (!canIgnoreBrokenLinks) {
-                    m_deleteResource.setValue(
-                        CmsVaadinUtils.getMessageText(
-                            org.opencms.workplace.commons.Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0));
-                    m_okButton.setVisible(false);
-                }
-                for (CmsResource source : brokenLinks.keySet()) {
-                    m_resourceBox.addComponent(new CmsResourceInfo(source));
-                    for (CmsResource target : brokenLinks.get(source)) {
-                        m_resourceBox.addComponent(indent(new CmsResourceInfo(target)));
-                    }
-
-                }
-            }
-        } catch (CmsException e) {
-            m_context.error(e);
-            return;
-        }
+        displayBrokenLinks();
 
         setActionHandler(new CmsOkCancelActionHandler() {
 
@@ -185,18 +181,32 @@ public class CmsDeleteDialog extends CmsBasicDialog {
      *
      * @param cms the CMS context
      * @param selectedResources the selected resources
+     * @param includeSiblings <code>true</code> if siblings would be deleted too
+     *
      * @return multimap of broken links, with sources as keys and targets as values
      *
      * @throws CmsException if something goes wrong
      */
-    public Multimap<CmsResource, CmsResource> getBrokenLinks(CmsObject cms, List<CmsResource> selectedResources)
+    public Multimap<CmsResource, CmsResource> getBrokenLinks(
+        CmsObject cms,
+        List<CmsResource> selectedResources,
+        boolean includeSiblings)
     throws CmsException {
 
-        Set<CmsResource> descendants = Sets.newHashSet();
+        Set<CmsResource> descendants = new HashSet<CmsResource>();
         for (CmsResource root : selectedResources) {
             descendants.add(root);
             if (root.isFolder()) {
                 descendants.addAll(cms.readResources(cms.getSitePath(root), CmsResourceFilter.IGNORE_EXPIRATION));
+            }
+        }
+
+        if (includeSiblings) {
+            // add siblings
+            for (CmsResource res : new HashSet<CmsResource>(descendants)) {
+                if (res.isFile()) {
+                    descendants.addAll(cms.readSiblings(res, CmsResourceFilter.IGNORE_EXPIRATION));
+                }
             }
         }
         HashSet<CmsUUID> deleteIds = new HashSet<CmsUUID>();
@@ -233,6 +243,49 @@ public class CmsDeleteDialog extends CmsBasicDialog {
     }
 
     /**
+     * Displays the broken links.<p>
+     */
+    void displayBrokenLinks() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        m_resourceBox.removeAllComponents();
+        m_deleteResource.setValue(
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_DELETE_MULTI_CONFIRMATION_0));
+        m_okButton.setVisible(true);
+        boolean canIgnoreBrokenLinks = OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
+            || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
+        try {
+            Multimap<CmsResource, CmsResource> brokenLinks = getBrokenLinks(
+                cms,
+                m_context.getResources(),
+                CmsResource.DELETE_REMOVE_SIBLINGS.equals(m_deleteSiblings.getValue()));
+            if (brokenLinks.isEmpty()) {
+                m_linksLabel.setVisible(false);
+                String noLinksBroken = CmsVaadinUtils.getMessageText(
+                    org.opencms.workplace.commons.Messages.GUI_DELETE_RELATIONS_NOT_BROKEN_0);
+                m_resourceBox.addComponent(new Label(noLinksBroken));
+            } else {
+                if (!canIgnoreBrokenLinks) {
+                    m_deleteResource.setValue(
+                        CmsVaadinUtils.getMessageText(
+                            org.opencms.workplace.commons.Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0));
+                    m_okButton.setVisible(false);
+                }
+                for (CmsResource source : brokenLinks.keySet()) {
+                    m_resourceBox.addComponent(new CmsResourceInfo(source));
+                    for (CmsResource target : brokenLinks.get(source)) {
+                        m_resourceBox.addComponent(indent(new CmsResourceInfo(target)));
+                    }
+
+                }
+            }
+        } catch (CmsException e) {
+            m_context.error(e);
+            return;
+        }
+    }
+
+    /**
      * Submits the dialog.<p>
      */
     void submit() {
@@ -240,11 +293,12 @@ public class CmsDeleteDialog extends CmsBasicDialog {
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             List<CmsUUID> changedIds = Lists.newArrayList();
+            CmsResourceDeleteMode mode = (CmsResourceDeleteMode)m_deleteSiblings.getValue();
             for (CmsResource resource : m_context.getResources()) {
                 changedIds.add(resource.getStructureId());
                 CmsLockActionRecord lockRecord = CmsLockUtil.ensureLock(cms, resource);
                 try {
-                    cms.deleteResource(cms.getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
+                    cms.deleteResource(cms.getSitePath(resource), mode);
                 } finally {
                     if (lockRecord.getChange().equals(LockChange.locked)) {
                         if (!resource.getState().isNew()) {
@@ -263,6 +317,21 @@ public class CmsDeleteDialog extends CmsBasicDialog {
         } catch (Exception e) {
             m_context.error(e);
         }
+    }
+
+    /**
+     * Checks whether the selected resources have siblings.<p>
+     *
+     * @return whether the selected resources have siblings
+     */
+    private boolean hasSiblings() {
+
+        for (CmsResource res : m_context.getResources()) {
+            if (res.getSiblingCount() > 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
