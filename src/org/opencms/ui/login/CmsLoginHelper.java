@@ -38,6 +38,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -434,6 +436,27 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         }
         return result;
 
+    }
+
+    /**
+     * Returns the start view.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return the start view
+     */
+    public static String getStartView(CmsObject cms) {
+
+        CmsUserSettings settings = new CmsUserSettings(cms);
+        String targetView = getDirectEditPath(cms, settings, false);
+        if (targetView == null) {
+            if (CmsWorkplace.VIEW_WORKPLACE.equals(settings.getStartView())) {
+                targetView = "#" + CmsFileExplorerConfiguration.APP_ID;
+            } else if (CmsWorkplace.VIEW_ADMIN.equals(settings.getStartView())) {
+                targetView = "#" + CmsAppHierarchyConfiguration.APP_ID;
+            }
+        }
+        return targetView;
     }
 
     /**

@@ -43,6 +43,7 @@ import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.extensions.CmsHistoryExtension;
 import org.opencms.ui.components.extensions.CmsPollServerExtension;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
+import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsExpiringValue;
 import org.opencms.util.CmsStringUtil;
 
@@ -122,6 +123,13 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
     /** Currently refreshing? */
     private boolean m_refreshing;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsAppWorkplaceUi() {
+        m_cachedViews = new HashMap<String, I_CmsAppView>();
+    }
 
     /**
      * Gets the current UI instance.<p>
@@ -481,7 +489,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
             return;
         }
         getSession().setErrorHandler(new CmsVaadinErrorHandler(this));
-        m_cachedViews = new HashMap<String, I_CmsAppView>();
+
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
         CmsAppNavigator navigator = new CmsAppNavigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);
@@ -542,7 +550,17 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         if (fragment != null) {
             getNavigator().navigateTo(fragment);
         } else {
-            showHome();
+            CmsObject cms = getCmsObject();
+            String target = CmsLoginHelper.getStartView(cms);
+            if (target != null) {
+                if (target.startsWith("#")) {
+                    getNavigator().navigateTo(target.substring(1));
+                } else {
+                    Page.getCurrent().setLocation(OpenCms.getLinkManager().substituteLink(cms, target));
+                }
+            } else {
+                showHome();
+            }
         }
     }
 }
