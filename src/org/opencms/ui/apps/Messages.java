@@ -384,6 +384,81 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LAUNCHPAD_TITLE_0 = "GUI_LAUNCHPAD_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_ADMIN_TOOL_NAME_0 = "GUI_LINKVALIDATION_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_ADMIN_TOOL_NAME_HELP_0 = "GUI_LINKVALIDATION_ADMIN_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0 = "GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_CHECK_INTERNAL_LINK_HELP_0 = "GUI_LINKVALIDATION_CHECK_INTERNAL_LINK_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_CHECK_INTERNAL_LINK_NAME_0 = "GUI_LINKVALIDATION_CHECK_INTERNAL_LINK_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_EXPIRED_DATE_0 = "GUI_LINKVALIDATION_EXPIRED_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_0 = "GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_HELP_0 = "GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0 = "GUI_LINKVALIDATION_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_HELP_0 = "GUI_LINKVALIDATION_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_INTERNALLINK_EDITOR_LABEL_BLOCK_0 = "GUI_LINKVALIDATION_INTERNALLINK_EDITOR_LABEL_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_LASTMODIFIED_0 = "GUI_LINKVALIDATION_LASTMODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_LINKS_ADDRESOURCES_0 = "GUI_LINKVALIDATION_LINKS_ADDRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_LINKS_RESOURCES_0 = "GUI_LINKVALIDATION_LINKS_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_LINKS_RESOURCES_HELP_0 = "GUI_LINKVALIDATION_LINKS_RESOURCES_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_NEW_EXTERNAL_LINK_CHECK_NAME_0 = "GUI_LINKVALIDATION_NEW_EXTERNAL_LINK_CHECK_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_NEW_EXTERNAL_LINK_CHECK_NAME_HELP_0 = "GUI_LINKVALIDATION_NEW_EXTERNAL_LINK_CHECK_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_NO_VALIDATION_YET_0 = "GUI_LINKVALIDATION_NO_VALIDATION_YET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_PATH_0 = "GUI_LINKVALIDATION_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_RELEASE_DATE_0 = "GUI_LINKVALIDATION_RELEASE_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_SITE_0 = "GUI_LINKVALIDATION_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_SIZE_0 = "GUI_LINKVALIDATION_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_TITLE_0 = "GUI_LINKVALIDATION_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_TYPE_0 = "GUI_LINKVALIDATION_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0 = "GUI_LINKVALIDATION_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_ADD_FOLDER_0 = "GUI_LISTMANAGER_ADD_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
