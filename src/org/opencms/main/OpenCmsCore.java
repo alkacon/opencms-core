@@ -2706,6 +2706,7 @@ public final class OpenCmsCore {
                             // unable to set the startup project, bad but not critical
                             LOG.error("Unable to set the startup project '" + settings.getStartProject() + "'.", e);
                         }
+                        OpenCms.getSessionManager().updateSessionInfo(newCms, request);
                     }
                     m_adminCms.updateLastLoginDate(user);
 
