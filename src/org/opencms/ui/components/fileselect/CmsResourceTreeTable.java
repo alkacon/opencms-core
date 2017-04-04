@@ -211,8 +211,13 @@ public class CmsResourceTreeTable extends TreeTable {
     public CmsResourceTreeTable(CmsObject cms, CmsResource root, CmsResourceTreeContainer container) {
         m_cms = cms;
         m_root = root;
+        FileSorter sorter = new FileSorter();
+        sorter.setSortProperties(
+            container,
+            new Object[] {CAPTION_FOLDERS, CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT},
+            new boolean[] {true, true});
+        container.setItemSorter(sorter);
         setContainerDataSource(container);
-        container.setItemSorter(new FileSorter());
         ColumnGenerator captionGenerator = new ColumnGenerator() {
 
             private static final long serialVersionUID = 1L;
