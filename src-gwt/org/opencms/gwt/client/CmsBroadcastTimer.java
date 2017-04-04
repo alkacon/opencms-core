@@ -79,6 +79,7 @@ public class CmsBroadcastTimer {
         if (INSTANCE == null) {
             m_keepRunning = true;
             CmsBroadcastTimer timer = new CmsBroadcastTimer();
+            timer.getBroadcast();
             timer.run();
             INSTANCE = timer;
         }
@@ -125,30 +126,37 @@ public class CmsBroadcastTimer {
             public boolean execute() {
 
                 if (CmsBroadcastTimer.shouldKeepRunning()) {
-                    CmsCoreProvider.getService().getBroadcast(new AsyncCallback<List<CmsBroadcastMessage>>() {
-
-                        public void onFailure(Throwable caught) {
-
-                            // in case of a status code exception abort, indicates the session is no longer valid
-                            if ((caught instanceof StatusCodeException)
-                                && (((StatusCodeException)caught).getStatusCode() == 500)) {
-                                CmsBroadcastTimer.abort();
-                            }
-                        }
-
-                        public void onSuccess(List<CmsBroadcastMessage> result) {
-
-                            if (result != null) {
-                                for (CmsBroadcastMessage message : result) {
-                                    CmsNotification.get().sendAlert(Type.WARNING, createMessageHtml(message));
-                                }
-                            }
-                        }
-                    });
+                    getBroadcast();
                     return true;
                 }
                 return false;
             }
         }, PING_INTERVAL);
+    }
+
+    /**
+     * Requests the latest broadcast.<p>
+     */
+    void getBroadcast() {
+
+        CmsCoreProvider.getService().getBroadcast(new AsyncCallback<List<CmsBroadcastMessage>>() {
+
+            public void onFailure(Throwable caught) {
+
+                // in case of a status code exception abort, indicates the session is no longer valid
+                if ((caught instanceof StatusCodeException) && (((StatusCodeException)caught).getStatusCode() == 500)) {
+                    CmsBroadcastTimer.abort();
+                }
+            }
+
+            public void onSuccess(List<CmsBroadcastMessage> result) {
+
+                if (result != null) {
+                    for (CmsBroadcastMessage message : result) {
+                        CmsNotification.get().sendAlert(Type.WARNING, createMessageHtml(message));
+                    }
+                }
+            }
+        });
     }
 }

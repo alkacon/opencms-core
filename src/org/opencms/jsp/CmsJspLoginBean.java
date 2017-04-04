@@ -88,6 +88,13 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         init(context, req, res);
     }
 
+    /**
+     * Logs any login exception.<p>
+     *
+     * @param requestContext the request context
+     * @param userName the user name
+     * @param currentLoginException the exception to log
+     */
     public static void logLoginException(
         CmsRequestContext requestContext,
         String userName,
@@ -277,6 +284,14 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             if (projectName != null) {
                 // if this fails, the login is regarded as a failure as well
                 getCmsObject().getRequestContext().setCurrentProject(getCmsObject().readProject(projectName));
+            }
+            if (!getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+                // in case the user is logged into an offline project, send any available login message
+                CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
+                if ((loginMessage != null) && loginMessage.isActive()) {
+                    OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getRequest());
+                    OpenCms.getSessionManager().sendBroadcast(null, loginMessage.getMessage(), user);
+                }
             }
 
         } catch (CmsException e) {

@@ -185,9 +185,9 @@
 /** The text color for a warning message. */
 @def notificationWarningColor #021324;
 /** The background for a warning message. */
-@def notificationWarningBg #FFCCCC;
+@def notificationWarningBg #FFF3D2;
 /** The border color for a warning message. */
-@def notificationWarningBorder #B31B34;
+@def notificationWarningBorder #AC7C00;
 /** The text color for a normal message. */
 @def notificationNormalColor #021324;
 /** The background for a normal message. */
