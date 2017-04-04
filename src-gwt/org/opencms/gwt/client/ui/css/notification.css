@@ -80,6 +80,7 @@ div.messageWrap{
 	position: absolute;
 	top:4px;
 	right:4px;
+	pointer-events: auto;
 }
 
 div.notificationContainer, .notificationContainer div.messagesPanel > div{
@@ -88,11 +89,12 @@ div.notificationContainer, .notificationContainer div.messagesPanel > div{
 
 .messagesPanel {
 	margin-top: 55px;
-	pointer-events: none;  	
+	pointer-events: none;    	
 } 
 
 .notificationMessage div.messageContent{
 	dislay: inline-block;
+	pointer-events: auto;
 }
 
 .notificationMessage div.messageContent p{
