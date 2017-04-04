@@ -205,7 +205,7 @@ public class CmsLoginUI extends A_CmsUI {
     private CmsLoginForm m_loginForm;
 
     /** The widget used to open the login target. */
-    private CmsLoginTargetOpener m_targetOpener = null;
+    private CmsLoginTargetOpener m_targetOpener;
 
     /**
      * Returns the initial HTML for the Vaadin based login dialog.<p>
@@ -261,7 +261,7 @@ public class CmsLoginUI extends A_CmsUI {
             String context = OpenCms.getSystemInfo().getContextPath();
             String vaadinDir = CmsStringUtil.joinPaths(context, "VAADIN/");
             String vaadinVersion = Version.getFullVersion();
-            String vaadinServlet = CmsStringUtil.joinPaths(context, "workplace/");
+            String vaadinServlet = CmsStringUtil.joinPaths(context, "workplace/dialogs/");
             String vaadinBootstrap = CmsStringUtil.joinPaths(
                 context,
                 "VAADIN/vaadinBootstrap.js?v=" + OpenCms.getSystemInfo().getVersionNumber());
