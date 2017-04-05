@@ -29,6 +29,7 @@ package org.opencms.file;
 
 import org.opencms.file.types.A_CmsResourceTypeLinkParseable;
 import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsLoaderException;
@@ -49,6 +50,8 @@ import org.opencms.util.I_CmsRegexSubstitution;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.Messages;
 
 import java.io.UnsupportedEncodingException;
@@ -220,7 +223,7 @@ public class CmsLinkRewriter {
             try {
                 resource = getResource(structureId);
                 rewriteLinks(resource, relationsForResource);
-            } catch (CmsException e) {
+            } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
@@ -236,6 +239,16 @@ public class CmsLinkRewriter {
                 if (resType instanceof A_CmsResourceTypeLinkParseable) {
                     try {
                         CmsFile file = m_cms.readFile(resource);
+                        if (resType instanceof CmsResourceTypeXmlContent) {
+                            CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
+                            try {
+                                content.validateXmlStructure(new CmsXmlEntityResolver(m_cms));
+                            } catch (CmsException e) {
+                                content.setAutoCorrectionEnabled(true);
+                                content.correctXmlStructure(m_cms);
+                                file.setContents(content.marshal());
+                            }
+                        }
                         m_cms.writeFile(file);
                     } catch (CmsException e) {
                         LOG.error(e.getLocalizedMessage(), e);
@@ -592,19 +605,43 @@ public class CmsLinkRewriter {
      */
     protected void rewriteContent(CmsFile file, Collection<CmsRelation> relations) throws CmsException {
 
-        LOG.info("Rewriting in-content links for " + file.getRootPath());
-        CmsPair<String, String> contentAndEncoding = decode(file);
-        String content = contentAndEncoding.getFirst();
-        String encodingForSave = contentAndEncoding.getSecond();
-        String newContent = rewriteContentString(content);
-        byte[] newContentBytes;
         try {
-            newContentBytes = newContent.getBytes(encodingForSave);
-        } catch (UnsupportedEncodingException e) {
-            newContentBytes = newContent.getBytes();
+            LOG.info("Rewriting in-content links for " + file.getRootPath());
+            CmsPair<String, String> contentAndEncoding = decode(file);
+
+            String content = "";
+
+            if (OpenCms.getResourceManager().getResourceType(file) instanceof CmsResourceTypeXmlContent) {
+                CmsXmlContent contentXml = CmsXmlContentFactory.unmarshal(m_cms, file);
+                try {
+                    contentXml.validateXmlStructure(new CmsXmlEntityResolver(m_cms));
+                } catch (CmsException e) {
+                    contentXml.setAutoCorrectionEnabled(true);
+                    contentXml.correctXmlStructure(m_cms);
+                    try {
+                        content = new String(contentXml.marshal(), contentAndEncoding.getSecond());
+                    } catch (UnsupportedEncodingException e1) {
+                        //
+                    }
+                }
+            }
+
+            if (content.isEmpty()) {
+                content = contentAndEncoding.getFirst();
+            }
+            String encodingForSave = contentAndEncoding.getSecond();
+            String newContent = rewriteContentString(content);
+            byte[] newContentBytes;
+            try {
+                newContentBytes = newContent.getBytes(encodingForSave);
+            } catch (UnsupportedEncodingException e) {
+                newContentBytes = newContent.getBytes();
+            }
+            file.setContents(newContentBytes);
+            m_cms.writeFile(file);
+        } catch (NullPointerException e) {
+            LOG.error(e);
         }
-        file.setContents(newContentBytes);
-        m_cms.writeFile(file);
     }
 
     /**

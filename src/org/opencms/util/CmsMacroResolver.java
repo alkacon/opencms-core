@@ -44,6 +44,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.apps.sitemanager.CmsSiteManager;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
@@ -264,18 +265,59 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         CmsResource.CmsResourceCopyMode copyMode)
     throws CmsException {
 
-        cms.copyResource(source, destination, copyMode);
+        copyAndResolveMacro(cms, source, destination, keyValue, adjustLinks, copyMode, null);
 
+    }
+
+    /**
+     * Copies resources, adjust internal links (if adjustLinks==true) and resolves macros (if keyValue map is set).<p>
+     *
+     * @param cms CmsObject
+     * @param source path
+     * @param destination path
+     * @param keyValue map to be used for macro resolver
+     * @param adjustLinks boolean, true means internal links get adjusted.
+     * @param copyMode copy Mode
+     * @param report report to write logs to
+     * @throws CmsException exception
+     */
+    public static void copyAndResolveMacro(
+        CmsObject cms,
+        String source,
+        String destination,
+        Map<String, String> keyValue,
+        boolean adjustLinks,
+        CmsResource.CmsResourceCopyMode copyMode,
+        I_CmsReport report)
+    throws CmsException {
+
+        if (report != null) {
+            report.println(
+                org.opencms.ui.apps.Messages.get().container(
+                    org.opencms.ui.apps.Messages.RPT_MACRORESOLVER_COPY_RESOURCES_1,
+                    source));
+        }
+        cms.copyResource(source, destination, copyMode);
+        if (report != null) {
+            report.println(
+                org.opencms.ui.apps.Messages.get().container(
+                    org.opencms.ui.apps.Messages.RPT_MACRORESOLVER_LINK_ADJUST_0));
+        }
         if (adjustLinks) {
             cms.adjustLinks(source, destination);
         }
-
         //Guards to check if keyValue is set correctly, otherwise no adjustment is done
         if (keyValue == null) {
             return;
         }
         if (keyValue.isEmpty()) {
             return;
+        }
+
+        if (report != null) {
+            report.println(
+                org.opencms.ui.apps.Messages.get().container(
+                    org.opencms.ui.apps.Messages.RPT_MACRORESOLVER_APPLY_MACROS_0));
         }
 
         CmsMacroResolver macroResolver = new CmsMacroResolver();
@@ -307,6 +349,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 ensureFoldername(destination) + CmsSiteManager.MACRO_FOLDER,
                 CmsResource.CmsResourceDeleteMode.valueOf(-1));
         }
+
     }
 
     /**

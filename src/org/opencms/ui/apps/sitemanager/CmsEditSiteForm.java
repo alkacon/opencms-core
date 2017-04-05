@@ -28,30 +28,19 @@
 package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.ade.configuration.CmsADEManager;
-import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.file.CmsDataAccessException;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceAlreadyExistsException;
-import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
-import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.loader.CmsLoaderException;
-import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.A_CmsUI;
@@ -59,12 +48,10 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -74,10 +61,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -474,21 +459,6 @@ public class CmsEditSiteForm extends VerticalLayout {
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsEditSiteForm.class.getName());
 
-    /** Constant. */
-    private static final String BLANK_HTML = "blank.html";
-
-    /**default index.html which gets created.*/
-    private static final String INDEX_HTML = "index.html";
-
-    /** Constant. */
-    private static final String MODEL_PAGE = "ModelPage";
-
-    /** Constant. */
-    private static final String MODEL_PAGE_PAGE = "ModelPage/Page";
-
-    /** Constant. */
-    private static final String NEW = ".templates/";
-
     /**vaadin serial id.*/
     private static final long serialVersionUID = -1011525709082939562L;
 
@@ -579,11 +549,17 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**vaadin component.*/
     private Button m_ok;
 
+    /**Click listener for ok button. */
+    private Button.ClickListener m_okClickListener;
+
     /**main Panel.*/
     private Panel m_panel;
 
     /**vaadin component.*/
     private FormLayout m_parameter;
+
+    /**Panel holding the report widget.*/
+    private Panel m_report;
 
     /**vaadin component.*/
     private TextField m_simpleFieldFolderName;
@@ -599,6 +575,9 @@ public class CmsEditSiteForm extends VerticalLayout {
 
     /**vaadin component.*/
     private TextField m_simpleFieldTitle;
+
+    /**Layout for the report widget. */
+    private FormLayout m_threadReport;
 
     /**
      * Constructor.<p>
@@ -661,7 +640,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
         });
 
-        m_ok.addClickListener(new ClickListener() {
+        m_okClickListener = new ClickListener() {
 
             private static final long serialVersionUID = 6814134727761004218L;
 
@@ -670,7 +649,6 @@ public class CmsEditSiteForm extends VerticalLayout {
                 setupValidators();
                 if (isValidInputSimple() & isValidInputSiteTemplate()) {
                     submit();
-                    cancel();
                     return;
                 }
                 if (isValidInputSimple()) {
@@ -679,7 +657,9 @@ public class CmsEditSiteForm extends VerticalLayout {
                 }
                 m_tab.setSelectedTab(0);
             }
-        });
+        };
+
+        m_ok.addClickListener(m_okClickListener);
 
         m_cancel.addClickListener(new ClickListener() {
 
@@ -738,11 +718,11 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             public void blur(BlurEvent event) {
 
-                if (!isFolderNameTouched()) {
+                if (!getFieldTitle().isEmpty() & !isFolderNameTouched()) {
                     String niceName = OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
                         m_clonedCms,
                         "/sites",
-                        getFieldTitle());
+                        getFieldTitle().toLowerCase());
                     setFolderNameState(niceName);
                     setFieldFolder(niceName);
                 }
@@ -780,6 +760,8 @@ public class CmsEditSiteForm extends VerticalLayout {
         m_fieldLoadSiteTemplate.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
 
         m_fieldSelectParentOU.setEnabled(false);
+
+        m_report.setVisible(false);
 
     }
 
@@ -1143,6 +1125,24 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
+     * Enables the ok button after finishing report thread.<p>
+     */
+    void setOkButtonEnabled() {
+
+        m_ok.setEnabled(true);
+        m_ok.removeClickListener(m_okClickListener);
+        m_ok.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 5637556711524961424L;
+
+            public void buttonClick(ClickEvent event) {
+
+                cancel();
+            }
+        });
+    }
+
+    /**
      * Setup validators which get called on click.<p>
      * Site-template gets validated separately.<p>
      */
@@ -1167,69 +1167,50 @@ public class CmsEditSiteForm extends VerticalLayout {
      */
     void submit() {
 
-        try {
-            // switch to root site
-            m_clonedCms.getRequestContext().setSiteRoot("");
+        //Show report field and hide form fields
+        m_report.setVisible(true);
+        m_panel.setVisible(false);
+        m_ok.setEnabled(false);
+        m_cancel.setEnabled(false);
 
-            // create the site root path
-            String siteRoot = "/" + ensureFoldername(getParentFolder()) + ensureFoldername(getFieldFolder());
+        // switch to root site
+        m_clonedCms.getRequestContext().setSiteRoot("");
 
-            CmsResource siteRootResource = null;
+        CmsSite site = getSiteFromForm();
 
-            if (m_fieldLoadSiteTemplate.getValue().isEmpty()) {
+        Map<String, String> bundle = getBundleMap();
 
-                siteRootResource = createSiteRootIfNeeded(siteRoot);
-                String sitePath = m_clonedCms.getSitePath(siteRootResource);
+        boolean createOU = m_fieldCreateOU.isEnabled() & m_fieldCreateOU.getValue().booleanValue();
 
-                // create sitemap configuration
-                String contentFolder = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
-                String sitemapConfig = CmsStringUtil.joinPaths(contentFolder, CmsADEManager.CONFIG_FILE_NAME);
-                if (!m_clonedCms.existsResource(sitemapConfig)) {
-                    createSitemapContentFolder(m_clonedCms, siteRootResource, contentFolder);
+        CmsCreateSiteThread createThread = new CmsCreateSiteThread(
+            m_clonedCms,
+            site,
+            m_site,
+            m_fieldLoadSiteTemplate.getValue(),
+            getFieldTemplate(),
+            createOU,
+            (String)m_fieldSelectParentOU.getValue(),
+            (String)m_fieldSelectOU.getValue(),
+            m_os,
+            bundle,
+            new Runnable() {
+
+                public void run() {
+
+                    setOkButtonEnabled();
                 }
-                createIndexHTML(siteRoot);
-            } else {
-                Map<String, String> bundle = getBundleMap();
-                CmsMacroResolver.copyAndResolveMacro(
-                    m_clonedCms,
-                    m_fieldLoadSiteTemplate.getValue(),
-                    siteRoot,
-                    bundle,
-                    true);
 
-                siteRootResource = m_clonedCms.readResource(siteRoot);
+            });
 
-                adjustFolderType(siteRootResource);
-            }
+        createThread.start();
 
-            setTemplate(siteRootResource);
+        CmsReportWidget report = new CmsReportWidget(createThread);
 
-            saveFavIcon(siteRoot);
+        report.setWidth("100%");
+        report.setHeight("350px");
 
-            handleOU(siteRootResource);
+        m_threadReport.addComponent(report);
 
-            // update the site manager state
-            CmsSite newSite = getSiteFromForm();
-            OpenCms.getSiteManager().updateSite(m_clonedCms, m_site, newSite);
-            // update the workplace server if the changed site was the workplace server
-            if ((m_site != null) && m_site.getUrl().equals(OpenCms.getSiteManager().getWorkplaceServer())) {
-                OpenCms.getSiteManager().updateGeneralSettings(
-                    m_clonedCms,
-                    OpenCms.getSiteManager().getDefaultUri(),
-                    Collections.singletonList(newSite.getUrl()),
-                    OpenCms.getSiteManager().getSharedFolder());
-            }
-            // write the system configuration
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
-            try {
-                m_clonedCms.unlockResource(siteRootResource);
-            } catch (CmsLockException e) {
-                LOG.info("Unlock resource failed", e);
-            }
-
-        } catch (Exception e) {
-            LOG.error("Error while saving site.", e);
-        }
     }
 
     /**
@@ -1256,147 +1237,6 @@ public class CmsEditSiteForm extends VerticalLayout {
         m_fieldSelectOU.setEnabled(!create);
         m_fieldSelectParentOU.setEnabled(create);
         m_fieldSelectOU.select("/");
-    }
-
-    /**
-     * Changes the folder type if necessary:<p>
-     *
-     * Type Folder -> Type SubsitemapFolder.<p>
-     * others -> no change.<p>
-     *
-     * @param siteRootResource resource to be changed
-     * @throws CmsLoaderException exception
-     * @throws CmsException exception
-     */
-    @SuppressWarnings("deprecation")
-    private void adjustFolderType(CmsResource siteRootResource) throws CmsLoaderException, CmsException {
-
-        if (OpenCms.getResourceManager().getResourceType(
-            CmsResourceTypeFolder.RESOURCE_TYPE_NAME) == OpenCms.getResourceManager().getResourceType(
-                siteRootResource)) {
-
-            siteRootResource.setType(
-                OpenCms.getResourceManager().getResourceType(
-                    CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP).getTypeId());
-            m_clonedCms.writeResource(siteRootResource);
-        }
-    }
-
-    /**
-     * Creates new index html if no one was found.<p>
-     *
-     * @param siteRoot of new site
-     * @throws CmsIllegalArgumentException exception
-     * @throws CmsException exception
-     */
-    private void createIndexHTML(String siteRoot) throws CmsIllegalArgumentException, CmsException {
-
-        if (!m_clonedCms.existsResource(siteRoot + INDEX_HTML)) {
-            //Create index.html
-            I_CmsResourceType containerType = OpenCms.getResourceManager().getResourceType(
-                org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME);
-            m_clonedCms.createResource(siteRoot + INDEX_HTML, containerType);
-        }
-    }
-
-    /**
-    * Helper method for creating the .content folder of a sub-sitemap.<p>
-    *
-    * @param cms the current CMS context
-    * @param subSitemapFolder the sub-sitemap folder in which the .content folder should be created
-    * @param contentFolder the content folder path
-    * @throws CmsException if something goes wrong
-    * @throws CmsLoaderException if something goes wrong
-    */
-    private void createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder, String contentFolder)
-    throws CmsException, CmsLoaderException {
-
-        CmsResource configFile = null;
-        String sitePath = cms.getSitePath(subSitemapFolder);
-        String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
-        String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
-        if (!cms.existsResource(folderName)) {
-            cms.createResource(
-                folderName,
-                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE));
-        }
-        I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
-        if (cms.existsResource(sitemapConfigName)) {
-            configFile = cms.readResource(sitemapConfigName);
-            if (!OpenCms.getResourceManager().getResourceType(configFile).getTypeName().equals(
-                configType.getTypeName())) {
-                throw new CmsException(
-                    Messages.get().container(
-                        Messages.ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2,
-                        sitemapConfigName,
-                        CmsADEManager.CONFIG_TYPE));
-            }
-        } else {
-            configFile = cms.createResource(
-                sitemapConfigName,
-                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE));
-        }
-
-        if (configFile != null) {
-            try {
-                CmsResource newFolder = m_clonedCms.createResource(
-                    contentFolder + NEW,
-                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME));
-                I_CmsResourceType containerType = OpenCms.getResourceManager().getResourceType(
-                    org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME);
-                CmsResource modelPage = m_clonedCms.createResource(newFolder.getRootPath() + BLANK_HTML, containerType);
-                String defTitle = Messages.get().getBundle(m_clonedCms.getRequestContext().getLocale()).key(
-                    Messages.GUI_DEFAULT_MODEL_TITLE_1,
-                    getFieldTitle());
-                String defDes = Messages.get().getBundle(m_clonedCms.getRequestContext().getLocale()).key(
-                    Messages.GUI_DEFAULT_MODEL_DESCRIPTION_1,
-                    getFieldTitle());
-                CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, defTitle, defTitle);
-                m_clonedCms.writePropertyObject(modelPage.getRootPath(), prop);
-                prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, defDes, defDes);
-                m_clonedCms.writePropertyObject(modelPage.getRootPath(), prop);
-                CmsFile file = m_clonedCms.readFile(configFile);
-                CmsXmlContent con = CmsXmlContentFactory.unmarshal(m_clonedCms, file);
-                con.addValue(m_clonedCms, MODEL_PAGE, Locale.ENGLISH, 0);
-                I_CmsXmlContentValue val = con.getValue(MODEL_PAGE_PAGE, Locale.ENGLISH);
-                val.setStringValue(m_clonedCms, modelPage.getRootPath());
-                file.setContents(con.marshal());
-                m_clonedCms.writeFile(file);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-    }
-
-    /**
-     * Creates root-folder for the new site.<p>
-     * If folder exist, the existing one will be returned.<p>
-     *
-     * @param siteRoot path to be created resp. read.
-     * @return site root folder
-     * @throws CmsException exception
-     */
-    private CmsResource createSiteRootIfNeeded(String siteRoot) throws CmsException {
-
-        CmsResource siteRootResource;
-
-        // check if the site root already exists
-        try {
-            // take the existing site and do not perform any OU related actions
-            siteRootResource = m_clonedCms.readResource(siteRoot);
-        } catch (CmsVfsResourceNotFoundException e) {
-            // not create a new site folder and the according OU if option is checked checked
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(
-                CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP);
-            siteRootResource = m_clonedCms.createResource(siteRoot, type);
-            CmsProperty folderTitle = new CmsProperty(
-                CmsPropertyDefinition.PROPERTY_TITLE,
-                getFieldTitle(),
-                getFieldTitle());
-            m_clonedCms.writePropertyObject(siteRoot, folderTitle);
-
-        }
-        return siteRootResource;
     }
 
     /**
@@ -1437,7 +1277,7 @@ public class CmsEditSiteForm extends VerticalLayout {
                 return name;
             }
         }
-        return null; //TODO throw exception
+        return null;
     }
 
     /**
@@ -1578,129 +1418,6 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Handles OU related operations.<p>
-     * Creates OU, adds site root to existing OU or does nothing.<p>
-     *
-     * @param siteRootResource Resource representing root folder
-     */
-    private void handleOU(CmsResource siteRootResource) {
-
-        String ouName = null;
-        String ouDescription = "OU for: %(site)";
-
-        if (m_fieldCreateOU.isVisible() & (m_fieldCreateOU.getValue()).booleanValue()) {
-            try {
-                OpenCms.getOrgUnitManager().createOrganizationalUnit(
-                    m_clonedCms,
-                    (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName(),
-                    ouDescription.replace("%(site)", getFieldTitle() + " [" + siteRootResource.getRootPath() + "]"),
-                    0,
-                    siteRootResource.getRootPath());
-                ouName = (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName();
-            } catch (CmsDataAccessException e) {
-                LOG.info("Can't create OU, an OU with same name exists. The existing OU is chosen for the new site");
-                try {
-                    OpenCms.getOrgUnitManager().addResourceToOrgUnit(
-                        m_clonedCms,
-                        (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName(),
-                        siteRootResource.getRootPath());
-                    ouName = (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName();
-                } catch (CmsException e2) {
-                    LOG.info("Resource is already added to OU");
-                    ouName = (String)m_fieldSelectParentOU.getValue() + siteRootResource.getName();
-                }
-            } catch (CmsException e) {
-                LOG.error("Error on creating new OU", e);
-            }
-        }
-
-        if (m_fieldSelectOU.isEnabled() & (m_fieldSelectOU.getValue() != "/")) {
-            try {
-                OpenCms.getOrgUnitManager().addResourceToOrgUnit(
-                    m_clonedCms,
-                    (String)m_fieldSelectOU.getValue(),
-                    siteRootResource.getRootPath());
-                ouName = ((String)m_fieldSelectOU.getValue()).substring(
-                    0,
-                    ((String)m_fieldSelectOU.getValue()).length() - 1);
-            } catch (CmsException e) {
-                LOG.error("Error on adding resource to OU", e);
-            }
-        }
-
-        try {
-            m_clonedCms.lockResource(siteRootResource);
-        } catch (CmsException e) {
-            LOG.error("unable to lock resource", e);
-        }
-
-        if (ouName != null) {
-            try {
-
-                m_clonedCms.chacc(
-                    siteRootResource.getRootPath(),
-                    I_CmsPrincipal.PRINCIPAL_GROUP,
-                    ouName + "/Users",
-                    "+r+w+v+c+i+o+d");
-            } catch (CmsException e) {
-                LOG.error("Error on setting permission for OU.", e);
-            }
-        }
-        try {
-            m_clonedCms.unlockResource(siteRootResource);
-        } catch (CmsException e) {
-            LOG.error("unable to unlock resource");
-        }
-    }
-
-    /**
-     * Saves the favicon if one was uploaded.<p>
-     *
-     * @param siteRoot of site
-     */
-    private void saveFavIcon(String siteRoot) {
-
-        if (m_imageCounter > 0) {
-            saveIcon(m_clonedCms, siteRoot);
-        }
-    }
-
-    /**
-     * Saves outputstream of favicon as resource.<p>
-     *
-     * @param cms cms object.
-     * @param siteRoot site root of considered site.
-     */
-    private void saveIcon(CmsObject cms, String siteRoot) {
-
-        CmsResource favicon = null;
-        try {
-            favicon = cms.createResource(
-                siteRoot + CmsSiteManager.FAVICON,
-                OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()));
-        } catch (CmsVfsResourceAlreadyExistsException e) {
-            //Resource already there
-            try {
-                favicon = cms.readResource(siteRoot + CmsSiteManager.FAVICON);
-            } catch (CmsException e2) {
-                //should never happen
-            }
-        } catch (CmsIllegalArgumentException | CmsException e) {
-            // should never happen
-        }
-        try {
-            cms.lockResource(siteRoot + CmsSiteManager.FAVICON);
-            CmsFile faviconFile = new CmsFile(favicon);
-            faviconFile.setContents(m_os.toByteArray());
-            cms.writeFile(faviconFile);
-            cms.unlockResource(siteRoot + CmsSiteManager.FAVICON);
-        } catch (CmsException e) {
-            // should not happen
-        }
-
-    }
-
-    /**
      * Sets the server field.<p>
      *
      * @param newValue value of the field.
@@ -1718,29 +1435,6 @@ public class CmsEditSiteForm extends VerticalLayout {
     private void setFieldTitle(String newValue) {
 
         m_simpleFieldTitle.setValue(newValue);
-    }
-
-    /**
-     * Sets the selected template as property to site root folder.<p>
-     *
-     * @param siteRootResource Resource representing root folder
-     */
-    private void setTemplate(CmsResource siteRootResource) {
-
-        try {
-            m_clonedCms.lockResource(siteRootResource);
-            // add template  property
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getFieldTemplate())) {
-                CmsProperty prop = new CmsProperty(
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                    getFieldTemplate(),
-                    getFieldTemplate());
-                m_clonedCms.writePropertyObject(siteRootResource.getRootPath(), prop);
-            }
-            m_clonedCms.unlockResource(siteRootResource);
-        } catch (CmsException e) {
-            LOG.error("Error on adding template", e);
-        }
     }
 
     /**
@@ -1862,6 +1556,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
     /**
      * Fill ComboBox for OU selection.<p>
+     * @param combo combo box
      */
     private void setUpOUComboBox(ComboBox combo) {
 

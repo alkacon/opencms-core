@@ -1029,6 +1029,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_REMOVE_PARAMETER_0 = "GUI_SITE_REMOVE_PARAMETER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_REPORT_0 = "GUI_SITE_REPORT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_SECURE_EXCL_HELP_0 = "GUI_SITE_SECURE_EXCL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1308,10 +1311,49 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DELETING_FILE_1 = "RPT_DELETING_FILE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_MACRORESOLVER_APPLY_MACROS_0 = "RPT_MACRORESOLVER_APPLY_MACROS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_MACRORESOLVER_COPY_RESOURCES_1 = "RPT_MACRORESOLVER_COPY_RESOURCES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_MACRORESOLVER_LINK_ADJUST_0 = "RPT_MACRORESOLVER_LINK_ADJUST_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_OUTPUT_WEBSERVER_1 = "RPT_OUTPUT_WEBSERVER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_ADD_OU_1 = "RPT_SITE_ADD_OU_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_CREATE_OU_1 = "RPT_SITE_CREATE_OU_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_CREATE_RESOURCES_0 = "RPT_SITE_CREATE_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_ERROR_0 = "RPT_SITE_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_ERROR_FAVICON_0 = "RPT_SITE_ERROR_FAVICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_FINISH_0 = "RPT_SITE_FINISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_FINISH_WARNING_0 = "RPT_SITE_FINISH_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_SET_FAVICON_0 = "RPT_SITE_SET_FAVICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_START_EDIT_1 = "RPT_SITE_START_EDIT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_START_NEW_1 = "RPT_SITE_START_NEW_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_APPLY_PATTERN_ERROR_1 = "RPT_SOURCESEARCH_APPLY_PATTERN_ERROR_1";
