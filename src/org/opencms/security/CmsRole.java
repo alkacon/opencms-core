@@ -86,14 +86,20 @@ public final class CmsRole {
     /** The "CATEGORY_EDITOR" role. */
     public static final CmsRole CATEGORY_EDITOR;
 
-    /** The "ELEMENT_AUTHOR" role. */
-    public static final CmsRole ELEMENT_AUTHOR;
+    /** Prefix for individual user confirmation runtime property. */
+    public static final String CONFIRM_ROLE_PREFIX = "confirm.role.";
 
     /** The "EXPORT_DATABASE" role. */
     public static final CmsRole DATABASE_MANAGER;
 
     /** The "DEVELOPER" role. */
     public static final CmsRole DEVELOPER;
+
+    /** The "EDITOR" role. */
+    public static final CmsRole EDITOR;
+
+    /** The "ELEMENT_AUTHOR" role. */
+    public static final CmsRole ELEMENT_AUTHOR;
 
     /** The "GALLERY_EDITOR" role. */
     public static final CmsRole GALLERY_EDITOR;
@@ -110,9 +116,6 @@ public final class CmsRole {
     /** The "ROOT_ADMIN" role, which is a parent to all other roles. */
     public static final CmsRole ROOT_ADMIN;
 
-    /** The "EDITOR" role. */
-    public static final CmsRole EDITOR;
-
     /** The "VFS_MANAGER" role. */
     public static final CmsRole VFS_MANAGER;
 
@@ -125,8 +128,89 @@ public final class CmsRole {
     /** The list of system roles. */
     private static final List<CmsRole> SYSTEM_ROLES;
 
-    /** Prefix for individual user confirmation runtime property. */
-    public static final String CONFIRM_ROLE_PREFIX = "confirm.role.";
+    /** The child roles of this role. */
+    private final List<CmsRole> m_children = new ArrayList<CmsRole>();
+
+    /** The distinct group names of this role. */
+    private List<String> m_distictGroupNames = new ArrayList<String>();
+
+    /** The name of the group this role is mapped to in the OpenCms database.*/
+    private final String m_groupName;
+
+    /** The id of the role, does not differentiate for organizational units. */
+    private final CmsUUID m_id;
+
+    /** Indicates if this role is organizational unit dependent. */
+    private boolean m_ouDependent;
+
+    /** The organizational unit this role applies to. */
+    private String m_ouFqn;
+
+    /** The parent role of this role. */
+    private final CmsRole m_parentRole;
+
+    /** The name of this role. */
+    private final String m_roleName;
+
+    /** Indicates if this role is a system role or a user defined role. */
+    private boolean m_systemRole;
+
+    /**
+     * Creates a user defined role.<p>
+     *
+     * @param roleName the name of this role
+     * @param groupName the name of the group the members of this role are stored in
+     * @param parentRole the parent role of this role
+     * @param ouDependent if the role is organizational unit dependent
+     */
+    public CmsRole(String roleName, CmsRole parentRole, String groupName, boolean ouDependent) {
+
+        this(roleName, parentRole, groupName);
+        m_ouDependent = ouDependent;
+        m_systemRole = false;
+        initialize();
+    }
+
+    /**
+     * Copy constructor.<p>
+     *
+     * @param role the role to copy
+     */
+    private CmsRole(CmsRole role) {
+
+        m_roleName = role.m_roleName;
+        m_id = role.m_id;
+        m_groupName = role.m_groupName;
+        m_parentRole = role.m_parentRole;
+        m_systemRole = role.m_systemRole;
+        m_ouDependent = role.m_ouDependent;
+        m_children.addAll(role.m_children);
+        m_distictGroupNames.addAll(Collections.unmodifiableList(role.m_distictGroupNames));
+    }
+
+    /**
+     * Creates a system role.<p>
+     *
+     * @param roleName the name of this role
+     * @param parentRole the parent role of this role
+     * @param groupName the related group name
+     */
+    private CmsRole(String roleName, CmsRole parentRole, String groupName) {
+
+        m_roleName = roleName;
+        m_id = CmsUUID.getConstantUUID(m_roleName);
+        m_ouDependent = !groupName.startsWith(CmsOrganizationalUnit.SEPARATOR);
+        m_parentRole = parentRole;
+        m_systemRole = true;
+        if (!m_ouDependent) {
+            m_groupName = groupName.substring(1);
+        } else {
+            m_groupName = groupName;
+        }
+        if (parentRole != null) {
+            parentRole.m_children.add(this);
+        }
+    }
 
     /**
      * Initializes the system roles with the configured OpenCms system group names.<p>
@@ -181,90 +265,6 @@ public final class CmsRole {
         // now initialize all system roles
         for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
             (SYSTEM_ROLES.get(i)).initialize();
-        }
-    }
-
-    /** The child roles of this role. */
-    private final List<CmsRole> m_children = new ArrayList<CmsRole>();
-
-    /** The distinct group names of this role. */
-    private List<String> m_distictGroupNames = new ArrayList<String>();
-
-    /** The name of the group this role is mapped to in the OpenCms database.*/
-    private final String m_groupName;
-
-    /** The id of the role, does not differentiate for organizational units. */
-    private final CmsUUID m_id;
-
-    /** Indicates if this role is organizational unit dependent. */
-    private boolean m_ouDependent;
-
-    /** The organizational unit this role applies to. */
-    private String m_ouFqn;
-
-    /** The parent role of this role. */
-    private final CmsRole m_parentRole;
-
-    /** The name of this role. */
-    private final String m_roleName;
-
-    /** Indicates if this role is a system role or a user defined role. */
-    private boolean m_systemRole;
-
-    /**
-     * Creates a user defined role.<p>
-     *
-     * @param roleName the name of this role
-     * @param groupName the name of the group the members of this role are stored in
-     * @param parentRole the parent role of this role
-     * @param ouDependent if the role is organizational unit dependent
-     */
-    public CmsRole(String roleName, CmsRole parentRole, String groupName, boolean ouDependent) {
-
-        this(roleName, parentRole, groupName);
-        m_ouDependent = ouDependent;
-        m_systemRole = false;
-        initialize();
-    }
-
-    /**
-     * Copy constructor.<p>
-     *
-     * @param role the role to copy
-     */
-    private CmsRole(CmsRole role) {
-
-        m_roleName = role.m_roleName;
-        m_id = CmsUUID.getConstantUUID(m_roleName);
-        m_groupName = role.m_groupName;
-        m_parentRole = role.m_parentRole;
-        m_systemRole = role.m_systemRole;
-        m_ouDependent = role.m_ouDependent;
-        m_children.addAll(role.m_children);
-        m_distictGroupNames.addAll(Collections.unmodifiableList(role.m_distictGroupNames));
-    }
-
-    /**
-     * Creates a system role.<p>
-     *
-     * @param roleName the name of this role
-     * @param parentRole the parent role of this role
-     * @param groupName the related group name
-     */
-    private CmsRole(String roleName, CmsRole parentRole, String groupName) {
-
-        m_roleName = roleName;
-        m_id = CmsUUID.getConstantUUID(m_roleName);
-        m_ouDependent = !groupName.startsWith(CmsOrganizationalUnit.SEPARATOR);
-        m_parentRole = parentRole;
-        m_systemRole = true;
-        if (!m_ouDependent) {
-            m_groupName = groupName.substring(1);
-        } else {
-            m_groupName = groupName;
-        }
-        if (parentRole != null) {
-            parentRole.m_children.add(this);
         }
     }
 
