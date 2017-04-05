@@ -205,7 +205,9 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
      */
     static boolean shouldShowLogin() {
 
-        return ((CmsUIServlet)getCurrent()).getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
+        CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
+        return cms.getRequestContext().getCurrentUser().isGuestUser()
+            || cms.getRequestContext().getUri().startsWith(CmsWorkplaceLoginHandler.LOGIN_HANDLER);
     }
 
     /**
