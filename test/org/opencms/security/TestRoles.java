@@ -158,7 +158,7 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.WORKPLACE_MANAGER, "/"));
         assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.WORKPLACE_MANAGER));
 
-        assertEquals(5, roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).size());
+        assertEquals(6, roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).size());
         assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(user));
         assertTrue(
             roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
