@@ -148,7 +148,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
         @Override
         public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
 
-            if (shouldShowLogin()) {
+            if (shouldShowLogin() || isLoginUIRequest(event.getRequest())) {
                 return CmsLoginUI.class;
             }
             return null;
@@ -163,7 +163,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
         public boolean handleRequest(VaadinSession session, VaadinRequest request, VaadinResponse response)
         throws IOException {
 
-            if (shouldShowLogin()) {
+            if (shouldShowLogin() && !isLoginUIRequest(request)) {
 
                 String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                     ((CmsUIServlet)getCurrent()).getCmsObject(),
@@ -199,15 +199,26 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
     private Map<Locale, SystemMessages> m_systemMessages = new HashMap<Locale, SystemMessages>();
 
     /**
+     * Checks whether the given request was referred from the login page.<p>
+     *
+     * @param request the request
+     *
+     * @return <code>true</code> in case of login ui requests
+     */
+    static boolean isLoginUIRequest(VaadinRequest request) {
+
+        String referrer = request.getHeader("referer");
+        return (referrer != null) && referrer.contains(CmsWorkplaceLoginHandler.LOGIN_HANDLER);
+    }
+
+    /**
      * Returns whether the login dialog should be shown.<p>
      *
      * @return <code>true</code> if the login dialog should be shown
      */
     static boolean shouldShowLogin() {
 
-        CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
-        return cms.getRequestContext().getCurrentUser().isGuestUser()
-            || cms.getRequestContext().getUri().startsWith(CmsWorkplaceLoginHandler.LOGIN_HANDLER);
+        return ((CmsUIServlet)getCurrent()).getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
     }
 
     /**
