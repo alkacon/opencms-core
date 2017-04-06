@@ -244,6 +244,7 @@ public class CmsLinkRewriter {
                             try {
                                 content.validateXmlStructure(new CmsXmlEntityResolver(m_cms));
                             } catch (CmsException e) {
+                                LOG.info("XML content was corrected automatically for resource " + file.getRootPath());
                                 content.setAutoCorrectionEnabled(true);
                                 content.correctXmlStructure(m_cms);
                                 file.setContents(content.marshal());
@@ -605,43 +606,41 @@ public class CmsLinkRewriter {
      */
     protected void rewriteContent(CmsFile file, Collection<CmsRelation> relations) throws CmsException {
 
-        try {
-            LOG.info("Rewriting in-content links for " + file.getRootPath());
-            CmsPair<String, String> contentAndEncoding = decode(file);
+        LOG.info("Rewriting in-content links for " + file.getRootPath());
+        CmsPair<String, String> contentAndEncoding = decode(file);
 
-            String content = "";
+        String content = "";
 
-            if (OpenCms.getResourceManager().getResourceType(file) instanceof CmsResourceTypeXmlContent) {
-                CmsXmlContent contentXml = CmsXmlContentFactory.unmarshal(m_cms, file);
+        if (OpenCms.getResourceManager().getResourceType(file) instanceof CmsResourceTypeXmlContent) {
+            CmsXmlContent contentXml = CmsXmlContentFactory.unmarshal(m_cms, file);
+            try {
+                contentXml.validateXmlStructure(new CmsXmlEntityResolver(m_cms));
+            } catch (CmsException e) {
+                LOG.info("XML content was corrected automatically for resource " + file.getRootPath());
+                contentXml.setAutoCorrectionEnabled(true);
+                contentXml.correctXmlStructure(m_cms);
                 try {
-                    contentXml.validateXmlStructure(new CmsXmlEntityResolver(m_cms));
-                } catch (CmsException e) {
-                    contentXml.setAutoCorrectionEnabled(true);
-                    contentXml.correctXmlStructure(m_cms);
-                    try {
-                        content = new String(contentXml.marshal(), contentAndEncoding.getSecond());
-                    } catch (UnsupportedEncodingException e1) {
-                        //
-                    }
+                    content = new String(contentXml.marshal(), contentAndEncoding.getSecond());
+                } catch (UnsupportedEncodingException e1) {
+                    //
                 }
             }
-
-            if (content.isEmpty()) {
-                content = contentAndEncoding.getFirst();
-            }
-            String encodingForSave = contentAndEncoding.getSecond();
-            String newContent = rewriteContentString(content);
-            byte[] newContentBytes;
-            try {
-                newContentBytes = newContent.getBytes(encodingForSave);
-            } catch (UnsupportedEncodingException e) {
-                newContentBytes = newContent.getBytes();
-            }
-            file.setContents(newContentBytes);
-            m_cms.writeFile(file);
-        } catch (NullPointerException e) {
-            LOG.error(e);
         }
+
+        if (content.isEmpty()) {
+            content = contentAndEncoding.getFirst();
+        }
+        String encodingForSave = contentAndEncoding.getSecond();
+        String newContent = rewriteContentString(content);
+        byte[] newContentBytes;
+        try {
+            newContentBytes = newContent.getBytes(encodingForSave);
+        } catch (UnsupportedEncodingException e) {
+            newContentBytes = newContent.getBytes();
+        }
+        file.setContents(newContentBytes);
+        m_cms.writeFile(file);
+
     }
 
     /**
