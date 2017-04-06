@@ -217,6 +217,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
                 siteRootResource = m_cms.readResource(m_site.getSiteRoot());
 
                 adjustFolderType(siteRootResource);
+                setFolderTitle(siteRootResource);
             }
 
             setTemplate(siteRootResource);
@@ -547,6 +548,32 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
             getReport().println(Messages.get().container(Messages.RPT_SITE_ERROR_FAVICON_0), I_CmsReport.FORMAT_ERROR);
             getReport().println(e);
             return;
+        }
+
+    }
+
+    /**
+     * Updates title property of site root resource in case of copy from template.<p>
+     *
+     * @param res root resource to set titel for
+     */
+    private void setFolderTitle(CmsResource res) {
+
+        try {
+            CmsProperty titleProperty = m_cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false);
+            if (!titleProperty.isNullProperty()) {
+                titleProperty.setValue(m_site.getTitle(), CmsProperty.TYPE_INDIVIDUAL);
+                m_cms.writePropertyObject(res.getRootPath(), titleProperty);
+            } else {
+                LOG.error("Editing title property of site root resource was not possible");
+                getReport().println(
+                    Messages.get().container(Messages.RPT_SITE_ERROR_TITLE_0),
+                    I_CmsReport.FORMAT_ERROR);
+            }
+        } catch (CmsException e) {
+            LOG.error("Editing title property of site root resource was not possible", e);
+            getReport().println(Messages.get().container(Messages.RPT_SITE_ERROR_TITLE_0), I_CmsReport.FORMAT_ERROR);
+            getReport().println(e);
         }
 
     }

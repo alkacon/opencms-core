@@ -1341,6 +1341,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SITE_ERROR_FAVICON_0 = "RPT_SITE_ERROR_FAVICON_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_SITE_ERROR_TITLE_0 = "RPT_SITE_ERROR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_SITE_FINISH_0 = "RPT_SITE_FINISH_0";
 
     /** Message constant for key in the resource bundle. */
