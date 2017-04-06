@@ -45,7 +45,6 @@ import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.db.CmsSubscriptionManager;
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -98,6 +97,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.error.CmsErrorUI;
+import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -107,6 +107,7 @@ import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
@@ -2721,23 +2722,11 @@ public final class OpenCmsCore {
                             // also check for new workplace
                             || request.getRequestURI().startsWith(OpenCms.getSystemInfo().getWorkplaceContext()))
                             && getRoleManager().hasRole(newCms, CmsRole.ELEMENT_AUTHOR)) {
-                            // set the default project of the user for workplace users
-                            CmsUserSettings settings = new CmsUserSettings(newCms);
-                            // set the configured start site
-                            newCms.getRequestContext().setSiteRoot(settings.getStartSite());
-                            try {
-                                CmsProject project = newCms.readProject(settings.getStartProject());
-                                if (getOrgUnitManager().getAllAccessibleProjects(
-                                    newCms,
-                                    project.getOuFqn(),
-                                    false).contains(project)) {
-                                    // user has access to the project, set this as current project
-                                    newCms.getRequestContext().setCurrentProject(project);
-                                }
-                            } catch (CmsException e) {
-                                // unable to set the startup project, bad but not critical
-                                LOG.error("Unable to set the startup project '" + settings.getStartProject() + "'.", e);
-                            }
+                            LOG.debug("Handling workplace login for user " + principal);
+                            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(newCms);
+                            request.getSession(true).setAttribute(
+                                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                                settings);
                             OpenCms.getSessionManager().updateSessionInfo(newCms, request);
                         }
                         m_adminCms.updateLastLoginDate(user);
