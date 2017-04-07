@@ -83,6 +83,7 @@ import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.UserError;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -1281,7 +1282,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         for (Component c : m_aliases) {
             if (c instanceof CmsRemovableFormRow<?>) {
-                ret.add(new CmsSiteMatcher(((String)((CmsRemovableFormRow<?>)c).getInput().getValue())));
+                ret.add(
+                    new CmsSiteMatcher(
+                        ((String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue())));
             }
         }
         return ret;
@@ -1390,7 +1393,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         Map<String, String> ret = new TreeMap<String, String>();
         for (Component c : m_parameter) {
             if (c instanceof CmsRemovableFormRow<?>) {
-                String[] parameterStringArray = ((String)((CmsRemovableFormRow<?>)c).getInput().getValue()).split("=");
+                String[] parameterStringArray = ((String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue()).split(
+                    "=");
                 ret.put(parameterStringArray[0], parameterStringArray[1]);
             }
         }

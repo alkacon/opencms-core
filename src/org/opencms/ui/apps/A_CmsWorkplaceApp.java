@@ -233,6 +233,11 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
         updateBreadCrumb(getBreadCrumbForState(state));
     }
 
+    public String toString() {
+
+        return this.getClass() + " " + System.identityHashCode(this);
+    }
+
     /**
      * Adds a navigation entry.<p>
      *

@@ -75,7 +75,7 @@ public abstract class A_CmsAttributeAwareApp extends A_CmsWorkplaceApp {
             Map<String, Object> attributes = getAttributesForComponent(comp);
             updateAppAttributes(attributes);
         } else {
-            m_rootLayout.setMainContent(new Label("Malformed path, tool not availabel for path: " + state));
+            m_rootLayout.setMainContent(new Label("Malformed path, tool not available for path: " + state));
             updateAppAttributes(Collections.<String, Object> emptyMap());
         }
         updateSubNav(getSubNavEntries(state));

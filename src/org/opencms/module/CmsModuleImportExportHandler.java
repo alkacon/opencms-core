@@ -132,7 +132,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         try {
             cms = OpenCms.initCmsObject(cms);
-            String importSite = module.getImportSite();
+            String importSite = module.getSite();
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
                 cms.getRequestContext().setSiteRoot(importSite);
             }
@@ -268,9 +268,10 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                     "<i>" + getModuleName() + "</i>"));
 
         } else {
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                getModuleName()));
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    getModuleName()));
         }
         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
@@ -302,7 +303,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         // export the module using the standard export
         CmsObject exportCms = cms;
-        String importSite = module.getImportSite();
+        String importSite = module.getSite();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
             try {
                 exportCms = OpenCms.initCmsObject(exportCms);
@@ -630,6 +631,19 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             checkedTypes.add(type);
         }
 
+        // import the module resources
+        CmsObject importCms = OpenCms.initCmsObject(cms);
+        String importSite = importedModule.getImportSite();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
+            importCms.getRequestContext().setSiteRoot(importSite);
+        } else {
+            String siteToSet = importCms.getRequestContext().getSiteRoot();
+            if ("".equals(siteToSet)) {
+                siteToSet = "/";
+            }
+            importedModule.setSite(siteToSet);
+        }
+
         //  add the imported module to the module manager
         OpenCms.getModuleManager().addModule(cms, importedModule);
 
@@ -641,12 +655,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         if (importedModule.getExplorerTypes() != Collections.EMPTY_LIST) {
             OpenCms.getWorkplaceManager().addExplorerTypeSettings(importedModule);
         }
-        // import the module resources
-        CmsObject importCms = OpenCms.initCmsObject(cms);
-        String importSite = importedModule.getImportSite();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
-            importCms.getRequestContext().setSiteRoot(importSite);
-        }
+
         CmsImport cmsImport = new CmsImport(importCms, report);
         cmsImport.importData(parameters);
         String importScript = importedModule.getImportScript();

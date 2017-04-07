@@ -68,7 +68,8 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The available module export modes. */
     public enum ExportMode {
         /** Default export mode. */
-        DEFAULT, /** Reduced export, that omits last modification information (dates and users). */
+        DEFAULT,
+        /** Reduced export, that omits last modification information (dates and users). */
         REDUCED;
 
         /**
@@ -98,6 +99,10 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /** The module action class name. */
     private String m_actionClass;
+
+    private String m_site;
+
+    private boolean m_hasImportSite;
 
     /** Initialized module action instance. */
     private I_CmsModuleAction m_actionInstance;
@@ -159,9 +164,6 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The script to execute when the module is imported. */
     private String m_importScript;
 
-    /** The import site. */
-    private String m_importSite;
-
     /** The name of this module, must be a valid Java package name. */
     private String m_name;
 
@@ -204,6 +206,7 @@ public class CmsModule implements Comparable<CmsModule> {
         m_excluderesources = Collections.emptyList();
         m_exportPoints = Collections.emptyList();
         m_dependencies = Collections.emptyList();
+        m_parameters = new TreeMap<String, String>();
         m_exportMode = ExportMode.DEFAULT;
     }
 
@@ -236,7 +239,8 @@ public class CmsModule implements Comparable<CmsModule> {
         String group,
         String actionClass,
         String importScript,
-        String importSite,
+        String site,
+        boolean isImportSite,
         ExportMode exportMode,
         String description,
         CmsModuleVersion version,
@@ -308,7 +312,10 @@ public class CmsModule implements Comparable<CmsModule> {
         } else {
             m_parameters = new TreeMap<String, String>(parameters);
         }
-        m_importSite = importSite;
+
+        m_site = site;
+
+        m_hasImportSite = isImportSite;
 
         m_importScript = importScript;
 
@@ -339,7 +346,8 @@ public class CmsModule implements Comparable<CmsModule> {
         List<CmsResource> result,
         final CmsObject cms,
         final List<CmsResource> moduleResources,
-        final List<String> excludeResources) throws CmsException {
+        final List<String> excludeResources)
+    throws CmsException {
 
         for (CmsResource resource : moduleResources) {
 
@@ -445,11 +453,11 @@ public class CmsModule implements Comparable<CmsModule> {
     throws CmsException {
 
         CmsObject cmsClone;
-        if ((null == module.getImportSite()) || cms.getRequestContext().getSiteRoot().equals(module.getImportSite())) {
+        if ((null == module.getSite()) || cms.getRequestContext().getSiteRoot().equals(module.getSite())) {
             cmsClone = cms;
         } else {
             cmsClone = OpenCms.initCmsObject(cms);
-            cmsClone.getRequestContext().setSiteRoot(module.getImportSite());
+            cmsClone.getRequestContext().setSiteRoot(module.getSite());
         }
 
         return cmsClone;
@@ -541,7 +549,8 @@ public class CmsModule implements Comparable<CmsModule> {
             m_group,
             m_actionClass,
             m_importScript,
-            m_importSite,
+            m_site,
+            m_hasImportSite,
             m_exportMode,
             m_description,
             m_version,
@@ -781,6 +790,11 @@ public class CmsModule implements Comparable<CmsModule> {
         return m_group;
     }
 
+    public boolean getHasImportSite() {
+
+        return hasImportSite();
+    }
+
     /**
      * Returns the importScript.<p>
      *
@@ -800,7 +814,12 @@ public class CmsModule implements Comparable<CmsModule> {
      */
     public String getImportSite() {
 
-        return m_importSite;
+        if (m_hasImportSite) {
+            return m_site;
+        } else {
+            return null;
+        }
+
     }
 
     /**
@@ -891,6 +910,16 @@ public class CmsModule implements Comparable<CmsModule> {
     }
 
     /**
+     * Gets the module's site.<p>
+     *
+     * @return the site of the module
+     */
+    public String getSite() {
+
+        return m_site;
+    }
+
+    /**
      * Returns the name of the user who uploaded this module.<p>
      *
      * @return the name of the user who uploaded this module
@@ -910,6 +939,11 @@ public class CmsModule implements Comparable<CmsModule> {
         return m_version;
     }
 
+    public String getVersionStr() {
+
+        return m_version.toString();
+    }
+
     /**
      * @see java.lang.Object#hashCode()
      */
@@ -917,6 +951,25 @@ public class CmsModule implements Comparable<CmsModule> {
     public int hashCode() {
 
         return m_name.hashCode();
+    }
+
+    public boolean hasImportSite() {
+
+        return m_hasImportSite;
+    }
+
+    public boolean hasModuleResourcesWithUndefinedSite() {
+
+        if (getSite() == null) {
+            for (String modRes : getResources()) {
+                if (!CmsStringUtil.isPrefixPath("/system/", modRes)
+                    && !OpenCms.getSiteManager().startsWithShared(modRes)) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
     }
 
     /**
@@ -1292,6 +1345,12 @@ public class CmsModule implements Comparable<CmsModule> {
         m_group = value;
     }
 
+    public void setHasImportSite(boolean isImportSite) {
+
+        checkFrozen();
+        m_hasImportSite = isImportSite;
+    }
+
     /**
      * Sets the importScript.<p>
      *
@@ -1314,7 +1373,8 @@ public class CmsModule implements Comparable<CmsModule> {
         if (importSite != null) {
             importSite = importSite.trim();
         }
-        m_importSite = importSite;
+        m_site = importSite;
+        m_hasImportSite = true;
     }
 
     /**
@@ -1402,6 +1462,14 @@ public class CmsModule implements Comparable<CmsModule> {
         m_resourceTypes = Collections.unmodifiableList(resourceTypes);
     }
 
+    public void setSite(String siteRoot) {
+
+        if (siteRoot == null) {
+            m_hasImportSite = false;
+        }
+        m_site = siteRoot;
+    }
+
     /**
      * Sets the user who installed of this module.<p>
      *
@@ -1415,6 +1483,13 @@ public class CmsModule implements Comparable<CmsModule> {
 
         checkFrozen();
         m_userInstalled = value.trim();
+    }
+
+    public void setVersionStr(String versionString) {
+
+        checkFrozen();
+        m_version = new CmsModuleVersion(versionString);
+
     }
 
     /**

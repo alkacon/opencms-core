@@ -502,7 +502,7 @@ public class CmsModuleManager {
         }
 
         CmsModule module = m_modules.get(moduleName);
-        String importSite = module.getImportSite();
+        String importSite = module.getSite();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
             CmsObject newCms;
             try {

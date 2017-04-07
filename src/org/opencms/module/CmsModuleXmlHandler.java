@@ -105,6 +105,9 @@ public class CmsModuleXmlHandler {
     /** The node name for the name node. */
     public static final String N_NAME = "name";
 
+    /** The node name for the module site. */
+    public static final String N_SITE = "site";
+
     /** The node name for the nicename node. */
     public static final String N_NICENAME = "nicename";
 
@@ -192,21 +195,22 @@ public class CmsModuleXmlHandler {
         // NOTE: If you change the order of parameters here or add new ones, you may
         // also need to change the corresponding parameter indexes in the method addXmlDigesterRulesForVersion5Modules.
 
-        digester.addCallMethod("*/" + N_MODULE, "createdModule", 14);
+        digester.addCallMethod("*/" + N_MODULE, "createdModule", 15);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NAME, 0);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NICENAME, 1);
         digester.addCallParam("*/" + N_MODULE + "/" + N_GROUP, 2);
         digester.addCallParam("*/" + N_MODULE + "/" + N_CLASS, 3);
         digester.addCallParam("*/" + N_MODULE + "/" + N_IMPORT_SCRIPT, 4);
         digester.addCallParam("*/" + N_MODULE + "/" + N_IMPORT_SITE, 5);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_EXPORT_MODE, 6, I_CmsXmlConfiguration.A_NAME);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 7);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 8);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 9);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 10);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 11);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 12);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 13);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_SITE, 6);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_EXPORT_MODE, 7, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 8);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 9);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 10);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 11);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 12);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 13);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 14);
 
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
@@ -312,9 +316,11 @@ public class CmsModuleXmlHandler {
             moduleElement.addElement(N_IMPORT_SCRIPT).addCDATA(importScript);
         }
 
-        String importSite = module.getImportSite();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
-            moduleElement.addElement(N_IMPORT_SITE).setText(importSite);
+        String site = module.getSite();
+        boolean isImportSite = module.hasImportSite();
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
+            moduleElement.addElement(isImportSite ? N_IMPORT_SITE : N_SITE).setText(site);
         }
 
         moduleElement.addElement(N_EXPORT_MODE).addAttribute(A_NAME, module.getExportMode().toString());
@@ -615,6 +621,7 @@ public class CmsModuleXmlHandler {
         String actionClass,
         String importScript,
         String importSite,
+        String site,
         String exportModeName,
         String description,
         String version,
@@ -674,6 +681,17 @@ public class CmsModuleXmlHandler {
             //stay with default export mode
         }
 
+        String siteForConstructor;
+        boolean isImportSite;
+
+        if (importSite != null) {
+            siteForConstructor = importSite;
+            isImportSite = true;
+        } else {
+            siteForConstructor = site;
+            isImportSite = false;
+        }
+
         // now create the module
         m_module = new CmsModule(
             moduleName,
@@ -681,7 +699,8 @@ public class CmsModuleXmlHandler {
             group,
             actionClass,
             importScript,
-            importSite,
+            siteForConstructor,
+            isImportSite,
             exportMode,
             description,
             moduleVersion,

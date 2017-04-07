@@ -40,14 +40,17 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -57,6 +60,32 @@ import com.vaadin.ui.CustomComponent;
  * Dialog with a site selector and file tree which can be used to select resources.<p>
  */
 public class CmsResourceSelectDialog extends CustomComponent {
+
+    public static class Options {
+
+        private IndexedContainer m_siteSelectionContainer;
+
+        /**
+         * Returns the siteSelectionContainer.<p>
+         *
+         * @return the siteSelectionContainer
+         */
+        public IndexedContainer getSiteSelectionContainer() {
+
+            return m_siteSelectionContainer;
+        }
+
+        /**
+         * Sets the siteSelectionContainer.<p>
+         *
+         * @param siteSelectionContainer the siteSelectionContainer to set
+         */
+        public void setSiteSelectionContainer(IndexedContainer siteSelectionContainer) {
+
+            m_siteSelectionContainer = siteSelectionContainer;
+        }
+
+    }
 
     /**
      * Converts resource selection to path (string) selection - either as root paths or site paths.<p>
@@ -152,11 +181,26 @@ public class CmsResourceSelectDialog extends CustomComponent {
      */
     public CmsResourceSelectDialog(CmsResourceFilter filter, CmsObject cms)
     throws CmsException {
+        this(filter, cms, new Options());
+    }
+
+    public CmsResourceSelectDialog(CmsResourceFilter filter, CmsObject cms, Options options)
+    throws CmsException {
         m_filter = filter;
         setCompositionRoot(new CmsResourceSelectDialogContents());
-        getSiteSelector().setContainerDataSource(CmsVaadinUtils.getAvailableSitesContainer(cms, PROPERTY_SITE_CAPTION));
+        IndexedContainer container = options.getSiteSelectionContainer() != null
+        ? options.getSiteSelectionContainer()
+        : CmsVaadinUtils.getAvailableSitesContainer(cms, PROPERTY_SITE_CAPTION);
+        getSiteSelector().setContainerDataSource(container);
+
+        if (!cms.existsResource("/", CmsResourceFilter.IGNORE_EXPIRATION)) {
+            cms = OpenCms.initCmsObject(cms);
+            cms.getRequestContext().setSiteRoot("/system/");
+        }
         m_siteRoot = cms.getRequestContext().getSiteRoot();
-        getSiteSelector().setValue(m_siteRoot);
+
+        getSiteSelector().setValue(
+            CmsVaadinUtils.getPathItemId(getSiteSelector().getContainerDataSource(), m_siteRoot));
         getSiteSelector().setNullSelectionAllowed(false);
         getSiteSelector().setItemCaptionPropertyId(PROPERTY_SITE_CAPTION);
         getSiteSelector().setFilteringMode(FilteringMode.CONTAINS);
@@ -208,7 +252,21 @@ public class CmsResourceSelectDialog extends CustomComponent {
             } else if (OpenCms.getSiteManager().startsWithShared(path)) {
                 getSiteSelector().setValue(OpenCms.getSiteManager().getSharedFolder());
             } else if (path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-                getSiteSelector().setValue("");
+                Container container = getSiteSelector().getContainerDataSource();
+                String newSiteRoot = null;
+                for (String possibleSiteRoot : Arrays.asList("", "/", "/system", "/system/")) {
+                    if (container.containsId(possibleSiteRoot)) {
+                        newSiteRoot = possibleSiteRoot;
+                        break;
+                    }
+                }
+                if (newSiteRoot == null) {
+                    LOG.warn(
+                        "Couldn't open path in site selector because neither root site nor system folder are in the site selector. path="
+                            + path);
+                    return;
+                }
+                getSiteSelector().setValue(newSiteRoot);
             }
         }
         if (!"/".equals(path)) {
@@ -236,7 +294,6 @@ public class CmsResourceSelectDialog extends CustomComponent {
                         m_fileTree.expandItem(id);
                     }
                 }
-
             } catch (CmsException e) {
                 LOG.debug("Can not read parent folder of current path.", e);
             }

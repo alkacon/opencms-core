@@ -44,6 +44,8 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.BeanUtil;
 import com.vaadin.ui.Button;
@@ -196,16 +198,22 @@ public class CmsBeanTableBuilder<T> {
 
     }
 
+    public Table buildTable(List<T> beans) {
+
+        Table table = new Table();
+        buildTable(table, beans);
+        return table;
+    }
+
     /**
      * Builds a table and uses the given beans to fill its rows.<p>
      *
      * @param beans the beans to display in the table
      * @return the finished table
      */
-    public Table buildTable(List<T> beans) {
+    public void buildTable(Table table, List<T> beans) {
 
         BeanItemContainer<T> container = new BeanItemContainer<T>(m_class);
-        Table table = new Table();
         List<String> visibleCols = Lists.newArrayList();
         for (ColumnBean column : m_columns) {
             String propName = column.getProperty().getName();
@@ -237,7 +245,40 @@ public class CmsBeanTableBuilder<T> {
         for (T bean : beans) {
             container.addBean(bean);
         }
-        return table;
+    }
+
+    public Filter getDefaultFilter(final String filterString) {
+
+        return new Filter() {
+
+            public boolean appliesToProperty(Object propertyId) {
+
+                for (ColumnBean col : m_columns) {
+                    if (col.getProperty().getName().equals(propertyId) && col.getInfo().filterable()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+
+                if (CmsStringUtil.isEmpty(filterString)) {
+                    return true;
+                }
+                T bean = (T)itemId;
+                for (ColumnBean col : m_columns) {
+                    if (col.getInfo().filterable()) {
+                        if (("" + item.getItemProperty(col.getProperty().getName()).getValue()).toLowerCase().contains(
+                            filterString)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        };
+
     }
 
     /**

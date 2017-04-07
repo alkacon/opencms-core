@@ -1082,6 +1082,7 @@
 		}
 	}
 
+
 	.o-report-show .o-report-overlay{
 		.oc-spin-center{
 			display: none;
@@ -1152,4 +1153,8 @@
 		padding:4px;
 	}
 
+  .o-module-complex-row .o-formrow-remove-button { 
+	margin-top: 8px; 
+  }
+	
 }

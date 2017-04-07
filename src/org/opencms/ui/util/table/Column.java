@@ -43,6 +43,8 @@ public @interface Column {
      */
     float expandRatio() default -1.0f;
 
+    boolean filterable() default true;
+
     /**
      * The message key for the column header (if no given message is found, will be used as a literal header).<p>
      *

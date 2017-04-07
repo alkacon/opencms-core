@@ -311,7 +311,8 @@ public class CmsDbSynchronizationView extends VerticalLayout {
         for (Component c : m_resources) {
             if (c instanceof CmsRemovableFormRow<?>) {
                 count++;
-                String value = (String)((CmsRemovableFormRow<?>)c).getInput().getValue();
+                AbstractField<?> field = (AbstractField<?>)((CmsRemovableFormRow)c).getInput();
+                String value = (String)(field.getValue());
                 if (value.isEmpty()) {
                     componentsToRemove.add(c);
                     lastElement = c;
@@ -384,7 +385,8 @@ public class CmsDbSynchronizationView extends VerticalLayout {
         List<String> res = new ArrayList<String>();
         for (Component c : m_resources) {
             if (c instanceof CmsRemovableFormRow<?>) {
-                res.add((String)((CmsRemovableFormRow<?>)c).getInput().getValue());
+                AbstractField<?> field = (AbstractField<?>)(((CmsRemovableFormRow)c).getInput());
+                res.add((String)(field.getValue()));
             }
         }
         return res;

@@ -65,6 +65,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.navigator.ViewProvider;
+import com.vaadin.server.Extension;
 import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
@@ -173,6 +174,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         if ((m_currentView != null) && (m_currentView instanceof ViewChangeListener)) {
             ((ViewChangeListener)m_currentView).afterViewChange(event);
         }
+        cacheView(event.getNewView());
     }
 
     /**
@@ -347,6 +349,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      * @see com.vaadin.navigator.ViewProvider#getView(java.lang.String)
      */
     public View getView(String viewName) {
+
+        System.out.println("getView " + viewName);
+        System.out.println(m_cachedViews);
 
         if (m_cachedViews.containsKey(viewName)) {
             View view = m_cachedViews.get(viewName);
@@ -535,9 +540,16 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     private void cacheView(View view) {
 
+        System.out.println("cacheView called for non-app-view " + view);
+
         if (!m_refreshing && (view instanceof I_CmsAppView) && ((I_CmsAppView)view).isCachable()) {
             m_cachedViews.put(((I_CmsAppView)view).getName(), (I_CmsAppView)view);
+            System.out.println("cacheView ok");
+        } else {
+            System.out.println("cacheView xx");
         }
+        System.out.println(m_cachedViews);
+
     }
 
     /**
@@ -572,6 +584,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     private void initializeClientPolling(Component component) {
 
         if (component instanceof AbstractComponent) {
+            AbstractComponent acomp = (AbstractComponent)component;
+            for (Extension extension : acomp.getExtensions()) {
+                if (extension instanceof CmsPollServerExtension) {
+                    return;
+                }
+            }
             new CmsPollServerExtension((AbstractComponent)component);
         }
     }

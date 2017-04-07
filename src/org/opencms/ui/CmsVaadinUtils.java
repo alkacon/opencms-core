@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -67,6 +68,7 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -81,10 +83,12 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.SingleComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.declarative.Design;
@@ -433,6 +437,16 @@ public final class CmsVaadinUtils {
         return getWpMessagesForCurrentLocale().key(key, args);
     }
 
+    public static String getPathItemId(Container cnt, String path) {
+
+        for (String id : Arrays.asList(path, CmsFileUtil.toggleTrailingSeparator(path))) {
+            if (cnt.containsId(id)) {
+                return id;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns the selectable projects container.<p>
      *
@@ -559,6 +573,11 @@ public final class CmsVaadinUtils {
         return OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
     }
 
+    public static boolean hasPathAsItemId(Container cnt, String path) {
+
+        return cnt.containsId(path) || cnt.containsId(CmsFileUtil.toggleTrailingSeparator(path));
+    }
+
     /**
      * Uses the currently set locale to resolve localization macros in the input string using workplace message bundles.<p>
      *
@@ -676,6 +695,21 @@ public final class CmsVaadinUtils {
             layoutClass.getResourceAsStream(relativeName),
             resolver.toFunction());
         return layoutStream;
+    }
+
+    public static void replaceComponent(Component component, Component replacement) {
+
+        if (!component.isAttached()) {
+            throw new IllegalArgumentException("Component must be attached");
+        }
+        HasComponents parent = component.getParent();
+        if (parent instanceof ComponentContainer) {
+            ((ComponentContainer)parent).replaceComponent(component, replacement);
+        } else if (parent instanceof SingleComponentContainer) {
+            ((SingleComponentContainer)parent).setContent(replacement);
+        } else {
+            throw new IllegalArgumentException("Illegal class for parent: " + parent.getClass());
+        }
     }
 
     /**

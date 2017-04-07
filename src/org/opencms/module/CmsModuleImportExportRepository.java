@@ -315,8 +315,8 @@ public class CmsModuleImportExportRepository {
         }
 
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(module.getImportSite())) {
-            cms.getRequestContext().setSiteRoot(module.getImportSite());
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(module.getSite())) {
+            cms.getRequestContext().setSiteRoot(module.getSite());
         }
         cms.getRequestContext().setCurrentProject(project);
 

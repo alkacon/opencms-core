@@ -24,7 +24,7 @@
 	group?, 
 	class?, 
 	import-script?,
-	import-site?,
+	(site|import-site)?,
 	export-mode?,
 	description?,
 	version,
@@ -78,6 +78,8 @@
 # for modules which don't keep all their files under /system/ (e.g. content modules). 
 -->
 <!ELEMENT import-site (#PCDATA)>
+
+<!ELEMENT site (#PCDATA)>
 
 <!--
 # The optional export mode.

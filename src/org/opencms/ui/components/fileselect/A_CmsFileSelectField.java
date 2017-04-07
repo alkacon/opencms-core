@@ -38,6 +38,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.components.fileselect.CmsResourceSelectDialog.Options;
 
 import org.apache.commons.logging.Log;
 
@@ -127,6 +128,12 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
         m_startWithSitemapView = startWithSitemapView;
     }
 
+    protected Options getOptions() {
+
+        Options options = new Options();
+        return options;
+    }
+
     /**
      * @see com.vaadin.ui.CustomField#initContent()
      */
@@ -174,9 +181,9 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
 
             //Switch if cms object was set.
             if (m_cms == null) {
-                fileSelect = new CmsResourceSelectDialog(m_filter);
+                fileSelect = new CmsResourceSelectDialog(m_filter, A_CmsUI.getCmsObject(), getOptions());
             } else {
-                fileSelect = new CmsResourceSelectDialog(m_filter, m_cms);
+                fileSelect = new CmsResourceSelectDialog(m_filter, m_cms, getOptions());
             }
             fileSelect.showSitemapView(m_startWithSitemapView);
 

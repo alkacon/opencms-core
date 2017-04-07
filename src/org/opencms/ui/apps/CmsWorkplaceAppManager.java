@@ -66,6 +66,7 @@ import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
 import org.opencms.ui.apps.logfile.CmsLogFileConfiguration;
 import org.opencms.ui.apps.logfile.CmsLogFileFolder;
 import org.opencms.ui.apps.logfile.CmsLogFileSettingConfiguration;
+import org.opencms.ui.apps.modules.CmsModuleAppConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectOverviewConfiguration;
 import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
@@ -210,7 +211,7 @@ public class CmsWorkplaceAppManager {
     protected static Log LOG = CmsLog.getLog(CmsWorkplaceAppManager.class.getName());
 
     /** The default quick launch apps, these can be overridden by the user. */
-    private static final String[] DEFAULT_USER_APPS = new String[] {"/accounts", "/modules"};
+    private static final String[] DEFAULT_USER_APPS = new String[] {"/accounts", "modules"};
 
     /** The available editors. */
     private static final I_CmsEditor[] EDITORS = new I_CmsEditor[] {
@@ -234,8 +235,9 @@ public class CmsWorkplaceAppManager {
             "/publishqueue",
             "/database",
             "/linkvalidation",
-            "/searchindex",
-            "/workplace"));
+            "/workplace",
+            "/modules",
+            "/searchindex"));
 
     /** The additional info key for the user quick launch apps. */
     private static final String QUICK_LAUCH_APPS_KEY = "quick_launch_apps";
@@ -752,7 +754,8 @@ public class CmsWorkplaceAppManager {
                 new CmsSiteManagerConfiguration(),
                 new CmsPublishQueueConfiguration(),
                 new CmsGitAppConfiguration(),
-                new CmsBroadCastConfigurtion()));
+                new CmsBroadCastConfigurtion(),
+                new CmsModuleAppConfiguration()));
 
         return result;
     }

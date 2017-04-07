@@ -29,10 +29,10 @@ package org.opencms.ui.components;
 
 import org.opencms.ui.FontOpenCms;
 
-import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
@@ -42,10 +42,13 @@ import com.vaadin.ui.HorizontalLayout;
  *
  * @param <T> the filed type
  */
-public class CmsRemovableFormRow<T extends AbstractField<?>> extends HorizontalLayout {
+public class CmsRemovableFormRow<T extends Component> extends HorizontalLayout {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** Style name for the remove button. */
+    public static final String REMOVE_BUTTON_STYLE = "o-formrow-remove-button";
 
     /** The text input field. */
     private T m_input;
@@ -67,6 +70,7 @@ public class CmsRemovableFormRow<T extends AbstractField<?>> extends HorizontalL
         setExpandRatio(input, 1f);
         Button deleteButton = new Button("");
         deleteButton.setIcon(FontOpenCms.CUT_SMALL);
+        deleteButton.addStyleName(REMOVE_BUTTON_STYLE);
         deleteButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
         deleteButton.setDescription(removeLabel);
         deleteButton.addClickListener(new ClickListener() {

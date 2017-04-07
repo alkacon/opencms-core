@@ -237,7 +237,7 @@ public class CmsFlexBucketConfiguration {
     }
 
     /**
-     * Freetze
+     * Freeze the bucket configuration, i.e. make it non-modifiable.<p>
      */
     public void freeze() {
 

@@ -187,6 +187,11 @@ public class CmsSiteSelectorOptionBuilder {
         }
     }
 
+    public void addSystemFolder() {
+
+        addOption(Type.site, "/system/", "/system/");
+    }
+
     /**
      * Gets the site selector options.<p>
      *

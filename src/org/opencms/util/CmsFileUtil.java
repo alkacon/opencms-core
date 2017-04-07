@@ -922,6 +922,15 @@ public final class CmsFileUtil {
         return webInfFolder;
     }
 
+    public static String toggleTrailingSeparator(String path) {
+
+        if (path.endsWith("/")) {
+            return path.substring(0, path.length() - 1);
+        } else {
+            return path + "/";
+        }
+    }
+
     /**
      * Traverses the file system starting from a base folder and executes a callback for every directory found.<p>
      *

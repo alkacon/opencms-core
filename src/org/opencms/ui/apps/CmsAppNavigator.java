@@ -53,6 +53,13 @@ public class CmsAppNavigator extends Navigator {
         super(ui, stateManager, display);
     }
 
+    @Override
+    public void navigateTo(String navigationState) {
+
+        System.out.println("Navigating to " + navigationState);
+        super.navigateTo(navigationState);
+    }
+
     /**
      * @see com.vaadin.navigator.Navigator#navigateTo(com.vaadin.navigator.View, java.lang.String, java.lang.String)
      */

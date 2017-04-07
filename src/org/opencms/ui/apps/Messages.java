@@ -37,184 +37,126 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
     public static final String ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2 = "ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPLORER_CAN_NOT_OPEN_PATH_1 = "ERR_EXPLORER_CAN_NOT_OPEN_PATH_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1 = "ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1";
-
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MODULEMANAGER_ACTION_MODULE_DEPENDENCY_2 = "ERR_MODULEMANAGER_ACTION_MODULE_DEPENDENCY_2";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0 = "ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_0 = "GUI_CACHE_CLEAN_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_CONFIRM_0 = "GUI_CACHE_CLEAN_CONFIRM_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_HELP_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_MODE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_HELP_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_ONLINE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_HELP_0 = "GUI_CACHE_CLEAN_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_GROUP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEX_0 = "GUI_CACHE_FLEX_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_GROUP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_MODE_ALL_0 = "GUI_CACHE_FLEXCACHE_CLEAN_MODE_ALL_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_MODE_VARIATIONS_0 = "GUI_CACHE_FLEXCACHE_CLEAN_MODE_VARIATIONS_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_HELP_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_CURSIZE_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_CURSIZE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_CURSIZE_HELP_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_CURSIZE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_MAXSIZE_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_MAXSIZE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_MAXSIZE_HELP_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_MAXSIZE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_STATS_BLOCK_0 = "GUI_CACHE_FLEXCACHE_LABEL_STATS_BLOCK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_0 = "GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_HELP_0 = "GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0 = "GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0 = "GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LIST_COLS_KEY_0 = "GUI_CACHE_FLEXCACHE_LIST_COLS_KEY_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LIST_COLS_PROJECT_0 = "GUI_CACHE_FLEXCACHE_LIST_COLS_PROJECT_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LIST_COLS_RESOURCE_0 = "GUI_CACHE_FLEXCACHE_LIST_COLS_RESOURCE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LIST_COLS_VARCOUNT_0 = "GUI_CACHE_FLEXCACHE_LIST_COLS_VARCOUNT_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_0 = "GUI_CACHE_IMAGE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_CLEAR_TIME_0 = "GUI_CACHE_IMAGE_CLEAR_TIME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0 = "GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_GROUP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0 = "GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_SIZE_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_SIZE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_0 = "GUI_CACHE_JAVA_HEAP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_FREE_0 = "GUI_CACHE_JAVA_HEAP_FREE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_FREE_HELP_0 = "GUI_CACHE_JAVA_HEAP_FREE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_MAX_0 = "GUI_CACHE_JAVA_HEAP_MAX_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_MAX_HELP_0 = "GUI_CACHE_JAVA_HEAP_MAX_HELP_0";
 
@@ -1204,6 +1146,306 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_USER_IS_0 = "GUI_MESSAGES_USER_IS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_ADD_DEPENDENCY_0 = "GUI_MODULES_ADD_DEPENDENCY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_ADD_EXPORT_POINT_0 = "GUI_MODULES_ADD_EXPORT_POINT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_ADD_RESOURCE_0 = "GUI_MODULES_ADD_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_APP_NAME_0 = "GUI_MODULES_APP_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_BUTTON_IMPORT_FROM_SERVER_0 = "GUI_MODULES_BUTTON_IMPORT_FROM_SERVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_BUTTON_IMPORT_HTTP_0 = "GUI_MODULES_BUTTON_IMPORT_HTTP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_BUTTON_NEW_MODULE_0 = "GUI_MODULES_BUTTON_NEW_MODULE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_CONFIRM_DELETE_TITLE_1 = "GUI_MODULES_CONFIRM_DELETE_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_CONTEXTMENU_DELETE_0 = "GUI_MODULES_CONTEXTMENU_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_CONTEXTMENU_EDIT_0 = "GUI_MODULES_CONTEXTMENU_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_CONTEXTMENU_EXPORT_0 = "GUI_MODULES_CONTEXTMENU_EXPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_CONTEXTMENU_LIST_TYPES_0 = "GUI_MODULES_CONTEXTMENU_LIST_TYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_DELETE_CONFIRMATION_0 = "GUI_MODULES_DELETE_CONFIRMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_EXCLUDED_RESOURCES_0 = "GUI_MODULES_EXCLUDED_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HEADER_GROUP_0 = "GUI_MODULES_HEADER_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HEADER_NAME_0 = "GUI_MODULES_HEADER_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HEADER_TITLE_0 = "GUI_MODULES_HEADER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HEADER_TYPES_0 = "GUI_MODULES_HEADER_TYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HEADER_VERSION_0 = "GUI_MODULES_HEADER_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_ACTIONCLASS_0 = "GUI_MODULES_HELP_ACTIONCLASS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_AUTHOREMAIL_0 = "GUI_MODULES_HELP_AUTHOREMAIL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_AUTHORNAME_0 = "GUI_MODULES_HELP_AUTHORNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_CLASSES_FOLDER_0 = "GUI_MODULES_HELP_CREATE_CLASSES_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_ELEMENTS_0 = "GUI_MODULES_HELP_CREATE_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_FORMATTER_FOLDER_0 = "GUI_MODULES_HELP_CREATE_FORMATTER_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_LIB_FOLDER_0 = "GUI_MODULES_HELP_CREATE_LIB_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_MODULE_FOLDER_0 = "GUI_MODULES_HELP_CREATE_MODULE_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_RESOURCES_FOLDER_0 = "GUI_MODULES_HELP_CREATE_RESOURCES_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_SCHEMAS_FOLDER_0 = "GUI_MODULES_HELP_CREATE_SCHEMAS_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_TEMPLATES_FOLDER_0 = "GUI_MODULES_HELP_CREATE_TEMPLATES_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_DESCRIPTION_0 = "GUI_MODULES_HELP_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_FIXED_IMPORT_SITE_0 = "GUI_MODULES_HELP_FIXED_IMPORT_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_GROUP_0 = "GUI_MODULES_HELP_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_IMPORT_SCRIPT_0 = "GUI_MODULES_HELP_IMPORT_SCRIPT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_NAME_0 = "GUI_MODULES_HELP_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_NICENAME_0 = "GUI_MODULES_HELP_NICENAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_REDUCED_EXPORT_MODE_0 = "GUI_MODULES_HELP_REDUCED_EXPORT_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_SITE_0 = "GUI_MODULES_HELP_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_VERSION_0 = "GUI_MODULES_HELP_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_IMPORT_TITLE_0 = "GUI_MODULES_IMPORT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_INCLUDED_RESOURCES_0 = "GUI_MODULES_INCLUDED_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_INVALID_MODULE_NAME_0 = "GUI_MODULES_INVALID_MODULE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_INVALID_MODULE_VERSION_0 = "GUI_MODULES_INVALID_MODULE_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_ACTIONCLASS_0 = "GUI_MODULES_LABEL_ACTIONCLASS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_AUTHOREMAIL_0 = "GUI_MODULES_LABEL_AUTHOREMAIL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_AUTHORNAME_0 = "GUI_MODULES_LABEL_AUTHORNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_CLASSES_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_CLASSES_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_ELEMENTS_0 = "GUI_MODULES_LABEL_CREATE_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_FORMATTER_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_FORMATTER_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_LIB_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_LIB_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_MODULE_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_MODULE_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_RESOURCES_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_RESOURCES_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_SCHEMAS_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_SCHEMAS_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_TEMPLATES_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_TEMPLATES_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_DESCRIPTION_0 = "GUI_MODULES_LABEL_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_EXCLUDED_RESOURCE_0 = "GUI_MODULES_LABEL_EXCLUDED_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_FIXED_IMPORT_SITE_0 = "GUI_MODULES_LABEL_FIXED_IMPORT_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_GROUP_0 = "GUI_MODULES_LABEL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_IMPORT_SCRIPT_0 = "GUI_MODULES_LABEL_IMPORT_SCRIPT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_MODULE_RESOURCE_0 = "GUI_MODULES_LABEL_MODULE_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_NAME_0 = "GUI_MODULES_LABEL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_NICENAME_0 = "GUI_MODULES_LABEL_NICENAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_PARAMETER_0 = "GUI_MODULES_LABEL_PARAMETER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_REDUCED_EXPORT_MODE_0 = "GUI_MODULES_LABEL_REDUCED_EXPORT_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_SELECT_IMPORT_MODULE_0 = "GUI_MODULES_LABEL_SELECT_IMPORT_MODULE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_SITE_0 = "GUI_MODULES_LABEL_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_TARGET_SITE_0 = "GUI_MODULES_LABEL_TARGET_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_VERSION_0 = "GUI_MODULES_LABEL_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_MODULE_ALREADY_EXISTS_0 = "GUI_MODULES_MODULE_ALREADY_EXISTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_MODULE_RESOURCE_NOT_FOUND_0 = "GUI_MODULES_MODULE_RESOURCE_NOT_FOUND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_MODULE_SITE_1 = "GUI_MODULES_MODULE_SITE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_MODULE_SITE_NONE_0 = "GUI_MODULES_MODULE_SITE_NONE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_MODULE_SITE_NOT_SET_0 = "GUI_MODULES_MODULE_SITE_NOT_SET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_MODULE_SITE_ROOT_FOLDER_0 = "GUI_MODULES_MODULE_SITE_ROOT_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_MODULEVERSION_NAME_0 = "GUI_MODULES_MODULEVERSION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_MODULEVERSION_VERSION_0 = "GUI_MODULES_MODULEVERSION_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_NAV_DELETE_MODULE_0 = "GUI_MODULES_NAV_DELETE_MODULE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_NAV_EXPORT_MODULE_0 = "GUI_MODULES_NAV_EXPORT_MODULE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_NAV_IMPORT_HTTP_0 = "GUI_MODULES_NAV_IMPORT_HTTP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_NAV_IMPORT_SERVER_0 = "GUI_MODULES_NAV_IMPORT_SERVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_NAV_MAIN_0 = "GUI_MODULES_NAV_MAIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_NAV_REPORT_0 = "GUI_MODULES_NAV_REPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_NO_EXPLORER_TYPES_0 = "GUI_MODULES_NO_EXPLORER_TYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_NO_RESOURCE_TYPES_0 = "GUI_MODULES_NO_RESOURCE_TYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_ONLINE_DISABLED_0 = "GUI_MODULES_ONLINE_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_PARAMETER_DESC_0 = "GUI_MODULES_PARAMETER_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_POPUP_SELECT_SITE_0 = "GUI_MODULES_POPUP_SELECT_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_REPORT_DELETE_MODULE_1 = "GUI_MODULES_REPORT_DELETE_MODULE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_REPORT_EXPORT_1 = "GUI_MODULES_REPORT_EXPORT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_ROW_COUNT_1 = "GUI_MODULES_ROW_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TAB_BASIC_0 = "GUI_MODULES_TAB_BASIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TAB_DEPENDENCIES_0 = "GUI_MODULES_TAB_DEPENDENCIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TAB_EXPORT_POINTS_0 = "GUI_MODULES_TAB_EXPORT_POINTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TAB_PARAMETERS_0 = "GUI_MODULES_TAB_PARAMETERS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TAB_RESOURCES_0 = "GUI_MODULES_TAB_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TITLE_EDIT_MODULE_1 = "GUI_MODULES_TITLE_EDIT_MODULE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TITLE_NEW_MODULE_0 = "GUI_MODULES_TITLE_NEW_MODULE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TITLE_SITE_SELECT_0 = "GUI_MODULES_TITLE_SITE_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TYPES_FOR_MODULE_1 = "GUI_MODULES_TYPES_FOR_MODULE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_UPLOAD_IMPORT_MODULE_0 = "GUI_MODULES_UPLOAD_IMPORT_MODULE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_RESOURCE_TITLE_0 = "GUI_NEW_RESOURCE_TITLE_0";
