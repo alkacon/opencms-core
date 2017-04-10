@@ -2047,8 +2047,9 @@ public final class OpenCmsCore {
 
         // get the right site for the request
         String siteRoot = null;
-        if (cms.getRequestContext().getUri().startsWith("/system/workplace/")
-            && getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR)) {
+        boolean isWorkplace = cms.getRequestContext().getUri().startsWith("/system/workplace/")
+            || request.getRequestURI().startsWith(OpenCms.getSystemInfo().getWorkplaceContext());
+        if (isWorkplace && getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR)) {
             // keep the site root for workplace requests
             siteRoot = cms.getRequestContext().getSiteRoot();
         } else {
