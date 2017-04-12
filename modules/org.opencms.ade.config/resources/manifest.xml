@@ -456,7 +456,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
-					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="seo_file" key="fileicon.seo_file" reference="xmlcontent">
