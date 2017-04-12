@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.threads;
+package org.opencms.ui.apps.linkvalidation;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
@@ -55,16 +55,21 @@ public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
     /** reference to the HtmlImport. */
     private CmsExternalLinksValidator m_externLinkValidator;
 
+    /**Runnable called when thread finished.*/
+    private Runnable m_fin;
+
     /**
      * Constructor, creates a new CmsExternLinkValidationThread.<p>
      *
      * @param cms the current CmsObject
+     * @param finRun runnable called after thread is finished
      */
-    public CmsExternalLinksValidatorThread(CmsObject cms) {
+    public CmsExternalLinksValidatorThread(CmsObject cms, Runnable finRun) {
 
         super(cms, Messages.get().getBundle().key(Messages.GUI_POINTER_VALIDATION_THREAD_NAME_0));
         initHtmlReport(cms.getRequestContext().getLocale());
         m_cms = cms;
+        m_fin = finRun;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_externLinkValidator = new CmsExternalLinksValidator();
         m_externLinkValidator.setReport(getReport());
@@ -93,6 +98,9 @@ public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage());
             }
+        }
+        if (m_fin != null) {
+            m_fin.run();
         }
     }
 }

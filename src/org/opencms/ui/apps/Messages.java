@@ -390,6 +390,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LINKVALIDATION_ADMIN_TOOL_NAME_HELP_0 = "GUI_LINKVALIDATION_ADMIN_TOOL_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_ADMIN_TOOL_NAME_SHORT_0 = "GUI_LINKVALIDATION_ADMIN_TOOL_NAME_SHORT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0 = "GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -406,6 +409,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_HELP_0 = "GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_SHORT_0 = "GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_SHORT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINKVALIDATION_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0 = "GUI_LINKVALIDATION_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0";

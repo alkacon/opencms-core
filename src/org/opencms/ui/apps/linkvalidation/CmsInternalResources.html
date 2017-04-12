@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<v-vertical-layout :center margin spacing  style-name="o-workplace-maxwidth" >
+		<v-label>%(key.GUI_LINKVALIDATION_LINKS_RESOURCES_0)</v-label>
+		<v-button _id="m_addResource" style-name="o-button-plain">%(key.GUI_LINKVALIDATION_LINKS_ADDRESOURCES_0)</v-button>
+		<v-vertical-layout _id="m_resources">
+		</v-vertical-layout>
+		<v-horizontal-layout :right margin spacing style-name="o-dialog-button-bar">
+			<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+		</v-horizontal-layout>
+	</v-vertical-layout>
+</body>
+</html>

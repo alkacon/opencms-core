@@ -663,6 +663,16 @@ public class CmsResourceTable extends CustomComponent {
     }
 
     /**
+     * Selects an given object in table.<p>
+     *
+     * @param o object to be selected.
+     */
+    public void setValue(Object o) {
+
+        m_fileTable.setValue(o);
+    }
+
+    /**
      * Fills the file item data.<p>
      *
      * @param cms the cms context

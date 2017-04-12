@@ -313,6 +313,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         /** Project id. */
         private String m_projectId;
 
+        /**selected resource.*/
+        private String m_selectedResource;
+
         /** The site root. */
         private String m_siteRoot;
 
@@ -345,7 +348,11 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 String projectId = fields.get(0);
                 String siteRoot = fields.get(1);
                 String folder = fields.get(2);
-                return new StateBean(siteRoot, folder, projectId);
+                StateBean ret = new StateBean(siteRoot, folder, projectId);
+                if (fields.size() == 4) {
+                    ret.setSelectedResource(fields.get(3));
+                }
+                return ret;
             } else {
                 return new StateBean(null, null, null);
             }
@@ -383,6 +390,16 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         }
 
         /**
+         * Returns the resource to select, empty if no one was set.<p>
+         *
+         * @return UUID as string
+         */
+        public String getSelectedResource() {
+
+            return m_selectedResource == null ? "" : m_selectedResource;
+        }
+
+        /**
          * Returns the siteRoot.<p>
          *
          * @return the siteRoot
@@ -390,6 +407,16 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         public String getSiteRoot() {
 
             return m_siteRoot;
+        }
+
+        /**
+         * Sets a resource to be selected.<p>
+         *
+         * @param resource to get selected
+         */
+        public void setSelectedResource(String resource) {
+
+            m_selectedResource = resource;
         }
     }
 
@@ -981,9 +1008,17 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 }
                 changeSite(siteRoot, path, true);
             } else if ((siteRoot != null) && !siteRoot.equals(cms.getRequestContext().getSiteRoot())) {
+                String saveState = m_currentState;
                 changeSite(siteRoot, path);
+                if (!getSelectionFromState(saveState).isEmpty()) {
+                    m_fileTable.setValue(Collections.singleton(new CmsUUID(getSelectionFromState(saveState))));
+                }
             } else {
+                String saveState = m_currentState;
                 openPath(path, true);
+                if (!getSelectionFromState(saveState).isEmpty()) {
+                    m_fileTable.setValue(Collections.singleton(new CmsUUID(getSelectionFromState(saveState))));
+                }
             }
         }
     }
@@ -1687,6 +1722,17 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         }
         return null;
 
+    }
+
+    /**
+     * Returns selected resource UUID from state (empty if not set).<p>
+     *
+     * @param state current state
+     * @return uuid as string
+     */
+    private String getSelectionFromState(String state) {
+
+        return StateBean.parse(state).getSelectedResource();
     }
 
     /**

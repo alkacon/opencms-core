@@ -29,9 +29,9 @@ package org.opencms.workplace.tools.link;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.report.I_CmsReportThread;
+import org.opencms.ui.apps.linkvalidation.CmsExternalLinksValidatorThread;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.list.A_CmsListReport;
-import org.opencms.workplace.threads.CmsExternalLinksValidatorThread;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.HashMap;
@@ -94,7 +94,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
             default:
-                CmsExternalLinksValidatorThread thread = new CmsExternalLinksValidatorThread(getCms());
+                CmsExternalLinksValidatorThread thread = new CmsExternalLinksValidatorThread(getCms(), null);
                 thread.start();
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
@@ -112,7 +112,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
     @Override
     public I_CmsReportThread initializeThread() {
 
-        return new CmsExternalLinksValidatorThread(getCms());
+        return new CmsExternalLinksValidatorThread(getCms(), null);
     }
 
     /**
