@@ -531,25 +531,32 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
      */
     protected void updateContentSize() {
 
+        // The scrolling should be done by the CmsScrollPanel and not by the text area,
+        // so we try to make the text area itself as big as its content here.
+
         int offsetHeight = m_textArea.getOffsetHeight();
-        // sanity check: don't do anything, if the measured height doesn't make any sense
+        int origRows = m_textArea.getVisibleLines();
+        // sanity check: don't do anything, if the measured height doesn't make any sense, e.g. if element is not attached
         if (offsetHeight > 5) {
-            int visibleRows = m_textArea.getVisibleLines();
-            double lineHeight = (1.00 * offsetHeight) / visibleRows;
-            // store the current scroll position
-            int scrollPosition = m_textAreaContainer.getVerticalScrollPosition()
-                + m_textArea.getElement().getScrollTop();
-            if (visibleRows != m_defaultRows) {
-                m_textArea.setVisibleLines(Math.max(1, m_defaultRows));
-            }
-            int rows = (int)Math.ceil(m_textArea.getElement().getScrollHeight() / lineHeight) + 1;
-            if (rows < m_defaultRows) {
-                rows = m_defaultRows;
-            }
-            m_textArea.setVisibleLines(rows);
-            // restore the scroll position
+            int scrollPosition = m_textAreaContainer.getVerticalScrollPosition();
+            Element textareaElem = m_textArea.getElement();
+            int rows = Math.max(0, m_defaultRows - 1); // we add 1 to it later, and the sum should be at least 1 and at least the default row number
+            int scrollHeight;
+            int prevOffsetHeight = -1;
+            do {
+                rows += 1;
+                m_textArea.setVisibleLines(rows);
+                scrollHeight = textareaElem.getScrollHeight();
+                offsetHeight = textareaElem.getOffsetHeight();
+                if (offsetHeight <= prevOffsetHeight) {
+                    // Increasing the number of rows should normally increase the offset height.
+                    // If it doesn't, e.g. because of CSS rules limiting the text area height, there is no point in continuing with the loop
+                    break;
+                }
+                prevOffsetHeight = offsetHeight;
+            } while (offsetHeight < scrollHeight);
             m_textAreaContainer.setVerticalScrollPosition(scrollPosition);
-            if (visibleRows != rows) {
+            if (origRows != rows) {
                 m_textAreaContainer.onResizeDescendant();
             }
         }
