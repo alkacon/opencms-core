@@ -313,8 +313,8 @@ public class CmsFlexCacheKey {
             paths.add(pathBean.getElement());
         }
 
-        if (m_uri != null) {
-            paths.add(pathBean.getUri());
+        if (m_site != null) {
+            paths.add(pathBean.getSite());
         }
 
         if (m_containerElement != null) {
