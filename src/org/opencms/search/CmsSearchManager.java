@@ -88,6 +88,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
@@ -622,6 +623,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
     }
+
+    /** This needs to be a fair lock to preserve order of threads accessing the search manager. */
+    private static final ReentrantLock SEARCH_MANAGER_LOCK = new ReentrantLock(true);
 
     /** The default value used for generating search result excerpts (1024 chars). */
     public static final int DEFAULT_EXCERPT_LENGTH = 1024;
@@ -1638,28 +1642,36 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      */
-    public synchronized void rebuildAllIndexes(I_CmsReport report) throws CmsException {
+    public void rebuildAllIndexes(I_CmsReport report) throws CmsException {
 
-        CmsMessageContainer container = null;
-        for (int i = 0, n = m_indexes.size(); i < n; i++) {
-            // iterate all configured search indexes
-            CmsSearchIndex searchIndex = m_indexes.get(i);
-            try {
-                // update the index
-                updateIndex(searchIndex, report, null);
-            } catch (CmsException e) {
-                container = new CmsMessageContainer(
-                    Messages.get(),
-                    Messages.ERR_INDEX_REBUILD_ALL_1,
-                    new Object[] {searchIndex.getName()});
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_REBUILD_ALL_1, searchIndex.getName()), e);
+        try {
+            SEARCH_MANAGER_LOCK.lock();
+
+            CmsMessageContainer container = null;
+            for (int i = 0, n = m_indexes.size(); i < n; i++) {
+                // iterate all configured search indexes
+                CmsSearchIndex searchIndex = m_indexes.get(i);
+                try {
+                    // update the index
+                    updateIndex(searchIndex, report, null);
+                } catch (CmsException e) {
+                    container = new CmsMessageContainer(
+                        Messages.get(),
+                        Messages.ERR_INDEX_REBUILD_ALL_1,
+                        new Object[] {searchIndex.getName()});
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_INDEX_REBUILD_ALL_1, searchIndex.getName()),
+                        e);
+                }
             }
-        }
-        // clean up the extraction result cache
-        cleanExtractionCache();
-        if (container != null) {
-            // throw stored exception
-            throw new CmsSearchException(container);
+            // clean up the extraction result cache
+            cleanExtractionCache();
+            if (container != null) {
+                // throw stored exception
+                throw new CmsSearchException(container);
+            }
+        } finally {
+            SEARCH_MANAGER_LOCK.unlock();
         }
     }
 
@@ -1671,14 +1683,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      */
-    public synchronized void rebuildIndex(String indexName, I_CmsReport report) throws CmsException {
+    public void rebuildIndex(String indexName, I_CmsReport report) throws CmsException {
 
-        // get the search index by name
-        CmsSearchIndex index = getIndex(indexName);
-        // update the index
-        updateIndex(index, report, null);
-        // clean up the extraction result cache
-        cleanExtractionCache();
+        try {
+            SEARCH_MANAGER_LOCK.lock();
+            // get the search index by name
+            CmsSearchIndex index = getIndex(indexName);
+            // update the index
+            updateIndex(index, report, null);
+            // clean up the extraction result cache
+            cleanExtractionCache();
+        } finally {
+            SEARCH_MANAGER_LOCK.unlock();
+        }
     }
 
     /**
@@ -1689,24 +1706,29 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      */
-    public synchronized void rebuildIndexes(List<String> indexNames, I_CmsReport report) throws CmsException {
+    public void rebuildIndexes(List<String> indexNames, I_CmsReport report) throws CmsException {
 
-        Iterator<String> i = indexNames.iterator();
-        while (i.hasNext()) {
-            String indexName = i.next();
-            // get the search index by name
-            CmsSearchIndex index = getIndex(indexName);
-            if (index != null) {
-                // update the index
-                updateIndex(index, report, null);
-            } else {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexName));
+        try {
+            SEARCH_MANAGER_LOCK.lock();
+            Iterator<String> i = indexNames.iterator();
+            while (i.hasNext()) {
+                String indexName = i.next();
+                // get the search index by name
+                CmsSearchIndex index = getIndex(indexName);
+                if (index != null) {
+                    // update the index
+                    updateIndex(index, report, null);
+                } else {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexName));
+                    }
                 }
             }
+            // clean up the extraction result cache
+            cleanExtractionCache();
+        } finally {
+            SEARCH_MANAGER_LOCK.unlock();
         }
-        // clean up the extraction result cache
-        cleanExtractionCache();
     }
 
     /**
@@ -2590,10 +2612,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * @param publishHistoryId the history ID of the published project
      * @param report the report to write the output to
      */
-    protected synchronized void updateAllIndexes(CmsObject adminCms, CmsUUID publishHistoryId, I_CmsReport report) {
+    protected void updateAllIndexes(CmsObject adminCms, CmsUUID publishHistoryId, I_CmsReport report) {
 
         int oldPriority = Thread.currentThread().getPriority();
         try {
+            SEARCH_MANAGER_LOCK.lock();
             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
             List<CmsPublishedResource> publishedResources;
             try {
@@ -2688,6 +2711,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // clean up the extraction result cache
             cleanExtractionCache();
         } finally {
+            SEARCH_MANAGER_LOCK.unlock();
             Thread.currentThread().setPriority(oldPriority);
         }
     }
@@ -2705,156 +2729,159 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      */
-    protected synchronized void updateIndex(
-        CmsSearchIndex index,
-        I_CmsReport report,
-        List<CmsPublishedResource> resourcesToIndex)
+    protected void updateIndex(CmsSearchIndex index, I_CmsReport report, List<CmsPublishedResource> resourcesToIndex)
     throws CmsException {
 
-        // copy the stored admin context for the indexing
-        CmsObject cms = OpenCms.initCmsObject(m_adminCms);
-        // make sure a report is available
-        if (report == null) {
-            report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsSearchManager.class);
-        }
+        try {
+            SEARCH_MANAGER_LOCK.lock();
 
-        // check if the index has been configured correctly
-        if (!index.checkConfiguration(cms)) {
-            // the index is disabled
-            return;
-        }
-
-        // set site root and project for this index
-        cms.getRequestContext().setSiteRoot("/");
-        // switch to the index project
-        cms.getRequestContext().setCurrentProject(cms.readProject(index.getProject()));
-
-        if ((resourcesToIndex == null) || resourcesToIndex.isEmpty()) {
-            // rebuild the complete index
-
-            // create a new thread manager for the indexing threads
-            CmsIndexingThreadManager threadManager = getThreadManager();
-
-            boolean isOfflineIndex = false;
-            if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
-                // disable offline indexing while the complete index is rebuild
-                isOfflineIndex = true;
-                index.setRebuildMode(CmsSearchIndex.REBUILD_MODE_MANUAL);
-                // re-initialize the offline indexes, this will disable this offline index
-                initOfflineIndexes();
+            // copy the stored admin context for the indexing
+            CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+            // make sure a report is available
+            if (report == null) {
+                report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsSearchManager.class);
             }
 
-            I_CmsIndexWriter writer = null;
-            try {
-                // create a backup of the existing index
-                String backup = index.createIndexBackup();
-                if (backup != null) {
-                    index.indexSearcherOpen(backup);
-                }
+            // check if the index has been configured correctly
+            if (!index.checkConfiguration(cms)) {
+                // the index is disabled
+                return;
+            }
 
-                // create a new index writer
-                writer = index.getIndexWriter(report, true);
-                if (writer instanceof CmsSolrIndexWriter) {
-                    try {
-                        ((CmsSolrIndexWriter)writer).deleteAllDocuments();
-                    } catch (IOException e) {
-                        LOG.error(e.getMessage(), e);
-                    }
-                }
+            // set site root and project for this index
+            cms.getRequestContext().setSiteRoot("/");
+            // switch to the index project
+            cms.getRequestContext().setCurrentProject(cms.readProject(index.getProject()));
 
-                // output start information on the report
-                report.println(
-                    Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_BEGIN_1, index.getName()),
-                    I_CmsReport.FORMAT_HEADLINE);
+            if ((resourcesToIndex == null) || resourcesToIndex.isEmpty()) {
+                // rebuild the complete index
 
-                // iterate all configured index sources of this index
-                Iterator<CmsSearchIndexSource> sources = index.getSources().iterator();
-                while (sources.hasNext()) {
-                    // get the next index source
-                    CmsSearchIndexSource source = sources.next();
-                    // create the indexer
-                    I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
-                    // new index creation, use all resources from the index source
-                    indexer.rebuildIndex(writer, threadManager, source);
+                // create a new thread manager for the indexing threads
+                CmsIndexingThreadManager threadManager = getThreadManager();
 
-                    // wait for indexing threads to finish
-                    while (threadManager.isRunning()) {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            // just continue with the loop after interruption
-                            LOG.info(e.getLocalizedMessage(), e);
-                        }
-                    }
-
-                    // commit and optimize the index after each index source has been finished
-                    try {
-                        writer.commit();
-                    } catch (IOException e) {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(
-                                Messages.get().getBundle().key(
-                                    Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
-                                    index.getName(),
-                                    index.getPath()),
-                                e);
-                        }
-                    }
-                    try {
-                        writer.optimize();
-                    } catch (IOException e) {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(
-                                Messages.get().getBundle().key(
-                                    Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_2,
-                                    index.getName(),
-                                    index.getPath()),
-                                e);
-                        }
-                    }
-                }
-
-                if (backup != null) {
-                    // remove the backup after the files have been re-indexed
-                    index.indexSearcherClose();
-                    index.removeIndexBackup(backup);
-                }
-
-                // output finish information on the report
-                report.println(
-                    Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_END_1, index.getName()),
-                    I_CmsReport.FORMAT_HEADLINE);
-
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(
-                                Messages.get().getBundle().key(
-                                    Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
-                                    index.getPath(),
-                                    index.getName()),
-                                e);
-                        }
-                    }
-                }
-                if (isOfflineIndex) {
-                    // reset the mode of the offline index
-                    index.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
-                    // re-initialize the offline indexes, this will re-enable this index
+                boolean isOfflineIndex = false;
+                if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
+                    // disable offline indexing while the complete index is rebuild
+                    isOfflineIndex = true;
+                    index.setRebuildMode(CmsSearchIndex.REBUILD_MODE_MANUAL);
+                    // re-initialize the offline indexes, this will disable this offline index
                     initOfflineIndexes();
                 }
-                // index has changed - initialize the index searcher instance
-                index.indexSearcherOpen(index.getPath());
+
+                I_CmsIndexWriter writer = null;
+                try {
+                    // create a backup of the existing index
+                    String backup = index.createIndexBackup();
+                    if (backup != null) {
+                        index.indexSearcherOpen(backup);
+                    }
+
+                    // create a new index writer
+                    writer = index.getIndexWriter(report, true);
+                    if (writer instanceof CmsSolrIndexWriter) {
+                        try {
+                            ((CmsSolrIndexWriter)writer).deleteAllDocuments();
+                        } catch (IOException e) {
+                            LOG.error(e.getMessage(), e);
+                        }
+                    }
+
+                    // output start information on the report
+                    report.println(
+                        Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_BEGIN_1, index.getName()),
+                        I_CmsReport.FORMAT_HEADLINE);
+
+                    // iterate all configured index sources of this index
+                    Iterator<CmsSearchIndexSource> sources = index.getSources().iterator();
+                    while (sources.hasNext()) {
+                        // get the next index source
+                        CmsSearchIndexSource source = sources.next();
+                        // create the indexer
+                        I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
+                        // new index creation, use all resources from the index source
+                        indexer.rebuildIndex(writer, threadManager, source);
+
+                        // wait for indexing threads to finish
+                        while (threadManager.isRunning()) {
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                // just continue with the loop after interruption
+                                LOG.info(e.getLocalizedMessage(), e);
+                            }
+                        }
+
+                        // commit and optimize the index after each index source has been finished
+                        try {
+                            writer.commit();
+                        } catch (IOException e) {
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
+                                        index.getName(),
+                                        index.getPath()),
+                                    e);
+                            }
+                        }
+                        try {
+                            writer.optimize();
+                        } catch (IOException e) {
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_2,
+                                        index.getName(),
+                                        index.getPath()),
+                                    e);
+                            }
+                        }
+                    }
+
+                    if (backup != null) {
+                        // remove the backup after the files have been re-indexed
+                        index.indexSearcherClose();
+                        index.removeIndexBackup(backup);
+                    }
+
+                    // output finish information on the report
+                    report.println(
+                        Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_END_1, index.getName()),
+                        I_CmsReport.FORMAT_HEADLINE);
+
+                } finally {
+                    if (writer != null) {
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
+                                        index.getPath(),
+                                        index.getName()),
+                                    e);
+                            }
+                        }
+                    }
+                    if (isOfflineIndex) {
+                        // reset the mode of the offline index
+                        index.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
+                        // re-initialize the offline indexes, this will re-enable this index
+                        initOfflineIndexes();
+                    }
+                    // index has changed - initialize the index searcher instance
+                    index.indexSearcherOpen(index.getPath());
+                }
+
+                // show information about indexing runtime
+                threadManager.reportStatistics(report);
+
+            } else {
+                updateIndexIncremental(cms, index, report, resourcesToIndex);
             }
-
-            // show information about indexing runtime
-            threadManager.reportStatistics(report);
-
-        } else {
-            updateIndexIncremental(cms, index, report, resourcesToIndex);
+        } finally {
+            SEARCH_MANAGER_LOCK.unlock();
         }
     }
 
@@ -2868,108 +2895,114 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      */
-    protected synchronized void updateIndexIncremental(
+    protected void updateIndexIncremental(
         CmsObject cms,
         CmsSearchIndex index,
         I_CmsReport report,
         List<CmsPublishedResource> resourcesToIndex)
     throws CmsException {
 
-        // update the existing index
-        List<CmsSearchIndexUpdateData> updateCollections = new ArrayList<CmsSearchIndexUpdateData>();
+        try {
+            SEARCH_MANAGER_LOCK.lock();
 
-        boolean hasResourcesToDelete = false;
-        boolean hasResourcesToUpdate = false;
+            // update the existing index
+            List<CmsSearchIndexUpdateData> updateCollections = new ArrayList<CmsSearchIndexUpdateData>();
 
-        // iterate all configured index sources of this index
-        Iterator<CmsSearchIndexSource> sources = index.getSources().iterator();
-        while (sources.hasNext()) {
-            // get the next index source
-            CmsSearchIndexSource source = sources.next();
-            // create the indexer
-            I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
-            // collect the resources to update
-            CmsSearchIndexUpdateData updateData = indexer.getUpdateData(source, resourcesToIndex);
-            if (!updateData.isEmpty()) {
-                // add the update collection to the internal pipeline
-                updateCollections.add(updateData);
-                hasResourcesToDelete = hasResourcesToDelete | updateData.hasResourcesToDelete();
-                hasResourcesToUpdate = hasResourcesToUpdate | updateData.hasResourceToUpdate();
-            }
-        }
+            boolean hasResourcesToDelete = false;
+            boolean hasResourcesToUpdate = false;
 
-        // only start index modification if required
-        if (hasResourcesToDelete || hasResourcesToUpdate) {
-            // output start information on the report
-            report.println(
-                Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_BEGIN_1, index.getName()),
-                I_CmsReport.FORMAT_HEADLINE);
-
-            I_CmsIndexWriter writer = null;
-            try {
-                // obtain an index writer that updates the current index
-                writer = index.getIndexWriter(report, false);
-
-                if (hasResourcesToDelete) {
-                    // delete the resource from the index
-                    Iterator<CmsSearchIndexUpdateData> i = updateCollections.iterator();
-                    while (i.hasNext()) {
-                        CmsSearchIndexUpdateData updateCollection = i.next();
-                        if (updateCollection.hasResourcesToDelete()) {
-                            updateCollection.getIndexer().deleteResources(
-                                writer,
-                                updateCollection.getResourcesToDelete());
-                        }
-                    }
+            // iterate all configured index sources of this index
+            Iterator<CmsSearchIndexSource> sources = index.getSources().iterator();
+            while (sources.hasNext()) {
+                // get the next index source
+                CmsSearchIndexSource source = sources.next();
+                // create the indexer
+                I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
+                // collect the resources to update
+                CmsSearchIndexUpdateData updateData = indexer.getUpdateData(source, resourcesToIndex);
+                if (!updateData.isEmpty()) {
+                    // add the update collection to the internal pipeline
+                    updateCollections.add(updateData);
+                    hasResourcesToDelete = hasResourcesToDelete | updateData.hasResourcesToDelete();
+                    hasResourcesToUpdate = hasResourcesToUpdate | updateData.hasResourceToUpdate();
                 }
+            }
 
-                if (hasResourcesToUpdate) {
-                    // create a new thread manager
-                    CmsIndexingThreadManager threadManager = getThreadManager();
+            // only start index modification if required
+            if (hasResourcesToDelete || hasResourcesToUpdate) {
+                // output start information on the report
+                report.println(
+                    Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_BEGIN_1, index.getName()),
+                    I_CmsReport.FORMAT_HEADLINE);
 
-                    Iterator<CmsSearchIndexUpdateData> i = updateCollections.iterator();
-                    while (i.hasNext()) {
-                        CmsSearchIndexUpdateData updateCollection = i.next();
-                        if (updateCollection.hasResourceToUpdate()) {
-                            updateCollection.getIndexer().updateResources(
-                                writer,
-                                threadManager,
-                                updateCollection.getResourcesToUpdate());
+                I_CmsIndexWriter writer = null;
+                try {
+                    // obtain an index writer that updates the current index
+                    writer = index.getIndexWriter(report, false);
+
+                    if (hasResourcesToDelete) {
+                        // delete the resource from the index
+                        Iterator<CmsSearchIndexUpdateData> i = updateCollections.iterator();
+                        while (i.hasNext()) {
+                            CmsSearchIndexUpdateData updateCollection = i.next();
+                            if (updateCollection.hasResourcesToDelete()) {
+                                updateCollection.getIndexer().deleteResources(
+                                    writer,
+                                    updateCollection.getResourcesToDelete());
+                            }
                         }
                     }
 
-                    // wait for indexing threads to finish
-                    while (threadManager.isRunning()) {
+                    if (hasResourcesToUpdate) {
+                        // create a new thread manager
+                        CmsIndexingThreadManager threadManager = getThreadManager();
+
+                        Iterator<CmsSearchIndexUpdateData> i = updateCollections.iterator();
+                        while (i.hasNext()) {
+                            CmsSearchIndexUpdateData updateCollection = i.next();
+                            if (updateCollection.hasResourceToUpdate()) {
+                                updateCollection.getIndexer().updateResources(
+                                    writer,
+                                    threadManager,
+                                    updateCollection.getResourcesToUpdate());
+                            }
+                        }
+
+                        // wait for indexing threads to finish
+                        while (threadManager.isRunning()) {
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                // just continue with the loop after interruption
+                                LOG.info(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
+                } finally {
+                    // close the index writer
+                    if (writer != null) {
                         try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            // just continue with the loop after interruption
-                            LOG.info(e.getLocalizedMessage(), e);
+                            writer.commit();
+                        } catch (IOException e) {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
+                                    index.getName(),
+                                    index.getPath()),
+                                e);
                         }
                     }
+                    // index has changed - initialize the index searcher instance
+                    index.indexSearcherUpdate();
                 }
-            } finally {
-                // close the index writer
-                if (writer != null) {
-                    try {
-                        writer.commit();
-                    } catch (IOException e) {
-                        LOG.error(
-                            Messages.get().getBundle().key(
-                                Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
-                                index.getName(),
-                                index.getPath()),
-                            e);
-                    }
-                }
-                // index has changed - initialize the index searcher instance
-                index.indexSearcherUpdate();
-            }
 
-            // output finish information on the report
-            report.println(
-                Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_END_1, index.getName()),
-                I_CmsReport.FORMAT_HEADLINE);
+                // output finish information on the report
+                report.println(
+                    Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_END_1, index.getName()),
+                    I_CmsReport.FORMAT_HEADLINE);
+            }
+        } finally {
+            SEARCH_MANAGER_LOCK.unlock();
         }
     }
 
