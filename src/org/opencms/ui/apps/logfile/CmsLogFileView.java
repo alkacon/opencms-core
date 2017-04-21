@@ -1,0 +1,238 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ui.apps.logfile;
+
+import org.opencms.main.OpenCms;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsToolBar;
+import org.opencms.util.CmsRfsException;
+import org.opencms.util.CmsRfsFileViewer;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+
+/**
+ * Class for the view of log files.<p>
+ */
+public class CmsLogFileView extends VerticalLayout {
+
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = -6323034856756469160L;
+
+    /**Vaadin component. */
+    protected FileDownloader m_fileDownloader;
+
+    /**Vaadin component. */
+    private Label m_fileContent;
+
+    /**Vaadin component. */
+    private ComboBox m_logfile;
+
+    /**RfsFileView holding data for log to show. */
+    private CmsRfsFileViewer m_logView;
+
+    /**Vaadin component. */
+    private TextField m_size;
+
+    /**
+     * constructor.<p>
+     *
+     * @param app which uses this view
+     */
+    protected CmsLogFileView(final CmsLogFileApp app) {
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        List<Logger> allLogger = CmsLogFileApp.getLoggers();
+        List<FileAppender> allAppender = new ArrayList<FileAppender>();
+
+        allLogger.add(0, LogManager.getRootLogger());
+
+        for (Logger logger : allLogger) {
+
+            @SuppressWarnings("unchecked")
+            List<Appender> appenders = Collections.list(logger.getAllAppenders());
+            for (Appender appen : appenders) {
+                if (appen instanceof FileAppender) {
+                    if (!allAppender.contains(appen)) {
+                        allAppender.add((FileAppender)appen);
+                    }
+                }
+            }
+        }
+
+        for (FileAppender appender : allAppender) {
+            m_logfile.addItem(appender.getFile());
+        }
+
+        m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
+
+        selectLogFile(allAppender, m_logView.getFilePath());
+        m_size.setValue(String.valueOf(m_logView.getWindowSize()));
+
+        m_logfile.setNullSelectionAllowed(false);
+        m_logfile.setNewItemsAllowed(false);
+
+        m_logfile.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1899253995224124911L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                updateView();
+                m_fileDownloader.setFileDownloadResource(getDownloadResource());
+            }
+        });
+
+        m_size.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 3396575545135969283L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                updateView();
+            }
+        });
+
+        try {
+            m_fileContent.setContentMode(ContentMode.HTML);
+            String content = "<pre>";
+            content += m_logView.readFilePortion();
+            content += "</pre>";
+            m_fileContent.setValue(content);
+            m_fileContent.setHeight("700px");
+            m_fileContent.addStyleName("v-scrollable");
+            m_fileContent.addStyleName("o-report");
+
+        } catch (CmsRfsException e) {
+            //
+        }
+    }
+
+    /**
+     * Returns a button to download current log file.<p>
+     *
+     * @return download button
+     */
+    protected Button getDownloadButton() {
+
+        Button downloadButton = CmsToolBar.createButton(
+            FontAwesome.DOWNLOAD,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGVIEW_DOWNLOAD_0));
+
+        m_fileDownloader = new FileDownloader(getDownloadResource()); //resource can be changed..
+
+        m_fileDownloader.extend(downloadButton);
+        downloadButton.setWidth("100px");
+        return downloadButton;
+    }
+
+    /**
+     * Creates log-file resource for download.<p>
+     *
+     * @return vaadin resource
+     */
+    protected Resource getDownloadResource() {
+
+        final File downloadFile = new File(m_logView.getFilePath());
+
+        return new StreamResource(new StreamResource.StreamSource() {
+
+            private static final long serialVersionUID = -8868657402793427460L;
+
+            public InputStream getStream() {
+
+                try {
+                    return new FileInputStream(downloadFile);
+                } catch (FileNotFoundException e) {
+                    return null;
+                }
+
+            }
+        }, "opencms.log");
+
+    }
+
+    /**
+     * Updates the log file view after changes.<p>
+     */
+    protected void updateView() {
+
+        try {
+            m_logView.setFilePath((String)m_logfile.getValue());
+            m_logView.setWindowSize(Integer.valueOf(m_size.getValue()).intValue());
+            String content = "<pre>";
+            content += m_logView.readFilePortion();
+            content += "</pre>";
+            m_fileContent.setValue(content);
+        } catch (CmsRfsException e) {
+            //
+        }
+
+    }
+
+    /**
+     * Selects the currently set log file.<p>
+     *
+     * @param appender all given appender
+     * @param filePath of log file
+     */
+    private void selectLogFile(List<FileAppender> appender, String filePath) {
+
+        for (FileAppender app : appender) {
+            if (app.getFile().equals(filePath)) {
+                m_logfile.select(app.getFile());
+                return;
+            }
+        }
+        m_logfile.select(appender.get(0).getFile()); //Default, take file from root appender
+    }
+}
