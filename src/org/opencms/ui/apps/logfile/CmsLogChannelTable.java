@@ -592,43 +592,31 @@ public class CmsLogChannelTable extends Table {
                 break;
             }
         }
-        @SuppressWarnings("unchecked")
-        List<Appender> parentAppenders = Collections.list(logger.getParent().getAllAppenders());
-        Iterator<Appender> parentAppendersIt = parentAppenders.iterator();
-        // if no Appender found from logger, select the Appender from parent logger
-        if (count == 0) {
-            while (parentAppendersIt.hasNext()) {
-                Appender appender = parentAppendersIt.next();
-                // only use file appenders
-                if (appender instanceof FileAppender) {
-                    FileAppender fapp = (FileAppender)appender;
-                    String temp = "";
-                    temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
-                    test = test + temp;
-                    count++;
-                    break;
-                }
-            }
-        }
 
-        if (count == 0) {
+        //iterate all parent loggers until a logger with appender was found
+        while (!logger.equals(Logger.getRootLogger())) {
+
+            logger = (Logger)logger.getParent();
             @SuppressWarnings("unchecked")
-            List<Appender> rootAppenders = Collections.list(Logger.getRootLogger().getAllAppenders());
-            Iterator<Appender> rootAppendersIt = rootAppenders.iterator();
-            // if no Appender found from parent logger, select the Appender from root logger
-            while (rootAppendersIt.hasNext()) {
-                Appender appender = rootAppendersIt.next();
-                // only use file appenders
-                if (appender instanceof FileAppender) {
-                    FileAppender fapp = (FileAppender)appender;
-                    String temp = "";
-                    temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
-                    test = test + temp;
-                    break;
+            List<Appender> parentAppenders = Collections.list(logger.getAllAppenders());
+            Iterator<Appender> parentAppendersIt = parentAppenders.iterator();
+            // if no Appender found from logger, select the Appender from parent logger
+            if (count == 0) {
+                while (parentAppendersIt.hasNext()) {
+                    Appender appender = parentAppendersIt.next();
+                    // only use file appenders
+                    if (appender instanceof FileAppender) {
+                        FileAppender fapp = (FileAppender)appender;
+                        String temp = "";
+                        temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
+                        test = test + temp;
+                        count++;
+                        break;
+                    }
                 }
             }
-
         }
+
         return test;
     }
 
