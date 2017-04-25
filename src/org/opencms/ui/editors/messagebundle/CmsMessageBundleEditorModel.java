@@ -1600,7 +1600,7 @@ public class CmsMessageBundleEditorModel {
     private void lockAllLocalizations(String key) throws CmsException {
 
         for (Locale l : m_bundleFiles.keySet()) {
-            if ((null == key) || m_localizations.get(l).containsKey(key)) {
+            if ((null == l) || m_localizations.get(l).containsKey(key)) {
                 lockLocalization(l);
             }
         }
