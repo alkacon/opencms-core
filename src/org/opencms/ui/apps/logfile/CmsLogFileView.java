@@ -34,13 +34,18 @@ import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsRfsException;
 import org.opencms.util.CmsRfsFileViewer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.SortedMap;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
@@ -67,6 +72,9 @@ public class CmsLogFileView extends VerticalLayout {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -6323034856756469160L;
+
+    /**Vaadin component. */
+    private ComboBox m_charset;
 
     /**Vaadin component. */
     protected FileDownloader m_fileDownloader;
@@ -108,6 +116,28 @@ public class CmsLogFileView extends VerticalLayout {
                 }
             }
         }
+
+        SortedMap<String, Charset> csMap = Charset.availableCharsets();
+        // default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
+        // before java 1.5 there is no other way (System property "file.encoding" is implementation detail not in vmspec.
+        Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
+        Charset cs;
+        Iterator<Charset> it = csMap.values().iterator();
+        while (it.hasNext()) {
+            cs = it.next();
+            m_charset.addItem(cs);
+        }
+
+        m_charset.select(defaultCs);
+        m_charset.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1899253995224124911L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                updateView();
+            }
+        });
 
         for (FileAppender appender : allAppender) {
             m_logfile.addItem(appender.getFile());
@@ -209,6 +239,7 @@ public class CmsLogFileView extends VerticalLayout {
         try {
             m_logView.setFilePath((String)m_logfile.getValue());
             m_logView.setWindowSize(Integer.valueOf(m_size.getValue()).intValue());
+            m_logView.setFileEncoding(((Charset)m_charset.getValue()).name());
             String content = "<pre>";
             content += m_logView.readFilePortion();
             content += "</pre>";
