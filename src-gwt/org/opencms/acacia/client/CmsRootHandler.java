@@ -29,6 +29,7 @@ package org.opencms.acacia.client;
 
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsType;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,6 +111,9 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
      */
     public CmsAttributeHandler getChildHandler(String attributeName, int index) {
 
+        if (m_handlers == null) {
+            CmsDebugLog.consoleLog("m_handlers == null");
+        }
         if (m_handlers.size() > index) {
             return m_handlers.get(index).get(attributeName);
         }
@@ -161,9 +165,11 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
             attributeName = CmsContentDefinition.removeIndex(attributeName);
             if ((handler instanceof CmsAttributeHandler)
                 && ((CmsAttributeHandler)handler).getAttributeType().isChoice()) {
-                // in case of a choice attribute, skip to the next level
+                // in case of a choice attribute, skip to the next path name
                 attributeName = CmsType.CHOICE_ATTRIBUTE_NAME;
+                i++;
             }
+
             handler = handler.getChildHandler(attributeName, index);
             index = nextIndex;
         }
@@ -224,6 +230,12 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
      */
     public void setHandler(int index, String attributeName, CmsAttributeHandler handler) {
 
+        CmsDebugLog.consoleLog(
+            "Name: "
+                + attributeName
+                + "   Index: "
+                + index
+                + ((this instanceof CmsAttributeHandler) ? "   Parent: " + getAttributeName() : ""));
         m_handlers.get(index).put(attributeName, handler);
         handler.setParentHandler(this);
         setHandlerById(attributeName, handler);
