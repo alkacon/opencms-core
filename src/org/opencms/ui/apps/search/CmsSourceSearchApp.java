@@ -27,7 +27,10 @@
 
 package org.opencms.ui.apps.search;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
@@ -41,6 +44,7 @@ import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
 import org.opencms.ui.report.CmsReportOverlay;
@@ -66,34 +70,37 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachableApp {
 
     /** The folder key. */
-    public static final String FOLDER = "folder";
+    public static final String FOLDER = "f";
 
     /** The index key. */
-    public static final String INDEX = "index";
+    public static final String INDEX = "i";
 
     /** The locale key. */
-    public static final String LOCALE = "locale";
+    public static final String LOCALE = "l";
 
     /** The project ley. */
-    public static final String PROJECT = "project";
+    public static final String PROJECT = "p";
 
     /** The query key. */
-    public static final String QUERY = "query";
+    public static final String QUERY = "q";
 
     /** The replace pattern key. */
-    public static final String REPLACE_PATTERN = "rpattern";
+    public static final String REPLACE_PATTERN = "rp";
 
     /** The resource type key. */
-    public static final String RESOURCE_TYPE = "rtype";
+    public static final String RESOURCE_TYPE = "rt";
 
     /** The search pattern key. */
-    public static final String SEARCH_PATTERN = "spattern";
+    public static final String SEARCH_PATTERN = "sp";
 
     /** The type key. */
-    public static final String SEARCH_TYPE = "type";
+    public static final String SEARCH_TYPE = "t";
+
+    /** The site root key. */
+    public static final String SITE_ROOT = "s";
 
     /** The XPath key. */
-    public static final String XPATH = "xpath";
+    public static final String XPATH = "x";
 
     /** The serial version id. */
     private static final long serialVersionUID = 4675966043824229258L;
@@ -129,6 +136,7 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
     static String generateState(CmsSearchReplaceSettings settings) {
 
         String state = "";
+        state = A_CmsWorkplaceApp.addParamToState(state, SITE_ROOT, settings.getSiteRoot());
         state = A_CmsWorkplaceApp.addParamToState(state, SEARCH_TYPE, settings.getType().name());
         state = A_CmsWorkplaceApp.addParamToState(state, SEARCH_PATTERN, settings.getSearchpattern());
         if (!settings.getPaths().isEmpty()) {
@@ -158,6 +166,7 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             SearchType type = SearchType.valueOf(typeString);
             settings = new CmsSearchReplaceSettings();
             settings.setType(type);
+            settings.setSiteRoot(A_CmsWorkplaceApp.getParamFromState(state, SITE_ROOT));
             settings.setPaths(Collections.singletonList(A_CmsWorkplaceApp.getParamFromState(state, FOLDER)));
             String resType = A_CmsWorkplaceApp.getParamFromState(state, RESOURCE_TYPE);
             if (resType != null) {
@@ -326,22 +335,32 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             m_currentState = state;
         }
 
-        m_thread = new CmsSearchReplaceThread(A_CmsUI.get().getHttpSession(), A_CmsUI.getCmsObject(), settings);
-        if (m_report != null) {
-            m_searchForm.removeComponent(m_report);
-        }
-        m_report = new CmsReportOverlay(m_thread);
-        m_report.addReportFinishedHandler(new Runnable() {
-
-            public void run() {
-
-                displayResult();
+        CmsObject cms;
+        try {
+            cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            if (settings.getSiteRoot() != null) {
+                cms.getRequestContext().setSiteRoot(settings.getSiteRoot());
             }
-        });
-        m_searchForm.addComponent(m_report);
-        m_report.setTitle(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_REPORT_TITLE_0));
-        m_thread.start();
-        m_resultTableFilter.clear();
+
+            m_thread = new CmsSearchReplaceThread(A_CmsUI.get().getHttpSession(), cms, settings);
+            if (m_report != null) {
+                m_searchForm.removeComponent(m_report);
+            }
+            m_report = new CmsReportOverlay(m_thread);
+            m_report.addReportFinishedHandler(new Runnable() {
+
+                public void run() {
+
+                    displayResult();
+                }
+            });
+            m_searchForm.addComponent(m_report);
+            m_report.setTitle(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_REPORT_TITLE_0));
+            m_thread.start();
+            m_resultTableFilter.clear();
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
+        }
     }
 
     /**

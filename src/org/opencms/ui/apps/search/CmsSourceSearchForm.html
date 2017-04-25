@@ -9,6 +9,7 @@
 <body>
 	<v-vertical-layout :center margin spacing>
 		<v-form-layout margin spacing style-name="o-formlayout-narrow">
+				<v-combo-box _id="m_siteSelect" immediate="true" width="100%" caption="Site" />
 				<v-combo-box _id="m_searchType" immediate="true"  width="100%" caption="%(key.GUI_SOURCESEARCH_SEARCH_TYPE_0)" description="%(key.GUI_SOURCESEARCH_SEARCH_TYPE_HELP_0)"/>
 				<v-text-field _id="m_searchPattern" width="100%" caption="%(key.GUI_SOURCESEARCH_SEARCH_PATTERN_0)" description="%(key.GUI_SOURCESEARCH_SEARCH_PATTERN_HELP_0)" />
 				<f-cms-path-select-field _id="m_searchRoot" width="100%" caption="%(key.GUI_SOURCESEARCH_RESOURCE_PATH_0)" description="%(key.GUI_SOURCESEARCH_RESOURCE_PATH_HELP_0)" />

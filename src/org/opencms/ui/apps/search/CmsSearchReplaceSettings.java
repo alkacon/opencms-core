@@ -85,6 +85,9 @@ public class CmsSearchReplaceSettings implements Serializable {
     /** The Xpath to perform the replacement. */
     private String m_xpath;
 
+    /** The site root. */
+    private String m_siteRoot;
+
     /**
      * Bean constructor with cms object for path validation.<p>
      */
@@ -170,6 +173,16 @@ public class CmsSearchReplaceSettings implements Serializable {
     public String getSearchpattern() {
 
         return m_searchpattern;
+    }
+
+    /**
+     * Returns the site root.<p>
+     *
+     * @return the siteRoot
+     */
+    public String getSiteRoot() {
+
+        return m_siteRoot;
     }
 
     /**
@@ -348,6 +361,16 @@ public class CmsSearchReplaceSettings implements Serializable {
     public void setSearchpattern(String searchpattern) {
 
         m_searchpattern = searchpattern;
+    }
+
+    /**
+     * Sets the site root.<p>
+     *
+     * @param siteRoot the site root to set
+     */
+    public void setSiteRoot(String siteRoot) {
+
+        m_siteRoot = siteRoot;
     }
 
     /**

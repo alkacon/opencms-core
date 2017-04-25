@@ -132,18 +132,27 @@ public class CmsSourceSearchForm extends VerticalLayout {
     /** The search button. */
     private Button m_search;
 
+    /** The site select. */
+    private ComboBox m_siteSelect;
+
     /** The search index select. */
     private ComboBox m_searchIndex;
+
     /** The search pattern field. */
     private TextField m_searchPattern;
+
     /** The search root path select. */
     private CmsPathSelectField m_searchRoot;
+
     /** The search type select. */
     private ComboBox m_searchType;
+
     /** The SOLR query field. */
     private TextField m_solrQuery;
+
     /** The replace project. */
     private ComboBox m_workProject;
+
     /** The XPath field. */
     private TextField m_xPath;
 
@@ -193,6 +202,8 @@ public class CmsSourceSearchForm extends VerticalLayout {
      * @param settings the settings
      */
     public void initFormValues(CmsSearchReplaceSettings settings) {
+
+        m_siteSelect.setValue(settings.getSiteRoot());
 
         m_searchType.setValue(settings.getType());
         if (!settings.getPaths().isEmpty()) {
@@ -244,6 +255,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
     void search() {
 
         CmsSearchReplaceSettings settings = new CmsSearchReplaceSettings();
+        settings.setSiteRoot((String)m_siteSelect.getValue());
         settings.setType((SearchType)m_searchType.getValue());
         settings.setPaths(Collections.singletonList(m_searchRoot.getValue()));
         I_CmsResourceType type = (I_CmsResourceType)m_resourceType.getValue();
@@ -292,6 +304,14 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+
+        m_siteSelect.setContainerDataSource(
+            CmsVaadinUtils.getAvailableSitesContainer(cms, CmsVaadinUtils.PROPERTY_LABEL));
+        m_siteSelect.setItemCaptionPropertyId(CmsVaadinUtils.PROPERTY_LABEL);
+        m_siteSelect.setTextInputAllowed(true);
+        m_siteSelect.setNullSelectionAllowed(false);
+        m_siteSelect.setFilteringMode(FilteringMode.CONTAINS);
+        m_siteSelect.setValue(cms.getRequestContext().getSiteRoot());
 
         m_searchType.setFilteringMode(FilteringMode.OFF);
         m_searchType.setNullSelectionAllowed(false);
