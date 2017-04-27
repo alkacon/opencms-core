@@ -253,8 +253,12 @@ public class CmsJspTagContainer extends BodyTagSupport {
     public static String getDetailContentPath(String detailContainersPage) {
 
         String detailName = CmsResource.getName(detailContainersPage);
-        String parentFolder = CmsResource.getParentFolder(detailContainersPage);
-        detailName = CmsStringUtil.joinPaths(CmsResource.getParentFolder(parentFolder), detailName);
+        String parentFolder = CmsResource.getParentFolder(CmsResource.getParentFolder(detailContainersPage));
+        if (parentFolder.endsWith("/" + DETAIL_CONTAINERS_FOLDER_NAME + "/")) {
+            // this will be the case for locale dependent detail only pages, move one level up
+            parentFolder = CmsResource.getParentFolder(parentFolder);
+        }
+        detailName = CmsStringUtil.joinPaths(parentFolder, detailName);
         return detailName;
     }
 
@@ -528,6 +532,10 @@ public class CmsJspTagContainer extends BodyTagSupport {
         try {
             String detailName = CmsResource.getName(detailContainersPage);
             String parentFolder = CmsResource.getParentFolder(detailContainersPage);
+            if (!parentFolder.endsWith("/" + DETAIL_CONTAINERS_FOLDER_NAME + "/")) {
+                // this will be the case for locale dependent detail only pages, move one level up
+                parentFolder = CmsResource.getParentFolder(parentFolder);
+            }
             detailName = CmsStringUtil.joinPaths(CmsResource.getParentFolder(parentFolder), detailName);
             result = parentFolder.endsWith("/" + DETAIL_CONTAINERS_FOLDER_NAME + "/")
                 && cms.existsResource(detailName, CmsResourceFilter.IGNORE_EXPIRATION);
