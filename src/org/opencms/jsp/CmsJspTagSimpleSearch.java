@@ -28,13 +28,16 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.publish.CmsPublishListHelper;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
+import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
+import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerCommon;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
@@ -52,6 +55,8 @@ import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -163,22 +168,10 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
 
         try {
             I_CmsSearchConfiguration config = null;
-            //             if (m_configString != null) {
-            //                 config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString));
-            //             } else if (m_fileFormat == FileFormat.JSON) {
-            //                 // read the JSON config file
-            //                 CmsFile configFile = cms.readFile(m_configFile);
-            //                 OpenCms.getLocaleManager();
-            //                 String configString = new String(
-            //                     configFile.getContents(),
-            //                     CmsLocaleManager.getResourceEncoding(cms, configFile));
-            //                 config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(configString));
-            //             } else { // assume XML
-            //                 CmsFile file = cms.readFile(m_configFile);
-            //                 CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
-            //                 config = new CmsSearchConfiguration(
-            //                     new CmsXMLSearchConfigurationParser(xmlContent, cms.getRequestContext().getLocale()));
-            //             }
+            CmsFile file = cms.readFile(m_configFile);
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
+            config = new CmsSearchConfiguration(
+                new CmsSimpleSearchConfigurationParser(cms, xmlContent, m_configString));
             m_searchController = new CmsSearchController(config);
 
             String indexName = m_searchController.getCommon().getConfig().getSolrIndex();

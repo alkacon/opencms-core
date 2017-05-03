@@ -381,46 +381,46 @@ public class CmsListConfigurationForm extends Accordion {
         "DEC"};
 
     /** List configuration node name and field key. */
-    private static final String N_CATEGORY = "Category";
+    public static final String N_CATEGORY = "Category";
 
     /** List configuration node name and field key. */
-    private static final String N_CATEGORY_FILTERS = "CategoryFilters";
+    public static final String N_CATEGORY_FILTERS = "CategoryFilters";
 
     /** List configuration node name and field key. */
-    private static final String N_CATEGORY_FULL_PATH = "CategoryFullPath";
+    public static final String N_CATEGORY_FULL_PATH = "CategoryFullPath";
 
     /** List configuration node name and field key. */
-    private static final String N_CATEGORY_ONLY_LEAFS = "CategoryOnlyLeafs";
+    public static final String N_CATEGORY_ONLY_LEAFS = "CategoryOnlyLeafs";
 
     /** List configuration node name and field key. */
-    private static final String N_DISPLAY_OPTIONS = "DisplayOptions";
+    public static final String N_DISPLAY_OPTIONS = "DisplayOptions";
 
     /** List configuration node name and field key. */
-    private static final String N_DISPLAY_TYPE = "TypesToCollect";
+    public static final String N_DISPLAY_TYPE = "TypesToCollect";
 
     /** List configuration node name and field key. */
-    private static final String N_FILTER_QUERY = "FilterQuery";
+    public static final String N_FILTER_QUERY = "FilterQuery";
 
     /** List configuration node name and field key. */
-    private static final String N_PREOPEN_ARCHIVE = "PreopenArchive";
+    public static final String N_PREOPEN_ARCHIVE = "PreopenArchive";
 
     /** List configuration node name and field key. */
-    private static final String N_PREOPEN_CATEGORIES = "PreopenCategories";
+    public static final String N_PREOPEN_CATEGORIES = "PreopenCategories";
 
     /** List configuration node name and field key. */
-    private static final String N_SEARCH_FOLDER = "SearchFolder";
+    public static final String N_SEARCH_FOLDER = "SearchFolder";
 
     /** List configuration node name and field key. */
-    private static final String N_SHOW_DATE = "ShowDate";
+    public static final String N_SHOW_DATE = "ShowDate";
 
     /** List configuration node name and field key. */
-    private static final String N_SHOW_EXPIRED = "ShowExpired";
+    public static final String N_SHOW_EXPIRED = "ShowExpired";
 
     /** List configuration node name and field key. */
-    private static final String N_SORT_ORDER = "SortOrder";
+    public static final String N_SORT_ORDER = "SortOrder";
 
     /** List configuration node name and field key. */
-    private static final String N_TITLE = "Title";
+    public static final String N_TITLE = "Title";
 
     /** The parameter fields. */
     private static final ParameterField[] PARAMETER_FIELDS = new ParameterField[] {
@@ -688,6 +688,7 @@ public class CmsListConfigurationForm extends Accordion {
             } else {
                 addFolderField(null);
             }
+            updateSortOptions();
             search(true, true);
         } catch (CmsException e) {
             e.printStackTrace();
