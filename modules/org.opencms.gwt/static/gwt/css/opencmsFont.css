@@ -179,8 +179,8 @@ button#opencms-leave-preview:after {
 .opencms-icon .opencms-icon-edit-point:before, .opencms-icon.opencms-icon-edit-point:before {
 	content: "\e600";
 }
-/* the up state */
-.opencms-icon.cmsState-up .opencms-icon-edit-point:before, .opencms-icon.opencms-icon-edit-point.cmsState-up:before, .opencms-icon.cmsState-up-hovering .opencms-icon-edit-point:before, .opencms-icon.opencms-icon-edit-point.cmsState-up-hovering:before {
+/* the up state, only needed when displaying the preview mode */
+.opencms-icon.opencms-icon-edit-point.cmsState-up:before, .opencms-icon.opencms-icon-edit-point.cmsState-up-hovering:before {
 	content: "\e601";
 }
 
