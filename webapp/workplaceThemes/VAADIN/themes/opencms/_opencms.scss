@@ -119,6 +119,14 @@
 		@include valo-textfield-error-style;
 	}
 	
+	/* Fixing inline icon position. */
+	.v-caption-inline-icon{
+		position: relative;
+		.v-icon{
+			top: 1px;
+		}
+	}
+	
 	/* Making scroll bars always visible on combo box selects */
 	.v-filterselect-suggestpopup{
 	 	 @include o-visible-scrollbars;

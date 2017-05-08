@@ -30,17 +30,27 @@ package org.opencms.ui.components.categoryselect;
 import org.opencms.relations.CmsCategory;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.fileselect.I_CmsSelectionHandler;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The category select dialog.<p>
@@ -70,6 +80,22 @@ public class CmsCategorySelectDialog extends CmsBasicDialog {
     public CmsCategorySelectDialog(String contextPath) {
         m_selectionHandlers = new ArrayList<I_CmsSelectionHandler<Collection<CmsCategory>>>();
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        m_filter.setIcon(FontOpenCms.FILTER);
+        m_filter.setInputPrompt(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+        m_filter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        m_filter.setWidth("200px");
+        m_filter.addTextChangeListener(new TextChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void textChange(TextChangeEvent event) {
+
+                filterTree(event.getText());
+
+            }
+        });
         m_tree.loadCategories(A_CmsUI.getCmsObject(), contextPath);
         m_okButton.addClickListener(new ClickListener() {
 
@@ -94,7 +120,7 @@ public class CmsCategorySelectDialog extends CmsBasicDialog {
     }
 
     /**
-     * Removes a selection handler
+     * Removes a selection handler.<p>
      *
      * @param selectionHandler the selection handler to remove
      */
@@ -111,6 +137,37 @@ public class CmsCategorySelectDialog extends CmsBasicDialog {
     public void setSelectedCategories(Collection<CmsCategory> categories) {
 
         m_tree.setSelectedCategories(categories);
+    }
+
+    /**
+     * Adds a filter to the category tree container.<p>
+     *
+     * @param filter the filter to add
+     */
+    void filterTree(String filter) {
+
+        HierarchicalContainer container = (HierarchicalContainer)m_tree.getContainerDataSource();
+        container.removeAllContainerFilters();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
+            final String lowerCaseFilter = filter.toLowerCase();
+            container.addContainerFilter(new Filter() {
+
+                private static final long serialVersionUID = 1L;
+
+                public boolean appliesToProperty(Object propertyId) {
+
+                    return true;
+                }
+
+                public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+
+                    CmsCategory cat = (CmsCategory)itemId;
+
+                    return cat.getPath().toLowerCase().contains(lowerCaseFilter)
+                        || ((cat.getTitle() != null) && cat.getTitle().toLowerCase().contains(lowerCaseFilter));
+                }
+            });
+        }
     }
 
     /**
