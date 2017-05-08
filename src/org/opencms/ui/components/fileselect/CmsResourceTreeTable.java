@@ -248,7 +248,7 @@ public class CmsResourceTreeTable extends TreeTable {
         // hide vertical and horizontal lines and disable alternating row background
         addStyleName(ValoTheme.TABLE_NO_STRIPES);
         addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
-
+        addStyleName(OpenCmsTheme.FILE_TREE);
         addExpandListener(new ExpandListener() {
 
             private static final long serialVersionUID = 1L;

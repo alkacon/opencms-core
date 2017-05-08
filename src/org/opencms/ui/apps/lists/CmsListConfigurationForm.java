@@ -74,6 +74,7 @@ import org.opencms.ui.apps.projects.CmsEditProjectForm;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.components.categoryselect.CmsCategorySelectField;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -428,7 +429,7 @@ public class CmsListConfigurationForm extends Accordion {
             N_CATEGORY,
             Messages.GUI_LISTMANAGER_PARAM_CATEGORY_0,
             Messages.GUI_LISTMANAGER_PARAM_CATEGORY_HELP_0,
-            TextField.class),
+            CmsCategorySelectField.class),
         new ParameterField(
             N_FILTER_QUERY,
             Messages.GUI_LISTMANAGER_PARAM_FILTER_QUERY_0,
@@ -764,7 +765,7 @@ public class CmsListConfigurationForm extends Accordion {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryField.getValue())) {
             result = "&fq=category_exact:(";
             for (String path : categoryField.getValue().split(",")) {
-                result += path + "&";
+                result += path + " ";
             }
             result = result.substring(0, result.length() - 1);
             result += ")";
@@ -968,15 +969,17 @@ public class CmsListConfigurationForm extends Accordion {
         m_save.setEnabled(false);
         for (Entry<String, Field<?>> fieldEntry : m_fields.entrySet()) {
             Object value = fieldEntry.getValue().getValue();
-            if (value instanceof Boolean) {
-                ((Field<Boolean>)fieldEntry.getValue()).setValue(Boolean.FALSE);
-            } else if (fieldEntry.getValue() instanceof ComboBox) {
-                ComboBox field = (ComboBox)fieldEntry.getValue();
-                field.setValue(field.getItemIds().iterator().next());
-            } else if (value instanceof String) {
-                ((Field<String>)fieldEntry.getValue()).setValue("");
-            } else {
-                fieldEntry.setValue(null);
+            if (value != null) {
+                if (value instanceof Boolean) {
+                    ((Field<Boolean>)fieldEntry.getValue()).setValue(Boolean.FALSE);
+                } else if (fieldEntry.getValue() instanceof ComboBox) {
+                    ComboBox field = (ComboBox)fieldEntry.getValue();
+                    field.setValue(field.getItemIds().iterator().next());
+                } else if (value instanceof String) {
+                    ((Field<String>)fieldEntry.getValue()).setValue("");
+                } else {
+                    fieldEntry.getValue().setValue(null);
+                }
             }
         }
         m_folders.removeAllComponents();
@@ -1403,7 +1406,7 @@ public class CmsListConfigurationForm extends Accordion {
                             + "'.");
                 }
                 comp.setCaption(CmsVaadinUtils.getMessageText(field.m_captionKey));
-                comp.setWidth("100%");
+                comp.setWidth("330px");
                 if (comp instanceof AbstractComponent) {
                     ((AbstractComponent)comp).setDescription(CmsVaadinUtils.getMessageText(field.m_decriptionKey));
                 }

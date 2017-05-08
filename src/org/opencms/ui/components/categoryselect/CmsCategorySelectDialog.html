@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	  	<meta name="package-mapping" content="cat:org.opencms.ui.components.categoryselect" />
+  </head>
+  <body>
+  		<o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout margin spacing size-full>
+  					<v-text-field _id="m_filter" width="200px" />
+  					<cat-cms-category-tree _id="m_tree" size-full :expand />
+  				</v-vertical-layout>
+  			</content>
+  			<buttons>
+  				<v-button _id="m_okButton">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+  </body>
+</html>

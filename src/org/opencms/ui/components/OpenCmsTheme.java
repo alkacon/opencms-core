@@ -132,6 +132,9 @@ public final class OpenCmsTheme {
     public static final String FULL_WIDTH_PADDING = "o-full-width-padding";
 
     /** CSS style name. */
+    public static final String FILE_TREE = "o-file-tree";
+
+    /** CSS style name. */
     public static final String HIDDEN = "hidden";
 
     /** CSS style name. */

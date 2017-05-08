@@ -238,7 +238,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categories)) {
             result = "&fq=category_exact:(";
             for (String path : categories.split(",")) {
-                result += path + "&";
+                result += path + " ";
             }
             result = result.substring(0, result.length() - 1);
             result += ")";
