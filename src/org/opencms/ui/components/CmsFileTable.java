@@ -277,6 +277,12 @@ public class CmsFileTable extends CmsResourceTable {
     /** The selected resources. */
     protected List<CmsResource> m_currentResources = new ArrayList<CmsResource>();
 
+    /** The default action column property. */
+    CmsResourceTableProperty m_actionColumnProperty;
+
+    /** The additional cell style generators. */
+    List<Table.CellStyleGenerator> m_additionalStyleGenerators;
+
     /** The current file property edit handler. */
     I_CmsFilePropertyEditHandler m_editHandler;
 
@@ -303,9 +309,6 @@ public class CmsFileTable extends CmsResourceTable {
 
     /** The original edit value. */
     private String m_originalEditValue;
-
-    /** The default action column property. */
-    CmsResourceTableProperty m_actionColumnProperty;
 
     {
         DEFAULT_TABLE_PROPERTIES.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
@@ -340,7 +343,18 @@ public class CmsFileTable extends CmsResourceTable {
      * @param contextProvider the dialog context provider
      */
     public CmsFileTable(I_CmsContextProvider contextProvider) {
+        this(contextProvider, DEFAULT_TABLE_PROPERTIES);
+    }
+
+    /**
+     * Default constructor.<p>
+     *
+     * @param contextProvider the dialog context provider
+     * @param tableColumns the table columns to show
+     */
+    public CmsFileTable(I_CmsContextProvider contextProvider, Map<CmsResourceTableProperty, Integer> tableColumns) {
         super();
+        m_additionalStyleGenerators = new ArrayList<Table.CellStyleGenerator>();
         m_actionColumnProperty = PROPERTY_RESOURCE_NAME;
         m_contextProvider = contextProvider;
         m_container.setItemSorter(new FileSorter());
@@ -353,7 +367,7 @@ public class CmsFileTable extends CmsResourceTable {
 
         m_fileTable.setTableFieldFactory(new FileFieldFactory());
         ColumnBuilder builder = new ColumnBuilder();
-        for (Entry<CmsResourceTableProperty, Integer> entry : DEFAULT_TABLE_PROPERTIES.entrySet()) {
+        for (Entry<CmsResourceTableProperty, Integer> entry : tableColumns.entrySet()) {
             builder.column(entry.getKey(), entry.getValue().intValue());
         }
         builder.buildColumns();
@@ -415,6 +429,9 @@ public class CmsFileTable extends CmsResourceTable {
                         style += " " + OpenCmsTheme.IN_NAVIGATION;
                     }
                 }
+                for (Table.CellStyleGenerator generator : m_additionalStyleGenerators) {
+                    style += generator.getStyle(source, itemId, propertyId);
+                }
                 return style;
             }
         });
@@ -453,6 +470,16 @@ public class CmsFileTable extends CmsResourceTable {
             }
         }
         return result;
+    }
+
+    /**
+     * Adds an additional cell style generator.<p>
+     *
+     * @param styleGenerator the cell style generator
+     */
+    public void addAdditionalStyleGenerator(Table.CellStyleGenerator styleGenerator) {
+
+        m_additionalStyleGenerators.add(styleGenerator);
     }
 
     /**
@@ -611,6 +638,16 @@ public class CmsFileTable extends CmsResourceTable {
     public void openContextMenu(ItemClickEvent event) {
 
         m_menu.openForTable(event, m_fileTable);
+    }
+
+    /**
+     * Removes the given cell style generator.<p>
+     *
+     * @param styleGenerator the cell style generator to remove
+     */
+    public void removeAdditionalStyleGenerator(Table.CellStyleGenerator styleGenerator) {
+
+        m_additionalStyleGenerators.remove(styleGenerator);
     }
 
     /**

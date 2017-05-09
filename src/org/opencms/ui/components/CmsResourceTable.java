@@ -60,7 +60,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -72,6 +71,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -146,7 +146,6 @@ public class CmsResourceTable extends CustomComponent {
                     m_fileTable.setConverter(visibleProp, visibleProp.getConverter());
                 }
             }
-
         }
 
         /**
@@ -245,6 +244,22 @@ public class CmsResourceTable extends CustomComponent {
     }
 
     /**
+     * Provides item property values for additional table columns.<p>
+     */
+    public static interface I_ResourcePropertyProvider {
+
+        /**
+         * Adds the property values to the given item.<p>
+         *
+         * @param resourceItem the resource item
+         * @param cms the cms context
+         * @param resource the resource
+         * @param locale  the workplace locale
+         */
+        void addItemProperties(Item resourceItem, CmsObject cms, CmsResource resource, Locale locale);
+    }
+
+    /**
      * Extending the indexed container to make the number of un-filtered items available.<p>
      */
     protected static class ItemContainer extends IndexedContainer {
@@ -294,12 +309,16 @@ public class CmsResourceTable extends CustomComponent {
     /** The table used to display the resource data. */
     protected Table m_fileTable = new Table();
 
+    /** Property provider for additional columns. */
+    private List<I_ResourcePropertyProvider> m_propertyProviders;
+
     /**
      * Creates a new instance.<p>
      *
      * This constructor does *not* set up the columns of the table; use the ColumnBuilder inner class for this.
      */
     public CmsResourceTable() {
+        m_propertyProviders = new ArrayList<I_ResourcePropertyProvider>();
         m_fileTable.setContainerDataSource(m_container);
         setCompositionRoot(m_fileTable);
         m_fileTable.setRowHeaderMode(RowHeaderMode.HIDDEN);
@@ -310,15 +329,9 @@ public class CmsResourceTable extends CustomComponent {
      * @param resourceItem the resource item to fill
      * @param cms the CMS context
      * @param resource the resource
-     * @param messages the message bundle
      * @param locale the locale
      */
-    public static void fillItemDefault(
-        Item resourceItem,
-        CmsObject cms,
-        CmsResource resource,
-        CmsMessages messages,
-        Locale locale) {
+    public static void fillItemDefault(Item resourceItem, CmsObject cms, CmsResource resource, Locale locale) {
 
         if (resource == null) {
             LOG.error("Error rendering item for 'null' resource");
@@ -529,6 +542,16 @@ public class CmsResourceTable extends CustomComponent {
     }
 
     /**
+     * Adds a property provider.<p>
+     *
+     * @param provider the property provider
+     */
+    public void addPropertyProvider(I_ResourcePropertyProvider provider) {
+
+        m_propertyProviders.add(provider);
+    }
+
+    /**
      * Clears the value selection.<p>
      */
     public void clearSelection() {
@@ -619,6 +642,16 @@ public class CmsResourceTable extends CustomComponent {
     }
 
     /**
+     * Removes a property provider.<p>
+     *
+     * @param provider the provider to remove
+     */
+    public void removePropertyProvider(I_ResourcePropertyProvider provider) {
+
+        m_propertyProviders.remove(provider);
+    }
+
+    /**
      * Selects all resources.<p>
      */
     public void selectAll() {
@@ -685,7 +718,10 @@ public class CmsResourceTable extends CustomComponent {
         if (resourceItem == null) {
             resourceItem = m_container.addItem(resource.getStructureId());
         }
-        fillItemDefault(resourceItem, cms, resource, CmsVaadinUtils.getWpMessagesForCurrentLocale(), locale);
+        fillItemDefault(resourceItem, cms, resource, locale);
+        for (I_ResourcePropertyProvider provider : m_propertyProviders) {
+            provider.addItemProperties(resourceItem, cms, resource, locale);
+        }
     }
 
 }
