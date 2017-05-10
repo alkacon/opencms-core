@@ -15,7 +15,7 @@
       	<xsd:element name="SearchFolder" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="unbounded" />
 		<xsd:element name="Category" type="OpenCmsCategory" />
 		<xsd:element name="SortOrder" type="OpenCmsString" />
-		<xsd:element name="FilterQueries" type="OpenCmsString" minOccurs="0" />
+		<xsd:element name="FilterQuery" type="OpenCmsString" minOccurs="0" />
 		<xsd:element name="ShowDate" type="OpenCmsBoolean" minOccurs="0" />
 		<xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
 		<xsd:element name="DisplayOptions" type="OpenCmsString" minOccurs="0" />
@@ -24,6 +24,7 @@
 		<xsd:element name="CategoryOnlyLeafs" type="OpenCmsBoolean" minOccurs="0" />
 		<xsd:element name="PreopenCategories" type="OpenCmsBoolean" minOccurs="0" />
 		<xsd:element name="PreopenArchive" type="OpenCmsBoolean" minOccurs="0" />
+		<xsd:element name="BlackList" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="25" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
