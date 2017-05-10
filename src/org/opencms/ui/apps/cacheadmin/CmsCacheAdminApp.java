@@ -334,12 +334,13 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
 
         layout.addComponent(flex);
 
-        Panel image = new Panel();
-        //        image.setWidth("400px");
-        image.setContent(new CmsImageCacheInfoLayout());
-        image.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
-
-        layout.addComponent(image);
+        // Disabled due to performance issues        
+        //        Panel image = new Panel();
+        //        //        image.setWidth("400px");
+        //        image.setContent(new CmsImageCacheInfoLayout());
+        //        image.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
+        //
+        //        layout.addComponent(image);
         outer.addComponent(layout);
         return outer;
     }
