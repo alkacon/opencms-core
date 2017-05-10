@@ -183,7 +183,13 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     public void updateDocument(String rootPath, I_CmsSearchDocument document) throws IOException {
 
         if ((m_server != null) && (m_index != null)) {
+
             if (document.getDocument() != null) {
+                try {
+                    m_server.deleteByQuery("path:\"" + rootPath + "\"", m_commitMs);
+                } catch (Exception e1) {
+                    LOG.error(e1.getLocalizedMessage(), e1);
+                }
                 try {
                     LOG.info(
                         Messages.get().getBundle().key(
