@@ -802,6 +802,9 @@ public final class CmsJspStandardContextBean {
     /** The meta mapping configuration. */
     Map<String, MetaMapping> m_metaMappings;
 
+    /** Map from root paths to site relative paths. */
+    private Map<String, String> m_sitePaths;
+
     /**
      * Creates an empty instance.<p>
      */
@@ -1443,6 +1446,30 @@ public final class CmsJspStandardContextBean {
     public CmsSite getSite() {
 
         return OpenCms.getSiteManager().getSiteForSiteRoot(m_cms.getRequestContext().getSiteRoot());
+    }
+
+    /**
+     * Transforms root paths to site paths.
+     *
+     * @return lazy map from root paths to site paths.
+     * 
+     * @see CmsRequestContext#removeSiteRoot(String)
+     */
+    public Map<String, String> getSitePath() {
+
+        if (m_sitePaths == null) {
+            m_sitePaths = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                public Object transform(Object rootPath) {
+
+                    if (rootPath instanceof String) {
+                        return getRequestContext().removeSiteRoot((String)rootPath);
+                    }
+                    return null;
+                }
+            });
+        }
+        return m_sitePaths;
     }
 
     /**
