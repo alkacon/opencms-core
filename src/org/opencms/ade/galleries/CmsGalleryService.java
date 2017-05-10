@@ -2278,19 +2278,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
-        Set<String> folderFilter = readFolderFilters();
-        data.setStartFolderFilter(folderFilter);
-        if ((folderFilter != null) && !folderFilter.isEmpty()) {
-            try {
-                data.setVfsPreloadData(
-                    generateVfsPreloadData(
-                        getCmsObject(),
-                        CmsGalleryService.getVfsTreeState(getRequest(), conf.getTreeToken()),
-                        folderFilter));
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
         data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
 
         List<CmsResourceTypeBean> types = null;
@@ -2427,6 +2414,22 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             default:
                 break;
+        }
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery())) {
+            Set<String> folderFilter = readFolderFilters();
+            data.setStartFolderFilter(folderFilter);
+            if ((folderFilter != null) && !folderFilter.isEmpty()) {
+                try {
+                    data.setVfsPreloadData(
+                        generateVfsPreloadData(
+                            getCmsObject(),
+                            CmsGalleryService.getVfsTreeState(getRequest(), conf.getTreeToken()),
+                            folderFilter));
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
         }
 
         CmsSiteSelectorOptionBuilder optionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
