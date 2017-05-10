@@ -1046,8 +1046,11 @@ public final class OpenCmsCore {
         // initialize site root from request
         String siteroot = null;
 
-        // a dedicated workplace site is configured
-        if (getSiteManager().isWorkplaceRequest(req)) {
+        String servletPath = req.getServletPath();
+        if ((servletPath != null) && servletPath.startsWith(CmsSystemInfo.WORKPLACE_PATH)) {
+            // in case of requests targeting the workplace servlet, use the site root from the current session
+            siteroot = sessionInfo.getSiteRoot();
+        } else if (getSiteManager().isWorkplaceRequest(req)) {
             // if no dedicated workplace site is configured,
             // or for the dedicated workplace site, use the site root from the session attribute
             siteroot = sessionInfo.getSiteRoot();
