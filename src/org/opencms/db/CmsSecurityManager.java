@@ -3338,7 +3338,6 @@ public final class CmsSecurityManager {
                 Messages.get().container(
                     Messages.ERR_IMPORT_USER_7,
                     new Object[] {
-                        id,
                         name,
                         firstname,
                         lastname,
