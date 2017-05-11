@@ -1082,13 +1082,15 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
 
             }
             for (CmsUUID id : ids) {
-                if (!updateFolder) {
-                    m_fileTable.update(id, removeIds.contains(id));
-                }
                 updateTree(id);
             }
             if (updateFolder) {
                 updateCurrentFolder(removeIds);
+            } else {
+                m_fileTable.update(removeIds, true);
+                HashSet<CmsUUID> updateIds = new HashSet<CmsUUID>(ids);
+                ids.removeAll(removeIds);
+                m_fileTable.update(updateIds, false);
             }
             m_fileTable.updateSorting();
             m_fileTable.clearSelection();
@@ -1272,17 +1274,16 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
      */
     protected void updateCurrentFolder(Collection<CmsUUID> removeIds) {
 
-        for (CmsUUID removeId : removeIds) {
-            m_fileTable.update(removeId, true);
-        }
+        m_fileTable.update(removeIds, true);
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             CmsResource folder = cms.readResource(m_currentFolder, FOLDERS);
             List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
+            Set<CmsUUID> ids = new HashSet<CmsUUID>();
             for (CmsResource child : childResources) {
-                m_fileTable.update(child.getStructureId(), false);
+                ids.add(child.getStructureId());
             }
-
+            m_fileTable.update(ids, false);
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
             LOG.error(e.getLocalizedMessage(), e);

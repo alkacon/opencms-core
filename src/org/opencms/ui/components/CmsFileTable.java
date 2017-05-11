@@ -265,14 +265,43 @@ public class CmsFileTable extends CmsResourceTable {
         void onFolderSelect(CmsUUID folderId);
     }
 
+    /** The default file table columns. */
+    public static final Map<CmsResourceTableProperty, Integer> DEFAULT_TABLE_PROPERTIES;
+
     /** The logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsFileTable.class);
 
-    /** The default file table columns. */
-    private static final Map<CmsResourceTableProperty, Integer> DEFAULT_TABLE_PROPERTIES = new LinkedHashMap<CmsResourceTableProperty, Integer>();
-
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
+
+    static {
+        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
+        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
+    }
 
     /** The selected resources. */
     protected List<CmsResource> m_currentResources = new ArrayList<CmsResource>();
@@ -309,33 +338,6 @@ public class CmsFileTable extends CmsResourceTable {
 
     /** The original edit value. */
     private String m_originalEditValue;
-
-    {
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_TITLE, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_SIZE, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
-    }
 
     /**
      * Default constructor.<p>
@@ -394,10 +396,7 @@ public class CmsFileTable extends CmsResourceTable {
                 }
                 m_currentResources = selectedResources;
 
-                if (!selectedIds.isEmpty() && (m_menuBuilder != null)) {
-                    m_menu.removeAllItems();
-                    m_menuBuilder.buildContextMenu(getContextProvider().getDialogContext(), m_menu);
-                }
+                rebuildMenu();
             }
         });
 
@@ -430,7 +429,10 @@ public class CmsFileTable extends CmsResourceTable {
                     }
                 }
                 for (Table.CellStyleGenerator generator : m_additionalStyleGenerators) {
-                    style += generator.getStyle(source, itemId, propertyId);
+                    String additional = generator.getStyle(source, itemId, propertyId);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additional)) {
+                        style += " " + additional;
+                    }
                 }
                 return style;
             }
@@ -758,13 +760,15 @@ public class CmsFileTable extends CmsResourceTable {
     /**
      * Updates all items with ids from the given list.<p>
      *
-     * @param id the resource structure id to update
+     * @param ids the resource structure ids to update
      * @param remove true if the item should be removed only
      */
-    public void update(CmsUUID id, boolean remove) {
+    public void update(Collection<CmsUUID> ids, boolean remove) {
 
-        updateItem(id, remove);
-
+        for (CmsUUID id : ids) {
+            updateItem(id, remove);
+        }
+        rebuildMenu();
     }
 
     /**
@@ -912,8 +916,19 @@ public class CmsFileTable extends CmsResourceTable {
             }
             // update the item on click to show any available changes
             if (!openedFolder) {
-                update(itemId, false);
+                update(Collections.singletonList(itemId), false);
             }
+        }
+    }
+
+    /**
+     * Rebuilds the context menu.<p>
+     */
+    void rebuildMenu() {
+
+        if (!getSelectedIds().isEmpty() && (m_menuBuilder != null)) {
+            m_menu.removeAllItems();
+            m_menuBuilder.buildContextMenu(getContextProvider().getDialogContext(), m_menu);
         }
     }
 

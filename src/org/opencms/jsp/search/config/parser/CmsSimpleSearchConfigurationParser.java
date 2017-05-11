@@ -202,7 +202,11 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         String params = super.getExtraSolrParams();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(params)) {
-            params = getFolderFilter() + getResourceTypeFilter() + getCategoryFilter() + getFilterQuery();
+            params = getFolderFilter()
+                + getResourceTypeFilter()
+                + getCategoryFilter()
+                + getFilterQuery()
+                + getBlacklistFilter();
         }
         return params;
     }
@@ -220,6 +224,33 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 + " Title_prop spell\"}%(query)";
         }
         return modifier;
+    }
+
+    /**
+     * Returns the blacklist filter.<p>
+     *
+     * @return the blacklist filter
+     */
+    String getBlacklistFilter() {
+
+        String result = "";
+        boolean first = true;
+        List<I_CmsXmlContentValue> balckListValues = m_content.getValues(
+            CmsListConfigurationForm.N_BLACKLIST,
+            CONFIG_LOCALE);
+        if (!balckListValues.isEmpty()) {
+            for (I_CmsXmlContentValue value : balckListValues) {
+                if (!first) {
+                    result += " OR ";
+                }
+                result += "\"" + m_cms.getRequestContext().addSiteRoot(value.getStringValue(m_cms)) + "\"";
+                first = false;
+            }
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
+            result = "&fq=-path:(" + result + ")";
+        }
+        return result;
     }
 
     /**

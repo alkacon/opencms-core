@@ -37,6 +37,9 @@ import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickListener;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -47,6 +50,17 @@ public class CmsResourceContextMenuBuilder implements I_CmsContextMenuBuilder {
     /** Tree builder used to build the tree of menu items. */
     private CmsContextMenuTreeBuilder m_treeBuilder;
 
+    private List<I_CmsContextMenuItemProvider> m_itemProviders;
+
+    public CmsResourceContextMenuBuilder() {
+        m_itemProviders = new ArrayList<I_CmsContextMenuItemProvider>();
+    }
+
+    public void addMenuItemProvider(I_CmsContextMenuItemProvider provider) {
+
+        m_itemProviders.add(provider);
+    }
+
     /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuBuilder#buildContextMenu(org.opencms.ui.I_CmsDialogContext, org.opencms.ui.contextmenu.CmsContextMenu)
      */
@@ -54,8 +68,7 @@ public class CmsResourceContextMenuBuilder implements I_CmsContextMenuBuilder {
 
         CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(context);
         m_treeBuilder = treeBuilder;
-        CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(
-            OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems());
+        CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(getItems());
         I_CmsContextMenuItem defaultActionItem = treeBuilder.getDefaultActionItem();
         for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
             createItem(menu, node, context, defaultActionItem);
@@ -122,5 +135,18 @@ public class CmsResourceContextMenuBuilder implements I_CmsContextMenuBuilder {
             guiMenuItem.addStyleName(ValoTheme.LABEL_BOLD);
         }
         return guiMenuItem;
+    }
+
+    private List<I_CmsContextMenuItem> getItems() {
+
+        if (m_itemProviders.isEmpty()) {
+            return OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems();
+        } else {
+            List<I_CmsContextMenuItem> items = new ArrayList<I_CmsContextMenuItem>();
+            for (I_CmsContextMenuItemProvider provider : m_itemProviders) {
+                items.addAll(provider.getMenuItems());
+            }
+            return items;
+        }
     }
 }

@@ -39,6 +39,8 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
+import org.opencms.ui.actions.A_CmsWorkplaceAction;
+import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
@@ -50,16 +52,25 @@ import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
+import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -74,6 +85,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
@@ -96,6 +109,16 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
     /** The logger for this class. */
     private static Log LOG = CmsLog.getLog(CmsListManager.class.getName());
 
+    /** The blacklisted table column property id. */
+    protected static final CmsResourceTableProperty BLACKLISTED_PROPERTY = new CmsResourceTableProperty(
+        "BLACKLISTED",
+        Boolean.class,
+        Boolean.FALSE,
+        Messages.GUI_LISTMANAGER_COLUMN_BLACKLISTED_0,
+        true,
+        1,
+        40);
+
     /** The mail layout. */
     private HorizontalSplitPanel m_mainLayout;
 
@@ -109,13 +132,16 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
     private CmsFileTable m_resultTable;
 
     /** The table filter input. */
-    private TextField m_resultTableFilter;
+    private TextField m_tableFilter;
 
     /** The search form. */
-    private CmsListConfigurationForm m_searchForm;
+    CmsListConfigurationForm m_searchForm;
 
     /** The text search input. */
     private TextField m_textSearch;
+
+    /** The list configurations overview table. */
+    private CmsFileTable m_overviewTable;
 
     /**
      * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
@@ -139,11 +165,12 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
      */
     public I_CmsDialogContext getDialogContext() {
 
+        CmsFileTable table = isOverView() ? m_overviewTable : m_resultTable;
         CmsFileTableDialogContext context = new CmsFileTableDialogContext(
             CmsProjectManagerConfiguration.APP_ID,
             ContextType.fileTable,
-            m_resultTable,
-            m_resultTable.getSelectedResources());
+            table,
+            table.getSelectedResources());
         context.setEditableProperties(CmsFileExplorer.INLINE_EDIT_PROPERTIES);
         return context;
     }
@@ -152,9 +179,9 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
      */
     @Override
-    public void initUI(I_CmsAppUIContext context) {
+    public void initUI(I_CmsAppUIContext uiContext) {
 
-        super.initUI(context);
+        super.initUI(uiContext);
 
         m_overviewButton = CmsToolBar.createButton(
             FontOpenCms.CLIPBOARD,
@@ -169,7 +196,7 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
                 toggleOverview();
             }
         });
-        context.addToolbarButton(m_overviewButton);
+        uiContext.addToolbarButton(m_overviewButton);
 
         m_publishButton = CmsToolBar.createButton(
             FontOpenCms.PUBLISH,
@@ -191,7 +218,7 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
             }
         });
 
-        context.addToolbarButton(m_publishButton);
+        uiContext.addToolbarButton(m_publishButton);
 
         m_rootLayout.setMainHeightFull(true);
         m_mainLayout = new HorizontalSplitPanel();
@@ -199,17 +226,109 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
         m_searchForm = new CmsListConfigurationForm(this);
         m_mainLayout.setFirstComponent(m_searchForm);
         m_infoLayout.addComponent(m_searchForm.getResultSorter());
-        m_resultTable = new CmsFileTable(null);
+        LinkedHashMap<CmsResourceTableProperty, Integer> tableColumns = new LinkedHashMap<CmsResourceTableProperty, Integer>();
+        tableColumns.putAll(CmsFileTable.DEFAULT_TABLE_PROPERTIES);
+        tableColumns.put(BLACKLISTED_PROPERTY, Integer.valueOf(0));
+        m_resultTable = new CmsFileTable(null, tableColumns);
         m_resultTable.applyWorkplaceAppSettings();
+        CmsResourceContextMenuBuilder menuBuilder = new CmsResourceContextMenuBuilder();
+        menuBuilder.addMenuItemProvider(OpenCms.getWorkplaceAppManager().getMenuItemProvider());
+        menuBuilder.addMenuItemProvider(new I_CmsContextMenuItemProvider() {
+
+            public List<I_CmsContextMenuItem> getMenuItems() {
+
+                return Arrays.<I_CmsContextMenuItem> asList(new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+
+                    public void executeAction(I_CmsDialogContext context) {
+
+                        CmsUUID structureId = context.getResources().get(0).getStructureId();
+                        m_searchForm.blacklistResource(structureId);
+                        context.finish(Collections.singletonList(structureId));
+                    }
+
+                    public String getId() {
+
+                        return "hideresource";
+                    }
+
+                    public String getTitle() {
+
+                        return getWorkplaceMessage(Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0);
+                    }
+
+                    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+                        if ((resources != null)
+                            && (resources.size() == 1)
+                            && !m_searchForm.isBlacklisted(resources.get(0).getStructureId())) {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                        } else {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                        }
+                    }
+
+                }, null, 10, 0), new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+
+                    public void executeAction(I_CmsDialogContext context) {
+
+                        CmsUUID structureId = context.getResources().get(0).getStructureId();
+                        m_searchForm.blacklistResource(structureId);
+                        context.finish(Collections.singletonList(structureId));
+                    }
+
+                    public String getId() {
+
+                        return "showresource";
+                    }
+
+                    public String getTitle() {
+
+                        return getWorkplaceMessage(Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0);
+                    }
+
+                    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+                        if ((resources != null)
+                            && (resources.size() == 1)
+                            && m_searchForm.isBlacklisted(resources.get(0).getStructureId())) {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                        } else {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                        }
+                    }
+
+                }, null, 10, 0));
+            }
+        });
+        m_resultTable.setMenuBuilder(menuBuilder);
+        m_resultTable.addAdditionalStyleGenerator(new CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                if (m_searchForm.isBlacklisted((CmsUUID)itemId)) {
+                    return OpenCmsTheme.PROJECT_OTHER;
+                }
+                return null;
+            }
+        });
         m_resultTable.setContextProvider(this);
+        m_resultTable.addPropertyProvider(m_searchForm);
         m_resultTable.setSizeFull();
-        m_resultTableFilter = new TextField();
-        m_resultTableFilter.setIcon(FontOpenCms.FILTER);
-        m_resultTableFilter.setInputPrompt(
+
+        m_overviewTable = new CmsFileTable(null);
+        m_overviewTable.applyWorkplaceAppSettings();
+        m_overviewTable.setContextProvider(this);
+        m_overviewTable.setSizeFull();
+
+        m_tableFilter = new TextField();
+        m_tableFilter.setIcon(FontOpenCms.FILTER);
+        m_tableFilter.setInputPrompt(
             Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-        m_resultTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-        m_resultTableFilter.setWidth("200px");
-        m_resultTableFilter.addTextChangeListener(new TextChangeListener() {
+        m_tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        m_tableFilter.setWidth("200px");
+        m_tableFilter.addTextChangeListener(new TextChangeListener() {
 
             private static final long serialVersionUID = 1L;
 
@@ -219,7 +338,7 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
             }
         });
-        m_infoLayout.addComponent(m_resultTableFilter);
+        m_infoLayout.addComponent(m_tableFilter);
 
         m_textSearch = new TextField();
         m_textSearch.setIcon(FontOpenCms.SEARCH);
@@ -314,7 +433,7 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
         List<CmsResource> resources = new ArrayList<CmsResource>(resultList);
         if (clearFilter) {
-            m_resultTableFilter.clear();
+            m_tableFilter.clear();
         }
         m_resultTable.fillTable(A_CmsUI.getCmsObject(), resources, clearFilter, false);
         enableOverviewMode(false);
@@ -328,12 +447,14 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
     void enableOverviewMode(boolean enabled) {
 
         m_publishButton.setVisible(!enabled);
-        m_resultTableFilter.setVisible(enabled);
+        m_tableFilter.setVisible(enabled);
         m_textSearch.setVisible(!enabled);
         if (enabled) {
             m_overviewButton.removeStyleName(OpenCmsTheme.BUTTON_PRESSED);
+            m_mainLayout.setSecondComponent(m_overviewTable);
         } else {
             m_overviewButton.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
+            m_mainLayout.setSecondComponent(m_resultTable);
         }
     }
 
@@ -345,6 +466,16 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
     void filterTable(String filter) {
 
         m_resultTable.filterTable(filter);
+    }
+
+    /**
+     * Returns whether the overview mode is active.<p>
+     *
+     * @return <code>true</code> in case the overview mode is active
+     */
+    boolean isOverView() {
+
+        return !m_overviewButton.getStyleName().contains(OpenCmsTheme.BUTTON_PRESSED);
     }
 
     /**
@@ -379,7 +510,7 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
      */
     void toggleOverview() {
 
-        boolean isOverview = !m_overviewButton.getStyleName().contains(OpenCmsTheme.BUTTON_PRESSED);
+        boolean isOverview = isOverView();
         if (!isOverview) {
             m_searchForm.resetFormValues();
             enableOverviewMode(!isOverview);
@@ -394,9 +525,11 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
      */
     void updateItems(List<String> updatedItems) {
 
+        Set<CmsUUID> ids = new HashSet<CmsUUID>();
         for (String id : updatedItems) {
-            m_resultTable.update(new CmsUUID(id), false);
+            ids.add(new CmsUUID(id));
         }
+        m_resultTable.update(ids, false);
     }
 
     /**
@@ -411,7 +544,7 @@ implements I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
                 "/",
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
                     OpenCms.getResourceManager().getResourceType(RES_TYPE_LIST_CONFIG)));
-            m_resultTable.fillTable(cms, resources);
+            m_overviewTable.fillTable(cms, resources);
         } catch (Exception e) {
             CmsErrorDialog.showErrorDialog(e);
             LOG.error(e.getLocalizedMessage(), e);

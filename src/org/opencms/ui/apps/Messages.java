@@ -51,12 +51,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGFILE_CHARSET_0 = "GUI_LOGFILE_CHARSET_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGFILE_CHARSET_HELP_0 = "GUI_LOGFILE_CHARSET_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -513,6 +507,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_ADD_TYPE_0 = "GUI_LISTMANAGER_ADD_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0 = "GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_CLEARBLACK_LIST_0 = "GUI_LISTMANAGER_CLEARBLACK_LIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_COLUMN_BLACKLISTED_0 = "GUI_LISTMANAGER_COLUMN_BLACKLISTED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_DESCRIPTION_0 = "GUI_LISTMANAGER_DESCRIPTION_0";
 
     /** Name of the used resource bundle. */
@@ -609,6 +612,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_PARAM_TITLE_HELP_0 = "GUI_LISTMANAGER_PARAM_TITLE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0 = "GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_REMOVE_TYPE_0 = "GUI_LISTMANAGER_REMOVE_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -637,6 +643,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_LOGFILE_ADMIN_TOOL_NAME_SHORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_CHARSET_0 = "GUI_LOGFILE_CHARSET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_CHARSET_HELP_0 = "GUI_LOGFILE_CHARSET_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_ENABLED_0 = "GUI_LOGFILE_ENABLED_0";

@@ -97,9 +97,7 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
 
         super.finish(ids);
         if (ids != null) {
-            for (CmsUUID id : ids) {
-                m_fileTable.update(id, false);
-            }
+            m_fileTable.update(ids, false);
         }
     }
 

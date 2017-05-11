@@ -63,6 +63,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.relations.CmsLink;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
@@ -73,10 +74,12 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.projects.CmsEditProjectForm;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
+import org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.categoryselect.CmsCategorySelectField;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -85,6 +88,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -129,7 +133,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * The list configuration edit form.<p>
  */
-public class CmsListConfigurationForm extends Accordion {
+public class CmsListConfigurationForm extends Accordion implements I_ResourcePropertyProvider {
 
     /**
      * Parameter field data.<p>
@@ -357,29 +361,8 @@ public class CmsListConfigurationForm extends Accordion {
     /** SOLR field name. */
     public static final String FIELD_PARENT_FOLDERS = "parent-folders";
 
-    /** Container item property key. */
-    private static final String FORMATTER_PROP = "formatter";
-
-    /** Container item property key. */
-    private static final String ICON_PROP = "icon";
-
-    /** The logger for this class. */
-    private static Log LOG = CmsLog.getLog(CmsEditProjectForm.class.getName());
-
-    /** The month name abbreviations. */
-    private static final String[] MONTHS = new String[] {
-        "JAN",
-        "FEB",
-        "MAR",
-        "APR",
-        "MAY",
-        "JUN",
-        "JUL",
-        "AUG",
-        "SEP",
-        "OCT",
-        "NOV",
-        "DEC"};
+    /** List configuration node name and field key. */
+    public static final String N_BLACKLIST = "Blacklist";
 
     /** List configuration node name and field key. */
     public static final String N_CATEGORY = "Category";
@@ -422,6 +405,30 @@ public class CmsListConfigurationForm extends Accordion {
 
     /** List configuration node name and field key. */
     public static final String N_TITLE = "Title";
+
+    /** Container item property key. */
+    private static final String FORMATTER_PROP = "formatter";
+
+    /** Container item property key. */
+    private static final String ICON_PROP = "icon";
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsEditProjectForm.class.getName());
+
+    /** The month name abbreviations. */
+    private static final String[] MONTHS = new String[] {
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAY",
+        "JUN",
+        "JUL",
+        "AUG",
+        "SEP",
+        "OCT",
+        "NOV",
+        "DEC"};
 
     /** The parameter fields. */
     private static final ParameterField[] PARAMETER_FIELDS = new ParameterField[] {
@@ -516,6 +523,12 @@ public class CmsListConfigurationForm extends Accordion {
     /** The add type button. */
     private Button m_addType;
 
+    /** The resource blacklist. */
+    private List<CmsUUID> m_blacklist;
+
+    /** The clear blacklisted resources button. */
+    private Button m_clearBlacklist;
+
     /** The currently edited configuration resource. */
     private CmsResource m_currentResource;
 
@@ -567,6 +580,7 @@ public class CmsListConfigurationForm extends Accordion {
      * @param manager the list manager instance
      */
     public CmsListConfigurationForm(CmsListManager manager) {
+        m_blacklist = new ArrayList<CmsUUID>();
         m_resultSorter = new ComboBox();
         m_resultSorter.setNullSelectionAllowed(false);
         m_resultSorter.setWidth("200px");
@@ -634,7 +648,37 @@ public class CmsListConfigurationForm extends Accordion {
                 addFolderField(null);
             }
         });
+        m_clearBlacklist.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                clearBlacklist();
+            }
+        });
         prepareSortOrder();
+    }
+
+    /**
+     * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
+     */
+    public void addItemProperties(Item resourceItem, CmsObject cms, CmsResource resource, Locale locale) {
+
+        if (resourceItem.getItemProperty(CmsListManager.BLACKLISTED_PROPERTY) != null) {
+            resourceItem.getItemProperty(CmsListManager.BLACKLISTED_PROPERTY).setValue(
+                Boolean.valueOf(m_blacklist.contains(resource.getStructureId())));
+        }
+    }
+
+    /**
+     * Adds a resource id to the blacklist.<p>
+     *
+     * @param resourceId the resource id to add
+     */
+    public void addToBlacklist(CmsUUID resourceId) {
+
+        m_blacklist.add(resourceId);
     }
 
     /**
@@ -689,12 +733,32 @@ public class CmsListConfigurationForm extends Accordion {
             } else {
                 addFolderField(null);
             }
+            m_blacklist.clear();
+            List<I_CmsXmlContentValue> blacklistValues = content.getValues(N_BLACKLIST, locale);
+            if (!blacklistValues.isEmpty()) {
+                for (I_CmsXmlContentValue value : blacklistValues) {
+                    CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
+                    if (link != null) {
+                        m_blacklist.add(link.getStructureId());
+                    }
+                }
+            }
             updateSortOptions();
             search(true, true);
         } catch (CmsException e) {
             e.printStackTrace();
         }
         updateSaveButtons();
+    }
+
+    /**
+     * Adds the given structure id to the blacklist.<p>
+     *
+     * @param structureId the structure id to add
+     */
+    protected void blacklistResource(CmsUUID structureId) {
+
+        m_blacklist.add(structureId);
     }
 
     /**
@@ -705,6 +769,28 @@ public class CmsListConfigurationForm extends Accordion {
     protected ComboBox getResultSorter() {
 
         return m_resultSorter;
+    }
+
+    /**
+     * Checks whether the given ID is blacklisted.<p>
+     *
+     * @param structureId the id to check
+     *
+     * @return <code>true</code> in case the id is blacklisted
+     */
+    protected boolean isBlacklisted(CmsUUID structureId) {
+
+        return m_blacklist.contains(structureId);
+    }
+
+    /**
+     * Removes the given id from the blacklist.<p>
+     *
+     * @param structureId the id to remove
+     */
+    protected void removeFromBlacklist(CmsUUID structureId) {
+
+        m_blacklist.remove(structureId);
     }
 
     /**
@@ -750,6 +836,15 @@ public class CmsListConfigurationForm extends Accordion {
             field.setValue(value);
         }
         m_types.addComponent(row);
+    }
+
+    /**
+     * Clears the resource blacklist.<p>
+     */
+    void clearBlacklist() {
+
+        m_blacklist.clear();
+        search(false, false);
     }
 
     /**
@@ -1053,6 +1148,15 @@ public class CmsListConfigurationForm extends Accordion {
                         contentVal = content.addValue(cms, N_SEARCH_FOLDER, locale, count);
                     }
                     contentVal.setStringValue(cms, folder);
+                    count++;
+                }
+                count = 0;
+                for (CmsUUID hiddenId : m_blacklist) {
+                    CmsXmlVfsFileValue contentVal = (CmsXmlVfsFileValue)content.getValue(N_BLACKLIST, locale, count);
+                    if (contentVal == null) {
+                        contentVal = (CmsXmlVfsFileValue)content.addValue(cms, N_BLACKLIST, locale, count);
+                    }
+                    contentVal.setIdValue(cms, hiddenId);
                     count++;
                 }
                 configFile.setContents(content.marshal());

@@ -52,8 +52,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
@@ -207,14 +209,14 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
     public void onRestoreFromCache() {
 
         if (m_resultTable.getItemCount() < CmsFileExplorer.UPDATE_FOLDER_THRESHOLD) {
-            for (CmsUUID id : m_resultTable.getAllIds()) {
-                m_resultTable.update(id, false);
-            }
+            m_resultTable.update(m_resultTable.getAllIds(), false);
         } else {
             if (m_currentResources != null) {
+                Set<CmsUUID> ids = new HashSet<CmsUUID>();
                 for (CmsResource res : m_currentResources) {
-                    m_resultTable.update(res.getStructureId(), false);
+                    ids.add(res.getStructureId());
                 }
+                m_resultTable.update(ids, false);
             }
         }
     }

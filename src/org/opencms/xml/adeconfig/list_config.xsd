@@ -24,7 +24,7 @@
 		<xsd:element name="CategoryOnlyLeafs" type="OpenCmsBoolean" minOccurs="0" />
 		<xsd:element name="PreopenCategories" type="OpenCmsBoolean" minOccurs="0" />
 		<xsd:element name="PreopenArchive" type="OpenCmsBoolean" minOccurs="0" />
-		<xsd:element name="BlackList" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="25" />
+		<xsd:element name="Blacklist" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="25" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
