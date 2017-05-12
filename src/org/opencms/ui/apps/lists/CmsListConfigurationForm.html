@@ -6,8 +6,8 @@
   	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
 </head>
 <body>
-	<v-accordion height="100%" style-name="borderless">
-		<tab caption="Configuration">
+	<v-tab-sheet height="100%" style-name="borderless">
+		<tab caption="%(key.GUI_LISTMANAGER_TAB_CONFIGURATION_0)">
 	<v-vertical-layout :center margin spacing>
 		<v-form-layout _id="m_formLayout" margin spacing style-name="o-formlayout-narrow">
 				<v-text-field _id="m_title" width="330px" caption="%(key.GUI_LISTMANAGER_PARAM_TITLE_0)" description="%(key.GUI_LISTMANAGER_PARAM_TITLE_0)" required requiredError="The title should not be empty." />
@@ -24,7 +24,7 @@
 				</v-horizontal-layout>
 	</v-vertical-layout>
 	</tab>
-	<tab caption="Facets"><v-vertical-layout _id="m_facetsLayout" :center margin spacing /></tab>
-	</v-accordion>
+	<tab caption="%(key.GUI_LISTMANAGER_TAB_FACETS_0)"><v-vertical-layout _id="m_facetsLayout" :center margin spacing /></tab>
+	</v-tab-sheet>
 </body>
 </html>

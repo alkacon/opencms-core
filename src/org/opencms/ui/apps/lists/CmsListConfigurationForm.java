@@ -113,7 +113,6 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -125,6 +124,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -133,7 +133,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * The list configuration edit form.<p>
  */
-public class CmsListConfigurationForm extends Accordion implements I_ResourcePropertyProvider {
+public class CmsListConfigurationForm extends TabSheet implements I_ResourcePropertyProvider {
 
     /**
      * Parameter field data.<p>

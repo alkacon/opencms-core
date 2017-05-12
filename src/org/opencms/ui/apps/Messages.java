@@ -768,6 +768,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_SEARCH_0 = "GUI_LISTMANAGER_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_TAB_CONFIGURATION_0 = "GUI_LISTMANAGER_TAB_CONFIGURATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_TAB_FACETS_0 = "GUI_LISTMANAGER_TAB_FACETS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_TITLE_0 = "GUI_LISTMANAGER_TITLE_0";
 
     /** Name of the used resource bundle. */
