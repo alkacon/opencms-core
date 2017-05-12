@@ -40,7 +40,7 @@
  * pricing and ordering information, please inquire at sales@alkacon.com.
  */
 
-package org.opencms.workplace.tools.database;
+package org.opencms.ui.apps.dbmanager;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -50,6 +50,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+import org.opencms.ui.apps.Messages; //TODO move messages
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -66,7 +67,7 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
     private Throwable m_error;
 
     /** The list of resource names. */
-    private List m_resources;
+    private List<String> m_resources;
 
     /**
      * Creates an Thread to remove the publish locks.<p>
@@ -74,10 +75,10 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      * @param resources a list of resource names
      */
-    public CmsRemovePubLocksThread(CmsObject cms, List resources) {
+    public CmsRemovePubLocksThread(CmsObject cms, List<String> resources) {
 
         super(cms, Messages.get().getBundle().key(Messages.GUI_DB_PUBLOCKS_THREAD_NAME_0));
-        m_resources = new ArrayList(resources);
+        m_resources = new ArrayList<String>(resources);
         initHtmlReport(cms.getRequestContext().getLocale());
     }
 
@@ -119,15 +120,15 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
             CmsLockFilter filter = CmsLockFilter.FILTER_ALL;
             filter = filter.filterType(CmsLockType.PUBLISH);
 
-            Iterator it = m_resources.iterator();
+            Iterator<String> it = m_resources.iterator();
             while (it.hasNext()) {
-                String paramResName = (String)it.next();
+                String paramResName = it.next();
                 getReport().println(
                     Messages.get().container(Messages.RPT_DB_PUBLOCKS_READLOCKS_1, paramResName),
                     I_CmsReport.FORMAT_NOTE);
-                Iterator itResources = cms.getLockedResources(paramResName, filter).iterator();
+                Iterator<String> itResources = cms.getLockedResources(paramResName, filter).iterator();
                 while (itResources.hasNext()) {
-                    String resName = (String)itResources.next();
+                    String resName = itResources.next();
                     if (!cms.existsResource(resName, CmsResourceFilter.ALL)) {
                         getReport().println(
                             Messages.get().container(Messages.RPT_DB_PUBLOCKS_UNLOCKING_1, resName),
@@ -135,9 +136,9 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
                         OpenCms.getMemoryMonitor().uncacheLock(cms.getRequestContext().addSiteRoot(resName));
                         continue;
                     }
-                    Iterator itSiblings = cms.readSiblings(resName, CmsResourceFilter.ALL).iterator();
+                    Iterator<CmsResource> itSiblings = cms.readSiblings(resName, CmsResourceFilter.ALL).iterator();
                     while (itSiblings.hasNext()) {
-                        CmsResource res = (CmsResource)itSiblings.next();
+                        CmsResource res = itSiblings.next();
                         getReport().println(
                             Messages.get().container(Messages.RPT_DB_PUBLOCKS_UNLOCKING_1, cms.getSitePath(res)),
                             I_CmsReport.FORMAT_DEFAULT);

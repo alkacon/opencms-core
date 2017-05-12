@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components.fileselect;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
@@ -141,11 +142,11 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     @Override
     protected void setResourceValue(CmsResource resource) {
 
+        CmsObject cms = m_cms == null ? A_CmsUI.getCmsObject() : m_cms;
+
         CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resource.getRootPath());
-        if (!m_useRootPaths
-            && (site != null)
-            && A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
-            setValue(true, A_CmsUI.getCmsObject().getSitePath(resource));
+        if (!m_useRootPaths && (site != null) && cms.getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
+            setValue(true, cms.getSitePath(resource));
         } else {
             setValue(true, resource.getRootPath());
         }

@@ -110,9 +110,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DB_PUBLOCKS_NOTICE_0 = "GUI_DB_PUBLOCKS_NOTICE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DB_PUBLOCKS_THREAD_NAME_0 = "GUI_DB_PUBLOCKS_THREAD_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_HELP_EXPORTFILE_1 = "GUI_EDITOR_HELP_EXPORTFILE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -209,9 +206,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_STATEXP_ADMIN_TOOL_NAME_0 = "GUI_STATEXP_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_STATEXP_THREAD_NAME_0 = "GUI_STATEXP_THREAD_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_STATICEXPORT_0 = "GUI_TITLE_STATICEXPORT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -234,21 +228,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATE_INDEX_0 = "RPT_CREATE_INDEX_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DB_PUBLOCKS_BEGIN_0 = "RPT_DB_PUBLOCKS_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DB_PUBLOCKS_END_0 = "RPT_DB_PUBLOCKS_END_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DB_PUBLOCKS_FAILED_0 = "RPT_DB_PUBLOCKS_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DB_PUBLOCKS_READLOCKS_1 = "RPT_DB_PUBLOCKS_READLOCKS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DB_PUBLOCKS_UNLOCKING_1 = "RPT_DB_PUBLOCKS_UNLOCKING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_HTML_DELETE_0 = "RPT_HTML_DELETE_0";

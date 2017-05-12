@@ -62,7 +62,7 @@ public class CmsInternalResources extends VerticalLayout {
      *
      * @param table linked table to be updated if button was pressed
      */
-    public CmsInternalResources(final CmsLinkValidationInternalTable table) {
+    public CmsInternalResources(final I_CmsUpdatableComponent table) {
         setHeightUndefined();
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         addEmptyPathFieldToLayout("/");

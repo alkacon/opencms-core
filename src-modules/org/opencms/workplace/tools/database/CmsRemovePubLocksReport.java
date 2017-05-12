@@ -29,6 +29,7 @@ package org.opencms.workplace.tools.database;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.report.I_CmsReportThread;
+import org.opencms.ui.apps.dbmanager.CmsRemovePubLocksThread;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListReport;

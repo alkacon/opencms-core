@@ -71,7 +71,7 @@ import com.vaadin.ui.Table;
 /**
  * Result table for broken internal relations.<p>
  */
-public class CmsLinkValidationInternalTable extends Table {
+public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdatableComponent {
 
     /**
      * The menu entry to switch to the explorer of concerning site.<p>
@@ -314,6 +314,60 @@ public class CmsLinkValidationInternalTable extends Table {
     }
 
     /**
+     * @see org.opencms.ui.apps.linkvalidation.I_CmsUpdatableComponent#update(java.util.List)
+     */
+    public void update(List<String> resourcePaths) {
+
+        m_container.removeAllItems();
+
+        getValidator(resourcePaths);
+        List<CmsResource> broken = m_validator.getResourcesWithBrokenLinks();
+        for (CmsResource res : broken) {
+            Item item = m_container.addItem(res);
+
+            item.getItemProperty(TableProperty.Path).setValue(
+                A_CmsUI.getCmsObject().getRequestContext().getSitePath(res));
+
+            item.getItemProperty(TableProperty.Type).setValue(
+                OpenCms.getResourceManager().getResourceType(res).getTypeName());
+
+            item.getItemProperty(TableProperty.Icon).setValue(getTypeImage(res));
+
+            if (res.getDateExpired() < CmsResource.DATE_RELEASED_DEFAULT) {
+                item.getItemProperty(TableProperty.DateExpired).setValue(new Date(res.getDateExpired()));
+            }
+            if (res.getDateReleased() > 0) {
+                item.getItemProperty(TableProperty.DateReleased).setValue(new Date(res.getDateReleased()));
+            }
+            item.getItemProperty(TableProperty.LastModified).setValue(new Date(res.getDateLastModified()));
+
+            if (res.getLength() > 0) {
+                item.getItemProperty(TableProperty.Size).setValue(
+                    CmsFileUtil.formatFilesize(
+                        res.getLength(),
+                        A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+            }
+            try {
+                item.getItemProperty(TableProperty.Title).setValue(
+                    A_CmsUI.getCmsObject().readPropertyObject(
+                        res,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false).getValue());
+            } catch (CmsException e) {
+                //
+            }
+            List<CmsRelation> brokenLinks = m_validator.getBrokenLinksForResource(res.getRootPath());
+            if (brokenLinks != null) {
+                Iterator<CmsRelation> j = brokenLinks.iterator();
+                while (j.hasNext()) {
+                    item.getItemProperty(TableProperty.BrokenLinks).setValue(
+                        getBrokenLinkString(j.next().getTargetPath()));
+                }
+            }
+        }
+    }
+
+    /**
      * Returns the available menu entries.<p>
      *
      * @return the menu entries
@@ -378,62 +432,6 @@ public class CmsLinkValidationInternalTable extends Table {
                 + "!!"
                 + uuid
                 + "!!");
-    }
-
-    /**
-     * Updates the table for given resource paths.<p>
-     *
-     * @param resourcePaths to be validated
-     */
-    void update(List<String> resourcePaths) {
-
-        m_container.removeAllItems();
-
-        getValidator(resourcePaths);
-        List<CmsResource> broken = m_validator.getResourcesWithBrokenLinks();
-        for (CmsResource res : broken) {
-            Item item = m_container.addItem(res);
-
-            item.getItemProperty(TableProperty.Path).setValue(
-                A_CmsUI.getCmsObject().getRequestContext().getSitePath(res));
-
-            item.getItemProperty(TableProperty.Type).setValue(
-                OpenCms.getResourceManager().getResourceType(res).getTypeName());
-
-            item.getItemProperty(TableProperty.Icon).setValue(getTypeImage(res));
-
-            if (res.getDateExpired() < CmsResource.DATE_RELEASED_DEFAULT) {
-                item.getItemProperty(TableProperty.DateExpired).setValue(new Date(res.getDateExpired()));
-            }
-            if (res.getDateReleased() > 0) {
-                item.getItemProperty(TableProperty.DateReleased).setValue(new Date(res.getDateReleased()));
-            }
-            item.getItemProperty(TableProperty.LastModified).setValue(new Date(res.getDateLastModified()));
-
-            if (res.getLength() > 0) {
-                item.getItemProperty(TableProperty.Size).setValue(
-                    CmsFileUtil.formatFilesize(
-                        res.getLength(),
-                        A_CmsUI.getCmsObject().getRequestContext().getLocale()));
-            }
-            try {
-                item.getItemProperty(TableProperty.Title).setValue(
-                    A_CmsUI.getCmsObject().readPropertyObject(
-                        res,
-                        CmsPropertyDefinition.PROPERTY_TITLE,
-                        false).getValue());
-            } catch (CmsException e) {
-                //
-            }
-            List<CmsRelation> brokenLinks = m_validator.getBrokenLinksForResource(res.getRootPath());
-            if (brokenLinks != null) {
-                Iterator<CmsRelation> j = brokenLinks.iterator();
-                while (j.hasNext()) {
-                    item.getItemProperty(TableProperty.BrokenLinks).setValue(
-                        getBrokenLinkString(j.next().getTargetPath()));
-                }
-            }
-        }
     }
 
     /**

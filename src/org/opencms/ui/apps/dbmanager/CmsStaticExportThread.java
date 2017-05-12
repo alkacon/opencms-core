@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.database;
+package org.opencms.ui.apps.dbmanager;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
@@ -33,6 +33,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+import org.opencms.ui.apps.Messages;
 
 import java.util.HashMap;
 import java.util.Map;

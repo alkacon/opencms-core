@@ -28,6 +28,7 @@
 package org.opencms.workplace.tools.database;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.ui.apps.dbmanager.CmsStaticExportThread;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
