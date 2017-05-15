@@ -934,7 +934,7 @@ public class CmsJspContentAccessBean {
         if (m_locale == null) {
             m_locale = OpenCms.getLocaleManager().getBestMatchingLocale(
                 m_requestedLocale,
-                OpenCms.getLocaleManager().getDefaultLocales(),
+                OpenCms.getLocaleManager().getDefaultLocales(m_cms, m_cms.getRequestContext().getUri()),
                 m_content.getLocales());
         }
 
