@@ -631,10 +631,10 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         for (I_CmsXmlContentValue additionalParam : parametersToParse) {
             String param = m_xml.getValue(
                 additionalParam.getPath() + "/" + XML_ELEMENT_ADDITIONAL_PARAMETERS_PARAM,
-                m_locale).toString();
+                m_locale).getStringValue(null);
             String solrQuery = m_xml.getValue(
                 additionalParam.getPath() + "/" + XML_ELEMENT_ADDITIONAL_PARAMETERS_SOLRQUERY,
-                m_locale).toString();
+                m_locale).getStringValue(null);
             result.put(param, solrQuery);
         }
         return result;
