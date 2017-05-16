@@ -176,7 +176,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private static long m_clientCacheMaxAge;
 
     /** Read write locks for jsp files. */
-    private static Map<String, ReentrantReadWriteLock> m_fileLocks;
+    private static Map<String, ReentrantReadWriteLock> m_fileLocks = CmsMemoryMonitor.createLRUCacheMap(10000);
 
     /** The directory to store the generated JSP pages in (absolute path). */
     private static String m_jspRepository;
