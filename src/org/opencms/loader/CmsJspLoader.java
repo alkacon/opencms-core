@@ -85,7 +85,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Splitter;
@@ -172,8 +171,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private static long m_clientCacheMaxAge;
 
     /** Read write locks for jsp files. */
-    @SuppressWarnings("unchecked")
-    private static Map<String, ReentrantReadWriteLock> m_fileLocks = new LRUMap(10000);
+    private static Map<String, ReentrantReadWriteLock> m_fileLocks = CmsMemoryMonitor.createLRUCacheMap(10000);
 
     /** The directory to store the generated JSP pages in (absolute path). */
     private static String m_jspRepository;
@@ -265,7 +263,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res) throws ServletException, IOException {
+        HttpServletResponse res)
+    throws ServletException, IOException {
 
         // get the current Flex controller
         CmsFlexController controller = CmsFlexController.getController(req);
