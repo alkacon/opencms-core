@@ -32,6 +32,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.report.I_CmsReportThread;
+import org.opencms.ui.apps.searchindex.CmsIndexingReportThread;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.list.A_CmsListReport;
@@ -51,7 +52,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A report for displaying the rebuild process of the corresponding
- * <code>{@link org.opencms.workplace.tools.searchindex.CmsIndexingReportThread}</code>.<p>
+ * <code>{@link org.opencms.ui.apps.searchindex.CmsIndexingReportThread}</code>.<p>
  *
  * @since 6.0.0
  */

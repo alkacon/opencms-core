@@ -41,6 +41,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
+import org.opencms.ui.apps.dbmanager.CmsDbManagerConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationConfiguration;
 import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
@@ -50,6 +51,7 @@ import org.opencms.ui.apps.projects.CmsProjectOverviewConfiguration;
 import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
 import org.opencms.ui.apps.search.CmsSourceSearchAppConfiguration;
+import org.opencms.ui.apps.searchindex.CmsSearchindexAppConfiguration;
 import org.opencms.ui.apps.sitemanager.CmsSiteManagerConfiguration;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
@@ -601,7 +603,8 @@ public class CmsWorkplaceAppManager {
                 new CmsCacheAdminConfiguration(),
                 new CmsFileHistoryConfiguration(),
                 new CmsLinkValidationConfiguration(),
-                //                new CmsDbManagerConfiguration(),
+                new CmsDbManagerConfiguration(),
+                new CmsSearchindexAppConfiguration(),
                 new CmsLogFileConfiguration(),
                 new CmsSourceSearchAppConfiguration(),
                 new CmsListManagerConfiguration(),

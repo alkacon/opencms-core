@@ -43,6 +43,7 @@
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.ui.apps.searchindex.CmsIndexingReportThread;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 

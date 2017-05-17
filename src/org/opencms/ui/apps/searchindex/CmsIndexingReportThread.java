@@ -40,7 +40,7 @@
  * pricing and ordering information, please inquire at sales@alkacon.com.
  */
 
-package org.opencms.workplace.tools.searchindex;
+package org.opencms.ui.apps.searchindex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.I_CmsEventListener;

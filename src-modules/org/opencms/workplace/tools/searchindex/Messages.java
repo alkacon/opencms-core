@@ -200,12 +200,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPS_SEARCHINDEX_TOOL_SEARCH_NAVACTIVE_0 = "GUI_GROUPS_SEARCHINDEX_TOOL_SEARCH_NAVACTIVE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_INDEXING_THREAD_NAME_0 = "GUI_INDEXING_THREAD_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INDEXING_THREAD_NAME_1 = "GUI_INDEXING_THREAD_NAME_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_FIELD_BLOCK_SETTINGS_0 = "GUI_LABEL_FIELD_BLOCK_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -834,12 +828,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_LIST_ITEM_SKIPPED_2 = "LOG_ERR_LIST_ITEM_SKIPPED_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_REBUILD_SEARCH_INDEXES_BEGIN_0 = "RPT_REBUILD_SEARCH_INDEXES_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_REBUILD_SEARCH_INDEXES_END_0 = "RPT_REBUILD_SEARCH_INDEXES_END_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_CONFIG_NOT_FOUND_0 = "RPT_SEARCH_CONFIG_NOT_FOUND_0";

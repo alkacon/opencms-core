@@ -555,6 +555,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_FILEHISTORY_TOOL_NAME_HELP_0 = "GUI_FILEHISTORY_TOOL_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_INDEXING_THREAD_NAME_0 = "GUI_INDEXING_THREAD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INDEXING_THREAD_NAME_1 = "GUI_INDEXING_THREAD_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LAUNCHPAD_HELP_0 = "GUI_LAUNCHPAD_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1119,6 +1125,45 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_QUICK_LAUNCH_TITLE_0 = "GUI_QUICK_LAUNCH_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_ADMIN_TOOL_NAME_0 = "GUI_SEARCHINDEX_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_ADMIN_TOOL_NAME_HELP_0 = "GUI_SEARCHINDEX_ADMIN_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_ADMIN_TOOL_NAME_SHORT_0 = "GUI_SEARCHINDEX_ADMIN_TOOL_NAME_SHORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_COL_CONFIGURATION_0 = "GUI_SEARCHINDEX_COL_CONFIGURATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_COL_LOCALE_0 = "GUI_SEARCHINDEX_COL_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_COL_NAME_0 = "GUI_SEARCHINDEX_COL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_COL_PROJECT_0 = "GUI_SEARCHINDEX_COL_PROJECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_COL_REBUILDMODE_0 = "GUI_SEARCHINDEX_COL_REBUILDMODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_INDEXSOURCE_SHOW_0 = "GUI_SEARCHINDEX_INDEXSOURCE_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_INDEXSOURCE_SHOW_1 = "GUI_SEARCHINDEX_INDEXSOURCE_SHOW_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_INDEXSOURCE_SHOW_HELP_0 = "GUI_SEARCHINDEX_INDEXSOURCE_SHOW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_REBUILD_0 = "GUI_SEARCHINDEX_REBUILD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCHINDEX_REBUILD_CONFIRM_1 = "GUI_SEARCHINDEX_REBUILD_CONFIRM_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_ADD_0 = "GUI_SITE_ADD_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1624,6 +1669,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_OUTPUT_WEBSERVER_1 = "RPT_OUTPUT_WEBSERVER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_REBUILD_SEARCH_INDEXES_BEGIN_0 = "RPT_REBUILD_SEARCH_INDEXES_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_REBUILD_SEARCH_INDEXES_END_0 = "RPT_REBUILD_SEARCH_INDEXES_END_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";
