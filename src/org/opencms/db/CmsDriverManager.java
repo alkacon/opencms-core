@@ -9334,7 +9334,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             // create the driver to write the export points
-            CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
+            I_CmsExportPointDriver exportPointDriver = OpenCms.getImportExportManager().createExportPointDriver(
+                exportPoints);
 
             // the export point hash table contains RFS export paths keyed by their internal VFS paths
             Iterator<String> i = exportPointDriver.getExportPointPaths().iterator();
@@ -9691,7 +9692,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // create the driver to write the export points
-        CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
+        I_CmsExportPointDriver exportPointDriver = OpenCms.getImportExportManager().createExportPointDriver(
+            exportPoints);
 
         // the report may be null if the export point write was started by an event
         if (report == null) {

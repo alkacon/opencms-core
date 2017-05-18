@@ -28,7 +28,11 @@
 package org.opencms.importexport;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsExportPoint;
+import org.opencms.db.CmsExportPointDriver;
+import org.opencms.db.CmsTempFolderExportPointDriver;
 import org.opencms.db.CmsUserExportSettings;
+import org.opencms.db.I_CmsExportPointDriver;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
@@ -48,11 +52,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
+
+import com.google.common.collect.Lists;
 
 /**
  * Provides information about how to handle imported resources.<p>
@@ -400,6 +407,9 @@ public class CmsImportExportManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportExportManager.class);
 
+    /** The configured temporary export point paths. */
+    private List<String> m_tempExportpointPaths = Lists.newArrayList();
+
     /** Boolean flag whether imported pages should be converted into XML pages. */
     private boolean m_convertToXmlPage;
 
@@ -597,6 +607,16 @@ public class CmsImportExportManager {
     }
 
     /**
+     * Adds a temporary export point path.<p>
+     *
+     * @param path the new temporary export point path
+     */
+    public void addTempExportpointPath(String path) {
+
+        m_tempExportpointPaths.add(path);
+    }
+
+    /**
      * Checks if imported pages should be converted into XML pages.<p>
      *
      * @return true, if imported pages should be converted into XML pages
@@ -604,6 +624,23 @@ public class CmsImportExportManager {
     public boolean convertToXmlPage() {
 
         return m_convertToXmlPage;
+    }
+
+    /**
+     * Creates a new export point driver based on the import/export configuration.<p>
+     *
+     * @param exportPoints the export points
+     *
+     * @return the export point driver instance
+     */
+    public I_CmsExportPointDriver createExportPointDriver(Set<CmsExportPoint> exportPoints) {
+
+        if (m_tempExportpointPaths.isEmpty()) {
+            return new CmsExportPointDriver(exportPoints);
+        } else {
+            return new CmsTempFolderExportPointDriver(exportPoints, getTempExportPointPaths());
+        }
+
     }
 
     /**
@@ -811,6 +848,18 @@ public class CmsImportExportManager {
     public String getOldWebAppUrl() {
 
         return m_webAppUrl;
+    }
+
+    /**
+     * Gets the configured list of temporary export point paths.<p>
+     *
+     * If any temporary export point paths are configured, then export points writing to these paths will write to a temporary folder instead.
+     *
+     * @return the list of temporary export point paths
+     */
+    public List<String> getTempExportPointPaths() {
+
+        return Collections.unmodifiableList(m_tempExportpointPaths);
     }
 
     /**

@@ -44,16 +44,16 @@ import org.apache.commons.logging.Log;
  *
  * @since 6.0.0
  */
-public class CmsExportPointDriver {
+public class CmsExportPointDriver implements I_CmsExportPointDriver {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExportPointDriver.class);
 
     /** The export points resolved to a lookup map. */
-    private Map<String, String> m_exportpointLookupMap;
+    protected Map<String, String> m_exportpointLookupMap;
 
     /** The configured export points. */
-    private Set<CmsExportPoint> m_exportpoints;
+    protected Set<CmsExportPoint> m_exportpoints;
 
     /**
      * Constructor for a CmsExportPointDriver.<p>
@@ -72,6 +72,13 @@ public class CmsExportPointDriver {
                 m_exportpointLookupMap.put(point.getUri(), point.getDestinationPath());
             }
         }
+    }
+
+    /**
+     * Empty default constructor, necessary for subclasses which may need to do initialization differently.<p>
+     */
+    protected CmsExportPointDriver() {
+        // do nothing; this constructor is only needed for subclasses
     }
 
     /**
@@ -164,7 +171,7 @@ public class CmsExportPointDriver {
      * @param exportpoint the name of the export point
      * @return the File for the given export point resource
      */
-    private File getExportPointFile(String rootPath, String exportpoint) {
+    protected File getExportPointFile(String rootPath, String exportpoint) {
 
         StringBuffer exportpath = new StringBuffer(128);
         exportpath.append(m_exportpointLookupMap.get(exportpoint));
@@ -179,7 +186,7 @@ public class CmsExportPointDriver {
      * @param exportpoint the name of the export point
      * @param content the contents of the file to write
      */
-    private void writeResource(String resourceName, String exportpoint, byte[] content) {
+    protected void writeResource(String resourceName, String exportpoint, byte[] content) {
 
         File file = getExportPointFile(resourceName, exportpoint);
         try {

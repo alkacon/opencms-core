@@ -14,7 +14,12 @@
 <!ELEMENT importexport (
 	importexporthandlers, 
 	import,
-	export? )>
+	export?,
+	temp-exportpoint-path*
+	 )>
+	 
+<!ELEMENT temp-exportpoint-path (#PCDATA)>
+
 
 <!--
 # List of import / export handlers.

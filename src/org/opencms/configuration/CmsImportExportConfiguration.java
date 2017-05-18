@@ -301,6 +301,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     /**  The node name of the static export vfx-prefix node. */
     public static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
 
+    /** The temporary export point path node. */
+    public static final String N_TEMP_EXPORTPONT_PATH = "temp-exportpoint-path";
+
     /**  The node name of the user csv export node. */
     public static final String N_USERCSVEXPORT = "usercsvexport";
 
@@ -442,6 +445,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             + N_EXPORT_TIMESTAMPMODE
             + "/"
             + N_EXPORT_RESOURCETYPENAME, 0);
+
+        digester.addCallMethod("*/" + N_IMPORTEXPORT + "/" + N_TEMP_EXPORTPONT_PATH, "addTempExportpointPath", 1);
+        digester.addCallParam("*/" + N_IMPORTEXPORT + "/" + N_TEMP_EXPORTPONT_PATH, 0);
 
         // creation of the static export manager
         digester.addObjectCreate("*/" + N_STATICEXPORT, CmsStaticExportManager.class);
@@ -822,6 +828,11 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
                     resourcetypeElement.addText(resourcetypeName);
                 }
             }
+        }
+
+        List<String> tempExportpointPaths = m_importExportManager.getTempExportPointPaths();
+        for (String path : tempExportpointPaths) {
+            importexportElement.addElement(N_TEMP_EXPORTPONT_PATH).addText(path);
         }
 
         // <staticexport> node
