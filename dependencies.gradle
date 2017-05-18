@@ -136,6 +136,7 @@ dependencies {
     distribution group: 'org.apache.poi', name: 'poi-ooxml-schemas', version: '3.8'
     distribution group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.8'
     distribution group: 'org.apache.solr', name: 'solr-core', version: '5.5.3'
+    distribution group: 'com.carrotsearch', name: 'hppc', version: '0.7.1'    
     distribution group: 'org.apache.solr', name: 'solr-solrj', version: '5.5.3'
     distribution group: 'org.apache.tika', name: 'tika-core', version: '1.1'
     distribution group: 'org.apache.tika', name: 'tika-parsers', version: '1.1'
