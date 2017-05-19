@@ -28,8 +28,9 @@
 package org.opencms.ui.apps.dbmanager;
 
 import org.opencms.main.OpenCms;
+import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.A_CmsAttributeAwareApp;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.linkvalidation.CmsInternalResources;
@@ -38,18 +39,35 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.VerticalLayout;
 
 /**
- * Class for database manager app.<p>
+ * Class for database manager app.<p>A_CmsAttributeAwareApp
  */
-public class CmsDbManager extends A_CmsWorkplaceApp {
+public class CmsDbManager extends A_CmsAttributeAwareApp implements I_CmsReportApp {
+
+    /**Path to http import tool. */
+    public static final String PATH_IMPORT_HTTP = "importhttp";
+
+    /**Path to import server tool.*/
+    public static final String PATH_IMPORT_SERVER = "importserver";
+
+    /**Path to the report from import(HTTP). */
+    public static final String PATH_REPORT_HTTP = "reportHTTP";
+
+    /**Path to the report from import(server).*/
+    public static final String PATH_REPORT_SERVER = "reportserver";
 
     /**App icon.*/
     protected static String APP_ICON = "apps/dbmanager/database_manager.png";
@@ -78,17 +96,17 @@ public class CmsDbManager extends A_CmsWorkplaceApp {
     /**Path to export tool. */
     private static final String PATH_EXPORT = "export";
 
-    /**Path to http import tool. */
-    private static final String PATH_IMPORT_HTTP = "importhttp";
-
-    /**Path to import server tool.*/
-    private static final String PATH_IMPORT_SERVER = "importserver";
-
     /**Path to remove publish locks too. */
     private static final String PATH_REMOVE_PUBLISH_LOCKS = "removepublishlocks";
 
     /**Path to static export tool.*/
     private static final String PATH_STATIC_EXPORT = "staticexport";
+
+    /**Map to store labels with theire threads for showing the reports.*/
+    private IdentityHashMap<A_CmsReportThread, String> m_labels = new IdentityHashMap<A_CmsReportThread, String>();
+
+    /**Map to link threads to the current states. */
+    private Map<String, A_CmsReportThread> m_reports = Maps.newHashMap();
 
     /**
      * Returns the list of all uploadable zip files and uploadable folders available on the server.<p>
@@ -123,6 +141,26 @@ public class CmsDbManager extends A_CmsWorkplaceApp {
     }
 
     /**
+     * @see org.opencms.ui.apps.dbmanager.I_CmsReportApp#goToMainView()
+     */
+    public void goToMainView() {
+
+        openSubView("", true);
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.I_CmsReportApp#openReport(java.lang.String, org.opencms.report.A_CmsReportThread, java.lang.String)
+     */
+    public void openReport(String path, A_CmsReportThread thread, String title) {
+
+        m_reports.put(path, thread);
+        m_labels.put(thread, title);
+        openSubView(path, true);
+
+    }
+
+    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
      */
     @Override
@@ -150,10 +188,10 @@ public class CmsDbManager extends A_CmsWorkplaceApp {
                 "",
                 CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0));
         }
-        if (state.startsWith(PATH_IMPORT_HTTP)) {
+        if (state.startsWith(PATH_IMPORT_HTTP) | state.startsWith(PATH_REPORT_HTTP)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_IMPORTHTTP_ADMIN_TOOL_NAME_SHORT_0));
         }
-        if (state.startsWith(PATH_IMPORT_SERVER)) {
+        if (state.startsWith(PATH_IMPORT_SERVER) | state.startsWith(PATH_REPORT_SERVER)) {
             crumbs.put(
                 "",
                 CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_IMPORTSERVER_ADMIN_TOOL_NAME_SHORT_0));
@@ -171,6 +209,10 @@ public class CmsDbManager extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+            return getStartComponent();
+        }
+
         if (state.startsWith(PATH_REMOVE_PUBLISH_LOCKS)) {
             return getRemovePublishLocksView();
         }
@@ -179,6 +221,26 @@ public class CmsDbManager extends A_CmsWorkplaceApp {
         }
         if (state.startsWith(PATH_EXPORT)) {
             return new CmsDbExportView();
+        }
+        if (state.startsWith(PATH_IMPORT_SERVER)) {
+            return new CmsDbImportServer(this);
+        }
+        if (state.startsWith(PATH_IMPORT_HTTP)) {
+            return new CmsDbImportHTTP(this);
+        }
+        if (state.startsWith(PATH_REPORT_SERVER) | state.startsWith(PATH_REPORT_HTTP)) {
+            CmsBasicReportPage reportForm = new CmsBasicReportPage(
+                m_labels.get(m_reports.get(state)),
+                m_reports.get(state),
+                new Runnable() {
+
+                    public void run() {
+
+                        openSubView("", true);
+                    }
+                });
+            reportForm.setHeight("100%");
+            return reportForm;
         }
         return null;
     }
@@ -236,8 +298,8 @@ public class CmsDbManager extends A_CmsWorkplaceApp {
      */
     private HorizontalSplitPanel getRemovePublishLocksView() {
 
-        m_rootLayout.setMainHeightFull(true);
         HorizontalSplitPanel sp = new HorizontalSplitPanel();
+        sp.setData(Collections.singletonMap(A_CmsAttributeAwareApp.ATTR_MAIN_HEIGHT_FULL, Boolean.TRUE));
         sp.setSizeFull();
 
         CmsDbRemovePublishLocks publishLocksView = new CmsDbRemovePublishLocks();
@@ -247,5 +309,15 @@ public class CmsDbManager extends A_CmsWorkplaceApp {
         sp.addStyleName("v-align-center");
         sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
         return sp;
+    }
+
+    /**
+     * Gets the start component of the app.<p>
+     *
+     * @return a vaadin vertical layout
+     */
+    private VerticalLayout getStartComponent() {
+
+        return new VerticalLayout();
     }
 }

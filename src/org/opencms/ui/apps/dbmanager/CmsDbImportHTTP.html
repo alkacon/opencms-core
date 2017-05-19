@@ -1,6 +1,31 @@
+<!DOCTYPE html>
 <html>
-
-
-
-
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-panel caption="%(key.GUI_DATABASEAPP_IMPORTHTTP_ADMIN_TOOL_NAME_0)" height="275px">
+			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
+				<v-horizontal-layout spacing caption="%(key.GUI_DATABASEAPP_IMPORT_IMPORTFILE_0)" description="%(key.GUI_DATABASEAPP_IMPORT_IMPORTFILE_HELP_0">
+					<v-upload _id="m_upload" button-caption="%(key.GUI_DATABASEAPP_IMPORT_CHOOSE_FILE_0)" ></v-upload>
+					<v-label  _id="m_uploadLabel"></v-label>
+				</v-horizontal-layout>
+				<v-combo-box _id="m_siteSelect" caption="%(key.GUI_DATABASEAPP_IMPORT_TARGET_SITE_0)" description="%(key.GUI_DATABASEAPP_IMPORT_TARGET_SITE_HELP_0)" width="100%"></v-combo-box> 
+				<v-check-box _id="m_keepPermissions" caption="%(key.GUI_DATABASEAPP_IMPORT_KEEP_PERMISSIONS_0)" description="%(key.GUI_DATABASEAPP_IMPORT_KEEP_PERMISSIONS_HELP_0)"\>
+			</v-form-layout>
+		</v-panel>
+		<v-panel>
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+					<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+				</v-horizontal-layout>
+			</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
 </html>

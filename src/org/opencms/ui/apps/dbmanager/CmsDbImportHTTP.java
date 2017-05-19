@@ -27,14 +27,126 @@
 
 package org.opencms.ui.apps.dbmanager;
 
-import com.vaadin.ui.VerticalLayout;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
+import org.opencms.workplace.threads.CmsDatabaseImportThread;
+
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Upload;
 
 /**
  * HTTP import class.<p>
  */
-public class CmsDbImportHTTP extends VerticalLayout {
+public class CmsDbImportHTTP extends A_CmsHTTPImportForm {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -2918164495466630578L;
+
+    /** The cancel button. */
+    private Button m_cancel;
+
+    /**Checkbox for the keep permission option.*/
+    private CheckBox m_keepPermissions;
+
+    /** The OK button. */
+    private Button m_ok;
+
+    /**The site select combo box.*/
+    private ComboBox m_siteSelect;
+
+    /** The upload widget. */
+    private Upload m_upload;
+
+    /** The label for the upload widget. */
+    private Label m_uploadLabel;
+
+    /**
+     * public constructor.<p>
+     *
+     * @param app calling app
+     */
+    public CmsDbImportHTTP(I_CmsReportApp app) {
+
+        super(app, "packages", false);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.A_CmsImportForm#getCancelButton()
+     */
+    @Override
+    protected Button getCancelButton() {
+
+        return m_cancel;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.A_CmsImportForm#getOkButton()
+     */
+    @Override
+    protected Button getOkButton() {
+
+        return m_ok;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.A_CmsImportForm#getReportPath()
+     */
+    @Override
+    protected String getReportPath() {
+
+        return CmsDbManager.PATH_REPORT_HTTP;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.A_CmsImportForm#getSiteSelector()
+     */
+    @Override
+    protected ComboBox getSiteSelector() {
+
+        return m_siteSelect;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.A_CmsImportForm#getThread()
+     */
+    @Override
+    protected A_CmsReportThread getThread() {
+
+        return new CmsDatabaseImportThread(
+            getCmsObject(),
+            m_importFile.getPath(),
+            m_keepPermissions.getValue().booleanValue());
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.A_CmsImportForm#getTitle()
+     */
+    @Override
+    protected String getTitle() {
+
+        return CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_IMPORTHTTP_ADMIN_TOOL_NAME_0);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.A_CmsHTTPImportForm#getUpload()
+     */
+    @Override
+    protected Upload getUpload() {
+
+        return m_upload;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.dbmanager.A_CmsHTTPImportForm#getUploadLabel()
+     */
+    @Override
+    protected Label getUploadLabel() {
+
+        return m_uploadLabel;
+    }
 
 }
