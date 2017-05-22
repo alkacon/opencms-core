@@ -109,6 +109,7 @@ import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.IOException;
@@ -1198,6 +1199,9 @@ public final class OpenCmsCore {
         } catch (Exception e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_PROP_0), e);
         }
+
+        // initializes the system properties providing the SAX parser factory and XML reader implementation names
+        CmsXmlUtils.initSystemProperties();
 
         // create the configuration manager instance
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getConfigFolder());
