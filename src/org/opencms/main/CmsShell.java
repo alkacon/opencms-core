@@ -228,14 +228,19 @@ public class CmsShell {
                         Messages.GUI_SHELL_EXEC_METHOD_1,
                         new Object[] {foundMethod.getName()}));
                 ite.getTargetException().printStackTrace(m_out);
+                if (m_errorCode != -1) {
+                    System.exit(m_errorCode);
+                }
             } catch (Throwable t) {
                 m_out.println(
                     Messages.get().getBundle(getLocale()).key(
                         Messages.GUI_SHELL_EXEC_METHOD_1,
                         new Object[] {foundMethod.getName()}));
                 t.printStackTrace(m_out);
+                if (m_errorCode != -1) {
+                    System.exit(m_errorCode);
+                }
             }
-
             return true;
         }
 
@@ -401,6 +406,9 @@ public class CmsShell {
 
     /** Indicates if this is an interactive session with a user sitting on a console. */
     private boolean m_interactive;
+
+    /** The code which the process should exit with in case of errors; -1 means exit is not called. */
+    private int m_errorCode = -1;
 
     /**
      * Creates a new CmsShell.<p>
@@ -860,6 +868,16 @@ public class CmsShell {
     }
 
     /**
+     * Handles an error code.<p>
+     *
+     * @param errorCode the error code
+     */
+    public void onError(String errorCode) {
+
+        m_errorCode = Integer.parseInt(errorCode);
+    }
+
+    /**
      * Prints the shell prompt.<p>
      */
     public void printPrompt() {
@@ -962,6 +980,7 @@ public class CmsShell {
             CmsCommandObject cmdObj = i.next();
             commandList = cmdObj.getMethodHelp(searchString);
             if (!CmsStringUtil.isEmpty(commandList)) {
+
                 m_out.println(
                     m_messages.key(Messages.GUI_SHELL_AVAILABLE_METHODS_1, cmdObj.getObject().getClass().getName()));
                 m_out.println(commandList);
@@ -1065,6 +1084,67 @@ public class CmsShell {
             m_out.println(m_messages.key(Messages.GUI_SHELL_METHOD_NOT_FOUND_1, commandMsg.toString()));
             m_out.println(m_messages.key(Messages.GUI_SHELL_HR_0));
             ((CmsShellCommands)m_shellCommands).help();
+        }
+    }
+
+    /**
+     * Executes all commands read from the given input stream.<p>
+     *
+     * @param fileInputStream a file input stream from which the commands are read
+     */
+    private void executeCommands(FileInputStream fileInputStream) {
+
+        try {
+            LineNumberReader lnr = new LineNumberReader(new InputStreamReader(fileInputStream));
+            while (!m_exitCalled) {
+                printPrompt();
+                String line = lnr.readLine();
+                if (line == null) {
+                    // if null the file has been read to the end
+                    try {
+                        Thread.sleep(500);
+                    } catch (Throwable t) {
+                        // noop
+                    }
+                    break;
+                }
+                if (line.trim().startsWith("#")) {
+                    System.out.println(line);
+                    continue;
+                }
+                StringReader reader = new StringReader(line);
+                StreamTokenizer st = new StreamTokenizer(reader);
+                st.eolIsSignificant(true);
+                st.wordChars('*', '*');
+                // put all tokens into a List
+                List<String> parameters = new ArrayList<String>();
+                while (st.nextToken() != StreamTokenizer.TT_EOF) {
+                    if (st.ttype == StreamTokenizer.TT_NUMBER) {
+                        parameters.add(Integer.toString(new Double(st.nval).intValue()));
+                    } else {
+                        parameters.add(st.sval);
+                    }
+                }
+                reader.close();
+
+                // extract command and arguments
+                if (parameters.size() == 0) {
+                    if (m_echo) {
+                        System.out.println();
+                    }
+                    continue;
+                }
+                String command = parameters.get(0);
+                parameters = parameters.subList(1, parameters.size());
+
+                // execute the command
+                executeCommand(command, parameters);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+            if (m_errorCode != -1) {
+                System.exit(m_errorCode);
+            }
         }
     }
 }
