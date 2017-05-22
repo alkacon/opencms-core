@@ -749,7 +749,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         try {
             URI uri = new URI(result);
             String path = uri.getPath();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path) || !OpenCms.getADEManager().isInitialized()) {
                 return null;
             }
             String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));

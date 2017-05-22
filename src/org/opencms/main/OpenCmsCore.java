@@ -414,7 +414,6 @@ public final class OpenCmsCore {
      */
     protected CmsADEManager getADEManager() {
 
-        m_adeManager.initialize();
         return m_adeManager;
     }
 
@@ -1439,13 +1438,14 @@ public final class OpenCmsCore {
             m_subscriptionManager.setSecurityManager(m_securityManager);
             m_subscriptionManager.initialize(adminCms);
 
-            // initialize ade manager
             // initialize the formatter configuration
             CmsFormatterConfiguration.initialize(adminCms);
             CmsPersistentLoginTokenHandler.setAdminCms(initCmsObject(adminCms));
             CmsLoginUI.setAdminCmsObject(initCmsObject(adminCms));
-            //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
+
+            // initialize ade manager
             m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
+            m_adeManager.initialize();
             m_workplaceAppManager = new CmsWorkplaceAppManager(initCmsObject(adminCms));
             m_workplaceAppManager.loadApps();
             m_templateContextManager = new CmsTemplateContextManager(initCmsObject(adminCms));

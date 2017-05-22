@@ -882,6 +882,7 @@ public class CmsADEManager {
 
         if (m_initStatus == Status.notInitialized) {
             try {
+                CmsLog.INIT.info(". Initializing the ADE configuration, this may take a while...");
                 m_initStatus = Status.initializing;
                 m_configType = OpenCms.getResourceManager().getResourceType(CONFIG_TYPE);
                 m_moduleConfigType = OpenCms.getResourceManager().getResourceType(MODULE_CONFIG_TYPE);
@@ -899,7 +900,9 @@ public class CmsADEManager {
                     m_configType,
                     m_moduleConfigType,
                     m_elementViewType);
+                CmsLog.INIT.info(". Reading online configuration...");
                 m_onlineCache.initialize();
+                CmsLog.INIT.info(". Reading offline configuration...");
                 m_offlineCache.initialize();
                 m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(
                     m_onlineCms,
@@ -907,17 +910,23 @@ public class CmsADEManager {
                 m_offlineContainerConfigurationCache = new CmsContainerConfigurationCache(
                     m_offlineCms,
                     "offline inheritance groups");
+                CmsLog.INIT.info(". Reading online inherited container configurations...");
                 m_onlineContainerConfigurationCache.initialize();
+                CmsLog.INIT.info(". Reading offline inherited container configurations...");
                 m_offlineContainerConfigurationCache.initialize();
                 m_offlineFormatterCache = new CmsFormatterConfigurationCache(m_offlineCms, "offline formatters");
                 m_onlineFormatterCache = new CmsFormatterConfigurationCache(m_onlineCms, "online formatters");
-                m_offlineFormatterCache.reload();
+                CmsLog.INIT.info(". Reading online formatter configurations...");
                 m_onlineFormatterCache.reload();
+                CmsLog.INIT.info(". Reading offline formatter configurations...");
+                m_offlineFormatterCache.reload();
 
                 m_offlineDetailIdCache = new CmsDetailNameCache(m_offlineCms);
                 m_onlineDetailIdCache = new CmsDetailNameCache(m_onlineCms);
-                m_offlineDetailIdCache.initialize();
+                CmsLog.INIT.info(". Initializing online detail name cache...");
                 m_onlineDetailIdCache.initialize();
+                CmsLog.INIT.info(". Initializing offline detail name cache...");
+                m_offlineDetailIdCache.initialize();
 
                 CmsGlobalConfigurationCacheEventHandler handler = new CmsGlobalConfigurationCacheEventHandler(
                     m_onlineCms);
@@ -929,6 +938,7 @@ public class CmsADEManager {
                 handler.addCache(m_offlineFormatterCache, m_onlineFormatterCache, "formatter configuration cache");
                 handler.addCache(m_offlineDetailIdCache, m_onlineDetailIdCache, "Detail ID cache");
                 OpenCms.getEventManager().addCmsEventListener(handler);
+                CmsLog.INIT.info(". Done initializing the ADE configuration.");
                 m_initStatus = Status.initialized;
             } catch (CmsException e) {
                 m_initStatus = Status.notInitialized;
