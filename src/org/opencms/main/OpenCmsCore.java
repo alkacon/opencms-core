@@ -403,7 +403,6 @@ public final class OpenCmsCore {
      */
     protected CmsADEManager getADEManager() {
 
-        m_adeManager.initialize();
         return m_adeManager;
     }
 
@@ -1397,6 +1396,7 @@ public final class OpenCmsCore {
             CmsPersistentLoginTokenHandler.setAdminCms(adminCms);
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
+            m_adeManager.initialize();
             m_templateContextManager = new CmsTemplateContextManager(adminCms);
             m_workflowManager = systemConfiguration.getWorkflowManager();
             if (m_workflowManager == null) {

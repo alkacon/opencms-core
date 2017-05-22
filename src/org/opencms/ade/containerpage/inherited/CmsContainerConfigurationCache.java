@@ -149,16 +149,18 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
             m_taskFuture.cancel(false);
             m_taskFuture = null;
         }
-        try {
-            List<CmsResource> resources = m_cms.readResources(
-                "/",
-                CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(
-                    OpenCms.getResourceManager().getResourceType(
-                        CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME)),
-                true);
-            m_state = new CmsContainerConfigurationCacheState(load(resources).values());
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+        if (m_cms.existsResource("/", CmsResourceFilter.IGNORE_EXPIRATION)) {
+            try {
+                List<CmsResource> resources = m_cms.readResources(
+                    "/",
+                    CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(
+                        OpenCms.getResourceManager().getResourceType(
+                            CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME)),
+                    true);
+                m_state = new CmsContainerConfigurationCacheState(load(resources).values());
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
         Runnable updateAction = new Runnable() {
 
