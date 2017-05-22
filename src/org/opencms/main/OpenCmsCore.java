@@ -102,6 +102,7 @@ import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.IOException;
@@ -184,7 +185,7 @@ public final class OpenCmsCore {
     /** The object used for resolving database user credentials. */
     private I_CmsCredentialsResolver m_credentialsResolver;
 
-   /** List of configured directory default file names. */
+    /** List of configured directory default file names. */
     private List<String> m_defaultFiles;
 
     /** The default user and group names. */
@@ -1043,11 +1044,10 @@ public final class OpenCmsCore {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(
-                ". "
-                    + Messages.get().getBundle().key(
-                        Messages.GUI_SHELL_VERSION_1,
-                        OpenCms.getSystemInfo().getVersionNumber()));
+            CmsLog.INIT.info(". "
+                + Messages.get().getBundle().key(
+                    Messages.GUI_SHELL_VERSION_1,
+                    OpenCms.getSystemInfo().getVersionNumber()));
             for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
                 CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
             }
@@ -1119,6 +1119,9 @@ public final class OpenCmsCore {
         } catch (Exception e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_PROP_0), e);
         }
+
+        // initializes the system properties providing the SAX parser factory and XML reader implementation names
+        CmsXmlUtils.initSystemProperties();
 
         // create the configuration manager instance
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getConfigFolder());
@@ -1526,7 +1529,8 @@ public final class OpenCmsCore {
         CmsObject cms,
         String resourceName,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsException {
+        HttpServletResponse res)
+    throws CmsException {
 
         CmsException tmpException = null;
         CmsResource resource;
@@ -1746,10 +1750,11 @@ public final class OpenCmsCore {
 
         synchronized (LOCK) {
             if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {
-                System.err.println(Messages.get().getBundle().key(
-                    Messages.LOG_SHUTDOWN_CONSOLE_NOTE_2,
-                    getSystemInfo().getVersionNumber(),
-                    getSystemInfo().getWebApplicationName()));
+                System.err.println(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SHUTDOWN_CONSOLE_NOTE_2,
+                        getSystemInfo().getVersionNumber(),
+                        getSystemInfo().getWebApplicationName()));
                 if (CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
@@ -1760,9 +1765,10 @@ public final class OpenCmsCore {
                             getSystemInfo().getVersionNumber() + " [" + getSystemInfo().getVersionId() + "]"));
                     CmsLog.INIT.info(
                         Messages.get().getBundle().key(Messages.INIT_CURRENT_RUNLEVEL_1, new Integer(getRunLevel())));
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_SHUTDOWN_TIME_1,
-                        new Date(System.currentTimeMillis())));
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_SHUTDOWN_TIME_1,
+                            new Date(System.currentTimeMillis())));
                 }
 
                 // take the system offline
@@ -1977,10 +1983,11 @@ public final class OpenCmsCore {
                 return m_instance;
             }
             if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(
-                    Messages.LOG_WRONG_INIT_SEQUENCE_2,
-                    new Integer(3),
-                    new Integer(getRunLevel())));
+                CmsLog.INIT.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_WRONG_INIT_SEQUENCE_2,
+                        new Integer(3),
+                        new Integer(getRunLevel())));
                 return m_instance;
             }
 
@@ -2016,10 +2023,11 @@ public final class OpenCmsCore {
                 return m_instance;
             }
             if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(
-                    Messages.LOG_WRONG_INIT_SEQUENCE_2,
-                    new Integer(4),
-                    new Integer(getRunLevel())));
+                CmsLog.INIT.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_WRONG_INIT_SEQUENCE_2,
+                        new Integer(4),
+                        new Integer(getRunLevel())));
                 return m_instance;
             }
 
@@ -2351,7 +2359,8 @@ public final class OpenCmsCore {
         HttpServletRequest req,
         HttpServletResponse res,
         CmsResource resource,
-        String resourceName) throws CmsException, CmsVfsResourceNotFoundException {
+        String resourceName)
+    throws CmsException, CmsVfsResourceNotFoundException {
 
         // check online project
         if (cms.getRequestContext().getCurrentProject().isOnlineProject() && (res != null)) {
@@ -2490,7 +2499,8 @@ public final class OpenCmsCore {
         CmsUser user,
         String siteRoot,
         CmsUUID projectId,
-        String ouFqn) throws CmsException {
+        String ouFqn)
+    throws CmsException {
 
         CmsProject project = null;
         try {
@@ -2727,7 +2737,8 @@ public final class OpenCmsCore {
         HttpServletResponse res,
         String user,
         String password,
-        String ouFqn) throws CmsException {
+        String ouFqn)
+    throws CmsException {
 
         String siteroot = null;
         // gather information from request if provided
