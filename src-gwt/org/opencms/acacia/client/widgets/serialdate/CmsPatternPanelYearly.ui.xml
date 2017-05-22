@@ -1,0 +1,15 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui.input">
+	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets" />
+	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
+	<g:HTMLPanel styleName="">
+		<div class="{css.widgetCss.patternRow}">
+			<cms:CmsRadioButton ui:field="m_everyRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><cms:CmsSelectBox ui:field="m_everyMonth" />
+		</div>
+		<div class="{css.widgetCss.patternRow}">
+			<cms:CmsRadioButton ui:field="m_atRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><cms:CmsSelectBox ui:field="m_atNumber" /><cms:CmsSelectBox ui:field="m_atDay" /><span ui:field="m_labelIn"></span><cms:CmsSelectBox ui:field="m_atMonth" />
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder>

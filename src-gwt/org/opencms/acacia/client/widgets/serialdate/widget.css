@@ -1,0 +1,54 @@
+@external primary;
+
+.serialDataWidget {
+	border: 1px solid #7788AA;
+}
+
+.emptyValue .serialDataWidget {
+	border: 1px solid value("constants.css.borderColor");
+}
+
+.emptyValue .serialDataWidget * {
+	color: value("constants.css.borderColor") !important;
+	font-style: italic !important;
+	border-color: value("constants.css.borderColor") !important;
+}
+
+div.patternRow > div {
+			display: inline-block;
+			margin: 2px 4px;
+			vertical-align: middle;
+}
+
+div.patternRow > div:first-child {
+			margin-left: 0px;
+}
+
+div.patternRow div {
+	font-weight: normal !important;
+}
+
+div.patternRow input.patternInput {
+	width: 50px;
+	text-align: right;
+}
+
+div.patternRadio div {
+	text-align: left !important;
+}
+
+.singleLine{}
+.firstColumn{}
+.defaultView{}
+.secondColumn{}
+.compactView
+
+.widget{}
+.dragHelper{}
+.hasError{}
+.hasWarning{}
+.label{}
+.inActive{}
+.widgetHolder{}
+.entity{}
+.attributeValue{}

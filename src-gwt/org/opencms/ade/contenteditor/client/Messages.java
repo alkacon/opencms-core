@@ -85,6 +85,177 @@ public final class Messages {
     public static final String GUI_MULTISELECT_ACTIVATE_0 = "GUI_MULTISELECT_ACTIVATE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_TIME_STARTTIME_0 = "GUI_SERIALDATE_TIME_STARTTIME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_TIME_ENDTIME_0 = "GUI_SERIALDATE_TIME_ENDTIME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_TIME_STARTDATE_0 = "GUI_SERIALDATE_TIME_STARTDATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_TIME_DURATION_0 = "GUI_SERIALDATE_TIME_DURATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_TYPE_DAILY_0 = "GUI_SERIALDATE_TYPE_DAILY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_TYPE_WEEKLY_0 = "GUI_SERIALDATE_TYPE_WEEKLY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_TYPE_MONTHLY_0 = "GUI_SERIALDATE_TYPE_MONTHLY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_TYPE_YEARLY_0 = "GUI_SERIALDATE_TYPE_YEARLY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAILY_EVERY_0 = "GUI_SERIALDATE_DAILY_EVERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAILY_DAYS_0 = "GUI_SERIALDATE_DAILY_DAYS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAILY_EVERYWORKINGDAY_0 = "GUI_SERIALDATE_DAILY_EVERYWORKINGDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_WEEKLY_EVERY_0 = "GUI_SERIALDATE_WEEKLY_EVERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_WEEKLY_WEEK_AT_0 = "GUI_SERIALDATE_WEEKLY_WEEK_AT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAY_MONDAY_0 = "GUI_SERIALDATE_DAY_MONDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAY_TUESDAY_0 = "GUI_SERIALDATE_DAY_TUESDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAY_WEDNESDAY_0 = "GUI_SERIALDATE_DAY_WEDNESDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAY_THURSDAY_0 = "GUI_SERIALDATE_DAY_THURSDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAY_FRIDAY_0 = "GUI_SERIALDATE_DAY_FRIDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAY_SATURDAY_0 = "GUI_SERIALDATE_DAY_SATURDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DAY_SUNDAY_0 = "GUI_SERIALDATE_DAY_SUNDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_MONTHLY_MONTHDAY_AT_0 = "GUI_SERIALDATE_MONTHLY_MONTHDAY_AT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_MONTHLY_MONTHDAY_DAY_EVERY_0 = "GUI_SERIALDATE_MONTHLY_MONTHDAY_DAY_EVERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_MONTHLY_MONTH_0 = "GUI_SERIALDATE_MONTHLY_MONTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_MONTHLY_WEEKDAY_AT_0 = "GUI_SERIALDATE_MONTHLY_WEEKDAY_AT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_MONTHLY_WEEKDAY_EVERY_0 = "GUI_SERIALDATE_MONTHLY_WEEKDAY_EVERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_EVERY_0 = "GUI_SERIALDATE_YEARLY_EVERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_AT_0 = "GUI_SERIALDATE_YEARLY_AT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_IN_0 = "GUI_SERIALDATE_YEARLY_IN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_JAN_0 = "GUI_SERIALDATE_YEARLY_JAN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_FEB_0 = "GUI_SERIALDATE_YEARLY_FEB_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_MAR_0 = "GUI_SERIALDATE_YEARLY_MAR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_APR_0 = "GUI_SERIALDATE_YEARLY_APR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_MAY_0 = "GUI_SERIALDATE_YEARLY_MAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_JUN_0 = "GUI_SERIALDATE_YEARLY_JUN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_JUL_0 = "GUI_SERIALDATE_YEARLY_JUL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_AUG_0 = "GUI_SERIALDATE_YEARLY_AUG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_SEP_0 = "GUI_SERIALDATE_YEARLY_SEP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_OCT_0 = "GUI_SERIALDATE_YEARLY_OCT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_NOV_0 = "GUI_SERIALDATE_YEARLY_NOV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_YEARLY_DEC_0 = "GUI_SERIALDATE_YEARLY_DEC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_WEEKDAYNUMBER_1_0 = "GUI_SERIALDATE_WEEKDAYNUMBER_1_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_WEEKDAYNUMBER_2_0 = "GUI_SERIALDATE_WEEKDAYNUMBER_2_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_WEEKDAYNUMBER_3_0 = "GUI_SERIALDATE_WEEKDAYNUMBER_3_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_WEEKDAYNUMBER_4_0 = "GUI_SERIALDATE_WEEKDAYNUMBER_4_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_WEEKDAYNUMBER_5_0 = "GUI_SERIALDATE_WEEKDAYNUMBER_5_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_ENDTYPE_NEVER_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_NEVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_ENDTYPE_OCC_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_OCC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_ENDTYPE_DATE_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_SAMEDAY_0 = "GUI_SERIALDATE_DURATION_DURATION_SAMEDAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_FIRST_0 = "GUI_SERIALDATE_DURATION_DURATION_FIRST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_SECOND_0 = "GUI_SERIALDATE_DURATION_DURATION_SECOND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_THIRD_0 = "GUI_SERIALDATE_DURATION_DURATION_THIRD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_FOURTH_0 = "GUI_SERIALDATE_DURATION_DURATION_FOURTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_FIFTH_0 = "GUI_SERIALDATE_DURATION_DURATION_FIFTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_SIXTH_0 = "GUI_SERIALDATE_DURATION_DURATION_SIXTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_ONEWEEK_0 = "GUI_SERIALDATE_DURATION_DURATION_ONEWEEK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_DURATION_TWOWEEK_0 = "GUI_SERIALDATE_DURATION_DURATION_TWOWEEK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0 = "GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0";
 
     /** Message constant for key in the resource bundle. */

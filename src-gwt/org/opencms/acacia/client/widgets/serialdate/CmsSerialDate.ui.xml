@@ -1,0 +1,67 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox">
+	<ui:style>
+		div.time, div.pattern, div.duration {
+			padding: 10px;
+		}
+		div.time > div, div.duration div.startDate > div, div.duration div.durationRow > div{
+			display: inline-block;
+			width: 150px;
+			vertical-align: middle;
+			margin: 2px 4px;
+			
+		}
+		div.duration div.durationRow div, div.pattern div.patternCheckboxes div{
+			text-align: left !important;
+		}
+		div.pattern {
+			border-top: 1px solid #999999;
+			border-bottom: 1px solid #999999;
+		}
+		div.pattern:after {
+    		content: ".";
+    		display: block;
+    		height: 0 !important;
+    		min-height: 0 !important;
+    		clear: left;
+    		visibility: hidden;
+    		overflow: hidden !important;
+		}
+		div.pattern div.patternCheckboxes, div.duration div.startDate{
+			width: 250px;
+			float: left;
+		}
+		div.pattern div.patternCheckboxes > div{
+			display: block;
+		}
+		div.pattern div.patternOptions, div.duration div.durationRow{
+			margin-left: 260px;
+		}
+	</ui:style>
+	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
+	<g:HTMLPanel styleName="">
+		<div class="{style.time}">
+			<span ui:field="m_startTimeLabel"></span><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_startTime" /></div>
+			<span ui:field="m_endTimeLabel"></span><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_endTime" /></div>
+			<span ui:field="m_durationLabel"></span><cms:CmsSelectBox ui:field="m_duration" />
+		</div>
+		<div class="{style.pattern}">
+			<div class="{style.patternCheckboxes}">
+				<cms:CmsRadioButton ui:field="m_dailyRadioButton" />
+				<cms:CmsRadioButton ui:field="m_weeklyRadioButton" />
+				<cms:CmsRadioButton ui:field="m_monthlyRadioButton" />
+				<cms:CmsRadioButton ui:field="m_yearlyRadioButton" />
+			</div>
+			<g:SimplePanel ui:field="m_patternOptions" styleName="{style.patternOptions}" />
+		</div>
+		<div class="{style.duration}">
+			<div class="{style.startDate}"><span ui:field="m_startDateLabel"></span><cmsd:CmsDateBox ui:field="m_startDate" /></div>
+			<div class="{style.durationRow}"><cms:CmsRadioButton ui:field="m_noEndingRadioButton" /></div>
+			<div class="{style.durationRow}"><cms:CmsRadioButton ui:field="m_endsAfterRadioButton" /><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_endsAfter" /></div></div>
+			<div class="{style.durationRow}"><cms:CmsRadioButton ui:field="m_endsAtRadioButton" /><cmsd:CmsDateBox ui:field="m_endDate" /></div>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder>
