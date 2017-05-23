@@ -392,7 +392,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-    
+
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -975,6 +975,19 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Sets the error code which should be returned as exit code in case an exception is thrown
+     * by a shell command.<p>
+     *
+     * A value of -1 means the shell should not exit on exceptions thrown by shell commands
+     *
+     * @param errorCode the error code (the string representation of an integer)
+     */
+    public void onError(String errorCode) {
+
+        m_shell.m_errorCode = Integer.parseInt(errorCode);
+    }
+
+    /**
      * Does performance measurements of the OpenCms core.<p>
      *
      * @throws Exception if something goes wrong
@@ -1221,6 +1234,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+    <<<<<<< HEAD
      * Sets the rebuild mode for the requested index. Allowing to disable indexing during module import.<p>
      * This setting will not be written to the XML configuration file and will only take effect within the current shell instance.<p>
      *
@@ -1238,6 +1252,8 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+    =======
+    >>>>>>> 688e97b... Improved shell error handling to deal with report errors.
      * Set the locale of the current user logged in. <p>
      *
      * This method will always set a valid Locale for the current user!

@@ -122,6 +122,7 @@ public class CmsShell {
          */
         protected boolean executeMethod(String command, List<String> parameters) {
 
+            m_hasReportError = false;
             // build the method lookup
             String lookup = buildMethodLookup(command, parameters.size());
 
@@ -241,6 +242,9 @@ public class CmsShell {
                     System.exit(m_errorCode);
                 }
             }
+            if (m_hasReportError && (m_errorCode != -1)) {
+                System.exit(m_errorCode);
+            }
             return true;
         }
 
@@ -353,6 +357,9 @@ public class CmsShell {
         }
     }
 
+    /** Thread local which stores the current shell instance while a command is executing. */
+    private static ThreadLocal<CmsShell> m_shellInstance = new ThreadLocal<CmsShell>();
+
     /** Prefix for "additional" parameter. */
     public static final String SHELL_PARAM_ADDITIONAL_COMMANDS = "-additional=";
 
@@ -408,7 +415,10 @@ public class CmsShell {
     private boolean m_interactive;
 
     /** The code which the process should exit with in case of errors; -1 means exit is not called. */
-    private int m_errorCode = -1;
+    protected int m_errorCode = -1;
+
+    /** Flag to indicate whether an error was added to a shell report during the last command execution. */
+    private boolean m_hasReportError;
 
     /**
      * Creates a new CmsShell.<p>
@@ -631,6 +641,17 @@ public class CmsShell {
         }
     }
 
+    /*
+    * If running in the context of a CmsShell, this method notifies the running shell instance that an error has occured in a report.<p>
+    */
+    public static void setReportError() {
+
+        CmsShell instance = m_shellInstance.get();
+        if (instance != null) {
+            instance.m_hasReportError = true;
+        }
+    }
+
     /**
      * Executes the commands from the given input stream in this shell.<p>
      *
@@ -661,6 +682,7 @@ public class CmsShell {
     public void execute(Reader reader) {
 
         try {
+            m_shellInstance.set(this); 
             LineNumberReader lnr = new LineNumberReader(reader);
             while (!m_exitCalled) {
                 if (m_interactive || m_echo) {
@@ -714,6 +736,11 @@ public class CmsShell {
             }
         } catch (Throwable t) {
             t.printStackTrace(m_err);
+            if (m_errorCode != -1) { 
+                System.exit(m_errorCode);
+            }
+        } finally {
+            m_shellInstance.set(null);
         }
     }
 
@@ -867,15 +894,6 @@ public class CmsShell {
         return m_interactive;
     }
 
-    /**
-     * Handles an error code.<p>
-     *
-     * @param errorCode the error code
-     */
-    public void onError(String errorCode) {
-
-        m_errorCode = Integer.parseInt(errorCode);
-    }
 
     /**
      * Prints the shell prompt.<p>
@@ -936,8 +954,6 @@ public class CmsShell {
      */
     @Deprecated
     public void start(FileInputStream inputStream) {
-
-        // in the old behavior 'interactive' was always true
         setInteractive(true);
         execute(inputStream);
     }
@@ -954,7 +970,6 @@ public class CmsShell {
     public boolean validateUser(String userName, String password, CmsRole requiredRole) {
 
         boolean result = false;
-
         try {
             CmsUser user = m_cms.readUser(userName, password);
             result = OpenCms.getRoleManager().hasRole(m_cms, user.getName(), requiredRole);
@@ -1087,64 +1102,4 @@ public class CmsShell {
         }
     }
 
-    /**
-     * Executes all commands read from the given input stream.<p>
-     *
-     * @param fileInputStream a file input stream from which the commands are read
-     */
-    private void executeCommands(FileInputStream fileInputStream) {
-
-        try {
-            LineNumberReader lnr = new LineNumberReader(new InputStreamReader(fileInputStream));
-            while (!m_exitCalled) {
-                printPrompt();
-                String line = lnr.readLine();
-                if (line == null) {
-                    // if null the file has been read to the end
-                    try {
-                        Thread.sleep(500);
-                    } catch (Throwable t) {
-                        // noop
-                    }
-                    break;
-                }
-                if (line.trim().startsWith("#")) {
-                    System.out.println(line);
-                    continue;
-                }
-                StringReader reader = new StringReader(line);
-                StreamTokenizer st = new StreamTokenizer(reader);
-                st.eolIsSignificant(true);
-                st.wordChars('*', '*');
-                // put all tokens into a List
-                List<String> parameters = new ArrayList<String>();
-                while (st.nextToken() != StreamTokenizer.TT_EOF) {
-                    if (st.ttype == StreamTokenizer.TT_NUMBER) {
-                        parameters.add(Integer.toString(new Double(st.nval).intValue()));
-                    } else {
-                        parameters.add(st.sval);
-                    }
-                }
-                reader.close();
-
-                // extract command and arguments
-                if (parameters.size() == 0) {
-                    if (m_echo) {
-                        System.out.println();
-                    }
-                    continue;
-                }
-                String command = parameters.get(0);
-                parameters = parameters.subList(1, parameters.size());
-
-                // execute the command
-                executeCommand(command, parameters);
-            }
-        } catch (Throwable t) {
-            t.printStackTrace(System.err);
-            if (m_errorCode != -1) {
-                System.exit(m_errorCode);
-            }
-        }
-    }
 }

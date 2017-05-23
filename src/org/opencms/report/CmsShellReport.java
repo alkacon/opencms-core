@@ -28,6 +28,7 @@
 package org.opencms.report;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsShell;
 
 import java.util.Locale;
 
@@ -51,6 +52,16 @@ public class CmsShellReport extends CmsPrintStreamReport {
     public CmsShellReport(Locale locale) {
 
         super(System.out, locale, false);
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#addError(java.lang.Object)
+     */
+    @Override
+    public void addError(Object obj) {
+
+        super.addError(obj);
+        CmsShell.setReportError();
     }
 
     /**
