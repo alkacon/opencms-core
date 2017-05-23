@@ -180,15 +180,13 @@ public class CmsExportPointDriver implements I_CmsExportPointDriver {
     }
 
     /**
-     * Writes (if required creates) a resource with the given name to the real file system.<p>
+     * Writes file data to the RFS.<p>
      *
-     * @param resourceName the root path of the resource to write
-     * @param exportpoint the name of the export point
-     * @param content the contents of the file to write
+     * @param file the RFS file location
+     * @param content the file content
      */
-    protected void writeResource(String resourceName, String exportpoint, byte[] content) {
+    protected void writeResource(File file, byte[] content) {
 
-        File file = getExportPointFile(resourceName, exportpoint);
         try {
             File folder;
             if (content == null) {
@@ -217,5 +215,18 @@ public class CmsExportPointDriver implements I_CmsExportPointDriver {
                 Messages.get().getBundle().key(Messages.LOG_WRITE_EXPORT_POINT_FAILED_1, file.getAbsolutePath()),
                 e);
         }
+    }
+
+    /**
+     * Writes (if required creates) a resource with the given name to the real file system.<p>
+     *
+     * @param resourceName the root path of the resource to write
+     * @param exportpoint the name of the export point
+     * @param content the contents of the file to write
+     */
+    protected void writeResource(String resourceName, String exportpoint, byte[] content) {
+
+        File file = getExportPointFile(resourceName, exportpoint);
+        writeResource(file, content);
     }
 }

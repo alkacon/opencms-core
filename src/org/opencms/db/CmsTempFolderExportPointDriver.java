@@ -35,10 +35,12 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -57,13 +59,28 @@ import com.google.common.collect.Sets;
 public class CmsTempFolderExportPointDriver extends CmsExportPointDriver {
 
     /** The log object for this class. */
+    @SuppressWarnings("unused")
     private static final Log LOG = CmsLog.getLog(CmsTempFolderExportPointDriver.class);
 
     /** The content to be used for dummy files in the temporary export point folders which represent deleted files. */
     public static final String DELETE_MARKER = "--OCMS-TEMP-EXPORTPOINT-DELETED-FILE-MARKER--";
 
+    /** The byte array used to mark files as deleted. */
+    protected static byte[] DELETE_MARKER_BYTES;
+
+    static {
+        try {
+            DELETE_MARKER_BYTES = DELETE_MARKER.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace(); // shouldn't happen
+        }
+    }
+
     /** The temp folder for export points. */
     public static final String TEMP_EXPORTPOINT_FOLDER = "WEB-INF/exportpoint-temp";
+
+    /** Map of export points by VFS path. */
+    private Map<String, CmsExportPoint> m_exportPointMap = Maps.newHashMap();
 
     /** The URIs (VFS paths) of export points which are mapped to the temporary export point folder. */
     private Set<String> m_urisWithTempFolderDestinations = Sets.newHashSet();
@@ -85,6 +102,7 @@ public class CmsTempFolderExportPointDriver extends CmsExportPointDriver {
         m_exportpointLookupMap = new HashMap<String, String>();
         for (CmsExportPoint point : m_exportpoints) {
             String dest = point.getConfiguredDestination();
+            m_exportPointMap.put(point.getUri(), point);
             if (shouldUseTempFolderForDestination(dest)) {
                 String realDest = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
                     CmsStringUtil.joinPaths(TEMP_EXPORTPOINT_FOLDER, point.getConfiguredDestination()));
@@ -119,11 +137,7 @@ public class CmsTempFolderExportPointDriver extends CmsExportPointDriver {
 
         File file = getExportPointFile(resourceName, exportpoint);
         if (m_urisWithTempFolderDestinations.contains(exportpoint)) {
-            try {
-                writeFile(resourceName, exportpoint, DELETE_MARKER.getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
+            writeFile(resourceName, exportpoint, DELETE_MARKER_BYTES);
         } else {
             if (file.exists() && file.canWrite()) {
                 // delete the file (or folder)
@@ -133,6 +147,32 @@ public class CmsTempFolderExportPointDriver extends CmsExportPointDriver {
                 if (parent.canWrite()) {
                     parent.delete();
                 }
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.db.CmsExportPointDriver#writeFile(java.lang.String, java.lang.String, byte[])
+     */
+    @Override
+    public void writeFile(String resourceName, String exportpoint, byte[] content) {
+
+        StringBuffer exportpath = new StringBuffer(128);
+        exportpath.append(m_exportpointLookupMap.get(exportpoint));
+        exportpath.append(resourceName.substring(exportpoint.length()));
+        File file = new File(exportpath.toString());
+        writeResource(file, content);
+        CmsExportPoint point = m_exportPointMap.get(exportpoint);
+        // we can use object identity comparison because DELETE_MARKER_BYTES is not used from the outside
+        if ((content != DELETE_MARKER_BYTES) && shouldUseTempFolderForDestination(point.getConfiguredDestination())) {
+            // we already wrote the file to the temp folder location,
+            // now write it to the real location, but only if it is new
+            exportpath = new StringBuffer(128);
+            exportpath.append(point.getDestinationPath());
+            exportpath.append(resourceName.substring(exportpoint.length()));
+            file = new File(exportpath.toString());
+            if (!file.exists()) {
+                writeResource(file, content);
             }
         }
     }
