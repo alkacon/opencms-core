@@ -1046,8 +1046,7 @@ public final class OpenCmsCore {
         // initialize site root from request
         String siteroot = null;
 
-        String servletPath = req.getServletPath();
-        if ((servletPath != null) && servletPath.startsWith(CmsSystemInfo.WORKPLACE_PATH)) {
+        if (isWorkplaceServletRequest(req)) {
             // in case of requests targeting the workplace servlet, use the site root from the current session
             siteroot = sessionInfo.getSiteRoot();
         } else if (getSiteManager().isWorkplaceRequest(req)) {
@@ -2594,8 +2593,9 @@ public final class OpenCmsCore {
         if (m_localeManager.isInitialized()) {
             // locale manager is initialized
             // resolve locale and encoding
-            if (requestedResource.endsWith(OpenCmsServlet.HANDLE_GWT) && (request != null)) {
-                // GWT RPC call, always keep the request encoding and use the default locale
+            if ((request != null)
+                && (requestedResource.endsWith(OpenCmsServlet.HANDLE_GWT) || isWorkplaceServletRequest(request))) {
+                // GWT RPC or workplace servlet call, always keep the request encoding and use the default locale
                 i18nInfo = new CmsI18nInfo(CmsLocaleManager.getDefaultLocale(), request.getCharacterEncoding());
             } else {
                 String resourceName;
@@ -2833,6 +2833,19 @@ public final class OpenCmsCore {
             cms.loginUser(user, password, CmsContextInfo.LOCALHOST);
         }
         return cms;
+    }
+
+    /**
+     * Checks whether the given request targets the workplace UI servlet.<p>
+     *
+     * @param req the request
+     *
+     * @return <code>true</code> in case the given request targets the workplace UI servlet
+     */
+    private boolean isWorkplaceServletRequest(HttpServletRequest req) {
+
+        String servletPath = req.getServletPath();
+        return (servletPath != null) && servletPath.startsWith(CmsSystemInfo.WORKPLACE_PATH);
     }
 
     /**
