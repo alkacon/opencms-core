@@ -58,7 +58,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RPC;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.VaadinService;
@@ -199,15 +198,21 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     }
 
     /**
+     * Opens the publish dialog.<p>
+     */
+    public void openPublishDialog() {
+
+        openPublishDailog(null, null);
+    }
+
+    /**
      * Opens the publish dialog for the given project.<p>
      *
      * @param project the project for which to open the dialog
      */
     public void openPublishDialog(CmsProject project) {
 
-        CmsPublishData publishData = getPublishData(project);
-        String data = getSerializedPublishData(publishData);
-        getRpcProxy(I_CmsGwtDialogClientRpc.class).openPublishDialog(data);
+        openPublishDailog(project, null);
     }
 
     /**
@@ -217,8 +222,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
      */
     public void openPublishDialog(List<CmsResource> resources) {
 
-        String data = getSerializedPublishData(getPublishData(resources));
-        getRpcProxy(I_CmsGwtDialogClientRpc.class).openPublishDialog(data);
+        openPublishDailog(null, resources);
     }
 
     /**
@@ -260,48 +264,23 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     }
 
     /**
-     * Gets the publish data for the given project.<p>
-     *
-     * @param project the project to open publish dialog for
-     *
-     * @return the publish data
-     */
-    protected CmsPublishData getPublishData(CmsProject project) {
-
-        CmsPublishService publishService = new CmsPublishService();
-        CmsObject cms = A_CmsUI.getCmsObject();
-        publishService.setCms(cms);
-        publishService.setRequest((HttpServletRequest)(VaadinService.getCurrentRequest()));
-        try {
-            return publishService.getPublishData(
-                cms,
-                new HashMap<String, String>()/*params*/,
-                null/*workflowId*/,
-                "" + project.getUuid()/*projectParam*/,
-                new ArrayList<String>(),
-                null/*closelink*/,
-                false/*confirmation*/);
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
-
-    /**
      * Gets the publish data for the given resources.<p>
      *
      * @param directPublishResources the resources to publish
+     * @param project the project for which to open the dialog
      *
      * @return the publish data for the resources
      */
-    protected CmsPublishData getPublishData(List<CmsResource> directPublishResources) {
+    protected CmsPublishData getPublishData(CmsProject project, List<CmsResource> directPublishResources) {
 
         CmsPublishService publishService = new CmsPublishService();
         CmsObject cms = A_CmsUI.getCmsObject();
         publishService.setCms(cms);
-        List<String> pathList = Lists.newArrayList();
-        for (CmsResource resource : directPublishResources) {
-            pathList.add(cms.getSitePath(resource));
+        List<String> pathList = new ArrayList<String>();
+        if (directPublishResources != null) {
+            for (CmsResource resource : directPublishResources) {
+                pathList.add(cms.getSitePath(resource));
+            }
         }
         publishService.setRequest((HttpServletRequest)(VaadinService.getCurrentRequest()));
         try {
@@ -309,7 +288,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
                 cms,
                 new HashMap<String, String>()/*params*/,
                 null/*workflowId*/,
-                null/*projectParam*/,
+                project != null ? project.getUuid().toString() : null /*projectParam*/,
                 pathList,
                 null/*closelink*/,
                 false/*confirmation*/);
@@ -338,6 +317,19 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Opens the publish dialog for the given project.<p>
+     *
+     * @param project the project for which to open the dialog
+     * @param directPublishResources the resources for which to open the publish dialog.
+     */
+    protected void openPublishDailog(CmsProject project, List<CmsResource> directPublishResources) {
+
+        CmsPublishData publishData = getPublishData(project, directPublishResources);
+        String data = getSerializedPublishData(publishData);
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openPublishDialog(data);
     }
 
 }
