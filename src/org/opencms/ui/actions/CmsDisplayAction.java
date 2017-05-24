@@ -30,6 +30,7 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
@@ -51,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefaultAction {
 
     /** The name of the online version window. */
-    public static final String ONLINE_WINDOW_NAME = "opencmsOnline";
+    public static final String ONLINE_WINDOW_NAME = "_blank";
 
     /** The action id. */
     public static final String ACTION_ID = "display";
@@ -66,16 +67,18 @@ public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefau
     public void executeAction(I_CmsDialogContext context) {
 
         if (context.getResources().size() == 1) {
+            CmsResource resource = context.getResources().get(0);
 
-            HttpServletRequest req = CmsVaadinUtils.getRequest();
-            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-            if (context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
+            if (!(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContent)
+                || context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
                 String link = OpenCms.getLinkManager().getOnlineLink(
                     context.getCms(),
-                    context.getCms().getSitePath(context.getResources().get(0)));
+                    context.getCms().getSitePath(resource));
                 A_CmsUI.get().openPageOrWarn(link, ONLINE_WINDOW_NAME);
             } else {
-                String link = OpenCms.getLinkManager().substituteLink(context.getCms(), context.getResources().get(0));
+                HttpServletRequest req = CmsVaadinUtils.getRequest();
+                CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
+                String link = OpenCms.getLinkManager().substituteLink(context.getCms(), resource);
                 A_CmsUI.get().getPage().setLocation(link);
             }
         }
