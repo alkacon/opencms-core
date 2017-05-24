@@ -369,6 +369,8 @@ public class CmsShell {
     /** Prefix for "servletMapping" parameter. */
     public static final String SHELL_PARAM_DEFAULT_WEB_APP = "-defaultWebApp=";
 
+    public static final String SHELL_PARAM_ERROR_CODE = "-errorCode=";
+
     /** Prefix for "script" parameter. */
     public static final String SHELL_PARAM_SCRIPT = "-script=";
 
@@ -571,6 +573,7 @@ public class CmsShell {
         String servletMapping = null;
         String defaultWebApp = null;
         String additional = null;
+        int errorCode = -1;
 
         if (args.length > 4) {
             wrongUsage = true;
@@ -587,6 +590,8 @@ public class CmsShell {
                     defaultWebApp = arg.substring(SHELL_PARAM_DEFAULT_WEB_APP.length());
                 } else if (arg.startsWith(SHELL_PARAM_ADDITIONAL_COMMANDS)) {
                     additional = arg.substring(SHELL_PARAM_ADDITIONAL_COMMANDS.length());
+                } else if (arg.startsWith(SHELL_PARAM_ERROR_CODE)) {
+                    errorCode = Integer.valueOf(arg.substring(SHELL_PARAM_ERROR_CODE.length()));
                 } else {
                     System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_WRONG_USAGE_0));
                     wrongUsage = true;
@@ -632,6 +637,7 @@ public class CmsShell {
                 System.out,
                 System.err,
                 interactive);
+            shell.m_errorCode = errorCode;
             shell.execute(stream);
             try {
                 stream.close();
@@ -682,7 +688,7 @@ public class CmsShell {
     public void execute(Reader reader) {
 
         try {
-            m_shellInstance.set(this); 
+            m_shellInstance.set(this);
             LineNumberReader lnr = new LineNumberReader(reader);
             while (!m_exitCalled) {
                 if (m_interactive || m_echo) {
@@ -736,7 +742,7 @@ public class CmsShell {
             }
         } catch (Throwable t) {
             t.printStackTrace(m_err);
-            if (m_errorCode != -1) { 
+            if (m_errorCode != -1) {
                 System.exit(m_errorCode);
             }
         } finally {
@@ -894,7 +900,6 @@ public class CmsShell {
         return m_interactive;
     }
 
-
     /**
      * Prints the shell prompt.<p>
      */
@@ -954,6 +959,7 @@ public class CmsShell {
      */
     @Deprecated
     public void start(FileInputStream inputStream) {
+
         setInteractive(true);
         execute(inputStream);
     }
