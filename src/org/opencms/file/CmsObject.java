@@ -3215,7 +3215,11 @@ public final class CmsObject {
     public List<CmsResource> readResources(CmsResource resource, CmsResourceFilter filter, boolean readTree)
     throws CmsException {
 
-        return m_securityManager.readResources(m_context, resource, filter, readTree);
+        if (readTree) {
+            return m_securityManager.readResources(m_context, resource, filter, readTree);
+        } else {
+            return m_securityManager.readChildResources(m_context, resource, filter, true, true);
+        }
     }
 
     /**
@@ -4005,7 +4009,7 @@ public final class CmsObject {
      *
      * @param publishTag the correlative publish tag
      * @param publishDate the date of publishing
-
+    
      * @throws CmsException if operation was not successful
      */
     public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {

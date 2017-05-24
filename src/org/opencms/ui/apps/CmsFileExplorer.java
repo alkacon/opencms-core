@@ -1235,7 +1235,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             folderPath = folderPath.substring(cms.getRequestContext().getSiteRoot().length());
         }
         setPathInfo(folderPath);
-        List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
+        List<CmsResource> childResources = cms.readResources(folder, FILES_N_FOLDERS, false);
         m_fileTable.fillTable(cms, childResources, clearFilter);
         boolean hasFolderChild = false;
         for (CmsResource child : childResources) {
