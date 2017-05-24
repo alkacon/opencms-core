@@ -31,20 +31,17 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * The display action. Renders the selected resource.<p>
@@ -68,17 +65,20 @@ public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefau
 
         if (context.getResources().size() == 1) {
             CmsResource resource = context.getResources().get(0);
-
-            if (!(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContent)
-                || context.getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
-                String link = OpenCms.getLinkManager().getOnlineLink(
-                    context.getCms(),
-                    context.getCms().getSitePath(resource));
+            boolean isOnline = context.getCms().getRequestContext().getCurrentProject().isOnlineProject();
+            String link;
+            if (isOnline
+                && !(CmsStringUtil.isEmptyOrWhitespaceOnly(context.getCms().getRequestContext().getSiteRoot())
+                    || OpenCms.getSiteManager().isSharedFolder(context.getCms().getRequestContext().getSiteRoot()))) {
+                // use the online link only in case the current site is not the root site or the shared folder
+                link = OpenCms.getLinkManager().getOnlineLink(context.getCms(), context.getCms().getSitePath(resource));
+            } else {
+                link = OpenCms.getLinkManager().substituteLink(context.getCms(), resource);
+            }
+            if (isOnline
+                || !(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContent)) {
                 A_CmsUI.get().openPageOrWarn(link, ONLINE_WINDOW_NAME);
             } else {
-                HttpServletRequest req = CmsVaadinUtils.getRequest();
-                CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-                String link = OpenCms.getLinkManager().substituteLink(context.getCms(), resource);
                 A_CmsUI.get().getPage().setLocation(link);
             }
         }
