@@ -30,7 +30,9 @@ package org.opencms.acacia.client.widgets;
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Iterator;
@@ -149,9 +151,12 @@ public class CmsMultiSelectWidget extends Composite implements I_CmsEditWidget {
         // All composites must call initWidget() in their constructors.
         m_scrollPanel.add(m_panel);
         m_scrollPanel.setResizable(false);
-        int height = (m_rowsToShow * 17);
+
+        int inputHeight = CmsClientStringUtil.parseInt(I_CmsLayoutBundle.INSTANCE.constants().css().inputHeight());
+
+        int height = (m_rowsToShow * inputHeight) + 6;
         if (m_checkboxes.size() < m_rowsToShow) {
-            height = (m_checkboxes.size() * 17);
+            height = (m_checkboxes.size() * inputHeight) + 6;
         }
         m_scrollPanel.setDefaultHeight(height);
         m_scrollPanel.setHeight(height + "px");
