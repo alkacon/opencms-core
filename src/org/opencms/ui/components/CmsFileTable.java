@@ -106,6 +106,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -303,6 +304,9 @@ public class CmsFileTable extends CmsResourceTable {
 
     /** The original edit value. */
     private String m_originalEditValue;
+
+    /** The table drag mode, stored during item editing. */
+    private TableDragMode m_beforEditDragMode;
 
     /** The default action column property. */
     CmsResourceTableProperty m_actionColumnProperty;
@@ -696,8 +700,12 @@ public class CmsFileTable extends CmsResourceTable {
         m_editProperty = propertyId;
         m_originalEditValue = (String)m_container.getItem(m_editItemId).getItemProperty(m_editProperty).getValue();
         m_editHandler = editHandler;
-        m_fileTable.setEditable(true);
 
+        // storing current drag mode and setting it to none to avoid text selection issues in IE11
+        m_beforEditDragMode = m_fileTable.getDragMode();
+        m_fileTable.setDragMode(TableDragMode.NONE);
+
+        m_fileTable.setEditable(true);
     }
 
     /**
@@ -716,6 +724,11 @@ public class CmsFileTable extends CmsResourceTable {
             }
         }
         clearEdit();
+
+        // restoring drag mode
+        m_fileTable.setDragMode(m_beforEditDragMode);
+
+        m_beforEditDragMode = null;
     }
 
     /**
