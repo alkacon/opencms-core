@@ -499,17 +499,6 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
     }
 
     /**
-     * Cleared all fields for the inactive view.<p>
-     */
-    public void clearFealds() {
-
-        m_startDate.setFormValueAsString("");
-        m_endDate.setFormValueAsString("");
-        m_startTime.setValue("");
-        m_endTime.setValue("");
-    }
-
-    /**
      * Represents a value change event.<p>
      */
     public void fireValueChange() {
@@ -678,14 +667,19 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
             m_endsAfterRadioButton.setEnabled(active);
             m_endsAtRadioButton.setEnabled(active);
 
-            if (active) {
-                m_groupPattern.selectButton(m_dailyRadioButton);
-                m_groupDuration.selectButton(m_noEndingRadioButton);
-            } else {
+            m_dailyPattern.setActive(active);
+
+            m_groupPattern.selectButton(m_dailyRadioButton);
+            m_groupDuration.selectButton(m_noEndingRadioButton);
+
+            if (!active) {
+                m_startDate.setFormValueAsString("");
+                m_endDate.setFormValueAsString("");
+                m_startTime.setValue("");
+                m_endTime.setValue("");
                 m_groupPattern.deselectButton();
                 m_groupDuration.deselectButton();
             }
-            m_dailyPattern.setActive(active);
         }
     }
 
@@ -908,12 +902,20 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
                 throw new IllegalArgumentException();
         }
 
-        startDate = m_timeFormat.parse(m_startTime.getText());
-        m_startDateValue.setHours(startDate.getHours());
-        m_startDateValue.setMinutes(startDate.getMinutes());
-        endDate = m_timeFormat.parse(m_endTime.getText());
-        m_endDateValue.setHours(endDate.getHours());
-        m_endDateValue.setMinutes(endDate.getMinutes());
+        try {
+            startDate = m_timeFormat.parse(m_startTime.getText());
+            m_startDateValue.setHours(startDate.getHours());
+            m_startDateValue.setMinutes(startDate.getMinutes());
+        } catch (IllegalArgumentException e) {
+            // TODO: Add validation to omit that exception
+        }
+        try {
+            endDate = m_timeFormat.parse(m_endTime.getText());
+            m_endDateValue.setHours(endDate.getHours());
+            m_endDateValue.setMinutes(endDate.getMinutes());
+        } catch (IllegalArgumentException e) {
+            // TODO: Add validation to omit that exception
+        }
 
         CmsDebugLog.getInstance().printLine("New Endtime: " + m_endDateValue.getTime());
         result += CONFIG_STARTDATE + "=" + m_startDateValue.getTime() + "|";

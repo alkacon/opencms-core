@@ -147,7 +147,6 @@ public class CmsSerialDateWidget extends Composite implements I_CmsEditWidget {
             getElement().focus();
         } else {
             getElement().addClassName(org.opencms.acacia.client.css.I_CmsLayoutBundle.INSTANCE.form().inActive());
-            m_serialDate.clearFealds();
         }
         m_serialDate.setActive(m_active);
         if (active) {

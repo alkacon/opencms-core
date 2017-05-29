@@ -80,6 +80,9 @@ public class CmsPatternPanelDaily extends Composite implements HasValueChangeHan
     /** Value change handler. */
     private ValueChangeHandler<String> m_handler;
 
+    /** Activation status. */
+    private boolean m_active = true;
+
     /**
      * Default constructor to create the panel.<p>
      */
@@ -123,7 +126,9 @@ public class CmsPatternPanelDaily extends Composite implements HasValueChangeHan
      */
     public void fireValueChange() {
 
-        ValueChangeEvent.fire(this, getWorkingDay());
+        if (m_active) {
+            ValueChangeEvent.fire(this, getWorkingDay());
+        }
     }
 
     /**
@@ -164,15 +169,13 @@ public class CmsPatternPanelDaily extends Composite implements HasValueChangeHan
      */
     public void setActive(boolean active) {
 
-        m_everyRadioButton.setEnabled(active);
-        m_workingRadioButton.setEnabled(active);
-        m_everyDay.setEnabled(active);
-        if (active) {
-            m_everyDay.setText("1");
+        if (active != m_active) {
+            m_active = active;
+            m_everyRadioButton.setEnabled(active);
+            m_workingRadioButton.setEnabled(active);
+            m_everyDay.setEnabled(active);
             m_everyRadioButton.setChecked(true);
-        } else {
-            m_group.deselectButton();
-            m_everyDay.setText("");
+            m_everyDay.setText("1");
         }
     }
 
