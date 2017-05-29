@@ -238,33 +238,6 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
      */
     protected void initContent(CmsExternalLinkInfoBean linkInfo) {
 
-        m_linkInfo = linkInfo;
-        m_previousLink = m_linkInfo.getLink() != null ? m_linkInfo.getLink() : "";
-        m_previousTitle = m_linkInfo.getTitle() != null ? m_linkInfo.getTitle() : "";
-        m_dialogContent = new CmsFieldsetFormFieldPanel(m_linkInfo, null);
-        m_dialogContent.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
-        m_dialogContent.getFieldSet().setOpenerVisible(false);
-        m_dialogContent.getFieldSet().getElement().getStyle().setMarginTop(4, Style.Unit.PX);
-        setMainContent(m_dialogContent);
-        if (m_isCreateNew) {
-            m_fileName = new CmsTextBox();
-            m_fileName.setTriggerChangeOnKeyPress(true);
-            m_fileName.addValueChangeHandler(this);
-            addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_FILE_NAME_0), m_fileName);
-        }
-
-        m_linkTitle = new CmsTextBox();
-        m_linkTitle.setFormValueAsString(m_previousTitle);
-        m_linkTitle.setTriggerChangeOnKeyPress(true);
-        m_linkTitle.addValueChangeHandler(this);
-        addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_TITLE_0), m_linkTitle);
-        m_linkContent = new CmsTextBox();
-        m_linkContent.setTriggerChangeOnKeyPress(true);
-        m_linkContent.addValueChangeHandler(this);
-        m_linkContent.setFormValueAsString(m_previousLink);
-        addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_LINK_0), m_linkContent);
-        addDialogClose(null);
-
         CmsPushButton closeButton = new CmsPushButton();
         closeButton.setText(Messages.get().key(Messages.GUI_CANCEL_0));
         closeButton.setUseMinWidth(true);
@@ -296,6 +269,33 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
             }
         });
         addButton(m_okButton);
+
+        m_linkInfo = linkInfo;
+        m_previousLink = m_linkInfo.getLink() != null ? m_linkInfo.getLink() : "";
+        m_previousTitle = m_linkInfo.getTitle() != null ? m_linkInfo.getTitle() : "";
+        m_dialogContent = new CmsFieldsetFormFieldPanel(m_linkInfo, null);
+        m_dialogContent.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
+        m_dialogContent.getFieldSet().setOpenerVisible(false);
+        m_dialogContent.getFieldSet().getElement().getStyle().setMarginTop(4, Style.Unit.PX);
+        setMainContent(m_dialogContent);
+        if (m_isCreateNew) {
+            m_fileName = new CmsTextBox();
+            m_fileName.setTriggerChangeOnKeyPress(true);
+            m_fileName.addValueChangeHandler(this);
+            addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_FILE_NAME_0), m_fileName);
+        }
+
+        m_linkTitle = new CmsTextBox();
+        m_linkTitle.setFormValueAsString(m_previousTitle);
+        m_linkTitle.setTriggerChangeOnKeyPress(true);
+        m_linkTitle.addValueChangeHandler(this);
+        addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_TITLE_0), m_linkTitle);
+        m_linkContent = new CmsTextBox();
+        m_linkContent.setFormValueAsString(m_previousLink);
+        m_linkContent.setTriggerChangeOnKeyPress(true);
+        m_linkContent.addValueChangeHandler(this);
+        addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_LINK_0), m_linkContent);
+        addDialogClose(null);
         setOkEnabled(
             false,
             m_isCreateNew
