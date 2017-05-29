@@ -70,6 +70,7 @@ import org.opencms.search.solr.spellchecking.CmsSolrSpellchecker;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.A_CmsModeStringEnumeration;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
@@ -79,6 +80,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1795,6 +1797,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 properties.put(CoreDescriptor.CORE_DATADIR, dataDir.getAbsolutePath());
                 properties.put(CoreDescriptor.CORE_CONFIGSET, "default");
                 core = m_coreContainer.create(index.getCoreName(), instanceDir.toPath(), properties);
+                ensureIndexIsUnlocked(core);
             } catch (NullPointerException e) {
                 if (core != null) {
                     core.close();
@@ -3093,6 +3096,34 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
         return container;
 
+    }
+
+    /**
+     * Remove write.lock file in the data directory to ensure the index is unlocked.
+     * @param core the Solr core to unlock the index for
+     */
+    private void ensureIndexIsUnlocked(SolrCore core) {
+
+        Collection<File> lockFiles = new ArrayList<File>(2);
+        lockFiles.add(
+            new File(
+                CmsFileUtil.addTrailingSeparator(CmsFileUtil.addTrailingSeparator(core.getDataDir()) + "index")
+                    + "write.lock"));
+        lockFiles.add(
+            new File(
+                CmsFileUtil.addTrailingSeparator(CmsFileUtil.addTrailingSeparator(core.getDataDir()) + "spellcheck")
+                    + "write.lock"));
+        for (File lockFile : lockFiles) {
+            if (lockFile.exists()) {
+                lockFile.delete();
+                LOG.warn(
+                    "Forcely unlocking index \""
+                        + core.getName()
+                        + "\" by removing file \""
+                        + lockFile.getAbsolutePath()
+                        + "\".");
+            }
+        }
     }
 
     /**
