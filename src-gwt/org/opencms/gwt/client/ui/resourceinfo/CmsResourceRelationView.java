@@ -45,9 +45,9 @@ import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
@@ -114,17 +114,14 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
     /** The popup which contains this widget. */
     protected CmsPopup m_popup;
 
-    /** Container which is used to display the main resource information box. */
-    SimplePanel m_infoBox = new SimplePanel();
-
-    /** Scroll panel. */
-    CmsScrollPanel m_scrollPanel;
-
     /** The dialog scroll panels. */
     List<CmsScrollPanel> m_scrollPanels;
 
     /** The edit button. */
     private CmsPushButton m_editButton;
+
+    /** The context menu handler. */
+    private CmsContextMenuHandler m_menuHandler;
 
     /** The display mode. */
     private Mode m_mode;
@@ -137,13 +134,29 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
      *
      * @param status the resource status from which we get the related resources to display.
      * @param mode the display mode (display relation sources or targets)
+     * @param menuHandler the context menu handler
      */
-    public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode) {
+    public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode, CmsContextMenuHandler menuHandler) {
 
         initWidget(m_panel);
+        m_menuHandler = menuHandler;
         m_scrollPanels = new ArrayList<CmsScrollPanel>();
         m_statusBean = status;
         m_mode = mode;
+        initContent(status);
+    }
+
+    /**
+     * Initializes the content.<p>
+     *
+     * @param status the status data
+     */
+    public void initContent(CmsResourceStatusBean status) {
+
+        m_statusBean = status;
+        m_panel.clear();
+        m_scrollPanels.clear();
+
         // wrap list info item in another panel to achieve layout uniformity with other similar widgets
         SimplePanel infoBoxPanel = new SimplePanel();
         infoBoxPanel.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
@@ -162,7 +175,7 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                 CmsDomUtil.resizeAncestor(getParent());
             }
         });
-        CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler());
+        CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), m_menuHandler);
         menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         infoWidget.addButton(menuButton);
         m_panel.add(infoBoxPanel);
@@ -216,9 +229,7 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                 CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                 CmsListItem item = new CmsListItem(itemWidget);
                 //   itemWidget.setWidth("490px");
-                CmsContextMenuButton button = new CmsContextMenuButton(
-                    relationBean.getStructureId(),
-                    new CmsResourceInfoView.ContextMenuHandler());
+                CmsContextMenuButton button = new CmsContextMenuButton(relationBean.getStructureId(), m_menuHandler);
                 item.getListItemWidget().addButton(button);
                 final CmsResourceStatusRelationBean currentRelationBean = relationBean;
                 final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(

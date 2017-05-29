@@ -32,26 +32,15 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
-import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
-import org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings;
-import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
-import org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog;
-import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
-import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
-import org.opencms.util.CmsUUID;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -61,7 +50,6 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
@@ -72,55 +60,6 @@ import com.google.gwt.user.client.ui.Widget;
  * A widget used to display various resource information to a user.<p>
  */
 public class CmsResourceInfoView extends Composite implements I_CmsDescendantResizeHandler {
-
-    /**
-     * Context menu handler for resource info boxes.<p>
-     */
-    public static class ContextMenuHandler extends CmsContextMenuHandler {
-
-        /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
-        protected static Set<String> m_filteredActions = new HashSet<String>();
-
-        static {
-            m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
-            m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
-            m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
-            m_filteredActions.add(CmsGwtConstants.ACTION_SHOWLOCALE);
-            m_filteredActions.add(CmsGwtConstants.ACTION_VIEW_ONLINE);
-
-            for (Class<?> cls : new Class[] {
-                CmsEditUserSettings.class,
-                CmsAbout.class,
-                CmsShowWorkplace.class,
-                CmsOpenSeoDialog.class,
-                CmsLogout.class}) {
-                m_filteredActions.add(cls.getName());
-            }
-        }
-
-        /**
-         * @see org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler#refreshResource(org.opencms.util.CmsUUID)
-         */
-        @Override
-        public void refreshResource(CmsUUID structureId) {
-
-            Window.Location.reload();
-        }
-
-        /**
-         * @see org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler#transformSingleEntry(org.opencms.gwt.shared.CmsContextMenuEntryBean, org.opencms.util.CmsUUID)
-         */
-        @Override
-        protected I_CmsContextMenuEntry transformSingleEntry(CmsContextMenuEntryBean entryBean, CmsUUID structureId) {
-
-            if (m_filteredActions.contains(entryBean.getName())) {
-                return null;
-            } else {
-                return super.transformSingleEntry(entryBean, structureId);
-            }
-        }
-
-    }
 
     /**
      * The uiBinder interface for this widget.<p>
@@ -240,14 +179,31 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
     @UiField
     protected HasText m_userLastModified;
 
+    /** The context menu handler. */
+    private CmsContextMenuHandler m_menuHandler;
+
     /**
      * Creates a new widget instance.<p>
      *
      * @param status the resource information to display
+     * @param menuHandler the context menu handler
      */
-    public CmsResourceInfoView(CmsResourceStatusBean status) {
+    public CmsResourceInfoView(CmsResourceStatusBean status, CmsContextMenuHandler menuHandler) {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_menuHandler = menuHandler;
+        m_scrollPanel.setHeight(CmsResourceInfoDialog.SCROLLPANEL_HEIGHT + "px");
+        initContent(status);
+    }
+
+    /**
+     * Initializes the content.<p>
+     *
+     * @param status the status data
+     */
+    public void initContent(CmsResourceStatusBean status) {
+
+        m_infoBoxContainer.clear();
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
         infoBox.addOpenHandler(new OpenHandler<CmsListItemWidget>() {
 
@@ -263,7 +219,7 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
                 CmsDomUtil.resizeAncestor(getParent());
             }
         });
-        CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler());
+        CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), m_menuHandler);
         menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         infoBox.addButton(menuButton);
         m_infoBoxContainer.add(infoBox);
@@ -284,7 +240,7 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
         m_size.setText("" + status.getSize() + " Bytes");
         m_userCreated.setText(status.getUserCreated());
         m_userLastModified.setText(status.getUserLastModified());
-        m_scrollPanel.setHeight(CmsResourceInfoDialog.SCROLLPANEL_HEIGHT + "px");
+
         List<String> locales = status.getLocales();
         if (locales != null) {
             StringBuffer buffer = new StringBuffer();
@@ -303,7 +259,10 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
                 index += 1;
             }
             m_locales.setText(buffer.toString());
+        } else {
+            m_locales.setText("");
         }
+        m_infoPanel.clear();
         if (status.getAdditionalAttributes() != null) {
             for (Entry<String, String> entry : status.getAdditionalAttributes().entrySet()) {
                 CmsResourceInfoLine line = new CmsResourceInfoLine();

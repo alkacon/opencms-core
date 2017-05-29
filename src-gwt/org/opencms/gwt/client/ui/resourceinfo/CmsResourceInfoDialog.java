@@ -33,6 +33,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabContentWrapper;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.contextmenu.CmsDialogContextMenuHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceRelationView.Mode;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusTabId;
@@ -56,19 +57,44 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsResourceInfoDialog extends CmsPopup {
 
+    /**
+     * Context menu handler for resource info boxes.<p>
+     */
+    public class ContextMenuHandler extends CmsDialogContextMenuHandler {
+
+        /**
+         * @see org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler#refreshResource(org.opencms.util.CmsUUID)
+         */
+        @Override
+        public void refreshResource(CmsUUID structureId) {
+
+            reload();
+        }
+    }
+
     /** The scroll panel height. */
     protected static final int SCROLLPANEL_HEIGHT = 300;
 
+    /** The detail content id. */
+    CmsUUID m_detailContentId;
+
+    /** If relation targets should be displayed. */
+    boolean m_includeTargets;
+
+    /** The content structure id. */
+    CmsUUID m_structureId;
+
     /** The tab panel. */
-    private CmsTabbedPanel<CmsTabContentWrapper> m_tabPanel;
+    CmsTabbedPanel<CmsTabContentWrapper> m_tabPanel;
 
     /**
      * Creates the dialog for the given resource information.<p>
      *
      * @param statusBean the resource information to bean
-     * @param includeTargets true if relation targets should be displayed
+     * @param includeTargets <code>true</code> if relation targets should be displayed
+     * @param detailContentId the detail content id
      */
-    public CmsResourceInfoDialog(final CmsResourceStatusBean statusBean, boolean includeTargets) {
+    public CmsResourceInfoDialog(CmsResourceStatusBean statusBean, boolean includeTargets, CmsUUID detailContentId) {
 
         super();
         setModal(true);
@@ -76,39 +102,47 @@ public class CmsResourceInfoDialog extends CmsPopup {
         addDialogClose(null);
         setWidth(610);
         removePadding();
-
-        final CmsTabbedPanel<CmsTabContentWrapper> tabPanel = new CmsTabbedPanel<CmsTabContentWrapper>();
-        m_tabPanel = tabPanel;
-        tabPanel.setAutoResize(true);
-        tabPanel.setAutoResizeHeightDelta(45);
+        m_includeTargets = includeTargets;
+        m_detailContentId = detailContentId;
+        m_structureId = statusBean.getStructureId();
+        m_tabPanel = new CmsTabbedPanel<CmsTabContentWrapper>();
+        m_tabPanel.setAutoResize(true);
+        m_tabPanel.setAutoResizeHeightDelta(45);
+        ContextMenuHandler menuHandler = new ContextMenuHandler();
         final List<CmsResourceRelationView> relationViews = new ArrayList<CmsResourceRelationView>();
         for (Map.Entry<CmsResourceStatusTabId, String> tabEntry : statusBean.getTabs().entrySet()) {
             switch (tabEntry.getKey()) {
                 case tabRelationsFrom:
-                    CmsResourceRelationView targets = new CmsResourceRelationView(statusBean, Mode.targets);
+                    CmsResourceRelationView targets = new CmsResourceRelationView(
+                        statusBean,
+                        Mode.targets,
+                        menuHandler);
                     setTabMinHeight(targets);
                     targets.setPopup(this);
-                    tabPanel.add(new CmsTabContentWrapper(targets), tabEntry.getValue());
+                    m_tabPanel.add(new CmsTabContentWrapper(targets), tabEntry.getValue());
                     relationViews.add(targets);
                     break;
                 case tabRelationsTo:
-                    CmsResourceRelationView usage = new CmsResourceRelationView(statusBean, Mode.sources);
+                    CmsResourceRelationView usage = new CmsResourceRelationView(statusBean, Mode.sources, menuHandler);
                     setTabMinHeight(usage);
                     usage.setPopup(this);
-                    tabPanel.add(new CmsTabContentWrapper(usage), tabEntry.getValue());
+                    m_tabPanel.add(new CmsTabContentWrapper(usage), tabEntry.getValue());
                     relationViews.add(usage);
                     break;
                 case tabStatus:
-                    CmsResourceInfoView infoView = new CmsResourceInfoView(statusBean);
+                    CmsResourceInfoView infoView = new CmsResourceInfoView(statusBean, menuHandler);
                     setTabMinHeight(infoView);
-                    tabPanel.add(new CmsTabContentWrapper(infoView), tabEntry.getValue());
+                    m_tabPanel.add(new CmsTabContentWrapper(infoView), tabEntry.getValue());
                     relationViews.add(null);
                     break;
                 case tabSiblings:
                     if (statusBean.getSiblings().size() > 0) {
-                        CmsResourceRelationView siblings = new CmsResourceRelationView(statusBean, Mode.siblings);
+                        CmsResourceRelationView siblings = new CmsResourceRelationView(
+                            statusBean,
+                            Mode.siblings,
+                            menuHandler);
                         setTabMinHeight(siblings);
-                        tabPanel.add(new CmsTabContentWrapper(siblings), tabEntry.getValue());
+                        m_tabPanel.add(new CmsTabContentWrapper(siblings), tabEntry.getValue());
                         relationViews.add(siblings);
                     }
                     break;
@@ -119,11 +153,11 @@ public class CmsResourceInfoDialog extends CmsPopup {
         if (relationViews.get(0) != null) {
             relationViews.get(0).onResizeDescendant();
         }
-        tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
+        m_tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             public void onSelection(SelectionEvent<Integer> event) {
 
-                Widget tabContent = tabPanel.getWidget(event.getSelectedItem().intValue()).getWidget();
+                Widget tabContent = m_tabPanel.getWidget(event.getSelectedItem().intValue()).getWidget();
                 if (tabContent instanceof I_CmsDescendantResizeHandler) {
                     ((I_CmsDescendantResizeHandler)tabContent).onResizeDescendant();
                 }
@@ -131,10 +165,10 @@ public class CmsResourceInfoDialog extends CmsPopup {
             }
 
         });
-        setMainContent(tabPanel);
+        setMainContent(m_tabPanel);
         List<CmsResourceStatusTabId> tabKeyList = Lists.newArrayList(statusBean.getTabs().keySet());
         int startTab = tabKeyList.indexOf(statusBean.getStartTab());
-        tabPanel.selectTab(startTab);
+        m_tabPanel.selectTab(startTab);
     }
 
     /**
@@ -169,7 +203,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
             protected void onResponse(CmsResourceStatusBean result) {
 
                 stop(false);
-                CmsResourceInfoDialog dialog = new CmsResourceInfoDialog(result, includeTargets);
+                CmsResourceInfoDialog dialog = new CmsResourceInfoDialog(result, includeTargets, detailContentId);
                 if (closeHandler != null) {
                     dialog.addCloseHandler(closeHandler);
                 }
@@ -189,6 +223,27 @@ public class CmsResourceInfoDialog extends CmsPopup {
     }
 
     /**
+     * Re-initializes the dialog content.<p>
+     *
+     * @param statusBean the resource status
+     */
+    protected void reinitContent(CmsResourceStatusBean statusBean) {
+
+        int selected = m_tabPanel.getSelectedIndex();
+        for (int i = 0; i < m_tabPanel.getTabCount(); i++) {
+            CmsTabContentWrapper wrapper = m_tabPanel.getWidget(i);
+            if (wrapper.getWidget() instanceof CmsResourceInfoView) {
+                ((CmsResourceInfoView)wrapper.getWidget()).initContent(statusBean);
+            } else if (wrapper.getWidget() instanceof CmsResourceRelationView) {
+                ((CmsResourceRelationView)wrapper.getWidget()).initContent(statusBean);
+                if (i == selected) {
+                    ((CmsResourceRelationView)wrapper.getWidget()).onResizeDescendant();
+                }
+            }
+        }
+    }
+
+    /**
      * Schedules a resize operation.<p>
      */
     void delayedResize() {
@@ -201,6 +256,34 @@ public class CmsResourceInfoDialog extends CmsPopup {
             }
         });
 
+    }
+
+    /**
+     * Reloads the dialog data.<p>
+     */
+    void reload() {
+
+        CmsRpcAction<CmsResourceStatusBean> action = new CmsRpcAction<CmsResourceStatusBean>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                CmsCoreProvider.getVfsService().getResourceStatus(
+                    m_structureId,
+                    CmsCoreProvider.get().getLocale(),
+                    m_includeTargets,
+                    m_detailContentId,
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsResourceStatusBean result) {
+
+                reinitContent(result);
+            }
+        };
+        action.execute();
     }
 
     /**

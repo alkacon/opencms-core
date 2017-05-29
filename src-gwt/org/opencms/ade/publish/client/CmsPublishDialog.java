@@ -45,7 +45,7 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
-import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView;
+import org.opencms.gwt.client.ui.contextmenu.CmsDialogContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
@@ -247,7 +247,7 @@ public class CmsPublishDialog extends CmsPopup {
         setAutoHideEnabled(false);
         setModal(true);
         addStyleName(CSS.publishDialog());
-        m_menuHandler = new CmsResourceInfoView.ContextMenuHandler() {
+        m_menuHandler = new CmsDialogContextMenuHandler() {
 
             @Override
             public void refreshResource(CmsUUID structureId) {
