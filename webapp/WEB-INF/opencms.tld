@@ -434,6 +434,14 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+              Indicates the parse action should be disabled to allow inline editing in the container page editor.
+            ]]></description>
+            <name>allowInlineEdit</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
    <tag>
         <description><![CDATA[
@@ -465,6 +473,14 @@
               Default: The empty list.
             ]]></description>
             <name>noAutoCloseTags</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              Indicates the parse action should be disabled to allow inline editing in the container page editor.
+            ]]></description>
+            <name>allowInlineEdit</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

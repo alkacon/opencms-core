@@ -65,6 +65,9 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 3072561342127379294L;
 
+    /** Indicates the parse action should be disabled to allow inline editing in the container page editor. */
+    private boolean m_allowInlineEdit;
+
     /** The configuration. */
     private String m_file;
 
@@ -134,20 +137,34 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
-
-        // This will always be true if the page is called through OpenCms
-        if (CmsFlexController.isCmsRequest(req)) {
+        if (m_allowInlineEdit && CmsJspTagEditable.isEditableRequest(req)) {
+            // during inline editing the content should not be parsed
             try {
-                String content = decorateTagAction(getBodyContent().getString(), getFile(), getLocale(), req);
-                getBodyContent().clear();
-                getBodyContent().print(content);
                 getBodyContent().writeOut(pageContext.getOut());
-
+                release();
             } catch (Exception ex) {
+                release();
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "decoration"), ex);
                 }
+                // this is severe
                 throw new JspException(ex);
+            }
+        } else {
+            // This will always be true if the page is called through OpenCms
+            if (CmsFlexController.isCmsRequest(req)) {
+                try {
+                    String content = decorateTagAction(getBodyContent().getString(), getFile(), getLocale(), req);
+                    getBodyContent().clear();
+                    getBodyContent().print(content);
+                    getBodyContent().writeOut(pageContext.getOut());
+
+                } catch (Exception ex) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "decoration"), ex);
+                    }
+                    throw new JspException(ex);
+                }
             }
         }
         return EVAL_PAGE;
@@ -193,6 +210,26 @@ public class CmsJspTagDecorate extends BodyTagSupport {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Returns if the parse action should be disabled to allow inline editing in the container page editor.<p>
+     *
+     * @return <code>true</code> if the parse action should be disabled to allow inline editing in the container page editor
+     */
+    public boolean isAllowInlineEdit() {
+
+        return m_allowInlineEdit;
+    }
+
+    /**
+     * Sets if the parse action should be disabled to allow inline editing in the container page editor.<p>
+     *
+     * @param allowInlineEdit <code>true</code> to allow inline editing
+     */
+    public void setAllowInlineEdit(boolean allowInlineEdit) {
+
+        m_allowInlineEdit = allowInlineEdit;
     }
 
     /**

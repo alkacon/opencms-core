@@ -73,6 +73,9 @@ public class CmsJspTagParse extends BodyTagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -6541745426202242240L;
 
+    /** Indicates the parse action should be disabled to allow inline editing in the container page editor. */
+    private boolean m_allowInlineEdit;
+
     /** The visitor / parser class name to use. */
     private String m_configuredParserClassname;
 
@@ -94,65 +97,82 @@ public class CmsJspTagParse extends BodyTagSupport {
 
         ServletRequest req = pageContext.getRequest();
         A_CmsConfiguredHtmlParser parser;
-
-        // This will always be true if the page is called through OpenCms
-        if (CmsFlexController.isCmsRequest(req)) {
-            String content = "";
+        if (m_allowInlineEdit && CmsJspTagEditable.isEditableRequest(req)) {
+            // during inline editing the content should not be parsed
             try {
-                if (CmsStringUtil.isEmpty(m_configuredParserClassname)) {
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(
-                            Messages.get().getBundle().key(
-                                Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
-                                new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
-                    }
-
+                getBodyContent().writeOut(pageContext.getOut());
+                release();
+            } catch (Exception ex) {
+                release();
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, TAG_NAME), ex);
                 }
-                // wrong attribute visitorClass -> content will remain empty, but no exception is
-                // thrown
+                // this is severe
+                throw new JspException(ex);
+            }
+        } else {
+            // This will always be true if the page is called through OpenCms
+            if (CmsFlexController.isCmsRequest(req)) {
+                String content = "";
                 try {
-                    // load
-                    Class<?> cl = Class.forName(m_configuredParserClassname);
-                    // Instantiate
-                    Object instance = cl.newInstance();
-                    // cast
-                    parser = (A_CmsConfiguredHtmlParser)instance;
-                    parser.setParam(m_param);
-                    // cms object:
-                    CmsFlexController controller = CmsFlexController.getController(req);
-                    CmsObject cms = controller.getCmsObject();
-                    parser.setCmsObject(cms);
-                    content = parseTagAction(getBodyContent().getString(), pageContext, parser);
+                    if (CmsStringUtil.isEmpty(m_configuredParserClassname)) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
+                                    new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
+                        }
 
-                } catch (Exception e) {
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(
-                            Messages.get().getBundle().key(
-                                Messages.GUI_ERR_TAG_ATTRIBUTE_INVALID_3,
-                                new Object[] {TAG_NAME, ATT_VISITOR_CLASS, A_CmsConfiguredHtmlParser.class.getName()}),
-                            e);
                     }
-                    e.printStackTrace(System.err);
-                }
+                    // wrong attribute visitorClass -> content will remain empty, but no exception is
+                    // thrown
+                    try {
+                        // load
+                        Class<?> cl = Class.forName(m_configuredParserClassname);
+                        // Instantiate
+                        Object instance = cl.newInstance();
+                        // cast
+                        parser = (A_CmsConfiguredHtmlParser)instance;
+                        parser.setParam(m_param);
+                        // cms object:
+                        CmsFlexController controller = CmsFlexController.getController(req);
+                        CmsObject cms = controller.getCmsObject();
+                        parser.setCmsObject(cms);
+                        content = parseTagAction(getBodyContent().getString(), pageContext, parser);
 
-            } finally {
-                try {
-                    getBodyContent().clear();
-                    getBodyContent().print(content);
-                    getBodyContent().writeOut(pageContext.getOut());
-                    release();
-
-                } catch (Exception ex) {
-                    release();
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, TAG_NAME), ex);
+                    } catch (Exception e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.GUI_ERR_TAG_ATTRIBUTE_INVALID_3,
+                                    new Object[] {
+                                        TAG_NAME,
+                                        ATT_VISITOR_CLASS,
+                                        A_CmsConfiguredHtmlParser.class.getName()}),
+                                e);
+                        }
+                        e.printStackTrace(System.err);
                     }
-                    // this is severe
-                    throw new JspException(ex);
+
+                } finally {
+                    try {
+                        getBodyContent().clear();
+                        getBodyContent().print(content);
+                        getBodyContent().writeOut(pageContext.getOut());
+                        release();
+
+                    } catch (Exception ex) {
+                        release();
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, TAG_NAME), ex);
+                        }
+                        // this is severe
+                        throw new JspException(ex);
+                    }
+
                 }
 
             }
-
         }
         return EVAL_PAGE;
     }
@@ -197,6 +217,16 @@ public class CmsJspTagParse extends BodyTagSupport {
     public String getParserClass() {
 
         return m_configuredParserClassname;
+    }
+
+    /**
+     * Returns if the parse action should be disabled to allow inline editing in the container page editor.<p>
+     *
+     * @return <code>true</code> if the parse action should be disabled to allow inline editing in the container page editor
+     */
+    public boolean isAllowInlineEdit() {
+
+        return m_allowInlineEdit;
     }
 
     /**
@@ -273,6 +303,16 @@ public class CmsJspTagParse extends BodyTagSupport {
         m_configuredParserClassname = null;
         m_param = null;
         super.release();
+    }
+
+    /**
+     * Sets if the parse action should be disabled to allow inline editing in the container page editor.<p>
+     *
+     * @param allowInlineEdit <code>true</code> to allow inline editing
+     */
+    public void setAllowInlineEdit(boolean allowInlineEdit) {
+
+        m_allowInlineEdit = allowInlineEdit;
     }
 
     /**
