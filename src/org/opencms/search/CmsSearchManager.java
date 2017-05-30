@@ -1742,6 +1742,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void registerSolrIndex(CmsSolrIndex index) throws CmsConfigurationException {
 
+        ensureIndexIsUnlocked(index.getPath());
+
         if ((m_solrConfig == null) || !m_solrConfig.isEnabled()) {
             // No solr server configured
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_SOLR_NOT_ENABLED_0));
@@ -1797,7 +1799,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 properties.put(CoreDescriptor.CORE_DATADIR, dataDir.getAbsolutePath());
                 properties.put(CoreDescriptor.CORE_CONFIGSET, "default");
                 core = m_coreContainer.create(index.getCoreName(), instanceDir.toPath(), properties);
-                ensureIndexIsUnlocked(core);
             } catch (NullPointerException e) {
                 if (core != null) {
                     core.close();
@@ -3100,25 +3101,24 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Remove write.lock file in the data directory to ensure the index is unlocked.
-     * @param core the Solr core to unlock the index for
+     * @param dataDir the data directory of the Solr index that should be unlocked.
      */
-    private void ensureIndexIsUnlocked(SolrCore core) {
+    private void ensureIndexIsUnlocked(String dataDir) {
 
         Collection<File> lockFiles = new ArrayList<File>(2);
         lockFiles.add(
             new File(
-                CmsFileUtil.addTrailingSeparator(CmsFileUtil.addTrailingSeparator(core.getDataDir()) + "index")
-                    + "write.lock"));
+                CmsFileUtil.addTrailingSeparator(CmsFileUtil.addTrailingSeparator(dataDir) + "index") + "write.lock"));
         lockFiles.add(
             new File(
-                CmsFileUtil.addTrailingSeparator(CmsFileUtil.addTrailingSeparator(core.getDataDir()) + "spellcheck")
+                CmsFileUtil.addTrailingSeparator(CmsFileUtil.addTrailingSeparator(dataDir) + "spellcheck")
                     + "write.lock"));
         for (File lockFile : lockFiles) {
             if (lockFile.exists()) {
                 lockFile.delete();
                 LOG.warn(
-                    "Forcely unlocking index \""
-                        + core.getName()
+                    "Forcely unlocking index with data dir \""
+                        + dataDir
                         + "\" by removing file \""
                         + lockFile.getAbsolutePath()
                         + "\".");
