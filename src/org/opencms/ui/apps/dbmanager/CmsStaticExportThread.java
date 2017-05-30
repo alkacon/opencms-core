@@ -68,6 +68,7 @@ public class CmsStaticExportThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void run() {
 

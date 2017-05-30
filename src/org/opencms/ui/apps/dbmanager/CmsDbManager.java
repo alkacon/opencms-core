@@ -50,7 +50,6 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Class for database manager app.<p>A_CmsAttributeAwareApp
@@ -210,7 +209,7 @@ public class CmsDbManager extends A_CmsAttributeAwareApp implements I_CmsReportA
     protected Component getComponentForState(String state) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            return getStartComponent();
+            return new CmsResourceTypeStatsView();
         }
 
         if (state.startsWith(PATH_REMOVE_PUBLISH_LOCKS)) {
@@ -309,15 +308,5 @@ public class CmsDbManager extends A_CmsAttributeAwareApp implements I_CmsReportA
         sp.addStyleName("v-align-center");
         sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
         return sp;
-    }
-
-    /**
-     * Gets the start component of the app.<p>
-     *
-     * @return a vaadin vertical layout
-     */
-    private VerticalLayout getStartComponent() {
-
-        return new VerticalLayout();
     }
 }
