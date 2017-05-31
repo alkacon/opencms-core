@@ -66,8 +66,10 @@ public class CmsImportExportManager {
     /** Time modes to specify how time stamps should be handled. */
     public static enum TimestampMode {
         /** Use the time of import for the timestamp. */
-        IMPORTTIME, /** Use the timestamp of the imported file. */
-        FILETIME, /** The timestamp is explicitly given. */
+        IMPORTTIME,
+        /** Use the timestamp of the imported file. */
+        FILETIME,
+        /** The timestamp is explicitly given. */
         VFSTIME;
 
         /** Returns the default timestamp mode.
@@ -90,7 +92,7 @@ public class CmsImportExportManager {
             } else {
                 try {
                     return TimestampMode.valueOf(value.toUpperCase());
-                } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     return getDefaultTimeStampMode();
                 }
             }
@@ -713,6 +715,7 @@ public class CmsImportExportManager {
      *
      * @throws CmsImportExportException if something goes wrong
      */
+    @SuppressWarnings("resource")
     public I_CmsImportExportHandler getImportExportHandler(CmsImportParameters parameters)
     throws CmsImportExportException {
 
@@ -735,7 +738,7 @@ public class CmsImportExportManager {
                 if (stream != null) {
                     stream.close();
                 }
-            } catch (@SuppressWarnings("unused") Exception e) {
+            } catch (Exception e) {
                 // noop
             }
             helper.closeFile();

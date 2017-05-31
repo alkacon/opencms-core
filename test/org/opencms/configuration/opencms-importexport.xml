@@ -157,6 +157,12 @@
             </rfs-rules>
 		</rendersettings>
 	</staticexport>
+	<protectedexport>
+		<exportpath>protected</exportpath>
+		<exportpoints>
+			<exportpoint uri="/sites/default/documents/" destination="documents/"/>
+		</exportpoints>
+	</protectedexport>
 	<usercsvexport>
         <separator>;</separator>
         <columns>

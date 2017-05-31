@@ -86,6 +86,17 @@
 			</resourcestorender>
 		</rendersettings>
 	</staticexport>
+	<!--
+		Use the protected export feature to statically export resources
+		while still ensuring resource permissions are not violated.
+		This will work for static resources like images and binaries only.
+	<protectedexport>
+		<exportpath>protected</exportpath>
+		<exportpoints>
+			<exportpoint uri="/sites/default/documents/" destination="documents/"/>
+		</exportpoints>
+	</protectedexport>
+	-->
 	<usercsvexport>
 		<separator>;</separator>
 		<columns>

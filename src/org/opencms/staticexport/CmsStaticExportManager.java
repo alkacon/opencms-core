@@ -29,6 +29,7 @@ package org.opencms.staticexport;
 
 import org.opencms.ade.detailpage.CmsDetailPageUtil;
 import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
+import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -70,10 +71,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.ServletException;
@@ -221,6 +226,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Lock object for write access to the {@link #m_exportnameResources} map in {@link #computeVfsExportnames()}. */
     private Object m_lockSetExportnames;
+
+    /** The protected export path. */
+    private String m_protectedExportPath;
+
+    /** The protected export points. */
+    private Map<String, String> m_protectedExportPoints = new LinkedHashMap<String, String>();
 
     /** Indicates if the quick static export for plain resources is enabled. */
     private boolean m_quickPlainExport;
@@ -377,6 +388,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public void addExportRuleUri(String exportUri) {
 
         m_exportTmpRule.addExportResourcePattern(exportUri);
+    }
+
+    /**
+     * Adds an protected export point.<p>
+     *
+     * @param uri the source URI
+     * @param destination the export destination
+     */
+    public void addProtectedExportPoint(String uri, String destination) {
+
+        m_protectedExportPoints.put(uri, destination);
     }
 
     /**
@@ -1044,6 +1066,21 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the protected export points.<p>
+     *
+     * @return the protected export points
+     */
+    public Set<CmsExportPoint> getExportPoints() {
+
+        Set<CmsExportPoint> result = new HashSet<CmsExportPoint>();
+        for (Entry<String, String> entry : m_protectedExportPoints.entrySet()) {
+            result.add(
+                new CmsExportPoint(entry.getKey(), CmsStringUtil.joinPaths(m_protectedExportPath, entry.getValue())));
+        }
+        return result;
+    }
+
+    /**
      * Returns true if the default value for the resource property "export" is true.<p>
      *
      * @return true if the default value for the resource property "export" is true
@@ -1174,6 +1211,48 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public String getPlainExportOptimization() {
 
         return String.valueOf(m_quickPlainExport);
+    }
+
+    /**
+     * Returns the protected export name for the given root path.<p>
+     *
+     * @param rootPath the root path
+     *
+     * @return the protected export name
+     */
+    public String getProtectedExportName(String rootPath) {
+
+        String result = null;
+        for (Entry<String, String> entry : m_protectedExportPoints.entrySet()) {
+            if (rootPath.startsWith(entry.getKey())) {
+                result = CmsStringUtil.joinPaths(
+                    "/",
+                    m_protectedExportPath,
+                    entry.getValue(),
+                    rootPath.substring(entry.getKey().length()));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the protected export path.<p>
+     *
+     * @return the protected export path
+     */
+    public String getProtectedExportPath() {
+
+        return m_protectedExportPath;
+    }
+
+    /**
+     * Returns the protected export points.<p>
+     *
+     * @return the protected export points
+     */
+    public Map<String, String> getProtectedExportPoints() {
+
+        return m_protectedExportPoints;
     }
 
     /**
@@ -2179,6 +2258,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public void setPlainExportOptimization(String value) {
 
         m_quickPlainExport = Boolean.valueOf(value).booleanValue();
+    }
+
+    /**
+     * Sets the protected export path.<p>
+     *
+     * @param exportPath the export path to set
+     */
+    public void setProtectedExportPath(String exportPath) {
+
+        m_protectedExportPath = exportPath;
     }
 
     /**

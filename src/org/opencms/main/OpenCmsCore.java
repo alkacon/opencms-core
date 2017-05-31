@@ -1016,6 +1016,117 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Handles the user authentification for each request sent to OpenCms.<p>
+     *
+     * User authentification is done in three steps:
+     * <ol>
+     * <li>Session authentification: OpenCms stores information of all authentificated
+     *      users in an internal storage based on the users session.</li>
+     * <li>Authorization handler authentification: If the session authentification fails,
+     *      the current configured authorization handler is called.</li>
+     * <li>Default user: When both authentification methods fail, the user is set to
+     *      the default (Guest) user.</li>
+     * </ol>
+     *
+     * @param req the current http request
+     * @param res the current http response
+     * @param allowPrivilegedLogin <code>true</code> to allow login through authorization handlers
+     *
+     * @return the initialized cms context
+     *
+     * @throws IOException if user authentication fails
+     * @throws CmsException in case something goes wrong
+     */
+    protected CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res, boolean allowPrivilegedLogin)
+    throws IOException, CmsException {
+
+        // first try to restore a stored session
+        CmsObject cms = initCmsObjectFromSession(req);
+        if (cms != null) {
+            return cms;
+        }
+        if (allowPrivilegedLogin) {
+            // if does not work, try to authorize the request
+            I_CmsAuthorizationHandler.I_PrivilegedLoginAction loginAction = new I_CmsAuthorizationHandler.I_PrivilegedLoginAction() {
+
+                private CmsObject m_adminCms;
+
+                /**
+                 * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#doLogin(javax.servlet.http.HttpServletRequest, java.lang.String)
+                 */
+                public CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException {
+
+                    try {
+                        CmsUser user = m_adminCms.readUser(principal);
+                        if (!user.isEnabled()) {
+                            throw new CmsException(
+                                Messages.get().container(Messages.ERR_INVALID_INIT_USER_2, user.getName(), "-"));
+                        }
+
+                        // initialize the new cms object
+                        CmsContextInfo contextInfo = new CmsContextInfo(m_adminCms.getRequestContext());
+                        contextInfo.setUserName(principal);
+                        CmsObject newCms = initCmsObject(m_adminCms, contextInfo);
+
+                        if ((contextInfo.getRequestedUri().startsWith("/system/workplace/")
+                            // also check for new workplace
+                            || request.getRequestURI().startsWith(OpenCms.getSystemInfo().getWorkplaceContext()))
+                            && getRoleManager().hasRole(newCms, CmsRole.ELEMENT_AUTHOR)) {
+                            LOG.debug("Handling workplace login for user " + principal);
+                            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(newCms);
+                            request.getSession(true).setAttribute(
+                                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                                settings);
+                            OpenCms.getSessionManager().updateSessionInfo(newCms, request);
+                        }
+                        m_adminCms.updateLastLoginDate(user);
+
+                        // fire the login user event
+                        OpenCms.fireCmsEvent(
+                            I_CmsEventListener.EVENT_LOGIN_USER,
+                            Collections.<String, Object> singletonMap("data", user));
+                        return newCms;
+                    } finally {
+                        m_adminCms = null;
+                    }
+                }
+
+                /**
+                 * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#getCmsObject()
+                 */
+                public CmsObject getCmsObject() {
+
+                    return m_adminCms;
+                }
+
+                /**
+                 * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#setCmsObject(org.opencms.file.CmsObject)
+                 */
+                public void setCmsObject(CmsObject adminCms) {
+
+                    m_adminCms = adminCms;
+                }
+            };
+            loginAction.setCmsObject(initCmsObject(req, res, OpenCms.getDefaultUsers().getUserAdmin(), null, null));
+            cms = m_authorizationHandler.initCmsObject(req, loginAction);
+            if (cms != null) {
+                return cms;
+            }
+
+            // authentification failed or not enough permissions, so display a login screen
+            m_authorizationHandler.requestAuthorization(req, res, getLoginFormURL(req, res));
+        }
+        cms = initCmsObject(
+            req,
+            m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
+            getSiteManager().matchRequest(req).getSiteRoot(),
+            CmsProject.ONLINE_PROJECT_ID,
+            "");
+        // return the initialized cms user context object
+        return cms;
+    }
+
+    /**
      * Returns an initialized CmsObject with the user initialized as provided,
      * with the "Online" project selected and "/" set as the current site root.<p>
      *
@@ -1356,6 +1467,7 @@ public final class OpenCmsCore {
         m_workplaceManager = workplaceConfiguration.getWorkplaceManager();
         // add the export points from the workplace
         addExportPoints(m_workplaceManager.getExportPoints());
+        addExportPoints(m_staticExportManager.getExportPoints());
 
         // get the module configuration
         CmsModuleConfiguration moduleConfiguration = (CmsModuleConfiguration)m_configurationManager.getConfiguration(
@@ -2718,117 +2830,6 @@ public final class OpenCmsCore {
     private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
 
         return initCmsObject(req, res, true);
-    }
-
-    /**
-     * Handles the user authentification for each request sent to OpenCms.<p>
-     *
-     * User authentification is done in three steps:
-     * <ol>
-     * <li>Session authentification: OpenCms stores information of all authentificated
-     *      users in an internal storage based on the users session.</li>
-     * <li>Authorization handler authentification: If the session authentification fails,
-     *      the current configured authorization handler is called.</li>
-     * <li>Default user: When both authentification methods fail, the user is set to
-     *      the default (Guest) user.</li>
-     * </ol>
-     *
-     * @param req the current http request
-     * @param res the current http response
-     * @param allowPrivilegedLogin <code>true</code> to allow login through authorization handlers
-     *
-     * @return the initialized cms context
-     *
-     * @throws IOException if user authentication fails
-     * @throws CmsException in case something goes wrong
-     */
-    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res, boolean allowPrivilegedLogin)
-    throws IOException, CmsException {
-
-        // first try to restore a stored session
-        CmsObject cms = initCmsObjectFromSession(req);
-        if (cms != null) {
-            return cms;
-        }
-        if (allowPrivilegedLogin) {
-            // if does not work, try to authorize the request
-            I_CmsAuthorizationHandler.I_PrivilegedLoginAction loginAction = new I_CmsAuthorizationHandler.I_PrivilegedLoginAction() {
-
-                private CmsObject m_adminCms;
-
-                /**
-                 * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#doLogin(javax.servlet.http.HttpServletRequest, java.lang.String)
-                 */
-                public CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException {
-
-                    try {
-                        CmsUser user = m_adminCms.readUser(principal);
-                        if (!user.isEnabled()) {
-                            throw new CmsException(
-                                Messages.get().container(Messages.ERR_INVALID_INIT_USER_2, user.getName(), "-"));
-                        }
-
-                        // initialize the new cms object
-                        CmsContextInfo contextInfo = new CmsContextInfo(m_adminCms.getRequestContext());
-                        contextInfo.setUserName(principal);
-                        CmsObject newCms = initCmsObject(m_adminCms, contextInfo);
-
-                        if ((contextInfo.getRequestedUri().startsWith("/system/workplace/")
-                            // also check for new workplace
-                            || request.getRequestURI().startsWith(OpenCms.getSystemInfo().getWorkplaceContext()))
-                            && getRoleManager().hasRole(newCms, CmsRole.ELEMENT_AUTHOR)) {
-                            LOG.debug("Handling workplace login for user " + principal);
-                            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(newCms);
-                            request.getSession(true).setAttribute(
-                                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
-                                settings);
-                            OpenCms.getSessionManager().updateSessionInfo(newCms, request);
-                        }
-                        m_adminCms.updateLastLoginDate(user);
-
-                        // fire the login user event
-                        OpenCms.fireCmsEvent(
-                            I_CmsEventListener.EVENT_LOGIN_USER,
-                            Collections.<String, Object> singletonMap("data", user));
-                        return newCms;
-                    } finally {
-                        m_adminCms = null;
-                    }
-                }
-
-                /**
-                 * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#getCmsObject()
-                 */
-                public CmsObject getCmsObject() {
-
-                    return m_adminCms;
-                }
-
-                /**
-                 * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#setCmsObject(org.opencms.file.CmsObject)
-                 */
-                public void setCmsObject(CmsObject adminCms) {
-
-                    m_adminCms = adminCms;
-                }
-            };
-            loginAction.setCmsObject(initCmsObject(req, res, OpenCms.getDefaultUsers().getUserAdmin(), null, null));
-            cms = m_authorizationHandler.initCmsObject(req, loginAction);
-            if (cms != null) {
-                return cms;
-            }
-
-            // authentification failed or not enough permissions, so display a login screen
-            m_authorizationHandler.requestAuthorization(req, res, getLoginFormURL(req, res));
-        }
-        cms = initCmsObject(
-            req,
-            m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
-            getSiteManager().matchRequest(req).getSiteRoot(),
-            CmsProject.ONLINE_PROJECT_ID,
-            "");
-        // return the initialized cms user context object
-        return cms;
     }
 
     /**

@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport, usercsvexport?, repositories?, extendedhtmlimport?)>
+<!ELEMENT opencms (importexport, staticexport, protectedexport?, usercsvexport?, repositories?, extendedhtmlimport?)>
 
 <!--
 # <importexport> configuration:
@@ -381,6 +381,17 @@
 # also be written to the "real" file system.
 -->
 <!ELEMENT related-system-res (regex*)>
+
+<!-- The protected export feature is used to statically export resources
+		while still ensuring resource permissions are not violated.
+		This will work for static resources like images and binaries only.-->
+<!ELEMENT protectedexport (exportpath, exportpoints)>
+
+<!ELEMENT exportpoints (exportpoint+)>
+<!ELEMENT exportpoint EMPTY>
+<!ATTLIST exportpoint 
+	uri CDATA #REQUIRED
+	destination CDATA #REQUIRED>
 
 <!--
 # In this node the import and export values for the im- / export of user data are configured.
