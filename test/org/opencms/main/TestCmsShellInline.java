@@ -29,10 +29,12 @@ package org.opencms.main;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -50,6 +52,9 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
     /** Default inline shell prompt for most test cases. */
     private static final String PROMPT = "Inline shell: ${user}@${siteroot}${uri}> ";
+
+    /** Default escape sequence in linux for the arrow up key. */
+    final private String ARROW_UP = new String(new byte[]{KeyEvent.VK_ESCAPE, KeyEvent.VK_OPEN_BRACKET, 'A'});
 
     /**
      * Default JUnit constructor.
@@ -77,6 +82,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         suite.addTest(new TestCmsShellInline("testShellSetProperties"));
         suite.addTest(new TestCmsShellInline("testShellCreateUser"));
         suite.addTest(new TestCmsShellInline("testShellEchoOff"));
+        suite.addTest(new TestCmsShellInline("testShellLineParsing"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -112,7 +118,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         shell.execute("addUserToRole 'Editor' 'EDITOR'");
 
         assertTrue(
-            "Editor does not have EDTITOR role",
+            "Editor does not have EDITOR role",
             OpenCms.getRoleManager().hasRole(cms, "Editor", CmsRole.EDITOR));
         List<CmsGroup> groups = cms.getGroupsOfUser("Editor", true);
         boolean found = false;
@@ -208,6 +214,48 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
         String result = bytes.toString();
         assertEquals("Shell did not produce expected output", expected, result);
+    }
+
+    /**
+     * Tests that the shell properly ignores escape sequences.
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testShellLineParsing() throws Exception {
+
+        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+        ByteArrayOutputStream bErr = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(bOut);
+        PrintStream err = new PrintStream(bErr);
+
+        CmsObject cms = getCmsObject();
+        CmsShell shell = new CmsShell(cms, PROMPT, null, out, err);
+
+        String commands = "echo on\n"     // This should be processed
+                + ARROW_UP + "echo off\n" // The shell should detect the escape sequence and ignore the rest
+                + "\n"
+                + ".\n"         // This should be ignored and shouldn't break the shell
+                + "/\n"         // Same here -- Parsed as StreamTokenizer.TT_NUMBER
+                + "*\n"         // Same here -- Parsed as StreamTokenizer.TT_NUMBER
+                + "(\n"         // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+                + "-\n"         // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+                + "( ( (\n"     // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+                + "setRequestTime(11)\n"  // Test parsing of numerical parameters
+                + "setRequestTime 12\n"   // Test parsing of numerical parameters
+                + "setRequestTime /\n"    // Test parsing of numerical parameters
+                + "setRequestTime / 13\n" // Test parsing of numerical parameters
+                + "setRequestTime /14\n"  // Test parsing of numerical parameters
+                + "exit\n";     // Should exit gracefully
+        shell.execute(commands);
+
+        String resultOut = bOut.toString();
+        String resultErr = bErr.toString();
+        System.out.println(resultOut);
+        System.err.println(resultErr);
+        CmsMessages messages = Messages.get().getBundle(shell.getLocale());
+        assertTrue("Escape sequence not detected", resultOut.contains(messages.key(Messages.GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0)));
+        assertTrue("Command 'echo on' skipped", resultOut.contains("Echo is now on"));
+        assertTrue("Shell didn't exit gracefully.", resultOut.contains("Goodbye!"));
     }
 
     /**
