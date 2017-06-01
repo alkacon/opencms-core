@@ -191,6 +191,9 @@ public class CmsWorkplaceAppManager {
     /** The main category id. */
     public static final String MAIN_CATEGORY_ID = "Main";
 
+    /** The administration category id. */
+    public static final String ADMINISTRATION_CATEGORY_ID = "Administration";
+
     /** The legacy category id. */
     public static final String LEGACY_CATEGORY_ID = "Legacy";
 
@@ -563,7 +566,9 @@ public class CmsWorkplaceAppManager {
         Map<String, I_CmsAppCategory> appCategories = new HashMap<String, I_CmsAppCategory>();
         CmsAppCategory main = new CmsAppCategory(MAIN_CATEGORY_ID, null, 0, 0);
         appCategories.put(main.getId(), main);
-        CmsAppCategory legacy = new CmsAppCategory(LEGACY_CATEGORY_ID, null, 1, 0);
+        CmsAppCategory admin = new CmsAppCategory(ADMINISTRATION_CATEGORY_ID, null, 5, 0);
+        appCategories.put(admin.getId(), admin);
+        CmsAppCategory legacy = new CmsAppCategory(LEGACY_CATEGORY_ID, null, 10, 0);
         appCategories.put(legacy.getId(), legacy);
         Iterator<I_CmsAppCategory> categoryIt = ServiceLoader.load(I_CmsAppCategory.class).iterator();
         while (categoryIt.hasNext()) {

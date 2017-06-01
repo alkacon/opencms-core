@@ -60,7 +60,7 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getAppCategory() {
 
-        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
+        return CmsWorkplaceAppManager.ADMINISTRATION_CATEGORY_ID;
     }
 
     /**

@@ -34,6 +34,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
+import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -59,7 +60,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getAppCategory() {
 
-        return "Main";
+        return CmsWorkplaceAppManager.ADMINISTRATION_CATEGORY_ID;
     }
 
     /**
