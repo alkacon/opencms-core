@@ -44,6 +44,8 @@ import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbManagerConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationConfiguration;
+import org.opencms.ui.apps.linkvalidation.CmsLinkValidationExternalConfiguration;
+import org.opencms.ui.apps.linkvalidation.CmsLinkValidationFolder;
 import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
 import org.opencms.ui.apps.logfile.CmsLogFileConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
@@ -543,7 +545,7 @@ public class CmsWorkplaceAppManager {
     private List<I_CmsFolderAppCategory> loadAppFolder() {
 
         List<I_CmsFolderAppCategory> result = new ArrayList<I_CmsFolderAppCategory>();
-        //        result.addAll(Arrays.<I_CmsAppCategory> asList(new CmsTestFolder()));
+        result.addAll(Arrays.<I_CmsFolderAppCategory> asList(new CmsLinkValidationFolder()));
         return result;
     }
 
@@ -624,6 +626,7 @@ public class CmsWorkplaceAppManager {
                 new CmsCacheAdminConfiguration(),
                 new CmsFileHistoryConfiguration(),
                 new CmsLinkValidationConfiguration(),
+                new CmsLinkValidationExternalConfiguration(),
                 new CmsDbManagerConfiguration(),
                 new CmsSearchindexAppConfiguration(),
                 new CmsLogFileConfiguration(),

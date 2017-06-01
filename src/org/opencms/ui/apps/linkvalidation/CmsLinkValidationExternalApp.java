@@ -29,22 +29,18 @@ package org.opencms.ui.apps.linkvalidation;
 
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
-import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Class for the Link validation app.<p>
  */
-public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
+public class CmsLinkValidationExternalApp extends A_CmsWorkplaceApp {
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -56,10 +52,13 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
 
         //Main page.
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LINKVALIDATION_ADMIN_TOOL_NAME_SHORT_0));
+            crumbs.put(
+                "",
+                CmsVaadinUtils.getMessageText(Messages.GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_SHORT_0));
             return crumbs;
         }
-        return new LinkedHashMap<String, String>(); //size==1 & state was not empty -> state doesn't match to known path
+
+        return new LinkedHashMap<String, String>();
     }
 
     /**
@@ -69,8 +68,8 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
     protected Component getComponentForState(String state) {
 
         if (state.isEmpty()) {
-            m_rootLayout.setMainHeightFull(true);
-            return getInternalComponent();
+            m_rootLayout.setMainHeightFull(false);
+            return new CmsLinkValidationExternal();
         }
         return null;
     }
@@ -82,29 +81,5 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
     protected List<NavEntry> getSubNavEntries(String state) {
 
         return null;
-    }
-
-    /**
-     * Returns the component for the internal link validation.<p>
-     *
-     * @return vaadin component
-     */
-    private HorizontalSplitPanel getInternalComponent() {
-
-        m_rootLayout.setMainHeightFull(true);
-        HorizontalSplitPanel sp = new HorizontalSplitPanel();
-        sp.setSizeFull();
-        CmsLinkValidationInternalTable table = new CmsLinkValidationInternalTable();
-        table.setSizeFull();
-        VerticalLayout leftCol = new VerticalLayout();
-        leftCol.setSizeFull();
-        CmsInternalResources resources = new CmsInternalResources(table);
-        leftCol.addComponent(resources);
-
-        leftCol.setExpandRatio(resources, 1);
-        sp.setFirstComponent(leftCol);
-        sp.setSecondComponent(table);
-        sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
-        return sp;
     }
 }

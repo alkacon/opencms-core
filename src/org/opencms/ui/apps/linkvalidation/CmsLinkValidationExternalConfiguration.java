@@ -45,13 +45,13 @@ import com.vaadin.server.Resource;
 /**
  * Configuration for Link Validation app.<p>
  */
-public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsLinkValidationExternalConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
-    public static final String APP_ID = "link-validation";
+    public static final String APP_ID = "link-validation-external";
 
     /**App icon path.*/
-    private static final String ICON = "apps/link.png";
+    private static final String ICON = "apps/linkvalidation/link_extern.png";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -67,7 +67,7 @@ public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfigurati
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsLinkValidationApp();
+        return new CmsLinkValidationExternalApp();
     }
 
     /**
@@ -85,7 +85,7 @@ public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LINKVALIDATION_ADMIN_TOOL_NAME_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_HELP_0);
     }
 
     /**
@@ -110,7 +110,7 @@ public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LINKVALIDATION_ADMIN_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_LINKVALIDATION_EXTERNALLINK_ADMIN_TOOL_NAME_0);
     }
 
     /**
@@ -119,7 +119,7 @@ public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public int getOrder() {
 
-        return 0;
+        return 1;
     }
 
     /**
