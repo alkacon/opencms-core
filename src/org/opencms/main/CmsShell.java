@@ -38,6 +38,7 @@ import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.awt.event.KeyEvent;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -674,6 +675,10 @@ public class CmsShell {
                     m_out.println(line);
                     continue;
                 }
+                if (line.indexOf(KeyEvent.VK_ESCAPE) != -1) {
+                    m_out.println("Escape sequences not supported (e.g. up, down, etc). Command ignored.");
+                    continue;
+                }
                 StringReader lineReader = new StringReader(line);
                 StreamTokenizer st = new StreamTokenizer(lineReader);
                 st.eolIsSignificant(true);
@@ -684,7 +689,9 @@ public class CmsShell {
                     if (st.ttype == StreamTokenizer.TT_NUMBER) {
                         parameters.add(Integer.toString(new Double(st.nval).intValue()));
                     } else {
-                        parameters.add(st.sval);
+                        if (null != st.sval) {
+                            parameters.add(st.sval);
+                        }
                     }
                 }
                 lineReader.close();
@@ -1030,6 +1037,9 @@ public class CmsShell {
      * @param parameters the list of parameters for the command
      */
     private void executeCommand(String command, List<String> parameters) {
+        if (null == command) {
+            return;
+        }
 
         if (m_echo) {
             // echo the command to STDOUT
