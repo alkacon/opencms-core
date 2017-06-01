@@ -233,6 +233,36 @@
 				display: none;
 			}
 		}
+		
+		&.o-close-on-background {
+			overflow: visible !important;
+			max-width: 800px !important;
+			width: auto !important;
+			
+			.v-window-closebox {
+				position: absolute;
+				color: transparent;
+				top: -10000px;
+				left: -10000px;
+				right: -10000px;
+				bottom: -10000px;
+				width: auto;
+				height: auto;
+				z-index: -1;
+			}
+			.v-window-contents {
+				position: relative;
+				z-index: 2;
+				
+				>.v-scrollable:before {
+				
+				border-top:none;
+				
+				}
+			}	
+		
+		}
+		
 		.v-window-header, .v-window-closebox, .v-window-maximizebox, .v-window-restorebox {
 			background-color: transparent;
 			font-weight: bold;

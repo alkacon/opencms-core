@@ -63,4 +63,13 @@ public interface I_CmsAppButtonProvider {
      */
     Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig);
 
+    /**
+     * Creates an app launcher button.<p>
+     *
+     * @param appConfig the app configuration
+     *
+     * @return the button component
+     */
+    Component createAppFolderButton(CmsAppCategoryNode node);
+
 }

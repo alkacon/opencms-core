@@ -29,6 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
@@ -38,7 +39,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -85,6 +88,70 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
             button.setDescription(helpText);
         }
         return button;
+    }
+
+    /**
+     * Creates a properly styled button for the given app.<p>
+     *
+     * @param cms the cms context
+     * @param node the node to display a buttom for
+     * @param locale the locale
+     *
+     * @return the button component
+     *
+     *                         (I_CmsFolderAppCategory)childNode.getCategory(),
+                        childNode.getAppConfigurations())
+     */
+    public static Component createAppFolderButton(CmsObject cms, final CmsAppCategoryNode node, final Locale locale) {
+
+        Button button = createAppFolderIconButton((I_CmsFolderAppCategory)node.getCategory(), locale);
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                CmsAppHierarchyPanel panel = new CmsAppHierarchyPanel(new CmsDefaultAppButtonProvider());
+                //                panel.setCaption(((I_CmsFolderAppCategory)node.getCategory()).getName(locale));
+                panel.setCaption("Test caption");
+                panel.fill(node, locale);
+
+                Panel realPanel = new Panel();
+                realPanel.setContent(panel);
+                realPanel.setCaption(((I_CmsFolderAppCategory)node.getCategory()).getName(locale));
+                realPanel.setWidth("700px");
+
+                final Window window = CmsBasicDialog.prepareWindow();
+
+                window.setResizable(false);
+                window.setContent(realPanel);
+                window.setClosable(true);
+                window.addStyleName("o-close-on-background");
+                window.setModal(true);
+                window.setDraggable(false);
+
+                CmsAppWorkplaceUi.get().addWindow(window);
+
+            }
+        });
+        return button;
+    }
+
+    /**
+     * Creates a properly styled button for the given app, without adding a click handler or checking visibility settings.<p>
+     *
+     * @param appCat the app category
+     * @param locale the locale
+     *
+     * @return the button component
+     */
+    public static Button createAppFolderIconButton(I_CmsFolderAppCategory appCat, Locale locale) {
+
+        return createIconButton(
+            appCat.getName(locale),
+            appCat.getHelpText(locale),
+            appCat.getIcon(),
+            appCat.getButtonStyle());
     }
 
     /**
@@ -146,5 +213,14 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
     public Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig) {
 
         return createAppButton(A_CmsUI.getCmsObject(), appConfig, UI.getCurrent().getLocale());
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppButtonProvider#createAppButton(org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration)
+     *
+     */
+    public Component createAppFolderButton(CmsAppCategoryNode node) {
+
+        return createAppFolderButton(A_CmsUI.getCmsObject(), node, UI.getCurrent().getLocale());
     }
 }

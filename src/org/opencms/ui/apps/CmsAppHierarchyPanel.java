@@ -89,9 +89,13 @@ public class CmsAppHierarchyPanel extends VerticalLayout {
             m_appPanel.addComponent(m_appButtonProvider.createAppButton(appConfig));
         }
         for (CmsAppCategoryNode childNode : rootNode.getChildren()) {
-            CmsAppHierarchyPanel childPanel = new CmsAppHierarchyPanel(m_appButtonProvider);
-            addChild(childNode.getCategory().getName(locale), childPanel);
-            childPanel.fill(childNode, locale);
+            if (childNode.getCategory() instanceof I_CmsFolderAppCategory) {
+                m_appPanel.addComponent(m_appButtonProvider.createAppFolderButton(childNode));
+            } else {
+                CmsAppHierarchyPanel childPanel = new CmsAppHierarchyPanel(m_appButtonProvider);
+                addChild(childNode.getCategory().getName(locale), childPanel);
+                childPanel.fill(childNode, locale);
+            }
         }
     }
 

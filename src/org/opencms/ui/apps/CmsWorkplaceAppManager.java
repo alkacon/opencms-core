@@ -536,6 +536,18 @@ public class CmsWorkplaceAppManager {
     }
 
     /**
+     * Loads the App Folder.<p>
+     *
+     * @return list of all app folder
+     */
+    private List<I_CmsFolderAppCategory> loadAppFolder() {
+
+        List<I_CmsFolderAppCategory> result = new ArrayList<I_CmsFolderAppCategory>();
+        //        result.addAll(Arrays.<I_CmsAppCategory> asList(new CmsTestFolder()));
+        return result;
+    }
+
+    /**
      * Returns the configured apps using the service loader.<p>
      *
      * @return tthe configured apps
@@ -570,6 +582,10 @@ public class CmsWorkplaceAppManager {
         appCategories.put(admin.getId(), admin);
         CmsAppCategory legacy = new CmsAppCategory(LEGACY_CATEGORY_ID, null, 10, 0);
         appCategories.put(legacy.getId(), legacy);
+        List<I_CmsFolderAppCategory> folder = loadAppFolder();
+        for (I_CmsFolderAppCategory appFolder : folder) {
+            appCategories.put(appFolder.getId(), appFolder);
+        }
         Iterator<I_CmsAppCategory> categoryIt = ServiceLoader.load(I_CmsAppCategory.class).iterator();
         while (categoryIt.hasNext()) {
             try {
