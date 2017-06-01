@@ -196,6 +196,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1 = "GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0 = "GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_LIST_MODULES_1 = "GUI_SHELL_LIST_MODULES_1";
 
     /** Message constant for key in the resource bundle. */
