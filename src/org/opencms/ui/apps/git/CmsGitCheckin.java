@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.git;
+package org.opencms.ui.apps.git;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
@@ -354,7 +354,7 @@ public class CmsGitCheckin {
             String logFilePath = getLogFilePath();
             byte[] logData = CmsFileUtil.readFully(new FileInputStream(logFilePath));
             return new String(logData, "UTF-8");
-        } catch (@SuppressWarnings("unused") IOException e) {
+        } catch (IOException e) {
             return "Error reading log file: " + getLogFilePath();
         }
     }
@@ -730,10 +730,12 @@ public class CmsGitCheckin {
                     module,
                     "Git export handler");
                 try {
-                    handler.exportData(getCmsObject(), new CmsPrintStreamReport(
-                        m_logStream,
-                        OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()),
-                        false));
+                    handler.exportData(
+                        getCmsObject(),
+                        new CmsPrintStreamReport(
+                            m_logStream,
+                            OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()),
+                            false));
                 } catch (CmsRoleViolationException | CmsConfigurationException | CmsImportExportException e) {
                     e.printStackTrace(m_logStream);
                 }

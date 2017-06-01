@@ -89,6 +89,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.synchronize.Messages.get(),
             org.opencms.ui.Messages.get(),
             org.opencms.ui.apps.Messages.get(),
+            org.opencms.ui.apps.git.Messages.get(),
             org.opencms.ui.components.Messages.get(),
             org.opencms.ui.dialogs.Messages.get(),
             org.opencms.util.Messages.get(),

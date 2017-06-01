@@ -992,6 +992,7 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         include 'classes/repository.properties'
         include 'sun-jaxws.xml'
         include 'spellcheck/**'
+        include 'git-scripts/**'
     }
     from ("${projectDir}/webapp/WEB-INF"){
         into '/WEB-INF'

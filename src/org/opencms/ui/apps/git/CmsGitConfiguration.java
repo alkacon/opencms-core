@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.git;
+package org.opencms.ui.apps.git;
 
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;

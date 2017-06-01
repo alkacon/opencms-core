@@ -43,6 +43,7 @@ import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbManagerConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
+import org.opencms.ui.apps.git.CmsGitAppConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationExternalConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationFolder;
@@ -633,7 +634,8 @@ public class CmsWorkplaceAppManager {
                 new CmsSourceSearchAppConfiguration(),
                 new CmsListManagerConfiguration(),
                 new CmsSiteManagerConfiguration(),
-                new CmsPublishQueueConfiguration()));
+                new CmsPublishQueueConfiguration(),
+                new CmsGitAppConfiguration()));
 
         return result;
     }

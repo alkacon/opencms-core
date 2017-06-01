@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.git;
+package org.opencms.ui.apps.git;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -123,7 +123,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GIT_CONFIGURATION_SWITCH_FAILED_DESC_0 = "GUI_GIT_CONFIGURATION_SWITCH_FAILED_DESC_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.git.messages";
+    private static final String BUNDLE_NAME = "org.opencms.ui.apps.git.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

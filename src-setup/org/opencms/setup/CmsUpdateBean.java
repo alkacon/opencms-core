@@ -133,7 +133,8 @@ public class CmsUpdateBean extends CmsSetupBean {
         "org.opencms.locale.zh",
         "org.opencms.workplace.help.de",
         "org.opencms.workplace.help.en",
-        "org.opencms.workplace.help"};
+        "org.opencms.workplace.help",
+        "org.opencms.workplace.tools.git"};
 
     /** The new logging offset in the database update thread. */
     protected int m_newLoggingDBOffset;

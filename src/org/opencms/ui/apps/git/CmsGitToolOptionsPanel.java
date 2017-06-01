@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.git.ui;
+package org.opencms.ui.apps.git;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
@@ -38,9 +38,6 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.tools.git.CmsGitCheckin;
-import org.opencms.workplace.tools.git.CmsGitConfiguration;
-import org.opencms.workplace.tools.git.Messages;
 
 import java.util.ArrayList;
 import java.util.Collection;
