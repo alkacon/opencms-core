@@ -40,6 +40,7 @@ import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowActionParams;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -214,7 +215,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         String projectParam,
         List<String> pathList,
         String closeLink,
-        boolean confirm) throws Exception {
+        boolean confirm)
+    throws Exception {
 
         CmsPublishData result;
         boolean canOverrideWorkflow = true;
@@ -315,7 +317,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     public CmsPublishGroupList getResourceGroups(
         CmsWorkflow workflow,
         CmsPublishOptions options,
-        boolean projectChanged) throws CmsRpcException {
+        boolean projectChanged)
+    throws CmsRpcException {
 
         List<CmsPublishGroup> results = null;
         CmsObject cms = getCmsObject();
@@ -438,7 +441,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsPublishOptions cache = (CmsPublishOptions)getRequest().getSession().getAttribute(
             SESSION_ATTR_ADE_PUB_OPTS_CACHE);
         if (cache == null) {
+            CmsUserSettings settings = new CmsUserSettings(getCmsObject());
             cache = new CmsPublishOptions();
+            cache.setIncludeSiblings(settings.getDialogPublishSiblings());
             getRequest().getSession().setAttribute(SESSION_ATTR_ADE_PUB_OPTS_CACHE, cache);
         }
         return cache;
