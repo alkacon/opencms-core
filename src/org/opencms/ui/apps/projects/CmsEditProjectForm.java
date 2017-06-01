@@ -38,6 +38,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
@@ -64,12 +65,12 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  * The edit project form component.<p>
  */
-public class CmsEditProjectForm extends VerticalLayout {
+public class CmsEditProjectForm extends CmsBasicDialog {
 
     /**
      * The OU validator.<p>
@@ -166,8 +167,8 @@ public class CmsEditProjectForm extends VerticalLayout {
     /** The user group field. */
     private CmsPrincipalSelect m_fieldUser;
 
-    /** The project manager instance. */
-    private CmsProjectManager m_manager;
+    /** The projects table instance. */
+    private CmsProjectsTable m_table;
 
     /** The OK button. */
     private Button m_ok;
@@ -181,16 +182,56 @@ public class CmsEditProjectForm extends VerticalLayout {
     /** The resource field validator. */
     private ResourceValidator m_resourceValidator;
 
+    /** The window this form is displayed in. */
+    private Window m_window;
+
+    /**
+     * Constructor.<p>
+     * Used to edit existing projects.<p>
+     *
+     * @param table the projects table
+     * @param projectId the project to edit
+     * @param window the window this form is displayed in
+     */
+    public CmsEditProjectForm(CmsProjectsTable table, CmsUUID projectId, Window window) {
+        this(table, window);
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            m_project = cms.readProject(projectId);
+            m_fieldName.setValue(m_project.getName());
+            m_fieldName.setEnabled(false);
+            m_fieldDescription.setValue(m_project.getDescription());
+            m_fieldUser.setValue(cms.readGroup(m_project.getGroupId()).getName());
+            m_fieldManager.setValue(cms.readGroup(m_project.getManagerGroupId()).getName());
+            try {
+                CmsOrganizationalUnit ou;
+                ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, m_project.getOuFqn());
+                m_fieldOU.setValue(ou.getDisplayName(UI.getCurrent().getLocale()));
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                m_fieldOU.setValue(null);
+            }
+            m_fieldOU.setEnabled(false);
+            for (String resName : cms.readProjectResources(m_project)) {
+                addResourceField(resName);
+            }
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
+        }
+
+    }
+
     /**
      * Constructor.<p>
      * Use this to create a new project.<p>
      *
-     * @param manager the project manager instance
+     * @param table the projects table
+     * @param window the window this form is displayed in
      */
-    public CmsEditProjectForm(CmsProjectManager manager) {
+    public CmsEditProjectForm(CmsProjectsTable table, Window window) {
+        m_window = window;
+        m_table = table;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
-        m_manager = manager;
         m_resourceValidator = new ResourceValidator();
         m_fieldManager.setWidgetType(WidgetType.groupwidget);
         m_fieldManager.setRealPrincipalsOnly(true);
@@ -250,41 +291,6 @@ public class CmsEditProjectForm extends VerticalLayout {
     }
 
     /**
-     * Constructor.<p>
-     * Used to edit existing projects.<p>
-     *
-     * @param manager the manager instance
-     * @param projectId the project to edit
-     */
-    public CmsEditProjectForm(CmsProjectManager manager, CmsUUID projectId) {
-        this(manager);
-        CmsObject cms = A_CmsUI.getCmsObject();
-        try {
-            m_project = cms.readProject(projectId);
-            m_fieldName.setValue(m_project.getName());
-            m_fieldName.setEnabled(false);
-            m_fieldDescription.setValue(m_project.getDescription());
-            m_fieldUser.setValue(cms.readGroup(m_project.getGroupId()).getName());
-            m_fieldManager.setValue(cms.readGroup(m_project.getManagerGroupId()).getName());
-            try {
-                CmsOrganizationalUnit ou;
-                ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, m_project.getOuFqn());
-                m_fieldOU.setValue(ou.getDisplayName(UI.getCurrent().getLocale()));
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                m_fieldOU.setValue(null);
-            }
-            m_fieldOU.setEnabled(false);
-            for (String resName : cms.readProjectResources(m_project)) {
-                addResourceField(resName);
-            }
-        } catch (CmsException e) {
-            CmsErrorDialog.showErrorDialog(e);
-        }
-
-    }
-
-    /**
      * Adds a new resource field.<p>
      *
      * @param value the value to set
@@ -310,7 +316,7 @@ public class CmsEditProjectForm extends VerticalLayout {
      */
     void cancel() {
 
-        m_manager.openSubView("", true);
+        m_window.close();
     }
 
     /**
@@ -323,7 +329,8 @@ public class CmsEditProjectForm extends VerticalLayout {
                 createProject();
             } else {
                 saveProject();
-                m_manager.openSubView("", true);
+                m_table.loadProjects();
+                m_window.close();
             }
         }
     }

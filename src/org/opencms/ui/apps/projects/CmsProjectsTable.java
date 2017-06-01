@@ -37,6 +37,8 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -68,6 +70,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -151,9 +154,16 @@ public class CmsProjectsTable extends Table {
         public void executeAction(Set<CmsUUID> data) {
 
             CmsUUID id = data.iterator().next();
-            m_manager.openSubView(
-                A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_EDIT, "projectId", id.toString()),
-                true);
+
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+            CmsEditProjectForm form = new CmsEditProjectForm(CmsProjectsTable.this, id, window);
+            window.setContent(form);
+            window.setCaption(
+                CmsVaadinUtils.getMessageText(
+                    Messages.GUI_PROJECTS_EDIT_1,
+                    m_container.getItem(id).getItemProperty(PROP_NAME).getValue()));
+            A_CmsUI.get().addWindow(window);
+            window.center();
         }
 
         /**
@@ -382,8 +392,8 @@ public class CmsProjectsTable extends Table {
         m_container.addContainerProperty(PROP_OWNER, String.class, "");
         m_container.addContainerProperty(PROP_MANAGER, String.class, "");
         m_container.addContainerProperty(PROP_USER, String.class, "");
-        m_container.addContainerProperty(PROP_DATE_CREATED, Date.class, "");
-        m_container.addContainerProperty(PROP_RESOURCES, Label.class, "");
+        m_container.addContainerProperty(PROP_DATE_CREATED, Date.class, null);
+        m_container.addContainerProperty(PROP_RESOURCES, Label.class, null);
 
         setContainerDataSource(m_container);
         setItemIconPropertyId(PROP_ICON);

@@ -42,10 +42,12 @@ import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
-import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -57,10 +59,13 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -71,32 +76,38 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     /** The small project icon path. */
     public static final String ICON_PROJECT_SMALL = "apps/projectmanager/project_fileicon.png";
 
-    /** The add project path name. */
-    public static final String PATH_NAME_ADD = "add";
-
-    /** The edit project path name. */
-    public static final String PATH_NAME_EDIT = "edit";
-
     /** The project files path name. */
     public static final String PATH_NAME_FILES = "files";
 
     /** The project history path name. */
     public static final String PATH_NAME_HISTORY = "history";
 
-    /** The add project icon path. */
-    private static final String ICON_ADD = "apps/projectmanager/project_add.png";
-
-    /** The project history icon path. */
-    private static final String ICON_HISTORY = "apps/projectmanager/project_history.png";
-
     /** The logger for this class. */
     private static Log LOG = CmsLog.getLog(CmsProjectManager.class.getName());
+
+    /** The projects table. */
+    CmsProjectsTable m_projectsTable;
 
     /** The file table filter input. */
     private TextField m_fileTableFilter;
 
+    /** The sub nav buttons of this app. */
+    private List<Component> m_navButtons = new ArrayList<Component>();
+
     /** The project table filter input. */
     private TextField m_projectTableFilter;
+
+    /**
+     * Returns the projects table component.<p>
+     *
+     * @return the projects table
+     */
+    protected CmsProjectsTable createProjectsTable() {
+
+        CmsProjectsTable table = new CmsProjectsTable(this);
+        table.loadProjects();
+        return table;
+    }
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -113,28 +124,9 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
                     A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName()));
         } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
-        } else if (state.equals(PATH_NAME_ADD)) {
-            crumbs.put(CmsProjectManagerConfiguration.APP_ID, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_0));
         } else if (state.equals(PATH_NAME_HISTORY)) {
             crumbs.put(CmsProjectManagerConfiguration.APP_ID, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_HISTORY_0));
-        } else if (state.startsWith(PATH_NAME_EDIT)) {
-            CmsUUID projectId = getIdFromState(state);
-            if (projectId != null) {
-                crumbs.put(
-                    CmsProjectManagerConfiguration.APP_ID,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_0));
-                try {
-                    crumbs.put(
-                        "",
-                        CmsVaadinUtils.getMessageText(
-                            Messages.GUI_PROJECTS_EDIT_1,
-                            A_CmsUI.getCmsObject().readProject(projectId).getName()));
-                } catch (CmsException e) {
-                    LOG.error("Error reading project for bread crumb.", e);
-                }
-            }
         } else if (state.startsWith(PATH_NAME_FILES)) {
             CmsUUID projectId = getIdFromState(state);
             if (projectId != null) {
@@ -176,7 +168,11 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
 
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
                 m_rootLayout.setMainHeightFull(true);
-                final CmsProjectsTable table = getProjectsTable();
+                if (m_projectsTable == null) {
+                    m_projectsTable = createProjectsTable();
+                } else {
+                    m_projectsTable.loadProjects();
+                }
                 m_projectTableFilter = new TextField();
                 m_projectTableFilter.setIcon(FontOpenCms.FILTER);
                 m_projectTableFilter.setInputPrompt(
@@ -189,25 +185,28 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
 
                     public void textChange(TextChangeEvent event) {
 
-                        table.filterTable(event.getText());
+                        m_projectsTable.filterTable(event.getText());
 
                     }
                 });
                 m_infoLayout.addComponent(m_projectTableFilter);
-                return table;
-            } else if (state.equals(PATH_NAME_ADD)) {
-                m_rootLayout.setMainHeightFull(false);
-                return getNewProjectForm();
+                showNavButtons();
+                return m_projectsTable;
+                //            } else if (state.equals(PATH_NAME_ADD)) {
+                //                m_rootLayout.setMainHeightFull(false);
+                //                return getNewProjectForm();
             } else if (state.equals(PATH_NAME_HISTORY)) {
                 m_rootLayout.setMainHeightFull(true);
+                hideNavButtons();
                 return new CmsProjectHistoryTable();
-            } else if (state.startsWith(PATH_NAME_EDIT)) {
-                CmsUUID projectId = getIdFromState(state);
-                if (projectId != null) {
-                    m_rootLayout.setMainHeightFull(false);
-                    return new CmsEditProjectForm(this, projectId);
-                }
+                //            } else if (state.startsWith(PATH_NAME_EDIT)) {
+                //                CmsUUID projectId = getIdFromState(state);
+                //                if (projectId != null) {
+                //                    m_rootLayout.setMainHeightFull(false);
+                //                    return new CmsEditProjectForm(this, projectId);
+                //                }
             } else if (state.startsWith(PATH_NAME_FILES)) {
+                hideNavButtons();
                 CmsUUID projectId = getIdFromState(state);
                 if (projectId != null) {
                     return prepareProjectFilesTable(projectId);
@@ -215,16 +214,6 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             }
         }
         return null;
-    }
-
-    /**
-     * Returns the new project form component.<p>
-     *
-     * @return the form component
-     */
-    protected Component getNewProjectForm() {
-
-        return new CmsEditProjectForm(this);
     }
 
     /**
@@ -267,17 +256,15 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
         return fileTable;
     }
 
-    /**
-     * Returns the projects table component.<p>
-     *
-     * @return the projects table
-     */
-    protected CmsProjectsTable getProjectsTable() {
-
-        CmsProjectsTable table = new CmsProjectsTable(this);
-        table.loadProjects();
-        return table;
-    }
+    //    /**
+    //     * Returns the new project form component.<p>
+    //     *
+    //     * @return the form component
+    //     */
+    //    protected Component getNewProjectForm() {
+    //
+    //        return new CmsEditProjectForm(this);
+    //    }
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
@@ -285,23 +272,6 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     @Override
     protected List<NavEntry> getSubNavEntries(String state) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)
-            && OpenCms.getRoleManager().hasRole(A_CmsUI.getCmsObject(), CmsRole.PROJECT_MANAGER)) {
-            List<NavEntry> subNav = new ArrayList<NavEntry>();
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_DESCRIPTION_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_ADD)),
-                    PATH_NAME_ADD));
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_HISTORY_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_HISTORY_DESCRIPTION_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_HISTORY)),
-                    PATH_NAME_HISTORY));
-            return subNav;
-        }
         return null;
     }
 
@@ -320,6 +290,16 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             result = new CmsUUID(temp);
         }
         return result;
+    }
+
+    /**
+     * Hides the sub navigation buttons.<p>
+     */
+    private void hideNavButtons() {
+
+        for (Component button : m_navButtons) {
+            button.setVisible(false);
+        }
     }
 
     /**
@@ -351,5 +331,51 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
         });
         m_infoLayout.addComponent(m_fileTableFilter);
         return fileTable;
+    }
+
+    /**
+     * Shows the sub navigation buttons.<p>
+     */
+    private void showNavButtons() {
+
+        if (m_navButtons.isEmpty()) {
+            Button addProject = CmsToolBar.createButton(
+                FontOpenCms.WAND,
+                CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_0));
+            addProject.addClickListener(new ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+                    CmsEditProjectForm form = new CmsEditProjectForm(m_projectsTable, window);
+                    window.setContent(form);
+                    window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ADD_0));
+                    A_CmsUI.get().addWindow(window);
+                    window.center();
+                }
+            });
+            m_uiContext.addToolbarButton(addProject);
+            m_navButtons.add(addProject);
+            Button history = CmsToolBar.createButton(
+                FontOpenCms.CLIPBOARD,
+                CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_HISTORY_0));
+            history.addClickListener(new ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    openSubView(CmsProjectManager.PATH_NAME_HISTORY, true);
+                }
+            });
+            m_uiContext.addToolbarButton(history);
+            m_navButtons.add(history);
+        } else {
+            for (Component button : m_navButtons) {
+                button.setVisible(true);
+            }
+        }
     }
 }

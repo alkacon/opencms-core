@@ -7,7 +7,9 @@
   	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
 </head>
 <body>
-	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+<o-cms-basic-dialog>
+	  		<content>
+	<v-vertical-layout :center margin spacing>
 		<v-panel caption="%(key.GUI_PROJECTS_IDENTIFICATION_0)" height="275px">
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
 				<v-text-field _id="m_fieldName" width="100%" caption="%(key.GUI_PROJECTS_NAME_0)" description="%(key.GUI_PROJECTS_NAME_HELP_0)" required requiredError="%(key.GUI_PROJECTS_NAME_VALIDATION_0)" />
@@ -23,14 +25,12 @@
 			<v-button _id="m_addResource" style-name="o-button-plain">%(key.GUI_PROJECTS_ADD_RESOURCE_0)</v-button>
 			</v-form-layout>
 		</v-panel>
-		<v-panel>
-			<v-horizontal-layout width="100%">
-				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
-					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
-					<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
-				</v-horizontal-layout>
-			</v-horizontal-layout>
-		</v-panel>
 	</v-vertical-layout>
+	</content>
+		  	<buttons>
+		  		<v-button _id="m_ok" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+		  	</buttons>
+  		</o-cms-basic-dialog>
 </body>
 </html>
