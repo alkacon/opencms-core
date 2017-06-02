@@ -108,19 +108,30 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
         button.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
+            private static final int DEFAULT_WIDTH = 750;
+            private static final int DEFAULT_MAX_APP_PER_ROW = 5;
+            private static final int MARGIN = 10;
 
             public void buttonClick(ClickEvent event) {
 
                 CmsAppHierarchyPanel panel = new CmsAppHierarchyPanel(new CmsDefaultAppButtonProvider());
                 //                panel.setCaption(((I_CmsFolderAppCategory)node.getCategory()).getName(locale));
                 panel.setCaption("Test caption");
+
                 panel.fill(node, locale);
 
                 Panel realPanel = new Panel();
                 realPanel.setContent(panel);
                 realPanel.setCaption(((I_CmsFolderAppCategory)node.getCategory()).getName(locale));
-                realPanel.setWidth("700px");
-
+                int browtherWidth = A_CmsUI.get().getPage().getBrowserWindowWidth();
+                if (node.getAppConfigurations().size() <= DEFAULT_MAX_APP_PER_ROW) {
+                    panel.setComponentAlignment(panel.getComponent(0), com.vaadin.ui.Alignment.MIDDLE_CENTER);
+                }
+                if (browtherWidth < DEFAULT_WIDTH) {
+                    realPanel.setWidth((browtherWidth - (2 * MARGIN)) + "px");
+                } else {
+                    realPanel.setWidth(DEFAULT_WIDTH + "px");
+                }
                 final Window window = CmsBasicDialog.prepareWindow();
 
                 window.setResizable(false);
@@ -221,6 +232,12 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
      */
     public Component createAppFolderButton(CmsAppCategoryNode node) {
 
+        if (node.getAppConfigurations().size() == 1) {
+            return createAppButton(
+                A_CmsUI.getCmsObject(),
+                node.getAppConfigurations().get(0),
+                UI.getCurrent().getLocale());
+        }
         return createAppFolderButton(A_CmsUI.getCmsObject(), node, UI.getCurrent().getLocale());
     }
 }
