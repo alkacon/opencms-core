@@ -1243,6 +1243,34 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Selects the OU of the site (if site has an OU), and disables the ComboBox.<p>
+     */
+    private void disableOUComboBox() {
+
+        try {
+            m_clonedCms.getRequestContext().setSiteRoot("");
+            List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
+                m_clonedCms,
+                "/",
+                true);
+            for (CmsOrganizationalUnit ou : ous) {
+                List<CmsResource> res = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                    m_clonedCms,
+                    ou.getName());
+                for (CmsResource resource : res) {
+                    if (resource.getRootPath().equals(m_site.getSiteRoot() + "/")) {
+                        m_fieldSelectOU.select(ou.getName());
+                    }
+                }
+            }
+
+        } catch (CmsException e) {
+            LOG.error("Error on reading OUs", e);
+        }
+        m_fieldSelectOU.setEnabled(false);
+    }
+
+    /**
      * Reads out all aliases from the form.<p>
      *
      * @return a List of CmsSiteMatcher
@@ -1550,7 +1578,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             if (!templates.isEmpty()) {
                 m_simpleFieldTemplate.setValue(templates.get(0).getRootPath());
             }
-            m_simpleFieldTemplate.setNullSelectionAllowed(false);
+            m_simpleFieldTemplate.setNullSelectionAllowed(true);
 
         } catch (CmsException e) {
             // should not happen
@@ -1581,33 +1609,5 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         combo.setNullSelectionAllowed(false);
         combo.setNewItemsAllowed(false);
         combo.select("/");
-    }
-
-    /**
-     * Selects the OU of the site (if site has an OU), and disables the ComboBox.<p>
-     */
-    private void disableOUComboBox() {
-
-        try {
-            m_clonedCms.getRequestContext().setSiteRoot("");
-            List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
-                m_clonedCms,
-                "/",
-                true);
-            for (CmsOrganizationalUnit ou : ous) {
-                List<CmsResource> res = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                    m_clonedCms,
-                    ou.getName());
-                for (CmsResource resource : res) {
-                    if (resource.getRootPath().equals(m_site.getSiteRoot() + "/")) {
-                        m_fieldSelectOU.select(ou.getName());
-                    }
-                }
-            }
-
-        } catch (CmsException e) {
-            LOG.error("Error on reading OUs", e);
-        }
-        m_fieldSelectOU.setEnabled(false);
     }
 }
