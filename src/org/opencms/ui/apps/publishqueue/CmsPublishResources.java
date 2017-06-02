@@ -34,7 +34,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobEnqueued;
-import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
@@ -45,11 +44,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -63,36 +58,27 @@ public class CmsPublishResources extends VerticalLayout {
     /**vaadin serial id.*/
     private static final long serialVersionUID = -3197777771233458574L;
 
-    /**Calling object.*/
-    final CmsPublishQueue m_manager;
+    /**Caption of dialog.*/
+    private String m_caption;
 
-    /**Vaadin component.*/
-    private Button m_cancel;
-
-    /**Vaadin component.*/
+    /**vaadin component.*/
     private VerticalLayout m_panel;
-
-    /**Vaadin component.*/
-    private Panel m_panelComp;
 
     /**
      * Public constructor.<p>
      *
-     * @param manager calling manager object
      * @param id job-id
      */
-    public CmsPublishResources(CmsPublishQueue manager, String id) {
+    public CmsPublishResources(String id) {
 
-        m_manager = manager;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         final CmsPublishJobBase job = OpenCms.getPublishManager().getJobByPublishHistoryId(new CmsUUID(id));
 
-        m_panelComp.setCaption(
-            CmsVaadinUtils.getMessageText(
-                Messages.GUI_PQUEUE_RESOURCES_2,
-                job.getProjectName(),
-                job.getUserName(A_CmsUI.getCmsObject())));
+        m_caption = CmsVaadinUtils.getMessageText(
+            Messages.GUI_PQUEUE_RESOURCES_2,
+            job.getProjectName(),
+            job.getUserName(A_CmsUI.getCmsObject()));
 
         String resourcesHTML = "";
 
@@ -110,19 +96,15 @@ public class CmsPublishResources extends VerticalLayout {
         label.addStyleName("o-report");
         m_panel.addComponent(label);
 
-        m_cancel.addClickListener(new ClickListener() {
+    }
 
-            private static final long serialVersionUID = -1921697074171843576L;
+    /**
+     * @see com.vaadin.ui.AbstractComponent#getCaption()
+     */
+    @Override
+    public String getCaption() {
 
-            public void buttonClick(ClickEvent event) {
-
-                if ((job instanceof CmsPublishJobRunning) | (job instanceof CmsPublishJobEnqueued)) {
-                    m_manager.openSubView("", true);
-                } else {
-                    m_manager.openSubView(CmsPublishQueue.PATH_HISTORY, true);
-                }
-            }
-        });
+        return m_caption;
     }
 
     /**

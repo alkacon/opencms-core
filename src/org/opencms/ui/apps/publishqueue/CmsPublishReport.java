@@ -43,11 +43,7 @@ import org.opencms.util.CmsUUID;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -65,38 +61,33 @@ public class CmsPublishReport extends VerticalLayout {
     /**object which calls table.*/
     CmsPublishQueue m_manager;
 
-    /**vaadin component.*/
-    private Button m_cancel;
-
     /**job id.*/
     private CmsUUID m_jobId;
 
     /**vaadin component.*/
     private VerticalLayout m_panel;
 
-    /**Vaadin component.*/
-    private Panel m_panelComp;
+    /**Caption of layout.*/
+    private String m_caption;
 
     /**
      * public constructor.<p>
      *
-     * @param queue calling object
      * @param jobId of chosen job
      */
-    public CmsPublishReport(CmsPublishQueue queue, String jobId) {
+    public CmsPublishReport(String jobId) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        m_manager = queue;
+
         m_jobId = new CmsUUID(jobId);
 
         //Obtain job and fill panel with CmsReportWidget
         final CmsPublishJobBase job = OpenCms.getPublishManager().getJobByPublishHistoryId(m_jobId);
 
-        m_panelComp.setCaption(
-            CmsVaadinUtils.getMessageText(
-                Messages.GUI_PQUEUE_REPORT_2,
-                job.getProjectName(),
-                job.getUserName(A_CmsUI.getCmsObject())));
+        m_caption = CmsVaadinUtils.getMessageText(
+            Messages.GUI_PQUEUE_REPORT_2,
+            job.getProjectName(),
+            job.getUserName(A_CmsUI.getCmsObject()));
         //switch for job type
         if (job instanceof CmsPublishJobRunning) {
             //Running job
@@ -124,19 +115,14 @@ public class CmsPublishReport extends VerticalLayout {
             label.addStyleName("o-report");
             m_panel.addComponent(label);
         }
+    }
 
-        m_cancel.addClickListener(new ClickListener() {
+    /**
+     * @see com.vaadin.ui.AbstractComponent#getCaption()
+     */
+    @Override
+    public String getCaption() {
 
-            private static final long serialVersionUID = -1921697074171843576L;
-
-            public void buttonClick(ClickEvent event) {
-
-                if (job instanceof CmsPublishJobRunning) {
-                    m_manager.openSubView("", true);
-                } else {
-                    m_manager.openSubView(CmsPublishQueue.PATH_HISTORY, true);
-                }
-            }
-        });
+        return m_caption;
     }
 }

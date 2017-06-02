@@ -27,28 +27,16 @@
 
 package org.opencms.ui.apps.publishqueue;
 
-import org.opencms.main.OpenCms;
-import org.opencms.publish.CmsPublishJobFinished;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  *Class for the Publish queue app.<p>
@@ -63,18 +51,6 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
 
     /**The icon for history. */
     public static final String TABLE_ICON = "apps/publish_queue.png";
-
-    /**job id. */
-    public static final String JOB_ID = "jobId";
-
-    /**Path for history table.*/
-    public static final String PATH_HISTORY = "history";
-
-    /**Path for report. */
-    public static final String PATH_REPORT = "report";
-
-    /**Path for showing published resources.*/
-    public static final String PATH_RESOURCE = "resource";
 
     /** The file table filter input. */
     private TextField m_siteTableFilter;
@@ -92,44 +68,7 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_TITLE_0));
             return crumbs;
         }
-
-        //Deeper path
-        crumbs.put(CmsPublishQueueConfiguration.APP_ID, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_TITLE_0));
-
-        //Report
-        if (state.startsWith(PATH_REPORT)) {
-            //Over History table?
-            if (OpenCms.getPublishManager().getJobByPublishHistoryId(
-                new CmsUUID(getJobIdFromState(state))) instanceof CmsPublishJobFinished) {
-                crumbs.put(
-                    CmsPublishQueueConfiguration.APP_ID + "/" + PATH_HISTORY,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_QUEUE_0));
-            }
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_REPORT_0));
-        }
-
-        //History
-        if (state.startsWith(PATH_HISTORY)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_QUEUE_0));
-        }
-
-        //Resources
-        if (state.startsWith(PATH_RESOURCE)) {
-            //Over History table?
-            if (OpenCms.getPublishManager().getJobByPublishHistoryId(
-                new CmsUUID(getJobIdFromState(state))) instanceof CmsPublishJobFinished) {
-                crumbs.put(
-                    CmsPublishQueueConfiguration.APP_ID + "/" + PATH_HISTORY,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_QUEUE_0));
-            }
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_RESOURCES_0));
-        }
-
-        if (crumbs.size() > 1) {
-            return crumbs;
-        } else {
-            return new LinkedHashMap<String, String>(); //size==1 & state was not empty -> state doesn't match to known path
-        }
+        return new LinkedHashMap<String, String>(); //size==1 & state was not empty -> state doesn't match to known path
     }
 
     /**
@@ -149,39 +88,6 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
             m_rootLayout.setMainHeightFull(true);
             return new CmsQueuedTable(this);
         }
-
-        if (state.startsWith(PATH_RESOURCE)) {
-            m_rootLayout.setMainHeightFull(false);
-            return new CmsPublishResources(this, getJobIdFromState(state));
-        }
-        if (state.startsWith(PATH_REPORT)) {
-            m_rootLayout.setMainHeightFull(false);
-            return new CmsPublishReport(this, getJobIdFromState(state));
-        }
-
-        m_rootLayout.setMainHeightFull(true);
-
-        if (state.startsWith(PATH_HISTORY)) {
-            final CmsHistoryQueuedTable table = new CmsHistoryQueuedTable(this);
-            m_siteTableFilter = new TextField();
-            m_siteTableFilter.setIcon(FontOpenCms.FILTER);
-            m_siteTableFilter.setInputPrompt(
-                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-            m_siteTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-            m_siteTableFilter.setWidth("200px");
-            m_siteTableFilter.addTextChangeListener(new TextChangeListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void textChange(TextChangeEvent event) {
-
-                    table.filterTable(event.getText());
-
-                }
-            });
-            m_infoLayout.addComponent(m_siteTableFilter);
-            return table;
-        }
         return null;
     }
 
@@ -191,57 +97,7 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
     @Override
     protected List<NavEntry> getSubNavEntries(String state) {
 
-        List<NavEntry> subNav = new ArrayList<NavEntry>();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state) | state.startsWith(PATH_HISTORY)) {
-
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_QUEUE_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_HISTORY_QUEUE_DESCRIPTION_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_HISTORY)),
-                    PATH_HISTORY));
-
-            return subNav;
-        }
-        //Dialogs for Ressources or Report are shown or path is not valid -> no nav
         return null;
 
     }
-
-    /**
-     * Returns the job id from the given state.<p>
-     *
-     * @param state the state
-     * @return the site root
-     */
-    private String getJobIdFromState(String state) {
-
-        return A_CmsWorkplaceApp.getParamFromState(state, JOB_ID);
-    }
-
-    /**
-     * Reads project from given state.<p>
-     *
-     * @param state state to be read
-     * @return project name
-     */
-    private String getProjectFromState(String state) {
-
-        String job_id = getJobIdFromState(state);
-        return OpenCms.getPublishManager().getJobByPublishHistoryId(new CmsUUID(job_id)).getProjectName();
-    }
-
-    /**
-     * Reads user from given state.<p>
-     *
-     * @param state state to be read
-     * @return user name
-     */
-    private String getUserFromState(String state) {
-
-        String job_id = getJobIdFromState(state);
-        return OpenCms.getPublishManager().getJobByPublishHistoryId(new CmsUUID(job_id)).getUserName(
-            A_CmsUI.getCmsObject());
-    }
-
 }
