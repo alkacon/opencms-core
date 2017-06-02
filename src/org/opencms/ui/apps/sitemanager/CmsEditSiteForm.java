@@ -46,7 +46,9 @@ import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsMacroResolver;
@@ -61,6 +63,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,13 +99,12 @@ import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the Form to edit or add a site.<p>
  */
-public class CmsEditSiteForm extends VerticalLayout {
+public class CmsEditSiteForm extends CmsBasicDialog {
 
     /**
      *  Bean for the ComboBox to edit the position.<p>
@@ -543,7 +545,7 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**boolean indicates if folder name was changed by user.*/
     private boolean m_isFolderNameTouched;
 
-    /** CmsSiteManager which calls Form.*/
+    /** The site manager instance.*/
     private CmsSiteManager m_manager;
 
     /**vaadin component.*/
@@ -551,9 +553,6 @@ public class CmsEditSiteForm extends VerticalLayout {
 
     /**Click listener for ok button. */
     private Button.ClickListener m_okClickListener;
-
-    /**main Panel.*/
-    private Panel m_panel;
 
     /**vaadin component.*/
     private FormLayout m_parameter;
@@ -667,7 +666,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                cancel();
+                closeDailog(false);
             }
         });
 
@@ -775,7 +774,9 @@ public class CmsEditSiteForm extends VerticalLayout {
     public CmsEditSiteForm(CmsSiteManager manager, String siteRoot) {
         this(manager);
         m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
-        m_panel.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_CONFIGURATION_EDIT_1, m_site.getTitle()));
+        displayResourceInfoDirectly(
+            Collections.singletonList(
+                new CmsResourceInfo(m_site.getTitle(), m_site.getSiteRoot(), m_manager.getFavIconPath(siteRoot))));
 
         m_tab.removeTab(m_tab.getTab(4));
         m_simpleFieldTitle.removeTextChangeListener(null);
@@ -788,7 +789,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
         m_fieldCreateOU.setVisible(false);
 
-        unableOUComboBox();
+        disableOUComboBox();
 
         m_alreadyUsedURL.remove(m_alreadyUsedURL.indexOf(m_site.getSiteMatcher())); //Remove current url to avoid validation problem
 
@@ -890,14 +891,6 @@ public class CmsEditSiteForm extends VerticalLayout {
     }
 
     /**
-     * Cancels site edit.<p>
-     */
-    void cancel() {
-
-        m_manager.openSubView("", true);
-    }
-
-    /**
      * Clears the message bundle and removes related text fields from UI.<p>
      */
     void clearMessageBundle() {
@@ -910,6 +903,16 @@ public class CmsEditSiteForm extends VerticalLayout {
             }
             m_bundleComponentKeyMap.clear();
         }
+    }
+
+    /**
+     * Closes the dialog.<p>
+     *
+     * @param updateTable <code>true</code> to update the site table
+     */
+    void closeDailog(boolean updateTable) {
+
+        m_manager.closeDialogWindow(updateTable);
     }
 
     /**
@@ -1137,7 +1140,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                cancel();
+                closeDailog(true);
             }
         });
     }
@@ -1169,7 +1172,7 @@ public class CmsEditSiteForm extends VerticalLayout {
 
         //Show report field and hide form fields
         m_report.setVisible(true);
-        m_panel.setVisible(false);
+        m_tab.setVisible(false);
         m_ok.setEnabled(false);
         m_cancel.setEnabled(false);
 
@@ -1583,7 +1586,7 @@ public class CmsEditSiteForm extends VerticalLayout {
     /**
      * Selects the OU of the site (if site has an OU), and disables the ComboBox.<p>
      */
-    private void unableOUComboBox() {
+    private void disableOUComboBox() {
 
         try {
             m_clonedCms.getRequestContext().setSiteRoot("");

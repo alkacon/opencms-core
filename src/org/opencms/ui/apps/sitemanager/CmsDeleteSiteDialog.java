@@ -27,7 +27,6 @@
 
 package org.opencms.ui.apps.sitemanager;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
@@ -40,7 +39,6 @@ import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +53,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * Dialog for deleting Sites.<p>
@@ -80,19 +77,18 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
     /**sites to delete.*/
     private final List<CmsSite> m_sitesToDelete = new ArrayList<CmsSite>();
 
-    /**CmsObject.*/
-    private CmsObject m_cms;
+    /** The site manager instance.*/
+    CmsSiteManager m_manager;
 
     /**
      * Public constructor.<p>
      *
-     * @param window where the dialog is shown
+     * @param manager the site manager instance
      * @param data with values for siteroots to delete.
-     * @param cms a cms object
      */
-    public CmsDeleteSiteDialog(CmsObject cms, final Window window, Set<String> data) {
+    public CmsDeleteSiteDialog(CmsSiteManager manager, Set<String> data) {
 
-        m_cms = cms;
+        m_manager = manager;
 
         for (String site : data) {
             m_sitesToDelete.add(OpenCms.getSiteManager().getSiteForSiteRoot(site));
@@ -113,7 +109,7 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                window.close();
+                m_manager.closeDialogWindow(false);
             }
         });
         m_okButton.addClickListener(new ClickListener() {
@@ -123,7 +119,7 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 submit();
-                window.close();
+                m_manager.closeDialogWindow(true);
             }
         });
     }
@@ -150,14 +146,16 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
         if (m_deleteResources.getValue().booleanValue()) {
             for (CmsSite site : m_sitesToDelete) {
                 try {
-                    m_cms.lockResource(site.getSiteRoot());
+                    m_manager.getRootCmsObject().lockResource(site.getSiteRoot());
                 } catch (CmsException e) {
                     LOG.error("unable to lock resource");
                 }
                 try {
-                    m_cms.deleteResource(site.getSiteRoot(), CmsResource.DELETE_PRESERVE_SIBLINGS);
+                    m_manager.getRootCmsObject().deleteResource(
+                        site.getSiteRoot(),
+                        CmsResource.DELETE_PRESERVE_SIBLINGS);
                     try {
-                        m_cms.unlockResource(site.getSiteRoot());
+                        m_manager.getRootCmsObject().unlockResource(site.getSiteRoot());
                     } catch (CmsLockException e) {
                         LOG.info("Unlock failed.", e);
                     }
@@ -209,26 +207,6 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
     }
 
     /**
-     * Estimates the path to an icon for the ResourceInfoBox.<p>
-     *
-     * @param rootPath of site
-     * @return path to a icon
-     */
-    private String getFavIconPath(String rootPath) {
-
-        CmsResource iconResource = null;
-        try {
-            iconResource = m_cms.readResource(rootPath + "/" + CmsSiteManager.FAVICON);
-        } catch (CmsException e) {
-            //no favicon there
-        }
-        if (iconResource != null) {
-            return OpenCms.getLinkManager().getPermalink(m_cms, iconResource.getRootPath());
-        }
-        return OpenCmsTheme.getImageLink(CmsSiteManager.TABLE_ICON);
-    }
-
-    /**
      * Returns a list of CmsResourceInfo objects.<p>
      *
      * @return list of cmsresourceinfo.
@@ -237,9 +215,9 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
 
         List<CmsResourceInfo> infos = new ArrayList<CmsResourceInfo>();
         for (CmsSite site : m_sitesToDelete) {
-            infos.add(new CmsResourceInfo(site.getTitle(), site.getSiteRoot(), getFavIconPath(site.getSiteRoot())));
+            infos.add(
+                new CmsResourceInfo(site.getTitle(), site.getSiteRoot(), m_manager.getFavIconPath(site.getSiteRoot())));
         }
         return infos;
     }
-
 }

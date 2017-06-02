@@ -30,24 +30,34 @@ package org.opencms.ui.apps.sitemanager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -56,17 +66,14 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class CmsSiteManager extends A_CmsWorkplaceApp {
 
-    /**Constant.*/
-    public static final String FAVICON = "favicon.ico";
-
     /**Bundel name for the sites which are used as templates for new sites.*/
     public static final String BUNDLE_NAME = "siteMacroBundle";
 
-    /** The site icon path. */
-    public static final String ICON = "apps/sitemanager/sites.png";
+    /**Constant.*/
+    public static final String FAVICON = "favicon.ico";
 
     /** The site icon path. */
-    public static final String TABLE_ICON = "apps/sites.png";
+    public static final String ICON = "apps/sitemanager/sites.png";
 
     /**The icon for adding a new site. */
     public static final String ICON_ADD = "apps/sitemanager/site-new.png";
@@ -98,8 +105,23 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     /**path attribute to transmit root of a site to be edited. */
     public static final String SITE_ROOT = "siteRoot";
 
+    /** The site icon path. */
+    public static final String TABLE_ICON = "apps/sites.png";
+
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsSiteManager.class.getName());
+
     /**Path to the sites folder.*/
     static final String PATH_SITES = "/sites/";
+
+    /** The site table. */
+    CmsSitesTable m_sitesTable;
+
+    /** The currently opened dialog window. */
+    private Window m_dialogWindow;
+
+    /** The root cms object. */
+    private CmsObject m_rootCms;
 
     /** The file table filter input. */
     private TextField m_siteTableFilter;
@@ -126,37 +148,143 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     }
 
     /**
+     * Closes the current dialog window and updates the sites table if requested.<p>
+     *
+     * @param updateTable <code>true</code> to update the sites table
+     */
+    public void closeDialogWindow(boolean updateTable) {
+
+        if (m_dialogWindow != null) {
+            m_dialogWindow.close();
+            m_dialogWindow = null;
+        }
+        if (updateTable) {
+            m_sitesTable.loadSites();
+        }
+    }
+
+    /**
+     * Returns the fav icon path for the given site.<p>
+     *
+     * @param siteRoot the site root
+     *
+     * @return the icon path
+     */
+    public String getFavIconPath(String siteRoot) {
+
+        CmsResource iconResource = null;
+        try {
+            iconResource = getRootCmsObject().readResource(siteRoot + "/" + CmsSiteManager.FAVICON);
+        } catch (CmsException e) {
+            //no favicon there
+        }
+        if (iconResource != null) {
+            return OpenCms.getLinkManager().getPermalink(getRootCmsObject(), iconResource.getRootPath());
+        }
+        return OpenCmsTheme.getImageLink(CmsSiteManager.TABLE_ICON);
+    }
+
+    /**
+     * Opens the delete dialog for the given sites.<p>
+     *
+     * @param data the site roots
+     */
+    public void openDeleteDialog(Set<String> data) {
+
+        if (m_dialogWindow != null) {
+            m_dialogWindow.close();
+        }
+        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
+        CmsDeleteSiteDialog form = new CmsDeleteSiteDialog(this, data);
+        m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_DELETE_0));
+        m_dialogWindow.setContent(form);
+        A_CmsUI.get().addWindow(m_dialogWindow);
+        m_dialogWindow.center();
+    }
+
+    /**
+     * Opens the edit site dialog.<p>
+     *
+     * @param siteRoot the site root of the site to edit, if <code>null</code>
+     */
+    public void openEditDailog(String siteRoot) {
+
+        if (m_dialogWindow != null) {
+            m_dialogWindow.close();
+        }
+
+        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        CmsEditSiteForm form;
+        if (siteRoot != null) {
+            form = new CmsEditSiteForm(this, siteRoot);
+            m_dialogWindow.setCaption(
+                CmsVaadinUtils.getMessageText(
+                    Messages.GUI_SITE_CONFIGURATION_EDIT_1,
+                    m_sitesTable.getItem(siteRoot).getItemProperty(CmsSitesTable.PROP_TITLE).getValue()));
+        } else {
+            form = new CmsEditSiteForm(this);
+            m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
+        }
+        m_dialogWindow.setContent(form);
+        A_CmsUI.get().addWindow(m_dialogWindow);
+        m_dialogWindow.center();
+    }
+
+    /**
+     * Opens the global settings dialog.<p>
+     */
+    public void openSettingsDailog() {
+
+        if (m_dialogWindow != null) {
+            m_dialogWindow.close();
+        }
+
+        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        CmsGlobalForm form = new CmsGlobalForm(this);
+        m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
+        m_dialogWindow.setContent(form);
+        A_CmsUI.get().addWindow(m_dialogWindow);
+        m_dialogWindow.center();
+    }
+
+    /**
+     * Opens the update server configuration dialog.<p>
+     */
+    public void openUpdateServerConfigDailog() {
+
+        if (m_dialogWindow != null) {
+            m_dialogWindow.close();
+        }
+
+        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        CmsWebServerConfigForm form = new CmsWebServerConfigForm(this);
+        m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));
+        m_dialogWindow.setContent(form);
+        A_CmsUI.get().addWindow(m_dialogWindow);
+        m_dialogWindow.center();
+    }
+
+    /**
+     * Creates the table holdings all available sites.
+     * @return a vaadin table component
+     */
+
+    protected CmsSitesTable createSitesTable() {
+
+        CmsSitesTable table = new CmsSitesTable(this);
+        table.loadSites();
+        return table;
+    }
+
+    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
      */
     @Override
     protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
 
         LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
-
-        //Check if state is empty -> start
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_MANAGER_TITLE_SHORT_0));
-            return crumbs;
-        }
-
-        //Deeper path
-        crumbs.put(
-            CmsSiteManagerConfiguration.APP_ID,
-            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_MANAGER_TITLE_SHORT_0));
-        if (state.equals(PATH_NAME_ADD)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
-        } else if (state.startsWith(PATH_NAME_EDIT)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_EDIT_0));
-        } else if (state.startsWith(PATH_NAME_GLOBAL)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
-        } else if (state.startsWith(PATH_NAME_WEBSERVER)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));
-        }
-        if (crumbs.size() > 1) {
-            return crumbs;
-        } else {
-            return new LinkedHashMap<String, String>();
-        }
+        crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SITE_MANAGER_TITLE_SHORT_0));
+        return crumbs;
     }
 
     /**
@@ -165,29 +293,8 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
-        if (m_siteTableFilter != null) {
-            m_infoLayout.removeComponent(m_siteTableFilter);
-            m_siteTableFilter = null;
-        }
-
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            if (state.startsWith(PATH_NAME_EDIT)) {
-                m_rootLayout.setMainHeightFull(false);
-                return new CmsEditSiteForm(this, getSiteRootFromState(state));
-            } else if (state.startsWith(PATH_NAME_ADD)) {
-                m_rootLayout.setMainHeightFull(false);
-                return new CmsEditSiteForm(this);
-            } else if (state.startsWith(PATH_NAME_GLOBAL)) {
-                m_rootLayout.setMainHeightFull(false);
-                return new CmsGlobalForm(this);
-            } else if (state.startsWith(PATH_NAME_WEBSERVER)) {
-                m_rootLayout.setMainHeightFull(false);
-                return new CmsWebServerConfigForm(this);
-            }
-            return null;
-        }
-
-        final CmsSitesTable sitesTable = (CmsSitesTable)getSitesTable();
+        addToolbarButtons();
+        m_sitesTable = createSitesTable();
 
         m_rootLayout.setMainHeightFull(true);
         m_siteTableFilter = new TextField();
@@ -202,24 +309,30 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
 
             public void textChange(TextChangeEvent event) {
 
-                sitesTable.filterTable(event.getText());
+                m_sitesTable.filterTable(event.getText());
             }
         });
         m_infoLayout.addComponent(m_siteTableFilter);
 
-        return sitesTable;
+        return m_sitesTable;
     }
 
     /**
-     * Creates the table holdings all available sites.
-     * @return a vaadin table component
+     * Returns the root cms object.<p>
+     *
+     * @return the root cms object
      */
+    protected CmsObject getRootCmsObject() {
 
-    protected Component getSitesTable() {
-
-        CmsSitesTable table = new CmsSitesTable(this);
-        table.loadSites();
-        return table;
+        if (m_rootCms == null) {
+            try {
+                m_rootCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                m_rootCms.getRequestContext().setSiteRoot("");
+            } catch (CmsException e) {
+                LOG.error("Error while cloning CmsObject", e);
+            }
+        }
+        return m_rootCms;
     }
 
     /**
@@ -228,45 +341,53 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     @Override
     protected List<NavEntry> getSubNavEntries(String state) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            List<NavEntry> subNav = new ArrayList<NavEntry>();
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_DESCRIPTION_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_ADD)),
-                    PATH_NAME_ADD));
-            subNav.add(
-                new NavEntry(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_HELP_0),
-                    new ExternalResource(OpenCmsTheme.getImageLink(ICON_SITES_GLOBAL)),
-                    PATH_NAME_GLOBAL));
-
-            if (OpenCms.getSiteManager().isConfigurableWebServer()) {
-                subNav.add(
-                    new NavEntry(
-                        CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0),
-                        CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_HELP_0),
-                        new ExternalResource(OpenCmsTheme.getImageLink(ICON_SITES_WEBSERVER)),
-                        PATH_NAME_WEBSERVER));
-            }
-
-            return subNav;
-        }
         return null;
     }
 
     /**
-     * Returns the site-root of a site from the given state.<p>
-     *
-     * @param state the state
-     *
-     * @return the site root
+     * Adds the toolbar buttons.<p>
      */
-    private String getSiteRootFromState(String state) {
+    private void addToolbarButtons() {
 
-        return A_CmsWorkplaceApp.getParamFromState(state, SITE_ROOT);
+        Button add = CmsToolBar.createButton(FontOpenCms.WAND, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
+        add.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                openEditDailog(null);
+            }
+        });
+        m_uiContext.addToolbarButton(add);
+
+        Button settings = CmsToolBar.createButton(
+            FontOpenCms.SETTINGS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
+        settings.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                openSettingsDailog();
+            }
+        });
+        m_uiContext.addToolbarButton(settings);
+        if (OpenCms.getSiteManager().isConfigurableWebServer()) {
+            Button webServer = CmsToolBar.createButton(
+                FontAwesome.SERVER,
+                CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));
+            webServer.addClickListener(new ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    openUpdateServerConfigDailog();
+                }
+            });
+            m_uiContext.addToolbarButton(webServer);
+        }
     }
-
 }

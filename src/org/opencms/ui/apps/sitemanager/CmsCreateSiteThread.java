@@ -100,7 +100,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
     /**Parent OU. */
     private String m_parentOU;
 
-    /**Selected OU*/
+    /**Selected OU.*/
     private String m_selectedOU;
 
     /**Source to copy resources from. */

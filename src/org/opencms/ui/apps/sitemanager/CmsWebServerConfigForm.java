@@ -32,6 +32,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.report.CmsReportWidget;
 
 import java.util.Map;
@@ -44,12 +45,11 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Class for the Web server configuration form and execution of script.
  */
-public class CmsWebServerConfigForm extends VerticalLayout {
+public class CmsWebServerConfigForm extends CmsBasicDialog {
 
     /**vaadin serial id. */
     private static final long serialVersionUID = 6872090597762705805L;
@@ -136,7 +136,7 @@ public class CmsWebServerConfigForm extends VerticalLayout {
      */
     void cancel() {
 
-        m_manager.openSubView("", true);
+        m_manager.closeDialogWindow(false);
     }
 
     /**

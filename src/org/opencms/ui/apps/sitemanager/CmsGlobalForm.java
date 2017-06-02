@@ -38,6 +38,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
 
 import java.util.ArrayList;
@@ -56,13 +57,12 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  *Class for the Global configuration dialog.<p>
  */
 
-public class CmsGlobalForm extends VerticalLayout {
+public class CmsGlobalForm extends CmsBasicDialog {
 
     /**
      * Validator for the worlplace server combo boxes.<p>
@@ -184,7 +184,7 @@ public class CmsGlobalForm extends VerticalLayout {
 
                 if (isValidWorkplaceServer()) {
                     submit();
-                    cancel();
+                    closeDialog();
                 }
                 return;
             }
@@ -196,7 +196,7 @@ public class CmsGlobalForm extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                cancel();
+                closeDialog();
                 return;
             }
         });
@@ -256,9 +256,9 @@ public class CmsGlobalForm extends VerticalLayout {
     /**
      * Cancels site edit.<p>
      */
-    void cancel() {
+    void closeDialog() {
 
-        m_manager.openSubView("", true);
+        m_manager.closeDialogWindow(false);
     }
 
     /**
