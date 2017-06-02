@@ -27,10 +27,13 @@
 
 package org.opencms.ui.apps.scheduler;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.notification.CmsContentNotificationJob;
 import org.opencms.relations.CmsExternalLinksValidator;
@@ -47,12 +50,15 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.util.CmsComboNullToEmptyConverter;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -73,13 +79,12 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Form used to edit a scheduled job.<p>
  */
-public class CmsJobEditView extends VerticalLayout {
+public class CmsJobEditView extends CmsBasicDialog {
 
     /**
      * Validator for the cron expression field.<p>
@@ -223,7 +228,7 @@ public class CmsJobEditView extends VerticalLayout {
     }
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsJobEditView.class);
+    static final Log LOG = CmsLog.getLog(CmsJobEditView.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -231,14 +236,20 @@ public class CmsJobEditView extends VerticalLayout {
     /** Field for the job name. */
     TextField m_fieldJobName;
 
+    /** Edited job. */
+    CmsScheduledJobInfo m_job = new CmsScheduledJobInfo();
+
+    /** The job manager instance. */
+    CmsJobManagerApp m_manager;
+
     /** Form containing the job parameters. */
     FormLayout m_paramContainer;
 
     /** Button to add a new parameter. */
     private Button m_buttonAddParam;
 
-    /** The button bar. */
-    private HorizontalLayout m_buttonBar;
+    /** The cancel button. */
+    private Button m_cancel;
 
     /** Field to activate / deactivate the job. */
     private CheckBox m_fieldActive;
@@ -276,17 +287,58 @@ public class CmsJobEditView extends VerticalLayout {
     /** Field group. */
     private BeanFieldGroup<CmsScheduledJobInfo> m_group;
 
-    /** Edited job. */
-    private CmsScheduledJobInfo m_job = new CmsScheduledJobInfo();
+    /** The ok button. */
+    private Button m_ok;
 
     /**
      * Creates a new instance.<p>
      *
+     * @param manager the job manager instance
      * @param job the job to be edited
      */
-    public CmsJobEditView(CmsScheduledJobInfo job) {
+    public CmsJobEditView(CmsJobManagerApp manager, CmsScheduledJobInfo job) {
+        m_manager = manager;
         m_job = job;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(job.getClassName())) {
+            displayResourceInfoDirectly(
+                Collections.singletonList(CmsJobTable.getJobInfo(job.getJobName(), job.getClassName())));
+        }
+        m_ok.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                try {
+                    if (trySaveToBean()) {
+                        OpenCms.getScheduleManager().scheduleJob(A_CmsUI.getCmsObject(), m_job);
+                        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+                        m_manager.closeDialogWindow(true);
+                    }
+
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    CmsErrorDialog.showErrorDialog(e, new Runnable() {
+
+                        public void run() {
+
+                            m_manager.closeDialogWindow(true);
+                        }
+                    });
+                }
+
+            }
+        });
+        m_cancel.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                m_manager.closeDialogWindow(false);
+            }
+        });
 
         BeanFieldGroup<CmsScheduledJobInfo> group = new BeanFieldGroup<CmsScheduledJobInfo>(CmsScheduledJobInfo.class);
         group.setItemDataSource(m_job);
@@ -373,19 +425,6 @@ public class CmsJobEditView extends VerticalLayout {
 
         for (Map.Entry<String, String> entry : info.getParameters().entrySet()) {
             addParamLine(entry.getKey(), entry.getValue());
-        }
-    }
-
-    /**
-     * Sets the buttons for the edit view.<p>
-     *
-     * @param buttons the buttons
-     */
-    public void setButtons(Component... buttons) {
-
-        m_buttonBar.removeAllComponents();
-        for (Component button : buttons) {
-            m_buttonBar.addComponent(button);
         }
     }
 

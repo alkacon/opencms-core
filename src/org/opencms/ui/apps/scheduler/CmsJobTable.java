@@ -41,6 +41,7 @@ import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -48,6 +49,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -129,6 +131,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         public void executeAction(Set<String> data) {
 
             String jobId = data.iterator().next();
+            @SuppressWarnings("unchecked")
             CmsScheduledJobInfo job = (((Set<CmsJobBean>)getValue()).iterator().next()).getJob();
             CmsScheduledJobInfo jobClone = (CmsScheduledJobInfo)job.clone();
             jobClone.setActive(!job.isActive());
@@ -168,16 +171,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
          */
         public void executeAction(Set<String> data) {
 
-            String stateCopy = CmsScheduledJobsAppConfig.APP_ID + "/" + CmsJobManagerApp.PATH_NAME_EDIT;
-            stateCopy = A_CmsWorkplaceApp.addParamToState(
-                stateCopy,
-                CmsJobManagerApp.PARAM_JOB_ID,
-                data.iterator().next());
-            stateCopy = A_CmsWorkplaceApp.addParamToState(
-                stateCopy,
-                CmsJobManagerApp.PARAM_COPY,
-                Boolean.TRUE.toString());
-            CmsAppWorkplaceUi.get().getNavigator().navigateTo(stateCopy);
+            m_manager.openEditDialog(data.iterator().next(), true);
         }
 
         /**
@@ -207,14 +201,16 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
+        @SuppressWarnings("unchecked")
         public void executeAction(Set<String> data) {
 
             String jobNames = "";
             final List<String> jobIds = new ArrayList<String>();
-
+            List<CmsResourceInfo> jobInfos = new ArrayList<CmsResourceInfo>();
             for (CmsJobBean job : (Set<CmsJobBean>)getValue()) {
                 jobIds.add(job.getJob().getId());
                 jobNames += job.getName() + ", ";
+                jobInfos.add(getJobInfo(job.getName(), job.getClassName()));
             }
             if (!jobNames.isEmpty()) {
                 jobNames = jobNames.substring(0, jobNames.length() - 2);
@@ -238,7 +234,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                         }
 
                     }
-                });
+                }).displayResourceInfoDirectly(jobInfos);
         }
 
         /**
@@ -270,7 +266,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
          */
         public void executeAction(Set<String> data) {
 
-            editJob(data.iterator().next());
+            m_manager.openEditDialog(data.iterator().next(), false);
         }
 
         /**
@@ -310,6 +306,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
          */
         public void executeAction(Set<String> data) {
 
+            @SuppressWarnings("unchecked")
             final CmsScheduledJobInfo job = ((Set<CmsJobBean>)getValue()).iterator().next().getJob();
 
             CmsConfirmationDialog.show(
@@ -322,7 +319,8 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                         CmsScheduleManager scheduler = OpenCms.getScheduleManager();
                         scheduler.executeDirectly(job.getId());
                     }
-                });
+                }).displayResourceInfoDirectly(
+                    Collections.singletonList(getJobInfo(job.getJobName(), job.getClassName())));
         }
 
         /**
@@ -451,6 +449,9 @@ public class CmsJobTable extends Table implements ColumnGenerator {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The job manager instance. */
+    CmsJobManagerApp m_manager;
+
     /** Bean container for the table. */
     private BeanItemContainer<CmsJobBean> m_beanContainer = new BeanItemContainer<CmsJobBean>(CmsJobBean.class);
 
@@ -462,8 +463,11 @@ public class CmsJobTable extends Table implements ColumnGenerator {
 
     /**
      * Creates a new instance.<p>
+     *
+     * @param manager the job manager instance
      */
-    public CmsJobTable() {
+    public CmsJobTable(CmsJobManagerApp manager) {
+        m_manager = manager;
         setContainerDataSource(m_beanContainer);
 
         setVisibleColumns();
@@ -509,6 +513,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                 if (TableProperty.className.toString().equals(propertyId)) {
                     return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
+                @SuppressWarnings("unchecked")
                 CmsScheduledJobInfo job = ((BeanItem<CmsJobBean>)source.getItem(itemId)).getBean().getJob();
                 if (TableProperty.name.toString().equals(propertyId) & job.isActive()) {
                     return " " + OpenCmsTheme.IN_NAVIGATION;
@@ -517,6 +522,19 @@ public class CmsJobTable extends Table implements ColumnGenerator {
             }
         });
 
+    }
+
+    /**
+     * Returns the resource info box to the given job.<p>
+     *
+     * @param name the job name
+     * @param className the job class
+     *
+     * @return the info box component
+     */
+    public static CmsResourceInfo getJobInfo(String name, String className) {
+
+        return new CmsResourceInfo(name, className, OpenCmsTheme.getImageLink("apps/scheduler.png"));
     }
 
     /**
@@ -606,6 +624,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
      * @param itemId of the clicked row
      * @param propertyId column id
      */
+    @SuppressWarnings("unchecked")
     void onItemClick(MouseEvents.ClickEvent event, Object itemId, Object propertyId) {
 
         if (!event.isCtrlKey() && !event.isShiftKey()) {
@@ -622,7 +641,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                 && TableProperty.className.toString().equals(propertyId)) {
 
                 String jobId = ((Set<CmsJobBean>)getValue()).iterator().next().getJob().getId();
-                editJob(jobId);
+                m_manager.openEditDialog(jobId, false);
             }
         }
     }

@@ -7,8 +7,9 @@
   	<meta name="package-mapping" content="s:org.opencms.ui.apps.scheduler" />
 </head>
 <body>
-	<v-vertical-layout>
-	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+<o-cms-basic-dialog>
+			<content>
+	<v-vertical-layout :center margin spacing>
 		<v-panel caption="%(key.GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0)">
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
 				<v-text-field _id="m_fieldJobName" width="100%" />
@@ -34,12 +35,12 @@
 				<v-button _id="m_buttonAddParam">%(key.GUI_SCHEDULER_ADD_PARAMETER_0)</v-button>
 			</v-form-layout>
 		</v-panel>
-		<v-panel>
-			<v-horizontal-layout width="100%">
-				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar" _id="m_buttonBar" />
-			</v-horizontal-layout>
-		</v-panel>
 	</v-vertical-layout>
-	</v-vertical-layout>
+	</content>
+			<buttons>
+				<v-button _id="m_ok" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
 </body>
 </html>
