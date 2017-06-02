@@ -408,6 +408,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCE_INFO_0 = "GUI_RESOURCE_INFO_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECTED_0 = "GUI_SELECTED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCEINFO_LIST_TITLE_0 = "GUI_RESOURCEINFO_LIST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

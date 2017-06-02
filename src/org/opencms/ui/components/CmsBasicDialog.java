@@ -247,7 +247,7 @@ public class CmsBasicDialog extends VerticalLayout {
                 m_mainPanel.addComponent(m_infoComponent, 0);
             } else {
                 m_infoComponent = createResourceListPanel(
-                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_RESOURCE_INFO_0),
+                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_SELECTED_0),
                     resources);
                 m_mainPanel.addComponent(m_infoComponent, 0);
                 m_mainPanel.setExpandRatio(m_infoComponent, 1);
@@ -278,7 +278,7 @@ public class CmsBasicDialog extends VerticalLayout {
                 m_mainPanel.addComponent(m_infoComponent, 0);
             } else {
                 m_infoComponent = createResourceListPanelDirectly(
-                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_RESOURCE_INFO_0),
+                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_SELECTED_0),
                     resourceInfos);
                 m_mainPanel.addComponent(m_infoComponent, 0);
                 m_mainPanel.setExpandRatio(m_infoComponent, 1);
