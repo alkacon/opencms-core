@@ -199,9 +199,7 @@ public class CmsLogFileView extends VerticalLayout {
             CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGVIEW_DOWNLOAD_0));
 
         m_fileDownloader = new FileDownloader(getDownloadResource()); //resource can be changed..
-
         m_fileDownloader.extend(downloadButton);
-        downloadButton.setWidth("100px");
         return downloadButton;
     }
 

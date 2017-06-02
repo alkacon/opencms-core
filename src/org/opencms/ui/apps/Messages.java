@@ -54,13 +54,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATABASEAPP_STATS_LIST_0 = "GUI_DATABASEAPP_STATS_LIST_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATABASEAPP_STATS_RESULTS_CAPTION_0 = "GUI_DATABASEAPP_STATS_RESULTS_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
@@ -474,7 +468,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_STATS_ALL_RESOURCES_HELP_0 = "GUI_DATABASEAPP_STATS_ALL_RESOURCES_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_STATS_LIST_0 = "GUI_DATABASEAPP_STATS_LIST_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_STATS_RESULTS_2 = "GUI_DATABASEAPP_STATS_RESULTS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_STATS_RESULTS_CAPTION_0 = "GUI_DATABASEAPP_STATS_RESULTS_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_STATS_RESULTS_ROOT_1 = "GUI_DATABASEAPP_STATS_RESULTS_ROOT_1";
@@ -922,6 +922,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_LOGVIEW_SETTINGS_SHORT_0 = "GUI_LOGFILE_LOGVIEW_SETTINGS_SHORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_VIEW_TOOL_NAME_0 = "GUI_LOGFILE_VIEW_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_VIEW_TOOL_NAME_HELP_0 = "GUI_LOGFILE_VIEW_TOOL_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_WINDOWSIZE_0 = "GUI_LOGFILE_WINDOWSIZE_0";

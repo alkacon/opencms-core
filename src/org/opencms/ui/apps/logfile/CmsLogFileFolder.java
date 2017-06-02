@@ -30,10 +30,10 @@ package org.opencms.ui.apps.logfile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
+import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
-import org.opencms.ui.apps.I_CmsWorkplaceApp;
+import org.opencms.ui.apps.I_CmsFolderAppCategory;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 
@@ -43,53 +43,34 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * Configuration class for Log management app.<p>
+ * Class for the folder to show Log file apps.<p>
  */
-public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsLogFileFolder implements I_CmsFolderAppCategory {
 
-    /** The app id. */
-    public static final String APP_ID = "logfile-app";
+    /**Folder id.*/
+    public static final String ID = "logfile-folder";
 
     /**App icon path.*/
-    private static final String ICON = "apps/log/apps/fileview_view.png";
+    private static final String ICON = "apps/log/folder.png";
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
+     * @see org.opencms.ui.apps.I_CmsFolderAppCategory#getButtonStyle()
      */
-    @Override
-    public String getAppCategory() {
-
-        return CmsLogFileFolder.ID;
-    }
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
-     */
-    public I_CmsWorkplaceApp getAppInstance() {
-
-        return new CmsLogFileApp();
-    }
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
-     */
-    @Override
     public String getButtonStyle() {
 
         return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
+     * @see org.opencms.ui.apps.I_CmsFolderAppCategory#getHelpText(java.util.Locale)
      */
-    @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_LOGFILE_ADMIN_TOOL_NAME_HELP_0);
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getIcon()
+     * @see org.opencms.ui.apps.I_CmsFolderAppCategory#getIcon()
      */
     public Resource getIcon() {
 
@@ -97,35 +78,48 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getId()
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getId()
      */
     public String getId() {
 
-        return APP_ID;
+        return ID;
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getName(java.util.Locale)
      */
-    @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_LOGFILE_ADMIN_TOOL_NAME_0);
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getOrder()
      */
-    @Override
     public int getOrder() {
 
-        return 8;
+        return 0;
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getParentId()
      */
-    @Override
+    public String getParentId() {
+
+        return CmsWorkplaceAppManager.ADMINISTRATION_CATEGORY_ID;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppCategory#getPriority()
+     */
+    public int getPriority() {
+
+        return 0;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsFolderAppCategory#getVisibility(org.opencms.file.CmsObject)
+     */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)
@@ -133,4 +127,5 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
         : CmsAppVisibilityStatus.INVISIBLE;
         return status;
     }
+
 }

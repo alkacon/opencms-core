@@ -43,15 +43,15 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * Configuration class for Log management app.<p>
+ * Class for the configuration of the log file settings app.<p>
  */
-public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsLogFileSettingConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
-    public static final String APP_ID = "logfile-app";
+    public static final String APP_ID = "logfile-settings";
 
     /**App icon path.*/
-    private static final String ICON = "apps/log/apps/fileview_view.png";
+    private static final String ICON = "apps/log/apps/log_preferences.png";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -67,7 +67,7 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsLogFileApp();
+        return new CmsLogFileSettingApp();
     }
 
     /**
@@ -85,7 +85,7 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_DESCRIPTION_0);
     }
 
     /**
@@ -110,7 +110,7 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_0);
     }
 
     /**

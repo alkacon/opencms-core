@@ -28,10 +28,8 @@
 package org.opencms.ui.apps.logfile;
 
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -44,25 +42,14 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Main class of Log managment app.<p>
  */
 public class CmsLogFileApp extends A_CmsWorkplaceApp {
-
-    /**Icon for log channel settings.*/
-    private static final String ICON_LOGCHANNEL = "apps/log/log_preferences.png";
-
-    /**Path to log channel settings.*/
-    private static final String PATH_LOGCHANNEL = "logchannel";
 
     /**Download button.*/
     private Button m_downloadButton;
@@ -198,22 +185,10 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
 
         //Check if state is empty -> start
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_ADMIN_TOOL_NAME_SHORT_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0));
             return crumbs;
         }
-
-        //Deeper path
-        crumbs.put(
-            CmsLogFileConfiguration.APP_ID,
-            CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_ADMIN_TOOL_NAME_SHORT_0));
-        if (state.startsWith(PATH_LOGCHANNEL)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_SHORT_0));
-        }
-        if (crumbs.size() > 1) {
-            return crumbs;
-        } else {
-            return new LinkedHashMap<String, String>();
-        }
+        return new LinkedHashMap<String, String>();
     }
 
     /**
@@ -237,27 +212,6 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
         if (m_downloadButton != null) {
             m_uiContext.removeToolbarButton(m_downloadButton);
         }
-        if (state.startsWith(PATH_LOGCHANNEL)) {
-            m_rootLayout.setMainHeightFull(true);
-            final CmsLogChannelTable channelTable = new CmsLogChannelTable();
-            m_tableFilter = new TextField();
-            m_tableFilter.setIcon(FontOpenCms.FILTER);
-            m_tableFilter.setInputPrompt(
-                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-            m_tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-            m_tableFilter.setWidth("200px");
-            m_tableFilter.addTextChangeListener(new TextChangeListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void textChange(TextChangeEvent event) {
-
-                    channelTable.filterTable(event.getText());
-                }
-            });
-            m_infoLayout.addComponent(m_tableFilter);
-            return channelTable;
-        }
         return null;
     }
 
@@ -267,15 +221,6 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     @Override
     protected List<NavEntry> getSubNavEntries(String state) {
 
-        List<NavEntry> subNav = new ArrayList<NavEntry>();
-
-        subNav.add(
-            new NavEntry(
-                CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_0),
-                CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_DESCRIPTION_0),
-                new ExternalResource(OpenCmsTheme.getImageLink(ICON_LOGCHANNEL)),
-                PATH_LOGCHANNEL));
-
-        return subNav;
+        return null;
     }
 }
