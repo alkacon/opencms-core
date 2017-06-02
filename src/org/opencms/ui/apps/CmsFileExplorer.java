@@ -1527,8 +1527,10 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
 
         if (show) {
             m_crumbs.removeStyleName(OpenCmsTheme.HIDDEN);
+            CmsAppWorkplaceUi.get().enableGlobalShortcuts();
         } else {
             m_crumbs.addStyleName(OpenCmsTheme.HIDDEN);
+            CmsAppWorkplaceUi.get().disableGlobalShortcuts();
         }
     }
 
