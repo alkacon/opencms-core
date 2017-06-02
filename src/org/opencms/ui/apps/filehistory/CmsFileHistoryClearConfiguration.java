@@ -43,15 +43,15 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * Configuration class of file history app.
+ * Configuration class for the file history clear app.<p>
  */
-public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsFileHistoryClearConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
-    public static final String APP_ID = "file-history";
+    public static final String APP_ID = "file-history-clear";
 
     /**App icon path.*/
-    public static final String ICON = "apps/filehistory/apps/history_settings.png";
+    public static final String ICON = "apps/filehistory/apps/history_clear.png";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -67,7 +67,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsFileHistoryApp();
+        return new CmsFileHistoryClearApp();
     }
 
     /**
@@ -85,7 +85,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_TOOL_NAME_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_DELETE_TOOL_NAME_HELP_0);
     }
 
     /**
@@ -110,7 +110,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_DELETE_TOOL_NAME_0);
     }
 
     /**

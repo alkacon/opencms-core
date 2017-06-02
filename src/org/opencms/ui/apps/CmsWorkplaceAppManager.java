@@ -42,7 +42,9 @@ import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbManagerConfiguration;
+import org.opencms.ui.apps.filehistory.CmsFileHistoryClearConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
+import org.opencms.ui.apps.filehistory.CmsFileHistoryFolder;
 import org.opencms.ui.apps.git.CmsGitAppConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationExternalConfiguration;
@@ -546,7 +548,8 @@ public class CmsWorkplaceAppManager {
     private List<I_CmsFolderAppCategory> loadAppFolder() {
 
         List<I_CmsFolderAppCategory> result = new ArrayList<I_CmsFolderAppCategory>();
-        result.addAll(Arrays.<I_CmsFolderAppCategory> asList(new CmsLinkValidationFolder()));
+        result.addAll(
+            Arrays.<I_CmsFolderAppCategory> asList(new CmsLinkValidationFolder(), new CmsFileHistoryFolder()));
         return result;
     }
 
@@ -626,6 +629,7 @@ public class CmsWorkplaceAppManager {
                 new CmsProjectOverviewConfiguration(),
                 new CmsCacheAdminConfiguration(),
                 new CmsFileHistoryConfiguration(),
+                new CmsFileHistoryClearConfiguration(),
                 new CmsLinkValidationConfiguration(),
                 new CmsLinkValidationExternalConfiguration(),
                 new CmsDbManagerConfiguration(),

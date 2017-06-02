@@ -37,6 +37,8 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -142,7 +144,9 @@ public class CmsFileHistorySettings extends VerticalLayout {
     public CmsFileHistorySettings(final CmsFileHistoryApp app, String state) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state) | state.equals(CmsFileHistoryApp.PATH_SETTINGS)) {
+        m_edit.setEnabled(false);
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             m_statusPanel.setVisible(false);
         } else {
             Label status = new Label();
@@ -163,15 +167,45 @@ public class CmsFileHistorySettings extends VerticalLayout {
         setupVersionComboBox();
         setupModeOptions();
 
+        ValueChangeListener changeListener = new ValueChangeListener() {
+
+            /**vaadin serial id.*/
+            private static final long serialVersionUID = -6003215873244541851L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                setButtonEnabled(true);
+            }
+        };
+
+        m_numberVersions.addValueChangeListener(changeListener);
+
+        m_mode.addValueChangeListener(changeListener);
+
         m_edit.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 161296255232053110L;
 
             public void buttonClick(ClickEvent event) {
 
-                app.openSubView(saveOptions(), true);
+                if (saveOptions()) {
+                    setButtonEnabled(false);
+                } else {
+                    app.openSubView(CmsFileHistoryApp.PATH_SETTINGS_INVALID, true);
+                }
             }
         });
+
+    }
+
+    /**
+     * Sets the edit button enabled or disabled.<p>
+     *
+     * @param enable state of button
+     */
+    protected void setButtonEnabled(boolean enable) {
+
+        m_edit.setEnabled(enable);
     }
 
     /**
@@ -179,7 +213,7 @@ public class CmsFileHistorySettings extends VerticalLayout {
      *
      * @return Path to be called in app.
      */
-    String saveOptions() {
+    boolean saveOptions() {
 
         //Enable history?
         boolean enabled = ((ComboBoxVersionsBean)m_numberVersions.getValue()).getValue() != CmsFileHistoryApp.NUMBER_VERSIONS_DISABLED;
@@ -199,12 +233,12 @@ public class CmsFileHistorySettings extends VerticalLayout {
 
         if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_WITHVERSIONS)
             && (versions == CmsFileHistoryApp.NUMBER_VERSIONS_DISABLED)) {
-            return CmsFileHistoryApp.PATH_SETTINGS_INVALID;
+            return false;
         }
         OpenCms.getSystemInfo().setVersionHistorySettings(enabled, versions, versionsDeleted);
         OpenCms.writeConfiguration(CmsSystemConfiguration.class);
 
-        return CmsFileHistoryApp.PATH_SETTINGS_SAVE;
+        return true;
     }
 
     /**

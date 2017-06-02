@@ -65,9 +65,6 @@ public class CmsFileHistoryClear extends VerticalLayout {
     ComboBox m_numberVersionsToKeep;
 
     /**Vaadin component.*/
-    private Button m_cancel;
-
-    /**Vaadin component.*/
     private CmsDateField m_dateField;
 
     /**Vaadin component.*/
@@ -90,7 +87,7 @@ public class CmsFileHistoryClear extends VerticalLayout {
      *
      * @param app instance of calling app
      */
-    public CmsFileHistoryClear(final CmsFileHistoryApp app) {
+    public CmsFileHistoryClear(final CmsFileHistoryClearApp app) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         //Setup ui components
@@ -105,16 +102,6 @@ public class CmsFileHistoryClear extends VerticalLayout {
             public void buttonClick(ClickEvent event) {
 
                 startCleanAndShowReport();
-            }
-        });
-
-        m_cancel.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 9147968498465234528L;
-
-            public void buttonClick(ClickEvent event) {
-
-                app.openSubView("", true);
             }
         });
     }
@@ -230,7 +217,7 @@ public class CmsFileHistoryClear extends VerticalLayout {
     }
 
     /**
-     * Starts the thread for deleting versions<p>
+     * Starts the thread for deleting versions.<p>
      *
      * @return started thread
      */

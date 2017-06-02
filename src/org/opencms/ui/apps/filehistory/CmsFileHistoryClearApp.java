@@ -38,9 +38,9 @@ import java.util.List;
 import com.vaadin.ui.Component;
 
 /**
- * App for the history settings and clearing of history.<p>
+ * Class for the file history clear app.<p>
  */
-public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
+public class CmsFileHistoryClearApp extends A_CmsWorkplaceApp {
 
     /**Mode don't keep versions.*/
     static final String MODE_DISABLED = "disabled";
@@ -57,12 +57,6 @@ public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
     /**Version unlimited option.*/
     static final int NUMBER_VERSIONS_UNLIMITED = -1;
 
-    /**Path to save invalid.*/
-    static final String PATH_SETTINGS_INVALID = "settings_invalid";
-
-    /**App icon path.*/
-    public static final String ICON = "apps/filehistory/history.png";
-
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
      */
@@ -73,10 +67,12 @@ public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
 
         //Deeper path
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_TOOL_NAME_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_DELETE_TOOL_NAME_0));
             return crumbs;
         }
+
         return new LinkedHashMap<String, String>(); //size==1 & state was not empty -> state doesn't match to known path
+
     }
 
     /**
@@ -87,7 +83,7 @@ public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             m_rootLayout.setMainHeightFull(false);
-            return new CmsFileHistorySettings(this, state);
+            return new CmsFileHistoryClear(this);
         }
         return null;
     }
