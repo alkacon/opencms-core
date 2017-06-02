@@ -41,12 +41,15 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
+import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -198,6 +201,12 @@ public class CmsEditProjectForm extends CmsBasicDialog {
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             m_project = cms.readProject(projectId);
+            displayResourceInfoDirectly(
+                Collections.singletonList(
+                    new CmsResourceInfo(
+                        m_project.getName(),
+                        m_project.getDescription(),
+                        OpenCmsTheme.getImageLink(CmsProjectManager.ICON_PROJECT_SMALL))));
             m_fieldName.setValue(m_project.getName());
             m_fieldName.setEnabled(false);
             m_fieldDescription.setValue(m_project.getDescription());

@@ -41,6 +41,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenu;
@@ -88,12 +89,19 @@ public class CmsProjectsTable extends Table {
          */
         public void executeAction(final Set<CmsUUID> data) {
 
+            List<CmsResourceInfo> projectInfos = new ArrayList<CmsResourceInfo>();
             String message;
+            String projectIcon = OpenCmsTheme.getImageLink(CmsProjectManager.ICON_PROJECT_SMALL);
             if (data.size() == 1) {
                 Item item = m_container.getItem(data.iterator().next());
                 message = CmsVaadinUtils.getMessageText(
                     Messages.GUI_PROJECTS_CONFIRM_DELETE_PROJECT_1,
                     item.getItemProperty(PROP_NAME).getValue());
+                projectInfos.add(
+                    new CmsResourceInfo(
+                        (String)item.getItemProperty(PROP_NAME).getValue(),
+                        (String)item.getItemProperty(PROP_DESCRIPTION).getValue(),
+                        projectIcon));
             } else {
                 message = "";
                 for (CmsUUID id : data) {
@@ -102,6 +110,11 @@ public class CmsProjectsTable extends Table {
                     }
                     Item item = m_container.getItem(id);
                     message += item.getItemProperty(PROP_NAME).getValue();
+                    projectInfos.add(
+                        new CmsResourceInfo(
+                            (String)item.getItemProperty(PROP_NAME).getValue(),
+                            (String)item.getItemProperty(PROP_DESCRIPTION).getValue(),
+                            projectIcon));
                 }
                 message = CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_CONFIRM_DELETE_PROJECTS_1, message);
             }
@@ -123,7 +136,7 @@ public class CmsProjectsTable extends Table {
                             }
                         }
                     }
-                });
+                }).displayResourceInfoDirectly(projectInfos);
         }
 
         /**

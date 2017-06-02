@@ -110,10 +110,12 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
      * @param title the window title
      * @param message the message to display in the dialog
      * @param okAction the action to execute when the user clicks OK
+     *
+     * @return the dialog instance
      */
-    public static void show(String title, String message, final Runnable okAction) {
+    public static CmsConfirmationDialog show(String title, String message, final Runnable okAction) {
 
-        show(title, message, okAction, null);
+        return show(title, message, okAction, null);
     }
 
     /**
@@ -123,8 +125,14 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
      * @param message the message to display in the dialog
      * @param okAction the action to execute when the user clicks OK
      * @param cancelAction the action for the cancel case
+     *
+     * @return the dialog instance
      */
-    public static void show(String title, String message, final Runnable okAction, final Runnable cancelAction) {
+    public static CmsConfirmationDialog show(
+        String title,
+        String message,
+        final Runnable okAction,
+        final Runnable cancelAction) {
 
         final Window window = CmsBasicDialog.prepareWindow();
         window.setCaption(title);
@@ -147,6 +155,7 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
         });
         window.setContent(dialog);
         UI.getCurrent().addWindow(window);
+        return dialog;
     }
 
     /**
