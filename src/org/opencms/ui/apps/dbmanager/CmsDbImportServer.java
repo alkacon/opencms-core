@@ -45,9 +45,6 @@ public class CmsDbImportServer extends A_CmsServerImportForm {
     private static final long serialVersionUID = -1489144623755018754L;
 
     /**vaadin component.*/
-    private Button m_cancel;
-
-    /**vaadin component.*/
     private CheckBox m_keepPermissions;
 
     /**vaadin component.*/
@@ -97,7 +94,7 @@ public class CmsDbImportServer extends A_CmsServerImportForm {
     @Override
     protected Button getCancelButton() {
 
-        return m_cancel;
+        return null;
     }
 
     /**
@@ -115,7 +112,7 @@ public class CmsDbImportServer extends A_CmsServerImportForm {
     @Override
     protected String getReportPath() {
 
-        return CmsDbManager.PATH_REPORT_SERVER;
+        return CmsDbImportApp.PATH_REPORT_SERVER;
     }
 
     /**

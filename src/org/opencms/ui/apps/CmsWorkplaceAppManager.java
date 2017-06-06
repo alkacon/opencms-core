@@ -41,7 +41,13 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
+import org.opencms.ui.apps.dbmanager.CmsDbExportConfiguration;
+import org.opencms.ui.apps.dbmanager.CmsDbImportHTTPConfiguration;
+import org.opencms.ui.apps.dbmanager.CmsDbImportServerConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbManagerConfiguration;
+import org.opencms.ui.apps.dbmanager.CmsDbManagerFolder;
+import org.opencms.ui.apps.dbmanager.CmsDbRemovePubLocksConfiguration;
+import org.opencms.ui.apps.dbmanager.CmsDbStaticExportConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryClearConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryFolder;
@@ -554,7 +560,8 @@ public class CmsWorkplaceAppManager {
             Arrays.<I_CmsFolderAppCategory> asList(
                 new CmsLinkValidationFolder(),
                 new CmsFileHistoryFolder(),
-                new CmsLogFileFolder()));
+                new CmsLogFileFolder(),
+                new CmsDbManagerFolder()));
         return result;
     }
 
@@ -638,6 +645,11 @@ public class CmsWorkplaceAppManager {
                 new CmsLinkValidationConfiguration(),
                 new CmsLinkValidationExternalConfiguration(),
                 new CmsDbManagerConfiguration(),
+                new CmsDbImportHTTPConfiguration(),
+                new CmsDbImportServerConfiguration(),
+                new CmsDbExportConfiguration(),
+                new CmsDbStaticExportConfiguration(),
+                new CmsDbRemovePubLocksConfiguration(),
                 new CmsSearchindexAppConfiguration(),
                 new CmsLogFileConfiguration(),
                 new CmsLogFileSettingConfiguration(),

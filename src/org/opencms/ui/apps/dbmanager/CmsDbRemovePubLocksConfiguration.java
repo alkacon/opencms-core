@@ -43,14 +43,15 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * Configuration for Database manager app.<p>
+ * Class for app configuration.<p>
  */
-public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsDbRemovePubLocksConfiguration extends A_CmsWorkplaceAppConfiguration {
 
-    /**Icon.*/
-    private static final String ICON = "apps/dbmanager/database_manager.png";
+    /**Icon for the app.*/
+    private static final String ICON = "apps/dbmanager/publishlocks.png";
+
     /** The app id. */
-    public static final String APP_ID = "db-admin";
+    public static final String APP_ID = "db-admin-remove-locks";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -66,7 +67,7 @@ public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsDbManager();
+        return new CmsDbRemovePubLocksApp();
     }
 
     /**
@@ -84,7 +85,7 @@ public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_DATABASEAPP_ADMIN_TOOL_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_DATABASEAPP_DB_PUBLOCKS_ADMIN_TOOL_HELP_0);
     }
 
     /**
@@ -109,7 +110,7 @@ public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_DATABASEAPP_STATS_TITLE_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_DATABASEAPP_DB_PUBLOCKS_ADMIN_TOOL_NAME_0);
     }
 
     /**
@@ -118,7 +119,7 @@ public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public int getOrder() {
 
-        return 0;
+        return 5;
     }
 
     /**

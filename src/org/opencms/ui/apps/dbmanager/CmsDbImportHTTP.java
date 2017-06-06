@@ -46,9 +46,6 @@ public class CmsDbImportHTTP extends A_CmsHTTPImportForm {
     /**vaadin serial id.*/
     private static final long serialVersionUID = -2918164495466630578L;
 
-    /** The cancel button. */
-    private Button m_cancel;
-
     /**Checkbox for the keep permission option.*/
     private CheckBox m_keepPermissions;
 
@@ -80,7 +77,7 @@ public class CmsDbImportHTTP extends A_CmsHTTPImportForm {
     @Override
     protected Button getCancelButton() {
 
-        return m_cancel;
+        return null;
     }
 
     /**
@@ -98,7 +95,7 @@ public class CmsDbImportHTTP extends A_CmsHTTPImportForm {
     @Override
     protected String getReportPath() {
 
-        return CmsDbManager.PATH_REPORT_HTTP;
+        return CmsDbImportApp.PATH_REPORT_HTTP;
     }
 
     /**

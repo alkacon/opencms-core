@@ -82,16 +82,17 @@ public abstract class A_CmsImportForm extends VerticalLayout {
         getSiteSelector().setNullSelectionAllowed(false);
         getSiteSelector().setItemCaptionPropertyId("caption");
 
-        getCancelButton().addClickListener(new ClickListener() {
+        if (getCancelButton() != null) {
+            getCancelButton().addClickListener(new ClickListener() {
 
-            private static final long serialVersionUID = -3475214711731413636L;
+                private static final long serialVersionUID = -3475214711731413636L;
 
-            public void buttonClick(ClickEvent event) {
+                public void buttonClick(ClickEvent event) {
 
-                m_app.goToMainView();
-            }
-        });
-
+                    m_app.goToMainView();
+                }
+            });
+        }
         getOkButton().addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 5651452508587710734L;

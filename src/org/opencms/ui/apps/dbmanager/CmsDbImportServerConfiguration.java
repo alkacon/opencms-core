@@ -35,6 +35,7 @@ import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.dbmanager.CmsDbImportApp.Mode;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
@@ -43,14 +44,15 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * Configuration for Database manager app.<p>
+ * Class for app configuration.<p>
  */
-public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsDbImportServerConfiguration extends A_CmsWorkplaceAppConfiguration {
 
-    /**Icon.*/
-    private static final String ICON = "apps/dbmanager/database_manager.png";
+    /**Icon of app.*/
+    private static final String ICON = "apps/dbmanager/data_import_server.png";
+
     /** The app id. */
-    public static final String APP_ID = "db-admin";
+    public static final String APP_ID = "db-admin-import-server";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -66,7 +68,7 @@ public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsDbManager();
+        return new CmsDbImportApp(Mode.SERVER);
     }
 
     /**
@@ -84,7 +86,7 @@ public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_DATABASEAPP_ADMIN_TOOL_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_DATABASEAPP_IMPORTSERVER_ADMIN_TOOL_HELP_0);
     }
 
     /**
@@ -109,7 +111,7 @@ public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_DATABASEAPP_STATS_TITLE_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_DATABASEAPP_IMPORTSERVER_ADMIN_TOOL_NAME_SHORT_0);
     }
 
     /**
@@ -118,7 +120,7 @@ public class CmsDbManagerConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public int getOrder() {
 
-        return 0;
+        return 1;
     }
 
     /**

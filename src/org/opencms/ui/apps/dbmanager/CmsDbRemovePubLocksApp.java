@@ -27,61 +27,25 @@
 
 package org.opencms.ui.apps.dbmanager;
 
-import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsAttributeAwareApp;
+import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.linkvalidation.CmsInternalResources;
 import org.opencms.util.CmsStringUtil;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalSplitPanel;
 
 /**
- * Class for database manager app.<p>A_CmsAttributeAwareApp
+ * App for the remove publish-locks function.<p>
  */
-public class CmsDbManager extends A_CmsAttributeAwareApp {
-
-    /** Name of the manifest file used in upload files. */
-    private static final String FILE_MANIFEST = "manifest.xml";
-
-    /** Name of the sub-folder containing the OpenCms module packages. */
-    private static final String FOLDER_MODULES = "modules";
-
-    /**
-     * Returns the list of all uploadable zip files and uploadable folders available on the server.<p>
-     *
-     * @param includeFolders if true, the uploadable folders are included in the list
-     * @return the list of all uploadable zip files and uploadable folders available on the server
-     */
-    protected static List<String> getFileListFromServer(boolean includeFolders) {
-
-        List<String> result = new ArrayList<String>();
-
-        // get the RFS package export path
-        String exportpath = OpenCms.getSystemInfo().getPackagesRfsPath();
-        File folder = new File(exportpath);
-
-        // get a list of all files of the packages folder
-        String[] files = folder.list();
-        for (int i = 0; i < files.length; i++) {
-            File diskFile = new File(exportpath, files[i]);
-            // check this is a file and ends with zip -> this is a database upload file
-            if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
-                result.add(diskFile.getName());
-            } else if (diskFile.isDirectory()
-                && includeFolders
-                && (!diskFile.getName().equalsIgnoreCase(FOLDER_MODULES))
-                && ((new File(diskFile + File.separator + FILE_MANIFEST)).exists())) {
-                // this is an unpacked package, add it to uploadable files
-                result.add(diskFile.getName());
-            }
-        }
-        return result;
-    }
+public class CmsDbRemovePubLocksApp extends A_CmsAttributeAwareApp {
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -93,12 +57,10 @@ public class CmsDbManager extends A_CmsAttributeAwareApp {
 
         //Deeper path
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_STATS_TITLE_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_DB_PUBLOCKS_ADMIN_TOOL_NAME_0));
             return crumbs;
         }
-
-        return new LinkedHashMap<String, String>(); //size==1 & state was not empty -> state doesn't match to known path
-
+        return new LinkedHashMap<String, String>();
     }
 
     /**
@@ -108,9 +70,8 @@ public class CmsDbManager extends A_CmsAttributeAwareApp {
     protected Component getComponentForState(String state) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            return new CmsResourceTypeStatsView();
+            return getRemovePublishLocksView();
         }
-
         return null;
     }
 
@@ -123,4 +84,23 @@ public class CmsDbManager extends A_CmsAttributeAwareApp {
         return null;
     }
 
+    /**
+     * Component for remove publish lock surface.<p>
+     *
+     * @return HorizontalSplitPanel
+     */
+    private HorizontalSplitPanel getRemovePublishLocksView() {
+
+        HorizontalSplitPanel sp = new HorizontalSplitPanel();
+        sp.setData(Collections.singletonMap(A_CmsAttributeAwareApp.ATTR_MAIN_HEIGHT_FULL, Boolean.TRUE));
+        sp.setSizeFull();
+
+        CmsDbRemovePublishLocks publishLocksView = new CmsDbRemovePublishLocks();
+
+        sp.setFirstComponent(new CmsInternalResources(publishLocksView));
+        sp.setSecondComponent(publishLocksView);
+        sp.addStyleName("v-align-center");
+        sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
+        return sp;
+    }
 }
