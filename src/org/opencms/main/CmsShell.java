@@ -676,7 +676,8 @@ public class CmsShell {
                     continue;
                 }
                 if (line.indexOf(KeyEvent.VK_ESCAPE) != -1) {
-                    m_out.println("Escape sequences not supported (e.g. up, down, etc). Command ignored.");
+                    m_out.println(
+                            m_messages.key(Messages.GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0));
                     continue;
                 }
                 StringReader lineReader = new StringReader(line);
@@ -690,9 +691,9 @@ public class CmsShell {
                         parameters.add(Integer.toString(new Double(st.nval).intValue()));
                     } else {
                         if (null != st.sval) {
-                            parameters.add(st.sval);
-                        }
+                        parameters.add(st.sval);
                     }
+                }
                 }
                 lineReader.close();
 
