@@ -30,6 +30,7 @@ package org.opencms.ui.apps;
 import org.opencms.file.CmsObject;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
@@ -108,7 +109,7 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
         button.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
-            private static final int DEFAULT_WIDTH = 750;
+            private static final int DEFAULT_WIDTH = 855;
             private static final int DEFAULT_MAX_APP_PER_ROW = 5;
             private static final int MARGIN = 10;
 
@@ -132,8 +133,7 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
                 } else {
                     realPanel.setWidth(DEFAULT_WIDTH + "px");
                 }
-                final Window window = CmsBasicDialog.prepareWindow();
-
+                final Window window = CmsBasicDialog.prepareWindow(DialogWidth.content);
                 window.setResizable(false);
                 window.setContent(realPanel);
                 window.setClosable(true);
