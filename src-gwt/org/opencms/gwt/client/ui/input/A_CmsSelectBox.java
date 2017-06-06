@@ -205,6 +205,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         m_popup.addAutoHidePartner(m_panel.getElement());
 
         m_popup.addStyleName(CSS.selectBoxSelector());
+        m_popup.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
         m_popup.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
         m_popup.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {

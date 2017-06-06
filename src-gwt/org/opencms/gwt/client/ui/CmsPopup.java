@@ -374,8 +374,12 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         m_containerElement = super.getContainerElement();
         setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
         m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
-        setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
+        setGlassStyleName(
+            I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay()
+                + " "
+                + I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
         Element dragOverlay = DOM.createDiv();
         dragOverlay.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragOverlay());
         getElement().insertFirst(dragOverlay);

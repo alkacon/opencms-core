@@ -120,6 +120,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
         addMouseOverHandler(handler);
         addMouseOutHandler(handler);
         setStyleName(CSS_CLASS);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
     }
 
     /**

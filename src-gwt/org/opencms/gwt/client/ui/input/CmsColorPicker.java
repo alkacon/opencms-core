@@ -188,7 +188,9 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
-     * @param handler
+     * Adds a value change handler to the textbox.<p>
+     *
+     * @param handler the value change handler to add
      */
     public void addValueChangeHandler(ValueChangeHandler<String> handler) {
 

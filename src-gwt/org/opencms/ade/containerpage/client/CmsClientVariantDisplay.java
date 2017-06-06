@@ -54,6 +54,7 @@ public class CmsClientVariantDisplay {
 
             super(true, true);
             addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
         }
 
         /**
@@ -115,6 +116,7 @@ public class CmsClientVariantDisplay {
         popup.add(container);
         m_popup = popup;
         m_popup.getGlassElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
+        m_popup.getGlassElement().addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
         m_popup.getGlassElement().getStyle().setBackgroundColor("white");
         m_popup.getGlassElement().getStyle().setOpacity(0.8);
         m_popup.getElement().getStyle().setZIndex(200000);

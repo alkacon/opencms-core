@@ -33,7 +33,7 @@
 		}
 			
 	</ui:style>
-	<g:HTMLPanel styleName="{main.form.inlineEditOverlay}">
+	<g:HTMLPanel styleName="{main.form.inlineEditOverlay} {main.generalCss.opencms}">
 		<div ui:field="m_overlayTop" class="{style.overlay}" style="top: 0px; left: 0px;" />
 		<div ui:field="m_overlayRight" class="{style.overlay}" style="left: 0px; top: 0px;" />
 		<div ui:field="m_overlayBottom" class="{style.overlay}" style="top: 0px; left: 0px;" />
