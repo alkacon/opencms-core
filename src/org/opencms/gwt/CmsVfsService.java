@@ -989,23 +989,25 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      */
     public String renameResourceInternal(CmsUUID structureId, String newName) throws CmsException {
 
-        CmsObject cms = getCmsObject();
-        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        newName = newName.trim();
+        CmsObject rootCms = OpenCms.initCmsObject(getCmsObject());
+        rootCms.getRequestContext().setSiteRoot("");
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(rootCms);
         try {
             CmsResource.checkResourceName(newName);
         } catch (CmsIllegalArgumentException e) {
             return e.getLocalizedMessage(locale);
         }
-        CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-        String oldSitePath = cms.getSitePath(resource);
-        String parentPath = CmsResource.getParentFolder(oldSitePath);
-        String newSitePath = CmsStringUtil.joinPaths(parentPath, newName);
+        CmsResource resource = rootCms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+        String oldPath = resource.getRootPath();
+        String parentPath = CmsResource.getParentFolder(oldPath);
+        String newPath = CmsStringUtil.joinPaths(parentPath, newName);
         try {
             ensureLock(resource);
-            cms.moveResource(oldSitePath, newSitePath);
-            resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            rootCms.moveResource(oldPath, newPath);
+            resource = rootCms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
-            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(rootCms));
         }
         tryUnlock(resource);
         return null;
