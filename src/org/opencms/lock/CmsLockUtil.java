@@ -136,16 +136,24 @@ public final class CmsLockUtil {
 
         }
 
-        public boolean unlock() throws CmsException {
+        /**
+         * Unlocks the resource if it was not formerly locked.<p>
+         *
+         * @return <code>true</code> in case the resource was unlocked
+         */
+        public boolean tryUnlock() {
 
             if (!m_lockRecord.getChange().equals(LockChange.unchanged) || m_new) {
-                m_cms.unlockResource(m_file);
-                return true;
-            } else {
-                return false;
-            }
-        }
+                try {
+                    m_cms.unlockResource(m_file);
+                    return true;
+                } catch (CmsException e) {
+                    // this will happen in case a parent folder is still locked, can be ignored
+                }
 
+            }
+            return false;
+        }
     }
 
     /** Logger instance for this class. */

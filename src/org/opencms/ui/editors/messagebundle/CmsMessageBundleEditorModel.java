@@ -163,13 +163,13 @@ public class CmsMessageBundleEditorModel {
             if (null != m_configuredMessages) {
                 try {
                     return m_configuredMessages.getString(key);
-                } catch (@SuppressWarnings("unused") CmsMessageException e) {
+                } catch (CmsMessageException e) {
                     // do nothing - use default messages
                 }
             }
             try {
                 return m_defaultMessages.getString(key);
-            } catch (@SuppressWarnings("unused") CmsMessageException e) {
+            } catch (CmsMessageException e) {
                 return "???" + key + "???";
             }
         }
@@ -699,7 +699,7 @@ public class CmsMessageBundleEditorModel {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
             //TODO: Improve
         }
         return result;
@@ -993,7 +993,7 @@ public class CmsMessageBundleEditorModel {
                 m_descFile = LockedFile.lockResource(m_cms, m_desc);
             }
             m_editMode = mode;
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             return false;
         }
         return true;
@@ -1016,17 +1016,15 @@ public class CmsMessageBundleEditorModel {
 
     /**
      * Unlock all files opened for writing.
-     *
-     * @throws CmsException thrown if unlocking fails.
      */
-    public void unlock() throws CmsException {
+    public void unlock() {
 
         for (Locale l : m_lockedBundleFiles.keySet()) {
             LockedFile f = m_lockedBundleFiles.get(l);
-            f.unlock();
+            f.tryUnlock();
         }
         if (null != m_descFile) {
-            m_descFile.unlock();
+            m_descFile.tryUnlock();
         }
     }
 
@@ -1704,8 +1702,7 @@ public class CmsMessageBundleEditorModel {
                 lockDescriptor();
             }
         } catch (CmsException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage(), e);
             return false;
         }
         for (Entry<Locale, SortedProperties> entry : m_localizations.entrySet()) {
@@ -1767,7 +1764,7 @@ public class CmsMessageBundleEditorModel {
                 }
             }
             return true;
-        } catch (@SuppressWarnings("unused") IOException | CmsException e) {
+        } catch (IOException | CmsException e) {
             // The problem should typically be a problem with locking or reading the file containing the translation.
             // This should be reported in the editor, if false is returned here.
             return false;

@@ -615,12 +615,7 @@ I_OptionListener, I_CmsHasShortcutActions {
             LOG.error(m_messages.key(Messages.ERR_DELETING_DESCRIPTOR_0), e);
         }
         // unlock resource
-        try {
-            m_model.unlock();
-        } catch (CmsException e) {
-            LOG.error(m_messages.key(Messages.ERR_UNLOCKING_RESOURCES_0), e);
-        }
-
+        m_model.unlock();
     }
 
     /**

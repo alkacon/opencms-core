@@ -38,7 +38,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.lock.CmsLockUtil.LockedFile;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -619,11 +618,7 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
 
         m_cleared = true;
         m_changed = false;
-        try {
-            m_file.unlock();
-        } catch (CmsException e) {
-            // ignore
-        }
+        m_file.tryUnlock();
         OpenCms.getWorkplaceAppManager().storeAppSettings(
             A_CmsUI.getCmsObject(),
             EditorSettings.class,
