@@ -59,7 +59,6 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -227,14 +226,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
             handleOU(siteRootResource);
 
             OpenCms.getSiteManager().updateSite(m_cms, m_oldSite, m_site);
-            // update the workplace server if the changed site was the workplace server
-            if ((m_oldSite != null) && m_oldSite.getUrl().equals(OpenCms.getSiteManager().getWorkplaceServer())) {
-                OpenCms.getSiteManager().updateGeneralSettings(
-                    m_cms,
-                    OpenCms.getSiteManager().getDefaultUri(),
-                    Collections.singletonList(m_site.getUrl()),
-                    OpenCms.getSiteManager().getSharedFolder());
-            }
+
             // write the system configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
             try {
