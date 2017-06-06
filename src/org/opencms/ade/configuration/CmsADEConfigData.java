@@ -475,12 +475,10 @@ public class CmsADEConfigData {
     public List<I_CmsFormatterBean> getDisplayFormatters(CmsObject cms) {
 
         List<I_CmsFormatterBean> result = new ArrayList<I_CmsFormatterBean>();
-        for (CmsResourceTypeConfig type : getResourceTypes()) {
-            try {
-                CmsFormatterConfiguration conf = getFormatters(cms, type.getType(), null);
-                result.addAll(conf.getDisplayFormatters());
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+
+        for (I_CmsFormatterBean formatter : getCachedFormatters().getFormatters().values()) {
+            if (formatter.isDisplayFormatter()) {
+                result.add(formatter);
             }
         }
         return result;
