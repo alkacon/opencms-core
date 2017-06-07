@@ -217,7 +217,8 @@ public class TestLiveConfig extends OpenCmsTestCase {
         String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
             cms,
             "/sites/default/.content/a1/blarg.html",
-            "/sites/default/today/news");
+            "/sites/default/today/news",
+            null);
         assertEquals("/sites/default/", detailPage);
 
         // default site
@@ -226,7 +227,8 @@ public class TestLiveConfig extends OpenCmsTestCase {
         detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
             cms,
             "/sites/default/.content/a1/blarg.html",
-            "/today/news");
+            "/today/news",
+            null);
         assertEquals("/sites/default/", detailPage);
     }
 

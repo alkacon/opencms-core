@@ -94,6 +94,7 @@
 	order CDATA #IMPLIED
 	port CDATA #IMPLIED
 	protocol CDATA #IMPLIED
+	security CDATA #IMPLIED
 	user CDATA  #IMPLIED
 	password CDATA #IMPLIED>
 
@@ -280,7 +281,7 @@ Each job can have an optional list of parameters.
 #     offset:       time in seconds added to the current time written as attribute
 #                   into the session when accessing the site over this alias
 -->
-<!ELEMENT sites ((workplace-server, default-uri, shared-folder?, site+) | (workplace-server, default-uri, site+, shared-folder?))>
+<!ELEMENT sites ((workplace-server+, default-uri, shared-folder?, site+) | (workplace-server, default-uri, site+, shared-folder?))>
 <!ELEMENT workplace-server (#PCDATA)>
 <!ELEMENT default-uri (#PCDATA)>
 <!ELEMENT shared-folder (#PCDATA)>

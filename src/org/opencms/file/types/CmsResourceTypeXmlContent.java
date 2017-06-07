@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -185,7 +185,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         boolean hasModelUri = false;
         CmsXmlContent newContent = null;
@@ -224,6 +225,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         if (hasModelUri) {
             CmsFile file = cms.readFile(resource);
             newContent = CmsXmlContentFactory.unmarshal(cms, file);
+            newContent.setAutoCorrectionEnabled(true);
             resource = newContent.getHandler().prepareForWrite(cms, newContent, file);
         }
 

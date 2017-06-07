@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -206,6 +206,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         formValues.put("backlink", backlink);
         formValues.put("redirect", "true");
         formValues.put("directedit", "true");
+        formValues.put("nofoot", "1");
         formValues.put("editcontext", CmsCoreProvider.get().getUri());
         String postCreateHandler = m_editableData.getPostCreateHandler();
         if (postCreateHandler != null) {

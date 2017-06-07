@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <export>
 	<info>
 		<infoproject>Offline</infoproject>
@@ -12,7 +11,7 @@
 		<class/>
 		<export-mode name="reduced"/>
 		<description><![CDATA[OpenCms Localization]]></description>
-		<version>9.5.3</version>
+		<version>10.5.1</version>
 		<authorname><![CDATA[ITDT Ltd.]]></authorname>
 		<authoremail><![CDATA[support@itdt.ru]]></authoremail>
 		<datecreated/>
@@ -1458,6 +1457,141 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ugc</destination>
+			<type>folder</type>
+			<uuidstructure>9173b800-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/ugc/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ugc/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>91753ea2-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<uuidresource>91753ea3-5e30-11e6-8dbc-d974a654b0c0</uuidresource>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_ru]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ui</destination>
+			<type>folder</type>
+			<uuidstructure>9170358b-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/ui/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ui/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9171e33d-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<uuidresource>9171e33e-5e30-11e6-8dbc-d974a654b0c0</uuidresource>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_ru]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ui/apps</destination>
+			<type>folder</type>
+			<uuidstructure>91c35eaf-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/ui/apps/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ui/apps/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>91c49731-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<uuidresource>91c49732-5e30-11e6-8dbc-d974a654b0c0</uuidresource>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_ru]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ui/components</destination>
+			<type>folder</type>
+			<uuidstructure>91c0787a-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/ui/components/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ui/components/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>91c1d80c-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<uuidresource>91c1d80d-5e30-11e6-8dbc-d974a654b0c0</uuidresource>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_ru]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ui/dialogs</destination>
+			<type>folder</type>
+			<uuidstructure>91bd6b35-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/ui/dialogs/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ui/dialogs/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>91bef1d7-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<uuidresource>91bef1d8-5e30-11e6-8dbc-d974a654b0c0</uuidresource>
+			<datecreated>Tue, 09 Aug 2016 12:55:37 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_ru]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/util</destination>
 			<type>folder</type>
 			<uuidstructure>4df19525-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
@@ -2070,6 +2204,33 @@
 			<datecreated>Fri, 16 Mar 2012 05:36:56 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/ru/messages/org/opencms/workplace/tools/git</destination>
+			<type>folder</type>
+			<uuidstructure>91f39674-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<datecreated>Tue, 09 Aug 2016 12:55:38 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/workplace/tools/git/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/workplace/tools/git/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>91f4f606-5e30-11e6-8dbc-d974a654b0c0</uuidstructure>
+			<uuidresource>91f4f607-5e30-11e6-8dbc-d974a654b0c0</uuidresource>
+			<datecreated>Tue, 09 Aug 2016 12:55:38 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_ru]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,10 +39,8 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
-import org.opencms.gwt.client.ui.input.form.CmsForm.I_FieldChangeHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
@@ -103,6 +101,9 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
         /** Enable/disable property definition button. */
         private boolean m_allowCreateProperties = true;
+
+        /** Flag to control whether the file name field should be focused after opening the property dialog. */
+        private boolean m_focusNameField;
 
         /** The file navigation. */
         private I_MultiFileNavigation m_multiFileNavigation;
@@ -180,6 +181,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         }
 
         /**
+         * Return true if  the file name field should be focused after opening the dialog.<p>
+         *
+         * @return true if the file name field should be focused
+         */
+        public boolean isFocusNameField() {
+
+            return m_focusNameField;
+        }
+
+        /**
          * Enables / disables the 'define property' functionality.<p>
          *
          * @param allowCreateProperties true if the user should be able to create new properties
@@ -207,6 +218,17 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         public void setDialog(CmsFormDialog formDialog) {
 
             m_formDialog = formDialog;
+        }
+
+        /**
+         * Enables / disables focusing on the name field.
+         *
+         * @param focusNameField true if the file name field should be focused after opening the dialog
+         *
+         * */
+        public void setFocusNameField(boolean focusNameField) {
+
+            m_focusNameField = focusNameField;
         }
 
         /**
@@ -524,13 +546,6 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
             m_submitHandler = new CmsPropertySubmitHandler(handler);
             editor.getForm().setFormHandler(this);
-            editor.getForm().setFieldChangeHandler(new I_FieldChangeHandler() {
-
-                public void onFieldChange(I_CmsFormField field, String newValue) {
-
-                    editor.handleFieldChange(field);
-                }
-            });
             try {
                 CmsVfsModePropertyEditor.disableResize(true);
                 editor.restoreActiveFieldData(m_prevFieldData);
@@ -852,14 +867,14 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         final boolean enableAdeTemplateSelect,
         final PropertyEditingContext editContext) {
 
-        PropertyEditorHandler handler = new PropertyEditorHandler(contextMenuHandler);
+        final PropertyEditorHandler handler = new PropertyEditorHandler(contextMenuHandler);
         handler.setPropertySaver(editContext.getPropertySaver());
         handler.setEnableAdeTemplateSelect(enableAdeTemplateSelect);
         editContext.setCancelHandler(cancelHandler);
 
         handler.setPropertiesBean(result);
         handler.setEditableName(editName);
-        CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
+        final CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
 
         editor.setShowResourceProperties(!handler.isFolder());
         editor.setReadOnly(result.isReadOnly());
@@ -879,8 +894,14 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
         formHandler.setSubmitHandler(submitHandler);
         editor.getForm().setFormHandler(formHandler);
+
         editor.initializeWidgets(dialog);
+
         dialog.centerHorizontally(50);
+        if (editContext.isFocusNameField()) {
+            editor.focusNameField();
+        }
+
         dialog.catchNotifications();
     }
 

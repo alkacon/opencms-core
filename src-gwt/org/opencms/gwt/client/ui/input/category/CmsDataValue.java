@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -89,6 +89,13 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
          * @return the CSS style name
          */
         String parameter();
+
+        /**
+         * Returns the CSS style name.<p>
+         *
+         * @return the CSS style name
+         */
+        String searchMatch();
 
         /**
          * Returns the CSS style name.<p>
@@ -246,6 +253,20 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
         getElement().getStyle().setBorderColor(I_CmsLayoutBundle.INSTANCE.constants().css().borderColor());
         getElement().getStyle().setColor(I_CmsLayoutBundle.INSTANCE.constants().css().textColorDisabled());
+    }
+
+    /**
+     * Enables / disables the 'search match' style for this widget.<p>
+     *
+     * @param isSearchMatch true if 'search match' style should be enabled
+     */
+    public void setSearchMatch(boolean isSearchMatch) {
+
+        if (isSearchMatch) {
+            addStyleName(m_style.searchMatch());
+        } else {
+            removeStyleName(m_style.searchMatch());
+        }
     }
 
     /**

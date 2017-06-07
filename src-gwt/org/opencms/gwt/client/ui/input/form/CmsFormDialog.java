@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,11 +31,13 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -240,7 +242,11 @@ public class CmsFormDialog extends CmsPopup {
                         if (keyCode == KeyCodes.KEY_ESCAPE) {
                             onClickCancel();
                         } else if (keyCode == KeyCodes.KEY_ENTER) {
-                            onClickOk();
+                            Element element = CmsDomUtil.getActiveElement();
+                            boolean isTextarea = (element != null) && element.getTagName().equalsIgnoreCase("textarea");
+                            if (!isTextarea) {
+                                onClickOk();
+                            }
                         }
                     }
                 }

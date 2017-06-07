@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -49,6 +50,9 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
     /** The handler name. */
     public static final String HANDLER_NAME = "Static";
 
+    /** The static resource prefix '/handleStatic'. */
+    public static final String STATIC_RESOURCE_PREFIX = OpenCmsServlet.HANDLE_PATH + HANDLER_NAME;
+
     /** The default output buffer size. */
     private static final int DEFAULT_BUFFER_SIZE = 32 * 1024;
 
@@ -61,8 +65,27 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStaticResourceHandler.class);
 
+    /** The regular expression to remove the static resource path prefix. */
+    private static String m_removePrefixRegex;
+
+    /** The regular expression to identify static resource paths. */
+    private static String m_staticResourceRegex;
+
     /** The opencms path prefix for static resources. */
     private static final String OPENCMS_PATH_PREFIX = "OPENCMS/";
+
+    /**
+     * Returns the context for static resources served from the class path, e.g. "/opencms/handleStatic/v5976v".<p>
+     *
+     * @param opencmsContext the OpenCms context
+     * @param opencmsVersion the OpenCms version
+     *
+     * @return the static resource context
+     */
+    public static String getStaticResourceContext(String opencmsContext, String opencmsVersion) {
+
+        return opencmsContext + STATIC_RESOURCE_PREFIX + "/v" + opencmsVersion.hashCode() + "v";
+    }
 
     /**
      * Returns the URL to a static resource.<p>
@@ -74,14 +97,80 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
     public static URL getStaticResourceURL(String resourcePath) {
 
         URL resourceURL = null;
-        String prefix = OpenCmsServlet.HANDLE_PATH + HANDLER_NAME + "/";
-        int index = resourcePath.indexOf(prefix);
-        if (index >= 0) {
-            String path = resourcePath.substring(index + prefix.length());
+        if (isStaticResourceUri(resourcePath)) {
+            String path = removeStaticResourcePrefix(resourcePath);
             path = CmsStringUtil.joinPaths(OPENCMS_PATH_PREFIX, path);
             resourceURL = OpenCms.getSystemInfo().getClass().getClassLoader().getResource(path);
         }
         return resourceURL;
+    }
+
+    /**
+     * Returns if the given URI points to a static resource.<p>
+     *
+     * @param path the path to test
+     *
+     * @return <code>true</code> in case the given URI points to a static resource
+     */
+    public static boolean isStaticResourceUri(String path) {
+
+        return (path != null) && path.matches(getStaticResourceRegex());
+
+    }
+
+    /**
+     * Returns if the given URI points to a static resource.<p>
+     *
+     * @param uri the URI to test
+     *
+     * @return <code>true</code> in case the given URI points to a static resource
+     */
+    public static boolean isStaticResourceUri(URI uri) {
+
+        return (uri != null) && isStaticResourceUri(uri.getPath());
+
+    }
+
+    /**
+     * Removes the static resource path prefix.<p>
+     *
+     * @param path the path
+     *
+     * @return the modified path
+     */
+    public static String removeStaticResourcePrefix(String path) {
+
+        return path.replaceFirst(getRemovePrefixRegex(), "");
+    }
+
+    /**
+     * Returns the regular expression to remove the static resource path prefix.<p>
+     *
+     * @return the regular expression to remove the static resource path prefix
+     */
+    private static String getRemovePrefixRegex() {
+
+        if (m_removePrefixRegex == null) {
+            m_removePrefixRegex = "^("
+                + OpenCms.getStaticExportManager().getVfsPrefix()
+                + ")?"
+                + STATIC_RESOURCE_PREFIX
+                + "(/v-?\\d+v/)?";
+        }
+        return m_removePrefixRegex;
+    }
+
+    /**
+     * Returns the regular expression to identify static resource paths.<p>
+     *
+     * @return the regular expression to identify static resource paths
+     */
+    private static String getStaticResourceRegex() {
+
+        if (m_staticResourceRegex == null) {
+            m_staticResourceRegex = getRemovePrefixRegex() + ".*";
+        }
+        return m_staticResourceRegex;
     }
 
     /**
@@ -248,7 +337,8 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
     protected void writeStaticResourceResponse(
         HttpServletRequest request,
         HttpServletResponse response,
-        URL resourceUrl) throws IOException {
+        URL resourceUrl)
+    throws IOException {
 
         URLConnection connection = null;
         InputStream is = null;
@@ -330,7 +420,7 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
                 // Browser has this an up-to-date version of the resource
                 return true;
             }
-        } catch (@SuppressWarnings("unused") Exception e) {
+        } catch (Exception e) {
             // Failed to parse header. Fail silently - the browser does not have
             // an up-to-date version in its cache.
         }

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,6 +36,63 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_FONT_SIZE_0 = "GUI_CODEMIRROR_LANG_FONT_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_HINT_0 = "GUI_CODEMIRROR_LANG_HINT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_RELACE_NO_0 = "GUI_CODEMIRROR_LANG_RELACE_NO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_0 = "GUI_CODEMIRROR_LANG_REPLACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_CONFIRM_0 = "GUI_CODEMIRROR_LANG_REPLACE_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_STOP_0 = "GUI_CODEMIRROR_LANG_REPLACE_STOP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_WITH_0 = "GUI_CODEMIRROR_LANG_REPLACE_WITH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_REPLACE_YES_0 = "GUI_CODEMIRROR_LANG_REPLACE_YES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_LANG_SEARCH_0 = "GUI_CODEMIRROR_LANG_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_NEXT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_FIND_PREVIOUS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_REPLACE_0 = "GUI_CODEMIRROR_SHORTCUT_REPLACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_0 = "GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_REPLACE_ALL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_REPLACE_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_REPLACE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_SEARCH_0 = "GUI_CODEMIRROR_SHORTCUT_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_SHORTCUT_SEARCH_HELP_0 = "GUI_CODEMIRROR_SHORTCUT_SEARCH_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_TO_CLIPBOARD_0 = "GUI_COPY_TO_CLIPBOARD_0";
 
     /** Message constant for key in the resource bundle. */
@@ -48,7 +105,13 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_FILE_SELECT_CAPTION_0 = "GUI_FILE_SELECT_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOT_EDITABLE_ONLINE_0 = "GUI_NOT_EDITABLE_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_EDIT_0 = "GUI_USER_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_INFO_DELETE_IMAGE_0 = "GUI_USER_INFO_DELETE_IMAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_INFO_NO_UPLOAD_0 = "GUI_USER_INFO_NO_UPLOAD_0";

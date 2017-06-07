@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -53,6 +53,8 @@ import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManagerImpl;
+import org.opencms.staticexport.CmsExportname.CmsExportNameComparator;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
@@ -176,7 +178,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private List<String> m_exportHeaders;
 
     /** List of all resources that have the "exportname" property set: &lt;system-wide unique export name, root path&gt;. */
-    private Map<String, String> m_exportnameResources;
+    private Map<CmsExportname, String> m_exportnameResources;
 
     /** Indicates if <code>true</code> is the default value for the property "export". */
     private boolean m_exportPropertyDefault;
@@ -971,23 +973,21 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      *
      * @return a map of export names
      */
+    public Map<CmsExportname, String> getExportnames() {
 
-    public Map<String, String> getExportnames() {
-
-        Map<String, String> exportnames = new HashMap<String, String>();
         if (m_exportnameResources == null) {
-            m_exportnameResources = Collections.unmodifiableMap(computeVfsExportnames());
-            exportnames.putAll(m_exportnameResources);
-        } else {
-            exportnames.putAll(m_exportnameResources);
+            try {
+                TreeMap<CmsExportname, String> sort = new TreeMap<CmsExportname, String>(new CmsExportNameComparator());
+                sort.putAll(computeVfsExportnames());
+                m_exportnameResources = sort;
+            } catch (Throwable t) {
+                LOG.error(t.getMessage(), t);
+            }
         }
-        TreeMap<String, String> sortedMap = new TreeMap<String, String>(new CmsStringUtil.CmsSlashComparator());
-        sortedMap.putAll(exportnames);
-
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
         }
-        return Collections.unmodifiableMap(sortedMap);
+        return Collections.unmodifiableMap(m_exportnameResources);
     }
 
     /**
@@ -1225,11 +1225,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @return the static export rfs name for a give vfs resource
      *
      * @see #getVfsName(CmsObject, String)
-     * @see #getRfsName(CmsObject, String, String)
+     * @see #getRfsName(CmsObject, String, String, String)
      */
     public String getRfsName(CmsObject cms, String vfsName) {
 
-        return getRfsName(cms, vfsName, null);
+        return getRfsName(cms, vfsName, null, null);
     }
 
     /**
@@ -1239,10 +1239,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param cms an initialized cms context
      * @param vfsName the name of the vfs resource
      * @param parameters the parameters of the link pointing to the resource
+     * @param targetDetailPage the target detail page to use
      *
      * @return the static export rfs name for a give vfs resource
      */
-    public String getRfsName(CmsObject cms, String vfsName, String parameters) {
+    public String getRfsName(CmsObject cms, String vfsName, String parameters, String targetDetailPage) {
 
         String rfsName;
         try {
@@ -1255,7 +1256,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     String detailPage = finder.getDetailPage(
                         cms,
                         vfsRes.getRootPath(),
-                        cms.getRequestContext().getUri());
+                        cms.getRequestContext().getUri(),
+                        targetDetailPage);
                     if (detailPage != null) {
                         vfsName = CmsStringUtil.joinPaths(
                             detailPage,
@@ -1470,6 +1472,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     throws CmsVfsResourceNotFoundException {
 
         String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+        CmsSite currentSite = OpenCms.getSiteManager().getSiteForSiteRoot(storedSiteRoot);
         try {
             cms.getRequestContext().setSiteRoot("/");
 
@@ -1479,10 +1482,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // in case of files, remove the filename and trailing slash
             path = path.substring(0, path.lastIndexOf('/'));
             // cache the export names
-            Map<String, String> exportnameResources = getExportnames();
+            Map<CmsExportname, String> exportnameMapping = getExportnames();
+            // in case of folders, remove the trailing slash and in case of files, remove the filename and trailing slash
             while (true) {
                 // exportnameResources are only folders!
-                String expName = exportnameResources.get(path + '/');
+                String expName = exportnameMapping.get(new CmsExportname(path + "/", currentSite));
+                if (expName == null) {
+                    expName = exportnameMapping.get(new CmsExportname(path + "/", null));
+                }
                 if (expName == null) {
                     if (path.length() == 0) {
                         break;
@@ -1719,17 +1726,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         Messages.get().getBundle().key(Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1, "/"));
                 }
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_EXPORT_EXPORT_HANDLER_1,
-                    getHandler().getClass().getName()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_EXPORT_EXPORT_HANDLER_1,
+                        getHandler().getClass().getName()));
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_LINKSUBSTITUTION_HANDLER_1,
-                    getLinkSubstitutionHandler().getClass().getName()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_LINKSUBSTITUTION_HANDLER_1,
+                        getLinkSubstitutionHandler().getClass().getName()));
             } else {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
             }
@@ -2375,7 +2384,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String rfsName = uri.substring(getRfsPrefixForRfsName(uri).length());
 
         // check if we have the result already in the cache
-        CmsStaticExportData data = m_cacheExportUris.get(rfsName);
+        CmsStaticExportData data = null;
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(cms.getRequestContext().getSiteRoot());
+        if (siteRoot != null) {
+            data = m_cacheExportUris.get(siteRoot + ":" + rfsName);
+        } else {
+            data = m_cacheExportUris.get(rfsName);
+        }
 
         if (data == null) {
             // export uri not in cache, must look up the file in the VFS
@@ -2428,7 +2443,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             data = new CmsStaticExportData(CACHEVALUE_404, rfsName, null, null);
         }
 
-        m_cacheExportUris.put(rfsName, data);
+        if (data.getResource() != null) {
+            siteRoot = OpenCms.getSiteManager().getSiteRoot(data.getResource().getRootPath());
+        }
+        if (siteRoot != null) {
+            m_cacheExportUris.put(siteRoot + ":" + rfsName, data);
+        } else {
+            m_cacheExportUris.put(rfsName, data);
+        }
+
         // this object comparison is safe, see caller method
         if (data.getVfsName() != CACHEVALUE_404) {
             if (data.getResource().isFolder() && !CmsResource.isFolder(rfsName)) {
@@ -2799,7 +2822,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String exportPath,
         String rfsName,
         CmsResource resource,
-        byte[] content) throws CmsException {
+        byte[] content)
+    throws CmsException {
 
         String exportFileName = CmsFileUtil.normalizePath(exportPath + rfsName);
 
@@ -2851,11 +2875,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
       *
       * @return the map of vfs exportnames with exportname as key and the vfs folder path as value
       */
-    private Map<String, String> computeVfsExportnames() {
+    private Map<CmsExportname, String> computeVfsExportnames() {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
         }
+
+        CmsSiteManagerImpl sm = OpenCms.getSiteManager();
 
         List<CmsResource> resources;
         CmsObject cms = null;
@@ -2865,7 +2891,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             resources = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
 
             synchronized (m_lockSetExportnames) {
-                Map<String, String> exportnameResources = new HashMap<String, String>();
+                Map<CmsExportname, String> exportnameResources = new HashMap<CmsExportname, String>();
                 for (int i = 0, n = resources.size(); i < n; i++) {
                     CmsResource res = resources.get(i);
                     try {
@@ -2874,6 +2900,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                             foldername,
                             CmsPropertyDefinition.PROPERTY_EXPORTNAME,
                             false).getValue();
+                        CmsSite site = sm.getSiteForRootPath(foldername);
                         if (exportname != null) {
                             if (exportname.charAt(exportname.length() - 1) != '/') {
                                 exportname = exportname + "/";
@@ -2883,7 +2910,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                             }
                             // export name has to be system-wide unique
                             // the folder name is a root path
-                            exportnameResources.put(exportname, foldername);
+                            exportnameResources.put(new CmsExportname(exportname, site), foldername);
                         }
                     } catch (CmsException e) {
                         // should never happen, folder will not be added

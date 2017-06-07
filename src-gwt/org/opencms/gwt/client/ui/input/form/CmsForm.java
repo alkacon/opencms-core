@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -71,20 +71,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  */
 public class CmsForm {
 
-    /**
-     * Interface which is called when field widgets fire value-change events.
-     */
-    public interface I_FieldChangeHandler {
-
-        /**
-         * Called when the value of a field changes.<p>
-         *
-         * @param field the field
-         * @param newValue the new value
-         */
-        void onFieldChange(I_CmsFormField field, String newValue);
-    }
-
     /** The set of fields which have been edited. */
     protected Set<String> m_editedFields = new HashSet<String>();
 
@@ -96,9 +82,6 @@ public class CmsForm {
 
     /** A flag which indicates whether the user has pressed enter in a widget. */
     protected boolean m_pressedEnter;
-
-    /** The field change handler. */
-    private I_FieldChangeHandler m_fieldChangeHandler;
 
     /** A multimap from field groups to fields. */
     private Multimap<String, I_CmsFormField> m_fieldsByGroup = ArrayListMultimap.create();
@@ -328,16 +311,6 @@ public class CmsForm {
     }
 
     /**
-     * Sets the field change handler.<p>
-     *
-     * @param handler the field change handler
-     */
-    public void setFieldChangeHandler(I_FieldChangeHandler handler) {
-
-        m_fieldChangeHandler = handler;
-    }
-
-    /**
      * Sets the form handler for this form.<p>
      *
      * @param handler the form handler
@@ -479,9 +452,6 @@ public class CmsForm {
         m_editedFields.add(field.getId());
         I_CmsStringModel model = field.getModel();
 
-        if (m_fieldChangeHandler != null) {
-            m_fieldChangeHandler.onFieldChange(field, newValue);
-        }
         if (model != null) {
             model.setValue(newValue, true);
         }

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,6 +60,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERROR_CONFIGURATION_EDITOR_CHANGE_HANDLER_FORMATTER_SELECTION_1 = "ERROR_CONFIGURATION_EDITOR_CHANGE_HANDLER_FORMATTER_SELECTION_1";
 
     /**
      * Hides the public constructor for this utility class.<p>

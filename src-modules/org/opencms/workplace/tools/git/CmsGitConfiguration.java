@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,13 +30,14 @@ package org.opencms.workplace.tools.git;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 /** Access to a single git configuration file. */
 public class CmsGitConfiguration {
@@ -297,12 +298,12 @@ public class CmsGitConfiguration {
     }
 
     /** Helper to read a line from the config file.
-     * @param line the line to read.
+     * @param propValue the property value
      * @return the value of the variable set at this line.
      */
-    private String getValueFromLine(final String line) {
+    private String getValueFromProp(final String propValue) {
 
-        String value = line.substring(line.indexOf("=") + 1);
+        String value = propValue;
         // remove quotes
         value = value.trim();
         if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("'") && value.endsWith("'"))) {
@@ -317,102 +318,94 @@ public class CmsGitConfiguration {
         m_isValid = false;
         if ((null != m_configFile) && m_configFile.exists()) {
             if (m_configFile.canRead()) {
-                BufferedReader configReader = null;
-                try {
-                    configReader = new BufferedReader(new FileReader(m_configFile));
-                    String line = configReader.readLine();
-                    while (line != null) {
-                        if (line.startsWith(DEFAULT_MODULES_TO_EXPORT)) {
-                            String value = getValueFromLine(line);
+                Properties props = new Properties();
+                try (FileInputStream input = new FileInputStream(m_configFile)) {
+                    props.load(input);
+                    for (Entry<Object, Object> entry : props.entrySet()) {
+                        String key = (String)entry.getKey();
+                        String propValue = (String)entry.getValue();
+                        if (key.equals(DEFAULT_MODULES_TO_EXPORT)) {
+                            String value = getValueFromProp(propValue).trim();
                             if (value.contains(",")) {
-                                m_configuredModules = Arrays.asList(value.split(","));
+                                m_configuredModules = Arrays.asList(value.split(" *, *"));
                             } else {
-                                m_configuredModules = Arrays.asList(value.split(" "));
+                                m_configuredModules = Arrays.asList(value.split(" +"));
                             }
                         }
 
-                        if (line.startsWith(DEFAULT_MODULE_PATH)) {
-                            m_modulesPath = getValueFromLine(line).trim();
+                        if (key.equals(DEFAULT_MODULE_PATH)) {
+                            m_modulesPath = getValueFromProp(propValue).trim();
                         }
 
-                        if (line.startsWith(DEFAULT_MODULE_RESOURCES_SUBFOLDER)) {
-                            m_resourcesSubfolder = getValueFromLine(line).trim();
+                        if (key.equals(DEFAULT_MODULE_RESOURCES_SUBFOLDER)) {
+                            m_resourcesSubfolder = getValueFromProp(propValue).trim();
                         }
 
-                        if (line.startsWith(DEFAULT_PULL_MODE_BEFORE)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_PULL_MODE_BEFORE)) {
+                            String value = getValueFromProp(propValue);
                             value = value.trim();
                             if (value.equals("1")) {
                                 m_defaultPullModeBefore = true;
                             }
                         }
-                        if (line.startsWith(DEFAULT_PULL_MODE_AFTER)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_PULL_MODE_AFTER)) {
+                            String value = getValueFromProp(propValue);
                             value = value.trim();
                             if (value.equals("1")) {
                                 m_defaultPullModeAfter = true;
                             }
                         }
-                        if (line.startsWith(DEFAULT_PUSH_MODE)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_PUSH_MODE)) {
+                            String value = getValueFromProp(propValue);
                             value = value.trim();
                             if (value.equals("1")) {
                                 m_defaultPushMode = true;
                             }
                         }
-                        if (line.startsWith(DEFAULT_MODULE_EXPORT_PATH)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_MODULE_EXPORT_PATH)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultModuleExportPath = value.trim();
                         }
-                        if (line.startsWith(DEFAULT_REPOSITORY_PATH)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_REPOSITORY_PATH)) {
+                            String value = getValueFromProp(propValue);
                             m_repositoryPath = value.trim();
                         }
-                        if (line.startsWith(DEFAULT_EXPORT_MODE)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_EXPORT_MODE)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultExportMode = (value.trim().equals("1")) ? 1 : 0;
                         }
-                        if (line.startsWith(DEFAULT_COMMIT_MESSAGE)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_COMMIT_MESSAGE)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultCommitMessage = value;
                         }
-                        if (line.startsWith(DEFAULT_GIT_USER_NAME)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_GIT_USER_NAME)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultGitUserName = value;
                         }
-                        if (line.startsWith(DEFAULT_GIT_USER_EMAIL)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_GIT_USER_EMAIL)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultGitUserEmail = value;
                         }
-                        if (line.startsWith(DEFAULT_EXCLUDE_LIBS)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_EXCLUDE_LIBS)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultExcludeLibs = (value.trim().equals("1")) ? true : false;
                         }
-                        if (line.startsWith(DEFAULT_COMMIT_MODE)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_COMMIT_MODE)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultCommitMode = (value.trim().equals("1")) ? true : false;
                         }
-                        if (line.startsWith(DEFAULT_IGNORE_UNCLEAN)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_IGNORE_UNCLEAN)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultIgnoreUnclean = (value.trim().equals("1")) ? true : false;
                         }
-                        if (line.startsWith(DEFAULT_COPY_AND_UNZIP)) {
-                            String value = getValueFromLine(line);
+                        if (key.equals(DEFAULT_COPY_AND_UNZIP)) {
+                            String value = getValueFromProp(propValue);
                             m_defaultCopyAndUnzip = (value.trim().equals("1")) ? true : false;
                         }
-                        line = configReader.readLine();
                     }
                     m_isValid = true;
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
-                    if (null != configReader) {
-                        try {
-                            configReader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
                 }
             }
         }

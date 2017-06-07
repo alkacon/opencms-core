@@ -41,9 +41,9 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
-<p><i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>10.5.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+<p><i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
+		<version>10.5.1</version>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
@@ -4087,7 +4087,16 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<source>system/workplace/admin/notification/password-change-notification</source>
@@ -4106,7 +4115,7 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>ROLE.EDITOR</uuidprincipal>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
 					<flags>518</flags>
 					<permissionset>
 						<allowed>1</allowed>
@@ -4136,7 +4145,7 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>ROLE.EDITOR</uuidprincipal>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
 					<flags>518</flags>
 					<permissionset>
 						<allowed>1</allowed>
@@ -4166,7 +4175,7 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>ROLE.EDITOR</uuidprincipal>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
 					<flags>518</flags>
 					<permissionset>
 						<allowed>1</allowed>

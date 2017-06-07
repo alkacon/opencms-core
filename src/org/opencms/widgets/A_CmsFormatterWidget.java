@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,7 @@ import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheSt
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -42,6 +43,7 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -92,7 +94,7 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
      */
     public static CmsSelectWidgetOption getWidgetOptionForFormatter(CmsObject cms, I_CmsFormatterBean formatter) {
 
-        String name = formatter.getNiceName()
+        String name = formatter.getNiceName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms))
             + " "
             + formatter.getResourceTypeNames().toString()
             + "  "
@@ -143,18 +145,50 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
+     */
+    @Override
+    public String getConfiguration(
+        CmsObject cms,
+        A_CmsXmlContentValue schemaType,
+        CmsMessages messages,
+        CmsResource resource,
+        Locale contentLocale) {
+
+        CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(messages.getLocale(), messages);
+        widgetDialog.setResource(resource);
+        String result = getConfiguration();
+        result += "||";
+        result += optionsToConfigurationString(parseSelectOptions(cms, widgetDialog, schemaType, false));
+        result += "||";
+        result += optionsToConfigurationString(parseSelectOptions(cms, widgetDialog, schemaType, true));
+        return result;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getWidgetName()
+     */
+    @Override
+    public String getWidgetName() {
+
+        return A_CmsFormatterWidget.class.getName();
+    }
+
+    /**
      * Gets the options corresponding to external (non-schema) formatters.<p>
      *
      * @param cms the CMS context
      * @param config the ADE configuration
      * @param rootPath the root path of the edited file
+     * @param allRemoved flag, indicating if all inheritedly available formatters should be disabled
      *
      * @return the select widget options for the external formatters
      */
     protected abstract List<CmsSelectWidgetOption> getFormatterOptions(
         CmsObject cms,
         CmsADEConfigData config,
-        String rootPath);
+        String rootPath,
+        boolean allRemoved);
 
     /**
      * Gets the values which have already been selected in the edited resource on the VFS.<p>
@@ -171,10 +205,14 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
      *
      * @param cms the current CMS context
      * @param config the ADE configuration
+     * @param allRemoved flag, indicating if all inheritedly available formatters should be disabled
      *
      * @return the select widget options for the content types with formatters in the schema
      */
-    protected abstract List<CmsSelectWidgetOption> getTypeOptions(CmsObject cms, CmsADEConfigData config);
+    protected abstract List<CmsSelectWidgetOption> getTypeOptions(
+        CmsObject cms,
+        CmsADEConfigData config,
+        boolean allRemoved);
 
     /**
      * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
@@ -184,6 +222,32 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
+
+        List<CmsSelectWidgetOption> options = Lists.newArrayList();
+        options.add(new CmsSelectWidgetOption("", true, getMessage(cms, Messages.GUI_FORMATTER_EMPTY_SELECTION_0)));
+        return options;
+    }
+
+    /**
+     * Returns the list of configured select options, parsing the configuration String if required.<p>
+     *
+     * The list elements are of type <code>{@link CmsSelectWidgetOption}</code>.
+     * The configuration String is parsed only once and then stored internally.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param widgetDialog the dialog of this widget
+     * @param param the widget parameter of this dialog
+     * @param allRemoved flag, indicating if all inheritedly available formatters should be disabled
+     *
+     * @return the list of select options
+     *
+     * @see CmsSelectWidgetOption
+     */
+    protected List<CmsSelectWidgetOption> parseSelectOptions(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param,
+        boolean allRemoved) {
 
         String path = getResourcePath(cms, widgetDialog);
         try {
@@ -196,9 +260,9 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
             Set<String> added = new HashSet<String>();
             List<CmsSelectWidgetOption> options = Lists.newArrayList();
             options.add(new CmsSelectWidgetOption("", true, getMessage(cms, Messages.GUI_FORMATTER_EMPTY_SELECTION_0)));
-            List<CmsSelectWidgetOption> formatterOptions = getFormatterOptions(cms, adeConfig, path);
+            List<CmsSelectWidgetOption> formatterOptions = getFormatterOptions(cms, adeConfig, path, allRemoved);
             options.addAll(formatterOptions);
-            List<CmsSelectWidgetOption> typeOptions = getTypeOptions(cms, adeConfig);
+            List<CmsSelectWidgetOption> typeOptions = getTypeOptions(cms, adeConfig, allRemoved);
             options.addAll(typeOptions);
             for (CmsSelectWidgetOption option : options) {
                 added.add(option.getValue());

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,13 +35,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
  * @since 8.0.0
  */
 public interface I_CmsToolbarButton extends HasClickHandlers {
-
-    /**
-     * The icon CSS class of this button.<p>
-     *
-     * @return the CSS class name
-     */
-    String getIconClass();
 
     /**
      * Returns the localized button title. Will show in tool-tip.<p>

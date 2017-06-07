@@ -31,7 +31,7 @@
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 		        <layouts>
 		           	<layout element="PreferFolder" widget="BooleanWidget" />
-		           	<layout element="Widget" widget="SelectorWidget" configuration="string:%(key.label.string)|select:%(key.label.select)|extended_multicheck:%(key.label.multicheck)" />
+		           	<layout element="Widget" widget="SelectorWidget" configuration="string:%(key.label.string)|textarea:%(key.label.textarea)|select:%(key.label.select)|extended_multicheck:%(key.label.multicheck)|selectcombo_prop:%(key.label.selectcombo)" />
 		           	<layout element="RuleType" widget="SelectorWidget" configuration="error:%(key.label.error)|warning:%(key.label.warning)" />
 		        </layouts>
         </xsd:appinfo>

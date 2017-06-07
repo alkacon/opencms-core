@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -96,7 +96,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     private String m_property;
 
     /** The selection type parsed from configuration string. */
-    private String m_selectiontype = "single";
+    private String m_selectiontype = "multi";
 
     /**
      * Creates a new category widget.<p>
@@ -125,7 +125,6 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         StringBuffer result = new StringBuffer(8);
 
-        // append category to configuration
         if (m_category != null) {
             result.append(CONFIGURATION_CATEGORY);
             result.append("=");
@@ -149,6 +148,15 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             result.append("=");
             result.append(m_property);
         }
+        // append 'selectionType' to configuration
+        if (m_selectiontype != null) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_SELECTIONTYPE);
+            result.append("=");
+            result.append(m_selectiontype);
+        }
         return result.toString();
     }
 
@@ -162,10 +170,26 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        String result = getConfiguration();
+        StringBuffer result = new StringBuffer();
+
+        // NOTE: set starting category as "category=" - independently if it is set via "property" or "category" config option.
+        String startingCategory = this.getStartingCategory(cms, cms.getSitePath(resource));
+        if (startingCategory.length() > 1) {
+            result.append(CONFIGURATION_CATEGORY).append("=").append(startingCategory);
+        }
+        // append 'only leafs' to configuration
+        if (m_onlyLeafs != null) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_ONLYLEAFS);
+            result.append("=");
+            result.append(m_onlyLeafs);
+        }
         // append 'selection type' to configuration in case of the schemaType
-        if (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)
-            || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)) {
+        if (!m_selectiontype.equals("single")
+            && (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)
+                || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME))) {
             m_selectiontype = "multi";
         } else {
             m_selectiontype = "single";
@@ -173,18 +197,18 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         if (m_selectiontype != null) {
             if (result.length() > 0) {
-                result += "|";
+                result.append("|");
             }
-            result += CONFIGURATION_SELECTIONTYPE;
-            result += "=";
-            result += m_selectiontype;
+            result.append(CONFIGURATION_SELECTIONTYPE);
+            result.append("=");
+            result.append(m_selectiontype);
         }
 
         if (m_parentSelection) {
             if (result.length() > 0) {
-                result += "|";
+                result.append("|");
             }
-            result += CONFIGURATION_PARENTSELECTION;
+            result.append(CONFIGURATION_PARENTSELECTION);
         }
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<String> categoriesList = catService.getCategoryRepositories(cms, cms.getSitePath(resource));
@@ -200,7 +224,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             i++;
         }
 
-        return result + catList;
+        return result.append(catList).toString();
     }
 
     /**
@@ -518,6 +542,16 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                     property = property.substring(0, property.indexOf('|'));
                 }
                 m_property = property;
+            }
+            int selectionTypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
+            if (selectionTypeIndex != -1) {
+                String selectionType = configuration.substring(
+                    selectionTypeIndex + CONFIGURATION_SELECTIONTYPE.length() + 1);
+                if (selectionType.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    selectionType = selectionType.substring(0, selectionType.indexOf('|'));
+                }
+                m_selectiontype = selectionType;
             }
         }
         super.setConfiguration(configuration);

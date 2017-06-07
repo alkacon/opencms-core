@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -117,7 +117,7 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         if (config != null) {
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
                 for (String typeName : formatter.getResourceTypeNames()) {
-                    String label = formatter.getNiceName()
+                    String label = formatter.getNiceName(wpLocale)
                         + " ("
                         + CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName)
                         + ")";

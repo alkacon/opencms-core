@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,13 +30,21 @@ package org.opencms.lock;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.gwt.Messages;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
 
+import java.io.Closeable;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Maps;
 
 /**
  * Locking utility class.<p>
@@ -46,14 +54,14 @@ public final class CmsLockUtil {
     /** Helper to handle the lock reports together with the files. */
     public static final class LockedFile {
 
+        /** The cms object used for locking, unlocking and encoding determination. */
+        private CmsObject m_cms;
         /** The file that was read. */
         private CmsFile m_file;
         /** The lock action record from locking the file. */
         private CmsLockActionRecord m_lockRecord;
         /** Flag, indicating if the file was newly created. */
         private boolean m_new;
-        /** The cms object used for locking, unlocking and encoding determination. */
-        private CmsObject m_cms;
 
         /** Private constructor.
          * @param cms the cms user context.
@@ -130,7 +138,7 @@ public final class CmsLockUtil {
 
         public boolean unlock() throws CmsException {
 
-            if (!m_lockRecord.getChange().equals(LockChange.unchanged)) {
+            if (!m_lockRecord.getChange().equals(LockChange.unchanged) || m_new) {
                 m_cms.unlockResource(m_file);
                 return true;
             } else {
@@ -139,6 +147,9 @@ public final class CmsLockUtil {
         }
 
     }
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLockUtil.class);
 
     /**
      * Hidden constructor.
@@ -178,6 +189,58 @@ public final class CmsLockUtil {
             lock = cms.getLock(resource);
         }
         return new CmsLockActionRecord(lock, change);
+    }
+
+    /**
+     * Utility method for locking and unlocking a set of resources conveniently with the try-with syntax
+     * from Java 1.7.<p>
+     *
+     * This method locks a set of resources and returns a Closeable instance that will unlock the locked resources
+     * when its close() method is called.
+     *
+     * @param cms the CMS context
+     * @param resources the resources to lock
+     *
+     * @return the Closeable used to unlock the resources
+     * @throws Exception if something goes wrong
+     */
+    public static Closeable withLockedResources(final CmsObject cms, CmsResource... resources) throws Exception {
+
+        final Map<CmsResource, CmsLockActionRecord> lockMap = Maps.newHashMap();
+        Closeable result = new Closeable() {
+
+            @SuppressWarnings("synthetic-access")
+            public void close() {
+
+                for (Map.Entry<CmsResource, CmsLockActionRecord> entry : lockMap.entrySet()) {
+                    if (entry.getValue().getChange() == LockChange.locked) {
+                        CmsResource resourceToUnlock = entry.getKey();
+                        // the resource may have been moved, so we read it again to get the correct path
+                        try {
+                            resourceToUnlock = cms.readResource(entry.getKey().getStructureId(), CmsResourceFilter.ALL);
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                        try {
+                            cms.unlockResource(resourceToUnlock);
+                        } catch (CmsException e) {
+                            LOG.warn(e.getLocalizedMessage(), e);
+                        }
+                    }
+
+                }
+            }
+        };
+        try {
+            for (CmsResource resource : resources) {
+                CmsLockActionRecord record = ensureLock(cms, resource);
+                lockMap.put(resource, record);
+            }
+        } catch (CmsException e) {
+            result.close();
+            throw e;
+        }
+        return result;
     }
 
 }

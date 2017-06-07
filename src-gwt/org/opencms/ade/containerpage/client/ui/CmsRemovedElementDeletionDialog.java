@@ -132,7 +132,7 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
      *
      * @param status the status of the removed element
      */
-    public CmsRemovedElementDeletionDialog(final CmsRemovedElementStatus status) {
+    public CmsRemovedElementDeletionDialog(CmsRemovedElementStatus status) {
 
         super(
             org.opencms.ade.containerpage.client.Messages.get().key(

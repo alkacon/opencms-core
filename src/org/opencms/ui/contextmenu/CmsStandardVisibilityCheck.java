@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -378,6 +378,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 if (!lock.isUnlocked()) {
                     return VISIBILITY_INVISIBLE;
                 }
+                prioritize = true;
             }
 
             if (flag(otherlock)) {
@@ -400,6 +401,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 if (!lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
                     return VISIBILITY_INVISIBLE;
                 }
+                prioritize = true;
             }
 
             if (flag(noinheritedlock)) {

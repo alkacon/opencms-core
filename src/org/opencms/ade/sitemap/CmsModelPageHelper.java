@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,7 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.CmsModelPageConfig;
-import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.file.CmsFile;
@@ -171,31 +171,26 @@ public class CmsModelPageHelper {
      */
     public CmsResource createModelGroupPage(String name, String description, CmsUUID copyId) throws CmsException {
 
-        CmsResource modelFolder = ensureModelFolder(m_rootResource, true);
-        String pattern = "modelgroup_%(number).html";
-        String newFilePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
-            m_cms,
-            CmsStringUtil.joinPaths(modelFolder.getRootPath(), pattern),
-            4);
-        CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, name, null);
-        CmsProperty descriptionProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, null);
         CmsResource newPage = null;
-        if (copyId == null) {
-            newPage = m_cms.createResource(
-                newFilePath,
-                getType(CmsResourceTypeXmlContainerPage.getStaticTypeName()),
-                null,
-                Arrays.asList(titleProp, descriptionProp));
-        } else {
-            CmsResource copyResource = m_cms.readResource(copyId);
-            m_cms.copyResource(copyResource.getRootPath(), newFilePath);
-            m_cms.writePropertyObject(newFilePath, titleProp);
-            m_cms.writePropertyObject(newFilePath, descriptionProp);
-
-            newPage = m_cms.readResource(newFilePath);
+        CmsResourceTypeConfig config = m_adeConfig.getResourceType(
+            CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
+        if ((config != null) && !config.isDisabled()) {
+            if (copyId == null) {
+                newPage = config.createNewElement(m_cms, m_rootResource.getRootPath());
+            } else {
+                CmsResource copyResource = m_cms.readResource(copyId);
+                newPage = config.createNewElement(m_cms, copyResource, m_rootResource.getRootPath());
+            }
+            m_cms.lockResource(newPage);
+            CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, name, null);
+            CmsProperty descriptionProp = new CmsProperty(
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                description,
+                null);
+            m_cms.writePropertyObject(m_cms.getSitePath(newPage), titleProp);
+            m_cms.writePropertyObject(m_cms.getSitePath(newPage), descriptionProp);
+            tryUnlock(newPage);
         }
-
-        tryUnlock(newPage);
         return newPage;
     }
 
@@ -211,7 +206,7 @@ public class CmsModelPageHelper {
      */
     public CmsResource createPageInModelFolder(String name, String description, CmsUUID copyId) throws CmsException {
 
-        CmsResource modelFolder = ensureModelFolder(m_rootResource, false);
+        CmsResource modelFolder = ensureModelFolder(m_rootResource);
         String pattern = "templatemodel_%(number).html";
         String newFilePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
             m_cms,
@@ -286,17 +281,15 @@ public class CmsModelPageHelper {
      * Tries to either read or create the default folder for model pages in the current sitemap, and returns it.<p>
      *
      * @param rootResource the root of the sitemap
-     * @param isModelGroup <code>true</code> if a model group folder is requested
      *
      * @return the folder resource
      *
      * @throws CmsException if something goes wrong
      */
-    public CmsResource ensureModelFolder(CmsResource rootResource, boolean isModelGroup) throws CmsException {
+    public CmsResource ensureModelFolder(CmsResource rootResource) throws CmsException {
 
-        String modelFolderPath = CmsStringUtil.joinPaths(
-            m_adeConfig.getBasePath(),
-            isModelGroup ? CmsContainerpageService.MODEL_GROUP_PATH_FRAGMENT : ".content/.templates");
+        String modelFolderPath = CmsStringUtil.joinPaths(m_adeConfig.getBasePath(), ".content/.templates");
+
         try {
             CmsResource result = m_cms.readFolder(modelFolderPath);
             return result;
@@ -321,25 +314,28 @@ public class CmsModelPageHelper {
     public List<CmsModelPageEntry> getModelGroups() {
 
         List<CmsModelPageEntry> result = new ArrayList<CmsModelPageEntry>();
-        String modelGroupFolderPath = CmsStringUtil.joinPaths(
-            m_adeConfig.getBasePath(),
-            CmsContainerpageService.MODEL_GROUP_PATH_FRAGMENT);
-        if (m_cms.existsResource(modelGroupFolderPath)) {
-            try {
-                List<CmsResource> modelResources = m_cms.readResources(
-                    modelGroupFolderPath,
-                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
-                        OpenCms.getResourceManager().getResourceType(
-                            CmsResourceTypeXmlContainerPage.getStaticTypeName())),
-                    false);
-                for (CmsResource model : modelResources) {
-                    CmsModelPageEntry entry = createModelPageEntry(model, false, false);
-                    if (entry != null) {
-                        result.add(entry);
+        CmsResourceTypeConfig config = m_adeConfig.getResourceType(
+            CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
+        if ((config != null) && !config.isDisabled()) {
+            String modelGroupFolderPath = config.getFolderPath(m_cms, m_adeConfig.getBasePath());
+            if (m_cms.existsResource(modelGroupFolderPath)) {
+                try {
+                    Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+                    List<CmsResource> modelResources = m_cms.readResources(
+                        modelGroupFolderPath,
+                        CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                            OpenCms.getResourceManager().getResourceType(
+                                CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME)),
+                        false);
+                    for (CmsResource model : modelResources) {
+                        CmsModelPageEntry entry = createModelPageEntry(model, false, false, wpLocale);
+                        if (entry != null) {
+                            result.add(entry);
+                        }
                     }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return result;
@@ -416,10 +412,11 @@ public class CmsModelPageHelper {
      * @param resource the model page resource
      * @param disabled if the model page is disabled
      * @param isDefault if this is the default model page
+     * @param locale the current user locale
      *
      * @return the model page entry bean
      */
-    CmsModelPageEntry createModelPageEntry(CmsResource resource, boolean disabled, boolean isDefault) {
+    CmsModelPageEntry createModelPageEntry(CmsResource resource, boolean disabled, boolean isDefault, Locale locale) {
 
         try {
             CmsModelPageEntry result = new CmsModelPageEntry();
@@ -444,7 +441,8 @@ public class CmsModelPageHelper {
             CmsProperty descProperty = m_cms.readPropertyObject(
                 resource,
                 CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-                false);
+                false,
+                locale);
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(descProperty.getValue())) {
                 infoBean.setSubTitle(descProperty.getValue());
             }
@@ -526,11 +524,16 @@ public class CmsModelPageHelper {
     private List<CmsModelPageEntry> buildModelPageList(List<CmsModelPageConfig> modelPageConfigs) {
 
         List<CmsModelPageEntry> result = Lists.newArrayList();
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         for (CmsModelPageConfig config : modelPageConfigs) {
             CmsUUID structureId = config.getResource().getStructureId();
             try {
                 CmsResource modelPage = m_cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-                CmsModelPageEntry entry = createModelPageEntry(modelPage, config.isDisabled(), config.isDefault());
+                CmsModelPageEntry entry = createModelPageEntry(
+                    modelPage,
+                    config.isDisabled(),
+                    config.isDefault(),
+                    wpLocale);
                 if (entry != null) {
                     result.add(entry);
                 }

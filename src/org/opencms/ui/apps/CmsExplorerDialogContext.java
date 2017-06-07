@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -63,7 +63,7 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         CmsFileTable fileTable,
         CmsFileExplorer explorer,
         List<CmsResource> resources) {
-        super(contextType, fileTable, resources);
+        super(CmsFileExplorerConfiguration.APP_ID, contextType, fileTable, resources);
         m_explorer = explorer;
     }
 
@@ -88,7 +88,7 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         if (ids != null) {
             for (CmsUUID id : ids) {
                 if (id.isNullUUID()) {
-                    m_explorer.updateAll();
+                    m_explorer.updateAll(false);
                     return;
                 }
             }
@@ -126,5 +126,14 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
         }
+    }
+
+    /**
+     * @see org.opencms.ui.components.CmsFileTableDialogContext#updateUserInfo()
+     */
+    @Override
+    public void updateUserInfo() {
+
+        m_explorer.m_appContext.updateUserInfo();
     }
 }

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -34,7 +34,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
-import org.opencms.module.CmsModule;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -71,6 +70,9 @@ public class CmsGwtActionElement extends CmsJspActionElement {
 
     /** The resource icon CSS URI. */
     private static final String ICON_CSS_URI = "/system/modules/org.opencms.gwt/resourceIcon.css";
+
+    /** The toolbar.css resource name. */
+    private static final String TOOLBAR_CSS = "css/toolbar.css";
 
     /** The current core data. */
     private CmsCoreData m_coreData;
@@ -263,7 +265,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         if (!CmsStringUtil.isEmpty(prefix)) {
             try {
                 param = "?prefix=" + URLEncoder.encode(prefix, OpenCms.getSystemInfo().getDefaultEncoding());
-            } catch (@SuppressWarnings("unused") UnsupportedEncodingException e) {
+            } catch (UnsupportedEncodingException e) {
                 //ignore, default encoding should be available
             }
         }
@@ -309,6 +311,9 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         return exportCommon(getCmsObject(), getCoreData(), iconCssClassPrefix)
             + "\n<style type=\"text/css\">\n @import url(\""
             + getFontIconCssLink()
+            + "\");\n"
+            + " @import url(\""
+            + getToolbarCssLink()
             + "\");\n </style>\n";
     }
 
@@ -376,14 +381,17 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             + moduleName
             + "\" >\n<script type=\"text/javascript\" src=\""
             + CmsWorkplace.getStaticResourceUri("gwt/opencms/opencms.nocache.js");
-        CmsModule module = OpenCms.getModuleManager().getModule("org.opencms.gwt");
-        if (module != null) {
-            result += "?version="
-                + module.getVersion().toString()
-                + "_"
-                + OpenCms.getSystemInfo().getVersionNumber().hashCode();
-        }
         result += "\"></script>\n";
         return result;
+    }
+
+    /**
+     * Returns the toolbar CSS link.<p>
+     *
+     * @return the toolbar CSS link
+     */
+    private String getToolbarCssLink() {
+
+        return CmsWorkplace.getResourceUri(TOOLBAR_CSS);
     }
 }

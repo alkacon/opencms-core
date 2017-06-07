@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -399,8 +399,14 @@ public interface I_CmsEventListener {
     /** Key name for passing a List of {@link org.opencms.file.CmsResource} in the data map. */
     String KEY_RESOURCES = "resources";
 
+    /** Key name for skipping searchindexing. */
+    String KEY_SKIPINDEX = "skipindex";
+
     /** Key name for passing a user action. */
     String KEY_USER_ACTION = "userAction";
+
+    /** Key name for passing user changes flag. */
+    String KEY_USER_CHANGES = "userChanges";
 
     /** Key name for passing an user ID. */
     String KEY_USER_ID = "userId";

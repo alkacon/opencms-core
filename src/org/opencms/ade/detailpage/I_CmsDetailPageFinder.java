@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,7 +46,8 @@ public interface I_CmsDetailPageFinder {
      * @param restype the resource type for which the detail pages should be found
      *
      * @return the list of detail page
-     * @throws CmsException
+     *
+     * @throws CmsException in case reading the resource type fails
      */
     Collection<String> getAllDetailPages(CmsObject cms, int restype) throws CmsException;
 
@@ -56,10 +57,13 @@ public interface I_CmsDetailPageFinder {
      * @param cms the CMS context
      * @param rootPath the root path of the resource for which the detail page should be looked up
      * @param linkSource the uri in the context of which the detail page link is being generated (relative to the site)
+     * @param targetDetailPage the target detail page to use
+     *
      * @return the detail page link, or null
      *
      * @throws CmsException if something goes wrong
      */
-    String getDetailPage(CmsObject cms, String rootPath, String linkSource) throws CmsException;
+    String getDetailPage(CmsObject cms, String rootPath, String linkSource, String targetDetailPage)
+    throws CmsException;
 
 }

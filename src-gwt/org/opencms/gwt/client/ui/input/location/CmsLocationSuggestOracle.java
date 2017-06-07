@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -128,36 +128,36 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
      */
     @Override
     public native void requestSuggestions(final Request request, final Callback callback) /*-{
-                                                                                          var query = request.@com.google.gwt.user.client.ui.SuggestOracle.Request::getQuery()();
-                                                                                          var controller=this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_controller;
-                                                                                          var pos=controller.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
-                                                                                          if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder == null) {
-                                                                                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder = new $wnd.google.maps.places.AutocompleteService();
-                                                                                          }
-                                                                                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder
-                                                                                          .getPlacePredictions(
-                                                                                          {
-                                                                                          'input' : query,
-                                                                                          'location' : pos,
-                                                                                          'radius' : 10000
-                                                                                          },
-                                                                                          function(results, status) {
-                                                                                          var suggestions = @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::createSuggestList()();
-                                                                                          // check to see if we have at least one valid address
-                                                                                          if (results
-                                                                                          && (status == $wnd.google.maps.places.PlacesServiceStatus.OK)) {
-                                                                                          for (var i = 0; i < results.length; i++) {
-                                                                                          var lat = 0;
-                                                                                          //results[i].geometry.location.lat();
-                                                                                          var lng =0;
-                                                                                          //results[i].geometry.location.lng();
-                                                                                          var address = results[i].description;
-                                                                                          //results[i].formatted_address;
-                                                                                          @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::addSuggestion(Ljava/util/List;Ljava/lang/String;)(suggestions, address);
-                                                                                          }
-                                                                                          }
-                                                                                          @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::respond(Lcom/google/gwt/user/client/ui/SuggestOracle$Request;Ljava/util/List;Lcom/google/gwt/user/client/ui/SuggestOracle$Callback;)(request, suggestions, callback);
-                                                                                          });
-                                                                                          }-*/;
+		var query = request.@com.google.gwt.user.client.ui.SuggestOracle.Request::getQuery()();
+		var controller = this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_controller;
+		var pos = controller.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+		if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder == null) {
+			this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder = new $wnd.google.maps.places.AutocompleteService();
+		}
+		this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder
+				.getPlacePredictions(
+						{
+							'input' : query,
+							'location' : pos,
+							'radius' : 10000
+						},
+						function(results, status) {
+							var suggestions = @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::createSuggestList()();
+							// check to see if we have at least one valid address
+							if (results
+									&& (status == $wnd.google.maps.places.PlacesServiceStatus.OK)) {
+								for (var i = 0; i < results.length; i++) {
+									var lat = 0;
+									//results[i].geometry.location.lat();
+									var lng = 0;
+									//results[i].geometry.location.lng();
+									var address = results[i].description;
+									//results[i].formatted_address;
+									@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::addSuggestion(Ljava/util/List;Ljava/lang/String;)(suggestions, address);
+								}
+							}
+							@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::respond(Lcom/google/gwt/user/client/ui/SuggestOracle$Request;Ljava/util/List;Lcom/google/gwt/user/client/ui/SuggestOracle$Callback;)(request, suggestions, callback);
+						});
+    }-*/;
 
 }

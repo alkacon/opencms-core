@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -59,7 +59,6 @@ public final class CmsTableUtil {
 
         button.addStyleName(OpenCmsTheme.BUTTON_TABLE_ICON);
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        button.addStyleName(OpenCmsTheme.BUTTON_ICON_SMALL);
         button.setIcon(icon);
         button.setDescription(caption);
         return button;

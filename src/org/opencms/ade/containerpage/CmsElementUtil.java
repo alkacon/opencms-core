@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,9 +44,11 @@ import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
@@ -179,7 +181,9 @@ public class CmsElementUtil {
         // initializing request for standard context bean
         req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
         if (detailContentId != null) {
-            CmsResource detailRes = m_cms.readResource(detailContentId);
+            CmsResource detailRes = m_cms.readResource(
+                detailContentId,
+                CmsResourceFilter.ignoreExpirationOffline(m_cms));
             req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
         }
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
@@ -217,7 +221,7 @@ public class CmsElementUtil {
         // initializing request for standard context bean
         req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
         if (detailContentId != null) {
-            CmsResource detailRes = m_cms.readResource(detailContentId);
+            CmsResource detailRes = m_cms.readResource(detailContentId, CmsResourceFilter.ignoreExpirationOffline(cms));
             req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
         }
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
@@ -288,10 +292,9 @@ public class CmsElementUtil {
         CmsADESessionCache cache) {
 
         I_CmsFormatterBean formatter = null;
-        Map<String, I_CmsFormatterBean> formatters = config.getFormatters(cms, element.getResource()).getFormatterSelection(
-            container.getType(),
-            container.getWidth(),
-            allowNested);
+        Map<String, I_CmsFormatterBean> formatters = config.getFormatters(
+            cms,
+            element.getResource()).getFormatterSelection(container.getType(), container.getWidth(), allowNested);
         String formatterId = element.getIndividualSettings().get(
             CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
         if (formatterId != null) {
@@ -389,7 +392,8 @@ public class CmsElementUtil {
         CmsResource page,
         CmsContainerElementBean element,
         Collection<CmsContainer> containers,
-        boolean allowNested) throws CmsException {
+        boolean allowNested)
+    throws CmsException {
 
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
@@ -499,6 +503,7 @@ public class CmsElementUtil {
                             elementData.getSettings().put(
                                 CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()),
                                 formatter.getId());
+                            element.addFormatterSetting(cnt.getName(), formatter.getId());
                         }
                     } else {
                         Map<String, I_CmsFormatterBean> formatterSelection = formatterConfiguraton.getFormatterSelection(
@@ -545,7 +550,8 @@ public class CmsElementUtil {
         CmsContainerElementBean element,
         String containerId,
         Collection<CmsContainer> containers,
-        boolean allowNested) throws CmsException {
+        boolean allowNested)
+    throws CmsException {
 
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
@@ -571,14 +577,14 @@ public class CmsElementUtil {
                         I_CmsFormatterBean formatter = formatterEntry.getValue();
                         String id = formatterEntry.getKey();
                         if (missesFormatterSetting
-                            && ((element.getFormatterId() == null) || element.getFormatterId().equals(
-                                formatter.getJspStructureId()))) {
+                            && ((element.getFormatterId() == null)
+                                || element.getFormatterId().equals(formatter.getJspStructureId()))) {
                             elementData.getSettings().put(
                                 CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()),
                                 id);
                             missesFormatterSetting = false;
                         }
-                        String label = formatter.getNiceName();
+                        String label = formatter.getNiceName(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms));
                         if (formatterEntry.getKey().startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
                             label = Messages.get().getBundle().key(Messages.GUI_SCHEMA_FORMATTER_LABEL_0)
                                 + " ["
@@ -643,21 +649,25 @@ public class CmsElementUtil {
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         // reinitializing resource to avoid caching issues
         elementBean.initResource(m_cms);
+        CmsResource resource = elementBean.getResource();
+        boolean isModelGroup = elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID);
+        if (isModelGroup) {
+            CmsUUID groupId = new CmsUUID(elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID));
+            resource = m_cms.readResource(groupId, CmsResourceFilter.IGNORE_EXPIRATION);
+        }
+
         boolean newEditorDisabled = !CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(
             m_cms,
             elementBean.getResource());
         result.setNewEditorDisabled(newEditorDisabled);
-        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
+        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         result.setResourceType(typeName);
         CmsPermissionInfo permissionInfo;
         String title;
         String subTitle;
         if (!elementBean.isInMemoryOnly()) {
-            permissionInfo = OpenCms.getADEManager().getPermissionInfo(
-                m_cms,
-                elementBean.getResource(),
-                m_page.getRootPath());
-            if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
+            permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, m_page.getRootPath());
+            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
                     && elementBean.isInheritedContainer(m_cms)) {
                     String requestUri = m_cms.getRequestContext().getUri();
@@ -666,29 +676,28 @@ public class CmsElementUtil {
                         folderPath,
                         CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
                     if (m_cms.existsResource(configPath)) {
-                        permissionInfo.setNoEditReason(new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(
-                            wpLocale,
-                            true));
+                        permissionInfo.setNoEditReason(
+                            new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(wpLocale, true));
                     } else {
                         if (!m_cms.getLock(folderPath).isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
-                            permissionInfo.setNoEditReason(org.opencms.workplace.explorer.Messages.get().getBundle(
-                                wpLocale).key(
-                                org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
-                                new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName()));
+                            permissionInfo.setNoEditReason(
+                                org.opencms.workplace.explorer.Messages.get().getBundle(wpLocale).key(
+                                    org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
+                                    new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName()));
                         }
                     }
                 }
             } else {
-                permissionInfo.setNoEditReason(Messages.get().getBundle(wpLocale).key(
-                    Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
+                permissionInfo.setNoEditReason(
+                    Messages.get().getBundle(wpLocale).key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
             }
             CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
                 m_cms,
-                elementBean.getResource().getStructureId(),
+                resource.getStructureId(),
                 m_locale);
             title = searchResult.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                elementBean.getResource().getName();
+                resource.getName();
             }
             subTitle = searchResult.getUserLastModified();
             Date lastModDate = searchResult.getDateLastModified();
@@ -703,13 +712,24 @@ public class CmsElementUtil {
         result.setTitle(title);
         result.setSubTitle(subTitle);
         result.setClientId(elementBean.editorHash());
-        result.setSitePath(elementBean.getSitePath());
+        result.setSitePath(m_cms.getSitePath(resource));
 
         result.setCreateNew(elementBean.isCreateNew());
         CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
+        if (typeConfig != null) {
+            result.setCopyInModels(typeConfig.isCopyInModels());
+        }
         Map<CmsUUID, CmsElementView> viewMap = OpenCms.getADEManager().getElementViews(m_cms);
-        boolean isModelGroup = elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID);
-        if (isModelGroup) {
+
+        boolean isModelGroupEditing = CmsModelGroupHelper.isModelGroupResource(m_page);
+        if (!isModelGroup
+            && isModelGroupEditing
+            && elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
+            && (ModelGroupState.isModelGroup == ModelGroupState.evaluate(
+                elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE)))) {
+            isModelGroup = true;
+        }
+        if (!isModelGroupEditing && isModelGroup) {
             CmsResourceTypeConfig modelGroupConfig = getConfigData().getResourceType(
                 CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
             if (modelGroupConfig != null) {
@@ -719,6 +739,9 @@ public class CmsElementUtil {
                     elementView = viewObject.getParentViewId();
                 }
                 result.setElementView(elementView);
+            }
+            if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, resource)) {
+                result.setResourceType(CmsGwtConstants.TYPE_MODELGROUP_REUSE);
             }
         } else if (typeConfig != null) {
             CmsUUID elementView = typeConfig.getElementView();
@@ -730,20 +753,24 @@ public class CmsElementUtil {
         }
         if (elementBean.isCreateNew()
             && CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
-            && ((typeConfig == null) || !typeConfig.checkCreatable(
-                m_cms,
-                CmsResource.getParentFolder(m_page.getRootPath())))) {
+            && ((typeConfig == null)
+                || !typeConfig.checkCreatable(m_cms, CmsResource.getParentFolder(m_page.getRootPath())))) {
             String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-            permissionInfo.setNoEditReason(Messages.get().getBundle(wpLocale).key(
-                Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1,
-                niceName));
+            permissionInfo.setNoEditReason(
+                Messages.get().getBundle(wpLocale).key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName));
         }
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
-        result.setModelGroup(isModelGroup);
-        result.setWasModelGroup(elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
-            && (ModelGroupState.evaluate(elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.wasModelGroup));
+        if (elementBean.isModelGroup()) {
+            String modelId = elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID);
+            result.setModelGroupId(modelId != null ? new CmsUUID(modelId) : CmsUUID.getNullUUID());
+        }
+        result.setWasModelGroup(
+            elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
+                && (ModelGroupState.evaluate(
+                    elementBean.getIndividualSettings().get(
+                        CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.wasModelGroup));
         return result;
     }
 
@@ -812,10 +839,11 @@ public class CmsElementUtil {
             m_cms,
             page,
             element.getResource());
-        elementData.setSettings(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
-            m_cms,
-            element.getIndividualSettings(),
-            settingConfig));
+        elementData.setSettings(
+            CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
+                m_cms,
+                element.getIndividualSettings(),
+                settingConfig));
         return elementData;
     }
 
@@ -933,6 +961,7 @@ public class CmsElementUtil {
                     container.getName(),
                     container.getType(),
                     container.getParentInstanceId(),
+                    container.isRootContainer(),
                     container.getMaxElements(),
                     Collections.<CmsContainerElementBean> emptyList());
             }
@@ -950,13 +979,9 @@ public class CmsElementUtil {
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
             m_req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
             String encoding = m_res.getCharacterEncoding();
-            return (new String(OpenCms.getResourceManager().getLoader(formatter).dump(
-                m_cms,
-                formatter,
-                null,
-                m_locale,
-                m_req,
-                m_res), encoding)).trim();
+            return (new String(
+                OpenCms.getResourceManager().getLoader(formatter).dump(m_cms, formatter, null, m_locale, m_req, m_res),
+                encoding)).trim();
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }

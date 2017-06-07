@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,6 +38,9 @@ import com.vaadin.server.Resource;
  */
 public class CmsEditorConfiguration extends A_CmsWorkplaceAppConfiguration {
 
+    /** The app id. */
+    public static final String APP_ID = "editor";
+
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getAppCategory()
      */
@@ -69,7 +72,7 @@ public class CmsEditorConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public String getId() {
 
-        return "editor";
+        return APP_ID;
     }
 
     /**

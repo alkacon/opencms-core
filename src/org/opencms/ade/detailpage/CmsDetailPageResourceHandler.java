@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ package org.opencms.ade.detailpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -101,7 +102,8 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
         CmsResource resource,
         CmsObject cms,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsResourceInitException, CmsSecurityException {
+        HttpServletResponse res)
+    throws CmsResourceInitException, CmsSecurityException {
 
         // check if the resource was already found or the path starts with '/system/'
         boolean abort = (resource != null) || cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
@@ -112,7 +114,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
         String path = cms.getRequestContext().getUri();
         path = CmsFileUtil.removeTrailingSeparator(path);
         try {
-            cms.readResource(path);
+            cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsSecurityException e) {
             // It may happen that a path is both an existing VFS path and a valid detail page link.
             // If this is the case, and the user has insufficient permissions to read the resource at the path,
@@ -127,7 +129,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
 
             if (detailId != null) {
                 // check existence / permissions
-                CmsResource detailRes = cms.readResource(detailId);
+                CmsResource detailRes = cms.readResource(detailId, CmsResourceFilter.ignoreExpirationOffline(cms));
                 // change OpenCms request URI to detail page
                 CmsResource detailPage = cms.readDefaultFile(CmsResource.getFolderPath(path));
                 if (!isValidDetailPage(cms, detailPage, detailRes)) {

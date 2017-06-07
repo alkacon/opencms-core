@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,6 +40,7 @@ import org.jsoup.nodes.Element;
 
 import com.google.common.collect.Lists;
 import com.vaadin.event.Action.Handler;
+import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.ui.Alignment;
@@ -48,7 +49,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -62,6 +62,10 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** The available window widths. */
     public enum DialogWidth {
+
+        /** Depending on the content. */
+        content,
+
         /** The maximum width of 90% of the window width. */
         max,
 
@@ -99,6 +103,7 @@ public class CmsBasicDialog extends VerticalLayout {
     /** Extension used to regulate max height. */
     private CmsMaxHeightExtension m_maxHeightExtension;
 
+    /** The window resize listener. */
     private BrowserWindowResizeListener m_windowResizeListener;
 
     /**
@@ -165,8 +170,24 @@ public class CmsBasicDialog extends VerticalLayout {
         Window window = new Window();
         window.setModal(true);
         window.setClosable(true);
-        //TODO: check width available
+        int pageWidth = Page.getCurrent().getBrowserWindowWidth();
+        if (((width == DialogWidth.wide) && (pageWidth < 810))
+            || ((width == DialogWidth.narrow) && (pageWidth < 610))) {
+            // in case the available page width does not allow the desired width, use max
+            width = DialogWidth.max;
+        }
+        if (width == DialogWidth.max) {
+            // in case max width would result in a width very close to wide or narrow, use their static width instead of relative width
+            if ((pageWidth >= 610) && (pageWidth < 670)) {
+                width = DialogWidth.narrow;
+            } else if ((pageWidth >= 810) && (pageWidth < 890)) {
+                width = DialogWidth.wide;
+            }
+        }
         switch (width) {
+            case content:
+                // do nothing
+                break;
             case wide:
                 window.setWidth("800px");
                 break;
@@ -255,17 +276,17 @@ public class CmsBasicDialog extends VerticalLayout {
      *
      * @param window the parent window
      */
-    public void initActionHandler(Window window) {
+    public void initActionHandler(final Window window) {
 
         if (m_actionHandler != null) {
-            UI.getCurrent().addActionHandler(m_actionHandler);
+            window.addActionHandler(m_actionHandler);
             window.addCloseListener(new CloseListener() {
 
                 private static final long serialVersionUID = 1L;
 
                 public void windowClose(CloseEvent e) {
 
-                    clearActionHandler();
+                    clearActionHandler(window);
                 }
             });
         }
@@ -405,11 +426,13 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /**
      * Removes the action handler.<p>
+     *
+     * @param window the window the action handler is attached to
      */
-    void clearActionHandler() {
+    void clearActionHandler(Window window) {
 
         if (m_actionHandler != null) {
-            UI.getCurrent().removeActionHandler(m_actionHandler);
+            window.removeActionHandler(m_actionHandler);
         }
     }
 

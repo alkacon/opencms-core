@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -82,7 +82,10 @@ public class CmsDeleteDialog extends CmsBasicDialog {
     private VerticalLayout m_resourceBox;
 
     // private AbstractComponent m_container;
-
+    
+    /** Message if deleting resources is allowed or not */
+    private Label m_deleteResource;
+    
     /** Label for the links. */
     private Label m_linksLabel;
 
@@ -132,6 +135,8 @@ public class CmsDeleteDialog extends CmsBasicDialog {
             || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
         try {
             Multimap<CmsResource, CmsResource> brokenLinks = getBrokenLinks(cms, m_context.getResources());
+            m_deleteResource.setValue(
+                CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_DELETE_MULTI_CONFIRMATION_0));
             if (brokenLinks.isEmpty()) {
                 m_linksLabel.setVisible(false);
                 String noLinksBroken = CmsVaadinUtils.getMessageText(
@@ -139,6 +144,9 @@ public class CmsDeleteDialog extends CmsBasicDialog {
                 m_resourceBox.addComponent(new Label(noLinksBroken));
             } else {
                 if (!canIgnoreBrokenLinks) {
+                    m_deleteResource.setValue(
+                        CmsVaadinUtils.getMessageText(
+                            org.opencms.workplace.commons.Messages.GUI_DELETE_RELATIONS_NOT_ALLOWED_0));
                     m_okButton.setVisible(false);
                 }
                 for (CmsResource source : brokenLinks.keySet()) {

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -312,6 +312,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
         super(GalleryTabId.cms_tab_results);
         m_galleryHandler = galleryHandler;
+
         m_contextMenuHandler = new CmsResultContextMenuHandler(tabHandler);
         m_types = new HashSet<String>();
         m_hasMoreResults = false;
@@ -327,9 +328,14 @@ public class CmsResultsTab extends A_CmsListTab {
         views.put(DETAILS, Messages.get().key(Messages.GUI_VIEW_LABEL_DETAILS_0));
         views.put(SMALL, Messages.get().key(Messages.GUI_VIEW_LABEL_SMALL_ICONS_0));
         views.put(BIG, Messages.get().key(Messages.GUI_VIEW_LABEL_BIG_ICONS_0));
+        String resultViewType = m_tabHandler.getResultViewType();
+        if (!views.containsKey(resultViewType)) {
+            resultViewType = SMALL;
+        }
         m_selectView = new CmsSelectBox(views);
         m_selectView.addStyleName(DIALOG_CSS.selectboxWidth());
-        m_selectView.selectValue(SMALL);
+        m_selectView.selectValue(resultViewType);
+        selectView(resultViewType);
         addWidgetToOptions(m_selectView);
         m_selectView.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -338,6 +344,7 @@ public class CmsResultsTab extends A_CmsListTab {
                 selectView(event.getValue());
                 setScrollPosition(0);
                 onContentChange();
+                getTabHandler().setResultViewType(event.getValue());
             }
         });
     }
@@ -492,7 +499,9 @@ public class CmsResultsTab extends A_CmsListTab {
     protected void addContent(CmsGallerySearchBean searchBean) {
 
         if (searchBean.getResults() != null) {
-            addContentItems(searchBean.getResults(), false);
+            boolean showPath = SortParams.path_asc.name().equals(searchBean.getSortOrder())
+                || SortParams.path_desc.name().equals(searchBean.getSortOrder());
+            addContentItems(searchBean.getResults(), false, showPath);
         }
     }
 
@@ -500,16 +509,16 @@ public class CmsResultsTab extends A_CmsListTab {
      * Adds list items for a list of search results.<p>
      *
      * @param list the list of search results
-     *
      * @param front if true, list items will be added to the front of the list, else at the back
+     * @param showPath <code>true</code> to show the resource path in sub title
      */
-    protected void addContentItems(List<CmsResultItemBean> list, boolean front) {
+    protected void addContentItems(List<CmsResultItemBean> list, boolean front, boolean showPath) {
 
         if (front) {
             list = Lists.reverse(list);
         }
         for (CmsResultItemBean resultItem : list) {
-            addSingleResult(resultItem, front);
+            addSingleResult(resultItem, front, showPath);
         }
         if (isTilingViewAllowed()) {
             m_selectView.getElement().getStyle().clearDisplay();
@@ -526,8 +535,9 @@ public class CmsResultsTab extends A_CmsListTab {
      *
      * @param resultItem the search result
      * @param front if true, adds the list item to the front of the list, else at the back
+     * @param showPath <code>true</code> to show the resource path in sub title
      */
-    protected void addSingleResult(CmsResultItemBean resultItem, boolean front) {
+    protected void addSingleResult(CmsResultItemBean resultItem, boolean front, boolean showPath) {
 
         m_types.add(resultItem.getType());
         boolean hasPreview = m_tabHandler.hasPreview(resultItem.getType());
@@ -535,7 +545,7 @@ public class CmsResultsTab extends A_CmsListTab {
         if (!m_galleryHandler.filterDnd(resultItem)) {
             dndHandler = null;
         }
-        CmsResultListItem listItem = new CmsResultListItem(resultItem, hasPreview, dndHandler);
+        CmsResultListItem listItem = new CmsResultListItem(resultItem, hasPreview, showPath, dndHandler);
         if (resultItem.isPreset()) {
             m_preset = listItem;
         }

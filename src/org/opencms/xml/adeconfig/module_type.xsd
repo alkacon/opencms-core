@@ -19,8 +19,10 @@
 	        <xsd:element name="Order" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 	        <xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
 	        <xsd:element name="ElementView" type="OpenCmsVarLink" minOccurs="0" maxOccurs="1" />
+	        <xsd:element name="Localization" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
 	        <xsd:element name="ShowInDefaultView" type="OpenCmsBoolean" minOccurs="0" />
 	        <xsd:element name="CopyInModels" type="OpenCmsBoolean" minOccurs="0" />
+	        <xsd:element name="ElementDeleteMode" type="OpenCmsString" minOccurs="0" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -32,9 +34,11 @@
 				<layout element="TypeName" widget="org.opencms.widgets.CmsTypeComboWidget"  /> 
 				<layout element="Disabled" widget="SelectorWidget" configuration="true:%(key.disabled.true)|*false:%(key.disabled.false)|add:%(key.disabled.add)" />
 				<layout element="ElementView" widget="org.opencms.widgets.CmsElementViewSelectWidget" configuration=""/>
+				<layout element="Localization" widget="VfsFileWidget" configuration="startsite=/|startfolder=/|showsiteselector|selectabletypes=xmlvfsbundle,propertyvfsbundle|searchtypes=xmlvfsbundle,propertyvfsbundle" />
+				<layout element="ElementDeleteMode" widget="SelectorWidget" configuration="alwaysKeep:%(key.deletemode.alwaysKeep)|alwaysDelete:%(key.deletemode.alwaysDelete)|*askKeep:%(key.deletemode.askKeep)|askDelete:%(key.deletemode.askDelete)" display="singleline"/>
 			</layouts>
 			<defaults>
-				<default element="Disabled" value="False"/>
+				<default element="Disabled" value="False" />
 			</defaults>
         </xsd:appinfo>
     </xsd:annotation>

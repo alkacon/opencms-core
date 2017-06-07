@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A user principal in the OpenCms permission system.<p>
@@ -68,6 +69,15 @@ import java.util.Map;
  * @see CmsGroup
  */
 public class CmsUser extends CmsPrincipal implements Cloneable {
+
+    /** Flag indicating changed additional infos. */
+    public static final int FLAG_ADDITIONAL_INFOS = 4;
+
+    /** Flag indicating changed core data. */
+    public static final int FLAG_CORE_DATA = 8;
+
+    /** Flag indicating a changed last login date. */
+    public static final int FLAG_LAST_LOGIN = 2;
 
     /** Storage for additional user information. */
     private Map<String, Object> m_additionalInfo;
@@ -204,6 +214,42 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     }
 
     /**
+     * Checks whether the flag indicates additional info changes.<p>
+     *
+     * @param changes the changes flags
+     *
+     * @return <code>true</code> in case the additional infos changed
+     */
+    public static boolean hasChangedAdditionalInfos(int changes) {
+
+        return (changes & FLAG_ADDITIONAL_INFOS) == FLAG_ADDITIONAL_INFOS;
+    }
+
+    /**
+     * Checks whether the flag indicates core data changes.<p>
+     *
+     * @param changes the changes flags
+     *
+     * @return <code>true</code> in case the core data changed
+     */
+    public static boolean hasChangedCoreData(int changes) {
+
+        return (changes & FLAG_CORE_DATA) == FLAG_CORE_DATA;
+    }
+
+    /**
+     * Checks whether the flag indicates last login date changes.<p>
+     *
+     * @param changes the changes flags
+     *
+     * @return <code>true</code> in case the last login date changed
+     */
+    public static boolean hasChangedLastLogin(int changes) {
+
+        return (changes & FLAG_LAST_LOGIN) == FLAG_LAST_LOGIN;
+    }
+
+    /**
      * Checks if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot.<p>
      *
      * <ul>
@@ -266,7 +312,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public CmsUser clone() {
 
         return new CmsUser(
             m_id,
@@ -278,7 +324,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
             m_lastlogin,
             m_flags,
             m_dateCreated,
-            m_additionalInfo);
+            new HashMap<String, Object>(m_additionalInfo));
     }
 
     /**
@@ -331,6 +377,33 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     public String getAddress() {
 
         return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ADDRESS);
+    }
+
+    /**
+     * Returns the changes of this user compared to the previous user data.<p>
+     *
+     * @param oldUser the old user
+     *
+     * @return the changes flags
+     */
+    public int getChanges(CmsUser oldUser) {
+
+        int result = 0;
+        if (oldUser.m_lastlogin != m_lastlogin) {
+            result = result | FLAG_LAST_LOGIN;
+        }
+        if (!oldUser.m_additionalInfo.equals(m_additionalInfo)) {
+            result = result | FLAG_ADDITIONAL_INFOS;
+        }
+        if (!Objects.equals(oldUser.m_email, m_email)
+            || !Objects.equals(oldUser.m_description, m_description)
+            || !Objects.equals(oldUser.m_firstname, m_firstname)
+            || !Objects.equals(oldUser.m_lastname, m_lastname)
+            || !Objects.equals(oldUser.m_password, m_password)
+            || (oldUser.m_flags != m_flags)) {
+            result = result | FLAG_CORE_DATA;
+        }
+        return result;
     }
 
     /**

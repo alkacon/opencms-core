@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -297,9 +297,17 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             CmsObject cms = CmsFlexController.getCmsObject(request);
             try {
                 boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
-                CmsResource res = isOnline
-                ? cms.readResource(m_value)
-                : cms.readResource(m_value, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsResource res = null;
+                if (CmsUUID.isValidUUID(m_value)) {
+                    CmsUUID structureId = new CmsUUID(m_value);
+                    res = isOnline
+                    ? cms.readResource(structureId)
+                    : cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                } else {
+                    res = isOnline
+                    ? cms.readResource(m_value)
+                    : cms.readResource(m_value, CmsResourceFilter.IGNORE_EXPIRATION);
+                }
                 I_CmsFormatterBean formatter = getFormatterForType(cms, res, isOnline);
                 displayAction(
                     res,

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -420,7 +420,7 @@ public class CmsADEConfigCacheState {
             try {
                 folder = getCms().readResource(CmsResource.getParentFolder(resource.getRootPath()));
             } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+                LOG.debug(e.getLocalizedMessage(), e);
                 return false;
             }
         } else {

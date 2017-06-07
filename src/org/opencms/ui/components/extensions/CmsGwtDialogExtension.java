@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,7 +44,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsUpdateListener;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
@@ -118,7 +117,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
 
         remove();
         if (reinitUI) {
-            CmsAppWorkplaceUi.get().reload();
+            A_CmsUI.get().reload();
         }
         if (m_updateListener != null) {
             m_updateListener.onUpdate(new ArrayList<String>());
@@ -134,7 +133,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (@SuppressWarnings("unused") InterruptedException e) {
+            } catch (InterruptedException e) {
                 // ignore
             }
         }

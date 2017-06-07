@@ -1,4 +1,4 @@
-@external html-face, cmsState;
+@external html-face, cmsState, previewVisible, gwt-TabLayoutPanel;
 
 div.editorGallery{
 	box-shadow: none;
@@ -35,6 +35,10 @@ div.parentPanel div.criteriaList {
     position: absolute;
     right: 6px;
     top: 41px;
+}
+
+div.parentPanel.previewVisible > div.gwt-TabLayoutPanel{
+	visibility:hidden;
 }
 
 div.selectboxWidth {
@@ -77,10 +81,10 @@ div.paramsText {
 }
 
 div.showParams div.cmsState{
-	font-size:10px;
-	position: absolute;
-	right: 4px;
-	top: 8px;
+	font-size:10px !important;
+	position: absolute !important;
+	right: 4px !important;
+	top: 8px !important;
 }
 
 div.searchTabRow {

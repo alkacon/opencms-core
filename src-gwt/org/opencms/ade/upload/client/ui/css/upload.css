@@ -42,3 +42,44 @@
 	overflow: hidden;
 	position: relative;
 }
+
+
+
+.unzipButtonUpFace::before, .unzipButtonDownFace::before { 
+	font-family: opencms-font;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	display: inline-block;
+	line-height: 1;
+	
+	border: 1px solid value("constants.css.textColorDisabledButton");
+    border-radius: 4px;
+    padding: 1px;
+    height: 11px;
+    width: 11px;
+    font-size: 11px;
+    line-height: 11px;
+    background-color: value("constants.css.backgroundColorInfo");
+    color: inherit;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.unzipButton {
+	position: relative; 
+	bottom: 5px;
+}
+
+.unzipButtonUpFace::before { 
+	content: " ";
+	position: relative;
+	top: 2px;
+}
+
+.unzipButtonDownFace::before {
+	content: "\e916";
+}

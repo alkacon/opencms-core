@@ -92,6 +92,11 @@ div.expiredListElementOverlay{
         opacity: 0.6;
 }
 
+.expired div.expiredOverlay, div.expiredListElementOverlay {
+	pointer-events: none; 
+}
+
+
 
 div.toolbarToggle{
 	position: fixed;

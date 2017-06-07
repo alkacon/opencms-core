@@ -1,22 +1,87 @@
 @mixin o-tools {
+	.o-tools-breadcrumb{
+		$breadcrumb-background: $o-dark-background-color;
+		$breadcrumb-background-active: $o-button-blue;
+		$breadcrumb-color: $v-font-color;
+		$breadcrumb-height: $v-unit-size;
+	
+		width: 100%;
+		height: $breadcrumb-height;
+		
+		> div {
+			display: inline-block;
+			overflow: hidden;
+			border-radius: $v-border-radius;
+		}
+		a, span {
+			text-decoration: none;
+			outline: none;
+			display: block;
+			float: left;
+			font-size: $v-font-size;
+			font-weight: 600;
+			line-height: $breadcrumb-height;
+			padding: 0 10px 0 26px;
+			position: relative;
+			background: $breadcrumb-background;
+			color: $breadcrumb-color;
+			transition: all 0.5s;
+			
+			&:first-child {
+				padding-left: 13px;
+				border-radius: $v-border-radius 0 0 $v-border-radius;
+			}
+			&:last-child {
+				border-radius: 0 $v-border-radius $v-border-radius 0;
+				padding-right: 13px;
+			}
+					
+			&.o-tools-breadcrumb-active{
+				background: $breadcrumb-background-active;
+				color: white;
+				&:after {
+					background: $breadcrumb-background-active;
+				}
+			}
+			
+			&:after {
+				content: '';
+				position: absolute;
+				top: -1px; 
+				right: -($breadcrumb-height/2); /*half of square's length*/
+				width: $breadcrumb-height; 
+				height: $breadcrumb-height;
+				transform: scale(0.707) rotate(45deg);
+				z-index: 1;
+				background: $breadcrumb-background;
+				border-right: 3px solid #FAFAFD;
+				border-top: 3px solid #FAFAFD;
+				transition: all 0.5s;
+				border-radius: 0 $v-border-radius 0 50px;
+			}
+					
+			&:last-child:after {
+				content: none;
+			}
+		}
+		a:hover{
+			$background-color: $v-table-background-color or valo-table-background-color();
+		  	$bg: mix($v-focus-color, $background-color, 20%);
+		  	background-color: $bg;
+			&:after {
+				background: $bg;
+			}
+		}
+	}
+
 	.o-tools-root{
 		height: 100%;
 		width: 100%;
 		position: relative;
 		
-		.o-tools-breadcrumb{
-			height: 50px;
-			width: 100%;
-			border-bottom: 1px solid first-color(valo-border($strength: 1));
-			padding:14px 22px;
-			
-			a {
-				text-decoration: none;
-			}
-		}
 		.o-tools-container{
 			position: absolute;
-			top: 50px;
+			top: 0;
 			left: 0;
 			right: 0;
 			bottom: 0;

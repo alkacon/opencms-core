@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsHistoryResourceBean;
 import org.opencms.main.CmsException;
@@ -82,7 +83,7 @@ public class CmsValueDiff implements I_CmsDiffProvider {
         CmsResource resource1 = A_CmsAttributeDiff.readResource(cms, v1);
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource1);
         CmsMacroResolver resolver = new CmsVersionMacroResolver(v1, v2);
-        if (type instanceof CmsResourceTypeXmlContent) {
+        if ((type instanceof CmsResourceTypeXmlContent) || (type instanceof CmsResourceTypeXmlPage)) {
             CmsResource resource2 = A_CmsAttributeDiff.readResource(cms, v2);
             final Panel panel = new Panel(
                 CmsVaadinUtils.getMessageText(Messages.GUI_HISTORY_DIALOG_CONTENT_VALUE_TABLE_CAPTION_0));
@@ -142,7 +143,8 @@ public class CmsValueDiff implements I_CmsDiffProvider {
         final Component parent,
         CmsFile file1,
         CmsFile file2,
-        CmsMacroResolver macroResolver) throws CmsException {
+        CmsMacroResolver macroResolver)
+    throws CmsException {
 
         CmsXmlDocumentComparison comp = new CmsXmlDocumentComparison(cms, file1, file2);
         CmsBeanTableBuilder<CmsValueCompareBean> builder = CmsBeanTableBuilder.newInstance(

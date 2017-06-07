@@ -73,7 +73,16 @@ public final class CmsGwtConstants {
     public static final String ACTION_SELECTELEMENTVIEW = "selectelementview";
 
     /** Context menu action id. */
+    public static final String ACTION_SHOWLOCALE = "showlocale";
+
+    /** Context menu action id. */
     public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
+
+    /** Context menu action id. */
+    public static final String ACTION_VIEW_ONLINE = "viewonline";
+
+    /** Name of the Javascript callback used to handle property changes triggered from the locale compare view. */
+    public static final String CALLBACK_HANDLE_CHANGED_PROPERTIES = "cmsHandleChangedProperties";
 
     /** Javascript function name for showing the locale compare view. */
     public static final String CALLBACK_REFRESH_LOCALE_COMPARISON = "cmsRefreshLocaleComparison";
@@ -105,11 +114,17 @@ public final class CmsGwtConstants {
     /** Id of the element ussed to  display the sitemap header from Vaadin code. */
     public static final String ID_LOCALE_HEADER_CONTAINER = "locale-header-container";
 
+    /** Name of the Javascript callback used to open the locale comparison view. */
+    public static final String LOCALECOMPARE_EDIT_PROPERTIES = "cmsLocaleCompareEditProperties";
+
     /** Parameter for the button left position. */
     public static final String PARAM_BUTTON_LEFT = "__buttonLeft";
 
     /** Parameter to disable direct edit. */
     public static final String PARAM_DISABLE_DIRECT_EDIT = "__disableDirectEdit";
+
+    /** Name of the request parameter used to store the redirect target after login. */
+    public static final String PARAM_LOGIN_REDIRECT = "loginRedirect";
 
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
@@ -143,6 +158,9 @@ public final class CmsGwtConstants {
 
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
+
+    /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
+    public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
 
     /**
      * Hide constructor.<p>

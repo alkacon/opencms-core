@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -127,6 +127,7 @@ public class CmsBinaryPreviewContent extends Composite {
             : resourceInfo.getTitle());
         infoBean.setSubTitle(resourceInfo.getResourcePath());
         infoBean.setResourceType(resourceInfo.getResourceType());
+        infoBean.setDetailResourceType(resourceInfo.getDetailResourceType());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_SIZE_0), resourceInfo.getSize());
         if (resourceInfo.getDescription() != null) {
             infoBean.addAdditionalInfo(

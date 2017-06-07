@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,17 +42,17 @@ import java.util.Locale;
  */
 public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
 
-    /** The parent item id. */
-    private String m_parentId;
+    /** The workplace action. */
+    private I_CmsWorkplaceAction m_action;
 
     /** The order. */
     private float m_order;
 
+    /** The parent item id. */
+    private String m_parentId;
+
     /** The priority. */
     private int m_priority;
-
-    /** The workplace action. */
-    private I_CmsWorkplaceAction m_action;
 
     /**
      * Creates a new instance.<p>
@@ -133,6 +133,16 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
     public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
         return m_action.getVisibility(context);
+    }
+
+    /**
+     * Returns the workplace action.<p>
+     *
+     * @return the workplace action
+     */
+    public I_CmsWorkplaceAction getWorkplaceAction() {
+
+        return m_action;
     }
 
     /**

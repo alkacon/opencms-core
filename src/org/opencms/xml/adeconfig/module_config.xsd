@@ -28,7 +28,7 @@
 				<tab element="Property" name="TabPropertyConfiguration" collapse="false" />
 				<tab element="FunctionRef" name="TabFunctions" collapse="false" />
 			</tabs>  			
-			<messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.ModuleConfiguration:label.SitemapConfiguration" />
+			<messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.ModuleConfiguration:label.SitemapConfiguration|label.ModuleType:label.ADEType" />
         </xsd:appinfo>        
     </xsd:annotation>
     

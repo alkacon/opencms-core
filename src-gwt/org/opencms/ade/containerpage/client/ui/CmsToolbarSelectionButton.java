@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,17 +78,7 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarOptionButton {
     @Override
     public void onToolbarClick() {
 
-        boolean active = isDown();
-
-        if (active) {
-            getHandler().deactivateCurrentButton();
-            getHandler().setActiveButton(this);
-            onToolbarActivate();
-            m_handler.resetEditableListButtons();
-            m_handler.reInitInlineEditing();
-        } else {
-            getHandler().deactivateCurrentButton();
-        }
+        getHandler().deactivateCurrentButton();
         getHandler().showPreview(getElement().getAbsoluteLeft());
     }
 }

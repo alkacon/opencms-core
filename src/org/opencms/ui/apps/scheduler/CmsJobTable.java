@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,6 +38,8 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -113,17 +115,12 @@ public class CmsJobTable extends Table implements ColumnGenerator {
     /** Bean container for the table. */
     private BeanItemContainer<CmsJobBean> m_beanContainer = new BeanItemContainer<CmsJobBean>(CmsJobBean.class);
 
-    /** Class to call for editing jobs. */
-    private I_CmsJobEditHandler m_jobEditHandler;
-
     /**
      * Creates a new instance.<p>
      */
     public CmsJobTable() {
 
         setContainerDataSource(m_beanContainer);
-
-        reloadJobs();
 
         setVisibleColumns();
         for (Action action : Action.values()) {
@@ -217,12 +214,22 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                             writeChangedJob(jobClone);
                             break;
                         case copy:
-                            jobClone.setActive(job.isActive());
-                            jobClone.clearId();
-                            String title = CmsVaadinUtils.getMessageText(
-                                org.opencms.ui.Messages.GUI_SCHEDULER_TITLE_COPY_1,
-                                jobClone.getJobName());
-                            m_jobEditHandler.editJob(jobClone, title);
+                            String stateCopy = CmsScheduledJobsAppConfig.APP_ID + "/" + CmsJobManagerApp.PATH_NAME_EDIT;
+                            stateCopy = A_CmsWorkplaceApp.addParamToState(
+                                stateCopy,
+                                CmsJobManagerApp.PARAM_JOB_ID,
+                                job.getId());
+                            stateCopy = A_CmsWorkplaceApp.addParamToState(
+                                stateCopy,
+                                CmsJobManagerApp.PARAM_COPY,
+                                Boolean.TRUE.toString());
+                            CmsAppWorkplaceUi.get().getNavigator().navigateTo(stateCopy);
+                            //                            jobClone.setActive(job.isActive());
+                            //                            jobClone.clearId();
+                            //                            String title = CmsVaadinUtils.getMessageText(
+                            //                                org.opencms.ui.Messages.GUI_SCHEDULER_TITLE_COPY_1,
+                            //                                jobClone.getJobName());
+                            //                            m_jobEditHandler.editJob(jobClone, title);
 
                             break;
 
@@ -234,28 +241,37 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                                     job.getJobName()),
                                 new Runnable() {
 
-                                public void run() {
+                                    public void run() {
 
-                                    try {
-                                        OpenCms.getScheduleManager().unscheduleJob(A_CmsUI.getCmsObject(), job.getId());
-                                        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
-                                        reloadJobs();
-                                    } catch (CmsRoleViolationException e) {
-                                        CmsErrorDialog.showErrorDialog(e);
+                                        try {
+                                            OpenCms.getScheduleManager().unscheduleJob(
+                                                A_CmsUI.getCmsObject(),
+                                                job.getId());
+                                            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+                                            reloadJobs();
+                                        } catch (CmsRoleViolationException e) {
+                                            CmsErrorDialog.showErrorDialog(e);
+                                        }
+
                                     }
-
-                                }
-                            });
+                                });
                             break;
 
                         case edit:
-                            if (m_jobEditHandler == null) {
-                                break;
-                            }
-                            m_jobEditHandler.editJob(
-                                job,
-                                CmsVaadinUtils.getMessageText(
-                                    org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
+                            String stateEdit = CmsScheduledJobsAppConfig.APP_ID + "/" + CmsJobManagerApp.PATH_NAME_EDIT;
+                            stateEdit = A_CmsWorkplaceApp.addParamToState(
+                                stateEdit,
+                                CmsJobManagerApp.PARAM_JOB_ID,
+                                job.getId());
+                            CmsAppWorkplaceUi.get().getNavigator().navigateTo(stateEdit);
+
+                            //                            if (m_jobEditHandler == null) {
+                            //                                break;
+                            //                            }
+                            //                            m_jobEditHandler.editJob(
+                            //                                job,
+                            //                                CmsVaadinUtils.getMessageText(
+                            //                                    org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
 
                             break;
                         case run:
@@ -266,12 +282,12 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                                     job.getJobName()),
                                 new Runnable() {
 
-                                public void run() {
+                                    public void run() {
 
-                                    CmsScheduleManager scheduler = OpenCms.getScheduleManager();
-                                    scheduler.executeDirectly(job.getId());
-                                }
-                            });
+                                        CmsScheduleManager scheduler = OpenCms.getScheduleManager();
+                                        scheduler.executeDirectly(job.getId());
+                                    }
+                                });
 
                             break;
                         default:
@@ -305,16 +321,6 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         sort();
         refreshRowCache();
 
-    }
-
-    /**
-     * Sets the job edit handler.<p>
-     *
-     * @param handler the job edit handler
-     */
-    public void setJobEditHandler(I_CmsJobEditHandler handler) {
-
-        m_jobEditHandler = handler;
     }
 
     /**

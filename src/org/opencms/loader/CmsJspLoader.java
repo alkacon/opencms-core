@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -44,6 +44,7 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspTagEnableAde;
+import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsEvent;
@@ -269,7 +270,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res) throws ServletException, IOException {
+        HttpServletResponse res)
+    throws ServletException, IOException {
 
         // get the current Flex controller
         CmsFlexController controller = CmsFlexController.getController(req);
@@ -511,6 +513,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 }
             }
 
+            // For now, disable flex caching when the __json parameter is used
+            if (CmsJsonPartFilter.isJsonRequest(req)) {
+                streaming = true;
+                bypass = true;
+            }
+
             // get the Flex controller
             CmsFlexController controller = getController(cms, file, req, res, streaming, true);
             Lock lock = m_purgeLock.readLock();
@@ -547,6 +555,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      *
      * @return the transformed JSP text
      */
+    @Deprecated
     public String processTaglibAttributes(String content) {
 
         // matches a whole page directive

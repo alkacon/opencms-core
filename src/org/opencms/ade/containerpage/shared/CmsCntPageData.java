@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -40,6 +41,18 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @since 8.0.0
  */
 public final class CmsCntPageData implements IsSerializable {
+
+    /** The element delte modes. */
+    public enum ElementDeleteMode {
+        /** Don't ask, delete no longer referenced element resources. */
+        alwaysDelete,
+        /** Don't ask, keep no longer referenced element resources. */
+        alwaysKeep,
+        /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
+        askDelete,
+        /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
+        askKeep
+    }
 
     /** Enum representing the different ways dropping elements on a container page can be handled. */
     public enum ElementReuseMode {
@@ -87,9 +100,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** The editor back-link URI. */
     private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
 
-    /** The xml-content editor URI. */
-    private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
-
     /** The detail view container resource path. */
     private String m_detailContainerPage;
 
@@ -117,6 +127,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The content locale. */
     private String m_locale;
 
+    /** The locale link beans. */
+    private Map<String, CmsLocaleLinkBean> m_localeLinkBeans;
+
     /** The lock information, if the page is locked by another user. */
     private String m_lockInfo;
 
@@ -125,6 +138,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The reason why the user is not able to edit the current container page. */
     private String m_noEditReason;
+
+    /** The online link to the current page. */
+    private String m_onlineLink;
 
     /** The original request parameters. */
     private String m_requestParams;
@@ -147,9 +163,19 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** The model group base element id. */
+    private String m_modelGroupEmenetId;
+
+    /** The app title to display in the toolbar. */
+    private String m_appTitle;
+
+    /** The element delete mode. */
+    private ElementDeleteMode m_deleteMode;
+
     /**
      * Constructor.<p>
      *
+     * @param onlineLink the online link to the current page
      * @param noEditReason the reason why the current user is not allowed to edit the current container page
      * @param requestParams the original request parameters
      * @param sitemapUri the current sitemap URI
@@ -165,11 +191,16 @@ public final class CmsCntPageData implements IsSerializable {
      * @param elementViews the element views
      * @param elementView the current element view
      * @param reuseMode the element reuse mode
+     * @param deleteMode the element delete mode
      * @param isModelPage true if this is a model page
      * @param isModelGroup true if the page is used for model groups
+     * @param modelGroupEmenetId the model group base element id
      * @param mainLocale the main locale to this page in case it is part of a locale group
+     * @param localeLinkBeans beans for links to other pages in the locale group
+     * @param appTitle the title to display in the toolbar
      */
     public CmsCntPageData(
+        String onlineLink,
         String noEditReason,
         String requestParams,
         String sitemapUri,
@@ -185,10 +216,14 @@ public final class CmsCntPageData implements IsSerializable {
         List<CmsElementViewInfo> elementViews,
         CmsElementViewInfo elementView,
         ElementReuseMode reuseMode,
+        ElementDeleteMode deleteMode,
         boolean isModelPage,
         boolean isModelGroup,
-        String mainLocale) {
-
+        String modelGroupEmenetId,
+        String mainLocale,
+        Map<String, CmsLocaleLinkBean> localeLinkBeans,
+        String appTitle) {
+        m_onlineLink = onlineLink;
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
         m_sitemapUri = sitemapUri;
@@ -204,9 +239,13 @@ public final class CmsCntPageData implements IsSerializable {
         m_elementViews = elementViews;
         m_elementView = elementView;
         m_reuseMode = reuseMode;
+        m_deleteMode = deleteMode;
         m_isModelPage = isModelPage;
         m_isModelGroup = isModelGroup;
+        m_modelGroupEmenetId = modelGroupEmenetId;
         m_mainLocale = mainLocale;
+        m_localeLinkBeans = localeLinkBeans;
+        m_appTitle = appTitle;
     }
 
     /**
@@ -215,6 +254,16 @@ public final class CmsCntPageData implements IsSerializable {
     protected CmsCntPageData() {
 
         // empty
+    }
+
+    /**
+     * Gets the title to display in the toolbar.<p>
+     *
+     * @return the title for the toolbar
+     */
+    public String getAppTitle() {
+
+        return m_appTitle;
     }
 
     /**
@@ -238,6 +287,16 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Returns the element delete mode.<p>
+     *
+     * @return the element delete mode
+     */
+    public ElementDeleteMode getDeleteMode() {
+
+        return m_deleteMode;
+    }
+
+    /**
      * Returns the detail view container resource path.<p>
      *
      * @return the detail view container resource path
@@ -255,16 +314,6 @@ public final class CmsCntPageData implements IsSerializable {
     public CmsUUID getDetailId() {
 
         return m_detailId;
-    }
-
-    /**
-     * Returns the xml-content editor URI.<p>
-     *
-     * @return the xml-content editor URI
-     */
-    public String getEditorUri() {
-
-        return EDITOR_URI;
     }
 
     /**
@@ -308,6 +357,18 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Gets the locale link beans, with localized language names as keys.<p>
+     *
+     * The beans represent links to different locale variants of this page.
+     *
+     * @return the locale link bean map for this
+     */
+    public Map<String, CmsLocaleLinkBean> getLocaleLinkBeans() {
+
+        return m_localeLinkBeans;
+    }
+
+    /**
      * Returns the lock information, if the page is locked by another user.<p>
      *
      * @return the lock infomation
@@ -328,6 +389,16 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Returns the model group base element id.<p>
+     *
+     * @return the model group base element id
+     */
+    public String getModelGroupElementId() {
+
+        return m_modelGroupEmenetId;
+    }
+
+    /**
      * Returns the no-edit reason.<p>
      *
      * @return the no-edit reason, if empty editing is allowed
@@ -335,6 +406,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getNoEditReason() {
 
         return m_noEditReason;
+    }
+
+    /**
+     * Returns the online link to the current page.<p>
+     *
+     * @return the online link to the current page
+     */
+    public String getOnlineLink() {
+
+        return m_onlineLink;
     }
 
     /**

@@ -9,8 +9,24 @@
 @import "loading-spinner";
 @import "permissions";
 @import "additional-bundleeditor";
+@import "codemirror";
 
 @include opencmsfont;
+
+
+/* additionally to the Open Sans font faces defined by the Vaadin Valo theme, add the 'Bold' variant as well. */
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 700;
+    src: url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix") format("embedded-opentype"), url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.woff") format("woff"), url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 800;
+    src: url("../valo/fonts/open-sans/OpenSans-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("../valo/fonts/open-sans/OpenSans-Bold-webfont.woff") format("woff"), url("../valo/fonts/open-sans/OpenSans-Bold-webfont.ttf") format("truetype");
+}
 
 .opencms {
    @include opencms;
@@ -23,11 +39,53 @@
    @include o-loading-spinner;
    @include o-permissions;
    @include o-table-bundleeditor;
+   @include o-codemirror;
    
    /* Embedded dialogs require the UI to have a transparent background. */
    &.cmsembeddeddialogsui.v-app, &.cmsembeddeddialogsui.v-app-loading {
 		background: transparent;
    }
+}
+/* due to a bug in the Vaadin Sass compiler, media queries only work on the top most level of the CSS */
+@media (max-width:500px) {
+	.opencms .CodeMirror-dialog {
+		div.CodeMirror-shortcutinfo {
+			display: none;
+		}
+		input {
+			width:90% !important;
+		}
+	}
+}
+
+@media (min-width:501px) and (max-width:800px){
+	.opencms .CodeMirror-dialog {
+		div.CodeMirror-shortcutinfo {
+			width: 40%;
+			span{
+				width: 45%;
+				&.col3, &.col2{
+					display:none;
+				}
+			}
+		}
+		input {
+			width:55% !important;
+		}
+	}
+}
+@media (min-width:801px) and (max-width:1200px){
+	.opencms .CodeMirror-dialog .CodeMirror-shortcutinfo span{
+		width: 45%;
+		&.col3{
+			display:none;
+		}
+	}
+}
+@media (min-width: 1201px){
+	.opencms .CodeMirror-dialog .CodeMirror-shortcutinfo span{
+		width: 30%;
+	}
 }
 
 html {

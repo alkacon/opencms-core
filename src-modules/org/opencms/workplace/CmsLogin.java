@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -211,7 +211,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("&copy; 2002 - 2015 Alkacon Software GmbH. ");
+        html.append("&copy; 2002 - 2015 Alkacon Software GmbH &amp; Co. KG. ");
         html.append(Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
         html.append("</div>\n");
         return html.toString();

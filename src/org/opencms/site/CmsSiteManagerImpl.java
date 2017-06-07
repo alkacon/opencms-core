@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -108,17 +108,17 @@ public final class CmsSiteManagerImpl {
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
 
+    /** Temporary store for site parameter values. */
+    private SortedMap<String, String> m_siteParams;
+
     /** Maps site roots to sites. */
     private Map<String, CmsSite> m_siteRootSites;
 
-    /** The workplace server. */
-    private String m_workplaceServer;
+    /** The workplace site matchers. */
+    private List<CmsSiteMatcher> m_workplaceMatchers;
 
-    /** The site matcher that matches the workplace site. */
-    private CmsSiteMatcher m_workplaceSiteMatcher;
-
-    /** Temporary store for site parameter values. */
-    private SortedMap<String, String> m_siteParams;
+    /** The workpace servers. */
+    private List<String> m_workplaceServers;
 
     /**
      * Creates a new CmsSiteManager.<p>
@@ -131,6 +131,8 @@ public final class CmsSiteManagerImpl {
         m_aliases = new ArrayList<CmsSiteMatcher>();
         m_siteParams = new TreeMap<String, String>();
         m_additionalSiteRoots = new ArrayList<String>();
+        m_workplaceServers = new ArrayList<String>();
+        m_workplaceMatchers = new ArrayList<CmsSiteMatcher>();
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SITE_CONFIG_0));
@@ -304,6 +306,21 @@ public final class CmsSiteManagerImpl {
         m_siteRootSites.put(site.getSiteRoot(), site);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
+        }
+    }
+
+    /**
+     * Adds a workplace server, this is only allowed during configuration.<p>
+     *
+     * @param workplaceServer the workplace server
+     */
+    public void addWorkplaceServer(String workplaceServer) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }
+        if (!m_workplaceServers.contains(workplaceServer)) {
+            m_workplaceServers.add(workplaceServer);
         }
     }
 
@@ -719,7 +736,17 @@ public final class CmsSiteManagerImpl {
      */
     public String getWorkplaceServer() {
 
-        return m_workplaceServer;
+        return m_workplaceServers.isEmpty() ? null : m_workplaceServers.get(0);
+    }
+
+    /**
+     * Returns the configured worklace servers.<p>
+     *
+     * @return the workplace servers
+     */
+    public List<String> getWorkplaceServers() {
+
+        return Collections.unmodifiableList(m_workplaceServers);
     }
 
     /**
@@ -729,7 +756,7 @@ public final class CmsSiteManagerImpl {
      */
     public CmsSiteMatcher getWorkplaceSiteMatcher() {
 
-        return m_workplaceSiteMatcher;
+        return m_workplaceMatchers.isEmpty() ? null : m_workplaceMatchers.get(0);
     }
 
     /**
@@ -796,14 +823,16 @@ public final class CmsSiteManagerImpl {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
                 }
             }
-            m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
-            if (CmsLog.INIT.isInfoEnabled()) {
-                if (m_workplaceSiteMatcher != null) {
-                    CmsLog.INIT.info(
-                        Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, m_workplaceSiteMatcher));
-                } else {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
+            if (!m_workplaceServers.isEmpty()) {
+                for (String server : m_workplaceServers) {
+                    CmsSiteMatcher matcher = new CmsSiteMatcher(server);
+                    m_workplaceMatchers.add(matcher);
+                    if (CmsLog.INIT.isInfoEnabled()) {
+                        CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, matcher));
+                    }
                 }
+            } else if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
             }
 
             // set site lists to unmodifiable
@@ -836,7 +865,7 @@ public final class CmsSiteManagerImpl {
         boolean result = m_siteMatcherSites.get(matcher) != null;
         if (!result) {
             // try to match the workplace site
-            result = (m_workplaceSiteMatcher != null) && m_workplaceSiteMatcher.equals(matcher);
+            result = isWorkplaceRequest(matcher);
         }
         return result;
     }
@@ -890,7 +919,7 @@ public final class CmsSiteManagerImpl {
      */
     public boolean isWorkplaceRequest(CmsSiteMatcher matcher) {
 
-        return (m_workplaceSiteMatcher != null) && m_workplaceSiteMatcher.equals(matcher);
+        return m_workplaceMatchers.contains(matcher);
     }
 
     /**
@@ -1031,22 +1060,6 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Sets the workplace server, this is only allowed during configuration.<p>
-     *
-     * If this method is called after the configuration is finished,
-     * a <code>RuntimeException</code> is thrown.<p>
-     *
-     * @param workplaceServer the workplace server to set
-     */
-    public void setWorkplaceServer(String workplaceServer) {
-
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
-        }
-        m_workplaceServer = workplaceServer;
-    }
-
-    /**
      * Returns true if the path starts with the shared folder path.<p>
      *
      * @param path the path to check
@@ -1074,12 +1087,6 @@ public final class CmsSiteManagerImpl {
         CmsObject clone = OpenCms.initCmsObject(cms);
         clone.getRequestContext().setSiteRoot("");
 
-        // set the wp server
-        CmsSiteMatcher matcher = new CmsSiteMatcher(workplaceServer);
-        if (!OpenCms.getSiteManager().isMatching(matcher)) {
-            throw new CmsException(Messages.get().container(Messages.ERR_SITE_NOT_CONFIGURED_1, workplaceServer));
-        }
-
         // set the shared folder
         if ((sharedFolder == null)
             || sharedFolder.equals("")
@@ -1093,7 +1100,6 @@ public final class CmsSiteManagerImpl {
 
         m_frozen = false;
         setDefaultUri(clone.readResource(defaulrUri).getRootPath());
-        setWorkplaceServer(workplaceServer);
         setSharedFolder(clone.readResource(sharedFolder).getRootPath());
         m_frozen = true;
     }

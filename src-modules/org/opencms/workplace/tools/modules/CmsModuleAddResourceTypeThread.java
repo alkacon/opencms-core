@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.module.Messages;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.content.CmsVfsBundleLoaderXml;
@@ -229,16 +230,23 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
      *
      * @param messages the messages
      * @param propertiesFile the properties file
+     * @param forcePropertyFileEncoding flag, indicating if encoding {@link #PROPERTIES_ENCODING} should be forced
      *
      * @throws CmsException if writing the properties fails
      * @throws UnsupportedEncodingException in case of encoding issues
      */
-    private void addMessagesToPropertiesFile(Map<String, String> messages, CmsFile propertiesFile)
+    private void addMessagesToPropertiesFile(
+        Map<String, String> messages,
+        CmsFile propertiesFile,
+        boolean forcePropertyFileEncoding)
     throws CmsException, UnsupportedEncodingException {
 
         lockTemporary(propertiesFile);
+        String encoding = forcePropertyFileEncoding
+        ? PROPERTIES_ENCODING
+        : CmsFileUtil.getEncoding(getCms(), propertiesFile);
         StringBuffer contentBuffer = new StringBuffer();
-        contentBuffer.append(new String(propertiesFile.getContents(), PROPERTIES_ENCODING));
+        contentBuffer.append(new String(propertiesFile.getContents(), encoding));
         for (Entry<String, String> entry : messages.entrySet()) {
             contentBuffer.append("\n");
             contentBuffer.append(entry.getKey());
@@ -246,7 +254,7 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
             contentBuffer.append(entry.getValue());
         }
         contentBuffer.append("\n");
-        propertiesFile.setContents(contentBuffer.toString().getBytes(PROPERTIES_ENCODING));
+        propertiesFile.setContents(contentBuffer.toString().getBytes(encoding));
         getCms().writeFile(propertiesFile);
     }
 
@@ -311,35 +319,48 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
             setting.setTitleKey(key);
         }
         if (!messages.isEmpty()) {
+            // add the messages to the module's workplace bundle
+
+            //1. check if the bundle exists as raw Java bundle
             String workplacePropertiesFile = CmsStringUtil.joinPaths(
                 moduleFolder,
                 CmsModulesEditBase.PATH_CLASSES,
                 m_resInfo.getModuleName().replace(".", "/"),
                 PROPERTIES_FILE_NAME);
             if (cms.existsResource(workplacePropertiesFile)) {
-                addMessagesToPropertiesFile(messages, cms.readFile(workplacePropertiesFile));
+                addMessagesToPropertiesFile(messages, cms.readFile(workplacePropertiesFile), true);
             } else {
+                //2. check if the bundle exists as XML bundle
                 String vfsBundleFileName = CmsStringUtil.joinPaths(
                     moduleFolder,
                     PATH_I18N,
                     m_resInfo.getModuleName() + SUFFIX_BUNDLE_FILE);
-                CmsFile vfsBundle;
+                OpenCms.getLocaleManager();
                 if (cms.existsResource(vfsBundleFileName)) {
-                    vfsBundle = cms.readFile(vfsBundleFileName);
+                    addMessagesToVfsBundle(messages, cms.readFile(vfsBundleFileName));
                 } else {
-                    String bundleFolder = CmsStringUtil.joinPaths(moduleFolder, PATH_I18N);
-                    if (!cms.existsResource(bundleFolder)) {
-                        cms.createResource(bundleFolder, CmsResourceTypeFolder.getStaticTypeId());
+                    //3. check if the bundle exists as property bundle
+                    // we always write to the default locale
+                    String propertyBundleFileName = vfsBundleFileName + "_" + CmsLocaleManager.getDefaultLocale();
+                    if (!cms.existsResource(propertyBundleFileName)) {
+                        //if non of the checked bundles exist, create one.
+                        String bundleFolder = CmsStringUtil.joinPaths(moduleFolder, PATH_I18N);
+                        if (!cms.existsResource(bundleFolder)) {
+                            cms.createResource(
+                                bundleFolder,
+                                OpenCms.getResourceManager().getResourceType(
+                                    CmsResourceTypeFolder.getStaticTypeName()));
+                        }
+                        CmsResource res = cms.createResource(
+                            propertyBundleFileName,
+                            OpenCms.getResourceManager().getResourceType(CmsVfsBundleManager.TYPE_PROPERTIES_BUNDLE),
+                            null,
+                            null);
+                        cms.writeResource(res);
                     }
-                    CmsResource res = cms.createResource(
-                        vfsBundleFileName,
-                        OpenCms.getResourceManager().getResourceType(CmsVfsBundleManager.TYPE_XML_BUNDLE).getTypeId(),
-                        null,
-                        null);
-                    cms.writeResource(res);
-                    vfsBundle = cms.readFile(res);
+                    addMessagesToPropertiesFile(messages, cms.readFile(propertyBundleFileName), false);
                 }
-                addMessagesToVfsBundle(messages, vfsBundle);
+
             }
         }
     }

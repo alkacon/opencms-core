@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -250,6 +250,9 @@ public final class Messages {
     public static final String GUI_SELECT_ELEMENT_VIEW_0 = "GUI_SELECT_ELEMENT_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_ONLINE_0 = "GUI_VIEW_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_FORMATTER_LABEL_0 = "GUI_SELECT_FORMATTER_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
@@ -290,6 +293,9 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOW_LOCALE_0 = "GUI_SHOW_LOCALE_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

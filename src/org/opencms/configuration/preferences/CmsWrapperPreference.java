@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -126,11 +126,11 @@ public class CmsWrapperPreference implements I_CmsPreference {
     }
 
     /**
-     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled()
+     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled(CmsObject)
      */
-    public boolean isDisabled() {
+    public boolean isDisabled(CmsObject cms) {
 
-        return m_wrappedPreference.isDisabled();
+        return m_wrappedPreference.isDisabled(cms);
     }
 
     /**

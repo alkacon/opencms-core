@@ -1,4 +1,52 @@
+@mixin o-verticalmenu($primary-stylename: o-verticalmenu) {
+	.#{$primary-stylename}{
+
+	  .#{$primary-stylename}-menuitem {
+	    display: block;
+	    @include valo-selection-item-style;
+	    padding-left: $v-selection-item-padding-horizontal;
+	    padding-right: $v-unit-size;
+	    position: relative;
+	  }
+	  
+	  &.#{$primary-stylename}-border-top > div:first-child:before{
+	  	display: block;
+	  }
+
+	  .#{$primary-stylename}-menuitem:hover {
+	    @include valo-selection-item-selected-style;
+	  }
+	
+	  .#{$primary-stylename}-separator {
+	    display: block;
+	    margin: $v-selection-overlay-padding-vertical 0;
+	    height: 0;
+	    overflow: hidden;
+	    border-bottom: valo-border($color: $v-overlay-background-color, $strength: 0.5);
+	    @if first-number($v-border) == 0 {
+	      border-bottom-width: 1px;
+	    }
+	  }
+	
+	  [class*="checked"] .#{$primary-stylename}-menuitem-caption:before {
+	    @include valo-menubar-checked-icon-style;
+	    position: absolute;
+	    left: $v-selection-item-padding-horizontal;
+	  }
+	
+	  [class*="unchecked"] .#{$primary-stylename}-menuitem-caption:before {
+	    content: "";
+	  }
+	
+	  [class*="disabled"] {
+	    cursor: default;
+	  }
+	}
+}
+
 @mixin o-contextmenu {
+
+	@include o-verticalmenu;
 	
 	.v-context-menu-container{
 		@include valo-selection-overlay-style;
@@ -15,8 +63,11 @@
 	.v-context-menu-item-basic, .v-context-menu-item-basic-submenu, .v-menubar-menuitem {
 		color: $v-font-color;
 	}
+	.v-popupview-popup-o-user-info div.v-menubar-submenu {
+		width: 100%;
+	}
 	
-	.v-context-menu, div.v-menubar-submenu {
+	.v-context-menu, div.v-menubar-submenu, div.o-verticalmenu {
 		float: left;
 		
 		> div, > span {
@@ -35,8 +86,11 @@
 			float: left;
 			clear: left;
 		  	@include valo-selection-item-style;
+		  	&.bold{
+		  		font-weight: 800;
+		  	}
 		}
-		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu, .v-menubar-menuitem {
+		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu, .v-menubar-menuitem, .o-verticalmenu-menuitem {
 			padding-top: 2px;
 			padding-bottom: 2px;
 			font-size: $v-font-size--large;

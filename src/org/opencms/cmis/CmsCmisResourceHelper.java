@@ -254,7 +254,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             String principalName = getAcePrincipalName(cms, principalId);
             AccessControlEntryImpl cmisAce = new AccessControlEntryImpl();
             AccessControlPrincipalDataImpl cmisPrincipal = new AccessControlPrincipalDataImpl();
-            cmisPrincipal.setPrincipalId(principalName);
+            cmisPrincipal.setId(principalName);
             cmisAce.setPrincipal(cmisPrincipal);
             cmisAce.setPermissions(onlyBasic ? getCmisPermissions(ace) : getNativePermissions(ace));
             cmisAce.setDirect(isDirect);
@@ -293,7 +293,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             addAction(aas, Action.CAN_GET_OBJECT_PARENTS, !isRoot);
             addAction(aas, Action.CAN_GET_PROPERTIES, true);
             addAction(aas, Action.CAN_UPDATE_PROPERTIES, !isReadOnly);
-            addAction(aas, Action.CAN_MOVE_OBJECT, !isReadOnly);
+            addAction(aas, Action.CAN_MOVE_OBJECT, !isReadOnly && !isRoot);
             addAction(aas, Action.CAN_DELETE_OBJECT, !isReadOnly && !isRoot);
             if (isFolder) {
                 addAction(aas, Action.CAN_GET_DESCENDANTS, true);
@@ -340,7 +340,8 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
         String renditionFilter,
         boolean includeAllowableActions,
         boolean includeAcl,
-        IncludeRelationships includeRelationships) throws CmsException {
+        IncludeRelationships includeRelationships)
+    throws CmsException {
 
         ObjectDataImpl result = new ObjectDataImpl();
         ObjectInfoImpl objectInfo = new ObjectInfoImpl();

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,10 +37,13 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -54,13 +57,18 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.filter.Or;
+import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The projects table.<p>
@@ -75,17 +83,44 @@ public class CmsProjectsTable extends Table {
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
-        public void executeAction(Set<CmsUUID> data) {
+        public void executeAction(final Set<CmsUUID> data) {
 
-            for (CmsUUID projectId : data) {
-                try {
-                    A_CmsUI.getCmsObject().deleteProject(projectId);
-                    CmsAppWorkplaceUi.get().reload();
-                } catch (CmsException e) {
-                    LOG.error("Error deleting project " + projectId, e);
-                    displayException(e);
+            String message;
+            if (data.size() == 1) {
+                Item item = m_container.getItem(data.iterator().next());
+                message = CmsVaadinUtils.getMessageText(
+                    Messages.GUI_PROJECTS_CONFIRM_DELETE_PROJECT_1,
+                    item.getItemProperty(PROP_NAME).getValue());
+            } else {
+                message = "";
+                for (CmsUUID id : data) {
+                    if (message.length() > 0) {
+                        message += ", ";
+                    }
+                    Item item = m_container.getItem(id);
+                    message += item.getItemProperty(PROP_NAME).getValue();
                 }
+                message = CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_CONFIRM_DELETE_PROJECTS_1, message);
             }
+
+            CmsConfirmationDialog.show(
+                CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DELETE_0),
+                message,
+                new Runnable() {
+
+                    public void run() {
+
+                        for (CmsUUID projectId : data) {
+                            try {
+                                A_CmsUI.getCmsObject().deleteProject(projectId);
+                                CmsAppWorkplaceUi.get().reload();
+                            } catch (CmsException e) {
+                                LOG.error("Error deleting project " + projectId, e);
+                                displayException(e);
+                            }
+                        }
+                    }
+                });
         }
 
         /**
@@ -191,7 +226,8 @@ public class CmsProjectsTable extends Table {
     /**
      * The show project files context menu entry.<p>
      */
-    class ShowFilesEntry implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>> {
+    class ShowFilesEntry
+    implements I_CmsSimpleContextMenuEntry<Set<CmsUUID>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
@@ -202,6 +238,14 @@ public class CmsProjectsTable extends Table {
             m_manager.openSubView(
                 A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_FILES, "projectId", id.toString()),
                 true);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles#getStyles()
+         */
+        public String getStyles() {
+
+            return ValoTheme.LABEL_BOLD;
         }
 
         /**
@@ -270,20 +314,23 @@ public class CmsProjectsTable extends Table {
         }
     }
 
-    /** The logger for this class. */
-    protected static Log LOG = CmsLog.getLog(CmsProjectsTable.class.getName());
+    /** Project date created property. */
+    public static final String PROP_DATE_CREATED = "dateCreated";
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 1540265836332964510L;
+    /** Project description property. */
+    public static final String PROP_DESCRIPTION = "descrition";
+
+    /** Project icon property. */
+    public static final String PROP_ICON = "icon";
 
     /** Project id property. */
     public static final String PROP_ID = "id";
 
+    /** Project manager property. */
+    public static final String PROP_MANAGER = "manager";
+
     /** Project name property. */
     public static final String PROP_NAME = "name";
-
-    /** Project description property. */
-    public static final String PROP_DESCRIPTION = "descrition";
 
     /** Project org unit property. */
     public static final String PROP_ORG_UNIT = "orgUnit";
@@ -291,29 +338,29 @@ public class CmsProjectsTable extends Table {
     /** Project owner property. */
     public static final String PROP_OWNER = "owner";
 
-    /** Project manager property. */
-    public static final String PROP_MANAGER = "manager";
+    /** Project resources property. */
+    public static final String PROP_RESOURCES = "resources";
 
     /** Project user property. */
     public static final String PROP_USER = "user";
 
-    /** Project date created property. */
-    public static final String PROP_DATE_CREATED = "dateCreated";
+    /** The logger for this class. */
+    protected static Log LOG = CmsLog.getLog(CmsProjectsTable.class.getName());
 
-    /** Project resources property. */
-    public static final String PROP_RESOURCES = "resources";
+    /** The serial version id. */
+    private static final long serialVersionUID = 1540265836332964510L;
 
     /** The data container. */
     IndexedContainer m_container;
+
+    /** The project manager instance. */
+    CmsProjectManager m_manager;
 
     /** The context menu. */
     CmsContextMenu m_menu;
 
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<CmsUUID>>> m_menuEntries;
-
-    /** The project manager instance. */
-    CmsProjectManager m_manager;
 
     /**
      * Constructor.<p>
@@ -325,6 +372,10 @@ public class CmsProjectsTable extends Table {
 
         m_container = new IndexedContainer();
         m_container.addContainerProperty(PROP_ID, CmsUUID.class, null);
+        m_container.addContainerProperty(
+            PROP_ICON,
+            Resource.class,
+            new ExternalResource(OpenCmsTheme.getImageLink(CmsProjectManager.ICON_PROJECT_SMALL)));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DESCRIPTION, String.class, "");
         m_container.addContainerProperty(PROP_ORG_UNIT, String.class, "");
@@ -335,6 +386,8 @@ public class CmsProjectsTable extends Table {
         m_container.addContainerProperty(PROP_RESOURCES, Label.class, "");
 
         setContainerDataSource(m_container);
+        setItemIconPropertyId(PROP_ICON);
+        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_NAME_0));
         setColumnHeader(PROP_DESCRIPTION, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DESCRIPTION_0));
         setColumnHeader(PROP_ORG_UNIT, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_ORG_UNIT_0));
@@ -343,6 +396,10 @@ public class CmsProjectsTable extends Table {
         setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_USER_GROUP_0));
         setColumnHeader(PROP_DATE_CREATED, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DATE_CREATED_0));
         setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCES_0));
+        setColumnWidth(null, 40);
+        setColumnExpandRatio(PROP_NAME, 2);
+        setColumnExpandRatio(PROP_DESCRIPTION, 2);
+        setColumnExpandRatio(PROP_RESOURCES, 2);
         setSelectable(true);
         setMultiSelect(true);
         m_menu = new CmsContextMenu();
@@ -356,6 +413,34 @@ public class CmsProjectsTable extends Table {
                 onItemClick(event);
             }
         });
+        setCellStyleGenerator(new CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                if (PROP_NAME.equals(propertyId)) {
+                    return OpenCmsTheme.HOVER_COLUMN;
+                }
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Filters the displayed projects.<p>
+     *
+     * @param filter the filter
+     */
+    public void filterTable(String filter) {
+
+        m_container.removeAllContainerFilters();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
+            m_container.addContainerFilter(
+                new Or(
+                    new SimpleStringFilter(PROP_NAME, filter, true, false),
+                    new SimpleStringFilter(PROP_DESCRIPTION, filter, true, false)));
+        }
     }
 
     /**
@@ -480,7 +565,7 @@ public class CmsProjectsTable extends Table {
 
         if (!event.isCtrlKey() && !event.isShiftKey()) {
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
                 CmsUUID itemId = (CmsUUID)event.getItemId();
                 Set<CmsUUID> value = (Set<CmsUUID>)getValue();
                 if (value == null) {
@@ -491,6 +576,12 @@ public class CmsProjectsTable extends Table {
                 }
                 m_menu.setEntries(getMenuEntries(), (Set<CmsUUID>)getValue());
                 m_menu.openForTable(event, this);
+            } else if (event.getButton().equals(MouseButton.LEFT) && PROP_NAME.equals(event.getPropertyId())) {
+                Item item = event.getItem();
+                CmsUUID id = (CmsUUID)item.getItemProperty(PROP_ID).getValue();
+                m_manager.openSubView(
+                    A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_FILES, "projectId", id.toString()),
+                    true);
             }
         }
     }

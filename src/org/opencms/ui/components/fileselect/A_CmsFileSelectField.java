@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,17 +31,15 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.workplace.CmsWorkplace;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -49,10 +47,9 @@ import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * Abstract file select field. Used by {@link org.opencms.ui.components.fileselect.CmsResourceSelectField} and {@link org.opencms.ui.components.fileselect.CmsPathSelectField}.<p>
+ * Abstract file select field. Used by {@link org.opencms.ui.components.fileselect.CmsPathSelectField}.<p>
  *
  * @param <T> the value type
  */
@@ -64,14 +61,17 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The file select dialog caption. */
+    protected String m_fileSelectCaption;
+
     /** The filter used for reading resources. */
     protected CmsResourceFilter m_filter;
 
+    /** The start with sitemap view flag. */
+    protected boolean m_startWithSitemapView;
+
     /** The text field containing the selected path. */
     protected TextField m_textField;
-
-    /** The file select dialog caption. */
-    protected String m_fileSelectCaption;
 
     /**
      * Creates a new instance.<p>
@@ -104,6 +104,16 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     }
 
     /**
+     * Sets the start with sitemap view flag.<p>
+     *
+     * @param startWithSitemapView the start with sitemap view flag
+     */
+    public void setStartWithSitempaView(boolean startWithSitemapView) {
+
+        m_startWithSitemapView = startWithSitemapView;
+    }
+
+    /**
      * @see com.vaadin.ui.CustomField#initContent()
      */
     @Override
@@ -114,13 +124,8 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
         layout.setSpacing(true);
         layout.addComponent(m_textField);
         Button fileSelectButton = new Button("");
-        fileSelectButton.addStyleName(OpenCmsTheme.BUTTON_UNPADDED);
-        fileSelectButton.addStyleName(ValoTheme.BUTTON_LINK);
-        ExternalResource folderRes = new ExternalResource(
-            CmsWorkplace.getResourceUri(
-                CmsWorkplace.RES_PATH_FILETYPES
-                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting("folder").getBigIconIfAvailable()));
-        fileSelectButton.setIcon(folderRes);
+        fileSelectButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
+        fileSelectButton.setIcon(FontOpenCms.GALLERY);
 
         layout.addComponent(fileSelectButton);
         layout.setExpandRatio(m_textField, 1f);
@@ -152,6 +157,15 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
                 : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
             A_CmsUI.get().addWindow(window);
             CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
+            fileSelect.showSitemapView(m_startWithSitemapView);
+
+            T value = getValue();
+            if (value instanceof CmsResource) {
+                fileSelect.showStartResource((CmsResource)value);
+            } else if (value instanceof String) {
+                fileSelect.openPath((String)value);
+            }
+
             window.setContent(fileSelect);
             fileSelect.addSelectionHandler(new I_CmsSelectionHandler<CmsResource>() {
 

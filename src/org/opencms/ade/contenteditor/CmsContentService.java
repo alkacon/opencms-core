@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,7 +61,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.search.CmsSearchManager;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsStringUtil;
@@ -446,6 +445,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
             getSessionCache().clearDynamicValues();
+            getSessionCache().uncacheXmlContent(structureId);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
                 result = readContentDefnitionForNew(
                     newLink,
@@ -621,7 +621,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 writeCategories(file, content, lastEditedEntity);
 
                 // update offline indices
-                OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+                OpenCms.getSearchManager().updateOfflineIndexes();
                 if (clearOnSuccess) {
                     tryUnlock(resource);
                     getSessionCache().uncacheXmlContent(structureId);
@@ -664,7 +664,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         try {
             CmsObject cms = getCmsObject();
-            CmsResource element = cms.readResource(new CmsUUID(contentId));
+            CmsResource element = cms.readResource(new CmsUUID(contentId), CmsResourceFilter.IGNORE_EXPIRATION);
             ensureLock(element);
             CmsFile elementFile = cms.readFile(element);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, elementFile);

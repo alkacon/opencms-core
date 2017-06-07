@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,9 +29,12 @@ package org.opencms.ui.contextmenu;
 
 import org.opencms.main.CmsLog;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.actions.CmsContextMenuActionItem;
+import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
@@ -57,6 +60,9 @@ public class CmsContextMenuTreeBuilder {
 
     /** The dialog context. */
     private I_CmsDialogContext m_context;
+
+    /** The default action item. */
+    private I_CmsContextMenuItem m_defaultActionItem;
 
     /** Cached visibilities for context menu entries. */
     private IdentityHashMap<I_CmsContextMenuItem, CmsMenuItemVisibilityMode> m_visiblities = new IdentityHashMap<I_CmsContextMenuItem, CmsMenuItemVisibilityMode>();
@@ -123,6 +129,10 @@ public class CmsContextMenuTreeBuilder {
         // this order also applies to the child order of each tree node built in the next step
         List<I_CmsContextMenuItem> uniqueItems = Lists.newArrayList(itemsById.values());
         uniqueItems = filterVisible(uniqueItems);
+        if (m_context.getResources().size() == 1) {
+            m_defaultActionItem = findDefaultAction(uniqueItems);
+        }
+
         Collections.sort(uniqueItems, new Comparator<I_CmsContextMenuItem>() {
 
             public int compare(I_CmsContextMenuItem a, I_CmsContextMenuItem b) {
@@ -188,6 +198,17 @@ public class CmsContextMenuTreeBuilder {
     }
 
     /**
+     * Returns the default action item if available.<p>
+     * Only available once {@link #buildTree(List)} or {@link #buildAll(List)} has been executed.<p>
+     *
+     * @return the default action item
+     */
+    public I_CmsContextMenuItem getDefaultActionItem() {
+
+        return m_defaultActionItem;
+    }
+
+    /**
      * Gets the visibility for a given item (cached, if possible).<p>
      *
      * @param item the item
@@ -223,6 +244,38 @@ public class CmsContextMenuTreeBuilder {
                 }
             }
         }
+    }
+
+    /**
+     * Evaluates the default action if any for highlighting within the menu.<p>
+     *
+     * @param items the menu items
+     *
+     * @return the default action if available
+     */
+    private I_CmsContextMenuItem findDefaultAction(Collection<I_CmsContextMenuItem> items) {
+
+        I_CmsContextMenuItem result = null;
+        int resultRank = -1;
+        for (I_CmsContextMenuItem menuItem : items) {
+            if ((menuItem instanceof CmsContextMenuActionItem)
+                && (((CmsContextMenuActionItem)menuItem).getWorkplaceAction() instanceof I_CmsDefaultAction)) {
+                I_CmsDefaultAction action = (I_CmsDefaultAction)((CmsContextMenuActionItem)menuItem).getWorkplaceAction();
+                if (getVisibility(menuItem).isActive()) {
+                    if (result == null) {
+                        result = menuItem;
+                        resultRank = action.getDefaultActionRank(m_context);
+                    } else {
+                        int rank = action.getDefaultActionRank(m_context);
+                        if (rank > resultRank) {
+                            result = menuItem;
+                            resultRank = rank;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 }

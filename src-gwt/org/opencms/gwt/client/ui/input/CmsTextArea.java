@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,14 +36,15 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
+import com.google.common.base.Objects;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -75,7 +76,7 @@ import com.google.gwt.user.client.ui.TextArea;
  */
 public class CmsTextArea extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers,
-I_CmsHasResizeOnShow {
+I_CmsHasResizeOnShow, I_CmsHasGhostValue {
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
@@ -101,8 +102,17 @@ I_CmsHasResizeOnShow {
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
+    /** True if we are currently focused. */
+    private boolean m_focus;
+
+    /** The 'ghost value' to display when no value is set. */
+    private String m_ghostValue;
+
     /** The previous value. */
     private String m_previousValue;
+
+    /** The real, logical value which might be different from the value displayed in the internal textarea. */
+    private String m_realValue = "";
 
     /** A timer to schedule the widget size recalculation. */
     private Timer m_updateSizeTimer;
@@ -120,7 +130,6 @@ I_CmsHasResizeOnShow {
         m_fadePanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().fader());
         m_panel.add(m_textAreaContainer);
         m_textAreaContainer.setResizable(true);
-        m_textAreaContainer.getElement().getStyle().setHeight(m_textArea.getOffsetHeight(), Unit.PX);
         m_textAreaContainer.add(m_textArea);
         m_fadePanel.addDomHandler(new ClickHandler() {
 
@@ -132,19 +141,21 @@ I_CmsHasResizeOnShow {
 
         m_textArea.addKeyUpHandler(new KeyUpHandler() {
 
+            @SuppressWarnings("synthetic-access")
             public void onKeyUp(KeyUpEvent event) {
 
                 scheduleResize();
-                fireValueChangedEvent(false);
+                actionChangeTextareaValue(m_textArea.getValue());
             }
 
         });
 
         m_textArea.addValueChangeHandler(new ValueChangeHandler<String>() {
 
+            @SuppressWarnings("synthetic-access")
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                fireValueChangedEvent(false);
+                actionChangeTextareaValue(event.getValue());
             }
         });
 
@@ -153,19 +164,24 @@ I_CmsHasResizeOnShow {
 
         m_textArea.addFocusHandler(new FocusHandler() {
 
+            @SuppressWarnings("synthetic-access")
             public void onFocus(FocusEvent event) {
 
                 m_panel.remove(m_fadePanel);
                 CmsDomUtil.fireFocusEvent(CmsTextArea.this);
+                m_focus = true;
+                updateGhostStyle();
             }
         });
         m_textArea.addBlurHandler(new BlurHandler() {
 
+            @SuppressWarnings("synthetic-access")
             public void onBlur(BlurEvent event) {
 
                 showFadePanelIfNeeded();
                 m_textAreaContainer.scrollToTop();
-
+                m_focus = false;
+                updateGhostStyle();
             }
         });
     }
@@ -233,10 +249,7 @@ I_CmsHasResizeOnShow {
      */
     public Object getFormValue() {
 
-        if (m_textArea.getText() == null) {
-            return "";
-        }
-        return m_textArea.getText();
+        return nullToEmpty(m_realValue);
     }
 
     /**
@@ -304,6 +317,14 @@ I_CmsHasResizeOnShow {
     }
 
     /**
+     * Selects all content.<p>
+     */
+    public void selectAll() {
+
+        m_textArea.selectAll();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
@@ -342,19 +363,25 @@ I_CmsHasResizeOnShow {
     }
 
     /**
+     * Sets or removes focus.<p>
+     *
+     * @param b true if the text area should be focused
+     */
+    public void setFocus(boolean b) {
+
+        m_textArea.setFocus(b);
+
+    }
+
+    /**
      * Sets the value of the widget.<p>
      *
      * @param value the new value
      */
     public void setFormValue(Object value) {
 
-        if (value == null) {
-            value = "";
-        }
-        if (value instanceof String) {
-            m_previousValue = (String)value;
-            m_textArea.setText(m_previousValue);
-        }
+        setRealValue((String)value);
+        updateGhostStyle();
 
     }
 
@@ -364,6 +391,42 @@ I_CmsHasResizeOnShow {
     public void setFormValueAsString(String newValue) {
 
         setFormValue(newValue);
+    }
+
+    /**
+     * Not used.<p>
+     *
+     * This widget automatically decides whether it's in ghost mode depending on the real value and ghost value set.<p>
+     *
+     * @param ghostMode not used
+     */
+    public void setGhostMode(boolean ghostMode) {
+        // do nothing
+
+    }
+
+    /**
+     * Enables or disables the 'ghost mode' style.<p>
+     *
+     * @param enabled true if 'ghost mode' style should be enabled
+     */
+    public void setGhostStyleEnabled(boolean enabled) {
+
+        String styleName = I_CmsInputLayoutBundle.INSTANCE.inputCss().textAreaGhostMode();
+        if (enabled) {
+            addStyleName(styleName);
+        } else {
+            removeStyleName(styleName);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostValue(java.lang.String, boolean)
+     */
+    public void setGhostValue(String value, boolean ghostMode) {
+
+        m_ghostValue = value;
+        updateGhostStyle();
     }
 
     /**
@@ -416,19 +479,6 @@ I_CmsHasResizeOnShow {
     public void setText(String text) {
 
         m_textArea.setText(text);
-    }
-
-    /**
-     * Helper method for firing a 'value changed' event.<p>
-     *
-     * @param force if <true, some additional information will be added to the event to ask event handlers to not perform any validation directly
-     */
-    protected void fireValueChangedEvent(boolean force) {
-
-        if (force || !getFormValueAsString().equals(m_previousValue)) {
-            m_previousValue = getFormValueAsString();
-            ValueChangeEvent.fire(this, m_previousValue);
-        }
     }
 
     /**
@@ -490,7 +540,7 @@ I_CmsHasResizeOnShow {
             int scrollPosition = m_textAreaContainer.getVerticalScrollPosition()
                 + m_textArea.getElement().getScrollTop();
             if (visibleRows != m_defaultRows) {
-                m_textArea.setVisibleLines(m_defaultRows);
+                m_textArea.setVisibleLines(Math.max(1, m_defaultRows));
             }
             int rows = (int)Math.ceil(m_textArea.getElement().getScrollHeight() / lineHeight) + 1;
             if (rows < m_defaultRows) {
@@ -501,6 +551,87 @@ I_CmsHasResizeOnShow {
             m_textAreaContainer.setVerticalScrollPosition(scrollPosition);
             if (visibleRows != rows) {
                 m_textAreaContainer.onResizeDescendant();
+            }
+        }
+    }
+
+    /**
+     * This method is called when the value of the internal textarea changes.<p>
+     *
+     * @param value the textarea value
+     */
+    private void actionChangeTextareaValue(String value) {
+
+        if (m_focus) {
+            setRealValue(value);
+            updateGhostStyle();
+        }
+    }
+
+    /**
+     * Converts null to an empty string, leaves other strings unchanged.<p>
+     *
+     * @param s the input string
+     * @return the input string if it was not null, otherwise the empty string
+     */
+    private String nullToEmpty(String s) {
+
+        if (s == null) {
+            return "";
+        }
+        return s;
+    }
+
+    /**
+     * Sets the 'real' (logical) value.<p>
+     *
+     * @param value the real value
+     */
+    private void setRealValue(String value) {
+
+        if (!Objects.equal(value, m_realValue)) {
+            m_realValue = value;
+            ValueChangeEvent.fire(this, value);
+        }
+    }
+
+    /**
+     * Updates the styling and content of the internal text area based on the real value, the ghost value, and whether
+     * it has focus.
+     */
+    private void updateGhostStyle() {
+
+        if (CmsStringUtil.isEmpty(m_realValue)) {
+            if (CmsStringUtil.isEmpty(m_ghostValue)) {
+                return;
+            }
+            if (!m_focus) {
+                setGhostStyleEnabled(true);
+                updateTextArea(m_ghostValue);
+            } else {
+                // don't show ghost mode while focused
+                setGhostStyleEnabled(false);
+            }
+        } else {
+            setGhostStyleEnabled(false);
+            updateTextArea(m_realValue);
+        }
+    }
+
+    /**
+     * Updates the content of the internal textarea.<p>
+     *
+     * @param value the new content
+     */
+    private void updateTextArea(String value) {
+
+        String oldValue = m_textArea.getValue();
+        if (!oldValue.equals(value)) {
+            int l1 = oldValue.split("\n").length;
+            int l2 = value.split("\n").length;
+            m_textArea.setValue(value);
+            if (l1 != l2) {
+                scheduleResize();
             }
         }
     }

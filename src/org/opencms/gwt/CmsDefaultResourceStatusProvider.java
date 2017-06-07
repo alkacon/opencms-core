@@ -47,6 +47,7 @@ import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
 import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -67,18 +68,23 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Helper class to generate all the data which is necessary for the resource status dialog(s).<p>
@@ -104,7 +110,8 @@ public class CmsDefaultResourceStatusProvider {
         CmsObject cms,
         CmsUUID source,
         List<CmsUUID> additionalIds,
-        boolean cancelIfChanged) throws CmsException {
+        boolean cancelIfChanged)
+    throws CmsException {
 
         CmsRelationTargetListBean result = new CmsRelationTargetListBean();
         CmsResource content = cms.readResource(source, CmsResourceFilter.ALL);
@@ -164,14 +171,16 @@ public class CmsDefaultResourceStatusProvider {
         String contentLocale,
         boolean includeTargets,
         CmsUUID detailContentId,
-        List<CmsUUID> additionalStructureIds) throws CmsException {
+        List<CmsUUID> additionalStructureIds)
+    throws CmsException {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         cms.getRequestContext().setLocale(locale);
         CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
         String localizedTitle = null;
+        Locale realLocale = null;
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(contentLocale)) {
-            Locale realLocale = CmsLocaleManager.getLocale(contentLocale);
+            realLocale = CmsLocaleManager.getLocale(contentLocale);
             CmsGallerySearchResult result = CmsGallerySearch.searchById(cms, structureId, realLocale);
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getTitle())) {
                 localizedTitle = result.getTitle();
@@ -229,8 +238,9 @@ public class CmsDefaultResourceStatusProvider {
         result.setUserCreated(resourceUtil.getUserCreated());
         result.setUserLastModified(resourceUtil.getUserLastModified());
 
-        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
         result.setResourceType(resType.getTypeName());
+
         result.setStructureId(resource.getStructureId());
         if (resType instanceof CmsResourceTypeXmlContent) {
             CmsFile file = cms.readFile(resource);
@@ -325,6 +335,36 @@ public class CmsDefaultResourceStatusProvider {
         sortOtherSiteRelations(cms, result);
         if (includeTargets) {
             result.getRelationTargets().addAll(getTargets(cms, contentLocale, resource, additionalStructureIds));
+            if ((detailContentId != null) && (realLocale != null)) {
+                // try to add detail only contents
+                try {
+                    Optional<CmsResource> detailOnlyPage = CmsJspTagContainer.getDetailOnlyPage(
+                        cms,
+                        cms.readResource(detailContentId, CmsResourceFilter.ALL),
+                        CmsJspTagContainer.getDetailContainerLocale(cms, realLocale.toString(), resource));
+                    if (detailOnlyPage.isPresent()) {
+                        result.getRelationTargets().addAll(
+                            getTargets(
+                                cms,
+                                contentLocale,
+                                detailOnlyPage.get(),
+                                Arrays.asList(detailOnlyPage.get().getStructureId())));
+                    }
+
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            Iterator<CmsResourceStatusRelationBean> iter = result.getRelationTargets().iterator();
+            // Remove duplicates
+            Set<CmsUUID> visitedIds = Sets.newHashSet();
+            while (iter.hasNext()) {
+                CmsResourceStatusRelationBean bean = iter.next();
+                if (visitedIds.contains(bean.getStructureId())) {
+                    iter.remove();
+                }
+                visitedIds.add(bean.getStructureId());
+            }
         }
         result.getSiblings().addAll(getSiblings(cms, contentLocale, resource));
         LinkedHashMap<CmsResourceStatusTabId, String> tabMap = new LinkedHashMap<CmsResourceStatusTabId, String>();
@@ -448,7 +488,8 @@ public class CmsDefaultResourceStatusProvider {
         CmsObject cms,
         String locale,
         CmsResource resource,
-        List<CmsUUID> additionalStructureIds) throws CmsException {
+        List<CmsUUID> additionalStructureIds)
+    throws CmsException {
 
         CmsRelationTargetListBean listBean = getContainerpageRelationTargets(
             cms,
@@ -494,7 +535,8 @@ public class CmsDefaultResourceStatusProvider {
         CmsObject cms,
         String locale,
         CmsResource relationResource,
-        CmsPermissionInfo permissionInfo) throws CmsException {
+        CmsPermissionInfo permissionInfo)
+    throws CmsException {
 
         CmsListInfoBean sourceBean = CmsVfsService.getPageInfo(cms, relationResource);
         sourceBean.setMarkChangedState(true);

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -137,7 +137,8 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                         }
                         propConfig.putAll(CmsSitemapView.getInstance().getController().getData().getProperties());
                         A_CmsPropertyEditor editor = createEntryEditor(handler, propConfig);
-                        editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
+                        editor.setPropertyNames(
+                            CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
                         final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
                         CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
 
@@ -185,7 +186,8 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         boolean show = getHoverbar().getController().isEditable()
             && (entry != null)
-            && (!CmsSitemapView.getInstance().isGalleryMode() || getHoverbar().getController().getData().isGalleryManager());
+            && (!CmsSitemapView.getInstance().isGalleryMode()
+                || getHoverbar().getController().getData().isGalleryManager());
         setVisible(show);
     }
 

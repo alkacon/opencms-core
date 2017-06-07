@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.shared.rpc;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsLocaleComparePropertyData;
 import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
@@ -45,6 +46,7 @@ import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationReply;
 import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -118,7 +120,8 @@ public interface I_CmsSitemapService extends RemoteService {
         String title,
         String description,
         CmsUUID copyId,
-        boolean isModelGroup) throws CmsRpcException;
+        boolean isModelGroup)
+    throws CmsRpcException;
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
@@ -216,6 +219,19 @@ public interface I_CmsSitemapService extends RemoteService {
     List<CmsNewResourceInfo> getNewElementInfo(String entryPointUri) throws CmsRpcException;
 
     /**
+     * Loads the data needed by the property editor in the locale comparison view.<p>
+     *
+     * @param id the id of the resource for which the property editor should be opened
+     * @param rootId the structure id of the resource which corresponds to the tree root in locale compare mode
+     *
+     * @return the property data for locale comparison mode
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsLocaleComparePropertyData loadPropertyDataForLocaleCompareView(CmsUUID id, CmsUUID rootId)
+    throws CmsRpcException;
+
+    /**
      * Merges a sub-sitemap into it's parent sitemap.<p>
      *
      * @param entryPoint the sitemap entry point
@@ -237,6 +253,21 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     CmsSitemapData prefetch(String sitemapUri) throws CmsRpcException;
+
+    /**
+     * Prepares sitemap reloading for the given sitemap root.<p>
+     *
+     * This method may change the currently set site root. If the given root id is not in a valid site,
+     * null will be returned, otherwise the URL which the client should use to reload the sitemap will be returned.
+     *
+     * @param rootId the structure id of the new sitemap root
+     * @param mode the new editor mode
+     *
+     * @return the URL which should be used to reload the sitemap
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    String prepareReloadSitemap(CmsUUID rootId, EditorMode mode) throws CmsRpcException;
 
     /**
      * Removes a model page from the current sitemap configuration.<p>
@@ -269,6 +300,23 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     CmsAliasEditValidationReply saveAliases(CmsAliasSaveValidationRequest saveRequest) throws CmsRpcException;
+
+    /**
+     * Saves the changed properties in locale comparison mode.<p>
+     *
+     * @param id the structure id
+     * @param newUrlName the new URL name
+     * @param propertyChanges the property changes
+     * @param editedName true if the name was edited
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    void savePropertiesForLocaleCompareMode(
+        CmsUUID id,
+        String newUrlName,
+        List<CmsPropertyModification> propertyChanges,
+        boolean editedName)
+    throws CmsRpcException;
 
     /**
      * Saves the change to the given sitemap.<p>

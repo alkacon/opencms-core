@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsResourceBundleLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
@@ -40,7 +42,6 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
-import org.opencms.ui.login.CmsChangePasswordDialog;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsAccountInfo;
@@ -52,6 +53,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.logging.Log;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.ObjectProperty;
@@ -134,6 +136,9 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** The serial version id. */
     private static final long serialVersionUID = 8907786853232656944L;
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUserDataDialog.class);
+
     /** The field binder. */
     private FieldGroup m_binder;
 
@@ -151,9 +156,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
 
     /** The OK  button. */
     private Button m_okButton;
-
-    /** The change password button. */
-    private Button m_changePassword;
 
     /** The edited user. */
     private CmsUser m_user;
@@ -174,6 +176,7 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
             throw new CmsRuntimeException(
                 Messages.get().container(Messages.ERR_USER_NOT_SELF_MANAGED_1, m_user.getName()));
         }
+
         CmsVaadinUtils.readAndLocalizeDesign(
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
@@ -207,15 +210,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
                 submit();
             }
         });
-        m_changePassword.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                openChangePassword();
-            }
-        });
 
         setActionHandler(new CmsOkCancelActionHandler() {
 
@@ -247,7 +241,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
             ((VerticalLayout)m_userInfo.getParent()).addComponent(new Label(getUserDataCheckMessage()), 1);
 
             m_cancelButton.setVisible(false);
-            m_changePassword.setVisible(false);
         }
     }
 
@@ -282,22 +275,7 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     void cancel() {
 
         m_context.finish(Collections.<CmsUUID> emptyList());
-    }
-
-    /**
-     * Opens the change password dialog.<p>
-     */
-    void openChangePassword() {
-
-        if (m_context instanceof CmsEmbeddedDialogContext) {
-            ((CmsEmbeddedDialogContext)m_context).closeWindow(true);
-        } else {
-            m_context.finish(Collections.<CmsUUID> emptyList());
-        }
-        m_context.start(
-            Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
-                + m_user.getSimpleName(),
-            new CmsChangePasswordDialog(m_context));
+        m_context.updateUserInfo();
     }
 
     /**
@@ -326,9 +304,27 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
                 }
                 m_context.getCms().writeUser(m_user);
                 m_context.finish(Collections.<CmsUUID> emptyList());
+                m_context.updateUserInfo();
             }
         } catch (Exception e) {
             m_context.error(e);
+        }
+    }
+
+    /**
+     * Updates the user info.<p>
+     */
+    void updateUserInfo() {
+
+        try {
+            m_user = m_context.getCms().readUser(m_user.getId());
+            m_userInfo.setValue(
+                "<img src=\""
+                    + OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(m_context.getCms(), m_user)
+                    + "\" style=\"vertical-align:middle; margin: -4px 10px 0 0;\" />"
+                    + m_user.getName());
+        } catch (CmsException e) {
+            LOG.error("Error updating user info.", e);
         }
     }
 

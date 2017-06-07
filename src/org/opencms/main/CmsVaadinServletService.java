@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,7 @@
 
 package org.opencms.main;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.vaadin.server.Constants;
@@ -62,7 +63,7 @@ public class CmsVaadinServletService extends VaadinServletService {
      * @see com.vaadin.server.VaadinServletService#getThemeResourceAsStream(com.vaadin.ui.UI, java.lang.String, java.lang.String)
      */
     @Override
-    public InputStream getThemeResourceAsStream(UI uI, String themeName, String resource) {
+    public InputStream getThemeResourceAsStream(UI uI, String themeName, String resource) throws IOException {
 
         String resourcePath = Constants.THEME_DIR_PATH + '/' + themeName + "/" + resource;
         InputStream result = getClass().getClassLoader().getResourceAsStream(resourcePath);

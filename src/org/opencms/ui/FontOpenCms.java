@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,14 +28,24 @@
 package org.opencms.ui;
 
 import com.vaadin.server.FontIcon;
+import com.vaadin.server.GenericFontIcon;
 
 /**
  * The available OpenCms workplace icons.<p>
  */
 public enum FontOpenCms implements FontIcon {
 
+    /** The add icon. */
+    ADD_SMALL(0xe90b),
+
     /** The apps icon. */
     APPS(0xe617),
+
+    /** The brackets icon. */
+    BRACKETS(0xe921),
+
+    /** The check icon. */
+    CHECK_SMALL(0xe916),
 
     /** The circle icon. */
     CIRCLE(0xe62a),
@@ -88,8 +98,23 @@ public enum FontOpenCms implements FontIcon {
     /** The context menu icon. */
     CONTEXT_MENU(0xe616),
 
+    /** The context menu dots icon. */
+    CONTEXT_MENU_DOTS(0xe91c),
+
+    /** The context menu icon. */
+    CONTEXT_MENU_SMALL(0xe909),
+
     /** The copy locale icon. */
     COPY_LOCALE(0xe61a),
+
+    /** The cut icon. */
+    CUT_SMALL(0xe906),
+
+    /** the delete icon. */
+    DELETE_SMALL(0xe90c),
+
+    /** The edit down icon. */
+    EDIT_DOWN_SMALL(0xe90f),
 
     /** The bulls eye edit icon. */
     EDIT_POINT(0xe600),
@@ -97,11 +122,20 @@ public enum FontOpenCms implements FontIcon {
     /** The disabled bulls eye edit icon. */
     EDIT_POINT_DISABLED(0xe601),
 
+    /** The bulls eye edit icon. */
+    EDIT_POINT_SMALL(0xe900),
+
+    /** The edit up icon. */
+    EDIT_UP_SMALL(0xe910),
+
     /** The error icon. */
     ERROR(0xed6b),
 
     /** The exit icon. */
     EXIT(0xe615),
+
+    /** The favorite icon. */
+    FAVORITE_SMALL(0xe905),
 
     /** The filter icon. */
     FILTER(0xe60c),
@@ -118,11 +152,32 @@ public enum FontOpenCms implements FontIcon {
     /** The hide icon. */
     HIDE(0xe609),
 
+    /** The highlight icon. */
+    HIGHLIGHT(0xe91e),
+
     /** The info icon. */
     INFO(0xe612),
 
+    /** The info icon. */
+    INFO_SMALL(0xe903),
+
+    /** The invisible chars icon. */
+    INVISIBLE_CHARS(0xe91f),
+
+    /** The lock icon. */
+    LOCK_SMALL(0xe90d),
+
+    /** The move icon. */
+    MOVE_SMALL(0xe902),
+
     /** The pen/edit icon. */
     PEN(0xe614),
+
+    /** The pen/edit icon. */
+    PEN_SMALL(0xe901),
+
+    /** The preview icon. */
+    PREVIEW_SMALL(0xe90e),
 
     /** The publish icon. */
     PUBLISH(0xe60e),
@@ -142,8 +197,17 @@ public enum FontOpenCms implements FontIcon {
     /** The search icon. */
     SEARCH(0xe60d),
 
+    /** The search replace icon. */
+    SEARCH_REPLACE(0xe91d),
+
+    /** The search icon. */
+    SEARCH_SMALL(0xe907),
+
     /** The settings icon. */
     SETTINGS(0xe618),
+
+    /** The settings icon. */
+    SETTINGS_SMALL(0xe904),
 
     /** The show icon. */
     SHOW(0xe608),
@@ -151,11 +215,29 @@ public enum FontOpenCms implements FontIcon {
     /** The sitemap icon. */
     SITEMAP(0xe613),
 
+    /** The sitemap icon. */
+    SITEMAP_SMALL(0xe90a),
+
+    /** An empty icon. */
+    SPACE(0x0020),
+
+    /** The trash icon. */
+    TRASH_SMALL(0xe913),
+
+    /** 'minus' state icon for tree opener. */
+    TREE_MINUS(0xe919),
+
+    /** 'plus' state icon for tree opener. */
+    TREE_PLUS(0xe918),
+
     /** The undo icon. */
     UNDO(0xe606),
 
     /** The upload icon. */
     UPLOAD(0xe604),
+
+    /** The upload icon. */
+    UPLOAD_SMALL(0xe908),
 
     /** The wand icon. */
     WAND(0xe610),
@@ -163,11 +245,11 @@ public enum FontOpenCms implements FontIcon {
     /** The warning icon. */
     WARNING(0xed50),
 
-    /** 'plus' state icon for tree opener. */ 
-    TREE_PLUS(0xe918),
+    /** The wrap lines icon. */
+    WRAP_LINES(0xe920);
 
-    /** 'minus' state icon for tree opener. */ 
-    TREE_MINUS(0xe919);
+    /** The font family. */
+    public static final String FONT_FAMILY = "opencms-font";
 
     /** The icon code point. */
     private int m_codepoint;
@@ -196,7 +278,7 @@ public enum FontOpenCms implements FontIcon {
     @Override
     public String getFontFamily() {
 
-        return "opencms-font";
+        return FONT_FAMILY;
     }
 
     /**
@@ -205,11 +287,7 @@ public enum FontOpenCms implements FontIcon {
     @Override
     public String getHtml() {
 
-        return "<span class=\"v-icon\" style=\"font-family: "
-            + getFontFamily()
-            + ";\">&#x"
-            + Integer.toHexString(m_codepoint)
-            + ";</span>";
+        return GenericFontIcon.getHtml(getFontFamily(), getCodepoint());
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,6 +54,14 @@ public class OpenCmsUrlServletFilter implements Filter {
      */
     private static final String INIT_PARAM_ADDITIONAL_EXCLUDEPREFIXES = "additionalExcludePrefixes";
 
+    /** A pipe separated list of URI prefixes, for which URIs should not be adjusted, additionally to the default prefixes. */
+    private String m_additionalExcludePrefixes;
+
+    /** The servlet context. */
+    private String m_contextPath;
+    /** Flag, indicating if the filter has been initialized. */
+    private boolean m_isInitialized;
+
     /**
      * A regex that matches if the requested URI starts with one of the default exclude prefixes
      * or a prefix listed in the value of the {@link #INIT_PARAM_ADDITIONAL_EXCLUDEPREFIXES} init-param.
@@ -62,14 +70,6 @@ public class OpenCmsUrlServletFilter implements Filter {
 
     /** The servlet name, prefixed by "/". */
     private String m_servletPath;
-    /** The servlet context. */
-    private String m_contextPath;
-
-    /** Flag, indicating if the filter has been initialized. */
-    private boolean m_isInitialized;
-
-    /** A pipe separated list of URI prefixes, for which URIs should not be adjusted, additionally to the default prefixes. */
-    private String m_additionalExcludePrefixes;
 
     /**
      * Creates a regex that matches all URIs starting with one of the <code>defaultExcludePrefixes</code>
@@ -165,7 +165,9 @@ public class OpenCmsUrlServletFilter implements Filter {
                 "/VAADIN/",
                 m_servletPath,
                 "/resources/",
-                "/webdav"};
+                "/webdav",
+                "/cmisatom",
+                "/services"};
             StringBuffer regex = new StringBuffer();
             regex.append(m_contextPath);
             regex.append('(');

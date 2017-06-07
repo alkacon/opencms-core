@@ -673,6 +673,11 @@ allModuleNames.split(',').each{ moduleName ->
         	sourceSets[moduleName].compileClasspath+= fileTree(libFolder){ include '**/*.jar' }
         	
         }
+        def libExtFolder=file("${moduleFolder}/resources/system/modules/${moduleName}/libext")
+        if (libExtFolder.exists()){
+        	println("Detecting libext folder for module $moduleName")
+        	sourceSets[moduleName].compileClasspath+= fileTree(libExtFolder){ include '**/*.jar' }
+        }
 
         task "jar_$moduleName" (type: Jar) {
         	ext.gwtModule = gwtModule
@@ -867,6 +872,7 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         exclude '**/workplaceThemes/**'
         exclude '**/solr/**'
         exclude '**/spellcheck/**'
+        exclude 'WEB-INF/sun-jaxws.xml'
         include '**/*.html'
         include '**/*.properties'
         include '**/*.txt'
@@ -882,7 +888,11 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
             DRIVERS_SUBSCRIPTION: drivers_subscription,
             ADDITIONAL_DB_POOLS: db_additional_pools,
             OPENCMS_CONFIGURATION: opencms_configuration,
-            RUNTIME_INFO: system_runtimeinfo
+            RUNTIME_INFO: system_runtimeinfo,
+            COMMENT_UPDATER_START: '',
+            COMMENT_UPDATER_END: '',
+            COMMENT_WAR_START: '<!--',
+            COMMENT_WAR_END: '-->'
         ])
     }
     
@@ -940,12 +950,6 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
 
     from ("${projectDir}/webapp/WEB-INF/solr"){
         into '/WEB-INF/solr-update/'
-        include 'conf/schema.xml'
-        include 'conf/solrconfig.xml'
-        include 'solr.xml'
-    }
-    from ("${projectDir}/webapp/WEB-INF/solr") {
-        into '/WEB-INF/solr-complete/'
         include '*'
         include '**/*'
     }
@@ -959,14 +963,23 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     from ("${projectDir}/webapp/WEB-INF"){
         into '/WEB-INF'
         include 'opencms.tld'
-        include 'web.xml'
+        exclude 'web.xml'
         include 'cmsshell.sh'
         include 'classes/META-INF/persistence.xml'
         include 'classes/ehcache.xml'
         include 'classes/repository.properties'
         include 'sun-jaxws.xml'
-        include 'wsdl/**'
         include 'spellcheck/**'
+    }
+    from ("${projectDir}/webapp/WEB-INF"){
+        into '/WEB-INF'
+        include 'web.xml'
+        filter(ReplaceTokens, tokens: [
+            COMMENT_UPDATER_START: '<!-- ',
+            COMMENT_UPDATER_END: '-->',
+            COMMENT_WAR_START: '',
+            COMMENT_WAR_END: ''
+        ])
     }
     from ("${projectDir}/webapp/resources"){
         into '/resources'
@@ -1113,21 +1126,22 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
 
 artifacts {
     archives jar
-    
     archives sourcesJar
+    
     if (project.hasProperty('publish_repository')){
         // do not include the war if only running the install task, it takes ages to build
         archives war
+        archives widgetSetJar
     }
     archives setupJar
-    
     archives sourcesJarSetup
+    
     archives gwtJar
-    
     archives sourcesJarGwt
-    archives testJar
     
+    archives testJar
     archives sourcesJarTest
+    
     tasks.each{ task ->
         if (task.name.startsWith("jar_org.opencms.")){
         	def moduleName=task.baseName
@@ -1253,7 +1267,7 @@ if (project.hasProperty('publish_repository')){
                         }
                     }
                 }
-                'setup,gwt,test'.split(",").each { groupName ->
+                'setup,gwt,widgetset,test'.split(",").each { groupName ->
                     addFilter(groupName){artifact, file ->
                         artifact.name.startsWith("opencms-$groupName")
                     }
@@ -1444,7 +1458,7 @@ install {
                     }
                 }
             }
-            'setup,gwt,test'.split(",").each { groupName ->
+            'setup,gwt,test,widgetset'.split(",").each { groupName ->
                 addFilter(groupName){artifact, file ->
                     artifact.name.startsWith("opencms-$groupName")
                 }
@@ -1550,5 +1564,6 @@ tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
     if (JavaVersion.current().isJava8Compatible()) {
     	options.addStringOption("Xdoclint:none", "-quiet")
+    	options.addBooleanOption("-allow-script-in-comments",true);
     }
 }

@@ -129,8 +129,15 @@ div.textArea > div.disableTextArea {
 }
 div.textArea textarea{
 	border:none;
+	outline: none;
 	font-family: value("constants.css.fontFamilyMono");
 }
+
+div.textArea.textAreaGhostMode textarea { 
+	font-style: oblique;
+	color: value("constants.css.textColorDisabled") /*!important*/;
+}
+
 
 .checkBox .gwt-ToggleButton {
 	outline: none;

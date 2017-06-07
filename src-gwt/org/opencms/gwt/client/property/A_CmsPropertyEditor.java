@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -236,6 +236,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         textbox.setInhibitValidationForKeypresses(true);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox);
+        result.getLayoutData().put("property", A_CmsPropertyEditor.FIELD_URLNAME);
         String urlName = m_handler.getName();
         if (urlName == null) {
             urlName = "";

@@ -19,3 +19,4 @@ results.didyoumean_1 = Meinten Sie {0}?
 results.didyoumean_0 = Meinten Sie:
 search.failed_0 = Die Suche ist gescheitert. Wahrscheinlich war die endgültige Suchanfrage fehlerhaft.
 query.compare_2 = Die Suchanfrage <em>{0}</em> wurde zu <em>{1}</em> transformiert.
+search.noquery = Bitte geben Sie einen Suchbegriff ein.

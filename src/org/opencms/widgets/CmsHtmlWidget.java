@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -283,7 +283,8 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
         A_CmsXmlContentValue schemaType,
         CmsMessages messages,
         CmsResource resource,
-        Locale contentLocale) throws JSONException {
+        Locale contentLocale)
+    throws JSONException {
 
         String embeddedImageGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get("imagegallery");
         String embeddedDownloadGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get(
@@ -414,9 +415,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                         cms,
                         OpenCmsSpellcheckHandler.getSpellcheckHandlerPath()));
 
-                result.put(
-                    "spellcheck_language",
-                    "+" + contentLocale.getDisplayLanguage(workplaceLocale) + "=" + contentLocale.getLanguage());
+                result.put("spellcheck_language", contentLocale.getLanguage());
             }
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);

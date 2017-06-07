@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<v-vertical-layout :center margin spacing>
+		<v-form-layout margin spacing style-name="o-formlayout-narrow">
+				<v-combo-box _id="m_searchType" immediate="true"  width="100%" caption="%(key.GUI_SOURCESEARCH_SEARCH_TYPE_0)" description="%(key.GUI_SOURCESEARCH_SEARCH_TYPE_HELP_0)"/>
+				<v-text-field _id="m_searchPattern" width="100%" caption="%(key.GUI_SOURCESEARCH_SEARCH_PATTERN_0)" description="%(key.GUI_SOURCESEARCH_SEARCH_PATTERN_HELP_0)" />
+				<f-cms-path-select-field _id="m_searchRoot" width="100%" caption="%(key.GUI_SOURCESEARCH_RESOURCE_PATH_0)" description="%(key.GUI_SOURCESEARCH_RESOURCE_PATH_HELP_0)" />
+				<v-combo-box _id="m_resourceType" immediate="true"  width="100%" caption="%(key.GUI_SOURCESEARCH_RESOURCE_TYPE_0)" description="%(key.GUI_SOURCESEARCH_RESOURCE_TYPE_HELP_0)"/>
+				<v-combo-box _id="m_locale" immediate="true"  width="100%" caption="%(key.GUI_SOURCESEARCH_LOCALE_0)" description="%(key.GUI_SOURCESEARCH_LOCALE_HELP_0)"/>
+				<v-text-field _id="m_xPath" width="100%" caption="%(key.GUI_SOURCESEARCH_XPATH_0)" description="%(key.GUI_SOURCESEARCH_XPATH_HELP_0)" />
+				<v-text-field _id="m_solrQuery" width="100%" caption="%(key.GUI_SOURCESEARCH_SOLR_QUERY_0)" description="%(key.GUI_SOURCESEARCH_SOLR_QUERY_HELP_0)" />
+				<v-combo-box _id="m_searchIndex" immediate="true"  width="100%" caption="%(key.GUI_SOURCESEARCH_INDEX_0)" description="%(key.GUI_SOURCESEARCH_INDEX_HELP_0)"/>
+				<v-check-box _id="m_replace" caption="%(key.GUI_SOURCESEARCH_REPLACE_0)" description="%(key.GUI_SOURCESEARCH_REPLACE_HELP_0)" />
+				<v-text-field _id="m_replacePattern" width="100%" caption="%(key.GUI_SOURCESEARCH_REPLACE_PATTERN_0)" description="%(key.GUI_SOURCESEARCH_REPLACE_PATTERN_HELP_0)" />
+				<v-combo-box _id="m_workProject" immediate="true"  width="100%" caption="%(key.GUI_SOURCESEARCH_PROJECT_0)" description="%(key.GUI_SOURCESEARCH_PROJECT_HELP_0)"/>
+			</v-form-layout>
+			<v-horizontal-layout :right margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_search">%(key.GUI_SOURCESEARCH_SEARCH_0)</v-button>
+				</v-horizontal-layout>
+	</v-vertical-layout>
+</body>
+</html>

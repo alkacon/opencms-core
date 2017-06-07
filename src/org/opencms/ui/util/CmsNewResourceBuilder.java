@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -174,7 +174,6 @@ public class CmsNewResourceBuilder {
          * @param sitePath the site path
          * @return the page info bean
          */
-        @SuppressWarnings("synthetic-access")
         private CmsListInfoBean getPageInfo(String sitePath) {
 
             CmsListInfoBean listInfo = new CmsListInfoBean();
@@ -191,19 +190,20 @@ public class CmsNewResourceBuilder {
                 resTypeNiceName);
             listInfo.setResourceType(m_type);
             return listInfo;
-
         }
-
     }
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResourceBuilder.class);
 
+    /** The CMS context. */
+    CmsObject m_cms;
+
+    /** The resource type name. */
+    String m_type;
+
     /** The list of registered callbacks. */
     private List<I_Callback> m_callbacks = Lists.newArrayList();
-
-    /** The CMS context. */
-    private CmsObject m_cms;
 
     /** The created resource (null until this helper has finished creating the resource). */
     private CmsResource m_createdResource;
@@ -219,9 +219,6 @@ public class CmsNewResourceBuilder {
 
     /** The property changes to save (may be null). */
     private CmsPropertyChangeSet m_propChanges;
-
-    /** The resource type name. */
-    private String m_type;
 
     /**
      * Creates a new instance.<p>

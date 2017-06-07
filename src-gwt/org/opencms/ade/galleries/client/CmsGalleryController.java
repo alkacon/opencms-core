@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -189,12 +189,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
+            m_searchObject.setOriginalGalleryData(dialogBean);
             m_searchObject.setGalleryMode(m_dialogMode);
             m_searchObject.setIgnoreSearchExclude(m_dialogMode != GalleryMode.ade);
             m_searchObject.setLocale(m_dialogBean.getLocale());
             m_searchObject.setScope(m_dialogBean.getScope());
             m_searchObject.setSortOrder(m_dialogBean.getSortOrder().name());
             m_searchObject.setGalleryStoragePrefix(m_dialogBean.getGalleryStoragePrefix());
+            if (m_dialogBean.getStartFolderFilter() != null) {
+                m_searchObject.setFolders(m_dialogBean.getStartFolderFilter());
+            }
         }
         if (m_dialogBean != null) {
             m_tabIds = m_dialogBean.getTabIds();
@@ -629,6 +633,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns the result view type.<p>
+     *
+     * @return the result view type
+     */
+    public String getResultViewType() {
+
+        return m_dialogBean.getResultViewType();
+    }
+
+    /**
      * Returns the search locale.<p>
      *
      * @return the search locale
@@ -712,11 +726,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      *
      * @param rootPath the root path
      * @param isRoot <code>true</code> if the requested entry is the root entry
+     * @param filter the sitemap filter string
      * @param callback the callback to execute with the result
      */
     public void getSubEntries(
         final String rootPath,
         final boolean isRoot,
+        final String filter,
         final I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback) {
 
         CmsRpcAction<List<CmsSitemapEntryBean>> action = new CmsRpcAction<List<CmsSitemapEntryBean>>() {
@@ -725,7 +741,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             public void execute() {
 
                 start(0, false);
-                getGalleryService().getSubEntries(rootPath, isRoot, this);
+                getGalleryService().getSubEntries(rootPath, isRoot, filter, this);
             }
 
             @Override
@@ -948,11 +964,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * Loads the root VFS entry bean for a given site selector option.<p>
      *
      * @param siteRoot the site root for which the VFS entry should be loaded
+     * @param filter the search filter
      *
      * @param asyncCallback the callback to call with the result
      */
     public void loadVfsEntryBean(
         final String siteRoot,
+        final String filter,
 
         final AsyncCallback<CmsVfsEntryBean> asyncCallback) {
 
@@ -962,7 +980,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             public void execute() {
 
                 start(200, false);
-                getGalleryService().loadVfsEntryBean(siteRoot, this);
+                getGalleryService().loadVfsEntryBean(siteRoot, filter, this);
             }
 
             @Override
@@ -1272,6 +1290,31 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Stores the result view type.<p>
+     *
+     * @param resultViewType the result view type
+     */
+    public void setResultViewType(final String resultViewType) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                getGalleryService().saveResultViewType(resultViewType, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                // nothing to do
+            }
+
+        };
+        action.execute();
+    }
+
+    /**
      * Sets the search object changed flag to <code>true</code>.<p>
      */
     public void setSearchObjectChanged() {
@@ -1513,7 +1556,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
         if (m_searchObject.isEmpty()) {
             // don't search: notify the user that at least one search criteria should be selected
-            m_handler.showFirstTab();
+            if (m_handler.m_galleryDialog.getResultsTab().isSelected()) {
+                m_handler.showFirstTab();
+            }
         } else {
             // perform the search
 
@@ -1702,7 +1747,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                         availableTypes.add(type.getType());
                     }
                 }
-                preparedSearchObj.setTypes(availableTypes);
+                preparedSearchObj.setServerSearchTypes(availableTypes);
                 // at least one gallery is selected
             } else {
 
@@ -1719,9 +1764,11 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     availableTypes.add(type.getType());
                 }
 
-                preparedSearchObj.setTypes(
+                preparedSearchObj.setServerSearchTypes(
                     new ArrayList<String>(CmsClientCollectionUtil.intersection(availableTypes, galleryTypes)));
             }
+        } else {
+            preparedSearchObj.setServerSearchTypes(m_searchObject.getTypes());
         }
         if (m_galleriesChanged) {
             preparedSearchObj.setGalleriesChanged(true);
@@ -1792,23 +1839,27 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
-     * Helper method for getting the default site root for a list of site selector options.<p>
+     * Helper method for getting the default (sub)site root for a list of site selector options.<p>
      *
      * @param options the list of options
      *
-     * @return the default site root
+     * @return the default (sub)site root
      */
     private String getDefaultSiteRoot(List<CmsSiteSelectorOption> options) {
 
         if (m_startSite != null) {
             return m_startSite;
         } else if ((options != null) && (!options.isEmpty())) {
+            String defaultOption = options.get(0).getSiteRoot();
             for (CmsSiteSelectorOption option : options) {
-                if (option.isCurrentSite()) {
+                if (option.getType().equals(CmsSiteSelectorOption.Type.currentSubsite)) {
                     return option.getSiteRoot();
                 }
+                if (option.isCurrentSite()) {
+                    defaultOption = option.getSiteRoot();
+                }
             }
-            return options.get(0).getSiteRoot();
+            return defaultOption;
         } else {
             return CmsCoreProvider.get().getSiteRoot();
         }
@@ -1872,7 +1923,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             protected void onResponse(List<CmsCategoryTreeEntry> result) {
 
                 m_dialogBean.setCategories(result);
-                m_handler.setCategoriesTabContent(result);
+                m_handler.setCategoriesTabContent(result, new ArrayList<String>());
                 m_handler.onCategoriesTabSelection();
                 stop(false);
             }

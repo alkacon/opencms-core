@@ -47,6 +47,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
+
 /**
  * Manages message bundles loaded from the VFS.<p>
  */
@@ -96,12 +98,6 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
         }
     }
 
-    /** Thread generation counter. */
-    private int m_threadCount;
-
-    /** Indicated if a reload is already scheduled. */
-    private boolean m_reloadIsScheduled;
-
     /** Resource type name for plain-text properties files containing messages. */
     public static final String TYPE_PROPERTIES_BUNDLE = "propertyvfsbundle";
 
@@ -116,6 +112,12 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /** The CMS context to use. */
     private CmsObject m_cms;
+
+    /** Indicated if a reload is already scheduled. */
+    private boolean m_reloadIsScheduled;
+
+    /** Thread generation counter. */
+    private int m_threadCount;
 
     /**
      * Creates a new instance.<p>
@@ -178,27 +180,38 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
     public synchronized void reload(boolean isStartup) {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-            flushBundles();
+            List<CmsResource> xmlBundles = Lists.newArrayList();
+            List<CmsResource> propertyBundles = Lists.newArrayList();
             try {
                 int xmlType = OpenCms.getResourceManager().getResourceType(TYPE_XML_BUNDLE).getTypeId();
-                List<CmsResource> xmlBundles = m_cms.readResources(
-                    "/",
-                    CmsResourceFilter.ALL.addRequireType(xmlType),
-                    true);
-                for (CmsResource xmlBundle : xmlBundles) {
-                    addXmlBundle(xmlBundle);
-                }
+                xmlBundles = m_cms.readResources("/", CmsResourceFilter.ALL.addRequireType(xmlType), true);
             } catch (Exception e) {
                 logError(e, isStartup);
             }
             try {
                 int propType = OpenCms.getResourceManager().getResourceType(TYPE_PROPERTIES_BUNDLE).getTypeId();
-                List<CmsResource> propertyBundles = m_cms.readResources(
-                    "/",
-                    CmsResourceFilter.ALL.addRequireType(propType),
-                    true);
-                for (CmsResource propertyBundle : propertyBundles) {
-                    addPropertyBundle(propertyBundle);
+                propertyBundles = m_cms.readResources("/", CmsResourceFilter.ALL.addRequireType(propType), true);
+            } catch (Exception e) {
+                logError(e, isStartup);
+            }
+            try {
+                synchronized (CmsResourceBundleLoader.class) {
+                    // Although the methods of CmsResourceBundleLoader which manipulate the cache
+                    // are synchronized, we synchronize the whole block to avoid intermediate states
+                    // where bundles have been removed from the cache but not re-added again
+                    for (String baseName : m_bundleBaseNames) {
+                        CmsResourceBundleLoader.flushBundleCache(baseName, true);
+                    }
+                    m_bundleBaseNames.clear();
+                    for (CmsResource xmlBundle : xmlBundles) {
+                        addXmlBundle(xmlBundle);
+                    }
+                    for (CmsResource propertyBundle : propertyBundles) {
+                        addPropertyBundle(propertyBundle);
+                    }
+                    if (OpenCms.getWorkplaceManager() != null) {
+                        OpenCms.getWorkplaceManager().flushMessageCache();
+                    }
                 }
             } catch (Exception e) {
                 logError(e, isStartup);
@@ -313,21 +326,6 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
                 CmsVfsResourceBundle.TYPE_XML);
             CmsVfsResourceBundle bundle = new CmsVfsResourceBundle(params);
             addBundle(name, locale, bundle);
-        }
-    }
-
-    /**
-     * Clears the internal cache.
-     */
-    private void flushBundles() {
-
-        for (String baseName : m_bundleBaseNames) {
-            CmsResourceBundleLoader.flushBundleCache(baseName, true);
-        }
-        m_bundleBaseNames.clear();
-        if (OpenCms.getWorkplaceManager() != null) {
-            // may be null in some test case scenarios
-            OpenCms.getWorkplaceManager().flushMessageCache();
         }
     }
 

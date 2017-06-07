@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -188,7 +188,10 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Adds leading and trailing slashes to a path.<p>
+     * Adds leading and trailing slashes to a path,
+     * if the path does not already start or end with a slash.<p>
+     *
+     * <b>Directly exposed for JSP EL<b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param path the path to which add the slashes
      *
@@ -228,10 +231,13 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Changes the filename suffix.
+     * Changes the given filenames suffix from the current suffix to the provided suffix.
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param filename the filename to be changed
      * @param suffix the new suffix of the file
+     *
      * @return the filename with the replaced suffix
      */
     public static String changeFileNameSuffixTo(String filename, String suffix) {
@@ -257,13 +263,13 @@ public final class CmsStringUtil {
      * <li>The <code>constraints</code></ol>
      *
      * @param name the name to check
-     * @param contraints the additional character constraints
+     * @param constraints the additional character constraints
      * @param key the key to use for generating the Exception (if required)
      * @param bundle the bundle to use for generating the Exception (if required)
      *
      * @throws CmsIllegalArgumentException if the check fails (generated from the given key and bundle)
      */
-    public static void checkName(String name, String contraints, String key, I_CmsMessageBundle bundle)
+    public static void checkName(String name, String constraints, String key, I_CmsMessageBundle bundle)
     throws CmsIllegalArgumentException {
 
         int l = name.length();
@@ -272,10 +278,10 @@ public final class CmsStringUtil {
             if (((c < 'a') || (c > 'z'))
                 && ((c < '0') || (c > '9'))
                 && ((c < 'A') || (c > 'Z'))
-                && (contraints.indexOf(c) < 0)) {
+                && (constraints.indexOf(c) < 0)) {
 
                 throw new CmsIllegalArgumentException(
-                    bundle.container(key, new Object[] {name, new Character(c), new Integer(i), contraints}));
+                    bundle.container(key, new Object[] {name, new Character(c), new Integer(i), constraints}));
             }
         }
     }
@@ -302,11 +308,14 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Compares paths while ignoring leading / trailing slashes.<p>
+     * Compares two paths, ignoring leading and trailing slashes.<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param path1 the first path
      * @param path2 the second path
-     * @return true if the paths are equal (ignoring leading or trailing slashes)
+     *
+     * @return true if the paths are equal (ignoring leading and trailing slashes)
      */
     public static boolean comparePaths(String path1, String path2) {
 
@@ -351,11 +360,10 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Replaces occurrences of special control characters in the given input with
-     * a HTML representation.<p>
-     *
-     * This method currently replaces line breaks to <code>&lt;br/&gt;</code> and special HTML chars
+     * Replaces line breaks to <code>&lt;br/&gt;</code> and HTML control characters
      * like <code>&lt; &gt; &amp; &quot;</code> with their HTML entity representation.<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param source the String to escape
      *
@@ -375,7 +383,11 @@ public final class CmsStringUtil {
     /**
      * Escapes a String so it may be used in JavaScript String definitions.<p>
      *
-     * This method replaces line breaks, quotation marks and \ characters.<p>
+     * This method escapes
+     * line breaks (<code>\r\n,\n</code>) quotation marks (<code>".'</code>)
+     * and slash as well as backspace characters (<code>\,/</code>).<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param source the String to escape
      *
@@ -399,6 +411,8 @@ public final class CmsStringUtil {
      *
      * This method replaces the following characters in a String:<br>
      * <code>{}[]()\$^.*+/</code><p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param source the string to escape
      *
@@ -516,6 +530,8 @@ public final class CmsStringUtil {
      * This method should be pretty robust and work even if the input HTML does not contains
      * a valid body tag.<p>
      *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
+     *
      * @param content the content to extract the body from
      *
      * @return the extracted body tag content
@@ -577,11 +593,18 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
-     * In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively,
-     * starting with the second! folder. The first folder is removed as last.<p>
+     * Shortens a resource name or path so that it is not longer than the provided maximum length.<p>
      *
-     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/myfolder/.../index.html</code>.<p>
+     * In order to reduce the length of the resource name, only
+     * complete folder names are removed and replaced with ... successively,
+     * starting with the second folder.
+     * The first folder is removed only in case the result still does not fit
+     * if all subfolders have been removed.<p>
+     *
+     * Example: <code>formatResourceName("/myfolder/subfolder/index.html", 21)</code>
+     * returns <code>/myfolder/.../index.html</code>.<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param name the resource name to format
      * @param maxLength the maximum length of the resource name (without leading <code>/...</code>)
@@ -704,7 +727,9 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Gets the common prefix path of two paths.<p>
+     * Returns the common parent path of two paths.<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param first the first path
      * @param second the second path
@@ -811,9 +836,13 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Returns the locale by suffix for the given name, including optional country code.<p>
+     * Returns a Locale calculated from the suffix of the given String, or <code>null</code> if no locale suffix is found.<p>
+     *
+     * The locale returned will include the optional country code if this was part of the suffix.<p>
      *
      * Calls {@link CmsResource#getName(String)} first, so the given name can also be a resource root path.<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param name the name to get the locale for
      *
@@ -861,7 +890,7 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Returns the locale suffix as String for a given name, <code>null</code> otherwise.<p>
+     * Returns the locale suffix from the given String, or <code>null</code> if no locae suffix is found.<p>
      *
      * Uses the the {@link #PATTERN_LOCALE_SUFFIX} to find a language_country occurrence in the
      * given name and returns the first group of the match.<p>
@@ -877,6 +906,8 @@ public final class CmsStringUtil {
      * <li><code>rabbit_enr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> null</code>
      * <li><code>rabbit_en.tar.gz&nbsp;&nbsp;-> null</code>
      * </ul>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param name the resource name to get the locale suffix for
      *
@@ -921,6 +952,8 @@ public final class CmsStringUtil {
      *
      * If the path is the root path, an empty list will be returned.<p>
      *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
+     *
      * @param path the path to split
      *
      * @return the list of non-empty path components
@@ -939,7 +972,11 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Converts a given path to a path relative to a base folder, but only if it actually is a sub-path of the latter, otherwise null is returned.<p>
+     * Converts the given path to a path relative to a base folder,
+     * but only if it actually is a sub-path of the latter,
+     * otherwise <code>null</code> is returned.<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param base the base path
      * @param path the path which should be converted to a relative path
@@ -981,6 +1018,8 @@ public final class CmsStringUtil {
     /**
      * Returns <code>true</code> if the provided String is either <code>null</code>
      * or contains only white spaces.<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param value the value to check
      *
@@ -1037,11 +1076,14 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Checks whether one path is a prefix path of another, i.e. its path components are
-     * the initial path components of the second path.<p>
+     * Checks if the first path is a prefix of the second path.<p>
      *
-     * It is not enough to just use {@link String#startsWith}, because we want /foo/bar to
-     * be a prefix path of  /foo/bar/baz, but not of /foo/bar42.<p>
+     * This method is different compared to {@link String#startsWith},
+     * because it considers <code>/foo/bar</code> to
+     * be a prefix path of <code>/foo/bar/baz</code>,
+     * but not of <code>/foo/bar42</code>.
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param firstPath the first path
      * @param secondPath the second path
@@ -1057,6 +1099,8 @@ public final class CmsStringUtil {
 
     /**
      * Checks if the given class name is a valid Java class name.<p>
+     *
+     * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param className the name to check
      *
@@ -2084,5 +2128,4 @@ public final class CmsStringUtil {
         Matcher matcher = pattern.matcher(value);
         return matcher.matches();
     }
-
 }

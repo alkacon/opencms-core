@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -102,6 +102,44 @@ public interface I_CmsLinkSubstitutionHandler {
      * @see #getRootPath(CmsObject, String, String) for the reverse function, which creates a VFS
      */
     String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure);
+
+    /**
+     * Returns a link <i>from</i> the URI stored in the provided OpenCms user context
+     * <i>to</i> the VFS resource indicated by the given <code>link</code> and <code>siteRoot</code>,
+     * for use on web pages.<p>
+     *
+     * The result should be an absolute link that contains the configured context path and
+     * servlet name, and in the case of the "online" project it will also be rewritten according to
+     * to the configured static export settings.<p>
+     *
+     * In case <code>link</code> is a relative URI, the current URI contained in the provided
+     * OpenCms user context <code>cms</code> is normally used to make the relative <code>link</code> absolute.<p>
+     *
+     * The provided <code>siteRoot</code> is assumed to be the "home" of the link.
+     * In case the current site of the given OpenCms user context <code>cms</code> is different from the
+     * provided <code>siteRoot</code>, the full server prefix is appended to the result link.<p>
+     *
+     * A server prefix is also added if
+     * <ul>
+     *   <li>the link is contained in a normal document and the link references a secure document</li>
+     *   <li>the link is contained in a secure document and the link references a normal document</li>
+     * </ul>
+     *
+     * Please note the above text describes the default behavior as implemented by
+     * {@link CmsDefaultLinkSubstitutionHandler}, which can be fully customized using this handler interface.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
+     * @param siteRoot the site root of the <code>link</code>
+     * @param targetDetailPage the target detail page, in case of linking to a specific detail page
+     * @param forceSecure if <code>true</code> generates always an absolute URL (with protocol and server name) for secure links
+     *
+     * @return a link <i>from</i> the URI stored in the provided OpenCms user context
+     *      <i>to</i> the VFS resource indicated by the given <code>link</code> and <code>siteRoot</code>
+     *
+     * @see #getRootPath(CmsObject, String, String) for the reverse function, which creates a VFS
+     */
+    String getLink(CmsObject cms, String link, String siteRoot, String targetDetailPage, boolean forceSecure);
 
     /**
      * Returns the resource root path in the OpenCms VFS for the given target URI link, or <code>null</code> in

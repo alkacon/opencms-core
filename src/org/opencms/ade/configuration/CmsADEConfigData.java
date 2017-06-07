@@ -353,6 +353,22 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns the names of the bundles configured as workplace bundles in any module configuration.
+     * @return the names of the bundles configured as workplace bundles in any module configuration.
+     */
+    public Set<String> getConfiguredWorkplaceBundles() {
+
+        Set<String> result = new HashSet<String>();
+        for (CmsResourceTypeConfig config : internalGetResourceTypes(false)) {
+            String bundlename = config.getConfiguredWorkplaceBundle();
+            if (null != bundlename) {
+                result.add(bundlename);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Gets the content folder path.<p>
      *
      * For example, if the configuration file is located at /sites/default/.content/.config, the content folder path is /sites/default/.content

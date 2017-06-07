@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 package org.opencms.loader;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -231,9 +232,20 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         Iterator<String> nameIterator = getUrlNameSequence(baseName);
         String result = nameIterator.next();
+        CmsObject onlineCms = null;
+
+        try {
+            onlineCms = OpenCms.initCmsObject(cms);
+            onlineCms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        } catch (CmsException e) {
+            // should not happen, nothing to do
+        }
+        String path = CmsStringUtil.joinPaths(parentFolder, result);
         // use CmsResourceFilter.ALL because we also want to skip over deleted resources
-        while (cms.existsResource(CmsStringUtil.joinPaths(parentFolder, result), CmsResourceFilter.ALL)) {
+        while (cms.existsResource(path, CmsResourceFilter.ALL)
+            || ((onlineCms != null) && onlineCms.existsResource(path, CmsResourceFilter.ALL))) {
             result = nameIterator.next();
+            path = CmsStringUtil.joinPaths(parentFolder, result);
         }
         return result;
     }

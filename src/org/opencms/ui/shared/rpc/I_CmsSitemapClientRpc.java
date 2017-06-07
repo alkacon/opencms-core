@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,6 +42,14 @@ public interface I_CmsSitemapClientRpc extends ClientRpc {
      * @param response a string representing the result code of the page copy dialog
      */
     void finishPageCopyDialog(String callId, String response);
+
+    /**
+     * Opens the property dialog in the locale comparison view.<p>
+     *
+     * @param structureId the structure id of the resource for which to open the property dialog
+     * @param rootId the root structure id of the locale comparison tree
+     */
+    void openPropertyDialog(String structureId, String rootId);
 
     /**
      * Displays the header for a sub-sitemap in the locale comparison view.<p>

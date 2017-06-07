@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -48,7 +48,6 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
@@ -209,9 +208,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     public void addLocale(CmsObject cms, Locale locale) throws CmsXmlException {
 
         if (hasLocale(locale)) {
-            throw new CmsXmlException(org.opencms.xml.page.Messages.get().container(
-                org.opencms.xml.page.Messages.ERR_XML_PAGE_LOCALE_EXISTS_1,
-                locale));
+            throw new CmsXmlException(
+                org.opencms.xml.page.Messages.get().container(
+                    org.opencms.xml.page.Messages.ERR_XML_PAGE_LOCALE_EXISTS_1,
+                    locale));
         }
         // add element node for Locale
         m_contentDefinition.createLocale(cms, this, m_document.getRootElement(), locale);
@@ -266,106 +266,102 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             contentDefinition = m_contentDefinition;
         }
 
-        // read the XML siblings from the parent node
-        List<Element> siblings = CmsXmlGenericWrapper.elements(parentElement, elementName);
-
         int insertIndex;
 
         if (contentDefinition.getChoiceMaxOccurs() > 0) {
-            // for a choice sequence we do not check the index position, we rather do a full XML validation afterwards
+            // for a choice sequence with maxOccurs we do not check the index position, we rather check if maxOccurs has already been hit
+            // additionally we ensure that the insert index is not too big
+            List<?> choiceSiblings = parentElement.content();
+            int numSiblings = choiceSiblings != null ? choiceSiblings.size() : 0;
 
-            insertIndex = index;
-        } else if (siblings.size() > 0) {
-            // we want to add an element to a sequence, and there are elements already of the same type
-
-            if (siblings.size() >= type.getMaxOccurs()) {
-                // must not allow adding an element if max occurs would be violated
-                throw new CmsRuntimeException(
-                    Messages.get().container(
-                        Messages.ERR_XMLCONTENT_ELEM_MAXOCCURS_2,
-                        elementName,
-                        new Integer(type.getMaxOccurs())));
-            }
-
-            if (index > siblings.size()) {
-                // index position behind last element of the list
-                throw new CmsRuntimeException(
-                    Messages.get().container(
-                        Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3,
-                        new Integer(index),
-                        new Integer(siblings.size())));
-            }
-
-            // check for offset required to append beyond last position
-            int offset = (index == siblings.size()) ? 1 : 0;
-            // get the element from the parent at the selected position
-            Element sibling = siblings.get(index - offset);
-            // check position of the node in the parent node content
-            insertIndex = sibling.getParent().content().indexOf(sibling) + offset;
-        } else {
-            // we want to add an element to a sequence, but there are no elements of the same type yet
-
-            if (index > 0) {
-                // since the element does not occur, index must be 0
-                throw new CmsRuntimeException(
-                    Messages.get().container(
-                        Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2,
-                        new Integer(index),
-                        elementName));
-            }
-
-            // check where in the type sequence the type should appear
-            int typeIndex = contentDefinition.getTypeSequence().indexOf(type);
-            if (typeIndex == 0) {
-                // this is the first type, so we just add at the very first position
-                insertIndex = 0;
-            } else {
-
-                // create a list of all element names that should occur before the selected type
-                List<String> previousTypeNames = new ArrayList<String>();
-                for (int i = 0; i < typeIndex; i++) {
-                    I_CmsXmlSchemaType t = contentDefinition.getTypeSequence().get(i);
-                    previousTypeNames.add(t.getName());
-                }
-
-                // iterate all elements of the parent node
-                Iterator<Node> i = CmsXmlGenericWrapper.content(parentElement).iterator();
-                int pos = 0;
-                while (i.hasNext()) {
-                    Node node = i.next();
-                    if (node instanceof Element) {
-                        if (!previousTypeNames.contains(node.getName())) {
-                            // the element name is NOT in the list of names that occurs before the selected type,
-                            // so it must be an element that occurs AFTER the type
-                            break;
-                        }
-                    }
-                    pos++;
-                }
-                insertIndex = pos;
-            }
-        }
-
-        I_CmsXmlContentValue newValue;
-        if (contentDefinition.getChoiceMaxOccurs() > 0) {
-            // for a choice we do a full XML validation
-            try {
-                // append the new element at the calculated position
-                newValue = addValue(cms, parentElement, type, locale, insertIndex);
-                // validate the XML structure to see if the index position was valid
-                CmsXmlUtils.validateXmlStructure(m_document, m_encoding, new CmsXmlEntityResolver(cms));
-            } catch (Exception e) {
+            if ((numSiblings >= contentDefinition.getChoiceMaxOccurs()) || (index > numSiblings)) {
                 throw new CmsRuntimeException(
                     Messages.get().container(
                         Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3,
-                        new Integer(insertIndex),
+                        new Integer(index),
                         elementName,
                         parentElement.getUniquePath()));
             }
+            insertIndex = index;
+
         } else {
-            // just append the new element at the calculated position
-            newValue = addValue(cms, parentElement, type, locale, insertIndex);
+            // read the XML siblings from the parent node
+            List<Element> siblings = CmsXmlGenericWrapper.elements(parentElement, elementName);
+
+            if (siblings.size() > 0) {
+                // we want to add an element to a sequence, and there are elements already of the same type
+
+                if (siblings.size() >= type.getMaxOccurs()) {
+                    // must not allow adding an element if max occurs would be violated
+                    throw new CmsRuntimeException(
+                        Messages.get().container(
+                            Messages.ERR_XMLCONTENT_ELEM_MAXOCCURS_2,
+                            elementName,
+                            new Integer(type.getMaxOccurs())));
+                }
+
+                if (index > siblings.size()) {
+                    // index position behind last element of the list
+                    throw new CmsRuntimeException(
+                        Messages.get().container(
+                            Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3,
+                            new Integer(index),
+                            new Integer(siblings.size())));
+                }
+
+                // check for offset required to append beyond last position
+                int offset = (index == siblings.size()) ? 1 : 0;
+                // get the element from the parent at the selected position
+                Element sibling = siblings.get(index - offset);
+                // check position of the node in the parent node content
+                insertIndex = sibling.getParent().content().indexOf(sibling) + offset;
+            } else {
+                // we want to add an element to a sequence, but there are no elements of the same type yet
+
+                if (index > 0) {
+                    // since the element does not occur, index must be 0
+                    throw new CmsRuntimeException(
+                        Messages.get().container(
+                            Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2,
+                            new Integer(index),
+                            elementName));
+                }
+
+                // check where in the type sequence the type should appear
+                int typeIndex = contentDefinition.getTypeSequence().indexOf(type);
+                if (typeIndex == 0) {
+                    // this is the first type, so we just add at the very first position
+                    insertIndex = 0;
+                } else {
+
+                    // create a list of all element names that should occur before the selected type
+                    List<String> previousTypeNames = new ArrayList<String>();
+                    for (int i = 0; i < typeIndex; i++) {
+                        I_CmsXmlSchemaType t = contentDefinition.getTypeSequence().get(i);
+                        previousTypeNames.add(t.getName());
+                    }
+
+                    // iterate all elements of the parent node
+                    Iterator<Node> i = CmsXmlGenericWrapper.content(parentElement).iterator();
+                    int pos = 0;
+                    while (i.hasNext()) {
+                        Node node = i.next();
+                        if (node instanceof Element) {
+                            if (!previousTypeNames.contains(node.getName())) {
+                                // the element name is NOT in the list of names that occurs before the selected type,
+                                // so it must be an element that occurs AFTER the type
+                                break;
+                            }
+                        }
+                        pos++;
+                    }
+                    insertIndex = pos;
+                }
+            }
         }
+
+        // just append the new element at the calculated position
+        I_CmsXmlContentValue newValue = addValue(cms, parentElement, type, locale, insertIndex);
 
         // re-initialize this XML content
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -385,7 +381,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         clone.m_autoCorrectionEnabled = m_autoCorrectionEnabled;
         clone.m_contentDefinition = m_contentDefinition;
         clone.m_conversion = m_conversion;
-        clone.m_document = m_document;
+        clone.m_document = (Document)(m_document.clone());
         clone.m_encoding = m_encoding;
         clone.m_file = m_file;
         clone.initDocument();

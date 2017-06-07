@@ -1,4 +1,6 @@
-<%@page taglibs="c"  import="org.opencms.ade.galleries.CmsGalleryActionElement, org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants, org.opencms.util.CmsStringUtil, org.opencms.i18n.CmsEncoder" taglibs="cms"%><%
+<%@page import="org.opencms.ade.galleries.CmsGalleryActionElement, org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants, org.opencms.util.CmsStringUtil, org.opencms.i18n.CmsEncoder" %><%@ 
+	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%@ 
+	taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%><%
   CmsGalleryActionElement gallery = new CmsGalleryActionElement(pageContext, request, response);
 %><!DOCTYPE html>
 <html>

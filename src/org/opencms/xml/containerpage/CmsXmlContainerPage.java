@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -58,6 +58,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -97,6 +98,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Elements,
         /** Element formatter node name. */
         Formatter,
+        /** The is root container node name. */
+        IsRootContainer,
         /** Container attribute key node name. */
         Key,
         /** Container name node name. */
@@ -396,7 +399,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         while (cntIt.hasNext()) {
             CmsContainerBean container = cntIt.next();
             // check all unused nested containers if their parent element is still part of the page
-            if (!currentContainers.containsKey(container.getName()) && container.isNestedContainer()) {
+            if (!currentContainers.containsKey(container.getName())
+                && (container.isNestedContainer() && !container.isRootContainer())) {
                 boolean remove = !pageElements.containsKey(container.getParentInstanceId())
                     || container.getElements().isEmpty();
                 if (!remove) {
@@ -504,6 +508,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         addBookmarkForElement(parentInstance, locale, container, cntPath, cntDef);
                     }
 
+                    Element isRootContainer = container.element(XmlNode.IsRootContainer.name());
+                    if (isRootContainer != null) {
+                        addBookmarkForElement(isRootContainer, locale, container, cntPath, cntDef);
+                    }
+
                     List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                     // Elements
                     for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(
@@ -564,6 +573,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         name.getText(),
                         type.getText(),
                         parentInstance != null ? parentInstance.getText() : null,
+                        (isRootContainer != null) && Boolean.valueOf(isRootContainer.getText()).booleanValue(),
                         elements);
                     containers.add(newContainerBean);
                 }
@@ -609,7 +619,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         parent.clearContent();
 
-        for (String containerName : cntPage.getNames()) {
+        // save containers in a defined order
+        List<String> containerNames = new ArrayList<String>(cntPage.getNames());
+        Collections.sort(containerNames);
+
+        for (String containerName : containerNames) {
             CmsContainerBean container = cntPage.getContainers().get(containerName);
 
             // the container
@@ -618,6 +632,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
             if (container.isNestedContainer()) {
                 cntElement.addElement(XmlNode.ParentInstanceId.name()).addCDATA(container.getParentInstanceId());
+            }
+            if (container.isRootContainer()) {
+                cntElement.addElement(XmlNode.IsRootContainer.name()).addText(Boolean.TRUE.toString());
             }
 
             // the elements

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -66,10 +66,10 @@ public class CmsInfoBoxFormFieldPanel extends A_CmsFormFieldPanel {
 
         m_panel = new FlowPanel();
         m_innerPanel = new FlowPanel();
-        CmsListItemWidget liWidget = new CmsListItemWidget(info);
-        liWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
-        liWidget.setStateIcon(StateIcon.standard);
-        m_panel.add(liWidget);
+        m_infoWidget = new CmsListItemWidget(info);
+        m_infoWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
+        m_infoWidget.setStateIcon(StateIcon.standard);
+        m_panel.add(m_infoWidget);
         m_panel.add(m_innerPanel);
         m_innerPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_innerPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().navModePropertiesBox());

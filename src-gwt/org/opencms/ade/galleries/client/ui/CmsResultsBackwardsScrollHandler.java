@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 
 import java.util.List;
 
@@ -160,7 +161,9 @@ public class CmsResultsBackwardsScrollHandler implements ScrollHandler {
             end = results.size();
         }
         List<CmsResultItemBean> page = results.subList(start, end);
-        m_resultsTab.addContentItems(page, true);
+        boolean showPath = SortParams.path_asc.name().equals(m_searchBean.getSortOrder())
+            || SortParams.path_desc.name().equals(m_searchBean.getSortOrder());
+        m_resultsTab.addContentItems(page, true, showPath);
     }
 
     /**

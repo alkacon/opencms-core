@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -44,23 +44,35 @@ public class CmsLogReport extends A_CmsReport {
     private StringBuffer m_buffer;
 
     /** The class name to use for the logger. */
-    private Class<?> m_clazz;
+    private Object m_channel;
 
     /**
      * Constructs a new report using the provided locale for the output language,
      * using the provided Java class for the log channel.<p>
      *
      * @param locale the locale to use for the report output messages
-     * @param clazz the the class for the logger channel
+     * @param channel the log channel
      */
-    public CmsLogReport(Locale locale, Class<?> clazz) {
+    public CmsLogReport(Locale locale, Class<?> channel) {
+        this(locale, (Object)channel);
+
+    }
+
+    /**
+     * Constructs a new report using the provided locale for the output language,
+     * using the provided Java class for the log channel.<p>
+     *
+     * @param locale the locale to use for the report output messages
+     * @param channel the log channel (usually a string with the package name, or a class)
+     */
+    public CmsLogReport(Locale locale, Object channel) {
 
         init(locale, null);
         m_buffer = new StringBuffer();
-        if (clazz == null) {
-            clazz = CmsLogReport.class;
+        if (channel == null) {
+            channel = CmsLogReport.class;
         }
-        m_clazz = clazz;
+        m_channel = channel;
     }
 
     /**
@@ -109,8 +121,8 @@ public class CmsLogReport extends A_CmsReport {
      */
     public synchronized void println() {
 
-        if (CmsLog.getLog(m_clazz).isInfoEnabled()) {
-            CmsLog.getLog(m_clazz).info(m_buffer.toString());
+        if (CmsLog.getLog(m_channel).isInfoEnabled()) {
+            CmsLog.getLog(m_channel).info(m_buffer.toString());
         }
         m_buffer = new StringBuffer();
         setLastEntryTime(System.currentTimeMillis());
@@ -121,13 +133,13 @@ public class CmsLogReport extends A_CmsReport {
      */
     public synchronized void println(Throwable t) {
 
-        if (CmsLog.getLog(m_clazz).isInfoEnabled()) {
+        if (CmsLog.getLog(m_channel).isInfoEnabled()) {
             StringBuffer message = new StringBuffer();
             message.append(getMessages().key(Messages.RPT_EXCEPTION_0));
             message.append(t.getMessage());
             m_buffer.append(message);
             addError(message.toString());
-            CmsLog.getLog(m_clazz).info(m_buffer.toString(), t);
+            CmsLog.getLog(m_channel).info(m_buffer.toString(), t);
         }
         m_buffer = new StringBuffer();
         setLastEntryTime(System.currentTimeMillis());

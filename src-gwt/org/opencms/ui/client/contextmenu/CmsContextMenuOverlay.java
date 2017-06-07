@@ -1,6 +1,9 @@
 
 package org.opencms.ui.client.contextmenu;
 
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -257,6 +260,7 @@ class CmsContextMenuOverlay extends VOverlay {
     public void unregister() {
 
         m_closeHandlerRegistration.removeHandler();
+        hide();
     }
 
     /**
@@ -280,9 +284,10 @@ class CmsContextMenuOverlay extends VOverlay {
      */
     protected void normalizeItemWidths() {
 
-        int widestItemWidth = getWidthOfWidestItem();
+        int widestItemWidth = 1 + getWidthOfWidestItem();
+        // Add 1 because actual width may not be an integer
         for (CmsContextMenuItemWidget item : m_menuItems) {
-            if (item.getOffsetWidth() <= widestItemWidth) {
+            if (measureWidth(item) <= widestItemWidth) {
                 item.setWidth(widestItemWidth + "px");
             }
         }
@@ -318,13 +323,26 @@ class CmsContextMenuOverlay extends VOverlay {
         int maxWidth = 0;
 
         for (CmsContextMenuItemWidget item : m_menuItems) {
-            int itemWidth = item.getOffsetWidth() + 1;
-
+            item.getElement().getStyle().clearWidth();
+            int itemWidth = measureWidth(item);
             if (itemWidth > maxWidth) {
                 maxWidth = itemWidth;
             }
         }
 
         return maxWidth;
+    }
+
+    /**
+     * Measures the width of a context menu item.<p>
+     *
+     * @param item the menu item
+     * @return the width
+     */
+    private int measureWidth(CmsContextMenuItemWidget item) {
+
+        return item.getOffsetWidth()
+            - CmsDomUtil.getCurrentStyleInt(item.getElement(), Style.paddingLeft)
+            - CmsDomUtil.getCurrentStyleInt(item.getElement(), Style.paddingRight);
     }
 }

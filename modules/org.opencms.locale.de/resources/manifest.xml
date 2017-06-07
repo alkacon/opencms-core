@@ -18,9 +18,9 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains the German language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the german version of the OpenCms Workplace.</p>
-<p><i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>10.5.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+<p><i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
+		<version>10.5.1</version>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
@@ -1647,6 +1647,18 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 23 Jun 2016 07:18:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/ui/editors/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/ui/editors/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4e766ad5-dbd1-11e6-a687-7ff2120bb7cf</uuidstructure>
+			<uuidresource>4e766ad6-dbd1-11e6-a687-7ff2120bb7cf</uuidresource>
+			<datecreated>Mon, 16 Jan 2017 09:51:09 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>

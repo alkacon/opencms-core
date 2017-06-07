@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 8.x and 9.x to @OPENCMS_VERSION@
+      Instructions for updating OpenCms 8.x, 9.x and 10.0.x to @OPENCMS_VERSION@
 
 
                                     WARNING:
@@ -26,7 +26,7 @@ IMPORTANT: This version of OpenCms requires at least Java 7.
 IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modules.
            If you made modifications to these modules, their changes will be lost.
            In this case export the changed module resources before starting the update.
-           Hint: You can use the "Resource changed since" feature in the the Database 
+           Hint: You can use the "Resource changed since" feature in the Database 
            Administration to export all the changes you have done after installing 
            OpenCms.
 
@@ -49,6 +49,8 @@ and 'lib/opencms.jar' are replaced with the new version from the archive before 
 continue. Be also sure that after unpacking the tomcat user has write permissions on 
 the whole web application directory.
 Be also aware that the 'web.xml' might be overwritten.
+The OpenCmsUrlServletFilter available since version 10.5.0 will be disabled by default. 
+Edit the 'web.xml' to enable it.
 
 
 3. Enable the upgrade wizard
@@ -56,21 +58,6 @@ Be also aware that the 'web.xml' might be overwritten.
 To do so, set the property 
 wizard.enabled=true
 in the config file WEB-INF/config/opencms.properties.
-
-3.a. Disable search index update
-
-By default, during the update before installing the new modules, all your search
-indexes will be rebuild, this is needed because we updated to the latest Lucene
-search engine version which has a different index format.
-Depending on your system, this may take too long. So you can disable it and, then
-later after the Update, you can rebuild your indexes one by one from the 
-Administration view. To disable it, edit the /update/cmsupdate.ori file, find
-lines 10-11:
----
-# Rebuild search indexes
-rebuildAllIndexes
----
-and delete them or comment them out.
 
 4. Restart your OpenCms servlet container
 
@@ -115,13 +102,18 @@ During the update Solr will be disabled in the WEB-INF/config/opencms-search.xml
 To update Solr you must update the 'schema.xml and' the 'solrconfig.xml' manually.
 The new default configuration files are located in the solr-update/ directory in 
 the WEB-INF folder of your application. If you are using the default configuration
-from the distribution, it is sufficient to copy the new configuration files to the
-WEB-INF/solr folder. Else if you have customized the Solr configuration you might 
-want to merge the 'schema.xml' and the 'solrconfig.xml' first. When you are done 
-set the attribute enabled to 'true' again (and restart the servelt container).
+from the distribution, it is sufficient to replace the folder WEB-INF/solr/ with
+the solr-update/ folder. Else if you have customized the Solr configuration you might
+want to merge the 'schema.xml' and the 'solrconfig.xml' first. Note that these two files
+are now located under solr/configsets/default/conf/ - up to OpenCms 10 it was solr/conf/.
+Even if you only keep your old config files, move them to solr/configsets/default/conf/.
 
-If you are updating from an earlier version than 8.5.0, copy the solr-complete/ 
-folder to the solr folder instead. 
+If you are updating from an earlier version than 8.5.0, always copy the whole solr-update/ 
+folder to the solr/ folder instead. 
+
+When you are done, enable Solr in the opencms-search.xml again (and restart the servlet
+container).
+
 
 
 7. Shutdown and restart your OpenCms servlet container
@@ -131,6 +123,25 @@ work directory (ie. ${TOMCAT_HOME}/work/Catalina/localhost/opencms/) and the
 OpenCms' jsp repository (ie. ${OPENCMS_HOME}/WEB-INF/jsp/)
 
 You should now be able to log into the OpenCms workplace as before.
+
+
+
+8. Rebuild search indexes
+
+As the search libraries and configuration may have changed, it is necessary to rebuild all search indexes.
+Log into OpenCms and navigate to Launchpad > Search Management and rebuild all indexes.
   
- 
+
+
+9. Convert model groups [only relevant when updating from 10.0.x]
+
+The way model groups are stored has changed between OpenCms 10.0.x and 10.5.x. So if you are using model 
+groups and are updating your system from version 10.0.x, you will need to convert them to the new format.
+
+This requires the following steps:
+
+- Open the explorer, switch to the root site / "system folder" and navigate to the folder /system/modules/org.opencms.ade.config/pages.
+- Execute the JSP "updateModelGroups.jsp" in this folder
+- In the form displayed by the JSP, fill out the "base path" and "base container name" fields (they are 
+  described in the form itself) and hit the submit button.    
 

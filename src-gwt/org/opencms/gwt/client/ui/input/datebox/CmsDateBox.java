@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
 import java.util.Map;
@@ -588,7 +589,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
      */
     public void setFormValueAsString(String value) {
 
-        if (value != null) {
+        if (!CmsStringUtil.isEmpty(value)) {
             try {
                 long time = Long.parseLong(value);
                 setValue(new Date(time));
@@ -640,7 +641,9 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
         if (fireEvents) {
             fireChange(value);
         }
-        if (m_dateOnly) {
+        if (value == null) {
+            m_box.setFormValueAsString("");
+        } else if (m_dateOnly) {
             m_box.setFormValueAsString(CmsDateConverter.toDateString(value));
         } else {
             m_box.setFormValueAsString(CmsDateConverter.toString(value));

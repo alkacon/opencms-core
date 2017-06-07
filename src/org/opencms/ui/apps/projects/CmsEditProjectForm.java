@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,12 @@ package org.opencms.ui.apps.projects;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
@@ -45,14 +50,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.Validator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -60,8 +71,76 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsEditProjectForm extends VerticalLayout {
 
+    /**
+     * The OU validator.<p>
+     */
+    protected class OUValidator implements Validator {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if (m_fieldOU.isEnabled() && CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)value)) {
+                try {
+                    OpenCms.getOrgUnitManager().readOrganizationalUnit(A_CmsUI.getCmsObject(), (String)value);
+                } catch (CmsException e) {
+                    throw new InvalidValueException(e.getLocalizedMessage(UI.getCurrent().getLocale()));
+                }
+            }
+        }
+    }
+
+    /**
+     * The resource field validator. Checks whether the resource is part of the project OU.<p>
+     */
+    protected class ResourceValidator implements Validator {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)value)
+                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_fieldOU.getValue())) {
+                try {
+                    List<CmsResource> ouRes = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                        A_CmsUI.getCmsObject(),
+                        m_fieldOU.getValue());
+
+                    String resPath = (String)value;
+                    for (CmsResource res : ouRes) {
+                        if (resPath.startsWith(res.getRootPath())) {
+                            return;
+                        }
+                    }
+                    throw new InvalidValueException(
+                        "The resource path "
+                            + value
+                            + " is not part of the project OU '"
+                            + m_fieldOU.getValue()
+                            + "'.");
+                } catch (CmsException e) {
+                    // ignore
+                }
+            }
+        }
+    }
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsEditProjectForm.class.getName());
+
     /** The serial version id. */
     private static final long serialVersionUID = 2345799706922671537L;
+
+    /** The OU field. */
+    TextField m_fieldOU;
 
     /** The add resources button. */
     private Button m_addResource;
@@ -81,6 +160,9 @@ public class CmsEditProjectForm extends VerticalLayout {
     /** The project name field. */
     private TextField m_fieldName;
 
+    /** The form fileds. */
+    private Field<?>[] m_fields;
+
     /** The user group field. */
     private CmsPrincipalSelect m_fieldUser;
 
@@ -96,8 +178,8 @@ public class CmsEditProjectForm extends VerticalLayout {
     /** The resources form layout. */
     private FormLayout m_resources;
 
-    /** The title label. */
-    private Label m_title;
+    /** The resource field validator. */
+    private ResourceValidator m_resourceValidator;
 
     /**
      * Constructor.<p>
@@ -109,9 +191,34 @@ public class CmsEditProjectForm extends VerticalLayout {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_manager = manager;
-        m_title.setValue(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_CREATE_NEW_0));
+        m_resourceValidator = new ResourceValidator();
         m_fieldManager.setWidgetType(WidgetType.groupwidget);
+        m_fieldManager.setRealPrincipalsOnly(true);
         m_fieldUser.setWidgetType(WidgetType.groupwidget);
+        m_fieldUser.setRealPrincipalsOnly(true);
+
+        try {
+            CmsOrganizationalUnit ou = OpenCms.getRoleManager().getOrgUnitsForRole(
+                A_CmsUI.getCmsObject(),
+                CmsRole.PROJECT_MANAGER,
+                true).get(0);
+            m_fieldOU.setValue(ou.getName());
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            m_fieldOU.setValue(null);
+        }
+        m_fieldOU.setImmediate(true);
+        m_fieldOU.addValidator(new OUValidator());
+        m_fieldOU.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                validateResourceFields();
+            }
+        });
+
         m_addResource.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -139,6 +246,7 @@ public class CmsEditProjectForm extends VerticalLayout {
                 cancel();
             }
         });
+        m_fields = new Field<?>[] {m_fieldName, m_fieldDescription, m_fieldManager, m_fieldUser, m_fieldOU};
     }
 
     /**
@@ -153,12 +261,20 @@ public class CmsEditProjectForm extends VerticalLayout {
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             m_project = cms.readProject(projectId);
-            m_title.setValue(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_EDIT_1, m_project.getName()));
             m_fieldName.setValue(m_project.getName());
             m_fieldName.setEnabled(false);
             m_fieldDescription.setValue(m_project.getDescription());
             m_fieldUser.setValue(cms.readGroup(m_project.getGroupId()).getName());
             m_fieldManager.setValue(cms.readGroup(m_project.getManagerGroupId()).getName());
+            try {
+                CmsOrganizationalUnit ou;
+                ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, m_project.getOuFqn());
+                m_fieldOU.setValue(ou.getDisplayName(UI.getCurrent().getLocale()));
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                m_fieldOU.setValue(null);
+            }
+            m_fieldOU.setEnabled(false);
             for (String resName : cms.readProjectResources(m_project)) {
                 addResourceField(resName);
             }
@@ -180,10 +296,12 @@ public class CmsEditProjectForm extends VerticalLayout {
         if (value != null) {
             field.setValue(value);
         }
+        field.addValidator(m_resourceValidator);
         CmsRemovableFormRow<CmsPathSelectField> row = new CmsRemovableFormRow<CmsPathSelectField>(
             field,
             CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_REMOVE_RESOURCE_0));
         row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCE_0));
+        row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_RESOURCE_HELP_0));
         m_resources.addComponent(row);
     }
 
@@ -200,11 +318,26 @@ public class CmsEditProjectForm extends VerticalLayout {
      */
     void submit() {
 
-        if (m_project == null) {
-            createProject();
-        } else {
-            saveProject();
-            m_manager.openSubView("", true);
+        if (isValid()) {
+            if (m_project == null) {
+                createProject();
+            } else {
+                saveProject();
+                m_manager.openSubView("", true);
+            }
+        }
+    }
+
+    /**
+     * Validates the resource fields.<p>
+     */
+    @SuppressWarnings("unchecked")
+    void validateResourceFields() {
+
+        for (Component c : m_resources) {
+            if (c instanceof CmsRemovableFormRow<?>) {
+                ((CmsRemovableFormRow<CmsPathSelectField>)c).getInput().validate();
+            }
         }
     }
 
@@ -215,8 +348,18 @@ public class CmsEditProjectForm extends VerticalLayout {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
+            String name = "/";
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_fieldOU.getValue())) {
+                name = CmsStringUtil.joinPaths(name, m_fieldOU.getValue());
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_fieldName.getValue())) {
+                name = CmsStringUtil.joinPaths(name, m_fieldName.getValue());
+            } else {
+                name = CmsStringUtil.joinPaths(name, "/");
+            }
+
             m_project = cms.createProject(
-                m_fieldName.getValue(),
+                name,
                 m_fieldDescription.getValue(),
                 m_fieldUser.getValue(),
                 m_fieldManager.getValue(),
@@ -248,6 +391,32 @@ public class CmsEditProjectForm extends VerticalLayout {
             }
         }
         return resources;
+    }
+
+    /**
+     * Validates the form fields.<p>
+     *
+     * @return <code>true</code> in case all fields are valid
+     */
+    @SuppressWarnings("unchecked")
+    private boolean isValid() {
+
+        for (Field<?> field : m_fields) {
+            if (!field.isValid()) {
+                field.focus();
+
+                return false;
+            }
+        }
+        for (Component c : m_resources) {
+            if (c instanceof CmsRemovableFormRow<?>) {
+                if (!((CmsRemovableFormRow<CmsPathSelectField>)c).getInput().isValid()) {
+                    ((CmsRemovableFormRow<CmsPathSelectField>)c).getInput().focus();
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

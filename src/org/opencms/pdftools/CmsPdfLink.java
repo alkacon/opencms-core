@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ package org.opencms.pdftools;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -127,7 +128,7 @@ public class CmsPdfLink {
             String formatterId = matcher.group(2);
             String detailName = matcher.group(3);
             CmsUUID id = cms.readIdForUrlName(detailName);
-            m_content = cms.readResource(id);
+            m_content = cms.readResource(id, CmsResourceFilter.ignoreExpirationOffline(cms));
             m_locale = CmsLocaleManager.getLocale(localeStr);
             m_formatter = cms.readResource(new CmsUUID(formatterId));
         } else {

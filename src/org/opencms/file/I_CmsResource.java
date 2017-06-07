@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,7 @@ import java.util.Comparator;
 
 /**
  * Common ancestor interface for {@link CmsFile} and {@link CmsFolder}
- * as well as for {@Link CmsHistoryFile} and {@link org.opencms.file.history.CmsHistoryFolder}.<p>
+ * as well as for {@link org.opencms.file.history.CmsHistoryFile} and {@link org.opencms.file.history.CmsHistoryFolder}.<p>
  *
  * @since 8.0.0
  */

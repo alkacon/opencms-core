@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -27,11 +27,13 @@
 
 package org.opencms.file.types;
 
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -80,6 +82,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The resource type name for inherited container references.  */
     public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritance_group";
 
+    /** The model group resource type name. */
     public static final String MODEL_GROUP_TYPE_NAME = "modelgroup";
 
     /** The name of this resource type. */
@@ -163,11 +166,53 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
         boolean result = false;
         if (resource != null) {
-            result = (resource.getTypeId() == getContainerPageTypeIdSafely());
+            result = (resource.getTypeId() == getContainerPageTypeIdSafely())
+                || (OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContainerPage);
         }
 
         return result;
 
+    }
+
+    /**
+     * Checks whether the given resource is a model group.<p>
+     *
+     * @param resource the resource
+     *
+     * @return <code>true</code> in case the resource is a model group
+     */
+    public static boolean isModelGroup(CmsResource resource) {
+
+        return OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals(MODEL_GROUP_TYPE_NAME);
+    }
+
+    /**
+     * Checks whether the given resource is a model reuse group.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     *
+     * @return <code>true</code> in case the resource is a model reuse group
+     */
+    public static boolean isModelReuseGroup(CmsObject cms, CmsResource resource) {
+
+        boolean result = false;
+        if (isModelGroup(resource)) {
+            try {
+                CmsProperty tempElementsProp = cms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    false);
+                if (tempElementsProp.isNullProperty()
+                    || !CmsContainerElement.USE_AS_COPY_MODEL.equals(tempElementsProp.getValue())) {
+                    result = true;
+                }
+            } catch (CmsException e) {
+                LOG.warn(e.getMessage(), e);
+            }
+
+        }
+        return result;
     }
 
     /**
@@ -179,7 +224,8 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         boolean hasModelUri = false;
         CmsXmlContainerPage newContent = null;

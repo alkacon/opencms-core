@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,11 +31,14 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.galleries.client.CmsGalleryFactory;
+import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
+import org.opencms.ade.galleries.client.CmsGalleryController;
+import org.opencms.ade.galleries.client.CmsGalleryControllerHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
@@ -142,6 +145,9 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
     /** The gallery data. */
     private CmsGalleryDataBean m_galleryData;
 
+    /** The gallery search bean. */
+    private CmsGallerySearchBean m_search;
+
     /** The gallery dialog container. */
     private SimplePanel m_tabsContainer;
 
@@ -165,6 +171,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
     /**
      * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
+    @SuppressWarnings("unused")
     public void onToolbarActivate() {
 
         Document.get().getBody().addClassName(I_CmsButton.ButtonData.WAND_BUTTON.getIconClass());
@@ -176,7 +183,9 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
                 resultDndFilter = new CmsTemplateContextResultDndFilter();
             }
             final Predicate<CmsResultItemBean> finalDndFilter = resultDndFilter;
-            m_dialog = CmsGalleryFactory.createDialog(new GalleryHandler(finalDndFilter), m_galleryData);
+            CmsGalleryDialog galleryDialog = new CmsGalleryDialog(new GalleryHandler(finalDndFilter));
+            new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog), m_galleryData, m_search);
+            m_dialog = galleryDialog;
             m_dialog.setDialogSize(dialogWidth, dialogHeight);
             getPopup().setWidth(dialogWidth);
             m_tabsContainer.add(m_dialog);
@@ -202,17 +211,18 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
      * @param galleryData the gallery data
      * @param viewChanged <code>true</code> in case the element view changed
      */
-    public void updateGalleryData(CmsGalleryDataBean galleryData, boolean viewChanged) {
+    public void updateGalleryData(CmsContainerPageGalleryData galleryData, boolean viewChanged) {
 
         if (m_dialog != null) {
             if (viewChanged) {
                 m_dialog.removeFromParent();
                 m_dialog = null;
             } else {
-                m_dialog.updateGalleryData(galleryData);
+                m_dialog.updateGalleryData(galleryData.getGalleryData());
             }
         }
-        m_galleryData = galleryData;
+        m_galleryData = galleryData.getGalleryData();
+        m_search = galleryData.getGallerySearch();
     }
 
     /**

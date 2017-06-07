@@ -8,22 +8,22 @@
 </head>
 <body>
 	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
-		<v-label _id="m_title" style-name="h2"/>
-		<v-panel caption="%(key.GUI_PROJECTS_IDENTIFICATION_0)" height="260px">
+		<v-panel caption="%(key.GUI_PROJECTS_IDENTIFICATION_0)" height="275px">
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
-				<v-text-field _id="m_fieldName" width="100%" caption="%(key.GUI_PROJECTS_NAME_0)"/>
-				<v-text-field _id="m_fieldDescription" width="100%" caption="%(key.GUI_PROJECTS_DESCRIPTION_0)"/>
-				<p-cms-principal-select _id="m_fieldManager" width="100%" caption="%(key.GUI_PROJECTS_MANAGER_GROUP_0)"/>
-				<p-cms-principal-select _id="m_fieldUser" width="100%" caption="%(key.GUI_PROJECTS_USER_GROUP_0)"/>
-				<v-check-box _id="m_fieldDeleteAfterPublish" caption="%(key.GUI_PROJECTS_DELETE_AFTER_PUBLISH_0)" />
+				<v-text-field _id="m_fieldName" width="100%" caption="%(key.GUI_PROJECTS_NAME_0)" description="%(key.GUI_PROJECTS_NAME_HELP_0)" required requiredError="%(key.GUI_PROJECTS_NAME_VALIDATION_0)" />
+				<v-text-field _id="m_fieldDescription" width="100%" caption="%(key.GUI_PROJECTS_DESCRIPTION_0)" description="%(key.GUI_PROJECTS_DESCRIPTION_HELP_0)"/>
+				<p-cms-principal-select _id="m_fieldManager" width="100%" caption="%(key.GUI_PROJECTS_MANAGER_GROUP_0)" description="%(key.GUI_PROJECTS_MANAGER_GROUP_HELP_0)" required requiredError="%(key.GUI_PROJECTS_MANAGER_GROUP_VALIDATION_0)"/>
+				<p-cms-principal-select _id="m_fieldUser" width="100%" caption="%(key.GUI_PROJECTS_USER_GROUP_0)" description="%(key.GUI_PROJECTS_USER_GROUP_HELP_0)" required requiredError="%(key.GUI_PROJECTS_USER_GROUP_VALIDATION_0)"/>
+				<v-text-field _id="m_fieldOU" width="100%" caption="%(key.GUI_PROJECTS_ORG_UNIT_0)" description="%(key.GUI_PROJECTS_ORG_UNIT_HELP_0)"/>
+				<v-check-box _id="m_fieldDeleteAfterPublish" caption="%(key.GUI_PROJECTS_DELETE_AFTER_PUBLISH_0)" description="%(key.GUI_PROJECTS_DELETE_AFTER_PUBLISH_HELP_0)" />
 			</v-form-layout>
 		</v-panel>
 		<v-panel caption="%(key.GUI_PROJECTS_RESOURCES_0)" height="100%" :expand>
 			<v-form-layout _id="m_resources" margin spacing style-name="o-formlayout-workplace-main">
-			<v-button _id="m_addResource">%(key.GUI_PROJECTS_ADD_RESOURCE_0)</v-button>
+			<v-button _id="m_addResource" style-name="o-button-plain">%(key.GUI_PROJECTS_ADD_RESOURCE_0)</v-button>
 			</v-form-layout>
 		</v-panel>
-		<v-panel height="46px">
+		<v-panel>
 			<v-horizontal-layout width="100%">
 				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
 					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>

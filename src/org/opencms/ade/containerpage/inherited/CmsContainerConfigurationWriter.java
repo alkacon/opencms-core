@@ -126,7 +126,7 @@ public class CmsContainerConfigurationWriter {
             configRes = cms.createResource(
                 configPath,
                 OpenCms.getResourceManager().getResourceType(
-                    CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId());
+                    CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME));
             needToUnlock = true;
         }
         if (configRes == null) {
@@ -178,7 +178,7 @@ public class CmsContainerConfigurationWriter {
      * @param parentElement the parent element to which the new element should be attached
      * @return the created XML element
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Element serializeSingleConfiguration(
         CmsObject cms,

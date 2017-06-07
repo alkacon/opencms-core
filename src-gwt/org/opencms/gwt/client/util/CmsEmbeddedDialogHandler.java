@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -52,6 +53,9 @@ public class CmsEmbeddedDialogHandler {
 
     /** The context menu handler. */
     private I_CmsActionHandler m_handler;
+
+    /** The on close command. */
+    private Command m_onCloseCommand;
 
     /**
      * Constructor.<p>
@@ -86,6 +90,19 @@ public class CmsEmbeddedDialogHandler {
                 m_handler.refreshResource(resourceIds.get(0));
             }
         }
+        if (m_onCloseCommand != null) {
+            m_onCloseCommand.execute();
+        }
+    }
+
+    /**
+     * Returns if the dialog iframe is attached.<p>
+     *
+     * @return <code>true</code> if the dialog iframe is attached
+     */
+    public boolean hasDialogFrame() {
+
+        return m_frame != null;
     }
 
     /**
@@ -189,6 +206,16 @@ public class CmsEmbeddedDialogHandler {
         } else {
             Window.Location.reload();
         }
+    }
+
+    /**
+     * Sets the on close command.<p>
+     *
+     * @param onCloseCommand the on close command
+     */
+    public void setOnCloseCommand(Command onCloseCommand) {
+
+        m_onCloseCommand = onCloseCommand;
     }
 
     /**

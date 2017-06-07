@@ -1,4 +1,5 @@
-<%@page taglibs="cms" import="org.opencms.ade.contenteditor.CmsContentEditorActionElement"%><%
+<%@page import="org.opencms.ade.contenteditor.CmsContentEditorActionElement"%><%@ 
+	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%
 CmsContentEditorActionElement actionElement=new CmsContentEditorActionElement(pageContext, request, response);
 %><!DOCTYPE html>
 <html>

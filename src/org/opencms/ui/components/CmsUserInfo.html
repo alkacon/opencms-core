@@ -4,15 +4,12 @@
 		<meta name="package-mapping" content="o:org.opencms.ui.components" />
 	</head>
 	<body>
-  		<v-vertical-layout style-name="o-user-info" spacing>
-  			<v-horizontal-layout _id="m_infoPanel" spacing>
-				
+  		<v-vertical-layout style-name="o-user-info">
+  			<v-horizontal-layout _id="m_infoPanel" spacing margin>
 				<v-label _id="m_info" width="200px" />
   			</v-horizontal-layout>
-  			<v-horizontal-layout  style-name="o-dialog-button-bar" spacing :right>
-  				<v-button _id="m_editData">%(key.GUI_USER_EDIT_0)</v-button>
-  				<v-button _id="m_logout">%(key.GUI_EXPLORER_CONTEXT_LOGOUT_0)</v-button>
-  			</v-horizontal-layout>
+  			<v-label _id="m_details" style-name="o-user-details" />
+  			<o-cms-vertical-menu _id="m_menu" style-name="border-top" :expand />
 		</v-vertical-layout>
 	</body>
 </html>

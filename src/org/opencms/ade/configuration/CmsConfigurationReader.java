@@ -29,6 +29,7 @@ package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -42,6 +43,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.relations.CmsLink;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
@@ -53,6 +56,7 @@ import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -135,6 +139,9 @@ public class CmsConfigurationReader {
     /** The JSP node name. */
     public static final String N_JSP = "Jsp";
 
+    /** The localization node name. */
+    public static final String N_LOCALIZATION = "Localization";
+
     /** The master configuration node name. */
     public static final String N_MASTER_CONFIG = "MasterConfig";
 
@@ -174,6 +181,9 @@ public class CmsConfigurationReader {
     /** The property name node name. */
     public static final String N_PROPERTY_NAME = "PropertyName";
 
+    /** Node name for the "Remove all formatters"-option. */
+    public static final String N_REMOVE_ALL_FORMATTERS = "RemoveAllFormatters";
+
     /** Node name for removed formatters. */
     public static final String N_REMOVE_FORMATTER = "RemoveFormatter";
 
@@ -209,6 +219,9 @@ public class CmsConfigurationReader {
 
     /** The CopyInModels node name. */
     private static final String N_COPY_IN_MODELS = "CopyInModels";
+
+    /** The ElementDeleteMode node name. */
+    private static final String N_ELEMENT_DELETE_MODE = "ElementDeleteMode";
 
     /** The PageRelative node name. */
     private static final String N_PAGE_RELATIVE = "PageRelative";
@@ -396,7 +409,8 @@ public class CmsConfigurationReader {
             parseFunctionReference(node);
         }
 
-        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(basePath, root);
+        boolean removeAllFormatters = getBoolean(root, N_REMOVE_ALL_FORMATTERS);
+        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(basePath, root, removeAllFormatters);
         boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
         boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
         boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
@@ -591,6 +605,27 @@ public class CmsConfigurationReader {
             }
         }
 
+        I_CmsXmlContentValueLocation locationLoc = node.getSubValue(N_LOCALIZATION);
+        String localization = null;
+        if (locationLoc != null) {
+            CmsXmlVfsFileValue locationValue = (CmsXmlVfsFileValue)locationLoc.getValue();
+            CmsLink link = locationValue.getLink(m_cms);
+            if (null != link) {
+                String stringValue = link.getSitePath();
+                // extract bundle base name from the path to the bundle file
+                int lastSlashIndex = stringValue.lastIndexOf("/");
+                String fileName = stringValue.substring(lastSlashIndex + 1);
+                if (CmsFileUtil.getExtension(fileName).equals(".properties")) {
+                    fileName = fileName.substring(0, fileName.length() - ".properties".length());
+                }
+                String localeSuffix = CmsStringUtil.getLocaleSuffixForName(fileName);
+                if ((localeSuffix != null) && fileName.endsWith(localeSuffix)) {
+                    fileName = fileName.substring(0, fileName.length() - localeSuffix.length() - 1);
+                }
+                localization = fileName;
+            }
+        }
+
         I_CmsXmlContentValueLocation showDefaultViewLoc = node.getSubValue(N_SHOW_IN_DEFAULT_VIEW);
         Boolean showInDefaultView = null;
         if (showDefaultViewLoc != null) {
@@ -602,6 +637,16 @@ public class CmsConfigurationReader {
         Boolean copyInModels = null;
         if (copyInModelsLoc != null) {
             copyInModels = Boolean.valueOf(Boolean.parseBoolean(copyInModelsLoc.getValue().getStringValue(m_cms)));
+        }
+
+        I_CmsXmlContentValueLocation elementDeleteModeLoc = node.getSubValue(N_ELEMENT_DELETE_MODE);
+        ElementDeleteMode elementDeleteMode = null;
+        if (elementDeleteModeLoc != null) {
+            try {
+                elementDeleteMode = ElementDeleteMode.valueOf(elementDeleteModeLoc.getValue().getStringValue(m_cms));
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
@@ -618,9 +663,11 @@ public class CmsConfigurationReader {
             detailPagesDisabled,
             addDisabled,
             elementView,
+            localization,
             showInDefaultView,
             copyInModels,
-            order);
+            order,
+            elementDeleteMode);
         m_resourceTypeConfigs.add(typeConfig);
     }
 
@@ -739,18 +786,26 @@ public class CmsConfigurationReader {
      *
      * @param basePath the configuration base path
      * @param node the parent node
+     * @param removeAllFormatters flag, indicating if all formatters that are not explicitly added should be removed
      * @return the formatter change set
      */
-    protected CmsFormatterChangeSet parseFormatterChangeSet(String basePath, I_CmsXmlContentLocation node) {
+    protected CmsFormatterChangeSet parseFormatterChangeSet(
+        String basePath,
+        I_CmsXmlContentLocation node,
+        boolean removeAllFormatters) {
 
         Set<String> addFormatters = parseAddFormatters(node);
         addFormatters.addAll(readLocalMacroFormatters(node));
-        Set<String> removeFormatters = parseRemoveFormatters(node);
+        Set<String> removeFormatters = removeAllFormatters ? new HashSet<String>() : parseRemoveFormatters(node);
         String siteRoot = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)) {
             siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
         }
-        CmsFormatterChangeSet result = new CmsFormatterChangeSet(removeFormatters, addFormatters, siteRoot);
+        CmsFormatterChangeSet result = new CmsFormatterChangeSet(
+            removeFormatters,
+            addFormatters,
+            siteRoot,
+            removeAllFormatters);
         return result;
     }
 

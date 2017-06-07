@@ -8,8 +8,8 @@
 		<div ui:field="m_mapCanvas" class="{main.locationPickerCss.mapCanvas}"></div>
 		<div  class="{main.locationPickerCss.locationFields}">
 			<div><g:Label ui:field="m_addressLabel" /><div class="{main.locationPickerCss.locationField}"><cmsin:CmsSuggestBox ui:field="m_addressField" /></div></div>
-			<div><g:Label ui:field="m_longitudeLabel" /><cmsin:CmsTextBox ui:field="m_longitudeField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
 			<div><g:Label ui:field="m_latitudeLabel" /><cmsin:CmsTextBox ui:field="m_latitudeField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
+			<div><g:Label ui:field="m_longitudeLabel" /><cmsin:CmsTextBox ui:field="m_longitudeField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
 			<div><g:Label ui:field="m_sizeLabel" /><cmsin:CmsTextBox ui:field="m_widthField" addStyleNames="{main.locationPickerCss.inlineField} {main.locationPickerCss.locationField}" />&nbsp;x&nbsp;<cmsin:CmsTextBox ui:field="m_heightField" addStyleNames="{main.locationPickerCss.inlineField} {main.locationPickerCss.locationField}" /></div>
 			<div><g:Label ui:field="m_zoomLabel" /><cmsin:CmsSelectBox ui:field="m_zoomField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
 			<div><g:Label ui:field="m_typeLabel" /><cmsin:CmsSelectBox ui:field="m_typeField" addStyleNames="{main.locationPickerCss.locationField}"/></div>

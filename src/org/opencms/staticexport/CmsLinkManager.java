@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -45,6 +45,7 @@ import org.opencms.util.CmsUUID;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
@@ -230,15 +231,28 @@ public class CmsLinkManager {
     }
 
     /**
-     * Returns if the given URI points to a static resource.<p>
+     * Returns if the given link points to the OpenCms workplace UI.<p>
      *
-     * @param uri the URI to test
+     * @param link the link to test
      *
-     * @return <code>true</code> in case the given URI points to a static resource
+     * @return <code>true</code> in case the given URI points to the OpenCms workplace UI
      */
-    public static boolean isStaticResourceUri(URI uri) {
+    public static boolean isWorkplaceLink(String link) {
 
-        return (uri != null) && uri.getPath().startsWith(OpenCms.getSystemInfo().getStaticResourceContext());
+        boolean result = false;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {
+            result = link.startsWith(OpenCms.getSystemInfo().getWorkplaceContext());
+            if (!result) {
+                try {
+                    URI uri = new URI(link);
+                    result = isWorkplaceUri(uri);
+                } catch (URISyntaxException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -324,6 +338,49 @@ public class CmsLinkManager {
             try {
                 cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                 result = substituteLinkForUnknownTarget(cms, resourceName, forceSecure);
+                result = appendServerPrefix(cms, result, resourceName, false);
+            } finally {
+                cms.getRequestContext().setCurrentProject(currentProject);
+            }
+        } catch (CmsException e) {
+            // should never happen
+            result = e.getLocalizedMessage();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the online link for the given resource, with full server prefix.<p>
+     *
+     * Like <code>http://site.enterprise.com:8080/index.html</code>.<p>
+     *
+     * In case the resource name is a full root path, the site from the root path will be used.
+     * Otherwise the resource is assumed to be in the current site set be the OpenCms user context.<p>
+     *
+     * Please note that this method will always return the link as it will appear in the "Online"
+     * project, that is after the resource has been published. In case you need a method that
+     * just returns the link with the full server prefix, use {@link #getServerLink(CmsObject, String)}.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param resourceName the resource to generate the online link for
+     * @param targetDetailPage the target detail page, in case of linking to a specific detail page
+     * @param forceSecure forces the secure server prefix if the target is secure
+     *
+     * @return the online link for the given resource, with full server prefix
+     *
+     * @see #getServerLink(CmsObject, String)
+     */
+    public String getOnlineLink(CmsObject cms, String resourceName, String targetDetailPage, boolean forceSecure) {
+
+        String result = "";
+        try {
+            CmsProject currentProject = cms.getRequestContext().getCurrentProject();
+            try {
+                cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                result = substituteLinkForUnknownTarget(cms, resourceName, targetDetailPage, forceSecure);
                 result = appendServerPrefix(cms, result, resourceName, false);
             } finally {
                 cms.getRequestContext().setCurrentProject(currentProject);
@@ -618,7 +675,7 @@ public class CmsLinkManager {
      *
      * @param cms the current OpenCms user context
      * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
-    
+
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> in the current site
      */
@@ -697,7 +754,60 @@ public class CmsLinkManager {
      */
     public String substituteLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
 
-        return m_linkSubstitutionHandler.getLink(cms, link, siteRoot, forceSecure);
+        return substituteLink(cms, link, siteRoot, null, forceSecure);
+    }
+
+    /**
+     * Returns a link <i>from</i> the URI stored in the provided OpenCms user context
+     * <i>to</i> the VFS resource indicated by the given <code>link</code> and <code>siteRoot</code>,
+     * for use on web pages, using the configured link substitution handler.<p>
+     *
+     * The result will be an absolute link that contains the configured context path and
+     * servlet name, and in the case of the "online" project it will also be rewritten according to
+     * to the configured static export settings.<p>
+     *
+     * In case <code>link</code> is a relative URI, the current URI contained in the provided
+     * OpenCms user context <code>cms</code> is used to make the relative <code>link</code> absolute.<p>
+     *
+     * The provided <code>siteRoot</code> is assumed to be the "home" of the link.
+     * In case the current site of the given OpenCms user context <code>cms</code> is different from the
+     * provided <code>siteRoot</code>, the full server prefix is appended to the result link.<p>
+     *
+     * A server prefix is also added if
+     * <ul>
+     *   <li>the link is contained in a normal document and the link references a secure document</li>
+     *   <li>the link is contained in a secure document and the link references a normal document</li>
+     * </ul>
+     *
+     * Please note the above text describes the default behavior as implemented by
+     * {@link CmsDefaultLinkSubstitutionHandler}, which can be fully customized using the
+     * {@link I_CmsLinkSubstitutionHandler} interface.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
+     * @param siteRoot the site root of the <code>link</code>
+     * @param targetDetailPage the target detail page, in case of linking to a specific detail page
+     * @param forceSecure if <code>true</code> generates always an absolute URL (with protocol and server name) for secure links
+     *
+     * @return a link <i>from</i> the URI stored in the provided OpenCms user context
+     *      <i>to</i> the VFS resource indicated by the given <code>link</code> and <code>siteRoot</code>
+     *
+     * @see I_CmsLinkSubstitutionHandler for the interface that can be used to fully customize the link substitution
+     * @see CmsDefaultLinkSubstitutionHandler for the default link substitution handler
+     */
+    public String substituteLink(
+        CmsObject cms,
+        String link,
+        String siteRoot,
+        String targetDetailPage,
+        boolean forceSecure) {
+
+        if (targetDetailPage != null) {
+            return m_linkSubstitutionHandler.getLink(cms, link, siteRoot, targetDetailPage, forceSecure);
+        } else {
+            return m_linkSubstitutionHandler.getLink(cms, link, siteRoot, forceSecure);
+        }
+
     }
 
     /**
@@ -784,6 +894,37 @@ public class CmsLinkManager {
      */
     public String substituteLinkForUnknownTarget(CmsObject cms, String link, boolean forceSecure) {
 
+        return substituteLinkForUnknownTarget(cms, link, null, forceSecure);
+    }
+
+    /**
+     * Returns a link <i>from</i> the URI stored in the provided OpenCms user context
+     * <i>to</i> the given <code>link</code>, for use on web pages.<p>
+     *
+     * A number of tests are performed with the <code>link</code> in order to find out how to create the link:<ul>
+     * <li>If <code>link</code> is empty, an empty String is returned.
+     * <li>If <code>link</code> starts with an URI scheme component, for example <code>http://</code>,
+     * and does not point to an internal OpenCms site, it is returned unchanged.
+     * <li>If <code>link</code> is an absolute URI that starts with a configured site root,
+     * the site root is cut from the link and
+     * the same result as {@link #substituteLink(CmsObject, String, String)} is returned.
+     * <li>Otherwise the same result as {@link #substituteLink(CmsObject, String)} is returned.
+     * </ul>
+     *
+     * @param cms the current OpenCms user context
+     * @param link the link to process
+     * @param targetDetailPage the target detail page, in case of linking to a specific detail page
+     * @param forceSecure forces the secure server prefix if the link target is secure
+     *
+     * @return a link <i>from</i> the URI stored in the provided OpenCms user context
+     *      <i>to</i> the given <code>link</code>
+     */
+    public String substituteLinkForUnknownTarget(
+        CmsObject cms,
+        String link,
+        String targetDetailPage,
+        boolean forceSecure) {
+
         if (CmsStringUtil.isEmpty(link)) {
             return "";
         }
@@ -808,7 +949,7 @@ public class CmsLinkManager {
             // we found a site root, cut this from the resource path
             sitePath = sitePath.substring(siteRoot.length());
         }
-        return substituteLink(cms, sitePath, siteRoot, forceSecure);
+        return substituteLink(cms, sitePath, siteRoot, targetDetailPage, forceSecure);
     }
 
     /**

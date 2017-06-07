@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -387,6 +387,7 @@ public class CmsImageDndController implements I_CmsDNDController {
     protected List<ImageDropTarget> findImageTargets() {
 
         List<ImageDropTarget> result = Lists.newArrayList();
+        List<CmsContainerPageElementPanel> modelGroups = CmsContainerpageController.get().getModelGroups();
         elementLoop: for (Element element : CmsDomUtil.nodeListToList(
             CmsDomUtil.querySelectorAll("*[" + ATTR_DATA_IMAGEDND + "]", RootPanel.getBodyElement()))) {
             Optional<CmsContainerPageElementPanel> optElemWidget = CmsContainerpageController.get().getContainerElementWidgetForElement(
@@ -399,6 +400,14 @@ public class CmsImageDndController implements I_CmsDNDController {
                 String noEditReason = elemWidget.getNoEditReason();
                 if ((noEditReason != null) && !elemWidget.hasWritePermission()) {
                     continue elementLoop;
+                }
+            }
+            if (!CmsContainerpageController.get().getData().isModelGroup()) {
+                // Don't make images in model groups into drop targets, except when we are in model group editing mode
+                for (CmsContainerPageElementPanel modelGroup : modelGroups) {
+                    if (modelGroup.getElement().isOrHasChild(element)) {
+                        continue elementLoop;
+                    }
                 }
             }
             ImageDropTarget target = new ImageDropTarget(element, optElemWidget);

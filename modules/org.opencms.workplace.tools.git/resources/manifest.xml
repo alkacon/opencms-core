@@ -15,8 +15,8 @@
 You can configure a git repository and a set of modules that should be controlled by that repository.<br>
 The module allows you to check in the latest version of your modules by simply pressing one button.<br>
 <strong>NOTE: Currently only Linux systems are supported.</strong>]]></description>
-		<version>10.5.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<version>10.5.1</version>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>

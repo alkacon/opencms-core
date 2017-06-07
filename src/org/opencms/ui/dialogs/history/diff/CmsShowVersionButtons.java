@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -79,7 +79,7 @@ public class CmsShowVersionButtons implements I_CmsDiffProvider {
                 : "" + CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION;
                 String link = CmsHistoryListUtil.getHistoryLink(cms, version.getStructureId(), v1Param);
                 link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, link);
-                A_CmsUI.get().getPage().open(link, "_blank");
+                A_CmsUI.get().openPageOrWarn(link, "_blank");
             }
 
         });

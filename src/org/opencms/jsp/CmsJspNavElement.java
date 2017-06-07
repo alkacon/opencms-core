@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -53,6 +53,9 @@ import java.util.Map;
  */
 public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
+    /** The locale for which the property should be read. */
+    protected Locale m_locale;
+
     /** The navigation position has changed flag. */
     private boolean m_changedNavPos;
 
@@ -65,6 +68,9 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     /** Flag indicating whether this is a hidden navigation entry. */
     private Boolean m_isHiddenNavigationEntry;
 
+    /** The properties accessed according to the chosen locale. */
+    private Map<String, String> m_localeProperties;
+
     /** The navigation tree level. */
     private int m_navTreeLevel = Integer.MIN_VALUE;
 
@@ -74,9 +80,6 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     /** The properties. */
     private Map<String, String> m_properties;
 
-    /** The properties accessed according to the chosen locale. */
-    private Map<String, String> m_localeProperties;
-
     /** The resource. */
     private CmsResource m_resource;
 
@@ -85,9 +88,6 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
     /** The navigation text. */
     private String m_text;
-
-    /** The locale for which the property should be read. */
-    protected Locale m_locale;
 
     /**
      * Empty constructor required for every JavaBean, does nothing.<p>
@@ -454,6 +454,32 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     public void init(String resource, Map<String, String> properties) {
 
         init(resource, properties, -1, null);
+    }
+
+    /**
+     * Initialized the member variables of this bean with the values
+     * provided.<p>
+     *
+     * A resource will be in the navigation if at least one of the two properties
+     * <code>I_CmsConstants.PROPERTY_NAVTEXT</code> or
+     * <code>I_CmsConstants.PROPERTY_NAVPOS</code> is set. Otherwise
+     * it will be ignored.<p>
+     *
+     * This bean does provides static methods to create a new instance
+     * from the context of a current CmsObject. Call these static methods
+     * in order to get a properly initialized bean.<p>
+     *
+     * @param resource the name of the resource to extract the navigation
+     *     information from
+     * @param properties the properties of the resource read from the vfs
+     * @param navTreeLevel tree level of this resource, for building
+     *     navigation trees
+     *
+     * @see CmsJspNavBuilder#getNavigationForResource()
+     */
+    public void init(String resource, Map<String, String> properties, int navTreeLevel) {
+
+        init(resource, properties, navTreeLevel, null);
     }
 
     /**

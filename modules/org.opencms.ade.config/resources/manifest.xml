@@ -16,9 +16,9 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		]]></import-script>
 		<export-mode name="reduced"/>
 		<description><![CDATA[Configuration for OpenCms websites.<br>
-<i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-		<version>10.5.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+<i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i>]]></description>
+		<version>10.5.1</version>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
@@ -402,7 +402,9 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage"/>
+						<entry key="SHOWLOCALE" name="showlocale" rule="containerpage"/>
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage"/>
+						<entry key="VIEWONLINE" name="viewonline" rule="containerpage"/>
 						<entry key="SELECTELEMENTVIEW" name="selectelementview" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges"/>
 						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted"/>
@@ -413,7 +415,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role"/>
 							<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog" rule="containerpage-no-different-site-and-has-editor-role"/>
 						</entry>
-						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings" rule="containerpage-basic"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishQueueDialogAction" rule="containerpage-basic"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout" rule="containerpage-basic"/>
 					</contextmenu>
@@ -508,7 +509,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 							<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0" name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog" rule="sitemap"/>
 							<entry key="GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditFile" params="reload=true|filename=%(subsite)/.content/.config" rule="sitemapcheckfile"/>
 						</entry>
-						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishQueueDialogAction" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout" rule="sitemap"/>
 					</contextmenu>
@@ -971,6 +971,48 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.ade.config/pages/updateModelGroups.jsp</source>
+			<destination>system/modules/org.opencms.ade.config/pages/updateModelGroups.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>43feadd4-ab31-11e6-8ea0-a123275265e0</uuidstructure>
+			<uuidresource>43feadd5-ab31-11e6-8ea0-a123275265e0</uuidresource>
+			<datecreated>Tue, 15 Nov 2016 12:44:36 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>132</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>516</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.ROOT_ADMIN</uuidprincipal>
+					<flags>516</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
 			<destination>system/shared</destination>
 			<type>folder</type>
 			<properties/>
@@ -1092,7 +1134,16 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>512</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<source>system/workplace/commons/import-aliases.jsp</source>
@@ -1246,6 +1297,14 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</properties>
 			<relations/>
 			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
 				<accessentry>
 					<uuidprincipal>ALL_OTHERS</uuidprincipal>
 					<flags>132</flags>

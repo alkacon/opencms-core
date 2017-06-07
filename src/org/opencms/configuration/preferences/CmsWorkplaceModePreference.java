@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -107,10 +107,10 @@ public class CmsWorkplaceModePreference extends CmsBuiltinPreference {
     }
 
     /**
-     * @see org.opencms.configuration.preferences.A_CmsPreference#isDisabled()
+     * @see org.opencms.configuration.preferences.A_CmsPreference#isDisabled(CmsObject)
      */
     @Override
-    public boolean isDisabled() {
+    public boolean isDisabled(CmsObject cms) {
 
         return !OpenCms.getModuleManager().hasModule("org.opencms.workplace.traditional");
     }

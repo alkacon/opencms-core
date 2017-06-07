@@ -1,0 +1,89 @@
+@mixin o-codemirror {
+	.o-codemirror{
+	
+		> div {
+			height: 100%;
+		}
+		.CodeMirror span, .CodeMirror pre, .CodeMirror-linenumber {
+			font-size: 14px;
+			line-height: 1.2em;
+		}
+		
+		.CodeMirror-linenumber  {
+			cursor: pointer;
+		}
+		
+		/* Visible tabs layout */
+		.cm-tab:after {
+			content: "\2192";
+			display: -moz-inline-block;
+			display: -webkit-inline-block;
+			display: inline-block;
+			width: 0px;
+			position: relative;
+			overflow: visible;
+			left: -1.4em;
+			color: #999;
+			visibility: hidden;
+		}
+	}
+	
+	.CodeMirror-dialog {
+		position: fixed;
+		top: auto;
+		bottom: 0; 
+		left: 0;
+		right: 0;
+		z-index: 15;
+		overflow: hidden;
+		border-top: valo-border();
+		background: $v-overlay-background-color;
+		@include box-shadow(0px 5px 15px 0px rgba(0,0,0,0.15));
+		padding: round($v-unit-size/2) 20px;
+		
+		.CodeMirror-shortcutinfo{
+			display: block;
+			float: right;
+			width: 55%;
+			max-width: 780px;
+			font-family: $v-font-family !important;
+			font-size: $v-font-size !important;
+			
+			b {
+				font-weight: 600;
+				display: inline-block;
+				padding: 2px 4px;
+				background: $gray-light;
+				border-radius: 2px;
+				min-width: 95px;
+			}
+			
+			span {
+				max-width: 250px;
+				min-width: 200px;
+				display: inline-block;
+				margin-right: 10px;
+				white-space: nowrap;
+			}
+		}
+		
+		input{
+			font-family: $v-font-family !important;
+			font-size: $v-font-size !important;
+			border: valo-border();
+			border-radius: $v-border-radius !important;
+			height: 20px !important;
+			line-height: 16px;
+			padding: 2px 5px;
+			display: block;
+			width: 40% !important;
+		}
+		
+		span {
+			font-family: $v-font-family !important;
+			font-size: $v-font-size !important;
+			display: block;
+			margin-bottom: 5px;
+		}
+	}
+}

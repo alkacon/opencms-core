@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 
 /**
  * Context for dialogs opened from the context menu.<p>
@@ -47,14 +48,14 @@ public interface I_CmsDialogContext {
      * The available context types.<p>
      */
     enum ContextType {
-        /** The file table context. */
-        fileTable,
-
         /** The app toolbar context. */
         appToolbar,
 
         /** The container page toolbar context. */
         containerpageToolbar,
+
+        /** The file table context. */
+        fileTable,
 
         /** The sitemap toolbar context. */
         sitemapToolbar
@@ -98,6 +99,13 @@ public interface I_CmsDialogContext {
     List<CmsUUID> getAllStructureIdsInView();
 
     /**
+     * Returns the app id.<p>
+     *
+     * @return the app id
+     */
+    String getAppId();
+
+    /**
      * Gets the CMS context to be used for dialog operations.<p>
      *
      * @return the CMS context
@@ -137,6 +145,13 @@ public interface I_CmsDialogContext {
     void reload();
 
     /**
+     * Sets the current window.<p>
+     *
+     * @param window the current dialog window
+     */
+    void setWindow(Window window);
+
+    /**
      * Called to start up the dialog with the given main widget and title string.<p>
      *
      * @param title the title to display
@@ -152,5 +167,10 @@ public interface I_CmsDialogContext {
      * @param width the preferred width for the dialog
      */
     void start(String title, Component dialog, DialogWidth width);
+
+    /**
+     * Called when the user info was changed.<p>
+     */
+    void updateUserInfo();
 
 }

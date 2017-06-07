@@ -7,9 +7,6 @@ login "@ADMIN_USER@" "@ADMIN_PWD@"
 # Switch to the default context
 setSiteRoot "@UPDATE_SITE@"
 
-# Rebuild search indexes
-rebuildAllIndexes
-
 # purge the jsp repository
 purgeJspRepository
 

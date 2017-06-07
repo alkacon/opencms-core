@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -71,7 +71,13 @@ public final class Messages {
     public static final String GUI_CONFIRMATION_PUBLISH_0 = "GUI_CONFIRMATION_PUBLISH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMATION_PUBLISH_NOWP_0 = "GUI_CONFIRMATION_PUBLISH_NOWP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRMATION_WORKFLOW_1 = "GUI_CONFIRMATION_WORKFLOW_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMATION_WORKFLOW_NOWP_1 = "GUI_CONFIRMATION_WORKFLOW_NOWP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRMATION_WORKPLACE_BUTTON_0 = "GUI_CONFIRMATION_WORKPLACE_BUTTON_0";

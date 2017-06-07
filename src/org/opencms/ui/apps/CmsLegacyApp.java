@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,11 +37,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.BrowserFrame;
+import com.vaadin.ui.JavaScript;
 
 /**
  * App for legacy admin tools. Renders the tool in an iframe.<p>
  */
 public class CmsLegacyApp extends BrowserFrame implements I_CmsWorkplaceApp {
+
+    /** Name of Javascript variable used to indicate whether we are currently showing a legacy app. */
+    public static final String VAR_IS_LEGACY_APP = "cmsIsLegacyApp";
 
     /** The serial version id. */
     private static final long serialVersionUID = -2857100593142358027L;
@@ -57,6 +61,25 @@ public class CmsLegacyApp extends BrowserFrame implements I_CmsWorkplaceApp {
     public CmsLegacyApp(I_CmsToolHandler toolHandler) {
 
         m_toolHandler = toolHandler;
+        addAttachListener(new AttachListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void attach(AttachEvent event) {
+
+                JavaScript.eval(VAR_IS_LEGACY_APP + " = true;");
+
+            }
+        });
+        addDetachListener(new DetachListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void detach(DetachEvent event) {
+
+                JavaScript.eval(VAR_IS_LEGACY_APP + " = false;");
+            }
+        });
         setSizeFull();
     }
 

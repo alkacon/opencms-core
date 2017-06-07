@@ -19,8 +19,7 @@
 					</div>
 				</div>
 			</c:if>
-			<div
-				class="<c:choose><c:when test="${content.value.Image.exists}">col-md-8 col-sm-10 col-xs-12</c:when><c:otherwise>col-xs-12</c:otherwise></c:choose>">
+			<div class="${content.value.Image.exists ? 'col-md-8 col-sm-10 col-xs-12' : 'col-xs-12' }">
 				<div ${content.rdfa.Text}>${content.value.Text}</div>
 				<c:if test="${content.value.Link.exists}">
 					<p>

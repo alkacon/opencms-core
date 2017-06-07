@@ -209,7 +209,8 @@ public class CmsAliasManager {
         CmsObject cms,
         byte[] aliasData,
         String siteRoot,
-        String separator) throws Exception {
+        String separator)
+    throws Exception {
 
         checkPermissionsForMassEdit(cms);
         BufferedReader reader = new BufferedReader(
@@ -337,7 +338,8 @@ public class CmsAliasManager {
         String siteRoot,
         String aliasPath,
         String vfsPath,
-        CmsAliasMode mode) throws CmsException {
+        CmsAliasMode mode)
+    throws CmsException {
 
         CmsResource resource;
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);

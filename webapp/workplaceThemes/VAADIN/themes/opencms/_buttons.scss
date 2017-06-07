@@ -18,7 +18,11 @@
   
   .v-button.o-button-plain {
   		min-width: 100px;
-  		@include valo-button-style($unit-size: 30px, $font-weight: bold);
+  		@include valo-button-style($unit-size: 30px, $font-color: $v-font-color, $font-weight: bold, $background-color: $o-medium-background-color);
+  }
+  
+  .v-button.o-button-icon {
+  		@include valo-button-style($unit-size: 30px, $padding: 0 8px, $font-color: $v-font-color, $font-size: 18px, $background-color: $o-medium-background-color);
   }
   
   .v-menubar.v-menubar-o-toolbar-button{
@@ -35,6 +39,10 @@
     margin: 0;
     color: inherit;
     background: transparent;
+    
+    &.o-button-pressed{
+    	@include valo-menubar-menuitem-checked-style($gray-light);
+    }
     
     img.v-icon {
       vertical-align: top;
@@ -62,20 +70,71 @@
   }
   
   .o-user-info{ 
+  	p {
+  		margin: 0 0 5px;
+  		font-size: $v-font-size--large;
+  		font-weight: bold;
+  		overflow: hidden;
+    	text-overflow: ellipsis;
+  	}
+  	
+  	.v-label {
+  		overflow: hidden;
+    	text-overflow: ellipsis;
+  	}
+  	
+  	.o-user-details {
+  		margin: 0 0 12px 8px; 
+  		overflow: hidden;
+    	text-overflow: ellipsis;
+  	}
   
-  	.o-user-image.v-button {
-  		height: 102px;
-  		padding: 2px;
+  	.o-user-image {
+  		position: relative;
+  		height: 98px;
+  		overflow: hidden;
+  		border: 1px solid #c5c5c7;
+  		border-radius: 4px;
   		
-  		> span.v-button-wrap {
-  			display: inline-block;
-  			vertical-align: top;
-  			
-  			img.v-icon {
+  		img {
   				height: 96px;
   				width: 96px;
+  		}
+  		
+  		.v-button{
+  			position: absolute;
+  			top: 64px;
+  			left: 38px;
+  			display: none;
+  			font-size: $app-icon-size-small;
+		    height: 28px;
+		    min-width: 28px;
+		    line-height: 20px;
+		    padding: 4px;
+		    margin: 0;
+		    color: inherit;
+		    background: rgba(250,250,253,0.6);
+		    border: none;
+		    box-shadow: none;
+		    
+		    .v-icon{
+		    	margin: 0;
+		    }
+		    
+		    &:focus:after {
+		    	border-color: transparent;
+		    	box-shadow: none;
+		    }
+		    
+		    &.o-upload-button{
+  				left: 4px;
   			}
   		}
+  		
+  		&:hover .v-button{
+  			display: block;
+  		}
+  		
   	}
     .v-button.v-button-o-toolbar-button{
   	  padding: 2px;
@@ -181,12 +240,12 @@
   }
   
   .v-button.o-button-table-icon, .v-button.o-button-unpadded {
-		padding: 0px;
-	}
+	padding: 0px;
+  }
 	
-	.o-button-icon-small .opencms-font {
-		font-size: 16px;
-		color: $alkacon-gray; 
-		vertical-align: middle; 
-	}
+  .v-button.o-button-table-icon .opencms-font {
+	font-size: 16px;
+	color: $alkacon-gray; 
+	vertical-align: middle; 
+  }
 }

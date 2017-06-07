@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -65,10 +65,9 @@ import com.google.common.collect.Lists;
  * The de- and encoding uses the same coding mechanism as JavaScript, special characters are
  * replaced with <code>%hex</code> where hex is a two digit hex number.<p>
  *
- * <b>Note:</b> On the client side (browser) instead of using corresponding <code>escape</code>
- * and <code>unescape</code> JavaScript functions, better use <code>encodeURIComponent</code> and
- * <code>decodeURIComponent</code> functions which are work properly with unicode characters.
- * These functions are supported in IE 5.5+ and NS 6+ only.<p>
+ * <b>Note:</b> On the client side (browser) instead of using the deprecated <code>escape</code>
+ * and <code>unescape</code> JavaScript functions, always the use <code>encodeURIComponent</code> and
+ * <code>decodeURIComponent</code> functions. Only these work properly with unicode characters.<p>
  *
  * @since 6.0.0
  */
@@ -542,12 +541,36 @@ public final class CmsEncoder {
     }
 
     /**
-     * Encodes a String in a way that is compatible with the JavaScript escape function.
+     * Encodes a String in a way similar to the JavaScript "encodeURIcomponent" function,
+     * using "UTF-8" for character encoding encoding.<p>
+     *
+     * JavaScript "decodeURIcomponent" can decode Strings that have been encoded using this method.<p>
+     *
+     * <b>Directly exposed for JSP EL<b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
+     *
+     * @param source The text to be encoded
+     *
+     * @return The encoded string
+     *
+     * @see #escape(String, String)
+     */
+    public static String escape(String source) {
+
+        return escape(source, ENCODING_UTF_8);
+    }
+
+    /**
+     * Encodes a String in a way similar to the JavaScript "encodeURIcomponent" function.<p>
+     *
+     * JavaScript "decodeURIcomponent" can decode Strings that have been encoded using this method,
+     * provided "UTF-8" has been used as encoding.<p>
+     *
+     * <b>Directly exposed for JSP EL<b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param source The text to be encoded
      * @param encoding the encoding type
      *
-     * @return The JavaScript escaped string
+     * @return The encoded string
      */
     public static String escape(String source, String encoding) {
 
@@ -663,13 +686,14 @@ public final class CmsEncoder {
     }
 
     /**
-     * Encodes a String in a way that is compatible with the JavaScript escape function.
-     * Multiple blanks are encoded _multiply _with <code>%20</code>.<p>
+     * Encodes a String in a way similar JavaScript "encodeURIcomponent" function.<p>
+     *
+     * Multiple blanks are encoded _multiply_ with <code>%20</code>.<p>
      *
      * @param source The text to be encoded
      * @param encoding the encoding type
      *
-     * @return The JavaScript escaped string
+     * @return The encoded String
      */
     public static String escapeWBlanks(String source, String encoding) {
 
@@ -833,13 +857,34 @@ public final class CmsEncoder {
     }
 
     /**
-     * Decodes a String in a way that is compatible with the JavaScript
-     * unescape function.<p>
+     * Decodes a String in a way similar to the JavaScript "decodeURIcomponent" function,
+     * using "UTF-8" for character encoding.<p>
+     *
+     * This method can decode Strings that have been encoded in JavaScript with "encodeURIcomponent".<p>
+     *
+     * <b>Directly exposed for JSP EL<b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
+     *
+     * @param source The String to be decoded
+     *
+     * @return The decoded String
+     */
+    public static String unescape(String source) {
+
+        return unescape(source, ENCODING_UTF_8);
+    }
+
+    /**
+     * Decodes a String in a way similar to the JavaScript "decodeURIcomponent" function.<p>
+     *
+     * This method can decode Strings that have been encoded in JavaScript with "encodeURIcomponent",
+     * provided "UTF-8" is used as encoding.<p>
+     *
+     * <b>Directly exposed for JSP EL<b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
      *
      * @param source The String to be decoded
      * @param encoding the encoding type
      *
-     * @return The JavaScript unescaped String
+     * @return The decoded String
      */
     public static String unescape(String source, String encoding) {
 

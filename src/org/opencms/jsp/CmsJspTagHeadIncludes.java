@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -383,7 +384,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             inlineCss);
         if (standardContext.getDetailContentId() != null) {
             try {
-                CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
+                CmsResource detailContent = cms.readResource(
+                    standardContext.getDetailContentId(),
+                    CmsResourceFilter.ignoreExpirationOffline(cms));
                 CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().getRootUri()).getFormatters(cms, detailContent);
@@ -482,7 +485,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             inlineJS);
         if (standardContext.getDetailContentId() != null) {
             try {
-                CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
+                CmsResource detailContent = cms.readResource(
+                    standardContext.getDetailContentId(),
+                    CmsResourceFilter.ignoreExpirationOffline(cms));
                 CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().getRootUri()).getFormatters(cms, detailContent);
@@ -493,7 +498,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                         int width = Integer.parseInt(getDetailwidth());
                         I_CmsFormatterBean formatter = config.getDetailFormatter(getDetailtype(), width);
                         jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
-                        inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineJavascript())) {
+                            inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                        }
                         requiresAllIncludes = false;
                     } catch (NumberFormatException ne) {
                         // nothing to do, we will include JavaScript for all detail containers
@@ -502,7 +509,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 if (requiresAllIncludes) {
                     for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
                         jsIncludes.addAll(getHeadIncludes(formatter, includeType));
-                        inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineJavascript())) {
+                            inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                        }
                     }
                 }
             } catch (CmsException e) {
@@ -807,7 +816,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
                 cms,
                 OpenCms.getADEManager().lookupConfiguration(cms, cms.getRequestContext().getRootUri()),
-                CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms),
+                CmsJspTagEditable.isEditableRequest(req)
+                ? CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms)
+                : null,
                 CmsContainerpageService.isEditingModelGroups(cms, pageResource));
             containerPage = modelHelper.readModelGroups(xmlContainerPage.getContainerPage(cms));
             standardContext.setPage(containerPage);

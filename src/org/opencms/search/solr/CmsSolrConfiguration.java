@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.core.SolrConfig;
@@ -53,6 +54,11 @@ import org.xml.sax.InputSource;
  */
 public class CmsSolrConfiguration {
 
+    /** The default config set path. */
+    public static final String DEFAULT_CONFIGSET_FOLDER = File.separatorChar
+        + "configsets"
+        + File.separatorChar
+        + "default";
     /** The 'conf' folder inside the Solr home directory. */
     public static final String CONF_FOLDER = File.separatorChar + "conf" + File.separatorChar;
 
@@ -176,7 +182,7 @@ public class CmsSolrConfiguration {
         if (m_solrConfig == null) {
             try {
                 InputSource solrConfig = new InputSource(new FileInputStream(getSolrConfigFile()));
-                m_solrConfig = new SolrConfig(getHome(), null, solrConfig);
+                m_solrConfig = new SolrConfig(Paths.get(getHome(), DEFAULT_CONFIGSET_FOLDER), null, solrConfig);
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(
                     Messages.get().container(Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1, getSolrConfigFile()),
@@ -199,7 +205,7 @@ public class CmsSolrConfiguration {
      */
     public File getSolrConfigFile() {
 
-        return new File(getHome() + CONF_FOLDER + SolrConfig.DEFAULT_CONF_FILE);
+        return new File(getHome() + DEFAULT_CONFIGSET_FOLDER + CONF_FOLDER + SolrConfig.DEFAULT_CONF_FILE);
     }
 
     /**
@@ -256,7 +262,7 @@ public class CmsSolrConfiguration {
      */
     public File getSolrSchemaFile() {
 
-        return new File(getHome() + CONF_FOLDER + IndexSchema.DEFAULT_SCHEMA_FILE);
+        return new File(getHome() + DEFAULT_CONFIGSET_FOLDER + CONF_FOLDER + IndexSchema.DEFAULT_SCHEMA_FILE);
     }
 
     /**

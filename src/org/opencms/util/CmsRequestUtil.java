@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -28,6 +28,7 @@
 package org.opencms.util;
 
 import org.opencms.flex.CmsFlexRequest;
+import org.opencms.flex.CmsFlexResponse;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -479,7 +480,8 @@ public final class CmsRequestUtil {
         String target,
         Map<String, String[]> params,
         HttpServletRequest req,
-        HttpServletResponse res) throws IOException, ServletException {
+        HttpServletResponse res)
+    throws IOException, ServletException {
 
         // cast the request back to a flex request so the parameter map can be accessed
         CmsFlexRequest f_req = (CmsFlexRequest)req;
@@ -729,6 +731,23 @@ public final class CmsRequestUtil {
      */
     public static List<FileItem> readMultipartFileItems(HttpServletRequest request) {
 
+        return readMultipartFileItems(request, OpenCms.getSystemInfo().getPackagesRfsPath());
+    }
+
+    /**
+     * Parses a request of the form <code>multipart/form-data</code>.
+     *
+     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * If the request is not of type <code>multipart/form-data</code>, then <code>null</code> is returned.<p>
+     *
+     * @param request the HTTP servlet request to parse
+     * @param tempFolderPath the real file system path to the temp file folder
+     *
+     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
+     */
+    public static List<FileItem> readMultipartFileItems(HttpServletRequest request, String tempFolderPath) {
+
         if (!ServletFileUpload.isMultipartContent(request)) {
             return null;
         }
@@ -736,7 +755,7 @@ public final class CmsRequestUtil {
         // maximum size that will be stored in memory
         factory.setSizeThreshold(4096);
         // the location for saving data that is larger than getSizeThreshold()
-        factory.setRepository(new File(OpenCms.getSystemInfo().getPackagesRfsPath()));
+        factory.setRepository(new File(tempFolderPath));
         ServletFileUpload fu = new ServletFileUpload(factory);
         // set encoding to correctly handle special chars (e.g. in filenames)
         fu.setHeaderEncoding(request.getCharacterEncoding());
@@ -808,17 +827,18 @@ public final class CmsRequestUtil {
      */
     public static void redirectPermanently(CmsJspActionElement jsp, String target) {
 
-        String newTarget = OpenCms.getLinkManager().substituteLink(jsp.getCmsObject(), target, null, true);
-        jsp.getRequest().setAttribute(
-            CmsRequestUtil.ATTRIBUTE_ERRORCODE,
-            new Integer(HttpServletResponse.SC_MOVED_PERMANENTLY));
+        target = OpenCms.getLinkManager().substituteLink(jsp.getCmsObject(), target);
         jsp.getResponse().setHeader(HEADER_CONNECTION, "close");
         try {
-            jsp.getResponse().sendRedirect(newTarget);
+            HttpServletResponse response = jsp.getResponse();
+            if (response instanceof CmsFlexResponse) {
+                ((CmsFlexResponse)jsp.getResponse()).sendRedirect(target, true);
+            } else {
+                response.setHeader("Location", target);
+                response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+            }
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_IOERROR_0), e);
-            // In case of an IOException, we send the redirect ourselves
-            jsp.getResponse().setHeader(HEADER_LOCATION, newTarget);
         }
     }
 

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,7 +44,6 @@ import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 
@@ -392,10 +391,11 @@ public class CmsGallerySearchParameters {
                 getDateCreatedRange().m_endTime));
 
         // Set date last modified time filter
-        query.addFilterQuery(CmsSearchUtil.getDateCreatedTimeRangeFilterQuery(
-            CmsSearchField.FIELD_DATE_LASTMODIFIED,
-            getDateLastModifiedRange().m_startTime,
-            getDateLastModifiedRange().m_endTime));
+        query.addFilterQuery(
+            CmsSearchUtil.getDateCreatedTimeRangeFilterQuery(
+                CmsSearchField.FIELD_DATE_LASTMODIFIED,
+                getDateLastModifiedRange().m_startTime,
+                getDateLastModifiedRange().m_endTime));
 
         // Set fields
         if (null != m_fields) {
@@ -436,7 +436,7 @@ public class CmsGallerySearchParameters {
 
         // set search locale
         if (null != m_locale) {
-            query.setLocales(new Locale(m_locale));
+            query.setLocales(CmsLocaleManager.getLocale(m_locale));
         }
 
         // set search words

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,6 +37,8 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 
+import com.vaadin.server.Page.BrowserWindowResizeEvent;
+import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.Responsive;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -48,13 +50,16 @@ import com.vaadin.ui.declarative.Design;
 /**
  * The layout used within the app view.<p>
  */
-public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
+public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext, BrowserWindowResizeListener {
 
     /** The serial version id. */
     private static final long serialVersionUID = -290796815149968830L;
 
     /** The app area. */
     private CssLayout m_appArea;
+
+    /** The app id. */
+    private String m_appId;
 
     /** The info area grid. */
     private CssLayout m_infoArea;
@@ -64,13 +69,17 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
 
     /**
      * Constructor.<p>
+     *
+     * @param appId the app id
      */
-    public CmsAppViewLayout() {
+    public CmsAppViewLayout(String appId) {
 
+        m_appId = appId;
         Design.read("CmsAppView.html", this);
         Responsive.makeResponsive(this);
         // setting the width to 100% within the java code is required by the responsive resize listeners
         setWidth("100%");
+        m_toolbar.init(m_appId);
     }
 
     /**
@@ -120,6 +129,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     }
 
     /**
+     * @see com.vaadin.server.Page.BrowserWindowResizeListener#browserWindowResized(com.vaadin.server.Page.BrowserWindowResizeEvent)
+     */
+    public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+        m_toolbar.browserWindowResized(event);
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsAppUIContext#clearToolbarButtons()
      */
     public void clearToolbarButtons() {
@@ -141,6 +158,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     public void enableDefaultToolbarButtons(boolean enabled) {
 
         m_toolbar.enableDefaultButtons(enabled);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#getAppId()
+     */
+    public String getAppId() {
+
+        return m_appId;
     }
 
     /**
@@ -222,5 +247,13 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     public void updateOnChange() {
 
         m_toolbar.updateAppIndicator();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#updateUserInfo()
+     */
+    public void updateUserInfo() {
+
+        m_toolbar.refreshUserInfoDropDown();
     }
 }

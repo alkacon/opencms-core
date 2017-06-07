@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,11 +39,24 @@ import java.util.Locale;
 public interface I_CmsSimpleContextMenuEntry<T> {
 
     /**
+     * This interface allows special styles for certain entries.<p>
+     */
+    public interface I_HasCssStyles {
+
+        /**
+         * Returns the styles to use for this menu entry.<p>
+         *
+         * @return the styles to use for this menu entry
+         */
+        String getStyles();
+    }
+
+    /**
      * Executes the entry action.<p>
      *
-     * @param data the item data
+     * @param context the item data
      */
-    void executeAction(T data);
+    void executeAction(T context);
 
     /**
      * Returns the entry title for the given locale.<p>
@@ -57,9 +70,9 @@ public interface I_CmsSimpleContextMenuEntry<T> {
     /**
      * Returns the entry visibility matching the given item data.<p>
      *
-     * @param data the item data
+     * @param context the item data
      *
      * @return the visibility mode
      */
-    CmsMenuItemVisibilityMode getVisibility(T data);
+    CmsMenuItemVisibilityMode getVisibility(T context);
 }

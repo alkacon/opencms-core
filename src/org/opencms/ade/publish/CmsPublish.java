@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -36,8 +36,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -48,6 +51,7 @@ import org.opencms.relations.CmsRelationValidatorInfoEntry;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -324,15 +328,13 @@ public class CmsPublish {
      */
     public CmsPublishResource relationToBean(CmsRelation relation) throws CmsException {
 
-        CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
-            m_cms,
-            relation.getTarget(m_cms, CmsResourceFilter.ALL),
-            null);
+        CmsPermissionInfo permissionInfo = new CmsPermissionInfo(true, false, "");
         return new CmsPublishResource(
             relation.getTargetId(),
             relation.getTargetPath(),
             relation.getTargetPath(),
             CmsResourceTypePlain.getStaticTypeName(),
+            null,
             CmsResourceState.STATE_UNCHANGED,
             permissionInfo,
             0,
@@ -371,15 +373,29 @@ public class CmsPublish {
         CmsResource resource,
         CmsPublishResourceInfo info,
         boolean removable,
-        List<CmsPublishResource> related) throws CmsException {
+        List<CmsPublishResource> related)
+    throws CmsException {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
         CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, null);
+
+        String typeName;
+        String detailTypeName = null;
+        if (CmsJspNavBuilder.isNavLevelFolder(m_cms, resource)) {
+            typeName = CmsGwtConstants.TYPE_NAVLEVEL;
+        } else if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, resource)) {
+            typeName = CmsGwtConstants.TYPE_MODELGROUP_REUSE;
+        } else {
+            typeName = resUtil.getResourceTypeName();
+            detailTypeName = CmsResourceIcon.getDefaultFileOrDetailType(m_cms, resource);
+        }
+
         CmsPublishResource pubResource = new CmsPublishResource(
             resource.getStructureId(),
             resUtil.getFullPath(),
             resUtil.getTitle(),
-            resUtil.getResourceTypeName(),
+            typeName,
+            detailTypeName,
             resource.getState(),
             permissionInfo,
             resource.getDateLastModified(),

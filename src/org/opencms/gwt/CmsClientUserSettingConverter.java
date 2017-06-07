@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -102,14 +102,14 @@ public class CmsClientUserSettingConverter {
     /** The CMS context to use. */
     private CmsObject m_cms;
 
-    /** The current request. */
-    private HttpServletRequest m_request;
+    /** The current preferences. */
+    private CmsDefaultUserSettings m_currentPreferences;
 
     /** The macro resolver used for macros in preference property definitions. */
     private CmsMacroResolver m_macroResolver = new CmsMacroResolver();
 
-    /** The current preferences. */
-    private CmsDefaultUserSettings m_currentPreferences;
+    /** The current request. */
+    private HttpServletRequest m_request;
 
     /**
      * Creates a new instance.<p>
@@ -144,7 +144,7 @@ public class CmsClientUserSettingConverter {
         currentSettings.init(m_currentPreferences.getUser());
         for (I_CmsPreference pref : OpenCms.getWorkplaceManager().getDefaultUserSettings().getPreferences().values()) {
             String tab = pref.getTab();
-            if (CmsGwtConstants.TAB_HIDDEN.equals(tab) || pref.isDisabled()) {
+            if (CmsGwtConstants.TAB_HIDDEN.equals(tab) || pref.isDisabled(m_cms)) {
                 continue;
             }
             CmsXmlContentProperty prop2 = pref.getPropertyDefinition(m_cms);

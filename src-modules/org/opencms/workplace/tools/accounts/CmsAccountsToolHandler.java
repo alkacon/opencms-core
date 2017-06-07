@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -333,14 +333,13 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         } else if (getLink().equals(getPath(OUROLES_FILE))) {
             return !m_webuserOu;
         } else if (getLink().equals(getPath(SWITCHUSER_FILE))) {
-            boolean visible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
+            boolean visible = false;
             CmsUUID userId = new CmsUUID(
                 CmsRequestUtil.getNotEmptyDecodedParameter(wp.getJsp().getRequest(), A_CmsEditUserDialog.PARAM_USERID));
             try {
-                visible &= OpenCms.getRoleManager().hasRole(
-                    cms,
-                    cms.readUser(userId).getName(),
-                    CmsRole.ELEMENT_AUTHOR);
+                CmsUser user = cms.readUser(userId);
+                visible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn()));
+                visible &= OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ELEMENT_AUTHOR);
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {

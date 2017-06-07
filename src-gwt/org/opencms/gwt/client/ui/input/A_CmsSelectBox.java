@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,6 +44,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -68,10 +70,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -99,36 +98,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         // binder interface
     }
 
-    /**
-     * Drag and drop event preview handler.<p>
-     *
-     * To be used while dragging.<p>
-     */
-    protected class ScrollEventPreviewHandler implements NativePreviewHandler {
-
-        /**
-         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-         */
-        public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-            Event nativeEvent = Event.as(event.getNativeEvent());
-            switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-                    break;
-                case Event.ONKEYDOWN:
-                    break;
-                case Event.ONMOUSEWHEEL:
-                    close();
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-
-    }
-
     /** The layout bundle. */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
@@ -141,6 +110,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /** The event bus. */
     protected SimpleEventBus m_eventBus;
+
+    /** Handler registration for mouse wheel handlers. */
+    protected HandlerRegistration m_mousewheelRegistration;
 
     /** The open-close button. */
     protected CmsPushButton m_openClose;
@@ -155,12 +127,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /** The popup panel inside which the selector will be shown.<p> */
     protected PopupPanel m_popup = new PopupPanel(true);
-
-    /** Handler registration for mouse wheel handlers. */
-    protected HandlerRegistration m_mousewheelRegistration;
-
-    /** The preview handler registration. */
-    protected HandlerRegistration m_previewHandlerRegistration;
 
     /** Style of the select box widget. */
     protected final CmsStyleVariable m_selectBoxState;
@@ -493,10 +459,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         m_openClose.setDown(false);
         m_popup.hide();
         m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        if (m_previewHandlerRegistration != null) {
-            m_previewHandlerRegistration.removeHandler();
-            m_previewHandlerRegistration = null;
-        }
     }
 
     /**
@@ -578,12 +540,18 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
             }
         });
 
-        // native event preview of mousewheel events doesn't seem to work in newer Chrome versions
         m_mousewheelRegistration = RootPanel.get().addDomHandler(new MouseWheelHandler() {
 
             public void onMouseWheel(MouseWheelEvent event) {
 
-                close();
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    public void execute() {
+
+                        positionPopup();
+                    }
+                });
+
             }
         }, MouseWheelEvent.getType());
 
@@ -656,59 +624,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         m_popup.setWidget(m_selector);
         m_popup.show();
 
-        int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
-        int popupHeight = m_popup.getOffsetHeight();
-        int dx = 0;
-        if (selectorWidth > (m_opener.getOffsetWidth() - 2)) {
-            int spaceOnTheRight = (Window.getClientWidth() + Window.getScrollLeft())
-                - m_opener.getAbsoluteLeft()
-                - selectorWidth
-                - 2;
-            dx = spaceOnTheRight < 0 ? spaceOnTheRight : 0;
-        }
-        // Calculate top position for the popup
-        int top = m_opener.getAbsoluteTop();
-
-        // Make sure scrolling is taken into account, since
-        // box.getAbsoluteTop() takes scrolling into account.
-        int windowTop = Window.getScrollTop();
-        int windowBottom = Window.getScrollTop() + Window.getClientHeight();
-
-        // Distance from the top edge of the window to the top edge of the
-        // text box
-        int distanceFromWindowTop = top - windowTop;
-
-        // Distance from the bottom edge of the window to the bottom edge of
-        // the text box
-        int distanceToWindowBottom = windowBottom - (top + m_opener.getOffsetHeight());
-
-        // If there is not enough space for the popup's height below the text
-        // box and there IS enough space for the popup's height above the text
-        // box, then then position the popup above the text box. However, if there
-        // is not enough space on either side, then stick with displaying the
-        // popup below the text box.
-        boolean displayAbove = (distanceFromWindowTop > distanceToWindowBottom)
-            && (distanceToWindowBottom < popupHeight);
-
-        // in case there is not enough space, add a scroll panel to the selector popup
-        if ((displayAbove && (distanceFromWindowTop < popupHeight))
-            || (!displayAbove && (distanceToWindowBottom < popupHeight))) {
-            setScrollingSelector((displayAbove ? distanceFromWindowTop : distanceToWindowBottom) - 10);
-            popupHeight = m_popup.getOffsetHeight();
-        }
-
-        if (displayAbove) {
-            // Position above the text box
-            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, -(popupHeight - 2));
-            m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
-            m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
-        } else {
-            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, openerHeight - 1);
-            m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
-            m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
-        }
-        // m_selectBoxState.setValue(CSS.selectBoxOpen());
-        m_previewHandlerRegistration = Event.addNativePreviewHandler(new ScrollEventPreviewHandler());
+        positionPopup();
     }
 
     /**
@@ -736,6 +652,67 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
      * @param newValue the value selected by the user
      */
     protected abstract void updateOpener(String newValue);
+
+    /**
+     * Positions the select popup.<p>
+     */
+    void positionPopup() {
+
+        if (m_popup.isShowing()) {
+            int width = m_popup.getOffsetWidth();
+
+            int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
+            int popupHeight = m_popup.getOffsetHeight();
+            int dx = 0;
+            if (width > (m_opener.getOffsetWidth())) {
+                int spaceOnTheRight = (Window.getClientWidth() + Window.getScrollLeft())
+                    - m_opener.getAbsoluteLeft()
+                    - width;
+                dx = spaceOnTheRight < 0 ? spaceOnTheRight : 0;
+            }
+            // Calculate top position for the popup
+            int top = m_opener.getAbsoluteTop();
+
+            // Make sure scrolling is taken into account, since
+            // box.getAbsoluteTop() takes scrolling into account.
+            int windowTop = Window.getScrollTop();
+            int windowBottom = Window.getScrollTop() + Window.getClientHeight();
+
+            // Distance from the top edge of the window to the top edge of the
+            // text box
+            int distanceFromWindowTop = top - windowTop;
+
+            // Distance from the bottom edge of the window to the bottom edge of
+            // the text box
+            int distanceToWindowBottom = windowBottom - (top + m_opener.getOffsetHeight());
+
+            // If there is not enough space for the popup's height below the text
+            // box and there IS enough space for the popup's height above the text
+            // box, then then position the popup above the text box. However, if there
+            // is not enough space on either side, then stick with displaying the
+            // popup below the text box.
+            boolean displayAbove = (distanceFromWindowTop > distanceToWindowBottom)
+                && (distanceToWindowBottom < popupHeight);
+
+            // in case there is not enough space, add a scroll panel to the selector popup
+            if ((displayAbove && (distanceFromWindowTop < popupHeight))
+                || (!displayAbove && (distanceToWindowBottom < popupHeight))) {
+                setScrollingSelector((displayAbove ? distanceFromWindowTop : distanceToWindowBottom) - 10);
+                popupHeight = m_popup.getOffsetHeight();
+            }
+
+            if (displayAbove) {
+                // Position above the text box
+                CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, -(popupHeight - 2));
+                m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+                m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+            } else {
+                CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, openerHeight - 1);
+                m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+                m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+            }
+        }
+    }
 
     /**
      * Helper method for adding event handlers for a 'hover' effect to the opener.<p>

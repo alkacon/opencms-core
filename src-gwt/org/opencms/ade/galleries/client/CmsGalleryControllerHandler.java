@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,6 +48,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -214,11 +215,17 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             Collections.sort(dialogBean.getGalleries(), new CmsComparatorTitle(true));
             setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
         }
+
         if ((m_galleryDialog.getTypesTab() != null) && (dialogBean.getTypes() != null)) {
             setTypesTabContent(controller.getSearchTypes(), searchObj.getTypes());
         }
+
+        if (m_galleryDialog.getSearchTab() != null) {
+            m_galleryDialog.getSearchTab().fillParams(searchObj);
+        }
+
         if ((m_galleryDialog.getCategoriesTab() != null) && (dialogBean.getCategories() != null)) {
-            setCategoriesTabContent(dialogBean.getCategories());
+            setCategoriesTabContent(dialogBean.getCategories(), searchObj.getCategories());
         }
         GalleryTabId startTab = dialogBean.getStartTab();
 
@@ -237,11 +244,16 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             onReceiveSitemapPreloadData(sitemapPreloadData);
         }
         CmsVfsEntryBean vfsPreloadData = searchObj.getVfsPreloadData();
+        if (vfsPreloadData == null) {
+            vfsPreloadData = dialogBean.getVfsPreloadData();
+        }
         if (m_galleryDialog.getVfsTab() != null) {
             if (vfsPreloadData != null) {
-                onReceiveVfsPreloadData(vfsPreloadData);
+                onReceiveVfsPreloadData(vfsPreloadData, searchObj.getFolders());
             } else if ((dialogBean.getVfsRootFolders() != null)) {
-                m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
+                m_galleryDialog.getVfsTab().fillInitially(
+                    dialogBean.getVfsRootFolders(),
+                    controller.getDefaultVfsTabSiteRoot());
             }
         }
 
@@ -301,12 +313,16 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      * This method is called when preloaded VFS tree state data is loaded.<p>
      *
      * @param vfsPreloadData the preload data
+     * @param folders the set of selected folders
      */
-    public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
+    public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData, Set<String> folders) {
 
         CmsVfsTab vfsTab = m_galleryDialog.getVfsTab();
         if (vfsTab != null) {
             vfsTab.onReceiveVfsPreloadData(vfsPreloadData);
+            if (folders != null) {
+                vfsTab.checkFolders(folders);
+            }
         }
     }
 
@@ -417,10 +433,11 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      * Sets the list content of the category tab.<p>
      *
      * @param categoryRoot the root category tree entry
+     * @param selected the selected categories
      */
-    public void setCategoriesTabContent(List<CmsCategoryTreeEntry> categoryRoot) {
+    public void setCategoriesTabContent(List<CmsCategoryTreeEntry> categoryRoot, List<String> selected) {
 
-        m_galleryDialog.getCategoriesTab().fillContent(categoryRoot);
+        m_galleryDialog.getCategoriesTab().fillContent(categoryRoot, selected);
     }
 
     /**
@@ -473,24 +490,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             setTypesTabContent(controller.getSearchTypes(), searchObj.getTypes());
         }
         if ((m_galleryDialog.getCategoriesTab() != null) && (dialogBean.getCategories() != null)) {
-            setCategoriesTabContent(dialogBean.getCategories());
-        }
-    }
-
-    /**
-     * Causes the preloaded tree states to be displayed in the tree tabs.<p>
-     *
-     * @param result the gallery search bean from which to take the preload data
-     */
-    protected void showPreloadDataInTabs(CmsGallerySearchBean result) {
-
-        CmsSitemapEntryBean sitemapPreloadData = result.getSitemapPreloadData();
-        if (sitemapPreloadData != null) {
-            onReceiveSitemapPreloadData(sitemapPreloadData);
-        }
-        CmsVfsEntryBean vfsPreloadData = result.getVfsPreloadData();
-        if (vfsPreloadData != null) {
-            onReceiveVfsPreloadData(vfsPreloadData);
+            setCategoriesTabContent(dialogBean.getCategories(), searchObj.getCategories());
         }
     }
 

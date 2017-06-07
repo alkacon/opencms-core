@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -139,9 +139,6 @@ public class CmsContainerPageCopier {
     /** The log instance used for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContainerPageCopier.class);
 
-    /** Original copy mode. */
-    private CopyMode m_originalMode;
-
     /** The CMS context used by this object. */
     private CmsObject m_cms;
 
@@ -245,7 +242,8 @@ public class CmsContainerPageCopier {
      */
     public CmsContainerElementBean replaceContainerElement(
         CmsResource targetPage,
-        CmsContainerElementBean originalElement) throws CmsException, NoCustomReplacementException {
+        CmsContainerElementBean originalElement)
+    throws CmsException, NoCustomReplacementException {
         // if (m_elementReplacements.containsKey(originalElement.getId()
 
         CmsObject targetCms = OpenCms.initCmsObject(m_cms);
@@ -274,18 +272,10 @@ public class CmsContainerPageCopier {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(originalResource);
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(m_cms, targetPage.getRootPath());
             CmsResourceTypeConfig typeConfig = config.getResourceType(type.getTypeName());
-            boolean shouldCopyElement;
-            if (m_copyMode == CopyMode.reuse) {
-                shouldCopyElement = false;
-            } else if (typeConfig == null) {
-                LOG.warn(
-                    "Type configuration for type " + type.getTypeName() + " not found at " + targetPage.getRootPath());
-                shouldCopyElement = false;
-            } else {
-                shouldCopyElement = (originalElement.isCreateNew() || typeConfig.isCopyInModels())
-                    && !type.getTypeName().equals(CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
-            }
-            if (shouldCopyElement) {
+            if ((m_copyMode != CopyMode.reuse)
+                && (typeConfig != null)
+                && (originalElement.isCreateNew() || typeConfig.isCopyInModels())
+                && !type.getTypeName().equals(CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME)) {
                 CmsResource resourceCopy = typeConfig.createNewElement(
                     targetCms,
                     originalResource,
@@ -417,6 +407,7 @@ public class CmsContainerPageCopier {
                 container.getName(),
                 container.getType(),
                 container.getParentInstanceId(),
+                container.isRootContainer(),
                 newElements);
             newContainers.add(newContainer);
         }
@@ -434,6 +425,22 @@ public class CmsContainerPageCopier {
      * @throws NoCustomReplacementException if a custom replacement element was not found
      */
     public void run(CmsResource source, CmsResource target) throws CmsException, NoCustomReplacementException {
+
+        run(source, target, null);
+    }
+
+    /**
+     * Starts the page copying process.<p>
+     *
+     * @param source the source (can be either a container page, or a folder whose default file is a container page)
+     * @param target the target folder
+     * @param targetName the name to give the new folder
+     *
+     * @throws CmsException if soemthing goes wrong
+     * @throws NoCustomReplacementException if a custom replacement element was not found
+     */
+    public void run(CmsResource source, CmsResource target, String targetName)
+    throws CmsException, NoCustomReplacementException {
 
         LOG.info(
             "Starting page copy process: page='"
@@ -487,9 +494,17 @@ public class CmsContainerPageCopier {
             }
 
             I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
-            String copyPath = CmsFileUtil.removeTrailingSeparator(
-                CmsStringUtil.joinPaths(target.getRootPath(), source.getName()));
-            copyPath = nameGen.getNewFileName(rootCms, copyPath + "%(number)", 4, true);
+            String copyPath;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(targetName)) {
+                copyPath = CmsStringUtil.joinPaths(target.getRootPath(), targetName);
+                if (rootCms.existsResource(copyPath)) {
+                    copyPath = nameGen.getNewFileName(rootCms, copyPath + "%(number)", 4, true);
+                }
+            } else {
+                copyPath = CmsFileUtil.removeTrailingSeparator(
+                    CmsStringUtil.joinPaths(target.getRootPath(), source.getName()));
+                copyPath = nameGen.getNewFileName(rootCms, copyPath + "%(number)", 4, true);
+            }
             Double maxNavPosObj = readMaxNavPos(target);
             double maxNavpos = maxNavPosObj == null ? 0 : maxNavPosObj.doubleValue();
             boolean hasNavpos = maxNavPosObj != null;
@@ -516,8 +531,7 @@ public class CmsContainerPageCopier {
             m_createdResources.add(copiedPage);
             replaceElements(copiedPage);
             CmsLocaleGroupService localeGroupService = rootCms.getLocaleGroupService();
-            if ((m_originalMode == CopyMode.automatic)
-                && (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage))) {
+            if (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage)) {
                 try {
                     localeGroupService.attachLocaleGroupIndirect(m_originalPage, copiedPage);
                 } catch (CmsException e) {
@@ -558,8 +572,7 @@ public class CmsContainerPageCopier {
             m_copiedFolderOrPage = copiedPage;
             replaceElements(copiedPage);
             CmsLocaleGroupService localeGroupService = rootCms.getLocaleGroupService();
-            if ((m_originalMode == CopyMode.automatic)
-                && (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage))) {
+            if (Status.linkable == localeGroupService.checkLinkable(m_originalPage, copiedPage)) {
                 try {
                     localeGroupService.attachLocaleGroupIndirect(m_originalPage, copiedPage);
                 } catch (CmsException e) {
@@ -578,7 +591,6 @@ public class CmsContainerPageCopier {
      */
     public void setCopyMode(CopyMode copyMode) {
 
-        m_originalMode = copyMode;
         m_copyMode = copyMode;
     }
 

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -1011,10 +1011,11 @@ public class CmsUserSettings {
         }
         // workplace upload applet mode
         setUploadVariant(
-            String.valueOf(m_user.getAdditionalInfo(
-                PREFERENCES
-                    + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                    + CmsWorkplaceConfiguration.N_UPLOADAPPLET)));
+            String.valueOf(
+                m_user.getAdditionalInfo(
+                    PREFERENCES
+                        + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                        + CmsWorkplaceConfiguration.N_UPLOADAPPLET)));
 
         // locale
         Object obj = m_user.getAdditionalInfo(
@@ -1314,9 +1315,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_BUTTONSTYLE,
                 new Integer(getWorkplaceButtonStyle()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                    + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
         }
         // workplace report type
         if (!getWorkplaceReportType().equals(
@@ -1327,9 +1329,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_REPORTTYPE,
                 getWorkplaceReportType());
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_REPORTTYPE);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                    + CmsWorkplaceConfiguration.N_REPORTTYPE);
         }
         // workplace upload applet
         if (getUploadVariant() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getUploadVariant()) {
@@ -1352,9 +1355,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_LISTALLPROJECTS,
                 Boolean.valueOf(getListAllProjects()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_LISTALLPROJECTS);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                    + CmsWorkplaceConfiguration.N_LISTALLPROJECTS);
         }
         // publish notification
         if (getShowPublishNotification() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowPublishNotification()) {
@@ -1364,9 +1368,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_PUBLISHNOTIFICATION,
                 Boolean.valueOf(getShowPublishNotification()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_PUBLISHNOTIFICATION);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                    + CmsWorkplaceConfiguration.N_PUBLISHNOTIFICATION);
         }
         // locale
         if (!getLocale().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale())) {
@@ -1393,9 +1398,10 @@ public class CmsUserSettings {
                     getStartProject());
             } catch (Exception e) {
                 if (cms != null) {
-                    m_user.deleteAdditionalInfo(PREFERENCES
-                        + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                        + CmsWorkplaceConfiguration.N_PROJECT);
+                    m_user.deleteAdditionalInfo(
+                        PREFERENCES
+                            + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                            + CmsWorkplaceConfiguration.N_PROJECT);
                 }
             }
         } else if (cms != null) {
@@ -1412,9 +1418,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_WORKPLACEVIEW,
                 getStartView());
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_WORKPLACEVIEW);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                    + CmsWorkplaceConfiguration.N_WORKPLACEVIEW);
         }
         // start site
         if (!getStartSite().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite())) {
@@ -1432,9 +1439,10 @@ public class CmsUserSettings {
                 PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_FOLDER,
                 getStartFolder());
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_FOLDER);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                    + CmsWorkplaceConfiguration.N_FOLDER);
         }
         // restrict explorer folder view
         if (getRestrictExplorerView() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView()) {
@@ -1444,9 +1452,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW,
                 Boolean.valueOf(getRestrictExplorerView()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                    + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW);
         }
         // explorer button style
         if (getExplorerButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerButtonStyle()) {
@@ -1456,9 +1465,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_BUTTONSTYLE,
                 new Integer(getExplorerButtonStyle()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
+                    + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
         }
         // explorer file entries
         if (getExplorerFileEntries() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerFileEntries()) {
@@ -1477,9 +1487,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_EXPLORERDISPLAYOPTIONS,
                 new Integer(getExplorerSettings()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_EXPLORERDISPLAYOPTIONS);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
+                    + CmsWorkplaceConfiguration.N_EXPLORERDISPLAYOPTIONS);
         }
         // dialog file copy mode
         if (getDialogCopyFileMode() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFileMode()) {
@@ -1526,9 +1537,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_DIRECTPUBLISH,
                 Boolean.valueOf(getDialogPublishSiblings()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_DIRECTPUBLISH);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
+                    + CmsWorkplaceConfiguration.N_DIRECTPUBLISH);
         }
         // dialog show lock mode
         if (getDialogShowLock() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowLock()) {
@@ -1536,9 +1548,10 @@ public class CmsUserSettings {
                 PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWLOCK,
                 Boolean.valueOf(getDialogShowLock()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_SHOWLOCK);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
+                    + CmsWorkplaceConfiguration.N_SHOWLOCK);
         }
         // dialog permissions inheritation mode
         if (getDialogPermissionsInheritOnFolder() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPermissionsInheritOnFolder()) {
@@ -1548,9 +1561,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER,
                 Boolean.valueOf(getDialogPermissionsInheritOnFolder()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
+                    + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER);
         }
         // dialog expand inherited permissions mode
         if (getDialogExpandInheritedPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandInheritedPermissions()) {
@@ -1560,9 +1574,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED,
                 Boolean.valueOf(getDialogExpandInheritedPermissions()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
+                    + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED);
         }
         // dialog expand users permissions mode
         if (getDialogExpandUserPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandUserPermissions()) {
@@ -1572,9 +1587,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSUSER,
                 Boolean.valueOf(getDialogExpandUserPermissions()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
-                + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSUSER);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
+                    + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSUSER);
         }
         // editor button style
         if (getEditorButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorButtonStyle()) {
@@ -1584,9 +1600,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_BUTTONSTYLE,
                 new Integer(getEditorButtonStyle()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
+                    + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
         }
         // direct edit button style
         if (getDirectEditButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDirectEditButtonStyle()) {
@@ -1596,9 +1613,10 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_DIRECTEDITSTYLE,
                 new Integer(getDirectEditButtonStyle()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
-                + CmsWorkplaceConfiguration.N_DIRECTEDITSTYLE);
+            m_user.deleteAdditionalInfo(
+                PREFERENCES
+                    + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
+                    + CmsWorkplaceConfiguration.N_DIRECTEDITSTYLE);
         }
         // editor settings
         if (m_editorSettings.size() > 0) {
@@ -2479,7 +2497,8 @@ public class CmsUserSettings {
      */
     public boolean startWithNewWorkplace() {
 
-        return getStartView().equals(CmsWorkplace.VIEW_WORKPLACE) && usesNewWorkplace();
+        return (CmsWorkplace.VIEW_WORKPLACE.equals(getStartView()) || CmsWorkplace.VIEW_ADMIN.equals(getStartView()))
+            && usesNewWorkplace();
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,13 @@ import com.vaadin.shared.communication.ServerRpc;
  *
  */
 public interface I_CmsSitemapServerRpc extends ServerRpc {
+
+    /**
+     * Handles changes made via the property dialog.<p>
+     *
+     * @param id the structure id of the changed resource
+     */
+    void handleChangedProperties(String id);
 
     /**
      * Opens the page copy dialog for a resource.<p>

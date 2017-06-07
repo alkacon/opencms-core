@@ -62,6 +62,20 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
     /** Gallery configuration id. */
     public static final String TC_SELECT_DOC = "selectDoc";
 
+    /** Gallery confiugration id. */
+    public static final String TC_SELECT_ALL_NO_SITEMAP = "selectAllNoSitemap";
+
+    static {
+        Map<String, CmsGalleryTabConfiguration> defaultConfigs = new HashMap<String, CmsGalleryTabConfiguration>();
+        defaultConfigs.put(TC_SELECT_ALL, parse("*sitemap,types,galleries,categories,vfstree,search,results"));
+        defaultConfigs.put(TC_SELECT_ALL_NO_SITEMAP, parse("*types,galleries,categories,vfstree,search,results"));
+        defaultConfigs.put(TC_SELECT_DOC, parse("types,*galleries,categories,vfstree,search,results"));
+        defaultConfigs.put(TC_ADE_ADD, parse("*types,galleries,categories,vfstree,search,results"));
+        defaultConfigs.put(TC_FOLDERS, parse("*vfstree"));
+        defaultConfigs.put(TC_GALLERIES, parse("*galleries,vfstree,results"));
+        DEFAULT_CONFIGURATIONS = Collections.unmodifiableMap(defaultConfigs);
+    }
+
     /** The id of the default tab. */
     protected GalleryTabId m_defaultTab;
 
@@ -84,16 +98,6 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
     protected CmsGalleryTabConfiguration() {
 
         // only used for serialization
-    }
-
-    static {
-        Map<String, CmsGalleryTabConfiguration> defaultConfigs = new HashMap<String, CmsGalleryTabConfiguration>();
-        defaultConfigs.put(TC_SELECT_ALL, parse("*sitemap,types,galleries,categories,vfstree,search,results"));
-        defaultConfigs.put(TC_SELECT_DOC, parse("types,*galleries,categories,vfstree,search,results"));
-        defaultConfigs.put(TC_ADE_ADD, parse("*types,galleries,categories,vfstree,search,results"));
-        defaultConfigs.put(TC_FOLDERS, parse("*vfstree"));
-        defaultConfigs.put(TC_GALLERIES, parse("*galleries,vfstree,results"));
-        DEFAULT_CONFIGURATIONS = Collections.unmodifiableMap(defaultConfigs);
     }
 
     /**

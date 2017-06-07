@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,9 @@ import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.types.A_CmsResourceTypeFolderBase;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
@@ -41,6 +44,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -62,9 +66,11 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.Version;
 import com.vaadin.ui.AbstractField;
@@ -133,6 +139,50 @@ public final class CmsVaadinUtils {
             return this;
         }
     }
+
+    /** Container property ids. */
+    public static enum PropertyId {
+        /** The caption id. */
+        caption,
+        /** The icon id. */
+        icon,
+        /** The is folder id. */
+        isFolder,
+        /** The is XML content id. */
+        isXmlContent
+    }
+
+    /** Container filter for the resource type container to show not folder types only. */
+    public static final Filter FILTER_NO_FOLDERS = new Filter() {
+
+        private static final long serialVersionUID = 1L;
+
+        public boolean appliesToProperty(Object propertyId) {
+
+            return PropertyId.isFolder.equals(propertyId);
+        }
+
+        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+
+            return !((Boolean)item.getItemProperty(PropertyId.isFolder).getValue()).booleanValue();
+        }
+    };
+
+    /** Container filter for the resource type container to show XML content types only. */
+    public static final Filter FILTER_XML_CONTENTS = new Filter() {
+
+        private static final long serialVersionUID = 1L;
+
+        public boolean appliesToProperty(Object propertyId) {
+
+            return PropertyId.isXmlContent.equals(propertyId);
+        }
+
+        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+
+            return ((Boolean)item.getItemProperty(PropertyId.isXmlContent).getValue()).booleanValue();
+        }
+    };
 
     /** The combo box label item property id. */
     public static final String PROPERTY_LABEL = "label";
@@ -238,6 +288,40 @@ public final class CmsVaadinUtils {
             LOG.error(e.getLocalizedMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Returns the available projects.<p>
+     *
+     * @param cms the CMS context
+     *
+     * @return the available projects
+     */
+    public static List<CmsProject> getAvailableProjects(CmsObject cms) {
+
+        // get all project information
+        List<CmsProject> allProjects;
+        try {
+            String ouFqn = "";
+            CmsUserSettings settings = new CmsUserSettings(cms);
+            if (!settings.getListAllProjects()) {
+                ouFqn = cms.getRequestContext().getCurrentUser().getOuFqn();
+            }
+            allProjects = new ArrayList<CmsProject>(
+                OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, ouFqn, settings.getListAllProjects()));
+            Iterator<CmsProject> itProjects = allProjects.iterator();
+            while (itProjects.hasNext()) {
+                CmsProject prj = itProjects.next();
+                if (prj.isHiddenFromSelector()) {
+                    itProjects.remove();
+                }
+            }
+        } catch (CmsException e) {
+            // should usually never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            allProjects = Collections.emptyList();
+        }
+        return allProjects;
     }
 
     /**
@@ -364,6 +448,38 @@ public final class CmsVaadinUtils {
     public static HttpServletRequest getRequest() {
 
         return (HttpServletRequest)VaadinService.getCurrentRequest();
+    }
+
+    /**
+     * Returns the available resource types container.<p>
+     *
+     * @return the resource types container
+     */
+    public static IndexedContainer getResourceTypesContainer() {
+
+        IndexedContainer types = new IndexedContainer();
+        types.addContainerProperty(PropertyId.caption, String.class, null);
+        types.addContainerProperty(PropertyId.icon, Resource.class, null);
+        types.addContainerProperty(PropertyId.isFolder, Boolean.class, null);
+        types.addContainerProperty(PropertyId.isXmlContent, Boolean.class, null);
+        for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
+            CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                type.getTypeName());
+            if (typeSetting != null) {
+                Item typeItem = types.addItem(type);
+                typeItem.getItemProperty(PropertyId.caption).setValue(
+                    CmsVaadinUtils.getMessageText(typeSetting.getKey()));
+                typeItem.getItemProperty(PropertyId.icon).setValue(
+                    new ExternalResource(
+                        CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSetting.getIcon())));
+                typeItem.getItemProperty(PropertyId.isXmlContent).setValue(
+                    Boolean.valueOf(type instanceof CmsResourceTypeXmlContent));
+                typeItem.getItemProperty(PropertyId.isFolder).setValue(
+                    Boolean.valueOf(type instanceof A_CmsResourceTypeFolderBase));
+            }
+        }
+
+        return types;
     }
 
     /**
@@ -687,40 +803,6 @@ public final class CmsVaadinUtils {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
-    }
-
-    /**
-     * Returns the available projects.<p>
-     *
-     * @param cms the CMS context
-     *
-     * @return the available projects
-     */
-    private static List<CmsProject> getAvailableProjects(CmsObject cms) {
-
-        // get all project information
-        List<CmsProject> allProjects;
-        try {
-            String ouFqn = "";
-            CmsUserSettings settings = new CmsUserSettings(cms);
-            if (!settings.getListAllProjects()) {
-                ouFqn = cms.getRequestContext().getCurrentUser().getOuFqn();
-            }
-            allProjects = new ArrayList<CmsProject>(
-                OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, ouFqn, settings.getListAllProjects()));
-            Iterator<CmsProject> itProjects = allProjects.iterator();
-            while (itProjects.hasNext()) {
-                CmsProject prj = itProjects.next();
-                if (prj.isHiddenFromSelector()) {
-                    itProjects.remove();
-                }
-            }
-        } catch (CmsException e) {
-            // should usually never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            allProjects = Collections.emptyList();
-        }
-        return allProjects;
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,6 @@ import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
-import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -48,6 +47,9 @@ import com.vaadin.server.Resource;
  * App configuration for the job scheduler.<p>
  */
 public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
+
+    /** The app id. */
+    public static final String APP_ID = "scheduledjobs";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -63,19 +65,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new I_CmsWorkplaceApp() {
-
-            public void initUI(I_CmsAppUIContext context) {
-
-                context.setAppContent(new CmsJobMainView(context));
-                context.showInfoArea(false);
-
-            }
-
-            public void onStateChange(String state) {
-                // do nothing
-            }
-        };
+        return new CmsJobManagerApp();
     }
 
     /**
@@ -93,7 +83,8 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getHelpText(Locale locale) {
 
-        return "Edit and create scheduled jobs.";
+        return org.opencms.workplace.tools.scheduler.Messages.get().getBundle(locale).key(
+            org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_ADMIN_TOOL_HELP_0);
     }
 
     /**
@@ -109,7 +100,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
      */
     public String getId() {
 
-        return "scheduledjobs";
+        return APP_ID;
     }
 
     /**
@@ -118,7 +109,8 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return "Scheduled jobs";
+        return org.opencms.workplace.tools.scheduler.Messages.get().getBundle(locale).key(
+            org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_ADMIN_TOOL_SHORTNAME_0);
     }
 
     /**

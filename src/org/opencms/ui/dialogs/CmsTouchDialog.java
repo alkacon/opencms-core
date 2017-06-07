@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,6 +45,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -220,8 +221,10 @@ public class CmsTouchDialog extends CmsBasicDialog {
     private void hardTouch(CmsResource resource) throws CmsException {
 
         CmsFile file = m_context.getCms().readFile(resource);
+        CmsObject cms = OpenCms.initCmsObject(m_context.getCms());
+        cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
         file.setContents(file.getContents());
-        m_context.getCms().writeFile(file);
+        cms.writeFile(file);
     }
 
     /**
@@ -240,7 +243,8 @@ public class CmsTouchDialog extends CmsBasicDialog {
         long timeStamp,
         boolean recursive,
         boolean correctDate,
-        boolean touchContent) throws CmsException {
+        boolean touchContent)
+    throws CmsException {
 
         CmsObject cms = m_context.getCms();
         CmsResource sourceRes = cms.readResource(resourceName, CmsResourceFilter.ALL);

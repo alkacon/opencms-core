@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,7 @@ package org.opencms.ade.upload.client.ui;
 import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle.I_CmsUploadCss;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
@@ -43,6 +44,7 @@ import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.FontOpenCms;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
@@ -56,6 +58,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsUploader;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog;
 import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -97,6 +100,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides an upload dialog.<p>
@@ -986,10 +990,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      * Adds a click handler for the given check box.<p>
      *
      * @param check the check box
-     * @param unzip the un-zip check box
+     * @param unzipWidget the un-zip check box
      * @param file the file
      */
-    private void addClickHandlerToCheckBox(final CmsCheckBox check, final CmsCheckBox unzip, final CmsFileInfo file) {
+    private void addClickHandlerToCheckBox(final CmsCheckBox check, final Widget unzipWidget, final CmsFileInfo file) {
 
         check.addClickHandler(new ClickHandler() {
 
@@ -1001,13 +1005,13 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                 // add or remove the file from the list of files to upload
                 if (check.isChecked()) {
                     getFilesToUpload().put(file.getFileName(), file);
-                    if (unzip != null) {
-                        unzip.enable();
+                    if (unzipWidget != null) {
+                        enableUnzip(unzipWidget);
                     }
                 } else {
                     getFilesToUpload().remove(file.getFileName());
-                    if (unzip != null) {
-                        unzip.disable(Messages.get().key(Messages.GUI_UPLOAD_FILE_NOT_SELECTED_0));
+                    if (unzipWidget != null) {
+                        disableUnzip(unzipWidget);
                     }
                 }
 
@@ -1021,6 +1025,26 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                 // update summary
                 updateSummary();
 
+            }
+
+            /**
+             * Disables the 'unzip' button
+             *
+             * @param unzip the unzip button
+             */
+            private void disableUnzip(Widget unzip) {
+
+                ((CmsToggleButton)unzip).setEnabled(false);
+            }
+
+            /**
+             * Enables the 'unzip' button
+             *
+             * @param unzip the unzip button
+             */
+            private void enableUnzip(Widget unzip) {
+
+                ((CmsToggleButton)unzip).setEnabled(true);
             }
         });
     }
@@ -1049,7 +1073,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             check.setChecked(m_filesToUpload.containsKey(file.getFileName()));
             check.setTitle(file.getFileName());
             if (!m_selectionDone && file.getFileName().toLowerCase().endsWith(".zip")) {
-                final CmsCheckBox unzip = createUnzipCheckBox(file);
+                final Widget unzip = createUnzipCheckBox(file);
                 addClickHandlerToCheckBox(check, unzip, file);
                 listItemWidget.addButton(unzip);
             } else {
@@ -1251,12 +1275,16 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      *
      * @return the unzip checkbox
      */
-    private CmsCheckBox createUnzipCheckBox(final CmsFileInfo file) {
+    private Widget createUnzipCheckBox(final CmsFileInfo file) {
 
-        final CmsCheckBox unzip = new CmsCheckBox();
+        final CmsToggleButton unzip = new CmsToggleButton();
+        I_CmsUploadCss uploadCss = I_CmsLayoutBundle.INSTANCE.uploadCss();
+        String caption = Messages.get().key(Messages.GUI_UNZIP_BUTTON_TEXT_0);
+        unzip.setUpFace(caption, uploadCss.unzipButtonUpFace());
+        unzip.setDownFace(caption, uploadCss.unzipButtonDownFace());
+        unzip.addStyleName(uploadCss.unzipButton());
         unzip.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-        unzip.setChecked(getFilesToUnzip(true).contains(file.getFileName()));
-        unzip.setTitle(Messages.get().key(Messages.GUI_UPLOAD_UNZIP_FILE_0));
+        unzip.setDown(getFilesToUnzip(true).contains(file.getFileName()));
         if (!m_filesToUpload.containsKey(file.getFileName())) {
             unzip.disable(Messages.get().key(Messages.GUI_UPLOAD_FILE_NOT_SELECTED_0));
         }
@@ -1268,9 +1296,11 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             public void onClick(ClickEvent event) {
 
                 // add or remove the file from the list of files to upload
-                if (unzip.isChecked()) {
+                if (unzip.isDown()) {
+                    CmsDebugLog.consoleLog("DOWN");
                     getFilesToUnzip(true).add(file.getFileName());
                 } else {
+                    CmsDebugLog.consoleLog("UP");
                     getFilesToUnzip(true).remove(file.getFileName());
                 }
             }

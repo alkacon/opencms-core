@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,6 +113,7 @@ public class CmsSitemapTab extends A_CmsListTab {
 
         if (!m_disableFillDefault) {
             fill(entries);
+            selectSite(m_handler.getDefaultSelectedSiteRoot());
         }
     }
 
@@ -134,6 +135,15 @@ public class CmsSitemapTab extends A_CmsListTab {
     public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
 
         return Collections.emptyList();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     */
+    @Override
+    public boolean hasQuickFilter() {
+
+        return true;
     }
 
     /**
@@ -197,6 +207,7 @@ public class CmsSitemapTab extends A_CmsListTab {
         if (sitemapEntry.isHiddenEntry()) {
             dataValue.setColor("#aaaaaa");
         }
+        dataValue.setSearchMatch(sitemapEntry.isSearchMatch());
 
         CmsLazyTreeItem result = new CmsLazyTreeItem(dataValue, true);
         result.setData(sitemapEntry);

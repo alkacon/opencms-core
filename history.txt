@@ -2,7 +2,7 @@
  * This file is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  */
 
 History of changes for the OpenCms project.
@@ -14,6 +14,80 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 10.5.1 - February 15, 2017
+! Rewritten and improved source search app.
+! Rewritten and improved integrated source code editor.
+! Page editor now offers filter options in most tabs of the "Add content" dialog.
+! Page editor: Added access to context menu in element settings dialog.
+! Page editor: Added option to configure the element deletion default in the "remove element" dialog.
+! Localization: Formatter names can now be localized.
+! Localization: Bundle translator now stores message properties in alphabetical order.
+! Localization: Bundle translator now offers a direct publish button in the toolbar.
+! Localization: Allowing locale specific detail only container contents.
+! Sitemap editor: Copy function now allows manual editing of target folder.
+! Template API: Added multiple utility functions to the <cms> taglib.
+! Detail pages: Settings on matching elements are now reused for detail content display.
+! Detail pages: <cms:link> tag now supports manually forcing a specific detail page.
+! Properties: Added text area widget option for editing properties.
+- Improved the project management app.
+- Improved writing of container pages to store containers and element settings in a reproducible order.
+- Improved handling of model groups.
+- Improved handling of locales with country variant.
+- Improved email validation regex to allow more valid email addresses.
+- Improved touch function to use automatic XML correction.
+- Improved copy element function to use automatic XML correction.
+- Improved link generation for static resources to use VFS prefix settings.
+- Updated CMIS Java libraries.
+- Defined calendar mime-type for .ics files, PR provided by gallardo.
+- Removed password output from standard out, PR provided by adrianrm.
+- Improved message in delete dialog if deleting is not allowed, PR provided by AnnJul.
+- Renamed copy dialog label 'Target folder' to 'Target', PR provided by gallardo.
+* Fixed issue with element settings not being saved on newly placed content elements.
+* Fixed issue with double conversion of dates in search field mappings for attributes.
+* Fixed issue with order of content elements mapped to multi-valued Solr-fields.
+* Fixed issue with context menu for deleted resources in publish dialog not displaying correctly.
+* Fixed issue with project tool tip not being displayed in file tables.
+* Fixed issue #408 with permanent redirects.
+* Fixed issue #457 in the Apollo template where user blog articles generation failed.
+* Fixed issue #462 where gallery dialog would not open on preselected values.
+* Fixed issue #475 where dynamic functions disappeared from a containerpage.
+* Fixed issue #477 where create containerpage with content elements would not work for non Admin users.
+
+
+OpenCms 10.5.0 Final - November 30, 2016
+! The user interface now uses mostly font icons for better support in high resolution (retina) screens.
+! New and improved Project Management app.
+! Expired / unreleased resources in lists can now be shown on their detail page.
+! Added OpenCmsUrlServletFilter to easily remove the /opencms servlet name.
+! Added <cms:jsonpart> tag and CmsJsonPartFilter to split the output of a page to JSON fragments. 
+! Added <cms:scaleImage> tag for creating responsive image variations, provided by mwxwidmann.
+! Improved behavior when switching between page editor, sitemap and explorer views.
+! Explorer: Displays of icon overlays on folders showing the default file type.
+! Explorer: Resources that are part of a sitemap are shown with a bold title.
+! Explorer: Option to sort by navigation position by click on icon column.
+! Explorer: Improved Display / Edit default actions when clicking on a file. 
+! Explorer: Improved Copy / Move / Rename functions and dialogs.
+! Explorer: Values for Title, Navigation, Copyright and Cache columns can be edited directly by clicking.
+! Keyboard shortcuts: Added option to switch the Explorer view to the "Online" project (Ctrl-O).
+! Added "Show Online" option to page editor (requires correct site configuration). 
+! Added option to disable all formatter in a subsitemap configuration.
+! Added support for connecting with encrypted email servers.
+! Added support for Google API keys to the location picker widget that uses Google Maps.
+! Improved model group handling to keep all group data in a single resource.
+! Improved user info dialog.
+! Enhanced <cms:link> tag to allow links to specific detail pages.
+! Updated Chinese and Japanese localization, provided by twofisher.
+! Updated Russian localization, provided by makarov-iliya.
+! Updated CodeMirror to version 5.21.0.
+! Updated TinyMCE to version 4.4.3.
+! Updated Lucene/SOLR to Version 5.5.3.
+* Fixed performance issues with inheritance groups.
+* Fixed issue #422 with bad performance of 'Choice' elements for XML contents, provided by mwxwidmann.
+* Fixed issue #425 where wrong content encoding header was set for GWT dialog messages by gallardo.
+* Fixed issue #451 where too many tabs caused layout problems in content editor.
+* Fixed issue #455 with TinyMCE when using Portuguese as workplace language.
+
 
 OpenCms 10.5.0 Beta - September 26, 2016
 ! Localization: Compare localized subsites side-by-side.

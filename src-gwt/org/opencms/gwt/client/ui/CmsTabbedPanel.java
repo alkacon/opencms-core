@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -72,8 +73,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Cms
     public enum CmsTabbedPanelStyle {
 
         /** Button style. */
-        buttonTabs(30, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(),
-        I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
+        buttonTabs(30, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(), I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
 
         /** Classic style. */
         classicTabs(28, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().classicTabs(), null);
@@ -416,6 +416,19 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Cms
     }
 
     /**
+     * Measures the height of the tab bar.<p>
+     *
+     * @return the tab bar height
+     */
+    public int getTabBarHeight() {
+
+        @SuppressWarnings("synthetic-access")
+        int result = m_tabPanel.m_tabBar.getOffsetHeight();
+        return result;
+
+    }
+
+    /**
      * Finds a tab with a given id.<p>
      *
      * @param tabId a tab id
@@ -660,6 +673,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Cms
     protected void onLoad() {
 
         super.onLoad();
+        m_tabPanel.checkTabOverflow();
         // force layout after insertion into DOM to deal with IE layout problems
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 

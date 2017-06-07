@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,6 +37,9 @@ public enum FontOpenCms {
 
     /** The apps icon. */
     APPS(0xe617),
+
+    /** The brackets icon. */
+    BRACKETS(0xe921),
 
     /** The circle icon. */
     CIRCLE(0xe62a),
@@ -89,6 +92,9 @@ public enum FontOpenCms {
     /** The context menu icon. */
     CONTEXT_MENU(0xe616),
 
+    /** The context menu dots icon. */
+    CONTEXT_MENU_DOTS(0xe91c),
+
     /** The copy locale icon. */
     COPY_LOCALE(0xe61a),
 
@@ -119,8 +125,14 @@ public enum FontOpenCms {
     /** The hide icon. */
     HIDE(0xe609),
 
+    /** The highlight icon. */
+    HIGHLIGHT(0xe91e),
+
     /** The info icon. */
     INFO(0xe612),
+
+    /** The invisible chars icon. */
+    INVISIBLE_CHARS(0xe91f),
 
     /** The pen/edit icon. */
     PEN(0xe614),
@@ -143,6 +155,9 @@ public enum FontOpenCms {
     /** The search icon. */
     SEARCH(0xe60d),
 
+    /** The search replace icon. */
+    SEARCH_REPLACE(0xe91d),
+
     /** The settings icon. */
     SETTINGS(0xe618),
 
@@ -162,7 +177,10 @@ public enum FontOpenCms {
     WAND(0xe610),
 
     /** The warning icon. */
-    WARNING(0xed50);
+    WARNING(0xed50),
+
+    /** The wrap lines icon. */
+    WRAP_LINES(0xe920);
 
     /**
      * Font icon widget.<p>

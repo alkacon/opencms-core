@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -72,7 +72,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -279,9 +278,6 @@ public class CmsJobEditView extends VerticalLayout {
     /** Edited job. */
     private CmsScheduledJobInfo m_job = new CmsScheduledJobInfo();
 
-    /** The title label. */
-    private Label m_titleLabel;
-
     /**
      * Creates a new instance.<p>
      *
@@ -294,7 +290,6 @@ public class CmsJobEditView extends VerticalLayout {
         BeanFieldGroup<CmsScheduledJobInfo> group = new BeanFieldGroup<CmsScheduledJobInfo>(CmsScheduledJobInfo.class);
         group.setItemDataSource(m_job);
         m_group = group;
-        m_titleLabel.addStyleName(ValoTheme.LABEL_H2);
 
         bindField(m_fieldJobName, "jobName");
         bindField(m_fieldJobClass, "className");
@@ -391,16 +386,6 @@ public class CmsJobEditView extends VerticalLayout {
         for (Component button : buttons) {
             m_buttonBar.addComponent(button);
         }
-    }
-
-    /**
-     * Sets the title.<p>
-     *
-     * @param title the title
-     */
-    public void setTitle(String title) {
-
-        m_titleLabel.setValue(title);
     }
 
     /**

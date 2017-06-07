@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,18 +113,24 @@ public class CmsRemoveFormatterWidget extends A_CmsFormatterWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsFormatterWidget#getFormatterOptions(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, java.lang.String)
+     * @see org.opencms.widgets.A_CmsFormatterWidget#getFormatterOptions(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, java.lang.String, boolean)
      */
     @Override
-    protected List<CmsSelectWidgetOption> getFormatterOptions(CmsObject cms, CmsADEConfigData config, String rootPath) {
+    protected List<CmsSelectWidgetOption> getFormatterOptions(
+        CmsObject cms,
+        CmsADEConfigData config,
+        String rootPath,
+        boolean allRemoved) {
 
-        Map<CmsUUID, I_CmsFormatterBean> activeFormatters = config.getActiveFormatters();
         List<CmsSelectWidgetOption> result = Lists.newArrayList();
-        List<I_CmsFormatterBean> formatters = Lists.newArrayList(activeFormatters.values());
-        Collections.sort(formatters, new A_CmsFormatterWidget.FormatterSelectComparator());
-        for (I_CmsFormatterBean formatterBean : formatters) {
-            CmsSelectWidgetOption option = getWidgetOptionForFormatter(cms, formatterBean);
-            result.add(option);
+        if (!allRemoved) {
+            Map<CmsUUID, I_CmsFormatterBean> activeFormatters = config.getActiveFormatters();
+            List<I_CmsFormatterBean> formatters = Lists.newArrayList(activeFormatters.values());
+            Collections.sort(formatters, new A_CmsFormatterWidget.FormatterSelectComparator());
+            for (I_CmsFormatterBean formatterBean : formatters) {
+                CmsSelectWidgetOption option = getWidgetOptionForFormatter(cms, formatterBean);
+                result.add(option);
+            }
         }
         return result;
     }
@@ -141,16 +147,21 @@ public class CmsRemoveFormatterWidget extends A_CmsFormatterWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsFormatterWidget#getTypeOptions(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData)
+     * @see org.opencms.widgets.A_CmsFormatterWidget#getTypeOptions(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, boolean)
      */
     @Override
-    protected List<CmsSelectWidgetOption> getTypeOptions(CmsObject cms, CmsADEConfigData adeConfig) {
+    protected List<CmsSelectWidgetOption> getTypeOptions(
+        CmsObject cms,
+        CmsADEConfigData adeConfig,
+        boolean allRemoved) {
 
         List<CmsSelectWidgetOption> result = Lists.newArrayList();
-        Set<String> activeTypes = adeConfig.getTypesWithActiveSchemaFormatters();
-        for (String activeType : activeTypes) {
-            CmsSelectWidgetOption option = getWidgetOptionForType(cms, activeType);
-            result.add(option);
+        if (!allRemoved) {
+            Set<String> activeTypes = adeConfig.getTypesWithActiveSchemaFormatters();
+            for (String activeType : activeTypes) {
+                CmsSelectWidgetOption option = getWidgetOptionForType(cms, activeType);
+                result.add(option);
+            }
         }
         return result;
     }

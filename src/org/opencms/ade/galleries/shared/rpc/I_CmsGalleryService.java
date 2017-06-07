@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -128,12 +128,13 @@ public interface I_CmsGalleryService extends RemoteService {
      *
      * @param rootPath the root path
      * @param isRoot <code>true</code> if the requested entry is the root entry
+     * @param filter the search filter string
      *
      * @return the sub entries
      *
      * @throws CmsRpcException if something goes wrong
      */
-    List<CmsSitemapEntryBean> getSubEntries(String rootPath, boolean isRoot) throws CmsRpcException;
+    List<CmsSitemapEntryBean> getSubEntries(String rootPath, boolean isRoot, String filter) throws CmsRpcException;
 
     /**
      * Gets the sub-folders of a folder.<p>
@@ -150,12 +151,20 @@ public interface I_CmsGalleryService extends RemoteService {
      * Loads the root VFS entry bean for the given site root.
      *
      * @param path the site root
+     * @param filter the filter string
      *
      * @return the root VFS entry bean for the given site root
      *
      *  @throws CmsRpcException if something goes wrong
      * */
-    CmsVfsEntryBean loadVfsEntryBean(String path) throws CmsRpcException;
+    CmsVfsEntryBean loadVfsEntryBean(String path, String filter) throws CmsRpcException;
+
+    /**
+     * Stores the result view type with the user.<p>
+     *
+     * @param resultViewType the result view type
+     */
+    void saveResultViewType(String resultViewType);
 
     /**
      * Saves the tree open state for a tree tab.<p>

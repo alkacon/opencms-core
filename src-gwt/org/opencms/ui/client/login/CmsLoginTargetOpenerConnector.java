@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,8 @@
 
 package org.opencms.ui.client.login;
 
+import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.shared.login.I_CmsLoginTargetRpc;
 
 import com.google.gwt.dom.client.Document;
@@ -74,6 +76,7 @@ public class CmsLoginTargetOpenerConnector extends AbstractExtensionConnector {
                     // to hopefully trigger the browser's password manager
                     Document doc = Document.get();
                     FormElement formEl = (FormElement)doc.getElementById("opencms-login-form");
+                    CmsDebugLog.consoleLog("form target = " + formEl.getTarget());
 
                     // make sure user name and password are children of the form
                     Element user = doc.getElementById("hidden-username");
@@ -87,7 +90,7 @@ public class CmsLoginTargetOpenerConnector extends AbstractExtensionConnector {
                     }
 
                     InputElement requestedResourceField = doc.createTextInputElement();
-                    requestedResourceField.setName("requestedResource");
+                    requestedResourceField.setName(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
                     requestedResourceField.setValue(target);
 
                     formEl.appendChild(requestedResourceField);

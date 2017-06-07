@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,10 +49,12 @@ public interface I_CmsPublishResourceFormatter {
     List<CmsPublishResource> getPublishResources() throws CmsException;
 
     /**
+     * Initializes the formatter.<p>
      *
-     * @param options
-     * @param resources
-     * @throws CmsException
+     * @param options the publish options
+     * @param resources the publish resources
+     *
+     * @throws CmsException in case something goes wrong
      */
     void initialize(CmsPublishOptions options, ResourceMap resources) throws CmsException;
 }

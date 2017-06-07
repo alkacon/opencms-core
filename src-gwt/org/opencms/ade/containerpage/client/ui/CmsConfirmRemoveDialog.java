@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -49,15 +50,35 @@ public class CmsConfirmRemoveDialog extends CmsPopup {
      *
      * @param elementInfo the data for the resource info box
      * @param deleteCheckbox true if the checkbox for deleting the resource should be displayed
+     * @param deleteMode the element delete mode
      * @param removeCallback the callback which should be called when the user has confirmed or cancelled the element removal
      */
     public CmsConfirmRemoveDialog(
         CmsListInfoBean elementInfo,
         boolean deleteCheckbox,
+        ElementDeleteMode deleteMode,
         AsyncCallback<Boolean> removeCallback) {
 
         m_widget = new CmsConfirmRemoveWidget(elementInfo, deleteCheckbox, removeCallback);
         m_widget.setPopup(this);
+        switch (deleteMode) {
+            default:
+            case askDelete:
+                break;
+            case askKeep:
+                m_widget.m_checkBox.setChecked(false);
+                m_widget.m_deleteContent = false;
+                break;
+            case alwaysKeep:
+                m_widget.m_checkBox.setChecked(false);
+                m_widget.m_deleteContent = false;
+                //$FALL-THROUGH$
+            case alwaysDelete:
+                m_widget.m_checkBox.setVisible(false);
+                m_widget.m_noReferenceLabel.setVisible(false);
+                break;
+        }
+
         setMainContent(m_widget);
         setModal(true);
         setGlassEnabled(true);

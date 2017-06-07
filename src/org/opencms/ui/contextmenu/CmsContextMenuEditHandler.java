@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,6 @@ package org.opencms.ui.contextmenu;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLockActionRecord;
@@ -40,6 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
@@ -47,6 +47,8 @@ import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+
+import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
@@ -66,17 +68,20 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
     /** The serial version id. */
     private static final long serialVersionUID = -9160838301862765592L;
 
+    /** The dialog context. */
+    private I_CmsDialogContext m_context;
+
     /** The edited content structure id. */
     private CmsUUID m_editId;
 
     /** The edited property. */
     private CmsResourceTableProperty m_editProperty;
 
-    /** The lock action record. */
-    private CmsLockActionRecord m_lockActionRecord;
-
     /** The file table. */
     private CmsFileTable m_fileTable;
+
+    /** The lock action record. */
+    private CmsLockActionRecord m_lockActionRecord;
 
     /**
      * Constructor.<p>
@@ -84,11 +89,17 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
      * @param editId the content structure id
      * @param editProperty the property to edit
      * @param fileTable the file table
+     * @param context the dialog context
      */
-    public CmsContextMenuEditHandler(CmsUUID editId, CmsResourceTableProperty editProperty, CmsFileTable fileTable) {
+    public CmsContextMenuEditHandler(
+        CmsUUID editId,
+        CmsResourceTableProperty editProperty,
+        CmsFileTable fileTable,
+        I_CmsDialogContext context) {
         m_editId = editId;
         m_editProperty = editProperty;
         m_fileTable = fileTable;
+        m_context = context;
     }
 
     /**
@@ -119,21 +130,15 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
             CmsObject cms = A_CmsUI.getCmsObject();
             CmsResource res = cms.readResource(m_editId);
             try {
-                if (CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(m_editProperty)
-                    || CmsResourceTableProperty.PROPERTY_TITLE.equals(m_editProperty)) {
-
-                    CmsProperty prop = new CmsProperty(
-                        m_editProperty == CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT
-                        ? CmsPropertyDefinition.PROPERTY_NAVTEXT
-                        : CmsPropertyDefinition.PROPERTY_TITLE,
-                        value,
-                        null);
-                    cms.writePropertyObject(cms.getSitePath(res), prop);
-                } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(m_editProperty)) {
+                if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(m_editProperty)) {
                     String sourcePath = cms.getSitePath(res);
                     cms.renameResource(
                         sourcePath,
                         CmsStringUtil.joinPaths(CmsResource.getParentFolder(sourcePath), value));
+                } else if (m_editProperty.isEditProperty()) {
+
+                    CmsProperty prop = new CmsProperty(m_editProperty.getEditPropertyId(), value, null);
+                    cms.writePropertyObject(cms.getSitePath(res), prop);
                 }
             } finally {
                 if (m_lockActionRecord.getChange() == LockChange.locked) {
@@ -147,9 +152,10 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
                 CmsAppWorkplaceUi.get().enableGlobalShortcuts();
                 m_fileTable.clearSelection();
             }
+            m_context.finish(Collections.singletonList(m_editId));
         } catch (CmsException e) {
             LOG.error("Exception while saving changed " + m_editProperty + " to resource " + m_editId, e);
-            CmsErrorDialog.showErrorDialog(e);
+            m_context.error(e);
         }
 
     }

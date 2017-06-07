@@ -87,7 +87,8 @@ div.notificationContainer, .notificationContainer div.messagesPanel > div{
 }
 
 .messagesPanel {
-	margin-top: 55px; 	
+	margin-top: 55px;
+	pointer-events: none;  	
 } 
 
 .notificationMessage div.messageContent{
@@ -138,10 +139,11 @@ div.notificationMessage b, span.notificationMessage b{
 	color: value("constants.css.notificationErrorColor"); 
 	border-color: value("constants.css.notificationErrorBorder"); 
 }
+
 .notificationNormal .notificationMessage { 
 	background-color: value("constants.css.notificationNormalBg"); 
 	color: value("constants.css.notificationNormalColor"); 
-	border-color: value("constants.css.notificationNormalBorder"); 
+	border-color: value("constants.css.notificationNormalBorder");
 }
 .notificationWarning .notificationMessage { 
 	background-color: value("constants.css.notificationWarningBg"); 

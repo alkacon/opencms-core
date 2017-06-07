@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,12 +62,6 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
     /** The fields that will be returned by a regular search (all stored and not lazy fields). */
     private static Set<String> m_returnFields = new HashSet<String>();
 
-    /** Contains all names of the fields that are used in the excerpt. */
-    private List<String> m_excerptFieldNames;
-
-    /** The field added flag. */
-    private boolean m_fieldAdded;
-
     static {
         m_returnFields.add(CmsSearchField.FIELD_CATEGORY);
         m_returnFields.add(CmsSearchField.FIELD_DATE_CONTENT);
@@ -80,6 +74,12 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
         m_returnFields.add(CmsSearchField.FIELD_SUFFIX);
         m_returnFields.add(CmsSearchField.FIELD_TYPE);
     }
+
+    /** Contains all names of the fields that are used in the excerpt. */
+    private List<String> m_excerptFieldNames;
+
+    /** The field added flag. */
+    private boolean m_fieldAdded;
 
     /**
      * Creates the default standard search configuration.<p>
@@ -108,7 +108,7 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
             null,
             CmsSearchField.BOOST_DEFAULT,
             null);
-        field.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, null));
+        field.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, null, true));
         result.addField(field);
 
         // title mapping as a keyword
@@ -122,35 +122,47 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
             0.0f,
             null);
         field.addMapping(
-            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE));
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE, true));
         result.addField(field);
 
         // title mapping as indexed field
         field = new CmsLuceneField(CmsSearchField.FIELD_TITLE_UNSTORED, "%(key.field.title)", false, true);
         field.addMapping(
-            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE));
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE, true));
         result.addField(field);
 
         // mapping of "Keywords" property to search field with the same name
         field = new CmsLuceneField(CmsSearchField.FIELD_KEYWORDS, "%(key.field.keywords)", true, true);
         field.addMapping(
-            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_KEYWORDS));
+            new CmsSearchFieldMapping(
+                CmsSearchFieldMappingType.PROPERTY,
+                CmsPropertyDefinition.PROPERTY_KEYWORDS,
+                true));
         result.addField(field);
 
         // mapping of "Description" property to search field with the same name
         field = new CmsLuceneField(CmsSearchField.FIELD_DESCRIPTION, "%(key.field.description)", true, true);
         field.addMapping(
-            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+            new CmsSearchFieldMapping(
+                CmsSearchFieldMappingType.PROPERTY,
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                true));
         result.addField(field);
 
         // "meta" field is a combination of "Title", "Keywords" and "Description" properties
         field = new CmsLuceneField(CmsSearchField.FIELD_META, "%(key.field.meta)", false, true);
         field.addMapping(
-            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE));
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE, true));
         field.addMapping(
-            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_KEYWORDS));
+            new CmsSearchFieldMapping(
+                CmsSearchFieldMappingType.PROPERTY,
+                CmsPropertyDefinition.PROPERTY_KEYWORDS,
+                true));
         field.addMapping(
-            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+            new CmsSearchFieldMapping(
+                CmsSearchFieldMappingType.PROPERTY,
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                true));
         result.addField(field);
 
         return result;

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -177,6 +177,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /** The cache delimiter char. */
     public static final char FLEX_CACHE_DELIMITER = (char)0;
 
+    /** Prefix for permanent redirect targets. */
+    public static final String PREFIX_PERMANENT_REDIRECT = "permanent-redirect:";
+
     /** Static string to indicate a header is "set" in the header maps. */
     public static final String SET_HEADER = "[setHeader]";
 
@@ -233,6 +236,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /** Indicates that parent stream is writing only in the buffer. */
     private boolean m_parentWritesOnlyToBuffer;
+
+    /** Flag which indicates whether a permanent redirect has been buffered. */
+    private boolean m_redirectPermanent;
 
     /** The wrapped ServletResponse. */
     private HttpServletResponse m_res;
@@ -615,9 +621,21 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @throws IllegalArgumentException In case of a malformed location string
      */
-    @SuppressWarnings("unused")
     @Override
     public void sendRedirect(String location) throws IOException {
+
+        sendRedirect(location, false);
+    }
+
+    /**
+     * Internal redirect method used to handle both temporary and permanent redirects.<p>
+     *
+     * @param location the redirect target
+     * @param permanent true for a permanent redirect, false for a temporary one
+     *
+     * @throws IOException if IO operations on the response fail
+     */
+    public void sendRedirect(String location, boolean permanent) throws IOException {
 
         // Ignore any redirects after the first one
         if (isSuspended() && (!location.equals(m_bufferRedirect))) {
@@ -628,6 +646,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
         if (m_cachingRequired && !m_includeMode) {
             m_bufferRedirect = location;
+            m_redirectPermanent = permanent;
         }
 
         if (!m_cachingRequired) {
@@ -648,12 +667,12 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                             location));
                 }
             }
-
             try {
                 // Checking for possible illegal characters (for example, XSS exploits) before sending the redirect
                 // The constructor is key here. That method will throw an URISyntaxException if the URL
                 // format is not according to standards (e.g. contains illegal characters, like spaces, < or >, etc).
-                new URI(location);
+                @SuppressWarnings("unused")
+                URI validURI = new URI(location);
             } catch (URISyntaxException e) {
                 // Deliberately NOT passing the original exception, since the URISyntaxException contains the full path,
                 // which may include the XSS attempt
@@ -665,9 +684,13 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             HttpServletResponse topRes = m_controller.getTopResponse();
             // add all headers found to make sure cookies can be set before redirect
             processHeaders(getHeaders(), topRes);
-            topRes.sendRedirect(location);
+            if (permanent) {
+                topRes.setHeader(CmsRequestUtil.HEADER_LOCATION, location);
+                topRes.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+            } else {
+                topRes.sendRedirect(location);
+            }
         }
-
         m_controller.suspendFlexResponse();
     }
 
@@ -843,7 +866,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             m_cachedEntry = new CmsFlexCacheEntry();
             if (m_bufferRedirect != null) {
                 // only set et cached redirect target
-                m_cachedEntry.setRedirect(m_bufferRedirect);
+                m_cachedEntry.setRedirect(m_bufferRedirect, m_redirectPermanent);
             } else {
                 // add cached headers
                 m_cachedEntry.addHeaders(m_bufferHeaders);
@@ -868,7 +891,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
             if (m_bufferRedirect != null) {
                 // send buffered redirect, will trigger redirect of top response
-                sendRedirect(m_bufferRedirect);
+                sendRedirect(m_bufferRedirect, m_redirectPermanent);
             } else {
                 // process the output
                 if (m_parentWritesOnlyToBuffer) {

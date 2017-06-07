@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -179,7 +179,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
                 siteRoot = m_controller.getDefaultVfsTabSiteRoot();
             }
             m_siteRoot = siteRoot;
-            m_controller.loadVfsEntryBean(siteRoot, new AsyncCallback<CmsVfsEntryBean>() {
+            m_controller.loadVfsEntryBean(siteRoot, null, new AsyncCallback<CmsVfsEntryBean>() {
 
                 public void onFailure(Throwable caught) {
 
@@ -203,7 +203,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(final String sortParams, String filter) {
 
-        m_controller.loadVfsEntryBean(sortParams, new AsyncCallback<CmsVfsEntryBean>() {
+        m_controller.loadVfsEntryBean(sortParams, filter, new AsyncCallback<CmsVfsEntryBean>() {
 
             public void onFailure(Throwable caught) {
 

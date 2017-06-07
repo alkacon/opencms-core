@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -174,7 +174,8 @@ public final class CmsSolrSpellchecker {
     public void getSpellcheckingResult(
         final HttpServletResponse res,
         final ServletRequest servletRequest,
-        final CmsObject cms) throws CmsPermissionViolationException, IOException {
+        final CmsObject cms)
+    throws CmsPermissionViolationException, IOException {
 
         // Perform a permission check
         performPermissionCheck(cms);
@@ -188,7 +189,8 @@ public final class CmsSolrSpellchecker {
             String requestBody = getRequestBody(servletRequest);
             final JSONObject jsonRequest = new JSONObject(requestBody);
             cmsSpellcheckingRequest = parseJsonRequest(jsonRequest);
-        } catch (@SuppressWarnings("unused") Exception e) {
+        } catch (Exception e) {
+            LOG.debug(e.getMessage(), e);
             cmsSpellcheckingRequest = parseHttpRequest(servletRequest, cms);
         }
 
@@ -375,7 +377,7 @@ public final class CmsSolrSpellchecker {
     private CmsSpellcheckingRequest parseJsonRequest(JSONObject jsonRequest) {
 
         final String id = jsonRequest.optString(JSON_ID);
-        final String lang = jsonRequest.optString(JSON_LANG, LANG_DEFAULT);
+
         final JSONObject params = jsonRequest.optJSONObject(JSON_PARAMS);
 
         if (null == params) {
@@ -383,7 +385,7 @@ public final class CmsSolrSpellchecker {
             return null;
         }
         final JSONArray words = params.optJSONArray(JSON_WORDS);
-
+        final String lang = params.optString(JSON_LANG, LANG_DEFAULT);
         if (null == words) {
             LOG.debug("Invalid JSON request: No field \"words\" defined. ");
             return null;

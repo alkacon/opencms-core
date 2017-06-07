@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,6 +47,7 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -596,7 +597,25 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void insert(Widget w, int beforeIndex) {
 
+        // in case an option bar as a direct child is present it may disturb the insert order
+        // it needs to be detached first
+        Element optionBar = null;
+        NodeList<Node> children = getElement().getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.getItem(i);
+            if ((child.getNodeType() == Node.ELEMENT_NODE)
+                && ((Element)child).hasClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar())) {
+                optionBar = (Element)child;
+                optionBar.removeFromParent();
+                break;
+            }
+
+        }
+
         insert(w, (Element)getElement(), beforeIndex, true);
+        if (optionBar != null) {
+            getElement().insertFirst(optionBar);
+        }
     }
 
     /**
@@ -881,7 +900,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         }
         for (int index = 0; index < getElement().getChildCount(); index++) {
             Node node = getElement().getChild(index);
-            if (node.getNodeType() != Node.ELEMENT_NODE) {
+            // in some cases the container element may have an option bar as a direct child, ignore it
+            if ((node.getNodeType() != Node.ELEMENT_NODE)
+                || ((Element)node).hasClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar())) {
                 continue;
             }
             m_elementPositions.add(new ElementPositionInfo((Element)node));

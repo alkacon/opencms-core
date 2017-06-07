@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,6 +47,7 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -62,6 +63,24 @@ import org.apache.commons.logging.Log;
  * @see CmsJspContentAccessBean
  */
 public final class CmsJspVfsAccessBean {
+
+    /**
+     * Transformer that loads a resource from the OpenCms VFS,
+     * the input is used as String for the resource name to read.<p>
+     */
+    public class CmsAvailableLocaleLoaderTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            List<Locale> result;
+            // read the available locales
+            result = OpenCms.getLocaleManager().getAvailableLocales(getCmsObject(), String.valueOf(input));
+            return result;
+        }
+    }
 
     /**
      * Provides Booleans that indicate if a specified resource exists in the OpenCms VFS,
@@ -333,6 +352,9 @@ public final class CmsJspVfsAccessBean {
     /** Properties loaded locale specific from the OpenCms VFS with search. */
     private Map<String, Map<String, Map<String, String>>> m_propertiesSearchLocale;
 
+    /** Available locales as determined by the {@link org.opencms.i18n.CmsLocaleManager} */
+    private Map<String, List<Locale>> m_availableLocales;
+
     /** Resources loaded from the OpenCms VFS. */
     private Map<String, CmsResource> m_resources;
 
@@ -370,6 +392,20 @@ public final class CmsJspVfsAccessBean {
             cms.getRequestContext().setAttribute(ATTRIBUTE_VFS_ACCESS_BEAN, result);
         }
         return result;
+    }
+
+    /**
+     * Returns a lazily generated map from site paths of resources to the available locales for the resource.
+     *
+     * @return a lazily generated map from site paths of resources to the available locales for the resource.
+     */
+    public Map<String, List<Locale>> getAvailableLocales() {
+
+        if (m_availableLocales == null) {
+            // create lazy map only on demand
+            m_availableLocales = CmsCollectionsGenericWrapper.createLazyMap(new CmsAvailableLocaleLoaderTransformer());
+        }
+        return m_availableLocales;
     }
 
     /**

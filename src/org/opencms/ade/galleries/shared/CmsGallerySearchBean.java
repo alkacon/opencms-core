@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -110,6 +110,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The number of search results to be display pro page. */
     private int m_matchesPerPage;
 
+    /** The original gallery data for which this search bean was created. */
+    private CmsGalleryDataBean m_originalGalleryData;
+
     /** The current search result page. */
     private int m_page;
 
@@ -133,6 +136,9 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /** The search scope. */
     private CmsGallerySearchScope m_scope;
+
+    /** The real list of types to be used for the search on the server. */
+    private List<String> m_serverSearchTypes = new ArrayList<String>();
 
     /** The sitemap preload data. */
     private CmsSitemapEntryBean m_sitemapPreloadData;
@@ -189,6 +195,8 @@ public class CmsGallerySearchBean implements IsSerializable {
         setIgnoreSearchExclude(searchObj.isIgnoreSearchExclude());
         setGalleryMode(searchObj.getGalleryMode());
         setGalleryStoragePrefix(searchObj.getGalleryStoragePrefix());
+        setServerSearchTypes(searchObj.getServerSearchTypes());
+        setOriginalGalleryData(searchObj.getOriginalGalleryData());
     }
 
     /**
@@ -425,6 +433,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Returns the original gallery data.<p>
+     *
+     * @return the original gallery data
+     */
+    public CmsGalleryDataBean getOriginalGalleryData() {
+
+        return m_originalGalleryData;
+    }
+
+    /**
      * Returns the page.<p>
      *
      * @return the page
@@ -505,6 +523,20 @@ public class CmsGallerySearchBean implements IsSerializable {
     public CmsGallerySearchScope getScope() {
 
         return m_scope;
+    }
+
+    /**
+     * Gets the server search types.<p>
+     *
+     * These are the types which are actually used for the search on the server, rather than the types
+     * which are checked in the types tab. The lists are different, for example, if the user hasn't selected any
+     * types.
+     *
+     * @return the server search types
+     */
+    public List<String> getServerSearchTypes() {
+
+        return m_serverSearchTypes;
     }
 
     /**
@@ -849,6 +881,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Sets the original gallery data.<p>
+     *
+     * @param originalGalleryData the original gallery data to set
+     */
+    public void setOriginalGalleryData(CmsGalleryDataBean originalGalleryData) {
+
+        m_originalGalleryData = originalGalleryData;
+    }
+
+    /**
      * Sets the page.<p>
      *
      * @param page the page to set
@@ -926,6 +968,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setScope(CmsGallerySearchScope scope) {
 
         m_scope = scope;
+    }
+
+    /**
+     * Sets the server search types.<p>
+     *
+     * @param types the server search types
+     */
+    public void setServerSearchTypes(List<String> types) {
+
+        m_serverSearchTypes = types;
     }
 
     /**

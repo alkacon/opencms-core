@@ -1,4 +1,4 @@
-@external cms-user-info, cms-user-image, opencms;
+@external cms-user-info, cms-user-image, opencms, o-color-blue, o-color-cyan, o-color-gray, o-color-orange, o-color-red, o-color-transparent, v-icon;
 
 @def TOOLBAR_HEIGHT 52px;
 
@@ -311,14 +311,14 @@
     border-radius: 4px;
     color: #FAFAFD;
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 600;
     padding: 4px 12px;
     width: auto !important;
     line-height: 32px;
 }
 
-.toolbarBackground div.userInfo{
-	padding: 0px;
+div.toolbarBackground > div.toolbarContent div.userInfo{
+	padding: 0px !important;
     display: inline-block;
     position: relative;
     -ms-order: 99;
@@ -341,7 +341,7 @@
 }
 
 .toolbarBackground div.userInfo > div:hover{
-	border-color: #2197DB;
+	border-color: #2197DB !important;
 }
 
 div.userInfoDialog{
@@ -445,6 +445,7 @@ div.toolbarToggle{
 }
 
 .quickButton .quickButtonWrap { 
+	text-align: center;
 }
 
 .quickButton .quickButtonWrap > div { 
@@ -457,6 +458,37 @@ div.toolbarToggle{
   display: inline-block; 
   text-align:center;
   position: relative; 
+}
+
+.quickButton .quickButtonImageContainer .v-icon{
+	border-radius: value("constants.css.borderRadius");
+	font-size: 32px;
+	color: white;
+	height: 48px;
+	display: inline-block;
+	line-height: 48px;
+	width: 48px;
+	text-align: center;
+}
+
+.quickButton .quickButtonImageContainer .v-icon.o-color-transparent{
+	color: inherit;
+}
+
+.quickButton .quickButtonImageContainer .o-color-blue {
+	background-color: value("constants.css.buttonColorBlue");
+}
+.quickButton .quickButtonImageContainer .o-color-cyan {
+	background-color: value("constants.css.buttonColorCyan");
+}
+.quickButton .quickButtonImageContainer .o-color-gray {
+	background-color: value("constants.css.buttonColorGray");
+}
+.quickButton .quickButtonImageContainer .o-color-orange {
+	background-color: value("constants.css.buttonColorOrange");
+}
+.quickButton .quickButtonImageContainer .o-color-red {
+	background-color: value("constants.css.buttonColorRed");
 }
 
 .quickButton.quickButtonDeactivated{

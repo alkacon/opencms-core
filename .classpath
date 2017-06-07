@@ -6,8 +6,8 @@
 	<classpathentry kind="src" path="src-setup"/>
 	<classpathentry excluding="META-INF/|data/|ehcache.xml" kind="src" output="test-bin" path="test"/>
 	<classpathentry kind="src" path="test-gwt"/>
-	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

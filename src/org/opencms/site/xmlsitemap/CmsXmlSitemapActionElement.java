@@ -128,6 +128,7 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
         for (String exclude : m_configuration.getExcludes()) {
             inexcludeSet.addExclude(exclude);
         }
+        xmlSitemapGenerator.setServerUrl(m_configuration.getServerUrl());
         String xmlSitemap = xmlSitemapGenerator.renderSitemap();
         getResponse().getWriter().print(xmlSitemap);
     }
@@ -171,7 +172,11 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
                 CmsXmlSeoConfiguration seoFileConfig = new CmsXmlSeoConfiguration();
                 seoFileConfig.load(cms, seoFile);
                 if (seoFileConfig.isXmlSitemapMode()) {
-                    buffer.append("Sitemap: " + OpenCms.getLinkManager().getOnlineLink(cms, cms.getSitePath(seoFile)));
+                    buffer.append(
+                        "Sitemap: "
+                            + CmsXmlSitemapGenerator.replaceServerUri(
+                                OpenCms.getLinkManager().getOnlineLink(cms, cms.getSitePath(seoFile)),
+                                m_configuration.getServerUrl()));
                     buffer.append("\n");
                 }
             } catch (CmsException e) {

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,10 +31,13 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.edit.CmsLocaleComparePropertyHandler;
+import org.opencms.ade.sitemap.client.edit.CmsNavModePropertyEditor;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsLocaleComparePropertyData;
 import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
@@ -49,25 +52,34 @@ import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.property.A_CmsPropertyEditor;
+import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsReloadMode;
+import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
+import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +87,7 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
@@ -145,9 +158,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 getService(),
                 CmsSitemapData.DICT_NAME);
         } catch (SerializationException e) {
-            CmsErrorDialog.handleException(new Exception(
-                "Deserialization of sitemap data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                e));
+            CmsErrorDialog.handleException(
+                new Exception(
+                    "Deserialization of sitemap data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
         }
 
         m_hiddenProperties = new HashSet<String>();
@@ -157,6 +171,102 @@ public class CmsSitemapController implements I_CmsSitemapController {
             m_eventBus = new SimpleEventBus();
             initDetailPageInfos();
         }
+    }
+
+    /**
+     * Opens the property editor for locale compare mode.<p>
+     *
+     * @param data the data used by the property editor
+     * @param ownId the id
+     * @param defaultFileId the default file id
+     * @param noEditReason the reason the properties can't be edited
+     */
+    public static void editPropertiesForLocaleCompareMode(
+        final CmsLocaleComparePropertyData data,
+        final CmsUUID ownId,
+        final CmsUUID defaultFileId,
+        final String noEditReason) {
+
+        final CmsUUID infoId;
+        infoId = defaultFileId;
+        Set<CmsUUID> idsForPropertyConfig = new HashSet<CmsUUID>();
+        idsForPropertyConfig.add(defaultFileId);
+        idsForPropertyConfig.add(ownId);
+
+        final List<CmsUUID> propertyConfigIds = new ArrayList<CmsUUID>(idsForPropertyConfig);
+
+        CmsRpcAction<CmsListInfoBean> action = new CmsRpcAction<CmsListInfoBean>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                CmsCoreProvider.getVfsService().getPageInfo(infoId, this);
+            }
+
+            @Override
+            protected void onResponse(CmsListInfoBean infoResult) {
+
+                stop(false);
+                final CmsLocaleComparePropertyHandler handler = new CmsLocaleComparePropertyHandler(data);
+                handler.setPageInfo(infoResult);
+
+                CmsRpcAction<Map<CmsUUID, Map<String, CmsXmlContentProperty>>> propertyAction = new CmsRpcAction<Map<CmsUUID, Map<String, CmsXmlContentProperty>>>() {
+
+                    @Override
+                    public void execute() {
+
+                        start(0, true);
+                        CmsCoreProvider.getVfsService().getDefaultProperties(propertyConfigIds, this);
+                    }
+
+                    @Override
+                    protected void onResponse(Map<CmsUUID, Map<String, CmsXmlContentProperty>> propertyResult) {
+
+                        stop(false);
+                        Map<String, CmsXmlContentProperty> propConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
+                        for (Map<String, CmsXmlContentProperty> defaultProps : propertyResult.values()) {
+                            propConfig.putAll(defaultProps);
+                        }
+                        propConfig.putAll(CmsSitemapView.getInstance().getController().getData().getProperties());
+                        A_CmsPropertyEditor editor = new CmsNavModePropertyEditor(propConfig, handler);
+                        editor.setPropertyNames(
+                            CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
+                        final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+                        CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
+
+                            /**
+                             * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
+                             */
+                            @Override
+                            public void onBeforeEditPropertyDefinition() {
+
+                                dialog.hide();
+                            }
+
+                        };
+                        defButton.getElement().getStyle().setFloat(Style.Float.LEFT);
+                        defButton.installOnDialog(dialog);
+                        CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+                        formHandler.setDialog(dialog);
+                        I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
+                        formHandler.setSubmitHandler(submitHandler);
+                        dialog.setFormHandler(formHandler);
+                        editor.initializeWidgets(dialog);
+                        dialog.centerHorizontally(50);
+                        dialog.catchNotifications();
+                        if (noEditReason != null) {
+                            editor.disableInput(noEditReason);
+                            dialog.getOkButton().disable(noEditReason);
+                        }
+
+                    }
+                };
+                propertyAction.execute();
+            }
+
+        };
+        action.execute();
     }
 
     /**
@@ -1204,13 +1314,14 @@ public class CmsSitemapController implements I_CmsSitemapController {
         CmsClientSitemapEntry entry = getEntryById(entryId);
         CmsSitemapChange change = getChangeForEdit(
             entry,
-            Collections.singletonList(new CmsPropertyModification(
-                entryId.toString()
-                    + "/"
-                    + CmsClientProperty.PROPERTY_NAVINFO
-                    + "/"
-                    + CmsClientProperty.PATH_STRUCTURE_VALUE,
-                CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY)));
+            Collections.singletonList(
+                new CmsPropertyModification(
+                    entryId.toString()
+                        + "/"
+                        + CmsClientProperty.PROPERTY_NAVINFO
+                        + "/"
+                        + CmsClientProperty.PATH_STRUCTURE_VALUE,
+                    CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY)));
         commitChange(change, null);
     }
 
@@ -1556,6 +1667,39 @@ public class CmsSitemapController implements I_CmsSitemapController {
             change.setClipBoardData(data);
             commitChange(change, null);
         }
+    }
+
+    /**
+     * Opens the property dialog for the locale comparison mode.<p>
+     *
+     * @param structureId the structure id of the sitemap entry to edit
+     * @param rootId the structure id of the resource comparing to the tree root in sitemap compare mode
+     */
+    public void openPropertyDialogForVaadin(final CmsUUID structureId, final CmsUUID rootId) {
+
+        CmsRpcAction<CmsLocaleComparePropertyData> action = new CmsRpcAction<CmsLocaleComparePropertyData>() {
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void execute() {
+
+                start(0, false);
+                m_service.loadPropertyDataForLocaleCompareView(structureId, rootId, this);
+            }
+
+            @Override
+            protected void onResponse(CmsLocaleComparePropertyData result) {
+
+                stop(false);
+                CmsSitemapController.editPropertiesForLocaleCompareMode(
+                    result,
+                    structureId,
+                    result.getDefaultFileId(),
+                    null);
+            }
+        };
+        action.execute();
+
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -92,10 +92,10 @@ public final class CmsDebugLog {
      * @param message the message to log
      */
     public static native void consoleLog(String message) /*-{
-                                                         if ($wnd.console && $wnd.console.log) {
-                                                         $wnd.console.log(message);
-                                                         }
-                                                         }-*/;
+        if ($wnd.console && $wnd.console.log) {
+            $wnd.console.log(message);
+        }
+    }-*/;
 
     /**
      * Returns the debug log.<p>

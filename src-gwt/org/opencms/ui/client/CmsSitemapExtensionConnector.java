@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -128,6 +128,17 @@ public class CmsSitemapExtensionConnector extends AbstractExtensionConnector imp
     }
 
     /**
+     * @see org.opencms.ui.shared.rpc.I_CmsSitemapClientRpc#openPropertyDialog(java.lang.String, java.lang.String)
+     */
+    public void openPropertyDialog(String structureIdStr, String rootIdStr) {
+
+        CmsJsUtil.callNamedFunctionWithString2(
+            CmsGwtConstants.LOCALECOMPARE_EDIT_PROPERTIES,
+            structureIdStr,
+            rootIdStr);
+    }
+
+    /**
      * @see org.opencms.ui.shared.rpc.I_CmsSitemapClientRpc#showInfoHeader(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     public void showInfoHeader(String title, String description, String path, String locale, String typeIcon) {
@@ -163,6 +174,21 @@ public class CmsSitemapExtensionConnector extends AbstractExtensionConnector imp
             }
         };
         callbackHelper.installCallbackOnWindow(CmsGwtConstants.CALLBACK_REFRESH_LOCALE_COMPARISON);
+
+        CmsScriptCallbackHelper propertySaveHelper = new CmsScriptCallbackHelper() {
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void run() {
+
+                JsArrayString arguments = m_arguments.cast();
+                String id = arguments.get(0);
+                getRpcProxy(I_CmsSitemapServerRpc.class).handleChangedProperties(id);
+            }
+
+        };
+        propertySaveHelper.installCallbackOnWindow(CmsGwtConstants.CALLBACK_HANDLE_CHANGED_PROPERTIES);
+
     }
 
 }

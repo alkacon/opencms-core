@@ -11,10 +11,11 @@
 		<group>OpenCms Frontend</group>
 		<class/>
 		<export-mode name="reduced"/>
-		<description><![CDATA[Exposes a configuration content that can be used to configure search forms]]></description>
-		<version>10.5.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
-		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
+		<description><![CDATA[<p>Exposes a configuration content that can be used to configure search forms</p>
+		<p><i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
+		<version>10.5.1</version>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>

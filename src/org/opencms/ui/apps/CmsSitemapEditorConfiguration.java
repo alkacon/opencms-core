@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -46,6 +47,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
@@ -161,22 +163,26 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        String siteRoot = cms.getRequestContext().getSiteRoot();
-        boolean active = CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot);
-        HttpServletRequest req = CmsVaadinUtils.getRequest();
-        String message = null;
-        if (active) {
-            if (req != null) {
-                // this is a VAADIN UI request
-                active = getPath(cms, req.getSession()) != null;
-                if (!active) {
-                    message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0);
+        if (OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR)) {
+            String siteRoot = cms.getRequestContext().getSiteRoot();
+            boolean active = CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot);
+            HttpServletRequest req = CmsVaadinUtils.getRequest();
+            String message = null;
+            if (active) {
+                if (req != null) {
+                    // this is a VAADIN UI request
+                    active = getPath(cms, req.getSession()) != null;
+                    if (!active) {
+                        message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0);
+                    }
                 }
+            } else {
+                message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_NOT_AVAILABLE_0);
             }
+            return new CmsAppVisibilityStatus(true, active, message);
         } else {
-            message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_NOT_AVAILABLE_0);
+            return CmsAppVisibilityStatus.INVISIBLE;
         }
-        return new CmsAppVisibilityStatus(true, active, message);
     }
 
     /**
@@ -190,9 +196,13 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
             String path = getPath(cms, A_CmsUI.get().getHttpSession());
             if (path != null) {
                 try {
-                    CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
-                    String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                    A_CmsUI.get().getPage().setLocation(link + "?path=" + path);
+                    CmsAppWorkplaceUi ui = CmsAppWorkplaceUi.get();
+                    if (ui.beforeViewChange(
+                        new ViewChangeEvent(ui.getNavigator(), ui.getCurrentView(), null, APP_ID, null))) {
+                        CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
+                        String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                        A_CmsUI.get().getPage().setLocation(link + "?path=" + path);
+                    }
                     return;
                 } catch (CmsException e) {
                     LOG.debug("Unable to open sitemap editor.", e);

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,13 +34,16 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_E
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IN_NAVIGATION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PROJECT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_SITE_PATH;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_SIZE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_STATE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_STATE_NAME;
@@ -50,6 +53,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_C
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_LOCKED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_MODIFIED;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -60,18 +64,22 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsCustomComponent;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -82,6 +90,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
@@ -90,7 +99,7 @@ import com.vaadin.ui.Table.TableDragMode;
 /**
  * Generic table for displaying lists of resources.<p>
  */
-public class CmsResourceTable extends A_CmsCustomComponent {
+public class CmsResourceTable extends CustomComponent {
 
     /**
      * Helper class for easily configuring a set of columns to display, together with their visibility / collapsed status.<p>
@@ -105,8 +114,8 @@ public class CmsResourceTable extends A_CmsCustomComponent {
          */
         public void buildColumns() {
 
-            List<CmsResourceTableProperty> visible = Lists.newArrayList();
-            List<CmsResourceTableProperty> collapsed = Lists.newArrayList();
+            Set<CmsResourceTableProperty> visible = new LinkedHashSet<CmsResourceTableProperty>();
+            Set<CmsResourceTableProperty> collapsed = new LinkedHashSet<CmsResourceTableProperty>();
             for (ColumnEntry entry : m_columnEntries) {
                 CmsResourceTableProperty prop = entry.getColumn();
                 m_container.addContainerProperty(prop, prop.getColumnType(), prop.getDefaultValue());
@@ -244,6 +253,19 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         private static final long serialVersionUID = -2033722658471550506L;
 
         /**
+         * @see com.vaadin.data.util.IndexedContainer#getSortableContainerPropertyIds()
+         */
+        @Override
+        public Collection<?> getSortableContainerPropertyIds() {
+
+            if (getItemSorter() instanceof I_CmsItemSorter) {
+                return ((I_CmsItemSorter)getItemSorter()).getSortableContainerPropertyIds(this);
+            } else {
+                return super.getSortableContainerPropertyIds();
+            }
+        }
+
+        /**
          * Returns the number of items in the container, not considering any filters.<p>
          *
          * @return the number of items
@@ -312,10 +334,20 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             LOG.warn("CmsObject was 'null', using thread local CmsObject");
         }
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        Map<String, CmsProperty> resourceProps = null;
+        try {
+            List<CmsProperty> props = cms.readPropertyObjects(resource, false);
+            resourceProps = new HashMap<String, CmsProperty>();
+            for (CmsProperty prop : props) {
+                resourceProps.put(prop.getName(), prop);
+            }
+        } catch (CmsException e1) {
+            LOG.debug("Unable to read properties for resource '" + resource.getRootPath() + "'.", e1);
+        }
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         if (resourceItem.getItemProperty(PROPERTY_TYPE_ICON) != null) {
             resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-                new CmsResourceIcon(resUtil, resUtil.getBigIconPath(), resource.getState()));
+                new CmsResourceIcon(resUtil, resource.getState(), true));
         }
 
         if (resourceItem.getItemProperty(PROPERTY_PROJECT) != null) {
@@ -338,6 +370,9 @@ public class CmsResourceTable extends A_CmsCustomComponent {
                     break;
                 default:
             }
+            if (projectFlag != null) {
+                projectFlag.setDescription(resUtil.getLockedInProjectName());
+            }
             resourceItem.getItemProperty(PROPERTY_PROJECT).setValue(projectFlag);
         }
 
@@ -354,30 +389,60 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
         }
 
-        if (resourceItem.getItemProperty(PROPERTY_TITLE) != null) {
-            resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
+        if (resourceItem.getItemProperty(PROPERTY_SITE_PATH) != null) {
+            resourceItem.getItemProperty(PROPERTY_SITE_PATH).setValue(cms.getSitePath(resource));
         }
 
-        if (resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT) != null) {
-            resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
+        if ((resourceItem.getItemProperty(PROPERTY_TITLE) != null) && (resourceProps != null)) {
+            resourceItem.getItemProperty(PROPERTY_TITLE).setValue(
+                resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_TITLE)
+                ? resourceProps.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue()
+                : "");
+        }
+        boolean inNavigation = false;
+        if ((resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT) != null) && (resourceProps != null)) {
+            resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(
+                resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)
+                ? resourceProps.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()
+                : "");
+            inNavigation = resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT);
         }
 
-        if (resourceItem.getItemProperty(PROPERTY_COPYRIGHT) != null) {
+        if ((resourceItem.getItemProperty(PROPERTY_NAVIGATION_POSITION) != null) && (resourceProps != null)) {
             try {
-                CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_COPYRIGHT, false);
-                resourceItem.getItemProperty(PROPERTY_COPYRIGHT).setValue(prop.getValue(""));
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
+                Float navPos = resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVPOS)
+                ? Float.valueOf(resourceProps.get(CmsPropertyDefinition.PROPERTY_NAVPOS).getValue())
+                : (inNavigation ? Float.valueOf(Float.MAX_VALUE) : null);
+                resourceItem.getItemProperty(PROPERTY_NAVIGATION_POSITION).setValue(navPos);
+                inNavigation = navPos != null;
+            } catch (Exception e) {
+                LOG.debug("Error evaluating navPos property", e);
             }
         }
 
-        if (resourceItem.getItemProperty(PROPERTY_CACHE) != null) {
-            try {
-                CmsProperty prop = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CACHE, false);
-                resourceItem.getItemProperty(PROPERTY_CACHE).setValue(prop.getValue(""));
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
+        if (resourceItem.getItemProperty(PROPERTY_IN_NAVIGATION) != null) {
+            if (inNavigation
+                && (resourceProps != null)
+                && resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVINFO)
+                && CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY.equals(
+                    resourceProps.get(CmsPropertyDefinition.PROPERTY_NAVINFO).getValue())) {
+                inNavigation = false;
             }
+            resourceItem.getItemProperty(PROPERTY_IN_NAVIGATION).setValue(Boolean.valueOf(inNavigation));
+        }
+
+        if ((resourceItem.getItemProperty(PROPERTY_COPYRIGHT) != null) && (resourceProps != null)) {
+            resourceItem.getItemProperty(PROPERTY_COPYRIGHT).setValue(
+                resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_COPYRIGHT)
+                ? resourceProps.get(CmsPropertyDefinition.PROPERTY_COPYRIGHT).getValue()
+                : "");
+        }
+
+        if ((resourceItem.getItemProperty(PROPERTY_CACHE) != null) && (resourceProps != null)) {
+            resourceItem.getItemProperty(PROPERTY_CACHE).setValue(
+                resourceProps.containsKey(CmsPropertyDefinition.PROPERTY_CACHE)
+                ? resourceProps.get(CmsPropertyDefinition.PROPERTY_CACHE).getValue()
+                : "");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE) != null) {
@@ -479,9 +544,23 @@ public class CmsResourceTable extends A_CmsCustomComponent {
      */
     public void fillTable(CmsObject cms, List<CmsResource> resources) {
 
+        fillTable(cms, resources, true);
+    }
+
+    /**
+     * Fills the resource table.<p>
+     *
+     * @param cms the current CMS context
+     * @param resources the resources which should be displayed in the table
+     * @param clearFilter <code>true</code> to clear the search filter
+     */
+    public void fillTable(CmsObject cms, List<CmsResource> resources, boolean clearFilter) {
+
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         m_container.removeAllItems();
-        m_container.removeAllContainerFilters();
+        if (clearFilter) {
+            m_container.removeAllContainerFilters();
+        }
         for (CmsResource resource : resources) {
             fillItem(cms, resource, wpLocale);
         }

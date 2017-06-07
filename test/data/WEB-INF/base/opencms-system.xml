@@ -59,7 +59,8 @@
 			<site server="http://localhost:8082" uri="/sites/testsite/" />
 			<site server="http://foo.org" uri="/sites/foo/" />
 			<site server="http://bar.org" uri="/sites/bar/" />
-			
+			<site server="http://localhost:8083" uri="/sites/site-one/" />
+			<site server="http://localhost:8084" uri="/sites/site-two/" />
 		</sites>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>

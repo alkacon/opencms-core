@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,7 +60,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * App to edit the quick launch menu.<p>
  */
-public class CmsQuickLaunchEditor extends VerticalLayout implements I_CmsWorkplaceApp {
+public class CmsQuickLaunchEditor extends VerticalLayout {
 
     /**
      * The drag and drop handler to add and sort the apps.<p>
@@ -237,57 +237,9 @@ public class CmsQuickLaunchEditor extends VerticalLayout implements I_CmsWorkpla
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
-     */
-    public void initUI(I_CmsAppUIContext context) {
-
-        context.setAppContent(this);
-        context.showInfoArea(false);
-        initAppIcons();
-    }
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceApp#onStateChange(java.lang.String)
-     */
-    public void onStateChange(String state) {
-
-        // this is a single state app, nothing to do
-
-    }
-
-    /**
-     * Cancels editing and restores the previous quick launch apps setting.<p>
-     */
-    void close() {
-
-        CmsAppWorkplaceUi.get().getNavigator().navigateTo(CmsAppHierarchyConfiguration.APP_ID);
-    }
-
-    /**
-     * Saves the changed apps setting.<p>
-     */
-    void saveToUser() {
-
-        List<String> apps = new ArrayList<String>();
-        HorizontalLayout appsLayout = m_userApps.getWrappedLayout();
-        int count = appsLayout.getComponentCount();
-        for (int i = 0; i < count; i++) {
-            WrappedDraggableComponent wrapper = (WrappedDraggableComponent)appsLayout.getComponent(i);
-            apps.add(wrapper.getItemId());
-        }
-
-        try {
-            OpenCms.getWorkplaceAppManager().setUserQuickLaunchApps(A_CmsUI.getCmsObject(), apps);
-        } catch (CmsException e) {
-            CmsErrorDialog.showErrorDialog("Could not write user Quicklaunch apps", e);
-        }
-        close();
-    }
-
-    /**
      * Initializes the app icon items.<p>
      */
-    private void initAppIcons() {
+    protected void initAppIcons() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         Locale locale = UI.getCurrent().getLocale();
@@ -319,5 +271,34 @@ public class CmsQuickLaunchEditor extends VerticalLayout implements I_CmsWorkpla
                 m_availableApps.getWrappedLayout().addComponent(new WrappedDraggableComponent(button, config.getId()));
             }
         }
+    }
+
+    /**
+     * Cancels editing and restores the previous quick launch apps setting.<p>
+     */
+    void close() {
+
+        CmsAppWorkplaceUi.get().getNavigator().navigateTo(CmsAppHierarchyConfiguration.APP_ID);
+    }
+
+    /**
+     * Saves the changed apps setting.<p>
+     */
+    void saveToUser() {
+
+        List<String> apps = new ArrayList<String>();
+        HorizontalLayout appsLayout = m_userApps.getWrappedLayout();
+        int count = appsLayout.getComponentCount();
+        for (int i = 0; i < count; i++) {
+            WrappedDraggableComponent wrapper = (WrappedDraggableComponent)appsLayout.getComponent(i);
+            apps.add(wrapper.getItemId());
+        }
+
+        try {
+            OpenCms.getWorkplaceAppManager().setUserQuickLaunchApps(A_CmsUI.getCmsObject(), apps);
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog("Could not write user Quicklaunch apps", e);
+        }
+        close();
     }
 }

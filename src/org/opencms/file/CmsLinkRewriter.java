@@ -162,9 +162,10 @@ public class CmsLinkRewriter {
     protected static void checkIsFolder(CmsResource resource) throws CmsException {
 
         if (!isFolder(resource)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                org.opencms.file.Messages.ERR_REWRITE_LINKS_ROOT_NOT_FOLDER_1,
-                resource.getRootPath()));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(
+                    org.opencms.file.Messages.ERR_REWRITE_LINKS_ROOT_NOT_FOLDER_1,
+                    resource.getRootPath()));
         }
     }
 
@@ -240,9 +241,9 @@ public class CmsLinkRewriter {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
-
             }
         }
+        copyLocaleRelations();
     }
 
     /**
@@ -273,6 +274,40 @@ public class CmsLinkRewriter {
                     source,
                     target));
         }
+    }
+
+    /**
+     * Separate method for copying locale relations..<p>
+     *
+     * This is necessary because the default copy mechanism does not copy locale relations.
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected void copyLocaleRelations() throws CmsException {
+
+        long start = System.currentTimeMillis();
+        List<CmsRelation> localeRelations = m_cms.readRelations(
+            CmsRelationFilter.ALL.filterType(CmsRelationType.LOCALE_VARIANT));
+        for (CmsRelation rel : localeRelations) {
+            if (isInSources(rel.getSourcePath()) && isInSources(rel.getTargetPath())) {
+                CmsResource newRelationSource = m_translationsById.get(rel.getSourceId());
+                CmsResource newRelationTarget = m_translationsById.get(rel.getTargetId());
+                if ((newRelationSource != null) && (newRelationTarget != null)) {
+                    try {
+                        m_cms.addRelationToResource(
+                            newRelationSource,
+                            newRelationTarget,
+                            CmsRelationType.LOCALE_VARIANT.getName());
+                    } catch (CmsException e) {
+                        LOG.error("Could not transfer locale relation: " + e.getLocalizedMessage(), e);
+                    }
+                } else {
+                    LOG.warn("Could not transfer locale relation because source/target not found in copy: " + rel);
+                }
+            }
+        }
+        long end = System.currentTimeMillis();
+        LOG.info("Copied locale relations, took " + (end - start) + "ms");
     }
 
     /**

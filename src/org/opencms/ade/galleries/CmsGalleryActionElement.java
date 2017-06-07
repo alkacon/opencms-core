@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -48,6 +48,7 @@ import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -249,6 +250,10 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {
             search = CmsGalleryService.getSearch(getRequest(), data);
+        }
+        Set<String> folderFilter = data.getStartFolderFilter();
+        if ((folderFilter != null) && !folderFilter.isEmpty()) {
+            data.setVfsPreloadData(CmsGalleryService.generateVfsPreloadData(getCmsObject(), null, folderFilter));
         }
         if ((search != null) && (search.getScope() != null) && (search.getScope() != data.getScope())) {
             // default selected scope option should be the one for which the search has been actually performed

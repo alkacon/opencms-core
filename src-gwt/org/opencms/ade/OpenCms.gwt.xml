@@ -5,7 +5,6 @@
 	<inherits name="org.opencms.ade.editprovider.EditProvider" />
 	<inherits name="org.opencms.ade.properties.Properties" />
 	<inherits name="org.opencms.ade.postupload.PostUpload" />
-	<stylesheet src="../../../../resources/css/toolbar.css"/>
 	<source path="client" />
 	<entry-point class="org.opencms.ade.client.OpenCmsEntryPoint" />
 </module>

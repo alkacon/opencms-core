@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
@@ -127,18 +128,29 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             parent = containerElement;
         }
         Style style = getElement().getStyle();
-        style.setRight(
-            parent.getOffsetWidth() - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()),
-            Unit.PX);
+        int right = parent.getOffsetWidth()
+            - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft());
+
         int top = m_position.getTop() - parent.getAbsoluteTop();
         if (m_position.getHeight() < 24) {
             // if the highlighted area has a lesser height than the buttons, center vertically
             top -= (24 - m_position.getHeight()) / 2;
         }
         if (top < 25) {
-            // if top is <25 the buttons might overlap with the option bar, so increase to 25
-            top = 25;
+            // check if there is a parent option bar element present
+            Element parentOptionBar = CmsDomUtil.getFirstChildWithClass(
+                parent,
+                I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar());
+            if (parentOptionBar != null) {
+                int optBarTop = CmsDomUtil.getCurrentStyleInt(parentOptionBar, CmsDomUtil.Style.top);
+                int optBarRight = CmsDomUtil.getCurrentStyleInt(parentOptionBar, CmsDomUtil.Style.right);
+                if ((Math.abs(optBarRight - right) < 25) && (Math.abs(optBarTop - top) < 25)) {
+                    // in case the edit buttons overlap, move to the left
+                    right = optBarRight + 25;
+                }
+            }
         }
+        style.setRight(right, Unit.PX);
         style.setTop(top, Unit.PX);
         updateExpiredOverlayPosition(parent);
     }

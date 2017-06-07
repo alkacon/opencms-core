@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,6 +40,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
@@ -84,7 +85,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -734,10 +734,25 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
      */
     public void setIcon(String iconClasses) {
 
+        setIcon(iconClasses, null);
+    }
+
+    /**
+     * Sets the icon for this item using the given CSS classes.<p>
+     *
+     * @param iconClasses the CSS classes
+     * @param detailIconClasses the detail type icon classes if available
+     */
+    public void setIcon(String iconClasses, String detailIconClasses) {
+
         m_iconPanel.setVisible(true);
-        Panel iconWidget = new SimplePanel();
+        HTML iconWidget = new HTML();
         m_iconPanel.setWidget(iconWidget);
-        iconWidget.addStyleName(iconClasses + " " + m_fixedIconClasses);
+        iconWidget.setStyleName(iconClasses + " " + m_fixedIconClasses);
+        // render the detail icon as an overlay above the main icon, if required
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailIconClasses)) {
+            iconWidget.setHTML("<span class=\"" + detailIconClasses + "\"></span>");
+        }
     }
 
     /**
@@ -1084,8 +1099,17 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         // set the resource type icon if present
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getResourceType())) {
-            setIcon(CmsIconUtil.getResourceIconClasses(infoBean.getResourceType(), false));
+            String iconClasses = CmsIconUtil.getResourceIconClasses(infoBean.getResourceType(), false);
+            String detailIconClasses = null;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getDetailResourceType())) {
+                detailIconClasses = CmsIconUtil.getResourceIconClasses(infoBean.getDetailResourceType(), true);
+                if (CmsGwtConstants.TYPE_CONTAINERPAGE.equals(infoBean.getResourceType())) {
+                    detailIconClasses += " " + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().pageDetailType();
+                }
+            }
+            setIcon(iconClasses, detailIconClasses);
         }
+
         if (infoBean.getStateIcon() != null) {
             setStateIcon(infoBean.getStateIcon());
         }

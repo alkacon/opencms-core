@@ -1,5 +1,13 @@
-<%@page taglibs="c,cms,fmt" buffer="none" session="false" import="org.opencms.main.*,org.opencms.file.*,org.opencms.jsp.*,org.opencms.jsp.util.*,org.opencms.ade.galleries.*,org.opencms.file.types.CmsResourceTypeXmlContainerPage" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
+<%@page buffer="none" session="false" import="org.opencms.main.*,
+	org.opencms.file.*,
+	org.opencms.jsp.*,
+	org.opencms.jsp.util.*,
+	org.opencms.ade.galleries.*,
+	org.opencms.file.types.CmsResourceTypeXmlContainerPage" %><%@ 
+	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%@ 
+	taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%><%@ 
+	taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%@
+	taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%><%
 
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsObject cmsObj = cms.getCmsObject();
@@ -112,7 +120,7 @@
 		
 			<!-- begin: #footer -->
 			<div id="footer">
-				Built with <a href="http://www.opencms.org/">OpenCms - The Open Source Cms</a>, provided by <a href="http://www.alkacon.com" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH - The OpenCms Experts</a>
+				Built with <a href="http://www.opencms.org/">OpenCms - The Open Source Cms</a>, provided by <a href="http://www.alkacon.com" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH &amp; Co. KG - The OpenCms Experts</a>
 			</div>
 			<!-- end: #footer -->
 		

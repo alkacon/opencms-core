@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,9 +113,14 @@ public interface I_CmsGalleryServiceAsync {
      *
      * @param rootPath the root path
      * @param isRoot <code>true</code> if the requested entry is the root entry
+     * @param filter the search filter, only relevant when isRoot is true
      * @param callback the asynchronous callback
      */
-    void getSubEntries(String rootPath, boolean isRoot, AsyncCallback<List<CmsSitemapEntryBean>> callback);
+    void getSubEntries(
+        String rootPath,
+        boolean isRoot,
+        String filter,
+        AsyncCallback<List<CmsSitemapEntryBean>> callback);
 
     /**
      * Gets the sub-folders of a folder.<p>
@@ -129,9 +134,19 @@ public interface I_CmsGalleryServiceAsync {
      * Loads the root VFS entry bean for the given site root.<p>
      *
      * @param path the site root
+     * @param filter the search filter
+     *
      * @param resultCallback the callback for the result
      * */
-    void loadVfsEntryBean(String path, AsyncCallback<CmsVfsEntryBean> resultCallback);
+    void loadVfsEntryBean(String path, String filter, AsyncCallback<CmsVfsEntryBean> resultCallback);
+
+    /**
+     * Stores the result view type with the user.<p>
+     *
+     * @param resultViewType the result view type
+     * @param callback the callback
+     */
+    void saveResultViewType(String resultViewType, AsyncCallback<Void> callback);
 
     /**
      * Saves the tree open state.<p>

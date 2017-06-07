@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -106,8 +106,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         requestContext.addSiteRoot(requestContext.getUri()),
                         requestContext.getRemoteAddress()));
 
-            } else
-                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == currentLoginException.getMessageContainer().getKey()) {
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == currentLoginException.getMessageContainer().getKey()) {
 
                 // the user has been disabled
                 LOG.warn(
@@ -130,8 +129,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         requestContext.addSiteRoot(requestContext.getUri()),
                         requestContext.getRemoteAddress()));
 
-            } else
-                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == currentLoginException.getMessageContainer().getKey()) {
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == currentLoginException.getMessageContainer().getKey()) {
 
                 // logins have been disabled by the administration
                 long endTime = CmsLoginMessage.DEFAULT_TIME_END;
@@ -340,6 +338,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      */
     public void logout() throws IOException {
 
+        String loggedInUserName = getRequestContext().getCurrentUser().getName();
         HttpSession session = getRequest().getSession(false);
         if (session != null) {
             session.invalidate();
@@ -352,7 +351,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             LOG.info(
                 Messages.get().getBundle().key(
                     Messages.LOG_LOGOUT_SUCCESFUL_3,
-                    getRequestContext().getCurrentUser().getName(),
+                    loggedInUserName,
                     getRequestContext().addSiteRoot(getRequestContext().getUri()),
                     getRequestContext().getRemoteAddress()));
         }

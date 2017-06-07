@@ -1,3 +1,16 @@
+@mixin o-loading-overlay{
+	background-color: $gray-dark;
+  	width: 100%;  
+  	height: 100%;
+  	position: fixed; 
+  	background-color: rgba($gray-dark, 0.5);
+  	pointer-events: auto; 
+  	left: 0px;
+  	right: 0px;
+  	top: 0px;
+  	bottom: 0px;
+}
+
 @mixin o-loading-spinner {
 	.v-loading-indicator, .v-app-loading { 
   	    /* Hide original loading animation while still displaying its children */ 
@@ -20,16 +33,7 @@
   	    *, & { 
   	    	visibility: visible !important;
   	    }
-  		background-color: $gray-dark;
-  		width: 100%;  
-  		height: 100%;
-  		position: fixed; 
-  		background-color: rgba($gray-dark, 0.5);
-  		pointer-events: auto; 
-  		left: 0px;
-  		right: 0px;
-  		top: 0px;
-  		bottom: 0px;
+  		@include o-loading-overlay;
   	} 
 	
     .oc-spinner-bg {

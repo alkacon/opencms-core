@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -79,7 +79,7 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
             String unknown = getIconUri(
                 OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     CmsResourceTypeUnknownFile.getStaticTypeName()).getBigIconIfAvailable());
-            String template = "div.%1$s { background: transparent scroll 50%% 50%% no-repeat url(\"%2$s\");} ";
+            String template = "div.%1$s, span.%1$s { background: transparent scroll 50%% 50%% no-repeat url(\"%2$s\");} ";
 
             return String.format(template, TYPE_ICON_CLASS, unknown);
         }

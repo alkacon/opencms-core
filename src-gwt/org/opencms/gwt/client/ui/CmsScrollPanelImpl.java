@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,6 +41,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -176,6 +177,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
         setStyleName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollPanel());
         Element scrollable = getScrollableElement();
         scrollable.getStyle().clearPosition();
+        scrollable.getStyle().setOverflowX(Overflow.HIDDEN);
         scrollable.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollable());
         getElement().appendChild(scrollable);
         Element container = getContainerElement();

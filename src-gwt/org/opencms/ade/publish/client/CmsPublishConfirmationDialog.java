@@ -29,6 +29,7 @@ package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.client.CmsPublishDialog.State;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
@@ -51,6 +52,9 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
     /** The link which is opened after the dialog is finished. */
     private String m_closeLink;
 
+    /** Flag indicating whether current user is a workplace user. */
+    private boolean m_isWorkplaceUser;
+
     /** The panel which contains the dialog contents. */
     private Panel m_panel = new HorizontalPanel();
 
@@ -67,13 +71,19 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
         setGlassEnabled(true);
         CmsPublishDialog.State state = dialog.getState();
         m_closeLink = closeLink;
+        m_isWorkplaceUser = CmsCoreProvider.get().getUserInfo().isWorkplaceUser();
         String message = "-";
         if (state == State.success) {
             CmsWorkflowAction lastAction = dialog.getLastAction();
             if (lastAction.isPublish()) {
-                message = getMessage(Messages.GUI_CONFIRMATION_PUBLISH_0);
+                message = getMessage(
+                    m_isWorkplaceUser ? Messages.GUI_CONFIRMATION_PUBLISH_0 : Messages.GUI_CONFIRMATION_PUBLISH_NOWP_0);
             } else {
-                message = getMessage(Messages.GUI_CONFIRMATION_WORKFLOW_1, lastAction.getLabel());
+                message = getMessage(
+                    m_isWorkplaceUser
+                    ? Messages.GUI_CONFIRMATION_WORKFLOW_1
+                    : Messages.GUI_CONFIRMATION_WORKFLOW_NOWP_1,
+                    lastAction.getLabel());
             }
         } else if (state == State.failure) {
             message = dialog.getFailureMessage();
@@ -112,7 +122,9 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
             }
         });
         List<CmsPushButton> result = new ArrayList<CmsPushButton>();
-        result.add(workplaceButton);
+        if (m_isWorkplaceUser) {
+            result.add(workplaceButton);
+        }
         return result;
     }
 

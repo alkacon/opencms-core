@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,6 +47,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
+import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.dialogs.permissions.CmsPermissionView.PermissionChangeHandler;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.PrincipalSelectHandler;
 import org.opencms.util.CmsStringUtil;
@@ -133,7 +134,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     /** The resource permissions panel. */
     private VerticalLayout m_resourcePermissions;
 
-    /** The tab for setting permissions. */ 
+    /** The tab for setting permissions. */
     private VerticalLayout m_setPermissionTab;
 
     /** The user permission panel. */
@@ -148,13 +149,18 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
 
         m_context = context;
         m_cms = context.getCms();
+        m_editable = CmsStandardVisibilityCheck.PERMISSIONS.getVisibility(context).isActive();
         m_resource = context.getResources().get(0);
         boolean editRoles = CmsWorkplace.canEditPermissionsForRoles(m_cms, m_resource.getRootPath());
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_main.setHeightUndefined();
-        m_principalSelect.setMargin(true);
-        m_principalSelect.setSelectHandler(this);
-        m_principalSelect.setRoleSelectionAllowed(editRoles);
+        if (m_editable) {
+            m_principalSelect.setMargin(true);
+            m_principalSelect.setSelectHandler(this);
+            m_principalSelect.setRoleSelectionAllowed(editRoles);
+        } else {
+            m_principalSelect.setVisible(false);
+        }
         displayResourceInfo(Collections.singletonList(m_resource));
         displayUserPermissions(m_cms.getRequestContext().getCurrentUser());
         displayInheritedPermissions();

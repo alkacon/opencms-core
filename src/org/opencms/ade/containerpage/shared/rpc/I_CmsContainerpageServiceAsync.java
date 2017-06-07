@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,13 +31,13 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
-import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -77,12 +77,13 @@ public interface I_CmsContainerpageServiceAsync {
      *
      * @param structureId the id of the container page
      * @param detailContentId the structure id of the detail content (may be null)
-     *
+     * @param contentLocale the content locale
      * @param callback the callback for the result
      */
     void checkContainerpageOrElementsChanged(
         CmsUUID structureId,
         CmsUUID detailContentId,
+        String contentLocale,
         AsyncCallback<Boolean> callback);
 
     /**
@@ -256,7 +257,7 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID elementView,
         String uri,
         String locale,
-        AsyncCallback<CmsGalleryDataBean> callback);
+        AsyncCallback<CmsContainerPageGalleryData> callback);
 
     /**
      * Returns new container element data for the given resource type name.<p>

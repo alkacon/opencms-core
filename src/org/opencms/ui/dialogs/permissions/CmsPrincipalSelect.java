@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,6 +33,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -111,6 +112,9 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     /** The main layout. */
     private HorizontalLayout m_main;
 
+    /** Controls whether only real users/groups or also pseudo-principals like ALL_OTHERS should be shown. */
+    private boolean m_realOnly;
+
     /**
      * Constructor.<p>
      */
@@ -145,7 +149,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         m_main.setExpandRatio(m_principalName, 2);
 
         m_selectPrincipalButton = new Button(FontAwesome.USER);
-        m_selectPrincipalButton.addStyleName("borderless");
+        m_selectPrincipalButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
         m_selectPrincipalButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -409,6 +413,16 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
+     * Controls whether only real users/groups or also pseudo-principals like ALL_OTHERS should be shown.
+     *
+     *  @param realOnly if true, only real users / groups will be shown
+     */
+    public void setRealPrincipalsOnly(boolean realOnly) {
+
+        m_realOnly = realOnly;
+    }
+
+    /**
      * @see com.vaadin.ui.Field#setRequired(boolean)
      */
     public void setRequired(boolean required) {
@@ -553,6 +567,8 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
 
         String parameters = "?type="
             + m_widgetType.name()
+            + "&realonly="
+            + m_realOnly
             + "&flags=null&action=listindependentaction&useparent=true&listaction=";
         if ((m_widgetType.equals(WidgetType.principalwidget)
             && I_CmsPrincipal.PRINCIPAL_GROUP.equals(m_principalTypeSelect.getValue()))
@@ -590,7 +606,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         if (enabled) {
             if (m_addPermissionSetButton == null) {
                 m_addPermissionSetButton = new Button(FontAwesome.PLUS);
-                m_addPermissionSetButton.addStyleName("borderless");
+                m_addPermissionSetButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
                 m_addPermissionSetButton.addClickListener(new ClickListener() {
 
                     private static final long serialVersionUID = 1L;

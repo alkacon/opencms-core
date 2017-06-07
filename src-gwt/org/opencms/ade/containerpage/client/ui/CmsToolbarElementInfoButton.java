@@ -163,6 +163,7 @@ implements I_CmsContainerpageEventHandler, I_CmsPublishEventHandler {
                 m_controller.getContainerpageService().checkContainerpageOrElementsChanged(
                     CmsCoreProvider.get().getStructureId(),
                     CmsContainerpageController.get().getData().getDetailId(),
+                    CmsContainerpageController.get().getData().getLocale(),
                     this);
             }
 

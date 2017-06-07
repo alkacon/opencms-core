@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,6 +67,16 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public void deleteResource(String resourcePath) {
 
         m_controller.deleteResource(resourcePath);
+    }
+
+    /**
+     * Returns the result view type.<p>
+     *
+     * @return the result view type
+     */
+    public String getResultViewType() {
+
+        return m_controller.getResultViewType();
     }
 
     /**
@@ -159,6 +169,16 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public void removeParam(String paramKey) {
 
         // nothing to do
+    }
+
+    /**
+     * Stores the result view type.<p>
+     *
+     * @param resultViewType the result view type
+     */
+    public void setResultViewType(String resultViewType) {
+
+        m_controller.setResultViewType(resultViewType);
     }
 
     /**

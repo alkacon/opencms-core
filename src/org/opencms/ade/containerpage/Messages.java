@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -68,7 +68,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SETTING_TEMPLATE_CONTEXTS_NAME_0 = "GUI_SETTING_TEMPLATE_CONTEXTS_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOWLOCALE_WRONG_SITE_0 = "GUI_SHOWLOCALE_WRONG_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0 = "GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_MODEL_0 = "GUI_TITLE_MODEL_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.messages";

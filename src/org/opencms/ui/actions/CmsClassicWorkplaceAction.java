@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,6 +45,9 @@ import java.util.List;
  */
 public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
 
+    /** The name of the classic workplace window. */
+    public static final String WORKPLACE_WINDOW_NAME = "workplaceClassic";
+
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
@@ -60,7 +63,7 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
             initPath = CmsFileUtil.addTrailingSeparator(cms.getRequestContext().getSiteRoot());
         }
         String link = CmsWorkplace.getWorkplaceExplorerLink(cms, initPath);
-        A_CmsUI.get().getPage().open(link, "_blank");
+        A_CmsUI.get().openPageOrWarn(link, WORKPLACE_WINDOW_NAME);
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,7 +54,6 @@ import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox.State;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -220,6 +219,8 @@ public class CmsPublishGroupPanel extends Composite {
         }
 
         info.setMarkChangedState(false);
+        info.setResourceType(resourceBean.getResourceType());
+        info.setDetailResourceType(resourceBean.getDetailResourceType());
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
         String resourceUser = resourceBean.getUserLastModified();
         String currentUser = CmsCoreProvider.get().getUserInfo().getName();
@@ -245,7 +246,6 @@ public class CmsPublishGroupPanel extends Composite {
             fillButtonSlot(itemWidget, SLOT_WARNING, warningImage, slotMapping);
         }
         itemWidget.setUnselectable();
-        itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType(), false));
         return itemWidget;
     }
 

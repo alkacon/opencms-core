@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -197,7 +197,7 @@ public class CmsUploadBean extends CmsJspBean {
             // try to create the resources on the VFS
             createResources(listener);
             // trigger update offline indexes, important for gallery search
-            OpenCms.getSearchManager().updateOfflineIndexes(2500);
+            OpenCms.getSearchManager().updateOfflineIndexes();
         } catch (CmsException e) {
             // an error occurred while creating the resources on the VFS, create a special error message
             LOG.error(e.getMessage(), e);

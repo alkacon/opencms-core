@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -324,7 +324,13 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         //        m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
         m_toolbar = new CmsToolbar();
         m_toolbar.setQuickLaunchHandler(new PageEditorQuickLaunchHandler());
-        m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0));
+        m_toolbar.getUserInfo().setHandler(containerpageHandler);
+        m_toolbar.getQuickLauncher().setHandler(containerpageHandler);
+        String title = controller.getData().getAppTitle();
+        if (title == null) {
+            title = Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0);
+        }
+        m_toolbar.setAppTitle(title);
 
         m_publish = new CmsToolbarPublishButton(containerpageHandler);
         m_publish.addClickHandler(clickHandler);
@@ -401,23 +407,23 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * @param controller the controller
      */
     private native void exportMethods(CmsContainerpageController controller) /*-{
-		var contr = controller;
-		$wnd.opencms = {
-			openStacktraceDialog : function(event) {
-				event = (event) ? event : ((window.event) ? window.event : "");
-				var elem = (event.target) ? event.target : event.srcElement;
-				if (elem != null) {
-					var children = elem.getElementsByTagName("span");
-					if (children.length > 0) {
-						var title = children[0].getAttribute("title");
-						var content = children[0].innerHTML;
-						@org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-					}
-				}
-			},
-			reinitializeEditButtons : function() {
-				contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
-			}
-		}
+        var contr = controller;
+        $wnd.opencms = {
+            openStacktraceDialog : function(event) {
+                event = (event) ? event : ((window.event) ? window.event : "");
+                var elem = (event.target) ? event.target : event.srcElement;
+                if (elem != null) {
+                    var children = elem.getElementsByTagName("span");
+                    if (children.length > 0) {
+                        var title = children[0].getAttribute("title");
+                        var content = children[0].innerHTML;
+                        @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                    }
+                }
+            },
+            reinitializeEditButtons : function() {
+                contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
+            }
+        }
     }-*/;
 }

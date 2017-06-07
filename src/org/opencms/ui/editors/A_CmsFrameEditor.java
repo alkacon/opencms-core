@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -94,6 +94,8 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor, ViewChangeListene
                     }
                 });
             return false;
+        } else if (!m_leaving) {
+            tryUnlock();
         }
 
         return true;
@@ -141,6 +143,15 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor, ViewChangeListene
     void leaveEditor(Navigator navigator, String target) {
 
         m_leaving = true;
+        tryUnlock();
+        navigator.navigateTo(target);
+    }
+
+    /**
+     * Tries to unlock the current resource.<p>
+     */
+    private void tryUnlock() {
+
         if (m_resource != null) {
             try {
                 A_CmsUI.getCmsObject().unlockResource(m_resource);
@@ -148,6 +159,5 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor, ViewChangeListene
                 LOG.debug("Unlocking resource " + m_resource.getRootPath() + " failed", e);
             }
         }
-        navigator.navigateTo(target);
     }
 }

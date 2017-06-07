@@ -1,4 +1,4 @@
-@external cms_type_icon, inlineEditable, navMode;
+@external cms_type_icon, inlineEditable, navMode, html-face;
 .itemContainer .itemAdditional{
 	display: none;
 }
@@ -22,10 +22,10 @@ li div.itemContainer.cmsHovering{
 	border: 1px solid value("constants.css.borderColor");
 }
 
-.titleRow div, .itemAdditional div {
+div.titleRow div, .itemAdditional div {
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");
-	line-height: 17px;
+	line-height: 17px !important;
 }
 
 .itemContainer .titleInput{
@@ -195,7 +195,6 @@ div.itemIcon{
 	height: 24px;
 	width: 24px;
 	float: left;
-	overflow: hidden;
 	margin: 7px 4px;
 	position: relative;
 }
@@ -205,6 +204,17 @@ div.itemIcon{
 	width: 24px;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
+}
+
+.itemIcon .cms_type_icon > span {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+}
+
+.itemIcon .cms_type_icon > span.pageDetailType {
+	top: 5px;
+	left: 8px;
 }
 
 .itemContainer .itemTitle{

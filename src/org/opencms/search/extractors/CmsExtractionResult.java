@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     private static final long serialVersionUID = 1465447302192195154L;
 
     /** The extracted individual content items. */
-    private Map<Locale, Map<String, String>> m_contentItems;
+    private Map<Locale, LinkedHashMap<String, String>> m_contentItems;
 
     /** The locales of the content. */
     private Collection<Locale> m_locales;
@@ -77,19 +78,13 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      */
     public CmsExtractionResult(
         Locale defaultLocale,
-        Map<Locale, Map<String, String>> multilingualContentItems,
+        Map<Locale, LinkedHashMap<String, String>> multilingualContentItems,
         Map<String, String> fieldMappings) {
 
         m_defaultLocale = defaultLocale;
         m_contentItems = null != multilingualContentItems
         ? removeNullEntries(multilingualContentItems)
-        : new HashMap<Locale, Map<String, String>>(1);
-
-        // ensure that a version for the default locale is present
-        if (null == m_contentItems.get(m_defaultLocale)) {
-            m_contentItems.put(m_defaultLocale, new HashMap<String, String>());
-        }
-        m_fieldMappings = null != fieldMappings ? fieldMappings : new HashMap<String, String>();
+        : new HashMap<Locale, LinkedHashMap<String, String>>(1);
 
         // set the locales
         m_locales = new HashSet<Locale>();
@@ -98,6 +93,12 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
                 m_locales.add(locale);
             }
         }
+
+        // ensure that a version for the default locale is present just to prevent null-checks
+        if (null == m_contentItems.get(m_defaultLocale)) {
+            m_contentItems.put(m_defaultLocale, new LinkedHashMap<String, String>());
+        }
+        m_fieldMappings = null != fieldMappings ? fieldMappings : new HashMap<String, String>();
 
     }
 
@@ -118,7 +119,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      * @param content the extracted content
      * @param contentItems the individual extracted content items
      */
-    public CmsExtractionResult(String content, Map<String, String> contentItems) {
+    public CmsExtractionResult(String content, LinkedHashMap<String, String> contentItems) {
 
         this(content, contentItems, null);
     }
@@ -130,11 +131,14 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      * @param contentItems the individual extracted content items
      * @param fieldMappings extraction results that should directly be indexed
      */
-    public CmsExtractionResult(String content, Map<String, String> contentItems, Map<String, String> fieldMappings) {
+    public CmsExtractionResult(
+        String content,
+        LinkedHashMap<String, String> contentItems,
+        Map<String, String> fieldMappings) {
 
         m_defaultLocale = null;
         m_locales = new HashSet<Locale>();
-        m_contentItems = new HashMap<Locale, Map<String, String>>(1);
+        m_contentItems = new LinkedHashMap<Locale, LinkedHashMap<String, String>>(1);
         if (fieldMappings != null) {
             m_fieldMappings = fieldMappings;
         } else {
@@ -143,7 +147,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         if (contentItems != null) {
             m_contentItems.put(m_defaultLocale, contentItems);
         } else {
-            m_contentItems.put(m_defaultLocale, new HashMap<String, String>());
+            m_contentItems.put(m_defaultLocale, new LinkedHashMap<String, String>());
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
             m_contentItems.get(m_defaultLocale).put(ITEM_CONTENT, content);
@@ -221,7 +225,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     /**
      * @see org.opencms.search.extractors.I_CmsExtractionResult#getContentItems()
      */
-    public Map<String, String> getContentItems() {
+    public LinkedHashMap<String, String> getContentItems() {
 
         return m_contentItems.get(m_defaultLocale);
     }
@@ -229,10 +233,10 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     /**
      * @see org.opencms.search.extractors.I_CmsExtractionResult#getContentItems(java.util.Locale)
      */
-    public Map<String, String> getContentItems(Locale locale) {
+    public LinkedHashMap<String, String> getContentItems(Locale locale) {
 
-        Map<String, String> localeItems = m_contentItems.get(locale);
-        return null == localeItems ? new HashMap<String, String>() : localeItems;
+        LinkedHashMap<String, String> localeItems = m_contentItems.get(locale);
+        return null == localeItems ? new LinkedHashMap<String, String>() : localeItems;
     }
 
     /**
@@ -265,13 +269,11 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     public I_CmsExtractionResult merge(List<I_CmsExtractionResult> extractionResults) {
 
         //prepare copy
-        Map<Locale, Map<String, String>> contentItems = new HashMap<Locale, Map<String, String>>(m_contentItems.size());
-        for (Locale locale : m_contentItems.keySet()) {
-            Map<String, String> originalLocalValues = m_contentItems.get(locale);
-            Map<String, String> localeValues = new HashMap<String, String>(originalLocalValues.size());
-            for (String key : originalLocalValues.keySet()) {
-                localeValues.put(key, originalLocalValues.get(key));
-            }
+        Map<Locale, LinkedHashMap<String, String>> contentItems = new HashMap<Locale, LinkedHashMap<String, String>>(
+            m_locales.size());
+        for (Locale locale : m_locales) {
+            LinkedHashMap<String, String> originalLocalValues = m_contentItems.get(locale);
+            LinkedHashMap<String, String> localeValues = new LinkedHashMap<String, String>(originalLocalValues);
             contentItems.put(locale, localeValues);
         }
 
@@ -281,7 +283,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         }
 
         //merge content from the other extraction results
-        for (Locale locale : contentItems.keySet()) {
+        for (Locale locale : m_locales) {
             Map<String, String> localeValues = contentItems.get(locale);
             for (I_CmsExtractionResult result : extractionResults) {
                 if (result.getLocales().contains(locale)) {
@@ -333,12 +335,12 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      * @param multilingualContentItems the map where replacement should take place
      * @return the map with all <code>null</code> values replaced with empty maps.
      */
-    private Map<Locale, Map<String, String>> removeNullEntries(
-        Map<Locale, Map<String, String>> multilingualContentItems) {
+    private Map<Locale, LinkedHashMap<String, String>> removeNullEntries(
+        Map<Locale, LinkedHashMap<String, String>> multilingualContentItems) {
 
         for (Locale locale : multilingualContentItems.keySet()) {
             if (null == multilingualContentItems.get(locale)) {
-                multilingualContentItems.put(locale, new HashMap<String, String>());
+                multilingualContentItems.put(locale, new LinkedHashMap<String, String>());
             }
         }
         return multilingualContentItems;

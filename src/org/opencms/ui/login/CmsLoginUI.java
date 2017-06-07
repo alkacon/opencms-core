@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,7 @@ package org.opencms.ui.login;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -241,7 +242,7 @@ public class CmsLoginUI extends A_CmsUI {
         }
 
         if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
-            String target = request.getParameter("requestedResource");
+            String target = request.getParameter(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(target)) {
                 target = CmsLoginController.getLoginTarget(cms, getWorkplaceSettings(cms, request.getSession()), null);
             }
@@ -355,9 +356,13 @@ public class CmsLoginUI extends A_CmsUI {
             CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
             settings = CmsLoginHelper.initSiteAndProject(cms);
-            VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
-                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
-                settings);
+            if (VaadinService.getCurrentRequest() != null) {
+                VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
+                    CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                    settings);
+            } else {
+                session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
+            }
         }
         return settings;
     }

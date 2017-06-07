@@ -34,7 +34,9 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_E
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IN_NAVIGATION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PROJECT;
@@ -55,24 +57,32 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsEditPropertyContext;
+import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuBuilder;
+import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -174,11 +184,31 @@ public class CmsFileTable extends CmsResourceTable {
 
     /**
      * Extends the default sorting to differentiate between files and folder when sorting by name.<p>
+     * Also allows sorting by navPos property for the Resource icon column.<p>
      */
-    public static class FileSorter extends DefaultItemSorter {
+    public static class FileSorter extends DefaultItemSorter implements I_CmsItemSorter {
 
         /** The serial version id. */
         private static final long serialVersionUID = 1L;
+
+        /**
+         * @see org.opencms.ui.util.I_CmsItemSorter#getSortableContainerPropertyIds(com.vaadin.data.Container)
+         */
+        public Collection<?> getSortableContainerPropertyIds(Container container) {
+
+            Set<Object> result = new HashSet<Object>();
+            for (Object propId : container.getContainerPropertyIds()) {
+                Class<?> propertyType = container.getType(propId);
+                if (Comparable.class.isAssignableFrom(propertyType)
+                    || propertyType.isPrimitive()
+                    || (propId.equals(CmsResourceTableProperty.PROPERTY_TYPE_ICON)
+                        && container.getContainerPropertyIds().contains(
+                            CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION))) {
+                    result.add(propId);
+                }
+            }
+            return result;
+        }
 
         /**
          * @see com.vaadin.data.util.DefaultItemSorter#compareProperty(java.lang.Object, boolean, com.vaadin.data.Item, com.vaadin.data.Item)
@@ -198,6 +228,25 @@ public class CmsFileTable extends CmsResourceTable {
                     }
                     return result;
                 }
+            } else if ((CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
+                || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
+                && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
+                int result;
+                Float pos1 = (Float)item1.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                Float pos2 = (Float)item2.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                if (pos1 == null) {
+                    result = pos2 == null
+                    ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
+                    : 1;
+                } else {
+                    result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
+                }
+                if (!sortDirection) {
+                    result = result * (-1);
+                }
+                return result;
             }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
         }
@@ -219,6 +268,9 @@ public class CmsFileTable extends CmsResourceTable {
     /** The logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsFileTable.class);
 
+    /** The default file table columns. */
+    private static final Map<CmsResourceTableProperty, Integer> DEFAULT_TABLE_PROPERTIES = new LinkedHashMap<CmsResourceTableProperty, Integer>();
+
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
 
@@ -237,20 +289,50 @@ public class CmsFileTable extends CmsResourceTable {
     /** The context menu builder. */
     I_CmsContextMenuBuilder m_menuBuilder;
 
+    /** The dialog context provider. */
+    private I_CmsContextProvider m_contextProvider;
+
     /** The edited item id. */
     private CmsUUID m_editItemId;
 
     /** The edited property id. */
     private CmsResourceTableProperty m_editProperty;
 
+    /** The folder select handler. */
+    private I_FolderSelectHandler m_folderSelectHandler;
+
     /** The original edit value. */
     private String m_originalEditValue;
 
-    /** The dialog context provider. */
-    private I_CmsContextProvider m_contextProvider;
+    /** The default action column property. */
+    CmsResourceTableProperty m_actionColumnProperty;
 
-    /** The folder select handler. */
-    private I_FolderSelectHandler m_folderSelectHandler;
+    {
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_TITLE, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_SIZE, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
+    }
 
     /**
      * Default constructor.<p>
@@ -258,8 +340,8 @@ public class CmsFileTable extends CmsResourceTable {
      * @param contextProvider the dialog context provider
      */
     public CmsFileTable(I_CmsContextProvider contextProvider) {
-
         super();
+        m_actionColumnProperty = PROPERTY_RESOURCE_NAME;
         m_contextProvider = contextProvider;
         m_container.setItemSorter(new FileSorter());
         m_fileTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -270,34 +352,11 @@ public class CmsFileTable extends CmsResourceTable {
         m_fileTable.setMultiSelect(true);
 
         m_fileTable.setTableFieldFactory(new FileFieldFactory());
-        new ColumnBuilder() {
-
-            {
-                column(PROPERTY_TYPE_ICON);
-                column(PROPERTY_PROJECT, COLLAPSED);
-                column(PROPERTY_RESOURCE_NAME);
-                column(PROPERTY_TITLE);
-                column(PROPERTY_NAVIGATION_TEXT, COLLAPSED);
-                column(PROPERTY_COPYRIGHT, COLLAPSED);
-                column(PROPERTY_CACHE, COLLAPSED);
-                column(PROPERTY_RESOURCE_TYPE);
-                column(PROPERTY_SIZE);
-                column(PROPERTY_PERMISSIONS, COLLAPSED);
-                column(PROPERTY_DATE_MODIFIED);
-                column(PROPERTY_USER_MODIFIED, COLLAPSED);
-                column(PROPERTY_DATE_CREATED, COLLAPSED);
-                column(PROPERTY_USER_CREATED, COLLAPSED);
-                column(PROPERTY_DATE_RELEASED);
-                column(PROPERTY_DATE_EXPIRED);
-                column(PROPERTY_STATE_NAME);
-                column(PROPERTY_USER_LOCKED);
-                column(PROPERTY_IS_FOLDER, INVISIBLE);
-                column(PROPERTY_STATE, INVISIBLE);
-                column(PROPERTY_INSIDE_PROJECT, INVISIBLE);
-                column(PROPERTY_RELEASED_NOT_EXPIRED, INVISIBLE);
-            }
-
-        }.buildColumns();
+        ColumnBuilder builder = new ColumnBuilder();
+        for (Entry<CmsResourceTableProperty, Integer> entry : DEFAULT_TABLE_PROPERTIES.entrySet()) {
+            builder.column(entry.getKey(), entry.getValue().intValue());
+        }
+        builder.buildColumns();
 
         m_fileTable.setSortContainerPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
         m_menu = new CmsContextMenu();
@@ -344,10 +403,19 @@ public class CmsFileTable extends CmsResourceTable {
 
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
-                return getStateStyle(m_container.getItem(itemId))
-                    + (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME == propertyId
-                    ? " " + OpenCmsTheme.HOVER_COLUMN
-                    : "");
+                Item item = m_container.getItem(itemId);
+                String style = getStateStyle(item);
+                if (m_actionColumnProperty == propertyId) {
+                    style += " " + OpenCmsTheme.HOVER_COLUMN;
+                } else if ((CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT == propertyId)
+                    || (CmsResourceTableProperty.PROPERTY_TITLE == propertyId)) {
+                    if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
+                        && ((Boolean)item.getItemProperty(
+                            CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
+                        style += " " + OpenCmsTheme.IN_NAVIGATION;
+                    }
+                }
+                return style;
             }
         });
 
@@ -365,7 +433,7 @@ public class CmsFileTable extends CmsResourceTable {
 
         String result = "";
         if (resourceItem != null) {
-            if ((resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).getValue() == null)
+            if ((resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT) == null)
                 || ((Boolean)resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).getValue()).booleanValue()) {
 
                 CmsResourceState state = (CmsResourceState)resourceItem.getItemProperty(
@@ -374,17 +442,57 @@ public class CmsFileTable extends CmsResourceTable {
             } else {
                 result = OpenCmsTheme.PROJECT_OTHER;
             }
-            if ((resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).getValue() != null)
+            if ((resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED) != null)
                 && !((Boolean)resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).getValue()).booleanValue()) {
                 result += " " + OpenCmsTheme.EXPIRED;
             }
-            if ((resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED).getValue() != null)
+            if ((resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_DISABLED) != null)
                 && ((Boolean)resourceItem.getItemProperty(
                     CmsResourceTableProperty.PROPERTY_DISABLED).getValue()).booleanValue()) {
                 result += " " + OpenCmsTheme.DISABLED;
             }
         }
         return result;
+    }
+
+    /**
+     * Applies settings generally used within workplace app file lists.<p>
+     */
+    public void applyWorkplaceAppSettings() {
+
+        // add site path property to container
+        m_container.addContainerProperty(
+            CmsResourceTableProperty.PROPERTY_SITE_PATH,
+            CmsResourceTableProperty.PROPERTY_SITE_PATH.getColumnType(),
+            CmsResourceTableProperty.PROPERTY_SITE_PATH.getDefaultValue());
+
+        // replace the resource name column with the path column
+        Object[] visibleCols = m_fileTable.getVisibleColumns();
+        for (int i = 0; i < visibleCols.length; i++) {
+            if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(visibleCols[i])) {
+                visibleCols[i] = CmsResourceTableProperty.PROPERTY_SITE_PATH;
+            }
+        }
+        m_fileTable.setVisibleColumns(visibleCols);
+        m_fileTable.setColumnCollapsible(CmsResourceTableProperty.PROPERTY_SITE_PATH, false);
+        m_fileTable.setColumnHeader(
+            CmsResourceTableProperty.PROPERTY_SITE_PATH,
+            CmsVaadinUtils.getMessageText(CmsResourceTableProperty.PROPERTY_SITE_PATH.getHeaderKey()));
+
+        // update column visibility according to the latest file explorer settings
+        CmsFileExplorerSettings settings;
+        try {
+            settings = OpenCms.getWorkplaceAppManager().getAppSettings(
+                A_CmsUI.getCmsObject(),
+                CmsFileExplorerSettings.class);
+
+            setTableState(settings);
+        } catch (Exception e) {
+            LOG.error("Error while reading file explorer settings from user.", e);
+        }
+        m_fileTable.setSortContainerPropertyId(CmsResourceTableProperty.PROPERTY_SITE_PATH);
+        setActionColumnProperty(CmsResourceTableProperty.PROPERTY_SITE_PATH);
+        setMenuBuilder(new CmsResourceContextMenuBuilder());
     }
 
     /**
@@ -503,6 +611,26 @@ public class CmsFileTable extends CmsResourceTable {
     public void openContextMenu(ItemClickEvent event) {
 
         m_menu.openForTable(event, m_fileTable);
+    }
+
+    /**
+     * Sets the default action column property.<p>
+     *
+     * @param actionColumnProperty the default action column property
+     */
+    public void setActionColumnProperty(CmsResourceTableProperty actionColumnProperty) {
+
+        m_actionColumnProperty = actionColumnProperty;
+    }
+
+    /**
+     * Sets the dialog context provider.<p>
+     *
+     * @param provider the dialog context provider
+     */
+    public void setContextProvider(I_CmsContextProvider provider) {
+
+        m_contextProvider = provider;
     }
 
     /**
@@ -646,16 +774,6 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
-     * Sets the dialog context provider.<p>
-     *
-     * @param provider the dialog context provider
-     */
-    protected void setContextProvider(I_CmsContextProvider provider) {
-
-        m_contextProvider = provider;
-    }
-
-    /**
      * Cancels the current edit process.<p>
      */
     void cancelEdit() {
@@ -717,36 +835,43 @@ public class CmsFileTable extends CmsResourceTable {
                 if ((event.getPropertyId() == null)
                     || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
                     openContextMenu(event);
-                } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
-                    Boolean isFolder = (Boolean)event.getItem().getItemProperty(
-                        CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
-                    if ((isFolder != null) && isFolder.booleanValue()) {
-                        if (m_folderSelectHandler != null) {
-                            m_folderSelectHandler.onFolderSelect(itemId);
-                        }
-                        openedFolder = true;
-                    } else {
-                        try {
-                            CmsObject cms = A_CmsUI.getCmsObject();
-                            CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
-                            String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                            HttpServletRequest req = CmsVaadinUtils.getRequest();
-
-                            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-                            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                                A_CmsUI.get().getPage().open(link, "_blank");
-                            } else {
-                                A_CmsUI.get().getPage().setLocation(link);
+                } else {
+                    if (m_actionColumnProperty.equals(event.getPropertyId())) {
+                        Boolean isFolder = (Boolean)event.getItem().getItemProperty(
+                            CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
+                        if ((isFolder != null) && isFolder.booleanValue()) {
+                            if (m_folderSelectHandler != null) {
+                                m_folderSelectHandler.onFolderSelect(itemId);
                             }
-                            return;
-                        } catch (CmsVfsResourceNotFoundException e) {
-                            LOG.info(e.getLocalizedMessage(), e);
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
+                            openedFolder = true;
+                        } else {
+                            try {
+                                CmsObject cms = A_CmsUI.getCmsObject();
+                                CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
+                                m_currentResources = Collections.singletonList(res);
+                                I_CmsDialogContext context = m_contextProvider.getDialogContext();
+                                I_CmsDefaultAction action = OpenCms.getWorkplaceAppManager().getDefaultAction(context);
+                                if (action != null) {
+                                    action.executeAction(context);
+                                    return;
+                                }
+                            } catch (CmsVfsResourceNotFoundException e) {
+                                LOG.info(e.getLocalizedMessage(), e);
+                            } catch (CmsException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    } else {
+                        I_CmsDialogContext context = m_contextProvider.getDialogContext();
+                        if ((m_currentResources.size() == 1)
+                            && m_currentResources.get(0).getStructureId().equals(itemId)
+                            && (context instanceof I_CmsEditPropertyContext)
+                            && ((I_CmsEditPropertyContext)context).isPropertyEditable(event.getPropertyId())) {
+
+                            ((I_CmsEditPropertyContext)context).editProperty(event.getPropertyId());
                         }
                     }
                 }
-
             }
             // update the item on click to show any available changes
             if (!openedFolder) {

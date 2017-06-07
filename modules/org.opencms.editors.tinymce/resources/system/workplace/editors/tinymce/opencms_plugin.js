@@ -1,4 +1,4 @@
-<%@ page taglibs="c,cms" import="
+<%@ page import="
    org.opencms.i18n.CmsEncoder,
    org.opencms.jsp.*,
    org.opencms.workplace.editors.*,
@@ -8,7 +8,10 @@
    org.opencms.editors.tinymce.*,
    java.util.*,
    org.opencms.file.types.CmsResourceTypeImage" %><%
-%><%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><% 
+%><%@ 
+taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%@ 
+taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%><%@ 
+taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><% 
     CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response); 
    pageContext.setAttribute("cms", cms);
    Locale locale=OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject());
@@ -434,7 +437,7 @@ tinymce.create('tinymce.opencms', {
    getInfo : function() {
       return {
          longname : 'OpenCms TinyMCE plugin',
-         author : 'Alkacon Software GmbH',
+         author : 'Alkacon Software GmbH & Co. KG',
          authorurl : 'http://www.opencms.org',
          infourl : 'http://wwww.opencms.org',
          version : '1.0'

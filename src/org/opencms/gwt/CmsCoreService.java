@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -71,7 +71,6 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
-import org.opencms.ui.components.CmsUserInfo;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -226,7 +225,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
             }
             CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
-            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION));
+            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ALL));
             CmsResource resource = resUtil[0].getResource();
             if (hasViewPermissions(cms, resource)) {
                 String fallbackType = resource.isFolder()
@@ -745,7 +744,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public String changePassword(String oldPassword, String newPassword, String newPasswordConfirm)
     throws CmsRpcException {
 
-        System.out.println("changing password from " + oldPassword + " to " + newPassword);
         CmsObject cms = getCmsObject();
         CmsPasswordInfo passwordBean = new CmsPasswordInfo(cms);
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -864,7 +862,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         CmsCategoryService catService = CmsCategoryService.getInstance();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ignoreExpirationOffline(cms));
             List<CmsCategory> categories = catService.readResourceCategories(cms, resource);
             List<String> currentCategories = new ArrayList<String>();
             for (CmsCategory category : categories) {
@@ -952,15 +950,16 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
         boolean isCategoryManager = roleManager.hasRole(cms, CmsRole.CATEGORY_EDITOR);
+        boolean isWorkplaceUser = roleManager.hasRole(cms, CmsRole.WORKPLACE_USER);
         UserInfo userInfo = new UserInfo(
             cms.getRequestContext().getCurrentUser().getName(),
             OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
                 cms,
                 cms.getRequestContext().getCurrentUser()),
-            CmsUserInfo.generateUserInfoHtml(cms, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)),
             isAdmin,
             isDeveloper,
             isCategoryManager,
+            isWorkplaceUser,
             cms.getRequestContext().getCurrentUser().isManaged());
         return userInfo;
     }
@@ -1081,7 +1080,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             if (resource.getDateLastModified() != modification) {
                 CmsUser user = cms.readUser(resource.getUserLastModified());
                 return CmsLockInfo.forChangedResource(user.getFullName());
@@ -1192,7 +1191,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         CmsCategoryService catService = CmsCategoryService.getInstance();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             ensureLock(resource);
             String sitePath = cms.getSitePath(resource);
             List<CmsCategory> previousCategories = catService.readResourceCategories(cms, resource);
@@ -1342,7 +1341,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     protected CmsLockInfo getLock(CmsUUID structureId) throws CmsException {
 
-        CmsResource res = getCmsObject().readResource(structureId);
+        CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         return getLock(getCmsObject().getSitePath(res));
     }
 

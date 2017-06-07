@@ -266,7 +266,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                     if ((f != null) && (!field.getName().startsWith(CmsSearchField.FIELD_CONTENT))) {
                         multi = f.multiValued();
                     }
-                } catch (SolrException e) {
+                } catch (@SuppressWarnings("unused") SolrException e) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_SOLR_FIELD_NOT_FOUND_1, field.toString()));
                 }
                 if (multi) {
@@ -298,7 +298,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                 }
             } catch (SolrException e) {
                 LOG.error(e.getMessage(), e);
-            } catch (RuntimeException e) {
+            } catch (@SuppressWarnings("unused") RuntimeException e) {
                 // noop
             }
         }

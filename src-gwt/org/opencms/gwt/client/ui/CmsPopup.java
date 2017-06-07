@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,10 @@ import org.opencms.gwt.client.util.CmsFadeAnimation;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
+import java.util.List;
 
+import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -53,11 +56,14 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -73,6 +79,59 @@ import com.google.gwt.user.client.ui.WidgetCollection;
  * @since 8.0.0
  */
 public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
+
+    /**
+     * Handles fragment changes by closing the active popups.<p>
+     *
+     * Only used for GWT dialogs opened from Vaadin.
+     */
+    public static class HistoryHandler implements ValueChangeHandler<String> {
+
+        /** The list of active popups. */
+        private List<CmsPopup> m_popups = Lists.newArrayList();
+
+        /**
+         * Adds a popup to the list of active popups.<p>
+         *
+         * @param popup the popup
+         */
+        public void addPopup(CmsPopup popup) {
+
+            m_popups.add(popup);
+        }
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<String> event) {
+
+            if (GWT.getModuleName().equals("org.opencms.ui.WidgetSet")) {
+                // only do this when popup is opened from Vaadin
+                // (copying the list to avoid ConcurrentModificationExceptions)
+                for (CmsPopup popup : Lists.newArrayList(m_popups)) {
+                    try {
+                        if (popup.isAttached()) {
+                            popup.hide();
+                        }
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+            m_popups.clear();
+        }
+
+        /**
+         * Removes a popup from the list of active popups.<p>
+         *
+         * @param popup the popup to remove
+         */
+        public void removePopup(CmsPopup popup) {
+
+            m_popups.remove(popup);
+        }
+
+    }
 
     /**
      * The dialog button panel.<p>
@@ -226,6 +285,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /** The wide dialog width. */
     public static final int WIDE_WIDTH = 800;
 
+    /** The history handler used to remove popups when the fragment is changed. */
+    private static HistoryHandler m_historyHandler;
+
     /** The close command. */
     protected Command m_closeCommand;
 
@@ -343,6 +405,12 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         setWidth(width);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+
+        if (m_historyHandler == null) {
+            m_historyHandler = new HistoryHandler();
+            History.addValueChangeHandler(m_historyHandler);
+        }
+        m_historyHandler.addPopup(this);
     }
 
     /**
@@ -653,6 +721,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             m_resizeHandlerRegistration = null;
         }
         super.hide();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#hide(boolean)
+     */
+    @Override
+    public void hide(boolean autoClosed) {
+
+        super.hide(autoClosed);
+        m_historyHandler.removePopup(this);
     }
 
     /**

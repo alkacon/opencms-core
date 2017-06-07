@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -193,7 +193,7 @@ public class CmsNewDialog extends CmsBasicDialog {
             }
         });
 
-        m_defaultLocationCheckbox.setValue(DEFAULT_LOCATION_DEFAULT);
+        m_defaultLocationCheckbox.setValue(getInitialValueForUseDefaultLocationOption(folderResource));
         m_defaultLocationCheckbox.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
@@ -427,6 +427,19 @@ public class CmsNewDialog extends CmsBasicDialog {
             throw new RuntimeException(e);
         }
 
+    }
+
+    /**
+     * Gets the initial value for the 'default location' option.<p>
+     *
+     * @param folderResource the current folder
+     *
+     * @return the initial value for the option
+     */
+    private Boolean getInitialValueForUseDefaultLocationOption(CmsResource folderResource) {
+
+        String rootPath = folderResource.getRootPath();
+        return Boolean.valueOf(OpenCms.getSiteManager().getSiteForRootPath(rootPath) != null);
     }
 
     /**

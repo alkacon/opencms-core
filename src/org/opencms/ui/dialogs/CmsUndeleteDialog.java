@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,6 +44,7 @@ import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 
@@ -124,16 +125,20 @@ public class CmsUndeleteDialog extends CmsBasicDialog {
     /**
      * Undeletes the selected files
      *
+     * @return the ids of the modified resources
+     *
      * @throws CmsException if something goes wrong
      */
-    protected void undelete() throws CmsException {
+    protected List<CmsUUID> undelete() throws CmsException {
 
+        List<CmsUUID> modifiedResources = new ArrayList<CmsUUID>();
         CmsObject cms = m_context.getCms();
         for (CmsResource resource : m_context.getResources()) {
             CmsLockActionRecord actionRecord = null;
             try {
                 actionRecord = CmsLockUtil.ensureLock(m_context.getCms(), resource);
                 cms.undeleteResource(cms.getSitePath(resource), true);
+                modifiedResources.add(resource.getStructureId());
             } finally {
                 if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
 
@@ -145,7 +150,7 @@ public class CmsUndeleteDialog extends CmsBasicDialog {
                 }
             }
         }
-
+        return modifiedResources;
     }
 
     /**
@@ -162,8 +167,8 @@ public class CmsUndeleteDialog extends CmsBasicDialog {
     void submit() {
 
         try {
-            undelete();
-            m_context.finish(null);
+            List<CmsUUID> modifiedResources = undelete();
+            m_context.finish(modifiedResources);
         } catch (Exception e) {
             m_context.error(e);
         }

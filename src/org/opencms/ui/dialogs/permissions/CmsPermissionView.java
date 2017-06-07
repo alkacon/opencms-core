@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -158,6 +158,9 @@ public class CmsPermissionView extends CssLayout {
 
     /** The delete button. */
     private Button m_deleteButton;
+
+    /** The container for the details button.  */
+    private CssLayout m_detailButtonContainer;
 
     /** The details button. */
     private Button m_details;
@@ -394,7 +397,7 @@ public class CmsPermissionView extends CssLayout {
         }
 
         if (isOverwriteAll) {
-            m_details.setVisible(false);
+            setDetailButtonVisible(false);
             if (m_editable) {
                 addComponent(m_deleteButton, 2);
                 m_deleteButton.addStyleName("o-permissions_delete");
@@ -423,7 +426,7 @@ public class CmsPermissionView extends CssLayout {
             m_permissions.setSortEnabled(false);
             if (m_editable) {
                 toggleDetails();
-                m_details.setVisible(false);
+                setDetailButtonVisible(false);
                 m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_ALLOWED, PROPERTY_DENIED);
                 m_permissions.setTableFieldFactory(FIELD_FACTORY);
                 m_permissions.setEditable(m_editable);
@@ -666,5 +669,21 @@ public class CmsPermissionView extends CssLayout {
         }
 
         return new Label(content, ContentMode.HTML);
+    }
+
+    /**
+     * Shows / hides the details button.<p>
+     *
+     * @param visible true if the details button should be shown
+     */
+    private void setDetailButtonVisible(boolean visible) {
+
+        m_detailButtonContainer.setVisible(visible);
+        if (visible) {
+            removeStyleName("o-permission-no-details");
+        } else {
+            addStyleName("o-permission-no-details");
+        }
+
     }
 }

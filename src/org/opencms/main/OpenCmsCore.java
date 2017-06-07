@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -66,6 +66,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
@@ -1041,7 +1042,7 @@ public final class OpenCmsCore {
         String siteroot = null;
 
         // a dedicated workplace site is configured
-        if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
+        if (getSiteManager().isWorkplaceRequest(req)) {
             // if no dedicated workplace site is configured,
             // or for the dedicated workplace site, use the site root from the session attribute
             siteroot = sessionInfo.getSiteRoot();
@@ -2239,6 +2240,7 @@ public final class OpenCmsCore {
             if ((status != 404)
                 && !isGuest
                 && (cms != null)
+                && (!CmsJsonPartFilter.isJsonRequest(req))
                 && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);

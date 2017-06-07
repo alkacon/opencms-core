@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -104,6 +104,9 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
 
     /** Pointer to the previous cache entry in the LRU cache. */
     private I_CmsLruCacheObject m_previous;
+
+    /** Flag which indicates whether a cached redirect is permanent. */
+    private boolean m_redirectPermanent;
 
     /** A redirection target (if redirection is set). */
     private String m_redirectTarget;
@@ -346,8 +349,9 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
 
         if (m_redirectTarget != null) {
             res.setOnlyBuffering(false);
+            res.setCmsCachingRequired(false);
             // redirect the response, no further output required
-            res.sendRedirect(m_redirectTarget);
+            res.sendRedirect(m_redirectTarget, m_redirectPermanent);
         } else {
             // process cached headers first
             CmsFlexResponse.processHeaders(m_headers, res);
@@ -499,13 +503,15 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
      * in the browser anyway, so there is no point in saving the data.<p>
      *
      * @param target The redirect target (must be a valid URL).
+     * @param permanent true if this is a permanent redirect
      */
-    public void setRedirect(String target) {
+    public void setRedirect(String target, boolean permanent) {
 
         if (m_completed || (target == null)) {
             return;
         }
         m_redirectTarget = target;
+        m_redirectPermanent = permanent;
         m_byteSize = 512 + CmsMemoryMonitor.getMemorySize(target);
         // If we have a redirect we don't need any other output or headers
         m_elements = null;

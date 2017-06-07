@@ -4,9 +4,15 @@
 	</head>
 	<body>
 		<v-css-layout width="100%" style-name="o-permissions">
-			<v-button _id="m_details" style-name="borderless"></v-button>
-			<v-label _id="m_label" style-name="o-permissions-heading" />
-			<v-label _id="m_inheritedFrom" style-name="o-permissions-info"/>
+			<v-css-layout style-name="o-permission-text">
+				<v-css-layout _id="m_detailButtonContainer" style-name="o-permission-details">
+					<v-button _id="m_details" style-name="borderless"></v-button>
+				</v-css-layout>
+				<v-css-layout style-name="o-permission-text-content">
+					<v-label _id="m_label" style-name="o-permissions-heading" />
+					<v-label _id="m_inheritedFrom" style-name="o-permissions-info"/>
+				</v-css-layout>
+			</v-css-layout>
 			<v-table _id="m_permissions" width="100%" visible="false" style-name="borderless no-vertical-lines no-horizontal-lines"/>
 			<v-vertical-layout _id="m_buttonBar" width="100%" visible="false" spacing margin>
 				<v-horizontal-layout spacing>

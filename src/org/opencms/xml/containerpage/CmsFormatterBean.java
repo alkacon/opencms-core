@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,8 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -37,6 +39,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -481,12 +484,17 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getNiceName()
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getNiceName(Locale)
      */
     @Override
-    public String getNiceName() {
+    public String getNiceName(Locale locale) {
 
-        return m_niceName;
+        if (locale == null) {
+            return m_niceName;
+        }
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
+        return resolver.resolveMacros(m_niceName);
     }
 
     /**

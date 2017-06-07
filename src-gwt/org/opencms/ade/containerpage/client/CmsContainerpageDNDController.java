@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -341,6 +341,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                                                     ? (CmsContainerPageElementPanel)draggable
                                                     : null,
                                                     modelReplaceId);
+                                                container.removePlaceholder();
                                             }
                                         });
                                 }
@@ -354,19 +355,28 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                                     ? (CmsContainerPageElementPanel)draggable
                                     : null,
                                     modelReplaceId);
+                                container.removePlaceholder();
                             }
                         }
                     };
 
                     CmsUUID structureId = new CmsUUID(CmsContainerpageController.getServerId(m_draggableId));
+                    CmsContainerElementData cachedElementData = m_controller.getCachedElement(m_draggableId);
+                    CmsDebugLog.consoleLog("Cached element data available " + (cachedElementData != null));
+                    if (cachedElementData != null) {
+                        CmsDebugLog.consoleLog("Is copy in models: " + cachedElementData.isCopyInModels());
+                    }
+                    CmsDebugLog.consoleLog(copyGroupId);
                     ElementReuseMode reuseMode = isCopyModel(draggable)
                     ? ElementReuseMode.copy
-                    : CmsContainerpageController.get().getData().getElementReuseMode();
+                    : (((cachedElementData != null) && !cachedElementData.isCopyInModels())
+                    ? ElementReuseMode.reuse
+                    : CmsContainerpageController.get().getData().getElementReuseMode());
                     if (handler.hasModifierCTRL()) {
                         reuseMode = ElementReuseMode.ask;
                     }
                     if (reuseMode != ElementReuseMode.reuse) {
-                        CmsContainerElementData cachedElementData = m_controller.getCachedElement(m_draggableId);
+
                         if ((cachedElementData != null)
                             && (!cachedElementData.hasWritePermission()
                                 || cachedElementData.isModelGroup()
@@ -643,6 +653,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 container,
                 m_isNew);
             if (m_isNew) {
+                CmsDebugLog.consoleLog("Setting new type: " + CmsContainerpageController.getServerId(m_draggableId));
                 containerElement.setNewType(CmsContainerpageController.getServerId(m_draggableId));
             } else {
                 m_controller.addToRecentList(elementData.getClientId(), null);

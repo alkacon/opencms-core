@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -346,7 +346,7 @@ public class CmsLoginUserAgreement extends CmsDialog {
             } catch (Exception e) {
                 // error when trying to determine if user agreement should be shown
                 LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_USERAGREEMENT_SHOW_1,
+                        Messages.LOG_USERAGREEMENT_SHOW_1,
                     getConfigurationContent().getFile().getRootPath()), e);
             }
 
@@ -476,8 +476,6 @@ public class CmsLoginUserAgreement extends CmsDialog {
     /**
      * Initializes the 'accepted' data from the current user.<p>
      * Returns the absolute path in the OpenCms VFS to the user agreement configuration file.<p>
-     *
-     * @return the absolute path in the OpenCms VFS to the user agreement configuration file
      */
     protected void initAcceptData() {
 

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,6 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -39,16 +38,27 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.apps.I_CmsHasShortcutActions;
+import org.opencms.ui.components.CmsConfirmationDialog;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
+import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.KeyChangeResult;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleType;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EntryChangeEvent;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_EntryChangeListener;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_ItemDeletionListener;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_OptionListener;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.ItemDeletionEvent;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TranslateTableFieldFactory;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -58,33 +68,34 @@ import org.apache.commons.logging.Log;
 import org.tepi.filtertable.FilterTable;
 
 import com.vaadin.annotations.Theme;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.Action;
+import com.vaadin.event.ContextClickEvent;
+import com.vaadin.event.ContextClickEvent.ContextClickListener;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.AbstractTextField;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Component.Focusable;
 import com.vaadin.ui.CustomTable;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Controller for the VAADIN UI of the Message Bundle Editor.
  */
 @Theme("opencms")
-public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener {
+public class CmsMessageBundleEditor
+implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_EntryChangeListener, I_ItemDeletionListener,
+I_OptionListener, I_CmsHasShortcutActions {
 
     /** Used to implement {@link java.io.Serializable}. */
     private static final long serialVersionUID = 5366955716462191580L;
@@ -92,8 +103,29 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditor.class);
 
+    /** Save shortcut. */
+    private static final Action ACTION_SAVE = new ShortcutAction(
+        "Ctrl+S",
+        ShortcutAction.KeyCode.S,
+        new int[] {ShortcutAction.ModifierKey.CTRL});
+
+    /** Save & Exit shortcut. */
+    private static final Action ACTION_SAVE_AND_EXIT = new ShortcutAction(
+        "Ctrl+Shift+S",
+        ShortcutAction.KeyCode.S,
+        new int[] {ShortcutAction.ModifierKey.CTRL, ShortcutAction.ModifierKey.SHIFT});
+
+    /** Exit shortcut. */
+    private static final Action ACTION_EXIT = new ShortcutAction(
+        "Ctrl+X",
+        ShortcutAction.KeyCode.X,
+        new int[] {ShortcutAction.ModifierKey.CTRL, ShortcutAction.ModifierKey.SHIFT});
+
+    /** The bundle editor shortcuts. */
+    Map<Action, Runnable> m_shortcutActions;
+
     /** Messages used by the GUI. */
-    static CmsMessages m_messages;
+    CmsMessages m_messages;
 
     /** Configurable Messages. */
     ConfigurableMessages m_configurableMessages;
@@ -104,35 +136,68 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** The cell style generators for the different modes. */
     private final Map<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator> m_styleGenerators = new HashMap<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator>(
         2);
+
+    /** Flag, indicating if leaving the editor is confirmed. */
+    boolean m_leaving;
+
+    /** The context of the UI. */
+    I_CmsAppUIContext m_context;
+
     /** The model behind the UI. */
     CmsMessageBundleEditorModel m_model;
+
     /** CmsObject for read / write actions. */
     CmsObject m_cms;
+
     /** The resource that was opened with the editor. */
     CmsResource m_resource;
+
     /** The table component that is shown. */
     FilterTable m_table;
+
+    /** The save button. */
+    Button m_saveBtn;
+    /** The save and exit button. */
+    Button m_saveExitBtn;
 
     /** The options column, optionally shown in the table. */
     CmsMessageBundleEditorTypes.OptionColumnGenerator m_optionsColumn;
 
-    /** Panel that where the tables short cut handler is attached. */
-    private Panel m_navigator;
-
     /** The place where to go when the editor is closed. */
     private String m_backLink;
 
-    /** Add key button - created in the beginning, but only shown in special settings. */
-    private Component m_addKeyButton;
+    /** The options view of the editor. */
+    private CmsMessageBundleEditorOptions m_options;
 
-    /** The app's info component. */
-    private HorizontalLayout m_appInfo;
+    /**
+     * Default constructor.
+     */
+    public CmsMessageBundleEditor() {
+        m_shortcutActions = new HashMap<Action, Runnable>();
+        m_shortcutActions.put(ACTION_SAVE, new Runnable() {
 
-    /** The right half of the app info component. */
-    private HorizontalLayout m_rightAppInfo;
+            public void run() {
 
-    /** The text field displaying the name of the currently edited file. */
-    private TextField m_fileName;
+                saveAction();
+            }
+        });
+        m_shortcutActions.put(ACTION_SAVE_AND_EXIT, new Runnable() {
+
+            public void run() {
+
+                saveAction();
+                closeAction();
+            }
+        });
+        m_shortcutActions.put(ACTION_EXIT, new Runnable() {
+
+            public void run() {
+
+                closeAction();
+            }
+        });
+
+    }
 
     /**
      * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
@@ -146,7 +211,22 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /**
      * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
      */
-    public boolean beforeViewChange(ViewChangeEvent event) {
+    public boolean beforeViewChange(final ViewChangeEvent event) {
+
+        if (!m_leaving && m_model.hasChanges()) {
+            CmsConfirmationDialog.show(
+                CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EDITOR_CLOSE_CAPTION_0),
+                CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EDITOR_CLOSE_TEXT_0),
+                new Runnable() {
+
+                    public void run() {
+
+                        m_leaving = true;
+                        event.getNavigator().navigateTo(event.getViewName());
+                    }
+                });
+            return false;
+        }
 
         cleanUpAction();
         return true;
@@ -161,6 +241,128 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsHasShortcutActions#getShortcutActions()
+     */
+    public Map<Action, Runnable> getShortcutActions() {
+
+        return m_shortcutActions;
+    }
+
+    /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_OptionListener#handleAddKey(java.lang.String)
+     */
+    public boolean handleAddKey(final String newKey) {
+
+        Map<Object, Object> filters = getFilters();
+        m_table.clearFilters();
+        boolean canAdd = !keyAlreadyExists(newKey);
+        if (canAdd) {
+            Object copyEntryId = m_table.addItem();
+            Item copyEntry = m_table.getItem(copyEntryId);
+            copyEntry.getItemProperty(TableProperty.KEY).setValue(newKey);
+        }
+        setFilters(filters);
+        return canAdd;
+    }
+
+    /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_EntryChangeListener#handleEntryChange(org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EntryChangeEvent)
+     */
+    public void handleEntryChange(EntryChangeEvent event) {
+
+        try {
+            m_model.lockOnChange(event.getPropertyId());
+
+            if (event.getPropertyId().equals(TableProperty.KEY)) {
+                KeyChangeResult result = m_model.handleKeyChange(event, true);
+                String captionKey = null;
+                String descriptionKey = null;
+                switch (result) {
+                    case SUCCESS:
+                        handleChange(event.getPropertyId());
+                        return;
+                    case FAILED_DUPLICATED_KEY:
+                        captionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_CAPTION_0;
+                        descriptionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_ALREADY_EXISTS_DESCRIPTION_0;
+                        break;
+                    case FAILED_FOR_OTHER_LANGUAGE:
+                        captionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_CAPTION_0;
+                        descriptionKey = Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_KEY_RENAMING_FAILED_DESCRIPTION_0;
+                        break;
+                    default:
+                        throw new IllegalArgumentException();
+                }
+                CmsMessageBundleEditorTypes.showWarning(m_messages.key(captionKey), m_messages.key(descriptionKey));
+                event.getSource().focus();
+            }
+            handleChange(event.getPropertyId());
+
+        } catch (CmsException e) {
+            // TODO: Localize
+            LOG.debug(e);
+            CmsMessageBundleEditorTypes.showWarning(
+                m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EDITING_NOT_POSSIBLE_0),
+                m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_EDITING_NOT_POSSIBLE_DESCRIPTION_0));
+            event.getSource().setValue(event.getOldValue());
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_ItemDeletionListener#handleItemDeletion(org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.ItemDeletionEvent)
+     */
+    public boolean handleItemDeletion(ItemDeletionEvent e) {
+
+        Item it = m_table.getItem(e.getItemId());
+        Property<?> keyProp = it.getItemProperty(TableProperty.KEY);
+        String key = (String)keyProp.getValue();
+        if (m_model.handleKeyDeletion(key)) {
+            return true;
+        }
+        CmsMessageBundleEditorTypes.showWarning(
+            m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_CAPTION_0),
+            m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_REMOVE_ENTRY_FAILED_DESCRIPTION_0));
+        return false;
+
+    }
+
+    /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_OptionListener#handleLanguageChange(java.util.Locale)
+     */
+    public void handleLanguageChange(final Locale locale) {
+
+        if (!locale.equals(m_model.getLocale())) {
+            Object sortProperty = m_table.getSortContainerPropertyId();
+            boolean isAcending = m_table.isSortAscending();
+            Map<Object, Object> filters = getFilters();
+            m_table.clearFilters();
+            if (m_model.setLocale(locale)) {
+                m_options.setEditedFilePath(m_model.getEditedFilePath());
+                m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
+            } else {
+                String caption = m_messages.key(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_LOCALE_SWITCHING_FAILED_CAPTION_0);
+                String description = m_messages.key(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_LOCALE_SWITCHING_FAILED_DESCRIPTION_0);
+                Notification warning = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+                warning.setDelayMsec(-1);
+                warning.show(UI.getCurrent().getPage());
+                m_options.setLanguage(m_model.getLocale());
+            }
+            setFilters(filters);
+            m_table.select(m_table.getCurrentPageFirstItemId());
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_OptionListener#handleModeChange(org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode)
+     */
+    public void handleModeChange(final EditMode mode) {
+
+        setEditMode(mode);
+
+    }
+
+    /**
      * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String)
      */
     public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink) {
@@ -169,39 +371,30 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         m_resource = resource;
         m_backLink = backLink;
+        m_context = context;
 
         try {
             m_model = new CmsMessageBundleEditorModel(m_cms, m_resource);
+            m_options = new CmsMessageBundleEditorOptions(
+                m_model.getLocales(),
+                m_model.getLocale(),
+                m_model.getEditMode(),
+                this);
+            m_options.setEditedFilePath(m_model.getEditedFilePath());
             m_configurableMessages = m_model.getConfigurableMessages(m_messages, UI.getCurrent().getLocale());
 
             fillToolBar(context);
-            fillAppInfo(context);
+            context.showInfoArea(false);
 
             Component main = createMainComponent();
 
-            if (m_model.hasMasterMode()) {
-                m_fieldFactories.put(
-                    CmsMessageBundleEditorTypes.EditMode.MASTER,
-                    new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                        m_table,
-                        m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
-                m_styleGenerators.put(
-                    CmsMessageBundleEditorTypes.EditMode.MASTER,
-                    new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                        m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
-            }
-            m_fieldFactories.put(
-                CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                    m_table,
-                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
-            m_styleGenerators.put(
-                CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+            initFieldFactories();
+            initStyleGenerators();
 
             m_table.setTableFieldFactory(m_fieldFactories.get(m_model.getEditMode()));
             m_table.setCellStyleGenerator(m_styleGenerators.get(m_model.getEditMode()));
+
+            m_optionsColumn.registerItemDeletionListener(this);
 
             adjustVisibleColumns();
 
@@ -210,13 +403,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             adjustFocus();
 
             if (m_model.getSwitchedLocaleOnOpening()) {
-                String caption = m_messages.key(
-                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0);
-                String description = m_messages.key(
-                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_DESCRIPTION_0);
-                Notification warningSwitchedLocale = new Notification(caption, description, Type.WARNING_MESSAGE, true);
-                warningSwitchedLocale.setDelayMsec(-1);
-                warningSwitchedLocale.show(UI.getCurrent().getPage());
+                CmsMessageBundleEditorTypes.showWarning(
+                    m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0),
+                    m_messages.key(Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_DESCRIPTION_0));
             }
 
         } catch (IOException | CmsException e) {
@@ -269,29 +458,52 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
+     * Returns the currently set filters in a map column -> filter.
+     *
+     * @return the currently set filters in a map column -> filter.
+     */
+    Map<Object, Object> getFilters() {
+
+        Map<Object, Object> result = new HashMap<Object, Object>(4);
+        result.put(TableProperty.KEY, m_table.getFilterFieldValue(TableProperty.KEY));
+        result.put(TableProperty.DEFAULT, m_table.getFilterFieldValue(TableProperty.DEFAULT));
+        result.put(TableProperty.DESCRIPTION, m_table.getFilterFieldValue(TableProperty.DESCRIPTION));
+        result.put(TableProperty.TRANSLATION, m_table.getFilterFieldValue(TableProperty.TRANSLATION));
+        return result;
+    }
+
+    /**
+     * Publish the changes.
+     */
+    void publishAction() {
+
+        //save first
+        saveAction();
+
+        //publish
+        m_model.publish();
+
+    }
+
+    /**
      * Save the changes.
      */
     void saveAction() {
 
+        Map<Object, Object> filters = getFilters();
+        m_table.clearFilters();
+
         try {
 
-            Map<TableProperty, Object> filters = new HashMap<TableProperty, Object>(4);
-            filters.put(TableProperty.DEFAULT, m_table.getFilterFieldValue(TableProperty.DEFAULT));
-            filters.put(TableProperty.DESCRIPTION, m_table.getFilterFieldValue(TableProperty.DESCRIPTION));
-            filters.put(TableProperty.KEY, m_table.getFilterFieldValue(TableProperty.KEY));
-            filters.put(TableProperty.TRANSLATION, m_table.getFilterFieldValue(TableProperty.TRANSLATION));
-
-            m_table.clearFilters();
-
             m_model.save();
-
-            for (TableProperty propertyId : filters.keySet()) {
-                m_table.setFilterFieldValue(propertyId, filters.get(propertyId));
-            }
+            disableSaveButtons();
 
         } catch (CmsException e) {
             LOG.error(m_messages.key(Messages.ERR_SAVING_CHANGES_0), e);
+            CmsErrorDialog.showErrorDialog(m_messages.key(Messages.ERR_SAVING_CHANGES_0), e);
         }
+
+        setFilters(filters);
 
     }
 
@@ -305,24 +517,20 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         CmsMessageBundleEditorTypes.EditMode oldMode = m_model.getEditMode();
         boolean success = false;
         if (!newMode.equals(oldMode)) {
+            Map<Object, Object> filters = getFilters();
             m_table.clearFilters();
             if (m_model.setEditMode(newMode)) {
                 m_table.setTableFieldFactory(m_fieldFactories.get(newMode));
                 m_table.setCellStyleGenerator(m_styleGenerators.get(newMode));
                 adjustOptionsColumn(oldMode, newMode);
-                if (newMode.equals(CmsMessageBundleEditorTypes.EditMode.MASTER)) {
-                    addAddKeyButton();
-                    if (m_table.getItemIds().isEmpty()) {
-                        m_table.addItem();
-                    }
-                } else {
-                    removeAddKeyButton();
-                }
+                m_options.updateShownOptions(m_model.hasMasterMode(), m_model.canAddKeys());
+                m_options.setEditMode(newMode);
                 success = true;
             } else {
                 Notification.show(m_messages.key(Messages.ERR_MODE_CHANGE_NOT_POSSIBLE_0), Type.ERROR_MESSAGE);
 
             }
+            setFilters(filters);
             adjustFocus();
         }
         return success;
@@ -330,32 +538,27 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
-     * Add the "Add key" button to the app info section.
+     * Sets the provided filters.
+     * @param filters a map "column id -> filter".
      */
-    private void addAddKeyButton() {
+    void setFilters(Map<Object, Object> filters) {
 
-        if (null == m_addKeyButton) {
-            m_addKeyButton = createAddKeyButton();
+        for (Object column : filters.keySet()) {
+            Object filterValue = filters.get(column);
+            if ((filterValue != null) && !filterValue.toString().isEmpty() && !m_table.isColumnCollapsed(column)) {
+                m_table.setFilterFieldValue(column, filterValue);
+            }
         }
-        m_rightAppInfo.addComponent(m_addKeyButton);
-        m_rightAppInfo.setComponentAlignment(m_addKeyButton, Alignment.MIDDLE_RIGHT);
-
     }
 
     /**
      * Sets the focus to the first editable field of the table.
+     * If entries can be added, it is set to the first field of the "Add entries" row.
      */
     private void adjustFocus() {
 
-        Map<Integer, AbstractTextField> firstEditableCol = m_fieldFactories.get(
-            m_model.getEditMode()).getValueFields().get(Integer.valueOf(1));
-        if (null != firstEditableCol) {
-            AbstractTextField firstTextField = firstEditableCol.get(Integer.valueOf(1));
-            if (null != firstTextField) {
-                firstTextField.focus();
-            }
-        }
-
+        // Put the focus on the "Filter key" field first
+        ((Focusable)m_table.getFilterField(TableProperty.KEY)).focus();
     }
 
     /**
@@ -370,6 +573,10 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (m_model.isShowOptionsColumn(oldMode) != m_model.isShowOptionsColumn(newMode)) {
             m_table.removeGeneratedColumn(TableProperty.OPTIONS);
             if (m_model.isShowOptionsColumn(newMode)) {
+                // Don't know why exactly setting the filter field invisible is necessary here,
+                // it should be already set invisible - but apparently not setting it invisible again
+                // will result in the field being visible.
+                m_table.setFilterFieldVisible(TableProperty.OPTIONS, false);
                 m_table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
             }
         }
@@ -433,69 +640,34 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
+                Map<Object, Object> filters = getFilters();
+                m_table.clearFilters();
                 if (!m_model.addDescriptor()) {
                     CmsVaadinUtils.showAlert(
                         m_messages.key(Messages.ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_0),
                         m_messages.key(Messages.ERR_BUNDLE_DESCRIPTOR_CREATION_FAILED_DESCRIPTION_0),
                         null);
                 } else {
+                    IndexedContainer newContainer = null;
                     try {
-                        m_table.setContainerDataSource(m_model.getContainerForCurrentLocale());
+                        newContainer = m_model.getContainerForCurrentLocale();
+                        m_table.setContainerDataSource(newContainer);
+                        initFieldFactories();
+                        initStyleGenerators();
+                        setEditMode(EditMode.MASTER);
+                        m_table.setColumnCollapsingAllowed(true);
+                        adjustVisibleColumns();
+                        m_options.updateShownOptions(m_model.hasMasterMode(), m_model.canAddKeys());
+                        m_options.setEditMode(m_model.getEditMode());
                     } catch (IOException | CmsException e) {
                         // Can never appear here, since container is created by addDescriptor already.
                         LOG.error(e.getLocalizedMessage(), e);
                     }
-                    m_fieldFactories.put(
-                        CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                        new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                            m_table,
-                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
-                    m_styleGenerators.put(
-                        CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-                        new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
-                    m_fieldFactories.put(
-                        CmsMessageBundleEditorTypes.EditMode.MASTER,
-                        new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
-                            m_table,
-                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
-                    m_styleGenerators.put(
-                        CmsMessageBundleEditorTypes.EditMode.MASTER,
-                        new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
-                            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
-                    setEditMode(EditMode.MASTER);
-                    m_table.setColumnCollapsingAllowed(true);
-                    adjustVisibleColumns();
-                    // fillAppInfo(m_context);
-                    // m_context.removeToolbarButton(event.getComponent());
                 }
+                setFilters(filters);
             }
         });
         return addDescriptorButton;
-    }
-
-    /**
-     * Returns a button component. On click, it triggers adding a new line to the table.
-     * @return a button for adding new lines to the table.
-     */
-    @SuppressWarnings("serial")
-    private Component createAddKeyButton() {
-
-        Button add = new Button();
-        add.setDescription(m_messages.key(Messages.GUI_ADD_ROW_0));
-        add.setIcon(FontOpenCms.CIRCLE_PLUS, m_messages.key(Messages.GUI_ADD_ROW_0));
-        add.addStyleName("icon-only");
-        add.addStyleName("borderless-colored");
-        add.addStyleName("friendly");
-        add.addClickListener(new ClickListener() {
-
-            public void buttonClick(ClickEvent event) {
-
-                m_table.addItem();
-
-            }
-        });
-        return add;
     }
 
     /**
@@ -520,127 +692,33 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
-     * Create the display for the file path.
-     * @return the display for the file path.
+     * Creates the button for converting an XML bundle in a property bundle.
+     * @return the created button.
      */
-    private Component createFilePathDisplay() {
+    private Component createConvertToPropertyBundleButton() {
 
-        FormLayout fileNameDisplay = new FormLayout();
-        fileNameDisplay.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        fileNameDisplay.setSizeFull();
-        m_fileName = new TextField();
-        m_fileName.setWidth("100%");
-        m_fileName.setValue(m_model.getEditedFilePath());
-        m_fileName.setEnabled(true);
-        m_fileName.setReadOnly(true);
-        m_fileName.setCaption(m_messages.key(Messages.GUI_FILENAME_LABEL_0));
-        fileNameDisplay.addComponent(m_fileName);
-        fileNameDisplay.setSpacing(true);
-        return fileNameDisplay;
-    }
+        Button addDescriptorButton = CmsToolBar.createButton(
+            FontOpenCms.SETTINGS,
+            m_messages.key(Messages.GUI_CONVERT_TO_PROPERTY_BUNDLE_0));
 
-    /**
-     * Creates the switcher component for the key sets.
-     *
-     * @return the switcher component.
-     */
-    @SuppressWarnings("serial")
-    private Component createKeysetSwitcher() {
+        addDescriptorButton.setDisableOnClick(true);
 
-        FormLayout allkeys = new FormLayout();
-        allkeys.setHeight("100%");
-        allkeys.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        allkeys.setSpacing(true);
-        ComboBox allkeysSelect = new ComboBox();
-        allkeysSelect.setCaption(m_messages.key(Messages.GUI_KEYSET_SWITCHER_LABEL_0));
-        allkeysSelect.setNullSelectionAllowed(false);
+        addDescriptorButton.addClickListener(new ClickListener() {
 
-        allkeysSelect.addItem(CmsMessageBundleEditorTypes.KeySetMode.ALL);
-        allkeysSelect.setItemCaption(
-            CmsMessageBundleEditorTypes.KeySetMode.ALL,
-            m_messages.key(Messages.GUI_KEYSET_SWITCHER_MODE_ALL_0));
-        allkeysSelect.addItem(CmsMessageBundleEditorTypes.KeySetMode.USED_ONLY);
-        allkeysSelect.setItemCaption(
-            CmsMessageBundleEditorTypes.KeySetMode.USED_ONLY,
-            m_messages.key(Messages.GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0));
-        allkeysSelect.setValue(m_model.getKeySetMode());
-        allkeysSelect.setNewItemsAllowed(false);
-        allkeysSelect.setTextInputAllowed(false);
+            private static final long serialVersionUID = 1L;
 
-        allkeysSelect.addValueChangeListener(new ValueChangeListener() {
+            public void buttonClick(ClickEvent event) {
 
-            public void valueChange(ValueChangeEvent event) {
-
-                Object sortProperty = m_table.getSortContainerPropertyId();
-                boolean isAcending = m_table.isSortAscending();
-                m_table.clearFilters();
-                m_model.setKeySetMode((CmsMessageBundleEditorTypes.KeySetMode)event.getProperty().getValue());
-                m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
-                m_table.select(m_table.getCurrentPageFirstItemId());
-            }
-
-        });
-        allkeys.addComponent(allkeysSelect);
-        return allkeys;
-    }
-
-    /**
-     * Creates the language switcher UI Component.
-     * @return the language switcher.
-     */
-    @SuppressWarnings("serial")
-    private Component createLanguageSwitcher() {
-
-        FormLayout languages = new FormLayout();
-        languages.setHeight("100%");
-        languages.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        ComboBox languageSelect = new ComboBox();
-        languageSelect.setCaption(m_messages.key(Messages.GUI_LANGUAGE_SWITCHER_LABEL_0));
-        languageSelect.setNullSelectionAllowed(false);
-
-        // set Locales
-        for (Locale locale : m_model.getLocales()) {
-            languageSelect.addItem(locale);
-            String caption = locale.getDisplayName(UI.getCurrent().getLocale());
-            if (CmsLocaleManager.getDefaultLocale().equals(locale)) {
-                caption += " ("
-                    + Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_DEFAULT_LOCALE_0)
-                    + ")";
-            }
-            languageSelect.setItemCaption(locale, caption);
-        }
-        languageSelect.setValue(m_model.getLocale());
-        languageSelect.setNewItemsAllowed(false);
-        languageSelect.setTextInputAllowed(false);
-
-        if (m_model.getLocales().size() > 1) {
-            languageSelect.addValueChangeListener(new ValueChangeListener() {
-
-                @SuppressWarnings("synthetic-access")
-                public void valueChange(ValueChangeEvent event) {
-
-                    try {
-                        Object sortProperty = m_table.getSortContainerPropertyId();
-                        boolean isAcending = m_table.isSortAscending();
-                        m_table.clearFilters();
-                        m_model.setLocale((Locale)event.getProperty().getValue());
-                        m_fileName.setReadOnly(false);
-                        m_fileName.setValue(m_model.getEditedFilePath());
-                        m_fileName.setReadOnly(true);
-                        m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
-                        m_table.select(m_table.getCurrentPageFirstItemId());
-                    } catch (IOException | CmsException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                try {
+                    m_model.saveAsPropertyBundle();
+                    Notification.show("Conversion successful.");
+                } catch (CmsException | IOException e) {
+                    CmsVaadinUtils.showAlert("Conversion failed", e.getLocalizedMessage(), null);
                 }
-            });
-
-        } else {
-            languageSelect.setEnabled(false);
-        }
-        languages.addComponent(languageSelect);
-        return languages;
+            }
+        });
+        addDescriptorButton.setDisableOnClick(true);
+        return addDescriptorButton;
     }
 
     /**
@@ -651,21 +729,46 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     private Component createMainComponent() throws IOException, CmsException {
 
+        VerticalLayout mainComponent = new VerticalLayout();
+        mainComponent.setSizeFull();
+        mainComponent.addStyleName("o-message-bundle-editor");
         m_table = createTable();
-        m_navigator = new Panel();
-        m_navigator.setSizeFull();
-        m_navigator.setContent(m_table);
-        m_navigator.addActionHandler(new CmsMessageBundleEditorTypes.TableKeyboardHandler(m_table));
-        m_navigator.addStyleName("o-message-bundle-editor");
+        Panel navigator = new Panel();
+        navigator.setSizeFull();
+        navigator.setContent(m_table);
+        navigator.addActionHandler(new CmsMessageBundleEditorTypes.TableKeyboardHandler(m_table));
+        navigator.addStyleName("v-panel-borderless");
 
-        return m_navigator;
+        mainComponent.addComponent(m_options.getOptionsComponent());
+        mainComponent.addComponent(navigator);
+        mainComponent.setExpandRatio(navigator, 1f);
+        m_options.updateShownOptions(m_model.hasMasterMode(), m_model.canAddKeys());
+        return mainComponent;
     }
 
     /** Creates the save button UI Component.
      * @return the save button.
      */
     @SuppressWarnings("serial")
-    private Component createSaveButton() {
+    private Component createPublishButton() {
+
+        Button publishBtn = CmsToolBar.createButton(FontOpenCms.PUBLISH, m_messages.key(Messages.GUI_BUTTON_PUBLISH_0));
+        publishBtn.addClickListener(new ClickListener() {
+
+            public void buttonClick(ClickEvent event) {
+
+                publishAction();
+            }
+
+        });
+        return publishBtn;
+    }
+
+    /** Creates the save button UI Component.
+     * @return the save button.
+     */
+    @SuppressWarnings("serial")
+    private Button createSaveButton() {
 
         Button saveBtn = CmsToolBar.createButton(FontOpenCms.SAVE, m_messages.key(Messages.GUI_BUTTON_SAVE_0));
         saveBtn.addClickListener(new ClickListener() {
@@ -676,6 +779,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             }
 
         });
+        saveBtn.setEnabled(false);
         return saveBtn;
     }
 
@@ -683,7 +787,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      * @return the save and exit button.
      */
     @SuppressWarnings("serial")
-    private Component createSaveExitButton() {
+    private Button createSaveExitButton() {
 
         Button saveExitBtn = CmsToolBar.createButton(
             FontOpenCms.SAVE_EXIT,
@@ -697,6 +801,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
             }
         });
+        saveExitBtn.setEnabled(false);
         return saveExitBtn;
     }
 
@@ -711,9 +816,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         table.setSizeFull();
 
         table.setContainerDataSource(m_model.getContainerForCurrentLocale());
-        if (table.getItemIds().isEmpty() && !m_model.hasDescriptor()) {
-            table.addItem();
-        }
 
         table.setColumnHeader(TableProperty.KEY, m_configurableMessages.getColumnHeader(TableProperty.KEY));
         table.setColumnCollapsible(TableProperty.KEY, false);
@@ -735,7 +837,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         table.setFilterDecorator(new CmsMessageBundleEditorFilterDecorator());
 
         table.setFilterBarVisible(true);
-        table.setFilterFieldVisible(TableProperty.OPTIONS, false);
         table.setColumnCollapsible(TableProperty.OPTIONS, false);
 
         table.setSortEnabled(true);
@@ -752,9 +853,10 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_optionsColumn = generateOptionsColumn(table);
 
         if (m_model.isShowOptionsColumn(m_model.getEditMode())) {
+            table.setFilterFieldVisible(TableProperty.OPTIONS, false);
             table.addGeneratedColumn(TableProperty.OPTIONS, m_optionsColumn);
         }
-        table.setColumnWidth(TableProperty.OPTIONS, 72);
+        table.setColumnWidth(TableProperty.OPTIONS, CmsMessageBundleEditorTypes.OPTION_COLUMN_WIDTH);
         table.setColumnExpandRatio(TableProperty.KEY, 1f);
         table.setColumnExpandRatio(TableProperty.DESCRIPTION, 1f);
         table.setColumnExpandRatio(TableProperty.DEFAULT, 1f);
@@ -763,23 +865,19 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         table.setPageLength(30);
         table.setCacheRate(1);
         table.sort(new Object[] {TableProperty.KEY}, new boolean[] {true});
-        table.addItemClickListener(new ItemClickListener() {
+        table.addContextClickListener(new ContextClickListener() {
 
-            private static final long serialVersionUID = 5418404788437252894L;
+            private static final long serialVersionUID = 1L;
 
-            public void itemClick(ItemClickEvent event) {
+            public void contextClick(ContextClickEvent event) {
 
-                Object propertyId = event.getPropertyId();
-                Object itemId = event.getItemId();
-                int col = m_model.getEditableColumns().indexOf(propertyId);
-                if (col >= 0) {
-                    AbstractTextField newTF = ((TranslateTableFieldFactory)m_table.getTableFieldFactory()).getValueFields().get(
-                        Integer.valueOf(col + 1)).get(itemId);
-                    if (newTF != null) {
-                        newTF.focus();
-                    }
+                Object itemId = m_table.getValue();
+                CmsContextMenu contextMenu = m_model.getContextMenuForItem(itemId);
+                if (null != contextMenu) {
+                    contextMenu.setAsContextMenuOf(m_table);
+                    contextMenu.setOpenAutomatically(false);
+                    contextMenu.open(event.getClientX(), event.getClientY());
                 }
-
             }
         });
         table.setNullSelectionAllowed(false);
@@ -787,97 +885,16 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         return table;
     }
 
-    /** Creates the view switcher UI component.
-     * @return the view switcher.
-     */
-    @SuppressWarnings("serial")
-    private Component createViewSwitcher() {
-
-        FormLayout views = new FormLayout();
-        views.setHeight("100%");
-        views.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-
-        final ComboBox viewSelect = new ComboBox();
-        viewSelect.setCaption(m_messages.key(Messages.GUI_VIEW_SWITCHER_LABEL_0));
-
-        // add Modes
-        viewSelect.addItem(CmsMessageBundleEditorTypes.EditMode.DEFAULT);
-        viewSelect.setItemCaption(
-            CmsMessageBundleEditorTypes.EditMode.DEFAULT,
-            m_messages.key(Messages.GUI_VIEW_SWITCHER_EDITMODE_DEFAULT_0));
-        viewSelect.addItem(CmsMessageBundleEditorTypes.EditMode.MASTER);
-        viewSelect.setItemCaption(
-            CmsMessageBundleEditorTypes.EditMode.MASTER,
-            m_messages.key(Messages.GUI_VIEW_SWITCHER_EDITMODE_MASTER_0));
-
-        // set current mode as selected
-        viewSelect.setValue(m_model.getEditMode());
-
-        viewSelect.setNewItemsAllowed(false);
-        viewSelect.setTextInputAllowed(false);
-        viewSelect.setNullSelectionAllowed(false);
-
-        viewSelect.addValueChangeListener(new ValueChangeListener() {
-
-            public void valueChange(ValueChangeEvent event) {
-
-                Object sortProperty = m_table.getSortContainerPropertyId();
-                boolean isAcending = m_table.isSortAscending();
-                if (!setEditMode((CmsMessageBundleEditorTypes.EditMode)event.getProperty().getValue())) {
-                    viewSelect.setValue(m_model.getEditMode());
-                } else {
-                    m_table.sort(new Object[] {sortProperty}, new boolean[] {isAcending});
-                    m_table.select(m_table.getCurrentPageFirstItemId());
-                }
-            }
-        });
-        views.addComponent(viewSelect);
-        return views;
-    }
-
     /**
-     * Adds the compontents to the app info bar.
-     * @param context the app UI context.
+     * Disable the save buttons, e.g., after saving.
      */
-    private void fillAppInfo(I_CmsAppUIContext context) {
+    private void disableSaveButtons() {
 
-        m_appInfo = new HorizontalLayout();
-        m_appInfo.setSizeFull();
-        m_appInfo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        m_appInfo.setSpacing(true);
-
-        HorizontalLayout left = new HorizontalLayout();
-        left.setHeight("100%");
-        left.setSpacing(true);
-
-        m_rightAppInfo = new HorizontalLayout();
-        m_rightAppInfo.setSizeFull();
-        m_rightAppInfo.setSpacing(true);
-
-        m_appInfo.addComponent(left);
-        m_appInfo.addComponent(m_rightAppInfo);
-        m_appInfo.setExpandRatio(m_rightAppInfo, 1f);
-
-        Component languages = createLanguageSwitcher();
-        left.addComponent(languages);
-        if (!(m_model.hasDescriptor()
-            || m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR))) {
-            Component keysetSwitcher = createKeysetSwitcher();
-            left.addComponent(keysetSwitcher);
-        }
-        if (m_model.hasMasterMode()) {
-            Component viewSwitcher = createViewSwitcher();
-            left.addComponent(viewSwitcher);
+        if (m_saveBtn.isEnabled()) {
+            m_saveBtn.setEnabled(false);
+            m_saveExitBtn.setEnabled(false);
         }
 
-        Component fileNameDisplay = createFilePathDisplay();
-        m_rightAppInfo.addComponent(fileNameDisplay);
-        m_rightAppInfo.setExpandRatio(fileNameDisplay, 2f);
-
-        if (!m_model.hasDescriptor()) {
-            addAddKeyButton();
-        }
-        context.setAppInfo(m_appInfo);
     }
 
     /** Adds Editor specific UI components to the toolbar.
@@ -888,20 +905,26 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         context.setAppTitle(m_messages.key(Messages.GUI_APP_TITLE_0));
 
         // create components
-        Component saveBtn = createSaveButton();
-        Component saveExitBtn = createSaveExitButton();
+        Component publishBtn = createPublishButton();
+        m_saveBtn = createSaveButton();
+        m_saveExitBtn = createSaveExitButton();
         Component closeBtn = createCloseButton();
 
         context.enableDefaultToolbarButtons(false);
         context.addToolbarButtonRight(closeBtn);
-        context.addToolbarButton(saveExitBtn);
-        context.addToolbarButton(saveBtn);
+        context.addToolbarButton(publishBtn);
+        context.addToolbarButton(m_saveExitBtn);
+        context.addToolbarButton(m_saveBtn);
 
         Component addDescriptorBtn = createAddDescriptorButton();
         if (m_model.hasDescriptor() || m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
             addDescriptorBtn.setEnabled(false);
         }
         context.addToolbarButton(addDescriptorBtn);
+        if (m_model.getBundleType().equals(BundleType.XML)) {
+            Component convertToPropertyBundleBtn = createConvertToPropertyBundleButton();
+            context.addToolbarButton(convertToPropertyBundleBtn);
+        }
     }
 
     /** Generates the options column for the table.
@@ -914,10 +937,71 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
-     * Removes the "Add key" button from the app info section.
+     * Handle a value change.
+     * @param propertyId the column in which the value has changed.
      */
-    private void removeAddKeyButton() {
+    private void handleChange(Object propertyId) {
 
-        m_rightAppInfo.removeComponent(m_addKeyButton);
+        if (!m_saveBtn.isEnabled()) {
+            m_saveBtn.setEnabled(true);
+            m_saveExitBtn.setEnabled(true);
+        }
+        m_model.handleChange(propertyId);
+
     }
+
+    /**
+     * Initialize the field factories for the messages table.
+     */
+    private void initFieldFactories() {
+
+        if (m_model.hasMasterMode()) {
+            TranslateTableFieldFactory masterFieldFactory = new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+                m_table,
+                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER));
+            masterFieldFactory.registerKeyChangeListener(this);
+            m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.MASTER, masterFieldFactory);
+        }
+        TranslateTableFieldFactory defaultFieldFactory = new CmsMessageBundleEditorTypes.TranslateTableFieldFactory(
+            m_table,
+            m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT));
+        defaultFieldFactory.registerKeyChangeListener(this);
+        m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, defaultFieldFactory);
+
+    }
+
+    /**
+     * Initialize the style generators for the messages table.
+     */
+    private void initStyleGenerators() {
+
+        if (m_model.hasMasterMode()) {
+            m_styleGenerators.put(
+                CmsMessageBundleEditorTypes.EditMode.MASTER,
+                new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                    m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.MASTER)));
+        }
+        m_styleGenerators.put(
+            CmsMessageBundleEditorTypes.EditMode.DEFAULT,
+            new CmsMessageBundleEditorTypes.TranslateTableCellStyleGenerator(
+                m_model.getEditableColumns(CmsMessageBundleEditorTypes.EditMode.DEFAULT)));
+
+    }
+
+    /**
+     * Checks if a key already exists.
+     * @param newKey the key to check for.
+     * @return <code>true</code> if the key already exists, <code>false</code> otherwise.
+     */
+    private boolean keyAlreadyExists(String newKey) {
+
+        Collection<?> itemIds = m_table.getItemIds();
+        for (Object itemId : itemIds) {
+            if (m_table.getItem(itemId).getItemProperty(TableProperty.KEY).getValue().equals(newKey)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

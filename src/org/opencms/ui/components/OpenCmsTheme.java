@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,10 +51,13 @@ public final class OpenCmsTheme {
     public static final String BUTTON_BLUE = "o-button-blue";
 
     /** CSS style name. */
-    public static final String BUTTON_ICON_SMALL = "o-button-icon-small";
+    public static final String BUTTON_ICON = "o-button-icon";
 
     /** CSS style name. */
     public static final String BUTTON_INVISIBLE = "o-button-invisible";
+
+    /** CSS style name. */
+    public static final String BUTTON_PRESSED = "o-button-pressed";
 
     /** CSS style name. */
     public static final String BUTTON_TABLE_ICON = "o-button-table-icon";
@@ -114,6 +117,9 @@ public final class OpenCmsTheme {
     public static final String DISABLED = "o-disabled";
 
     /** CSS style name. */
+    public static final String DROPDOWN = "o-dropdown";
+
+    /** CSS style name. */
     public static final String EXPIRED = "o-expired";
 
     /** CSS style name. */
@@ -127,30 +133,37 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String HIDDEN_TOOLBAR = "o-hidden-toolbar";
+
     /** CSS style name. */
     public static final String HOVER_COLUMN = "o-hover-column";
 
     /** CSS style name. */
+    public static final String IN_NAVIGATION = "o-in-navigation";
+
+    /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
+
     /** CSS style name. */
     public static final String LABEL_ERROR = "o-label-error";
 
     /** CSS style name. */
     public static final String LOCK_OTHER = "o-lock-other";
+
     /** CSS style name. */
     public static final String LOCK_PUBLISH = "o-lock-publish";
 
     /** CSS style name. */
     public static final String LOCK_SHARED = "o-lock-shared";
-
     /** CSS style name. */
     public static final String LOCK_USER = "o-lock-user";
 
     /** CSS style name. */
     public static final String MAIN = "o-main";
-
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
+
+    /** CSS style name. */
+    public static final String NO_TRANSLATION_ICON = "o-notranslation";
 
     /** Path to the OpenCms logo theme resource. */
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
@@ -175,6 +188,9 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String REDUCED_SPACING = "o-reduced-spacing";
+
+    /** CSS style name. */
+    public static final String REQUIRED_BUTTON = "o-required-button";
 
     /** CSS style name. */
     public static final String RESINFO_HIDDEN_ICON = "o-resinfo-hidden-icon";
@@ -246,6 +262,9 @@ public final class OpenCmsTheme {
     public static final String TOOLBAR_CENTER = "o-toolbar-center";
 
     /** CSS style name. */
+    public static final String TOOLBAR_FIELD = "o-toolbar-field";
+
+    /** CSS style name. */
     public static final String TOOLBAR_INNER = "o-toolbar-inner";
 
     /** CSS style name. */
@@ -258,7 +277,19 @@ public final class OpenCmsTheme {
     public static final String TOOLBAR_LOGO = "o-toolbar-logo";
 
     /** CSS style name. */
+    public static final String TOOLS_BREADCRUMB = "o-tools-breadcrumb";
+
+    /** CSS style name. */
+    public static final String USER_IMAGE = "o-user-image";
+
+    /** CSS style name. */
     public static final String USER_INFO = "o-user-info";
+
+    /** CSS style name. */
+    public static final String VERTICAL_MENU = "o-verticalmenu";
+
+    /** CSS style name. */
+    public static final String VERTICAL_MENU_ITEM = "o-verticalmenu-menuitem";
 
     /** CSS style name. */
     public static final String WORKPLACE_MAXWIDTH = "o-workplace-maxwidth";

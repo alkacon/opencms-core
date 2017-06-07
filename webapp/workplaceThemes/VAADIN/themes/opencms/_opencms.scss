@@ -39,8 +39,8 @@
 	}
 }
 
-@mixin o-workplace-form-narrow {
-	.o-formlayout-workplace-main { 
+@mixin o-workplace-form-narrow($stylename: o-formlayout-workplace-main) {
+	.#{$stylename} { 
 		.v-formlayout-row .v-formlayout-captioncell {
 			display: inline-block;  
 			margin-left: 0px !important; 
@@ -115,14 +115,78 @@
 		font-size: $v-font-size;
 	}
 	
+	.v-customcomponent-error input.v-textfield{
+		@include valo-textfield-error-style;
+	}
+	
 	/* Making scroll bars always visible on combo box selects */
 	.v-filterselect-suggestpopup{
 	 	 @include o-visible-scrollbars;
 	}
+	
+	.v-filterselect-suggestpopup .gwt-MenuItem.v-filterselect-item-bold{
+	 	font-weight: 800;
+	 }
   
 	/* Fix for disabled menu items - especially for non-collapsible table columns. */
 	.gwt-MenuItem span.v-disabled {
 		display: none;
+	}
+	
+	/* Toolbar drop down */
+	.v-popupview.v-popupview-o-navigator-dropdown{
+		color: inherit;
+	}
+	
+	div.v-popupview-popup.v-popupview-popup-o-navigator-dropdown{
+		margin-top: 55px !important;
+		margin-left: -10px !important;
+		border: 4px solid $v-window-background-color;
+	}
+	
+	.v-popupview-popup-o-navigator-dropdown .popupContent{
+		max-width: 352px;
+	}
+	
+	
+	
+	.v-window.o-dropdown{
+		overflow: visible !important;
+		&:after {
+			content: "";
+			top: -2px;
+			right: 12px;
+			height: 40px;
+			width: 40px;
+			position: absolute;
+			transform: rotate(45deg);
+			background: $v-window-background-color;
+			z-index: -1;
+		}
+		
+		.v-window-closebox, .v-window-closebox:hover {
+			position: fixed;
+			top: -10000px;
+			left: -10000px;
+			width: 20000px;
+			height: 20000px;
+			color: transparent;
+			z-index: -1;
+		}
+	
+		.v-window-contents {
+			overflow: hidden;
+			border-radius: 4px;
+			position: relative;
+			z-index: 10;
+			> .v-scrollable > div{
+				background: $v-app-background-color;
+			    color: valo-font-color($v-app-background-color);
+			    margin: 4px;
+			    padding: $v-overlay-padding-vertical $v-overlay-padding-horizontal;
+			    width: auto !important;
+			}
+	    }
 	}
 	
 	/* Toolbar menu pointy corner */
@@ -236,12 +300,14 @@
 	.v-formlayout.o-form-less-margin{
 		@include valo-formlayout-margin(14px);
 	}
+	
+	@include o-workplace-form-narrow(o-formlayout-narrow);
   
 	.o-responsive[width-range~="1241px-"]{
 		/* big screen styles */
 		.o-toolbar{
 			.o-toolbar-items-left, .o-toolbar-items-right{
-				width: 500px;
+				width: 520px;
 			}
 		}
 		@include o-workplace-form-wide;
@@ -252,8 +318,11 @@
 		@include o-workplace-form-narrow;
  	
 		.o-toolbar{
+			.o-toolbar-inner{
+				margin: 0 5px;
+			}
 			.o-toolbar-items-left, .o-toolbar-items-right{
-				width: 250px;
+				width: 350px;
 			}
 			div.o-toolbar-center {
 				span.o-toolbar-logo{
@@ -269,7 +338,7 @@
   	
 		.o-toolbar{
 			.o-toolbar-items-left, .o-toolbar-items-right{
-				width: 350px;
+				width: 400px;
 			}
 		}
 	}
@@ -279,7 +348,26 @@
 		height: 32px;
 		width: 32px !important;
 		position: relative;
-		padding: 4px;
+		padding: 4px !important;
+		box-sizing: border-box;
+		vertical-align: middle;
+		
+		.o-icon-overlay, .o-page-icon-overlay{
+			display: block;
+			height: 16px;
+			width: 16px;
+			position: absolute;
+			z-index: 2;
+		}
+		.o-icon-overlay{
+			top:10px;
+			left: 10px;
+		}
+		
+		.o-page-icon-overlay{
+			top: 13px;
+			left: 16px;
+		}
 		 	
 		.o-lock-shared, .o-lock-user, .o-lock-other, .o-lock-publish, .o-state-changed, .o-state-new, .o-sibling{
 			position: absolute;
@@ -343,21 +431,6 @@
 		top: 0;
 	}
 	
-	/* Toolbar drop down */
-	.v-popupview.v-popupview-o-navigator-dropdown{
-		color: inherit;
-	}
-	
-	.v-popupview-popup-o-navigator-dropdown{
-		margin-top: 55px !important;
-		margin-left: -10px !important;
-		border: 4px solid $v-window-background-color;
-	}
-	
-	.v-popupview-popup-o-navigator-dropdown .popupContent{
-		max-width: 352px;
-	}
-	
 	/* Resource info box */ 
 	.v-panel.o-resource-info{
 		@include linear-gradient(to bottom, $v-app-background-color 0%, $v-app-background-color 48%, $o-medium-background-color 52%, $o-medium-background-color 100%);
@@ -375,7 +448,7 @@
 	*[location="buttonContainer"] > * > * > .o-resinfo2 {
 		margin-top: -1px; 
 	}
-		
+	
 	
 	.o-resinfo2 {
 		 border: 1px solid #ccc; 
@@ -399,6 +472,13 @@
 		
 		.o-resource-icon {
 			margin-top: 2px;
+		}
+		
+		.o-resource-icon.o-notranslation {
+			color: $alkacon-red; 
+			font-size: 24px;
+			margin-top: -10px;
+			margin-left: -2px; 
 		}
 	
 		.o-resinfo-top {
@@ -471,10 +551,20 @@
     	margin-top: 9px; 
     }
     
+     .v-filterselect-suggestpopup-o-sitemap-localeselect .v-icon { 
+    	color: #474747 !important; 
+    	font-size: 11px !important;
+    }
+    
+    .o-sitemap-localeselect .v-icon {
+    	color: #474747 !important;
+    	font-size: 12px !important;
+    	padding-top: 0.13em !important; 
+    }
+    
     .o-pointer { 
     	cursor: pointer; 
     }
-    
     
     .o-sitemap-tree-node-content .v-menubar-menuitem {
     	min-width: 24px !important;
@@ -482,12 +572,6 @@
     	padding-right: 0px !important;  
     	&, & * { 
     		font-size: 20px !important; 
-    	}
-    }
-    
-    .o-locale-linkmode-bar { 
-    	.v-button::after { 
-    		display:none !important;
     	}
     }
     
@@ -517,11 +601,23 @@
     	}
     }
     
+    #sitemap-ui-overlays { 
+		.v-context-menu, div.v-menubar-submenu {	
+			.v-context-menu-item-basic-icon-container {
+				width: 16px;
+			}
+				
+			.v-context-menu-item-basic-text {
+				padding: 0 0px 0 0px;
+			}
+		}
+		
+		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu {
+			padding-right: 11px; 
+		}
+	}
     
-     
-    	
     
-	  
 	/* explorer bread crumb path input styles */
 	.o-crumb-wrapper{
 		position: relative;
@@ -713,6 +809,7 @@
 		.o-sitemap-tree-node-right {
 			-ms-flex: 1; 
 			flex: 1; 
+			min-width: 0px;
 		}
 		
 		.o-sitemap-tree-node-children { 
@@ -736,32 +833,6 @@
 	.v-button.o-button-invisible { 
 		visibility: hidden; 
 	}
-	
-	
-	.v-tree-node-caption-o-locale-link-target-alredy-linked { 
-		color: orange;
-	}
-	
-	.v-tree-node-caption-o-locale-link-notranslation { 
-		font-weight: 100;
-		color: #afafaf;
-	}
-	
-	
-	.v-tree-node-caption-o-locale-link-target-other { 
-		font-weight: 100;
-		color: #afafaf; 
-	}
-	
-	.o-show-locale-disabled {
-		color: #afafaf !important;
-	} 
-		
-	
-	
-	
-	
-		
 	
 	/* history compare dialog styles */
 	
@@ -857,25 +928,87 @@
 			left: -($v-font-size + 2);
 		}
 	}
+	
+.o-report-overlay {
+	
+	@include o-loading-overlay;
+	z-index: 200000;
+	
+	.o-report-window{
+		visibility: hidden;
+		position: absolute;
+		top: 40px;
+		left: 20%;
+		width: 60%;
+	}
+}
 
-	.o-wrap-table .v-table-cell-wrapper {
-		white-space: normal !important; 
+.o-report-show .o-report-overlay{
+	.oc-spin-center{
+		display: none;
+	}
+	.o-report-window{
+		visibility: visible;
+	}
+}
+	
+.o-report { 
+	box-sizing: border-box; 
+	padding: 10px; 
+	margin: 0; 
+	background-color: $v-app-background-color; 
+	font-size: 11px; 
+	white-space: nowrap;
+	overflow-y: auto;
+	border-radius: $v-border-radius;
+	
+	&.o-report-hidden {
+		display: none;
+	}
+	&.o-report-popup-view {
+		@include valo-overlay-style($animate-in: v-popup-animate-in 120ms, $animate-out: (valo-animate-out-fade 120ms));
+		position: fixed;
+		top:10%;
+		left: 20%;
+		height: 80%;
+		width: 60%;
 	}
 	
-	.o-wrap-table .v-table-body-wrapper {
-		overflow-y: auto !important;
+	.o-report-content {
+		@include user-select(text);
+		.o-report-headline { 
+			color: #000099; font-weight: bold;
+		}
+		.o-report-note { 
+			color: #666666; 
+		}
+		.o-report-ok { 
+			color: #009900;
+		}
+		.o-report-warn { 
+			color: #990000; 
+			padding-left: 40px; 
+		}
+		.o-report-error { 
+			color: #990000; 
+			font-weight: bold; 
+			padding-left: 40px; 
+		}
+		.o-report-exception {
+			color: #990000;
+			font-weight: bold;
+		}
+		.o-report-stacktraceline { 
+			margin-left: 6ex; 
+		}
 	}
+}
+
+
+
+
 	
-	.o-table-image { 
-		max-width: 200px; 
-		max-height: 200px;
-		width: auto;
-		height: auto;
-		display: block; 
-	}
 	
-	.o-table-cell-padding .v-table-cell-wrapper { 
-		padding: 10px 10px; 
-	}
-	 
+	
+	
 }

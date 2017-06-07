@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,7 +60,9 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
                 String value = (String)(event.getProperty().getValue());
                 if (!m_settingInternalValue) {
                     setInternalValue(value);
+                    fireValueChange(false);
                 }
+
             }
 
         });
@@ -98,22 +100,6 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     }
 
     /**
-     * Sets the resource value.<p>
-     *
-     * @param resource the resource
-     */
-    @Override
-    public void setResourceValue(CmsResource resource) {
-
-        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resource.getRootPath());
-        if (!m_useRootPaths && A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
-            m_textField.setValue(A_CmsUI.getCmsObject().getSitePath(resource));
-        } else {
-            m_textField.setValue(resource.getRootPath());
-        }
-    }
-
-    /**
      * Sets if only root paths should be used.<p>
      *
      * @param useRootPaths <code>true</code> to use root paths only
@@ -131,7 +117,7 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     @Override
     public void setValue(String value) {
 
-        m_textField.setValue(value);
+        setValue(false, value);
     }
 
     /**
@@ -147,5 +133,33 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
         } finally {
             m_settingInternalValue = false;
         }
+    }
+
+    /**
+     * @see org.opencms.ui.components.fileselect.A_CmsFileSelectField#setResourceValue(org.opencms.file.CmsResource)
+     */
+    @Override
+    protected void setResourceValue(CmsResource resource) {
+
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resource.getRootPath());
+        if (!m_useRootPaths
+            && (site != null)
+            && A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
+            setValue(true, A_CmsUI.getCmsObject().getSitePath(resource));
+        } else {
+            setValue(true, resource.getRootPath());
+        }
+    }
+
+    /**
+     * Sets the value.<p>
+     *
+     * @param fireChange <code>true</code> to fire the value change event
+     * @param value the value to set
+     */
+    protected void setValue(boolean fireChange, String value) {
+
+        m_textField.setValue(value);
+        fireValueChange(false);
     }
 }

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,6 +60,20 @@ public class CmsAddToFavoritesButton extends A_CmsToolbarOptionButton {
             button.disable("Can not add empty element to favorites.");
         }
         return button;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
+     */
+    @Override
+    public boolean isOptionAvailable(CmsContainerPageElementPanel element) {
+
+        try {
+            element.getStructureId();
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     /**

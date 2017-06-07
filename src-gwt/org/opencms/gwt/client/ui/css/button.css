@@ -87,10 +87,10 @@ div.cmsMenuButton{
     padding:2px 4px; 
 }
 div.cmsFontIconButton {
-	border: none;	
-	font-size: 20px;
-	height: 20px;
-	padding: 0px;
+	border: none !important;	
+	font-size: 20px !important;
+	height: 20px !important;
+	padding: 0px !important;
 }
 
 
@@ -100,25 +100,25 @@ div.cmsTransparentButton {
 
 
 div.cmsButtonBig.cmsFontIconButton {
-	font-size: 32px;
-	height: 40px;
-	padding: 4px;
-	position: relative;
-	color:  value("constants.css.textColor");
+	font-size: 32px !important;
+	height: 40px !important;
+	padding: 4px !important;
+	position: relative !important;
+	color:  value("constants.css.textColor") !important;
 }
 
 div.cmsFontIconButton.cmsButtonBig.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsButtonBig.cmsState.cmsState-up-hovering {
-	color:  value("constants.css.textColorHighlight");
-	border-color: transparent;
-	background: transparent;
+	color:  value("constants.css.textColorHighlight") !important;
+	border-color: transparent !important;
+	background: transparent !important;
 }
 div.cmsFontIconButton{
-	color: value("constants.css.textColorDisabledButton");
+	color: value("constants.css.textColorDisabledButton") !important;
 }
 div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsState.cmsState-up-hovering {
-	color:  value("constants.css.textColor");
-	border-color: transparent;
-	background: transparent;
+	color:  value("constants.css.textColor") !important;
+	border-color: transparent !important;
+	background: transparent !important;
 }
 
 div.cmsFontIconButton div.html-face{
@@ -126,7 +126,7 @@ div.cmsFontIconButton div.html-face{
 }
 
 div.cmsFontIconButton.cmsButtonSmall{
-	font-size: 16px;
+	font-size: 16px !important;
 }
 
 div.cmsFontIconButton.cmsButtonSmall div.html-face{

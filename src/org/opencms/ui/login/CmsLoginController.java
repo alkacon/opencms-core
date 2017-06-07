@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsResourceBundleLoader;
@@ -47,6 +48,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -298,10 +300,12 @@ public class CmsLoginController {
             target = OpenCms.getLinkManager().substituteLink(currentCms, target);
         }
 
-        if (workplace2
-            && CmsStringUtil.isEmptyOrWhitespaceOnly(fragment)
-            && CmsWorkplace.VIEW_WORKPLACE.equals(settings.getUserSettings().getStartView())) {
-            fragment = CmsFileExplorerConfiguration.APP_ID;
+        if (workplace2 && CmsStringUtil.isEmptyOrWhitespaceOnly(fragment)) {
+            if (CmsWorkplace.VIEW_WORKPLACE.equals(settings.getUserSettings().getStartView())) {
+                fragment = CmsFileExplorerConfiguration.APP_ID;
+            } else if (CmsWorkplace.VIEW_ADMIN.equals(settings.getUserSettings().getStartView())) {
+                fragment = CmsAppHierarchyConfiguration.APP_ID;
+            }
         }
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
@@ -320,6 +324,7 @@ public class CmsLoginController {
         if (UI.getCurrent() instanceof CmsAppWorkplaceUi) {
             ((CmsAppWorkplaceUi)UI.getCurrent()).onWindowClose();
         }
+        String loggedInUser = cms.getRequestContext().getCurrentUser().getName();
         UI.getCurrent().getSession().close();
         String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
             cms,
@@ -327,6 +332,15 @@ public class CmsLoginController {
             false);
         VaadinService.getCurrentRequest().getWrappedSession().invalidate();
         Page.getCurrent().setLocation(loginLink);
+        // logout was successful
+        if (LOG.isInfoEnabled()) {
+            LOG.info(
+                org.opencms.jsp.Messages.get().getBundle().key(
+                    org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
+                    loggedInUser,
+                    "{workplace logout option}",
+                    cms.getRequestContext().getRemoteAddress()));
+        }
     }
 
     /**
@@ -341,6 +355,7 @@ public class CmsLoginController {
     public static void logout(CmsObject cms, HttpServletRequest request, HttpServletResponse response)
     throws IOException {
 
+        String loggedInUser = cms.getRequestContext().getCurrentUser().getName();
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
@@ -353,7 +368,7 @@ public class CmsLoginController {
             LOG.info(
                 org.opencms.jsp.Messages.get().getBundle().key(
                     org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
-                    cms.getRequestContext().getCurrentUser().getName(),
+                    loggedInUser,
                     cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()),
                     cms.getRequestContext().getRemoteAddress()));
         }
@@ -462,6 +477,15 @@ public class CmsLoginController {
                 return;
             }
             currentCms.loginUser(realUser, password);
+            if (LOG.isInfoEnabled()) {
+                CmsRequestContext context = currentCms.getRequestContext();
+                LOG.info(
+                    org.opencms.jsp.Messages.get().getBundle().key(
+                        org.opencms.jsp.Messages.LOG_LOGIN_SUCCESSFUL_3,
+                        context.getCurrentUser().getName(),
+                        "{workplace login dialog}",
+                        context.getRemoteAddress()));
+            }
             OpenCms.getSessionManager().updateSessionInfo(
                 currentCms,
                 (HttpServletRequest)VaadinService.getCurrentRequest());
@@ -494,7 +518,7 @@ public class CmsLoginController {
             final String loginTarget = getLoginTarget(currentCms, settings, m_params.getRequestedResource());
             final boolean isPublicPC = CmsLoginForm.PC_TYPE_PUBLIC.equals(pcType);
             if (OpenCms.getLoginManager().requiresUserDataCheck(currentCms, userObj)) {
-                I_CmsDialogContext context = new A_CmsDialogContext(ContextType.appToolbar, null) {
+                I_CmsDialogContext context = new A_CmsDialogContext("", ContextType.appToolbar, null) {
 
                     @Override
                     public void finish(CmsProject project, String siteRoot) {
@@ -530,6 +554,11 @@ public class CmsLoginController {
                                 ((CmsBasicDialog)dialog).initActionHandler(m_window);
                             }
                         }
+                    }
+
+                    public void updateUserInfo() {
+
+                        // not supported
                     }
                 };
                 CmsUser u = currentCms.readUser(userObj.getId());

@@ -115,7 +115,11 @@
 /** Background color for sitemap entries marked as expired or not released. */
 @def backgroundColorSitemapExpired #D8DEEA;
 
-
+@def buttonColorRed #b31b34;
+@def buttonColorCyan #1bb39a;
+@def buttonColorBlue #144382;
+@def buttonColorOrange #fc9700;
+@def buttonColorGray #7f8691;
 
 
 /**

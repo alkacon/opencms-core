@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,8 +33,10 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.search.Messages;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
@@ -43,7 +45,6 @@ import org.opencms.xml.CmsXmlUtils;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
@@ -76,12 +77,26 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
     /** The mapping type. */
     private CmsSearchFieldMappingType m_type;
 
+    /** Flag, indicating if the mapping applies to a lucene index. */
+    private boolean m_isLucene;
+
     /**
      * Public constructor for a new search field mapping.<p>
      */
     public CmsSearchFieldMapping() {
 
         // no initialization required
+    }
+
+    /**
+     * Public constructor for a new search field mapping.<p>
+     *
+     * @param isLucene flag, indicating if the mapping is done for a lucene index
+     */
+    public CmsSearchFieldMapping(boolean isLucene) {
+
+        this();
+        m_isLucene = isLucene;
     }
 
     /**
@@ -95,6 +110,19 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
         this();
         setType(type);
         setParam(param);
+    }
+
+    /**
+     * Public constructor for a new search field mapping.<p>
+     *
+     * @param type the type to use, see {@link #setType(CmsSearchFieldMappingType)}
+     * @param param the mapping parameter, see {@link #setParam(String)}
+     * @param isLucene flag, indicating if the mapping is done for a lucene index
+     */
+    public CmsSearchFieldMapping(CmsSearchFieldMappingType type, String param, boolean isLucene) {
+
+        this(type, param);
+        m_isLucene = isLucene;
     }
 
     /**
@@ -180,7 +208,9 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                     Map<String, String> localizedContentItems = null;
                     String xpath = null;
                     if (paramParts.length > 1) {
-                        localizedContentItems = extractionResult.getContentItems(new Locale(paramParts[0].trim()));
+                        OpenCms.getLocaleManager();
+                        localizedContentItems = extractionResult.getContentItems(
+                            CmsLocaleManager.getLocale(paramParts[0].trim()));
                         xpath = paramParts[1].trim();
                     } else {
                         localizedContentItems = extractionResult.getContentItems();
@@ -201,33 +231,39 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                         // map all attributes for a resource
                         switch (attribute) {
                             case dateContent:
-                                content = DateTools.timeToString(
-                                    res.getDateContent(),
-                                    DateTools.Resolution.MILLISECOND);
+                                content = m_isLucene
+                                ? DateTools.timeToString(res.getDateContent(), DateTools.Resolution.MILLISECOND)
+                                : Long.toString(res.getDateContent());
                                 break;
                             case dateCreated:
-                                content = DateTools.timeToString(
-                                    res.getDateCreated(),
-                                    DateTools.Resolution.MILLISECOND);
+                                content = m_isLucene
+                                ? DateTools.timeToString(res.getDateCreated(), DateTools.Resolution.MILLISECOND)
+                                : Long.toString(res.getDateCreated());
                                 break;
                             case dateExpired:
-                                long expirationDate = res.getDateExpired();
-                                if (expirationDate == CmsResource.DATE_EXPIRED_DEFAULT) {
-                                    // default of Long.MAX_VALUE is to big, use January 1, 2100 instead
-                                    content = DATE_EXPIRED_DEFAULT_STR;
+                                if (m_isLucene) {
+                                    long expirationDate = res.getDateExpired();
+                                    if (expirationDate == CmsResource.DATE_EXPIRED_DEFAULT) {
+                                        // default of Long.MAX_VALUE is to big, use January 1, 2100 instead
+                                        content = DATE_EXPIRED_DEFAULT_STR;
+                                    } else {
+                                        content = DateTools.timeToString(
+                                            expirationDate,
+                                            DateTools.Resolution.MILLISECOND);
+                                    }
                                 } else {
-                                    content = DateTools.timeToString(expirationDate, DateTools.Resolution.MILLISECOND);
+                                    content = Long.toString(res.getDateExpired());
                                 }
                                 break;
                             case dateLastModified:
-                                content = DateTools.timeToString(
-                                    res.getDateLastModified(),
-                                    DateTools.Resolution.MILLISECOND);
+                                content = m_isLucene
+                                ? DateTools.timeToString(res.getDateLastModified(), DateTools.Resolution.MILLISECOND)
+                                : Long.toString(res.getDateLastModified());
                                 break;
                             case dateReleased:
-                                content = DateTools.timeToString(
-                                    res.getDateReleased(),
-                                    DateTools.Resolution.MILLISECOND);
+                                content = m_isLucene
+                                ? DateTools.timeToString(res.getDateReleased(), DateTools.Resolution.MILLISECOND)
+                                : Long.toString(res.getDateReleased());
                                 break;
                             case flags:
                                 content = String.valueOf(res.getFlags());

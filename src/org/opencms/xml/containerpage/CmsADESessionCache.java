@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,7 @@ package org.opencms.xml.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.file.CmsObject;
@@ -143,6 +144,9 @@ public final class CmsADESessionCache {
     /** Bean containing last page info. */
     private LastPageBean m_lastPage;
 
+    /** The last stored gallery search for the page editor. */
+    private CmsGallerySearchBean m_lastPageEditorGallerySearch;
+
     /** The recently used formatters by resource type. */
     private Map<String, List<CmsUUID>> m_recentFormatters = new ConcurrentHashMap<String, List<CmsUUID>>();
 
@@ -197,6 +201,7 @@ public final class CmsADESessionCache {
 
     /**
      * Gets the session cache for the current session.<p>
+     * In case the request is not editable, <code>null</code> will be returned.<p>
      *
      * @param request the current request
      * @param cms the current CMS context
@@ -228,7 +233,7 @@ public final class CmsADESessionCache {
             m_recentFormatters.put(resType, formatterIds);
         }
         formatterIds.remove(formatterId);
-        if (formatterIds.size() >= (RECENT_FORMATTERS_SIZE - 1)) {
+        if (formatterIds.size() >= (RECENT_FORMATTERS_SIZE)) {
             formatterIds.remove(RECENT_FORMATTERS_SIZE - 1);
         }
         formatterIds.add(0, formatterId);
@@ -303,6 +308,16 @@ public final class CmsADESessionCache {
     public LastPageBean getLastPage() {
 
         return m_lastPage;
+    }
+
+    /**
+     * Returns the lastPageEditorGallerySearch.<p>
+     *
+     * @return the lastPageEditorGallerySearch
+     */
+    public CmsGallerySearchBean getLastPageEditorGallerySearch() {
+
+        return m_lastPageEditorGallerySearch;
     }
 
     /**
@@ -454,6 +469,16 @@ public final class CmsADESessionCache {
 
         m_lastPage = new LastPageBean(cms.getRequestContext().getSiteRoot(), pageId, detailId);
 
+    }
+
+    /**
+     * Sets the last stored gallery search from the page editor.<p>
+     *
+     * @param searchObj the search to store
+     */
+    public void setLastPageEditorGallerySearch(CmsGallerySearchBean searchObj) {
+
+        m_lastPageEditorGallerySearch = searchObj;
     }
 
     /**

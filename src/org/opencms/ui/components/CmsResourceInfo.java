@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,17 +31,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer;
-import org.opencms.ui.components.fileselect.CmsSitemapTreeContainer.IconMode;
+import org.opencms.ui.components.CmsResourceIcon.IconMode;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Locale;
@@ -115,15 +110,10 @@ public class CmsResourceInfo extends CustomLayout {
         Locale locale = A_CmsUI.get().getLocale();
         CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
         resUtil.setAbbrevLength(100);
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         m_topText.setValue(resUtil.getGalleryTitle(locale));
         m_bottomText.setValue(resUtil.getPath());
 
-        m_icon.initContent(
-            resUtil,
-            CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
-            useState ? resource.getState() : null);
+        m_icon.initContent(resUtil, useState ? resource.getState() : null, true, true);
 
     }
 
@@ -139,7 +129,7 @@ public class CmsResourceInfo extends CustomLayout {
         this();
         m_topText.setValue(top);
         m_bottomText.setValue(bottom);
-        m_icon.initContent(null, iconPath, null);
+        m_icon.initContent(null, iconPath, null, false, true);
 
     }
 
@@ -182,11 +172,11 @@ public class CmsResourceInfo extends CustomLayout {
             }
         }
         info.getBottomLine().setValue(path);
-        String icon = CmsSitemapTreeContainer.getSitemapResourceIcon(
+        String icon = CmsResourceIcon.getSitemapResourceIcon(
             A_CmsUI.getCmsObject(),
             resUtil.getResource(),
             IconMode.localeCompare);
-        info.getResourceIcon().initContent(resUtil, icon, null);
+        info.getResourceIcon().initContent(resUtil, icon, null, true, false);
         return info;
     }
 

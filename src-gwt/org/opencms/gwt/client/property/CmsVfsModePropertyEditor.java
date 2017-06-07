@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,8 +30,8 @@ package org.opencms.gwt.client.property;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
-import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
@@ -84,6 +84,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** The interval used for updating the height. */
     public static final int UPDATE_HEIGHT_INTERVAL = 200;
 
+    /** True when resizing of the dialog is disabled. */
     protected static boolean m_resizeDisabled;
 
     /** The map of tab names. */
@@ -132,10 +133,10 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
     }
 
-    /** 
+    /**
      * Disables resizing.<p>
-     * 
-     * @param disabled true if resizing should be disabled 
+     *
+     * @param disabled true if resizing should be disabled
      */
     public static void disableResize(boolean disabled) {
 
@@ -169,6 +170,16 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
+     * Focuses the file name field (delayed).<p>
+     */
+    public void focusNameField() {
+
+        m_activeFieldData = new CmsActiveFieldData(null, "simple", A_CmsPropertyEditor.FIELD_URLNAME);
+        m_panel.tryToRestoreFieldData(m_activeFieldData);
+
+    }
+
+    /**
      * Gets the active field data.<p>
      *
      * @return the active field data
@@ -176,18 +187,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     public CmsActiveFieldData getActiveFieldData() {
 
         return m_activeFieldData;
-    }
-
-    /**
-     * Handles field value changes.<p>
-     *
-     * @param field the changed field
-     */
-    public void handleFieldChange(I_CmsFormField field) {
-
-        if ((m_activeFieldData != null) && (m_activeFieldData.getField() != field)) {
-            m_activeFieldData = null;
-        }
     }
 
     /**
@@ -389,7 +388,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             defaultValue = defaultValueAndOrigin.getFirst();
             origin = defaultValueAndOrigin.getSecond();
         }
-        Widget w = (Widget)field.getWidget();
+        final Widget w = (Widget)field.getWidget();
         I_CmsStringModel model = getStringModel(pathValue);
         field.bind(model);
         boolean ghost = CmsStringUtil.isEmptyOrWhitespaceOnly(pathValue.getValue());
@@ -400,14 +399,19 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
                 initialValue = null;
             }
         }
-        if ((w instanceof CmsTextBox)) {
+        if (w instanceof HasFocusHandlers) {
             try {
                 ((HasFocusHandlers)w).addFocusHandler(new FocusHandler() {
 
                     @SuppressWarnings("synthetic-access")
                     public void onFocus(FocusEvent event) {
 
-                        m_activeFieldData = new CmsActiveFieldData(field, tab, propName);
+                        if ((w instanceof CmsTextBox) || (w instanceof CmsTextArea)) {
+                            m_activeFieldData = new CmsActiveFieldData(field, tab, propName);
+                        } else {
+                            // field received focus, but it doesn't make sense to restore it later
+                            m_activeFieldData = null;
+                        }
                     }
                 });
             } catch (Exception e) {

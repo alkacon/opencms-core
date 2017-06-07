@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -932,19 +932,10 @@ public class CmsJspContentAccessBean {
 
         // make sure a valid locale is used
         if (m_locale == null) {
-            m_locale = m_requestedLocale;
-            // check if the requested locale is available
-            if (!m_content.hasLocale(m_locale)) {
-                Iterator<Locale> it = OpenCms.getLocaleManager().getDefaultLocales().iterator();
-                while (it.hasNext()) {
-                    Locale locale = it.next();
-                    if (m_content.hasLocale(locale)) {
-                        // found a matching locale
-                        m_locale = locale;
-                        break;
-                    }
-                }
-            }
+            m_locale = OpenCms.getLocaleManager().getBestMatchingLocale(
+                m_requestedLocale,
+                OpenCms.getLocaleManager().getDefaultLocales(),
+                m_content.getLocales());
         }
 
         return m_content;

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -79,4 +79,23 @@ public interface I_CmsAppView extends View {
      * @return the new component
      */
     Component reinitComponent();
+
+    /**
+     * Returns whether this view needs to be restored from cache.<p>
+     *
+     * @return <code>true</code> if this view needs to be restored from cache
+     */
+    boolean requiresRestore();
+
+    /**
+     * Restores the view from cache.<p>
+     */
+    void restoreFromCache();
+
+    /**
+     * Sets the requires restore from cache flag.<p>
+     *
+     * @param restored the requires restore from cache flag
+     */
+    void setRequiresRestore(boolean restored);
 }

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,21 +39,21 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The user info toolbar button.<p>
  */
-public class CmsQuickLauncher extends CmsMenuButton {
+public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButton {
 
     /**
      * Abstract class for standard handling of quick launh items.<p>
@@ -99,7 +99,7 @@ public class CmsQuickLauncher extends CmsMenuButton {
     /**
      * Button for an individual entry in the quick launch menu.<p>
      */
-    public class QuickLaunchButton extends Composite {
+    public class QuickLaunchButton extends HTML {
 
         /**
          * Creates a new button instance for the given bean.<p>
@@ -110,13 +110,25 @@ public class CmsQuickLauncher extends CmsMenuButton {
 
             super();
             I_CmsToolbarCss toolbarCss = I_CmsLayoutBundle.INSTANCE.toolbarCss();
-
-            initWidget(div(
-                toolbarCss.quickButton(),
-                div(
+            SafeHtml html;
+            if (data.getIconUrl().startsWith(FONT_ICON_PREFIX)) {
+                SafeHtml iconHtml = new FontIconHtml(data.getIconUrl());
+                html = BUTTON_TEMPLATES.iconButtonHtml(
                     toolbarCss.quickButtonWrap(),
-                    div(null, div(toolbarCss.quickButtonImageContainer(), new Image(data.getIconUrl()))),
-                    div(null, new InlineLabel(data.getTitle())))));
+                    toolbarCss.quickButtonImageContainer(),
+                    iconHtml,
+                    data.getTitle());
+
+            } else {
+                html = BUTTON_TEMPLATES.imageButtonHtml(
+                    toolbarCss.quickButtonWrap(),
+                    toolbarCss.quickButtonImageContainer(),
+                    data.getIconUrl(),
+                    data.getTitle());
+            }
+
+            setHTML(html);
+            setStyleName(toolbarCss.quickButton());
             if (data.isLegacy()) {
                 addStyleName(toolbarCss.quickButtonLegacy());
             }
@@ -126,36 +138,75 @@ public class CmsQuickLauncher extends CmsMenuButton {
             } else {
                 addDomHandler(new ClickHandler() {
 
-                    @SuppressWarnings("synthetic-access")
                     public void onClick(ClickEvent event) {
 
                         closeMenu();
-                        m_handler.handleQuickLaunch(data);
+                        m_quickLaunchHandler.handleQuickLaunch(data);
 
                     }
                 }, ClickEvent.getType());
             }
         }
+    }
+
+    /**
+     * The button HTML generator templates.<p>
+     */
+    protected interface ButtonTemplates extends SafeHtmlTemplates {
 
         /**
-         * Helper method which constructs a FlowPanel with the given CSS class and contents.<p>
+         * Generates the icon button HTML.<p>
          *
-         * @param cls the CSS class (may be null)
-         * @param components the child widgets
+         * @param buttonWrapClass the CSS class
+         * @param imageContainerClass the CSS class
+         * @param iconHtml the icon HTML
+         * @param titel the button title
          *
-         * @return the constructed FlowPanel
+         * @return the HTML
          */
-        private FlowPanel div(String cls, Widget... components) {
+        @Template("<div class=\"{0}\"><div class=\"{1}\">{2}</div><div><span>{3}</span></div></div>")
+        SafeHtml iconButtonHtml(String buttonWrapClass, String imageContainerClass, SafeHtml iconHtml, String titel);
 
-            FlowPanel result = new FlowPanel();
-            if (cls != null) {
-                result.addStyleName(cls);
-            }
-            for (Widget comp : components) {
-                result.add(comp);
-            }
-            return result;
+        /**
+         * Generates the image button HTML.<p>
+         *
+         * @param buttonWrapClass the CSS class
+         * @param imageContainerClass the CSS class
+         * @param imageUri the image URI
+         * @param titel the button title
+         *
+         * @return the HTML
+         */
+        @Template("<div class=\"{0}\"><div class=\"{1}\"><img src=\"{2}\" /></div><div><span>{3}</span></div></div>")
+        SafeHtml imageButtonHtml(String buttonWrapClass, String imageContainerClass, String imageUri, String titel);
+    }
+
+    /** The font icon HTML. */
+    protected class FontIconHtml implements SafeHtml {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /** The font icon HTML. */
+        private String m_html;
+
+        /**
+         * Constructor.<p>
+         *
+         * @param iconHtml the icon HTML prefixed with 'fonticon:'
+         */
+        protected FontIconHtml(String iconHtml) {
+            m_html = iconHtml.substring(FONT_ICON_PREFIX.length());
         }
+
+        /**
+         * @see com.google.gwt.safehtml.shared.SafeHtml#asString()
+         */
+        public String asString() {
+
+            return m_html;
+        }
+
     }
 
     /** Html for the menu button. */
@@ -163,8 +214,17 @@ public class CmsQuickLauncher extends CmsMenuButton {
         + I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarFontButton()
         + "'>\ue617</span>";
 
+    /** The font icon HTML prefix. */
+    protected static final String FONT_ICON_PREFIX = "fonticon:";
+
+    /** The button template generator instance. */
+    static final ButtonTemplates BUTTON_TEMPLATES = GWT.create(ButtonTemplates.class);
+
     /** The quick launch handler. */
-    private I_QuickLaunchHandler m_handler;
+    I_QuickLaunchHandler m_quickLaunchHandler;
+
+    /** The handler instance. */
+    private I_CmsToolbarHandler m_handler;
 
     /** The panel containing the individual quick launch buttons. */
     private Panel m_itemContainer;
@@ -193,9 +253,95 @@ public class CmsQuickLauncher extends CmsMenuButton {
 
             public void onClick(ClickEvent event) {
 
-                toggleQuickLauncher();
+                onToolbarClick();
             }
         });
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#isActive()
+     */
+    public boolean isActive() {
+
+        return isOpen();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarActivate()
+     */
+    public void onToolbarActivate() {
+
+        CmsRpcAction<List<CmsQuickLaunchData>> action = new CmsRpcAction<List<CmsQuickLaunchData>>() {
+
+            @Override
+            public void execute() {
+
+                start(150, false);
+                CmsCoreProvider.getVfsService().loadQuickLaunchItems(m_quickLaunchHandler.getParameters(), this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsQuickLaunchData> result) {
+
+                stop(false);
+                fillItems(result);
+                openMenu();
+            }
+
+        };
+        action.execute();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarClick()
+     */
+    public void onToolbarClick() {
+
+        boolean active = isActive();
+
+        setActive(!active);
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
+     */
+    public void onToolbarDeactivate() {
+
+        // nothing to do
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#setActive(boolean)
+     */
+    public void setActive(boolean active) {
+
+        if (active) {
+            if (m_handler != null) {
+                m_handler.deactivateCurrentButton();
+                m_handler.setActiveButton(this);
+            }
+            m_popup.catchNotifications();
+            onToolbarActivate();
+            openMenu();
+        } else {
+            onToolbarDeactivate();
+            closeMenu();
+            if (m_handler != null) {
+                m_handler.setActiveButton(null);
+                m_handler.activateSelection();
+            }
+        }
+    }
+
+    /**
+     * Sets the button handler.<p>
+     *
+     * @param handler the button handler
+     */
+    public void setHandler(I_CmsToolbarHandler handler) {
+
+        m_handler = handler;
     }
 
     /**
@@ -203,10 +349,24 @@ public class CmsQuickLauncher extends CmsMenuButton {
      *
      * @param handler the quick launch handler
      */
-    public void setHandler(I_QuickLaunchHandler handler) {
+    public void setQuicklaunchHandler(I_QuickLaunchHandler handler) {
 
-        m_handler = handler;
+        m_quickLaunchHandler = handler;
         setVisible(true);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsMenuButton#autoClose()
+     */
+    @Override
+    protected void autoClose() {
+
+        super.autoClose();
+        onToolbarDeactivate();
+        if (m_handler != null) {
+            m_handler.setActiveButton(null);
+            m_handler.activateSelection();
+        }
     }
 
     /**
@@ -224,34 +384,13 @@ public class CmsQuickLauncher extends CmsMenuButton {
     }
 
     /**
-     * Toggles the user info visibility.<p>
+     * Returns the container-page handler.<p>
+     *
+     * @return the container-page handler
      */
-    protected void toggleQuickLauncher() {
+    protected I_CmsToolbarHandler getHandler() {
 
-        if (isOpen()) {
-            closeMenu();
-        } else {
-            CmsRpcAction<List<CmsQuickLaunchData>> action = new CmsRpcAction<List<CmsQuickLaunchData>>() {
-
-                @SuppressWarnings("synthetic-access")
-                @Override
-                public void execute() {
-
-                    start(150, false);
-                    CmsCoreProvider.getVfsService().loadQuickLaunchItems(m_handler.getParameters(), this);
-                }
-
-                @Override
-                protected void onResponse(List<CmsQuickLaunchData> result) {
-
-                    stop(false);
-                    fillItems(result);
-                    openMenu();
-                }
-
-            };
-            action.execute();
-        }
+        return m_handler;
     }
 
     /**

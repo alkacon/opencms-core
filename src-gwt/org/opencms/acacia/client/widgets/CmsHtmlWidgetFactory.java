@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -154,7 +154,7 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
             }
             options.importcss_append = true;
             if (config.importCss) {
-                options.importcss_selector_filter = ""; // always matches 
+                options.importcss_selector_filter = ""; // always matches
             } else {
                 options.importcss_selector_filter = new $wnd.RegExp("$.^"); // never matches
             }
@@ -195,7 +195,8 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                 }
             };
             if (config.allowscripts) {
-                options.extended_valid_elements = "script[type|src|defer|async|charset]";
+                options.valid_elements = "*[*]";
+                options.allow_script_urls = true;
             }
 
             if (config.toolbar_items) {

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -64,7 +64,19 @@ public class CmsMessagesService extends CmsGwtService {
     public void service(ServletRequest request, ServletResponse response) throws IOException {
 
         try {
-            response.setCharacterEncoding(request.getCharacterEncoding());
+            // Set response's character encoding to the default(*) to avoid ambiguous
+            // interpretations of the Servlet spec from different servlet containers.
+            // This complies with the Servlet spec.
+            // See for example the "Java Servlet Specification Version 3.0":
+            // "Servlets should set the locale and the character encoding of a response.
+            // [...]
+            // If the servlet does not specify a character encoding before the getWriter
+            // method of the ServletResponse interface is called or the response is committed,
+            // the default ISO-8859-1 is used."
+            // (*): the OpenCms configured encoding (defaulting to UTF-8) is favoured over
+            // ISO-8859-1 to allow for a wider charset support.
+            String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            response.setCharacterEncoding(characterEncoding);
             response.setContentType("text/javascript");
             Locale locale;
             String localeString = request.getParameter(CmsLocaleManager.PARAMETER_LOCALE);

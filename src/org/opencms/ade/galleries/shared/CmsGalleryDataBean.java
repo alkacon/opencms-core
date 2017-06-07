@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,8 +32,10 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -49,6 +51,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** The category tree entry to display as tree. */
     private List<CmsCategoryTreeEntry> m_categoryTreeEntry;
+
+    /** Additional data about the context from which the gallery dialog was started. */
+    private Map<String, String> m_contextParameters = new HashMap<String, String>();
 
     /** The current element. */
     private String m_currentElement;
@@ -80,6 +85,9 @@ public class CmsGalleryDataBean implements IsSerializable {
      */
     private String m_referenceSitePath;
 
+    /** The result view type. */
+    private String m_resultViewType;
+
     /** The search scope. */
     private CmsGallerySearchScope m_scope;
 
@@ -91,6 +99,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** The start folder. */
     private String m_startFolder;
+
+    /** The folder filter for the initial search. */
+    private Set<String> m_startFolderFilter;
 
     /** The start gallery folder. */
     private String m_startGallery;
@@ -109,6 +120,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** The types to display in the list of available categories. */
     private List<CmsResourceTypeBean> m_types;
+
+    /** Preloaded contents for the VFS tree tab. */
+    private CmsVfsEntryBean m_vfsPreloadData;
 
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
@@ -131,6 +145,19 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsCategoryTreeEntry> getCategories() {
 
         return m_categoryTreeEntry;
+    }
+
+    /**
+     * Gets the context parameters.<p>
+     *
+     * These are additional parameters to store information about the context from which the gallery dialog was
+     * opened.
+     *
+     * @return the context parameters
+     */
+    public Map<String, String> getContextParameters() {
+
+        return m_contextParameters;
     }
 
     /**
@@ -226,6 +253,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
+     * Returns the result view type.<p>
+     *
+     * @return the result view type
+     */
+    public String getResultViewType() {
+
+        return m_resultViewType;
+    }
+
+    /**
      * Returns the search scope.<p>
      *
      * @return the search scope
@@ -263,6 +300,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public String getStartFolder() {
 
         return m_startFolder;
+    }
+
+    /**
+     * Returns the start folder filter.<p>
+     *
+     * @return the start folder filter
+     */
+    public Set<String> getStartFolderFilter() {
+
+        return m_startFolderFilter;
     }
 
     /**
@@ -323,6 +370,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsResourceTypeBean> getTypes() {
 
         return m_types;
+    }
+
+    /**
+     * Returns the vfsPreloadData.<p>
+     *
+     * @return the vfsPreloadData
+     */
+    public CmsVfsEntryBean getVfsPreloadData() {
+
+        return m_vfsPreloadData;
     }
 
     /**
@@ -447,6 +504,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
+     * Sets the result view type.<p>
+     *
+     * @param resultViewType the result view type to set
+     */
+    public void setResultViewType(String resultViewType) {
+
+        m_resultViewType = resultViewType;
+    }
+
+    /**
      * Sets the search scope.<p>
      *
      * @param scope the search scope
@@ -484,6 +551,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setStartFolder(String startFolder) {
 
         m_startFolder = startFolder;
+    }
+
+    /**
+     * Sets the start folder filter.<p>
+     *
+     * @param startFolderFilter the start folder filter to set
+     */
+    public void setStartFolderFilter(Set<String> startFolderFilter) {
+
+        m_startFolderFilter = startFolderFilter;
     }
 
     /**
@@ -545,6 +622,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setTypes(List<CmsResourceTypeBean> types) {
 
         m_types = types;
+    }
+
+    /**
+     * Sets the vfsPreloadData.<p>
+     *
+     * @param vfsPreloadData the vfsPreloadData to set
+     */
+    public void setVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
+
+        m_vfsPreloadData = vfsPreloadData;
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -28,6 +28,7 @@
 package org.opencms.search.extractors;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -122,9 +123,12 @@ public interface I_CmsExtractionResult {
      * which will contain the value of the complete content.
      * </ul>
      *
+     * The map has to be ordered to e.g., get the correct indexing order for search field mappings
+     * when a sequence of values is mapped to a multi-valued search field.
+     *
      * @return the extracted content as individual items
      */
-    Map<String, String> getContentItems();
+    LinkedHashMap<String, String> getContentItems();
 
     /** <p>Returns the extracted content for a given locale as individual items.</p>
      * @param locale the locale of the extracted content items
@@ -133,7 +137,7 @@ public interface I_CmsExtractionResult {
      *
      * @see #getContentItems()
      */
-    Map<String, String> getContentItems(Locale locale);
+    LinkedHashMap<String, String> getContentItems(Locale locale);
 
     /** Returns the best fitting locale for the content.
      * @return the best fitting locale for the content

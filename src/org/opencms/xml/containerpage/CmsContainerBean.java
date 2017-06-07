@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,6 +57,12 @@ public class CmsContainerBean {
     /** The container elements. */
     private final List<CmsContainerElementBean> m_elements;
 
+    /**
+     * Indicates whether this container not nested,
+     * or in case of a detail only container page the starting point of a detail only container hierarchy.
+     **/
+    private boolean m_isRootContainer;
+
     /** The maximal number of elements in the container. */
     private int m_maxElements;
 
@@ -81,6 +87,7 @@ public class CmsContainerBean {
      * @param name the container name
      * @param type the container type
      * @param parentInstanceId the parent instance id
+     * @param isRootContainer <code>true</code> if this container not nested
      * @param maxElements the maximal number of elements in the container
      * @param elements the elements
      **/
@@ -88,12 +95,14 @@ public class CmsContainerBean {
         String name,
         String type,
         String parentInstanceId,
+        boolean isRootContainer,
         int maxElements,
         List<CmsContainerElementBean> elements) {
 
         m_name = name;
         m_type = type;
         m_parentInstanceId = parentInstanceId;
+        m_isRootContainer = isRootContainer;
         m_maxElements = maxElements;
         m_elements = (elements == null
         ? Collections.<CmsContainerElementBean> emptyList()
@@ -106,11 +115,17 @@ public class CmsContainerBean {
      * @param name the container name
      * @param type the container type
      * @param parentInstanceId the parent instance id
+     * @param isRootContainer <code>true</code> if this container not nested
      * @param elements the elements
      **/
-    public CmsContainerBean(String name, String type, String parentInstanceId, List<CmsContainerElementBean> elements) {
+    public CmsContainerBean(
+        String name,
+        String type,
+        String parentInstanceId,
+        boolean isRootContainer,
+        List<CmsContainerElementBean> elements) {
 
-        this(name, type, parentInstanceId, -1, elements);
+        this(name, type, parentInstanceId, isRootContainer, -1, elements);
     }
 
     /**
@@ -253,6 +268,17 @@ public class CmsContainerBean {
     public boolean isNestedContainer() {
 
         return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_parentInstanceId);
+    }
+
+    /**
+     * Returns if this container not nested,
+     * or in case of a detail only container page the starting point of a detail only container hierarchy.<p>
+     *
+     * @return <code>true</code> if this container not nested
+     */
+    public boolean isRootContainer() {
+
+        return m_isRootContainer;
     }
 
     /**

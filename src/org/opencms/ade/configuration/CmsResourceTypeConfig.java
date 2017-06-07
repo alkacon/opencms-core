@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
@@ -93,11 +94,17 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** True if this is a disabled configuration. */
     private boolean m_disabled;
 
+    /** The element delete mode. */
+    private ElementDeleteMode m_elementDeleteMode;
+
     /** The element view id. */
     private CmsUUID m_elementView;
 
     /** A reference to a folder of folder name. */
     private CmsContentFolderDescriptor m_folderOrName;
+
+    /** The bundle to add as workplace bundle for the resource type. */
+    private String m_localization;
 
     /** The name pattern .*/
     private String m_namePattern;
@@ -131,7 +138,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             CmsElementView.DEFAULT_ELEMENT_VIEW.getId(),
             null,
             null,
-            I_CmsConfigurationObject.DEFAULT_ORDER);
+            null,
+            I_CmsConfigurationObject.DEFAULT_ORDER,
+            null);
     }
 
     /**
@@ -144,8 +153,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param addDisabled true if adding elements of this type via ADE should be disabled
      * @param elementView the element view id
+     * @param localization the base name of the bundle to add as workplace bundle for the resource type
      * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it
      * @param copyInModels if elements of this type when used in models should be copied instead of reused
+     * @param elementDeleteMode the element delete mode
      *
      * @param order the number used for sorting resource types from modules
      */
@@ -157,9 +168,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         boolean detailPagesDisabled,
         boolean addDisabled,
         CmsUUID elementView,
+        String localization,
         Boolean showInDefaultView,
         Boolean copyInModels,
-        int order) {
+        int order,
+        ElementDeleteMode elementDeleteMode) {
 
         m_typeName = typeName;
         m_disabled = disabled;
@@ -168,9 +181,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_detailPagesDisabled = detailPagesDisabled;
         m_addDisabled = addDisabled;
         m_elementView = elementView;
+        m_localization = localization;
         m_showInDefaultView = showInDefaultView;
         m_copyInModels = copyInModels;
         m_order = order;
+        m_elementDeleteMode = elementDeleteMode;
     }
 
     /**
@@ -196,8 +211,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         }
         checkInitialized();
         String folderPath = getFolderPath(cms, pageFolderRootPath);
-        CmsObject createCms = OpenCms.initCmsObject(m_cms);
-        createCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
         String oldSiteRoot = cms.getRequestContext().getSiteRoot();
         cms.getRequestContext().setSiteRoot("");
         //tryToUnlock(cms, folderPath);
@@ -302,9 +315,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         checkOffline(cms);
         checkInitialized();
         String folderPath = getFolderPath(cms, pageFolderRootPath);
-        CmsObject folderCreateCms = OpenCms.initCmsObject(m_cms);
-        folderCreateCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
-        createFolder(folderCreateCms, folderPath);
+        createFolder(cms, folderPath);
         String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
         builder.setSiteRoot("");
         builder.setPatternPath(destination);
@@ -320,13 +331,15 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      *
      * @throws CmsException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public void createFolder(CmsObject cms, String rootPath) throws CmsException {
 
-        cms.getRequestContext().setSiteRoot("");
+        CmsObject rootCms = OpenCms.initCmsObject(cms);
+        rootCms.getRequestContext().setSiteRoot("");
         List<String> parents = new ArrayList<String>();
         String currentPath = rootPath;
         while (currentPath != null) {
-            if (cms.existsResource(currentPath)) {
+            if (rootCms.existsResource(currentPath)) {
                 break;
             }
             parents.add(currentPath);
@@ -335,9 +348,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         parents = Lists.reverse(parents);
         for (String parent : parents) {
             try {
-                cms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
+                rootCms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
                 try {
-                    cms.unlockResource(parent);
+                    rootCms.unlockResource(parent);
                 } catch (CmsException e) {
                     // may happen if parent folder is locked also
                     if (LOG.isInfoEnabled()) {
@@ -368,9 +381,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         checkInitialized();
         CmsObject rootCms = rootCms(userCms);
         String folderPath = getFolderPath(userCms, pageFolderRootPath);
-        CmsObject folderCreateCms = OpenCms.initCmsObject(m_cms);
-        folderCreateCms.getRequestContext().setCurrentProject(userCms.getRequestContext().getCurrentProject());
-        createFolder(folderCreateCms, folderPath);
+        createFolder(userCms, folderPath);
         String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
         String creationPath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(rootCms, destination, 5);
         // set the content locale
@@ -407,7 +418,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public CmsResource createNewElement(CmsObject userCms, String pageFolderRootPath) throws CmsException {
 
-        return createNewElement(userCms, null, null);
+        return createNewElement(userCms, null, pageFolderRootPath);
     }
 
     /**
@@ -436,6 +447,25 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Returns the bundle that is configured as workplace bundle for the resource type, or <code>null</code> if none is configured.
+     * @return the bundle that is configured as workplace bundle for the resource type, or <code>null</code> if none is configured.
+     */
+    public String getConfiguredWorkplaceBundle() {
+
+        return m_localization;
+    }
+
+    /**
+     * Gets the element delete mode.<p>
+     *
+     * @return the element delete mode
+     */
+    public ElementDeleteMode getElementDeleteMode() {
+
+        return m_elementDeleteMode;
+    }
+
+    /**
      * Returns the element view id.<p>
      *
      * @return the element view id
@@ -459,10 +489,14 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         if (m_folderOrName != null) {
             return m_folderOrName.getFolderPath(cms, pageFolderRootPath);
         } else {
-            return CmsStringUtil.joinPaths(
-                cms.getRequestContext().getSiteRoot(),
-                CmsADEManager.CONTENT_FOLDER_NAME,
-                m_typeName);
+            String siteRoot = null;
+            if (pageFolderRootPath != null) {
+                siteRoot = OpenCms.getSiteManager().getSiteRoot(pageFolderRootPath);
+            }
+            if (siteRoot == null) {
+                siteRoot = cms.getRequestContext().getSiteRoot();
+            }
+            return CmsStringUtil.joinPaths(siteRoot, CmsADEManager.CONTENT_FOLDER_NAME, m_typeName);
         }
     }
 
@@ -552,7 +586,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public boolean isCopyInModels() {
 
-        return (m_copyInModels != null) && m_copyInModels.booleanValue();
+        return (m_copyInModels == null) || m_copyInModels.booleanValue();
     }
 
     /**
@@ -629,6 +663,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         ? childConfig.m_showInDefaultView
         : m_showInDefaultView;
         Boolean copyInModels = childConfig.m_copyInModels != null ? childConfig.m_copyInModels : m_copyInModels;
+        ElementDeleteMode deleteMode = childConfig.m_elementDeleteMode != null
+        ? childConfig.m_elementDeleteMode
+        : m_elementDeleteMode;
 
         CmsResourceTypeConfig result = new CmsResourceTypeConfig(
             m_typeName,
@@ -638,9 +675,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
             childConfig.isAddDisabled(),
             elementView,
+            m_localization,
             showInDefaultView,
             copyInModels,
-            m_order);
+            m_order,
+            deleteMode);
         if (childConfig.isDisabled()) {
             result.m_disabled = true;
         }
@@ -674,9 +713,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_detailPagesDisabled,
             isAddDisabled(),
             m_elementView,
+            m_localization,
             m_showInDefaultView,
             m_copyInModels,
-            m_order);
+            m_order,
+            m_elementDeleteMode);
     }
 
     /**

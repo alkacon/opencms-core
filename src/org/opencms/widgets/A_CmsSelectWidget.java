@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -134,20 +134,10 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
         CmsResource resource,
         Locale contentLocale) {
 
-        String result = "";
         CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(messages.getLocale(), messages);
         widgetDialog.setResource(resource);
         List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, schemaType);
-        Iterator<CmsSelectWidgetOption> it = options.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            CmsSelectWidgetOption option = it.next();
-            if (i > 0) {
-                result += "|";
-            }
-            result += option.toString();
-            i++;
-        }
+        String result = optionsToConfigurationString(options);
         return result;
     }
 
@@ -374,6 +364,27 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
         m_selectOptions = new ArrayList<CmsSelectWidgetOption>();
         m_selectOptions.addAll(selectOptions);
+    }
+
+    /**
+     * Converts a list of select widget options to the configuration string as expected on the client side of the widget.
+     * @param options the options to convert
+     * @return the configuration String as expected on the client side of the widget.
+     */
+    String optionsToConfigurationString(final List<CmsSelectWidgetOption> options) {
+
+        String result = "";
+        Iterator<CmsSelectWidgetOption> it = options.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            CmsSelectWidgetOption option = it.next();
+            if (i > 0) {
+                result += "|";
+            }
+            result += option.toString();
+            i++;
+        }
+        return result;
     }
 
 }

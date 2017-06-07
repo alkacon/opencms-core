@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -40,11 +40,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Lucene document factory class to extract index data from a cms resource
@@ -80,7 +79,7 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
 
             List<String> elements = page.getNames(locale);
             StringBuffer content = new StringBuffer();
-            Map<String, String> items = new HashMap<String, String>();
+            LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
             for (Iterator<String> i = elements.iterator(); i.hasNext();) {
                 String elementName = i.next();
                 String value = page.getStringValue(cms, elementName, locale);

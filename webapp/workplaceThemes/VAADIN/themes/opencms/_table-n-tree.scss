@@ -10,24 +10,102 @@
   	opacity: 1;
   }
   
-  div.v-tree-node-caption:hover span, div.v-tree-node-caption-drag-center span{
+  div.v-tree-node-caption span.o-resource-icon, div.v-table-cell-wrapper  span.o-resource-icon{
+  	margin: 0 2px 0 -6px;
+  }
+  
+  div.v-tree-node-caption > div > span{
+  	position: relative;
+  	&:before{
+	  	content:"";
+	  	position: absolute;
+	  	top:0;
+	  	left: 0;
+	  	right: 0;
+	  	bottom: 0;
+	  	opacity: 0;
+	  	z-index: 10;
+  	}
+  }
+  
+  .v-tree-node div.v-tree-node-caption span, div.v-tree-node-caption-drag-center span{
+  	width: 100%;
+  }
+  
+  div.v-tree-node-caption:hover span.o-tree-caption, div.v-tree-node-caption-drag-center span.o-tree-caption{
   	color: #ffffff;
   	position: relative;
   	z-index: 1;
   	&:before{
   		content: "";
   		position: absolute;
-  		top: 4px;
+  		top: 5px;
   		left: -3px;
   		right: 95px;
-  		bottom: 3px;
+  		bottom: 2px;
   		z-index: -1;
   		background: $v-selection-color;
   		border-radius: $v-border-radius;
   	}
   }
+  span.v-treetable-treespacer{
+  	line-height: $v-tree-row-height;
+  	color: $v-font-color;
+  	&:after{
+  		content: "";
+  		position: absolute;
+  		top: 0;
+  		left: -200px;
+  		right: 0;
+  		bottom: 0;
+  	}
+  }
+  div.o-tree-table-caption{
+  	width: 100%;
+  	
+  	span.o-resource-icon{
+  		float: left;
+  	}
+  	span.o-tree-caption{
+  		display: block;
+    	height: $v-tree-row-height;
+    	line-height: $v-tree-row-height;
+    	padding-left: 30px;
+    	width: 100%;
+    	position: relative;
+  		z-index: 1;
+  	}
+  	
+  	&:hover span.o-tree-caption{
+  		color: #ffffff;
+  		&:before{
+  		content: "";
+  		position: absolute;
+  		top: 4px;
+  		left: 26px;
+  		right: 24px;
+  		bottom: 4px;
+  		z-index: -1;
+  		background: $v-selection-color;
+  		border-radius: $v-border-radius;
+  	}
+  	}
+  }
+  .opencms .v-table-row:hover > .v-table-cell-content, .opencms .v-table-row-odd:hover > .v-table-cell-content, .opencms .v-table-row > .v-table-cell-content, .opencms .v-table-row-odd > .v-table-cell-content{
+  	&.o-disabled{
+  		background: $o-medium-background-color;
+  		
+  		div.o-tree-table-caption:hover span.o-tree-caption{
+  			color: inherit;
+  			&:before{
+  				display: none;
+  			}
+  		}
+  	}
   
-  div.v-tree-node-selected.v-tree-node-caption:hover span:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span:before{
+  }
+  
+  div.v-tree-node-selected.v-tree-node-caption:hover span.o-tree-caption:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span.o-tree-caption:before{
   	background: lighten($v-selection-color,10%);
   }
   
@@ -46,19 +124,19 @@
   	color: $font-color;
   }
   
-  .v-tree-node-caption-o-state-deleted {
+  .v-tree-node-caption-o-state-deleted, .v-table-cell-content-o-state-deleted {
 		text-decoration: line-through;
 	}
   
-	.v-tree-node-caption-o-state-changed {
+	.v-tree-node-caption-o-state-changed, .v-table-cell-content-o-state-changed.o-name-column{
 		color: $o-state-changed-color;
 	}
   
-	.v-tree-node-caption-o-state-new {
+	.v-tree-node-caption-o-state-new, .v-table-cell-content-o-state-new.o-name-column{
 		color: $o-state-new-color;
 	}
   
-	.v-tree-node-caption.o-disabled, .v-tree-node-caption-o-project-other {
+	.v-tree-node-caption.o-disabled, .v-tree-node-caption-o-project-other, .v-table-cell-content-o-disabled.o-name-column, .v-table-cell-content-o-project-other.o-name-column{
 		color: $o-state-other-project-color;
 	}
 }
@@ -113,40 +191,73 @@
   .v-table .v-table-row-odd{
     background-color: $o-medium-background-color;
   }
-  
-  .v-table .o-hover-column:hover div{
-  	color: #ffffff;
-  	position: relative;
-  	z-index: 1;
-  	&:before{
-  		content:"";
-  		background: $v-selection-color;
-  		position: absolute;
-  		top:-5px;
-  		left:4px;
-  		right:4px;
-  		bottom: -5px;
-  		z-index: -1;
-  		border-radius: $v-border-radius;
-  	}
+  .v-table.v-table-no-stripes .v-table-row-odd{
+    background-color: transparent;
   }
-  .v-table .v-selected .o-hover-column:hover div:before{
-  	background: lighten($v-selection-color,10%);
+  
+  .v-table .o-hover-column, .v-table .v-table-cell-content-o-hover-column {
+  	&:hover div{
+	  	color: #ffffff;
+	  	position: relative;
+	  	z-index: 1;
+	  	&:before{
+	  		content:"";
+	  		background: $v-selection-color;
+	  		position: absolute;
+	  		top:-5px;
+	  		left:4px;
+	  		right:4px;
+	  		bottom: -5px;
+	  		z-index: -1;
+	  		border-radius: $v-border-radius;
+	  	}
+	}
+  }
+  
+  .v-table 	.o-in-navigation div{
+		font-weight: 800;
+  }
+  .v-table .v-selected .o-hover-column{
+  	color: inherit;
+  	&:hover div:before{
+  		background: lighten($v-selection-color,10%);
+  	}
   }
   
   .v-table-row-o-state-deleted {
 		text-decoration: line-through;
 	}
   
-	.v-table-row-o-state-changed {
+	.v-table-row-o-state-changed .o-hover-column {
 		color: $o-state-changed-color;
 	}
   
-	.v-table-row-o-state-new {
+	.v-table-row-o-state-new .o-hover-column {
 		color: $o-state-new-color;
 	}
   
 	.v-table-row-o-project-other {
 		color: $o-state-other-project-color;
+	}
+	
+	/* Data view table styles */
+	.o-wrap-table .v-table-cell-wrapper {
+		white-space: normal !important; 
+	}
+	
+	.o-wrap-table .v-table-body-wrapper {
+		overflow-y: auto !important;
+	}
+	
+	.o-table-image { 
+		max-width: 200px; 
+		max-height: 200px;
+		width: auto;
+		height: auto;
+		display: block; 
+	}
+	
+	.o-table-cell-padding .v-table-cell-wrapper { 
+		padding: 10px 10px; 
 	}
 }

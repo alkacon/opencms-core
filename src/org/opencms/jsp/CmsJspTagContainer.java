@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -36,6 +36,8 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -44,6 +46,7 @@ import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContext;
@@ -53,6 +56,7 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -73,9 +77,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -86,6 +92,8 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.base.Optional;
 
 /**
  * Provides access to the page container elements.<p>
@@ -114,6 +122,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1228397990961282556L;
 
+    /** Use this locale string for locale independent detail only container resources. */
+    public static final String LOCALE_ALL = "ALL";
+
     /** The evaluated body content if available. */
     private String m_bodyContent;
 
@@ -126,11 +137,20 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /** The editable by tag attribute. A comma separated list of OpenCms principals. */
     private String m_editableBy;
 
+    /** Indicating that the container page editor is active for the current request. */
+    private boolean m_editableRequest;
+
     /** The maxElements attribute value. */
     private String m_maxElements;
 
     /** The name attribute value. */
     private String m_name;
+
+    /**
+     * The container name prefix to use for nested container names.
+     * If empty the element instance id of the parent element will be used.
+     **/
+    private String m_namePrefix;
 
     /** The optional container parameter. */
     private String m_param;
@@ -152,9 +172,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /** The container width as a string. */
     private String m_width;
-
-    /** Indicating that the container page editor is active for the current request. */
-    private boolean m_editableRequest;
 
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
@@ -202,6 +219,33 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
+     * Returns the detail container resource locale appropriate for the given detail page.<p>
+     *
+     * @param cms the cms context
+     * @param contentLocale the content locale
+     * @param resource the detail page resource
+     *
+     * @return the locale String
+     */
+    public static String getDetailContainerLocale(CmsObject cms, String contentLocale, CmsResource resource) {
+
+        boolean singleLocale = CmsJspTagContainer.useSingleLocaleDetailContainers(
+            cms.getRequestContext().getSiteRoot());
+        if (!singleLocale) {
+            try {
+                CmsProperty prop = cms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_LOCALE_INDEPENDENT_DETAILS,
+                    true);
+                singleLocale = Boolean.parseBoolean(prop.getValue());
+            } catch (Exception e) {
+                LOG.warn(e.getMessage(), e);
+            }
+        }
+        return singleLocale ? CmsJspTagContainer.LOCALE_ALL : contentLocale;
+    }
+
+    /**
      * Returns the path to the associated detail content.<p>
      *
      * @param detailContainersPage the detail containers page path
@@ -214,6 +258,35 @@ public class CmsJspTagContainer extends BodyTagSupport {
         String parentFolder = CmsResource.getParentFolder(detailContainersPage);
         detailName = CmsStringUtil.joinPaths(CmsResource.getParentFolder(parentFolder), detailName);
         return detailName;
+    }
+
+    /**
+     * Gets the detail only page for a detail content.<p>
+     *
+     * @param cms the CMS context
+     * @param detailContent the detail content
+     * @param contentLocale the content locale
+     *
+     * @return the detail only page, or Optional.absent() if there is no detail only page
+     */
+    public static Optional<CmsResource> getDetailOnlyPage(
+        CmsObject cms,
+        CmsResource detailContent,
+        String contentLocale) {
+
+        try {
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            String path = getDetailOnlyPageName(detailContent.getRootPath(), contentLocale);
+            if (rootCms.existsResource(path, CmsResourceFilter.ALL)) {
+                CmsResource detailOnlyRes = rootCms.readResource(path, CmsResourceFilter.ALL);
+                return Optional.of(detailOnlyRes);
+            }
+            return Optional.absent();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return Optional.absent();
+        }
     }
 
     /**
@@ -233,13 +306,28 @@ public class CmsJspTagContainer extends BodyTagSupport {
             try {
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
+                String locale = getDetailContainerLocale(
+                    cms,
+                    cms.getRequestContext().getLocale().toString(),
+                    cms.readResource(cms.getRequestContext().getUri()));
 
-                String resourceName = getDetailOnlyPageName(standardContext.getDetailContent().getRootPath());
+                String resourceName = getDetailOnlyPageName(standardContext.getDetailContent().getRootPath(), locale);
+                CmsResource resource = null;
                 if (rootCms.existsResource(resourceName)) {
-                    CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
-                        rootCms,
-                        rootCms.readResource(resourceName),
-                        req);
+                    resource = rootCms.readResource(resourceName);
+                } else {
+                    // check if the deprecated locale independent detail container page exists
+                    resourceName = getDetailOnlyPageName(standardContext.getDetailContent().getRootPath(), null);
+                    if (rootCms.existsResource(resourceName)) {
+                        resource = rootCms.readResource(resourceName);
+                    }
+                }
+
+                CmsXmlContainerPage xmlContainerPage = null;
+                if (resource != null) {
+                    xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(rootCms, resource, req);
+                }
+                if (xmlContainerPage != null) {
                     detailOnlyPage = xmlContainerPage.getContainerPage(rootCms);
                     standardContext.setDetailOnlyPage(detailOnlyPage);
                 }
@@ -254,16 +342,56 @@ public class CmsJspTagContainer extends BodyTagSupport {
      * Returns the site path to the detail only container page.<p>
      *
      * @param detailContentSitePath the detail content site path
+     * @param contentLocale the content locale
      *
      * @return the site path to the detail only container page
      */
-    public static String getDetailOnlyPageName(String detailContentSitePath) {
+    public static String getDetailOnlyPageName(String detailContentSitePath, String contentLocale) {
 
         String result = CmsResource.getFolderPath(detailContentSitePath);
-        result = CmsStringUtil.joinPaths(
-            result,
-            DETAIL_CONTAINERS_FOLDER_NAME,
-            CmsResource.getName(detailContentSitePath));
+        if (contentLocale != null) {
+            result = CmsStringUtil.joinPaths(
+                result,
+                DETAIL_CONTAINERS_FOLDER_NAME,
+                contentLocale.toString(),
+                CmsResource.getName(detailContentSitePath));
+        } else {
+            result = CmsStringUtil.joinPaths(
+                result,
+                DETAIL_CONTAINERS_FOLDER_NAME,
+                CmsResource.getName(detailContentSitePath));
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of detail only container pages associated with the given resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     *
+     * @return the list of detail only container pages
+     */
+    public static List<CmsResource> getDetailOnlyResources(CmsObject cms, CmsResource resource) {
+
+        List<CmsResource> result = new ArrayList<CmsResource>();
+        Set<String> resourcePaths = new HashSet<String>();
+        String sitePath = cms.getSitePath(resource);
+        for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
+            resourcePaths.add(getDetailOnlyPageName(sitePath, locale.toString()));
+        }
+        // in case the deprecated locale less detail container resource exists
+        resourcePaths.add(getDetailOnlyPageName(sitePath, null));
+        // add the locale independent detail container resource
+        resourcePaths.add(getDetailOnlyPageName(sitePath, LOCALE_ALL));
+        for (String path : resourcePaths) {
+            try {
+                CmsResource detailContainers = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+                result.add(detailContainers);
+            } catch (CmsException e) {
+                // will happen in case resource does not exist, ignore
+            }
+        }
         return result;
     }
 
@@ -413,6 +541,24 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
+     * Checks whether single locale detail containers should be used for the given site root.<p>
+     *
+     * @param siteRoot the site root to check
+     *
+     * @return <code>true</code> if single locale detail containers should be used for the given site root
+     */
+    public static boolean useSingleLocaleDetailContainers(String siteRoot) {
+
+        boolean result = false;
+        if ((siteRoot != null)
+            && (OpenCms.getLocaleManager().getLocaleHandler() instanceof CmsSingleTreeLocaleHandler)) {
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+            result = (site != null) && CmsSite.LocalizationMode.singleTree.equals(site.getLocalizationMode());
+        }
+        return result;
+    }
+
+    /**
      * Creates the closing tag for the container.<p>
      *
      * @param tagName the tag name
@@ -544,6 +690,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         getName(),
                         getType(),
                         m_parentElement != null ? m_parentElement.getInstanceId() : null,
+                        (m_parentContainer == null) || (m_detailOnly && !m_parentContainer.isDetailOnly()),
                         maxElements,
                         Collections.<CmsContainerElementBean> emptyList());
                 }
@@ -583,7 +730,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 List<CmsContainerElementBean> allElements = new ArrayList<CmsContainerElementBean>();
                 CmsContainerElementBean detailElement = null;
                 if (isUsedAsDetailView) {
-                    detailElement = generateDetailViewElement(cms, detailContent);
+                    detailElement = generateDetailViewElement(cms, detailContent, container);
                 }
                 if (detailElement != null) {
                     allElements.add(detailElement);
@@ -689,16 +836,28 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
-     * Returns the name attribute value.<p>
+     * Returns the container name, in case of nested containers with a prefix to guaranty uniqueness.<p>
      *
-     * @return String the name attribute value
+     * @return String the container name
      */
     public String getName() {
 
         if (isNested()) {
-            return m_parentElement.getInstanceId() + "-" + m_name;
+            return (CmsStringUtil.isEmptyOrWhitespaceOnly(m_namePrefix)
+            ? m_parentElement.getInstanceId()
+            : m_namePrefix) + "-" + m_name;
         }
         return m_name;
+    }
+
+    /**
+     * Returns the name prefix.<p>
+     *
+     * @return the namePrefix
+     */
+    public String getNameprefix() {
+
+        return m_namePrefix;
     }
 
     /**
@@ -806,6 +965,16 @@ public class CmsJspTagContainer extends BodyTagSupport {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the name prefix.<p>
+     *
+     * @param namePrefix the name prefix to set
+     */
+    public void setNameprefix(String namePrefix) {
+
+        m_namePrefix = namePrefix;
     }
 
     /**
@@ -1049,10 +1218,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
      *
      * @param cms the CMS context
      * @param detailContent the detail content resource
+     * @param container the container
      *
      * @return the detail view element
      */
-    private CmsContainerElementBean generateDetailViewElement(CmsObject cms, CmsResource detailContent) {
+    private CmsContainerElementBean generateDetailViewElement(
+        CmsObject cms,
+        CmsResource detailContent,
+        CmsContainerBean container) {
 
         CmsContainerElementBean element = null;
         if (detailContent != null) {
@@ -1066,6 +1239,19 @@ public class CmsJspTagContainer extends BodyTagSupport {
             if (formatter != null) {
                 // use structure id as the instance id to enable use of nested containers
                 Map<String, String> settings = new HashMap<String, String>();
+                if (!container.getElements().isEmpty()) {
+                    // in case the first element in the container is of the same type as the detail content, transfer it's settings
+                    CmsContainerElementBean el = container.getElements().get(0);
+                    try {
+                        el.initResource(cms);
+                        if (el.getResource().getTypeId() == detailContent.getTypeId()) {
+                            settings.putAll(el.getIndividualSettings());
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
                 settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, detailContent.getStructureId().toString());
                 // create element bean
                 element = new CmsContainerElementBean(
@@ -1153,7 +1339,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
-     * Returns the ADE session cache for container elements.<p>
+     * Returns the ADE session cache for container elements in case of an editable request, otherwise <code>null</code>.<p>
      *
      * @param cms the cms context
      *
@@ -1161,7 +1347,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
      */
     private CmsADESessionCache getSessionCache(CmsObject cms) {
 
-        return CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms);
+        return m_editableRequest
+        ? CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms)
+        : null;
     }
 
     /**

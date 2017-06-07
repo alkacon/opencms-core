@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,7 @@ import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsNotificationWidget;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -133,14 +134,17 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
     /** Flag which indicates that the formats from this object should have priority. */
     private boolean m_overrideFormats;
 
+    /** The preview visible style. */
+    private CmsStyleVariable m_previewVisibility;
+
+    /** Flag indicating if the resource preview is visible. */
+    private boolean m_previewVisible;
+
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
 
     /** The Full-text search tab. */
     private CmsSearchTab m_searchTab;
-
-    //    /** The show preview button. */
-    //    private CmsPushButton m_showPreview;
 
     /** The sitemap tab. */
     private CmsSitemapTab m_sitemapTab;
@@ -159,9 +163,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /** The dialog width. */
     private int m_width;
-
-    /** Flag indicating if the resource preview is visible. */
-    private boolean m_previewVisible;
 
     /**
      * The constructor.<p>
@@ -188,6 +189,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         // parent widget
         m_parentPanel = new FlowPanel();
         m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().parentPanel());
+        m_previewVisibility = new CmsStyleVariable(m_parentPanel);
+        m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
         m_dialogElementId = HTMLPanel.createUniqueId();
         m_parentPanel.getElement().setId(m_dialogElementId);
         // set the default height of the dialog
@@ -662,12 +665,14 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
     public void setPreviewVisible(boolean visible) {
 
         m_previewVisible = visible;
-        m_tabbedPanel.setVisible(!m_previewVisible);
         if (m_previewVisible) {
             useMaxDimensions();
-            m_parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+            m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewVisible());
+            if (m_galleryHandler instanceof CmsGalleryPopup) {
+                ((CmsGalleryPopup)m_galleryHandler).center();
+            }
         } else {
-            m_parentPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+            m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
             updateSizes();
         }
     }

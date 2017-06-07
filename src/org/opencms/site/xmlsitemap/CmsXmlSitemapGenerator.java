@@ -54,6 +54,8 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -173,6 +175,9 @@ public class CmsXmlSitemapGenerator {
     /** A link to the site root. */
     protected String m_siteRootLink;
 
+    /** Configured replacement server URL. */
+    private String m_serverUrl;
+
     /**
      * Creates a new sitemap generator instance.<p>
      *
@@ -193,6 +198,38 @@ public class CmsXmlSitemapGenerator {
         m_baseFolderSitePath = CmsStringUtil.joinPaths(
             "/",
             m_siteGuestCms.getRequestContext().removeSiteRoot(m_baseFolderRootPath));
+    }
+
+    /**
+     * Replaces the protocol/host/port of a link with the ones from the given server URI, if it's not empty.<p>
+     *
+     * @param link the link to change
+     * @param server the server URI string
+    
+     * @return the changed link
+     */
+    public static String replaceServerUri(String link, String server) {
+
+        String serverUriStr = server;
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(serverUriStr)) {
+            return link;
+        }
+        try {
+            URI serverUri = new URI(serverUriStr);
+            URI linkUri = new URI(link);
+            URI result = new URI(
+                serverUri.getScheme(),
+                serverUri.getAuthority(),
+                linkUri.getPath(),
+                linkUri.getQuery(),
+                linkUri.getFragment());
+            return result.toString();
+        } catch (URISyntaxException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return link;
+        }
+
     }
 
     /**
@@ -278,7 +315,7 @@ public class CmsXmlSitemapGenerator {
                 }
             }
             CmsXmlSitemapUrlBean urlBean = new CmsXmlSitemapUrlBean(
-                onlineLink,
+                replaceServerUri(onlineLink),
                 dateModified,
                 getChangeFrequency(propertyList),
                 getPriority(propertyList));
@@ -343,6 +380,18 @@ public class CmsXmlSitemapGenerator {
     }
 
     /**
+     * Sets the replacement server URL.<p>
+     *
+     * The replacement server URL will replace the scheme/host/port from the URLs returned by getOnlineLink.
+     *
+     * @param serverUrl the server URL
+     */
+    public void setServerUrl(String serverUrl) {
+
+        m_serverUrl = serverUrl;
+    }
+
+    /**
      * Adds the detail page links for a given page to the results.<p>
      *
      * @param containerPage the container page resource
@@ -363,7 +412,7 @@ public class CmsXmlSitemapGenerator {
                 String detailLink = getDetailLink(containerPage, detailRes, locale);
                 detailLink = CmsFileUtil.removeTrailingSeparator(detailLink);
                 CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
-                    detailLink,
+                    replaceServerUri(detailLink),
                     detailRes.getDateLastModified(),
                     getChangeFrequency(detailProps),
                     getPriority(detailProps));
@@ -550,6 +599,16 @@ public class CmsXmlSitemapGenerator {
 
         List<CmsResource> result = new ArrayList<CmsResource>();
         CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(m_siteGuestCms);
+        try {
+            CmsResource rootDefaultFile = m_siteGuestCms.readDefaultFile(
+                m_siteGuestCms.getRequestContext().removeSiteRoot(m_baseFolderRootPath),
+                CmsResourceFilter.DEFAULT);
+            if (rootDefaultFile != null) {
+                result.add(rootDefaultFile);
+            }
+        } catch (Exception e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        }
         List<CmsJspNavElement> navElements = navBuilder.getSiteNavigation(m_baseFolderSitePath, -1);
         for (CmsJspNavElement navElement : navElements) {
             CmsResource navResource = navElement.getResource();
@@ -611,6 +670,18 @@ public class CmsXmlSitemapGenerator {
     }
 
     /**
+     * Replaces the protocol/host/port of a link with the ones from the configured server URI, if it's not empty.<p>
+     *
+     * @param link the link to change
+     *
+     * @return the changed link
+     */
+    protected String replaceServerUri(String link) {
+
+        return replaceServerUri(link, m_serverUrl);
+    }
+
+    /**
      * Adds the alias links for a given structure id to the results.<p>
      *
      * @param aliasStructureId the alias target structure id
@@ -625,7 +696,11 @@ public class CmsXmlSitemapGenerator {
             Collection<CmsAlias> aliases = m_pageAliasesBelowBaseFolderByStructureId.get(aliasStructureId);
             for (CmsAlias alias : aliases) {
                 String aliasLink = (m_siteRootLink + "/" + alias.getAliasPath()).replaceAll("(?<!:)//+", "/");
-                CmsXmlSitemapUrlBean aliasUrlBean = new CmsXmlSitemapUrlBean(aliasLink, -1, changeFrequency, priority);
+                CmsXmlSitemapUrlBean aliasUrlBean = new CmsXmlSitemapUrlBean(
+                    replaceServerUri(aliasLink),
+                    -1,
+                    changeFrequency,
+                    priority);
                 aliasUrlBean.setOriginalResource(aliasTarget);
                 addResult(aliasUrlBean, 1);
             }

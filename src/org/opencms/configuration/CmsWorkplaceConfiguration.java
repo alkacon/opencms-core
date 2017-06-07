@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -27,6 +27,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.configuration.preferences.I_CmsPreference;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -369,6 +370,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** Node name. */
     public static final String N_GALLERY_DEFAULT_SCOPE = "gallery-default-scope";
+
+    /** The element delete mode node name. */
+    public static final String N_ELEMENT_DELETE_MODE = "element-delete-mode";
 
     /** The node name of the group-translation node. */
     public static final String N_GROUP_TRANSLATION = "group-translation";
@@ -937,6 +941,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_GALLERY_DEFAULT_SCOPE, "setGalleryDefaultScope", 0);
 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_ELEMENT_DELETE_MODE, "setElementDeleteMode", 0);
+
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_USER_LISTS, "setUserListMode", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_USER_LISTS, 0, A_MODE);
 
@@ -1408,6 +1414,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         if (defaultScope != null) {
             workplaceElement.addElement(N_GALLERY_DEFAULT_SCOPE).setText(defaultScope);
         }
+        ElementDeleteMode deleteMode = m_workplaceManager.getElementDeleteMode();
+        if (deleteMode != null) {
+            workplaceElement.addElement(N_ELEMENT_DELETE_MODE).setText(deleteMode.name());
+        }
 
         // return the configured node
         return workplaceElement;
@@ -1517,45 +1527,36 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL,
             "setDefaultAccess");
 
-        digester.addCallMethod(
-            "*/"
-                + N_WORKPLACE
-                + "/"
-                + N_EXPLORERTYPES
-                + "/"
-                + N_DEFAULTACCESSCONTROL
-                + "/"
-                + N_ACCESSCONTROL
-                + "/"
-                + N_ACCESSENTRY,
-            "addAccessEntry",
-            2);
-        digester.addCallParam(
-            "*/"
-                + N_WORKPLACE
-                + "/"
-                + N_EXPLORERTYPES
-                + "/"
-                + N_DEFAULTACCESSCONTROL
-                + "/"
-                + N_ACCESSCONTROL
-                + "/"
-                + N_ACCESSENTRY,
-            0,
-            A_PRINCIPAL);
-        digester.addCallParam(
-            "*/"
-                + N_WORKPLACE
-                + "/"
-                + N_EXPLORERTYPES
-                + "/"
-                + N_DEFAULTACCESSCONTROL
-                + "/"
-                + N_ACCESSCONTROL
-                + "/"
-                + N_ACCESSENTRY,
-            1,
-            A_PERMISSIONS);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_DEFAULTACCESSCONTROL
+            + "/"
+            + N_ACCESSCONTROL
+            + "/"
+            + N_ACCESSENTRY, "addAccessEntry", 2);
+        digester.addCallParam("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_DEFAULTACCESSCONTROL
+            + "/"
+            + N_ACCESSCONTROL
+            + "/"
+            + N_ACCESSENTRY, 0, A_PRINCIPAL);
+        digester.addCallParam("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_DEFAULTACCESSCONTROL
+            + "/"
+            + N_ACCESSCONTROL
+            + "/"
+            + N_ACCESSENTRY, 1, A_PERMISSIONS);
     }
 
     /**

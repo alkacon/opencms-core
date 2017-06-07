@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,11 +36,12 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsFieldSet;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -51,12 +52,14 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
+import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
@@ -110,6 +113,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         }
     }
 
+    /** The hidden field widget name. */
+    private static final String HIDDEN_FIELD_WIDGET = "hidden";
+
     /** The template context changed flag. */
     private boolean m_changedContext;
 
@@ -123,7 +129,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     private CmsMultiCheckBox m_contextsWidget;
 
     /** The container page controller. */
-    private CmsContainerpageController m_controller;
+    CmsContainerpageController m_controller;
 
     /** Checkbox to set the 'createNew' status. */
     private CmsCheckBox m_createNewCheckBox;
@@ -140,14 +146,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** The break up model group checkbox. */
     private CmsCheckBox m_modelGroupBreakUp;
 
-    /** The is model group description field. */
-    private CmsTextBox m_modelGroupDescription;
-
     /** Checkbox to set the 'model group' status. */
-    private CmsSelectBox m_modelGroupSelect;
-
-    /** The is model group title field. */
-    private CmsTextBox m_modelGroupTitle;
+    CmsSelectBox m_modelGroupSelect;
 
     /** The element setting values. */
     private Map<String, String> m_settings;
@@ -176,9 +176,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         infoBean.setResourceType(elementBean.getResourceType());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
+
         boolean isEditableModelGroup = CmsCoreProvider.get().getUserInfo().isDeveloper()
             && m_controller.getData().isModelGroup()
-            && !m_controller.hasModelGroupChild(elementWidget);
+            && ((m_controller.getModelGroupElementId() == null)
+                || CmsContainerpageController.getServerId(elementBean.getClientId()).equals(
+                    m_controller.getModelGroupElementId()));
         boolean isDeveloper = CmsCoreProvider.get().getUserInfo().isDeveloper();
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
             || isDeveloper
@@ -219,10 +222,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
                 if (isEditableModelGroup && !elementWidget.hasModelGroupParent()) {
                     addModelGroupSettings(elementBean, elementWidget, modelGroupFieldSet);
-                } else {
+                } else if (!elementWidget.isModelGroup()) {
                     addCreateNewCheckbox(elementBean, modelGroupFieldSet);
                 }
-                fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
+                if (modelGroupFieldSet.getWidgetCount() > 0) {
+                    fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
+                }
 
             } else if (elementWidget.isModelGroup()) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
@@ -277,6 +282,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             }
         } else {
             formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
+        }
+        String id = CmsContainerpageController.getServerId(elementBean.getClientId());
+        if (CmsUUID.isValidUUID(id) && !(new CmsUUID(id).isNullUUID())) {
+            CmsContextMenuButton menuButton = new CmsContextMenuButton(new CmsUUID(id), new ContextMenuHandler());
+            menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+            formFieldPanel.getInfoWidget().addButton(menuButton);
         }
         getForm().setWidget(formFieldPanel);
         formFieldPanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
@@ -343,13 +354,18 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         getForm().removeGroup("");
         Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(settingsConfig.values());
         for (I_CmsFormField field : formFields.values()) {
+
             String fieldId = field.getId();
-            String initialValue = m_settings.get(fieldId);
-            if (initialValue == null) {
-                CmsXmlContentProperty propDef = settingsConfig.get(fieldId);
-                initialValue = propDef.getDefault();
+            CmsXmlContentProperty propDef = settingsConfig.get(fieldId);
+            // skip hidden fields
+            if (!HIDDEN_FIELD_WIDGET.equals(propDef.getWidget())) {
+                String initialValue = m_settings.get(fieldId);
+                if (initialValue == null) {
+
+                    initialValue = propDef.getDefault();
+                }
+                getForm().addField(field, initialValue);
             }
-            getForm().addField(field, initialValue);
         }
         getForm().render();
         A_CmsFormFieldPanel formWidget = getForm().getWidget();
@@ -358,21 +374,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         }
         if (getWidth() > 0) {
             getForm().getWidget().truncate("settings_truncation", getWidth() - 12);
-        }
-    }
-
-    /**
-     * Enables the model group title and description fields.<p>
-     *
-     * @param enabled <code>true</code> to enable
-     */
-    void setModelGroupEnabled(boolean enabled) {
-
-        if (m_modelGroupTitle != null) {
-            m_modelGroupTitle.setEnabled(enabled);
-        }
-        if (m_modelGroupDescription != null) {
-            m_modelGroupDescription.setEnabled(enabled);
         }
     }
 
@@ -394,6 +395,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
      */
     @SuppressWarnings("incomplete-switch")
     void submitForm(CmsForm formParam, final Map<String, String> fieldValues, Set<String> editedFields) {
+
+        String modelGroupId = null;
 
         if (CmsInheritanceContainerEditor.getInstance() != null) {
             CmsInheritanceContainerEditor.getInstance().onSettingsEdited();
@@ -436,10 +439,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                     break;
             }
             if (group != GroupOption.disabled) {
-                fieldValues.put(CmsContainerElement.MODEL_GROUP_TITLE, m_modelGroupTitle.getFormValueAsString());
-                fieldValues.put(
-                    CmsContainerElement.MODEL_GROUP_DESCRIPTION,
-                    m_modelGroupDescription.getFormValueAsString());
+                modelGroupId = CmsContainerpageController.getServerId(m_elementBean.getClientId());
             }
         }
 
@@ -455,7 +455,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 filteredFieldValues.put(key, value);
             }
         }
-
+        final String changeModelGroupId = modelGroupId;
         m_controller.reloadElementWithSettings(
             m_elementWidget,
             m_elementBean.getClientId(),
@@ -477,6 +477,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                     if (result.getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER)
                         && !CmsContainerpageController.get().isGroupcontainerEditing()) {
                         CmsContainerpageController.get().reloadPage();
+                    }
+                    if (m_modelGroupSelect != null) {
+                        m_controller.setModelGroupElementId(changeModelGroupId);
                     }
                 }
 
@@ -542,33 +545,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         selectRow.getLabel().setText(Messages.get().key(Messages.GUI_USE_AS_MODEL_GROUP_LABEL_0));
         selectRow.getWidgetContainer().add(m_modelGroupSelect);
         fieldSet.add(selectRow);
-        m_modelGroupSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                GroupOption option = GroupOption.valueOf(event.getValue());
-                setModelGroupEnabled(option != GroupOption.disabled);
-            }
-        });
-        CmsFormRow titleRow = new CmsFormRow();
-        titleRow.getLabel().setText(Messages.get().key(Messages.GUI_MODEL_GROUP_TITLE_0));
-        m_modelGroupTitle = new CmsTextBox();
-        titleRow.getWidgetContainer().add(m_modelGroupTitle);
-        fieldSet.add(titleRow);
-
-        CmsFormRow descriptionRow = new CmsFormRow();
-        descriptionRow.getLabel().setText(Messages.get().key(Messages.GUI_MODEL_GROUP_DESCRIPTION_0));
-        m_modelGroupDescription = new CmsTextBox();
-        descriptionRow.getWidgetContainer().add(m_modelGroupDescription);
-        fieldSet.add(descriptionRow);
-
-        if (elementWidget.isModelGroup()) {
-            m_modelGroupTitle.setFormValueAsString(
-                elementBean.getSettings().get(CmsContainerElement.MODEL_GROUP_TITLE));
-            m_modelGroupDescription.setFormValueAsString(
-                elementBean.getSettings().get(CmsContainerElement.MODEL_GROUP_DESCRIPTION));
-        }
-        setModelGroupEnabled(elementWidget.isModelGroup());
     }
 
     /**

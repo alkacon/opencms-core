@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -30,6 +30,8 @@ package org.opencms.security;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Locale;
+
 /**
  * Default implementation for the validation handler.<p>
  *
@@ -38,7 +40,7 @@ import org.opencms.util.CmsStringUtil;
 public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
     /** The email regular expression. */
-    public static final String EMAIL_REGEX = "^([a-zA-Z0-9_\\.\\-'])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$";
+    public static final String EMAIL_REGEX = "\\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z";
 
     /** The user name constraints. */
     public static final String USERNAME_CONSTRAINTS = "-._~$@";
@@ -56,6 +58,7 @@ public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
         if (CmsStringUtil.isNotEmpty(email)) {
             email = email.trim();
+            email = email.toLowerCase(Locale.ROOT);
         }
         if (!CmsStringUtil.validateRegex(email, EMAIL_REGEX, false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));

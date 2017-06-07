@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -64,6 +64,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.data.Validator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -74,6 +75,33 @@ import com.vaadin.ui.FormLayout;
  * The publish schedule dialog.<p>
  */
 public class CmsPublishScheduledDialog extends CmsBasicDialog {
+
+    /**
+     * Validates the date input.<p>
+     */
+    class DateValidator implements Validator {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            Date date = (Date)value;
+            if (date == null) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_SCHEDULED_DATEEMPTY_0));
+            }
+            if (date.getTime() < new Date().getTime()) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_SCHEDULED_DATENOTFUTURE_0));
+            }
+
+        }
+
+    }
 
     /** The serial version id. */
     private static final long serialVersionUID = 7488454443783670970L;
@@ -146,6 +174,9 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 submit();
             }
         });
+
+        m_dateField.addValidator(new DateValidator());
+
     }
 
     /**
@@ -161,6 +192,9 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
      */
     void submit() {
 
+        if (!m_dateField.isValid()) {
+            return;
+        }
         long current = System.currentTimeMillis();
         Date dateValue = m_dateField.getValue();
         long publishTime = m_dateField.getValue().getTime();
@@ -209,6 +243,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 CmsScheduledJobInfo job = new CmsScheduledJobInfo();
                 // the job name
                 String jobName = tmpProject.getName();
+                jobName = jobName.replace("&#47;", "/");
                 // set the job parameters
                 job.setJobName(jobName);
                 job.setClassName("org.opencms.scheduler.jobs.CmsPublishScheduledJob");
@@ -354,7 +389,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 CmsRole.WORKPLACE_USER.getGroupName(),
                 CmsRole.PROJECT_MANAGER.getGroupName(),
                 CmsProject.PROJECT_TYPE_TEMPORARY);
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             String resName = CmsResource.getName(rootPath);
             if (resName.length() > 64) {
                 resName = resName.substring(0, 64) + "...";

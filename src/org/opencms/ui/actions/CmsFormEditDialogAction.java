@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,6 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
@@ -42,11 +41,7 @@ import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
 
 import com.vaadin.navigator.View;
 import com.vaadin.ui.UI;
@@ -62,29 +57,21 @@ public class CmsFormEditDialogAction extends A_CmsWorkplaceAction {
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.EDIT;
 
-    /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFormEditDialogAction.class);
-
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        String backLink;
-        try {
-            String currentLocation = UI.getCurrent().getPage().getLocation().toString();
-            backLink = URLEncoder.encode(currentLocation, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            backLink = UI.getCurrent().getPage().getLocation().toString();
-        }
         View view = CmsAppWorkplaceUi.get().getCurrentView();
         if (view instanceof CmsAppView) {
             ((CmsAppView)view).setCacheStatus(CacheStatus.cacheOnce);
         }
         CmsAppWorkplaceUi.get().showApp(
             OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
-            CmsEditor.getEditState(context.getResources().get(0).getStructureId(), false, backLink));
+            CmsEditor.getEditState(
+                context.getResources().get(0).getStructureId(),
+                false,
+                UI.getCurrent().getPage().getLocation().toString()));
     }
 
     /**

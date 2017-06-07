@@ -72,9 +72,9 @@ writeProperty '/system/workplace/admin/galleryoverview/tablegallery/' 'internal'
 		]]></import-script>
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains Overviews for every OpenCms gallery types.</p>
-<p><i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
 		<version>10.5.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -190,6 +190,9 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /** The use parent flag, indicates the value should be set in the parent frame, not the window opener. */
     private String m_paramUseparent;
 
+    /** The 'realonly' parameter value.*/
+    private String m_realOnly;
+
     /**
      * Public constructor.<p>
      *
@@ -351,6 +354,18 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     }
 
     /**
+     * Gets the 'realonly parameter'.<p>
+     *
+     * This controls whether pseudo-principals like 'ALL OTHERS' should be shown or not.<p>
+     *
+     * @return the parameter value
+     */
+    public String getParamRealonly() {
+
+        return m_realOnly;
+    }
+
+    /**
      * Returns the use parent frame flag.<p>
      *
      * @return the use parent frame flag
@@ -404,6 +419,18 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     public void setParamFlags(String flags) {
 
         m_paramFlags = flags;
+    }
+
+    /**
+     * Sets the 'realonly' parameter.<p>
+     *
+     * This controls whether 'pseudo-principals' like 'ALL OTHERS' should be shown or not.
+     *
+     * @param realonly the parameter value
+     */
+    public void setParamRealonly(String realonly) {
+
+        m_realOnly = realonly;
     }
 
     /**
@@ -478,12 +505,28 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
         String ou = getCms().getRequestContext().getCurrentUser().getOuFqn();
         Set<CmsPrincipal> principals = new HashSet<CmsPrincipal>();
+        boolean realOnly = Boolean.valueOf(getParamRealonly()).booleanValue();
         if (isShowingUsers()) {
             // include special principals
-            if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
+            if (!realOnly) {
+                if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
+                    CmsUser user = new CmsUser(
+                        CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
+                        key(Messages.GUI_LABEL_OVERWRITEALL_0),
+                        "",
+                        "",
+                        "",
+                        "",
+                        0,
+                        0,
+                        0,
+                        null);
+                    user.setDescription(key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0));
+                    principals.add(user);
+                }
                 CmsUser user = new CmsUser(
-                    CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
-                    key(Messages.GUI_LABEL_OVERWRITEALL_0),
+                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
+                    key(Messages.GUI_LABEL_ALLOTHERS_0),
                     "",
                     "",
                     "",
@@ -492,22 +535,9 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
                     0,
                     0,
                     null);
-                user.setDescription(key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0));
+                user.setDescription(key(Messages.GUI_DESCRIPTION_ALLOTHERS_0));
                 principals.add(user);
             }
-            CmsUser user = new CmsUser(
-                CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
-                key(Messages.GUI_LABEL_ALLOTHERS_0),
-                "",
-                "",
-                "",
-                "",
-                0,
-                0,
-                0,
-                null);
-            user.setDescription(key(Messages.GUI_DESCRIPTION_ALLOTHERS_0));
-            principals.add(user);
             if (includeOtherOus) {
                 // add all manageable users
                 principals.addAll(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
@@ -519,20 +549,24 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             }
         } else {
             // include special principals
-            if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
-                principals.add(new CmsGroup(
-                    CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
-                    null,
-                    key(Messages.GUI_LABEL_OVERWRITEALL_0),
-                    key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0),
-                    0));
+            if (!realOnly) {
+                if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
+                    principals.add(
+                        new CmsGroup(
+                            CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
+                            null,
+                            key(Messages.GUI_LABEL_OVERWRITEALL_0),
+                            key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0),
+                            0));
+                }
+                principals.add(
+                    new CmsGroup(
+                        CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
+                        null,
+                        key(Messages.GUI_LABEL_ALLOTHERS_0),
+                        key(Messages.GUI_DESCRIPTION_ALLOTHERS_0),
+                        0));
             }
-            principals.add(new CmsGroup(
-                CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
-                null,
-                key(Messages.GUI_LABEL_ALLOTHERS_0),
-                key(Messages.GUI_DESCRIPTION_ALLOTHERS_0),
-                0));
             if (includeOtherOus) {
                 // add all manageable users
                 principals.addAll(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));

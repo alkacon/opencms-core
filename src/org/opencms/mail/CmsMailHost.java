@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -52,12 +52,16 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
     /** The user name to use for authentication. */
     private String m_username;
 
+    /** The security setting. */
+    private String m_security;
+
     /**
      * Creates a new mail host.<p>
      *
      * @param hostname the name of the mail host
      * @param order the order in which the host is tried
      * @param protocol the protocol to use (default "smtp")
+     * @param security the security setting
      * @param username the user name to use for authentication
      * @param password the password to use for authentication
      * @param port the port, if < 0 then 25 is used
@@ -67,6 +71,7 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         Integer port,
         Integer order,
         String protocol,
+        String security,
         String username,
         String password) {
 
@@ -76,6 +81,7 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         m_protocol = (protocol != null) ? protocol : CmsMailSettings.MAIL_DEFAULT_PROTOCOL;
         m_username = username;
         m_password = password;
+        m_security = security;
         m_order = order;
     }
 
@@ -159,6 +165,16 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
     }
 
     /**
+     * Gets the value of the security setting.<p>
+     *
+     * @return the value of the security setting
+     */
+    public String getSecurity() {
+
+        return m_security;
+    }
+
+    /**
      * Returns the user name used for authentication.<p>
      *
      * @return the user name used for authentication
@@ -206,7 +222,9 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         buf.append(" order=");
         buf.append(m_order);
         buf.append(" protocol=");
+
         buf.append(getProtocol());
+        buf.append(" security=" + getSecurity());
         if (isAuthenticating()) {
             buf.append(" user=");
             buf.append(getUsername());

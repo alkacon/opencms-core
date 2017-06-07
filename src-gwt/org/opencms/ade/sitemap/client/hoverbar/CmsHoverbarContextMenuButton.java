@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -123,11 +123,11 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         result.add(new CmsEditModelPageMenuEntry(hoverbar));
         result.add(new CmsDeleteModelPageMenuEntry(hoverbar));
         result.add(new CmsDisableMenuEntry(hoverbar));
+        result.add(new CmsEditMenuEntry(hoverbar));
         result.add(new CmsCopyPageMenuEntry(hoverbar));
         result.add(new CmsCopyModelPageMenuEntry(hoverbar));
         result.add(new CmsSetDefaultModelMenuEntry(hoverbar));
         result.add(new CmsCopyAsModelGroupPageMenuEntry(hoverbar));
-        result.add(new CmsEditMenuEntry(hoverbar));
         result.add(new CmsCreateGalleryMenuEntry(hoverbar));
         result.add(new CmsResourceInfoMenuEntry(hoverbar));
         result.add(new CmsParentSitemapMenuEntry(hoverbar));

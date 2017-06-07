@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -395,7 +395,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
         cms.lockResource("/foo1.txt");
         cms.moveResource("/foo1.txt", "/foo2.txt");
-        OpenCms.getSearchManager().updateOfflineIndexes(5000);
+        OpenCms.getSearchManager().updateOfflineIndexes();
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setQuery("foo1");

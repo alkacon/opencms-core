@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,7 +36,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
@@ -61,8 +60,12 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.Lists;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontIcon;
+import com.vaadin.server.Page;
+import com.vaadin.server.Page.BrowserWindowResizeEvent;
+import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -73,22 +76,25 @@ import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The workplace toolbar.<p>
  */
-public class CmsToolBar extends CssLayout {
+public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener {
 
     /** Toolbar dialog context. */
-    protected static class ToolbarContext extends A_CmsDialogContext {
+    protected class ToolbarContext extends A_CmsDialogContext {
 
         /**
          * Constructor.<p>
+         *
+         * @param appId the app id
          */
-        protected ToolbarContext() {
-            super(ContextType.appToolbar, Collections.<CmsResource> emptyList());
+        protected ToolbarContext(String appId) {
+            super(appId, ContextType.appToolbar, Collections.<CmsResource> emptyList());
         }
 
         /**
@@ -106,6 +112,14 @@ public class CmsToolBar extends CssLayout {
 
             return Lists.newArrayList();
         }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+         */
+        public void updateUserInfo() {
+
+            refreshUserInfoDropDown();
+        }
     }
 
     /** Logger instance for this class. */
@@ -117,11 +131,20 @@ public class CmsToolBar extends CssLayout {
     /** The app indicator. */
     private Label m_appIndicator;
 
+    /** Flag indicating the toolbar buttons are folded into a sub menu. */
+    private boolean m_buttonsFolded;
+
     /** The context menu component. */
     private MenuBar m_contextMenu;
 
     /** The dialog context. */
     private I_CmsDialogContext m_dialogContext;
+
+    /** The sub menu displaying the folded buttons. */
+    private PopupView m_foldedButtonsMenu;
+
+    /** The browser window width that is required to display all toolbar buttons. */
+    private int m_foldingThreshhold;
 
     /** Toolbar items left. */
     private HorizontalLayout m_itemsLeft;
@@ -129,8 +152,14 @@ public class CmsToolBar extends CssLayout {
     /** Toolbar items right. */
     private HorizontalLayout m_itemsRight;
 
+    /** The contains the buttons from the left side, displayed in the folded buttons sub menu. */
+    private VerticalLayout m_leftButtons;
+
     /** The quick launch drop down. */
     private Component m_quickLaunchDropDown;
+
+    /** The contains the buttons from the right side, displayed in the folded buttons sub menu. */
+    private VerticalLayout m_rightButtons;
 
     /** The user drop down. */
     private Component m_userDropDown;
@@ -141,11 +170,15 @@ public class CmsToolBar extends CssLayout {
     public CmsToolBar() {
         m_quickLaunchDropDown = createQuickLaunchDropDown();
         m_userDropDown = createUserInfoDropDown();
+        m_leftButtons = new VerticalLayout();
+        m_rightButtons = new VerticalLayout();
+        VerticalLayout layout = new VerticalLayout();
+        layout.addComponent(m_leftButtons);
+        layout.addComponent(m_rightButtons);
+        m_foldedButtonsMenu = new PopupView(getDropDownButtonHtml(FontOpenCms.CONTEXT_MENU_DOTS), layout);
+        m_foldedButtonsMenu.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
+        m_foldedButtonsMenu.setHideOnMouseOut(false);
         Design.read("CmsToolBar.html", this);
-        m_dialogContext = new ToolbarContext();
-        initContextMenu();
-        m_itemsRight.addComponent(m_quickLaunchDropDown);
-        m_itemsRight.addComponent(m_userDropDown);
     }
 
     /**
@@ -158,10 +191,27 @@ public class CmsToolBar extends CssLayout {
      */
     public static Button createButton(Resource icon, String title) {
 
+        return createButton(icon, title, false);
+    }
+
+    /**
+     * Creates a properly styled toolbar button.<p>
+     *
+     * @param icon the button icon
+     * @param title the button title, will be used for the tooltip
+     * @param alwaysShow <code>true</code> to prevent the button to be folded into a sub menu for small screens
+     *
+     * @return the button
+     */
+    public static Button createButton(Resource icon, String title, boolean alwaysShow) {
+
         Button button = new Button(icon);
         button.setDescription(title);
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         button.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
+        if (alwaysShow) {
+            button.addStyleName(OpenCmsTheme.REQUIRED_BUTTON);
+        }
         return button;
     }
 
@@ -254,7 +304,12 @@ public class CmsToolBar extends CssLayout {
      */
     public void addButtonLeft(Component button) {
 
-        m_itemsLeft.addComponent(button);
+        if (m_buttonsFolded && !isAlwaysShow(button)) {
+            m_leftButtons.addComponent(button);
+        } else {
+            m_itemsLeft.addComponent(button);
+        }
+        updateFoldingThreshhold();
     }
 
     /**
@@ -264,12 +319,25 @@ public class CmsToolBar extends CssLayout {
      */
     public void addButtonRight(Component button) {
 
-        int dropDownIndex = m_itemsRight.getComponentIndex(m_userDropDown);
-        if (dropDownIndex >= 0) {
-            m_itemsRight.addComponent(button, dropDownIndex);
+        if (m_buttonsFolded && !isAlwaysShow(button)) {
+            m_rightButtons.addComponent(button);
         } else {
-            m_itemsRight.addComponent(button);
+            int dropDownIndex = m_itemsRight.getComponentIndex(m_userDropDown);
+            if (dropDownIndex >= 0) {
+                m_itemsRight.addComponent(button, dropDownIndex);
+            } else {
+                m_itemsRight.addComponent(button);
+            }
         }
+        updateFoldingThreshhold();
+    }
+
+    /**
+     * @see com.vaadin.server.Page.BrowserWindowResizeListener#browserWindowResized(com.vaadin.server.Page.BrowserWindowResizeEvent)
+     */
+    public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+        updateButtonVisibility(event.getWidth());
     }
 
     /**
@@ -278,10 +346,12 @@ public class CmsToolBar extends CssLayout {
     public void clearButtonsLeft() {
 
         m_itemsLeft.removeAllComponents();
+        m_leftButtons.removeAllComponents();
         // in case the app title is set, make sure to keep the label in the button bar
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_appIndicator.getValue())) {
             m_itemsLeft.addComponent(m_appIndicator);
         }
+        updateFoldingThreshhold();
     }
 
     /**
@@ -290,6 +360,8 @@ public class CmsToolBar extends CssLayout {
     public void clearButtonsRight() {
 
         m_itemsRight.removeAllComponents();
+        m_rightButtons.removeAllComponents();
+        updateFoldingThreshhold();
     }
 
     /**
@@ -317,6 +389,17 @@ public class CmsToolBar extends CssLayout {
             m_itemsRight.removeComponent(m_contextMenu);
             m_itemsRight.removeComponent(m_quickLaunchDropDown);
         }
+        updateFoldingThreshhold();
+    }
+
+    /**
+     * Refreshes the user drop down.<p>
+     */
+    public void refreshUserInfoDropDown() {
+
+        Component oldVersion = m_userDropDown;
+        m_userDropDown = createUserInfoDropDown();
+        m_itemsRight.replaceComponent(oldVersion, m_userDropDown);
     }
 
     /**
@@ -328,6 +411,9 @@ public class CmsToolBar extends CssLayout {
 
         m_itemsLeft.removeComponent(button);
         m_itemsRight.removeComponent(button);
+        m_leftButtons.removeComponent(button);
+        m_rightButtons.removeComponent(button);
+        updateFoldingThreshhold();
     }
 
     /**
@@ -385,6 +471,19 @@ public class CmsToolBar extends CssLayout {
     }
 
     /**
+     * Initializes the toolbar.<p>
+     *
+     * @param appId the app id
+     */
+    protected void init(String appId) {
+
+        m_dialogContext = new ToolbarContext(appId);
+        initContextMenu();
+        m_itemsRight.addComponent(m_quickLaunchDropDown);
+        m_itemsRight.addComponent(m_userDropDown);
+    }
+
+    /**
      * Sets the dialog context.<p>
      *
      * @param context the dialog context
@@ -395,6 +494,42 @@ public class CmsToolBar extends CssLayout {
 
         // reinit context menu
         initContextMenu();
+    }
+
+    /**
+     * Updates the button visibility according o the given widow width.<p>
+     *
+     * @param width the window width
+     */
+    protected void updateButtonVisibility(int width) {
+
+        if (!m_buttonsFolded && (m_foldingThreshhold > width)) {
+            foldButtons();
+        } else if (m_buttonsFolded && (width > m_foldingThreshhold)) {
+            unfoldButtons();
+        }
+    }
+
+    /**
+     * Recalculates the space required by the toolbar buttons
+     */
+    protected void updateFoldingThreshhold() {
+
+        int left = estimateRequiredWidth(m_itemsLeft) + estimateRequiredWidth(m_leftButtons);
+        int right = estimateRequiredWidth(m_itemsRight) + estimateRequiredWidth(m_rightButtons);
+        int requiredWidth = left > right ? left : right;
+        if (requiredWidth < 350) {
+            // folding not required at any width
+            m_foldingThreshhold = 0;
+        } else if (requiredWidth < 400) {
+            m_foldingThreshhold = 984;
+        } else if (requiredWidth <= 520) {
+            m_foldingThreshhold = 1240;
+        } else {
+            // always fold
+            m_foldingThreshhold = 10000;
+        }
+        updateButtonVisibility(Page.getCurrent().getBrowserWindowWidth());
     }
 
     /**
@@ -415,15 +550,8 @@ public class CmsToolBar extends CssLayout {
     void handleUpload(List<String> uploadedFiles) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        if (uploadedFiles.size() == 1) {
-            String tempFile = CmsStringUtil.joinPaths(
-                CmsUserIconHelper.USER_IMAGE_FOLDER,
-                CmsUserIconHelper.TEMP_FOLDER,
-                uploadedFiles.get(0));
-            OpenCms.getWorkplaceAppManager().getUserIconHelper().handleImageUpload(
-                cms,
-                cms.getRequestContext().getCurrentUser(),
-                tempFile);
+        boolean success = OpenCms.getWorkplaceAppManager().getUserIconHelper().handleImageUpload(cms, uploadedFiles);
+        if (success) {
             refreshUserInfoDropDown();
         }
     }
@@ -555,6 +683,77 @@ public class CmsToolBar extends CssLayout {
     }
 
     /**
+     * Calculates the width required by the layout components
+     *
+     * @param items the layout
+     *
+     * @return the width
+     */
+    private int estimateRequiredWidth(AbstractOrderedLayout items) {
+
+        int result = 0;
+        if (items != null) {
+            for (Component comp : items) {
+                if (comp == m_foldedButtonsMenu) {
+                    continue;
+                } else if ((comp instanceof Button) || (comp instanceof PopupView) || (comp instanceof MenuBar)) {
+                    // assume all buttons have a with of 50px
+                    result += 50;
+                } else if (comp == m_appIndicator) {
+                    // assume app indicator requires 150px
+                    result += 50;
+                } else {
+                    float compWidth = comp.getWidth();
+                    if ((compWidth > 0) && (comp.getWidthUnits() == Unit.PIXELS)) {
+                        // also add 10px margin
+                        result += compWidth + 10;
+                    } else {
+                        result += 200;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Folds the toolbar buttons into a sub menu.<p>
+     */
+    private void foldButtons() {
+
+        VerticalLayout mainPV = (VerticalLayout)m_foldedButtonsMenu.getContent().getPopupComponent();
+        for (int i = m_itemsLeft.getComponentCount() - 1; i > -1; i--) {
+            Component comp = m_itemsLeft.getComponent(i);
+            if (!isAlwaysShow(comp)) {
+                m_itemsLeft.removeComponent(comp);
+                m_leftButtons.addComponent(comp, 0);
+                m_leftButtons.setComponentAlignment(comp, Alignment.MIDDLE_CENTER);
+            }
+        }
+        if (m_leftButtons.getComponentCount() == 0) {
+            mainPV.removeComponent(m_leftButtons);
+        } else {
+            mainPV.addComponent(m_leftButtons, 0);
+        }
+        for (int i = m_itemsRight.getComponentCount() - 1; i > -1; i--) {
+            Component comp = m_itemsRight.getComponent(i);
+            if (!isAlwaysShow(comp)) {
+                m_itemsRight.removeComponent(comp);
+                m_rightButtons.addComponent(comp, 0);
+                m_rightButtons.setComponentAlignment(comp, Alignment.MIDDLE_CENTER);
+            }
+        }
+        if (m_rightButtons.getComponentCount() == 0) {
+            mainPV.removeComponent(m_rightButtons);
+        } else {
+            mainPV.addComponent(m_rightButtons);
+        }
+        m_itemsRight.addComponent(m_foldedButtonsMenu, 0);
+        m_buttonsFolded = true;
+        markAsDirtyRecursive();
+    }
+
+    /**
      * Initializes the context menu entries.<p>
      */
     private void initContextMenu() {
@@ -572,12 +771,42 @@ public class CmsToolBar extends CssLayout {
     }
 
     /**
-     * Refreshes the user drop down.<p>
+     * Checks whether the given component may be placed into the buttons sub menu.<p>
+     *
+     * @param comp the component to check
+     *
+     * @return <code>true</code> in case the component should always be displayed in the toolbar
      */
-    private void refreshUserInfoDropDown() {
+    private boolean isAlwaysShow(Component comp) {
 
-        Component oldVersion = m_userDropDown;
-        m_userDropDown = createUserInfoDropDown();
-        m_itemsRight.replaceComponent(oldVersion, m_userDropDown);
+        return ((comp == m_appIndicator)
+            || (comp == m_contextMenu)
+            || (comp == m_userDropDown)
+            || (comp == m_quickLaunchDropDown)
+            || comp.getStyleName().contains(OpenCmsTheme.REQUIRED_BUTTON));
+    }
+
+    /**
+     * Places the buttons formerly moved to the sub menu back into the toolbar.<p>
+     */
+    private void unfoldButtons() {
+
+        m_itemsRight.removeComponent(m_foldedButtonsMenu);
+        while (m_leftButtons.getComponentCount() > 0) {
+            Component comp = m_leftButtons.getComponent(0);
+            if (!isAlwaysShow(comp)) {
+                m_leftButtons.removeComponent(comp);
+                m_itemsLeft.addComponent(comp);
+            }
+        }
+        int index = 0;
+        while (m_rightButtons.getComponentCount() > 0) {
+            Component comp = m_rightButtons.getComponent(0);
+            m_rightButtons.removeComponent(comp);
+            m_itemsRight.addComponent(comp, index);
+            index++;
+        }
+        m_buttonsFolded = false;
+        markAsDirtyRecursive();
     }
 }

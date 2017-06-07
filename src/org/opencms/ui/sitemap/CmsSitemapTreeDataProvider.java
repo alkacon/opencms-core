@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -99,9 +99,9 @@ public class CmsSitemapTreeDataProvider {
 
             folders.add(null); // add null as a dummy value so that in the loop below, lastFolder takes all real folders as values
             for (CmsResource folder : folders) {
-                if ((folder == null)
-                    || ((lastFolder != null)
-                        && !(CmsStringUtil.isPrefixPath(lastFolder.getRootPath(), folder.getRootPath())))) {
+                if ((lastFolder != null)
+                    && ((folder == null)
+                        || !(CmsStringUtil.isPrefixPath(lastFolder.getRootPath(), folder.getRootPath())))) {
                     foldersWithNoChildFolders.add(lastFolder.getStructureId());
 
                 }

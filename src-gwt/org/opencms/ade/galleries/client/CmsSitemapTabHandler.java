@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -77,7 +77,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
      */
     public String getDefaultSelectedSiteRoot() {
 
-        return m_controller.getSitemapSiteSelectorOptions().get(0).getSiteRoot();
+        return m_controller.getDefaultSitemapTabSiteRoot();
     }
 
     /**
@@ -126,7 +126,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         boolean isRoot,
         I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback) {
 
-        m_controller.getSubEntries(rootPath, isRoot, callback);
+        m_controller.getSubEntries(rootPath, isRoot, null, callback);
     }
 
     /**
@@ -150,7 +150,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         getTab().setSortSelectBoxValue(siteRoot, true);
         m_controller.getDefaultScope();
         if (siteRoot == null) {
-            siteRoot = m_controller.getDefaultVfsTabSiteRoot();
+            siteRoot = m_controller.getDefaultSitemapTabSiteRoot();
         }
         m_siteRoot = siteRoot;
         getSubEntries(siteRoot, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
@@ -193,7 +193,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(final String sortParams, String filter) {
 
-        m_controller.getSubEntries(sortParams, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
+        m_controller.getSubEntries(sortParams, true, filter, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
             public void execute(List<CmsSitemapEntryBean> entries) {
 

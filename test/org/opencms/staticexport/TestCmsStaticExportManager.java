@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -30,11 +30,17 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlEntityResolver;
 
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 import junit.extensions.TestSetup;
@@ -47,6 +53,9 @@ import junit.framework.TestSuite;
  * @since 6.0.0
  */
 public class TestCmsStaticExportManager extends OpenCmsTestCase {
+
+    /** simple xml content schema system id, with attachment relation type. */
+    private static final String SCHEMA_SYSTEM_ID_14 = "http://www.opencms.org/test14.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -72,6 +81,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsStaticExportManager("testExportJspLinkGeneration"));
         suite.addTest(new TestCmsStaticExportManager("testDefaultSuffixLinkGeneration"));
+        suite.addTest(new TestCmsStaticExportManager("testSiteExport"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -247,6 +257,71 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
     }
 
     /**
+     * Tests saving XML contents with links from/to various sites.<p>
+     * 
+     * @throws Exception 
+     */
+    public void testSiteExport() throws Exception {
+
+        // set the site root to the root site
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("");
+
+        CmsProperty exportProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORT, CmsStringUtil.TRUE, null);
+        CmsProperty exportNameProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "/", null);
+
+        // create site folder one
+        CmsResource siteFolder = cms.createResource("/sites/site-one/", CmsResourceTypeFolder.getStaticTypeId());
+        cms.writePropertyObject(siteFolder.getRootPath(), exportProp);
+        cms.writePropertyObject(siteFolder.getRootPath(), exportNameProp);
+        cms.unlockResource(siteFolder.getRootPath());
+
+        // create site folder two
+        siteFolder = cms.createResource("/sites/site-two/", CmsResourceTypeFolder.getStaticTypeId());
+        cms.writePropertyObject(siteFolder.getRootPath(), exportProp);
+        cms.writePropertyObject(siteFolder.getRootPath(), exportNameProp);
+        cms.unlockResource(siteFolder.getRootPath());
+
+        // unmarshal content definition
+        String content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-14.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_14, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        // Create files for site one
+        createTestFile("/sites/site-one/testfile-file1.html");
+        createTestFile("/sites/site-one/testfile-file2.html");
+        createTestFile("/sites/site-one/testfile-file3.html");
+
+        // Create files for site two
+        createTestFile("/sites/site-two/testfile-file1.html");
+        createTestFile("/sites/site-two/testfile-file2.html");
+        createTestFile("/sites/site-two/testfile-file3.html");
+
+        // publish the created site folders
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setSiteRoot("/sites/site-one");
+        checkLinkWithoutParameters(cms, "/testfile-file1.html", "/data/export/testfile-file1.html");
+        checkLinkWithoutParameters(cms, "/testfile-file2.html", "/data/export/testfile-file2.html");
+        checkLinkWithoutParameters(cms, "/testfile-file3.html", "/data/export/testfile-file3.html");
+        checkLinkWithParameters(cms, "/testfile-file1.html", "/data/export/testfile-file1.html");
+        checkLinkWithParameters(cms, "/testfile-file2.html", "/data/export/testfile-file2.html");
+        checkLinkWithParameters(cms, "/testfile-file3.html", "/data/export/testfile-file3.html");
+
+        cms.getRequestContext().setSiteRoot("/sites/site-two");
+        checkLinkWithoutParameters(cms, "/testfile-file1.html", "/data/export/testfile-file1.html");
+        checkLinkWithoutParameters(cms, "/testfile-file2.html", "/data/export/testfile-file2.html");
+        checkLinkWithoutParameters(cms, "/testfile-file3.html", "/data/export/testfile-file3.html");
+        checkLinkWithParameters(cms, "/testfile-file1.html", "/data/export/testfile-file1.html");
+        checkLinkWithParameters(cms, "/testfile-file2.html", "/data/export/testfile-file2.html");
+        checkLinkWithParameters(cms, "/testfile-file3.html", "/data/export/testfile-file3.html");
+
+    }
+
+    /**
      * Checks a link that has no parameters.<p>
      *
      * @param cms the cms context
@@ -272,12 +347,30 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
     private void checkLinkWithParameters(CmsObject cms, String vfsName, String expected) {
 
         // check JSP WITH parameters
-        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, "?a=b&c=d");
+        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, "?a=b&c=d", null);
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         String extension = expected.substring(expected.lastIndexOf('.'));
         Pattern pattern = Pattern.compile(
             "^" + CmsStringUtil.escapePattern(expected + "_") + "\\d*" + CmsStringUtil.escapePattern(extension) + "$");
         assertTrue(pattern.matcher(rfsName).matches());
         assertEquals(vfsName, OpenCms.getStaticExportManager().getVfsName(cms, rfsName));
+    }
+
+    /**
+     * Creates a test file for the testSiteLinks test.<p>
+     * 
+     * @param rootPath the test file path 
+     * @return the new test file 
+     * @throws Exception if something goes wrong 
+     */
+    private CmsResource createTestFile(String rootPath) throws Exception {
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("");
+        int xmlcontentType = OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId();
+        byte[] content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-14.xml");
+        CmsResource tsl = cms.createResource(rootPath, xmlcontentType, content, Collections.<CmsProperty> emptyList());
+        cms.unlockResource(tsl);
+        return tsl;
     }
 }

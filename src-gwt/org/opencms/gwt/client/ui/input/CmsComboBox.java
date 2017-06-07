@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -416,13 +416,13 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
-     * Updates a single select cell.<p>
+     * Updates the select cell.<p>
      *
-     * @param cell the select cell to update
+     * @param cell the select cell
      */
-    public void updateCell(CmsLabelSelectCell cell) {
-
+    protected void updateCell(CmsLabelSelectCell cell) {
         // do nothing
+
     }
 
     /**

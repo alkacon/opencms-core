@@ -1,4 +1,6 @@
-<%@page taglibs="c,cms" import="org.opencms.file.*,org.opencms.jsp.*,org.opencms.workplace.*" %><%
+<%@page import="org.opencms.file.*,org.opencms.jsp.*,org.opencms.workplace.*" %><%@ 
+	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%@ 
+	taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%><%
 CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
 CmsDialog wp = new CmsDialog(jsp);
 pageContext.setAttribute("projectid", "" + wp.getSettings().getProject()); 

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.i18n.CmsMessages;
@@ -284,8 +285,12 @@ public final class CmsResourceUtil {
      */
     public String getBigIconPath() {
 
-        if (CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
+        if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
             return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_BIG);
+        }
+        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
+            return CmsWorkplace.getResourceUri(
+                CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_MODEL_GROUP_REUSE_BIG);
         }
         I_CmsResourceType type = getResourceType();
         CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
@@ -457,6 +462,13 @@ public final class CmsResourceUtil {
      */
     public String getIconPathResourceType() {
 
+        if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
+            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_SMALL);
+        }
+        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
+            return CmsWorkplace.getResourceUri(
+                CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_MODEL_GROUP_REUSE_SMALL);
+        }
         if (!isEditable()) {
             return CmsWorkplace.RES_PATH_FILETYPES
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(

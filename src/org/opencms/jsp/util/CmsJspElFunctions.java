@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,8 +29,8 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
@@ -40,6 +40,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.util.CmsHtml2TextConverter;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -81,6 +82,17 @@ public final class CmsJspElFunctions {
     private CmsJspElFunctions() {
 
         // NOOP
+    }
+
+    /**
+     * Extends the given list by adding the provided object.<p>
+     *
+     * @param list the list to extend
+     * @param value the value to add to the list
+     */
+    public static void addToList(List<Object> list, Object value) {
+
+        list.add(value);
     }
 
     /**
@@ -322,16 +334,16 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Encodes a String in a way that is compatible with the JavaScript escape function.
+     * Returns a newly created, empty List object.<p>
      *
-     * @param source The text to be encoded
-     * @param encoding the encoding type
+     * There is no way to create an empty list using standard JSTL methods,
+     * hence this function.<p>
      *
-     * @return The JavaScript escaped string
+     * @return a newly created, empty List object
      */
-    public static String escape(String source, String encoding) {
+    public static List<Object> createList() {
 
-        return CmsEncoder.escape(source, encoding);
+        return new ArrayList<Object>();
     }
 
     /**
@@ -378,17 +390,17 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Returns the current navigation URI.<p>
+     * Returns the current request URI.<p>
      *
-     * Which can be the request URI or the VFS resource URI.<p>
-     *
-     * In case a sitemap is used, the navigation URI will be the
-     * request URI, if not the VFS resource URI is returned.<p>
+     * For OpenCms 10.5, this is the same as using <code>${cms.requestContext.uri}</code> on a JSP.<p>
      *
      * @param input the request convertible object to get the navigation URI from
      *
      * @return the current navigation URI
+     *
+     * @deprecated On a JSP use <code>${cms.requestContext.uri}</code> instead.
      */
+    @Deprecated
     public static String getNavigationUri(Object input) {
 
         ServletRequest req = convertRequest(input);
@@ -445,10 +457,23 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Converts a string (which is assumed to contain a JSON object whose values are strings only) to a map, for use in JSPs.<p>
+     * Returns whether the given resource is a sub sitemap folder.<p>
+     *
+     * @param resource the resource to check
+     *
+     * @return <code>true</code> if the given resource is a sub sitemap folder
+     */
+    public static boolean isSubSitemap(CmsResource resource) {
+
+        return (resource != null) && CmsResourceTypeFolderSubSitemap.isSubSitemap(resource);
+    }
+
+    /**
+     * Parses the JSON String and returns the requested value.<p>
      *
      * @param maybeJsonString the JSON string
      * @param key the key
+     *
      * @return the json value string
      */
     public static String jsonGetString(Object maybeJsonString, Object key) {
@@ -533,6 +558,20 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Repairs the given HTML input by adding potentially missing closing tags.<p>
+     *
+     * @param input the HTML input
+     *
+     * @return the repaired HTML or an empty string in case of errors
+     */
+    public static String repairHtml(String input) {
+
+        CmsHtmlConverter converter = new CmsHtmlConverter();
+        String result = converter.convertToStringSilent(input);
+        return result == null ? "" : result;
+    }
+
+    /**
      * Strips all HTML markup from the given input.<p>
      *
      * <ul>
@@ -580,16 +619,15 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Decodes a String in a way that is compatible with the JavaScript
-     * unescape function.<p>
+     * Validates a value against a regular expression.<p>
      *
-     * @param source The String to be decoded
-     * @param encoding the encoding type
+     * @param value the value
+     * @param regex the regex
      *
-     * @return The JavaScript unescaped String
+     * @return <code>true</code> if the value satisfies the validation
      */
-    public static String unescape(String source, String encoding) {
+    public static boolean validateRegex(String value, String regex) {
 
-        return CmsEncoder.unescape(source, encoding);
+        return CmsStringUtil.validateRegex(value, regex, true);
     }
 }

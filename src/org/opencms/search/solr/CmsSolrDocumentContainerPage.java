@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -46,6 +46,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -80,12 +81,34 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
+        return extractContent(cms, resource, index, null);
+    }
+
+    /**
+     * Extracts the content of a given index resource according to the resource file type and the
+     * configuration of the given index.<p>
+     *
+     * @param cms the cms object
+     * @param resource the resource to extract the content from
+     * @param index the index to extract the content for
+     * @param forceLocale if set, only the content values for the given locale will be extracted
+     *
+     * @return the extracted content of the resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public I_CmsExtractionResult extractContent(
+        CmsObject cms,
+        CmsResource resource,
+        CmsSearchIndex index,
+        Locale forceLocale)
+    throws CmsException {
+
         logContentExtraction(resource, index);
         I_CmsExtractionResult ex = null;
         try {
             CmsFile file = readFile(cms, resource);
             CmsXmlContainerPage containerPage = CmsXmlContainerPageFactory.unmarshal(cms, file);
-            Locale locale = index.getLocaleForResource(cms, resource, containerPage.getLocales());
 
             List<I_CmsExtractionResult> all = new ArrayList<I_CmsExtractionResult>();
             CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
@@ -101,7 +124,12 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                         && formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
-                        all.add(CmsSolrDocumentXmlContent.extractXmlContent(cms, element.getResource(), index));
+                        all.add(
+                            CmsSolrDocumentXmlContent.extractXmlContent(
+                                cms,
+                                element.getResource(),
+                                index,
+                                forceLocale));
                     }
                 }
             }
@@ -111,11 +139,14 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             // Add to each container page the contents in all available locales,
             // in case one containerpage is used in multiple languages.
             List<Locale> localesAvailable = OpenCms.getLocaleManager().getAvailableLocales(cms, resource);
-            Map<Locale, Map<String, String>> multilingualValues = new HashMap<Locale, Map<String, String>>(
+            Map<Locale, LinkedHashMap<String, String>> multilingualValues = new HashMap<Locale, LinkedHashMap<String, String>>(
                 localesAvailable.size());
             for (Locale localeAvailable : localesAvailable) {
-                multilingualValues.put(localeAvailable, new HashMap<String, String>());
+                multilingualValues.put(localeAvailable, new LinkedHashMap<String, String>());
             }
+            Locale locale = forceLocale != null
+            ? forceLocale
+            : index.getLocaleForResource(cms, resource, containerPage.getLocales());
             ex = new CmsExtractionResult(locale, multilingualValues, fieldMappings);
             ex = ex.merge(all);
             return ex;

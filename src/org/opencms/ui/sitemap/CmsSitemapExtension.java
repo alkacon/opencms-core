@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,6 +38,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
@@ -146,6 +147,14 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         }
 
         /**
+         * @see org.opencms.ui.I_CmsDialogContext#getAppId()
+         */
+        public String getAppId() {
+
+            return CmsSitemapEditorConfiguration.APP_ID;
+        }
+
+        /**
          * @see org.opencms.ui.I_CmsDialogContext#getCms()
          */
         public CmsObject getCms() {
@@ -194,6 +203,14 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         }
 
         /**
+         * @see org.opencms.ui.I_CmsDialogContext#setWindow(com.vaadin.ui.Window)
+         */
+        public void setWindow(Window window) {
+
+            m_window = window;
+        }
+
+        /**
          * @see org.opencms.ui.I_CmsDialogContext#start(java.lang.String, com.vaadin.ui.Component)
          */
         public void start(String title, Component dialog) {
@@ -227,6 +244,14 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         }
 
         /**
+         * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+         */
+        public void updateUserInfo() {
+
+            // not supported
+        }
+
+        /**
          * Returns the client RPC.<p>
          *
          * @return the client RPC
@@ -255,6 +280,9 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
     /** The container for the locale comparison view. */
     private VerticalLayout m_localeCompareContainer;
 
+    /** The currently active sitemap tree controller. */
+    private CmsSitemapTreeController m_sitemapTreeController;
+
     /** The UI instance. */
     private CmsSitemapUI m_ui;
 
@@ -267,6 +295,16 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
         extend(ui);
         m_ui = ui;
         registerRpc(this, I_CmsSitemapServerRpc.class);
+    }
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsSitemapServerRpc#handleChangedProperties(java.lang.String)
+     */
+    public void handleChangedProperties(String id) {
+
+        if (m_sitemapTreeController != null) {
+            m_sitemapTreeController.updateNodeForId(new CmsUUID(id));
+        }
     }
 
     /**
@@ -299,6 +337,27 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
     }
 
     /**
+     * Opens the property dialog for the locale comparison view.<p>
+     *
+     * @param sitemapEntryId the structure id for the sitemap entry to edit
+     * @param rootId the structure id of the current tree's root
+     */
+    public void openPropertyDialog(CmsUUID sitemapEntryId, CmsUUID rootId) {
+
+        getRpcProxy(I_CmsSitemapClientRpc.class).openPropertyDialog("" + sitemapEntryId, "" + rootId);
+    }
+
+    /**
+     * Sets the currently active sitemap tree controller.<p>
+     *
+     * @param controller the controller to set
+     */
+    public void setSitemapTreeController(CmsSitemapTreeController controller) {
+
+        m_sitemapTreeController = controller;
+    }
+
+    /**
      * Shows an info header in the locale-header-container element.<p>
      *
      * @param title the title
@@ -319,7 +378,9 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
 
         if (m_localeCompareContainer == null) {
             m_localeCompareContainer = new VerticalLayout();
-            CmsExternalLayout layout = new CmsExternalLayout(CmsGwtConstants.ID_LOCALE_COMPARISON, m_localeCompareContainer);
+            CmsExternalLayout layout = new CmsExternalLayout(
+                CmsGwtConstants.ID_LOCALE_COMPARISON,
+                m_localeCompareContainer);
             m_ui.getContent().addComponent(layout);
         }
         m_localeCompareContainer.removeAllComponents();

@@ -49,4 +49,9 @@
 	.o-message-bundle-editor .v-table .filters-panel {
 		height: unset;
 	}
+	
+	.o-message-bundle-editor .v-options {
+		background-color: $v-app-background-color;
+		padding-left: $toolbar-padding;
+	}
 }

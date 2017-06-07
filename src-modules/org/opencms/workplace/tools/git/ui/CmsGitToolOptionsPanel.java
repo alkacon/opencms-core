@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,7 +43,6 @@ import org.opencms.workplace.tools.git.CmsGitConfiguration;
 import org.opencms.workplace.tools.git.Messages;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -137,6 +136,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
     /** Field for 'Add and commit' setting. */
     private CheckBox m_addAndCommit;
 
+    /** The advanced options layout. */
+    private VerticalLayout m_advancedLayout;
+
     /** Cancel button. */
     private Button m_cancel;
 
@@ -184,9 +186,6 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
     /** Field for 'Ignroe unclean' setting. */
     private CheckBox m_ignoreUnclean;
-
-    /** Container for all the components. */
-    private VerticalLayout m_mainContainer;
 
     /** Selected mode. */
     private ActionType m_mode = ActionType.checkIn;
@@ -565,9 +564,7 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
      */
     public void setAdvancedVisible(boolean visible) {
 
-        for (Component component : getAdvancedOptions()) {
-            component.setVisible(visible);
-        }
+        m_advancedLayout.setVisible(visible);
         m_advancedVisible = visible;
         m_toggleOptions.setCaption(
             visible
@@ -660,7 +657,7 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
         if (m_checkinBean.getConfigurations().size() < 2) {
             // Do not show the configuration selection at all.
-            m_mainContainer.removeComponent(m_configurationSelectionPanel);
+            removeComponent(m_configurationSelectionPanel);
         } else {
             for (CmsGitConfiguration configuration : m_checkinBean.getConfigurations()) {
                 m_configurationSelector.addItem(configuration);
@@ -713,23 +710,6 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         }
 
         return result;
-    }
-
-    /**
-     * Gets the fields which should be shown/hidden when the user toggles the advanced options.<p>
-     *
-     * @return the list of advanced options
-     */
-    private List<? extends Component> getAdvancedOptions() {
-
-        return Arrays.asList(
-            m_ignoreUnclean,
-            m_pullFirst,
-            m_copyAndUnzip,
-            m_addAndCommit,
-            m_pullAfterCommit,
-            m_pushAutomatically,
-            m_excludeLib);
     }
 
     /**

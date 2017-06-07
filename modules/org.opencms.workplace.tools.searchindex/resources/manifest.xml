@@ -21,21 +21,21 @@ writeProperty '/system/workplace/admin/searchindex/' 'Title' 'Search Index'
 writeProperty '/system/workplace/admin/searchindex/' 'admintoolhandler-class' 'org.opencms.workplace.tools.searchindex.CmsSearchToolHandler'
 writeProperty '/system/workplace/admin/searchindex/' 'default-file' 'index.jsp'
 
-writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'Description' '${key.GUI_SOURCESEARCH_ADMIN_TOOL_HELP_0}'
-writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'NavImage' 'tools/searchindex/icons/big/sourcesearch.png'
-writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'NavInfo' '${key.GUI_SOURCESEARCH_ADMIN_TOOL_GROUP_0}'
-writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'NavPos' '50.0'
-writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'NavText' '${key.GUI_SOURCESEARCH_ADMIN_TOOL_NAME_0}'
+writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'Description' ''
+writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'NavImage' ''
+writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'NavInfo' ''
+writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'NavPos' ''
+writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'NavText' ''
 writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'Title' 'Source search'
-writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'admintoolhandler-class' 'org.opencms.workplace.tools.CmsOnlyAdminToolHandler'
+writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'admintoolhandler-class' ''
 writeProperty '/system/workplace/admin/searchindex/sourcesearch/' 'default-file' 'index.jsp'
 		]]></import-script>
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains tools related to the search capabilities of OpenCms.</p>
 <p>Install this module if you need search capabilities in OpenCms.</p>
-<p><i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>10.5.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+<p><i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
+		<version>10.5.1</version>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>

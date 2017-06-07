@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,6 +56,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
@@ -179,6 +180,11 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
 
     /** Serialization id. */
     private static final long serialVersionUID = 8119684308154724518L;
+
+    // install the slf4j bridge to pipe vaadin logging to log4j
+    static {
+        SLF4JBridgeHandler.install();
+    }
 
     /** The current CMS context. */
     private ThreadLocal<CmsObject> m_perThreadCmsObject;

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_DIALOG_TITLE_1 = "GUI_UPLOAD_DIALOG_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNZIP_BUTTON_TEXT_0 = "GUI_UNZIP_BUTTON_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_DRAG_AND_DROP_DISABLED_0 = "GUI_UPLOAD_DRAG_AND_DROP_DISABLED_0";

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,6 +50,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -74,6 +75,39 @@ public class CmsPublishRelationFinder {
         public ResourceMap() {
 
             super();
+        }
+
+        /**
+         * Creates a new resource map based on this instance while filtering some elements out.<p>
+         *
+         * The given predicate is used to check whether any single resource should be kept. If it returns
+         * false for a top-level resource (map key), the parent will be removed and all its children added as
+         * keys. If it returns false for a map value, the value will be removed for its key.
+         *
+         * @param pred predicate to check whether resources should be kept
+         * @return the new filtered resource map
+         */
+        public ResourceMap filter(Predicate<CmsResource> pred) {
+
+            ResourceMap result = new ResourceMap();
+            for (CmsResource key : keySet()) {
+                if (pred.apply(key)) {
+                    result.get(key);
+                    for (CmsResource value : get(key)) {
+                        if (pred.apply(value)) {
+                            result.get(key).add(value);
+                        }
+                    }
+                } else {
+                    for (CmsResource value : get(key)) {
+                        if (pred.apply(value)) {
+                            result.get(value);
+                        }
+                    }
+
+                }
+            }
+            return result;
         }
 
         /**
@@ -103,6 +137,7 @@ public class CmsPublishRelationFinder {
             }
             return result;
         }
+
     }
 
     /** The log instance for this class. */

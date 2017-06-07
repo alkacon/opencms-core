@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,9 @@ public interface I_CmsAppCategory {
     /**
      * Returns the order.<p>
      *
+     * App categories are sorted by the order, i.e., categories with higher order numbers
+     * are shown below the ones with lower order numbers.<p>
+     *
      * @return the order
      */
     int getOrder();
@@ -60,12 +63,19 @@ public interface I_CmsAppCategory {
     /**
      * Returns the parentId.<p>
      *
+     * App categories can be nested. The method must return the id of the parent category
+     * if the category is nested. If it is on top level, <code>null</code> should be
+     * returned.<p>
+     *
      * @return the parentId
      */
     String getParentId();
 
     /**
      * Returns the priority.<p>
+     *
+     * If more than one category with the same id is present, the one with higher priority
+     * is shown. The other categories with this id are discarded.<p>
      *
      * @return the priority
      */

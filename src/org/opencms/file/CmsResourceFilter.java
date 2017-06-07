@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -226,6 +226,17 @@ public final class CmsResourceFilter {
         m_expireBefore = 0L;
 
         updateCacheId();
+    }
+
+    /**
+     * Returns the DEFAULT filter in the Online project, and IGNORE_EXPIRATION otherwise.<p>
+     *
+     * @param cms the CMS context whose project to check
+     * @return the resource filter based on the given CmsObject
+     */
+    public static CmsResourceFilter ignoreExpirationOffline(CmsObject cms) {
+
+        return cms.getRequestContext().getCurrentProject().isOnlineProject() ? DEFAULT : IGNORE_EXPIRATION;
     }
 
     /**

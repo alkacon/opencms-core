@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,10 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspTagEnableAde;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -40,6 +43,9 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
@@ -52,6 +58,8 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
 
     /** The app id. */
     public static final String APP_ID = "pageeditor";
+
+    private static final Log LOG = CmsLog.getLog(CmsPageEditorConfiguration.class);
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -165,20 +173,23 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
      */
     void openPageEditor() {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        HttpServletRequest req = CmsVaadinUtils.getRequest();
-        if (req == null) {
-            // called from outside the VAADIN UI, not allowed
-            throw new RuntimeException("Wrong usage, this can not be called from outside a VAADIN UI.");
-        }
-        CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
-        String page = getPath(cms, req.getSession());
-        if (page != null) {
-            A_CmsUI.get().getPage().setLocation(OpenCms.getLinkManager().substituteLink(cms, page));
+        CmsAppWorkplaceUi ui = CmsAppWorkplaceUi.get();
+        if (ui.beforeViewChange(new ViewChangeEvent(ui.getNavigator(), ui.getCurrentView(), null, APP_ID, null))) {
+            CmsObject cms = A_CmsUI.getCmsObject();
+            HttpServletRequest req = CmsVaadinUtils.getRequest();
+            if (req == null) {
+                // called from outside the VAADIN UI, not allowed
+                throw new RuntimeException("Wrong usage, this can not be called from outside a VAADIN UI.");
+            }
+            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
+            String page = getPath(cms, req.getSession());
+            if (page != null) {
+                A_CmsUI.get().getPage().setLocation(OpenCms.getLinkManager().substituteLink(cms, page));
 
-        } else {
-            String message = CmsVaadinUtils.getMessageText(Messages.GUI_PAGE_EDITOR_NOT_AVAILABLE_0);
-            Notification.show(message, Type.WARNING_MESSAGE);
+            } else {
+                String message = CmsVaadinUtils.getMessageText(Messages.GUI_PAGE_EDITOR_NOT_AVAILABLE_0);
+                Notification.show(message, Type.WARNING_MESSAGE);
+            }
         }
     }
 
@@ -194,6 +205,16 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
 
         CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(session);
         String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+        if (page == null) {
+            try {
+                CmsResource mainDefaultFile = cms.readDefaultFile("/");
+                if (mainDefaultFile != null) {
+                    page = cms.getSitePath(mainDefaultFile);
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         return page;
     }
 

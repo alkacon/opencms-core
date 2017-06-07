@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.ui.apps.CmsPageEditorConfiguration;
+import org.opencms.ui.apps.I_CmsHasAppLaunchCommand;
+import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
@@ -144,6 +148,16 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
             } else {
                 siteRoot = null;
             }
+            if (((project == null) || !project.isOnlineProject())
+                && CmsFileExplorerConfiguration.APP_ID.equals(m_context.getAppId())) {
+                I_CmsWorkplaceAppConfiguration editorConf = OpenCms.getWorkplaceAppManager().getAppConfiguration(
+                    CmsPageEditorConfiguration.APP_ID);
+                if (editorConf.getVisibility(m_context.getCms()).isActive()) {
+                    ((I_CmsHasAppLaunchCommand)editorConf).getAppLaunchCommand().run();
+                    return;
+                }
+            }
+
             m_context.finish(project, siteRoot);
         } catch (CmsException e) {
             m_context.error(e);

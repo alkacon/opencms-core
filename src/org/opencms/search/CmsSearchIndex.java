@@ -716,7 +716,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the first document where the given term matches the selected index field
      */
-    public synchronized I_CmsSearchDocument getDocument(String field, String term) {
+    public I_CmsSearchDocument getDocument(String field, String term) {
 
         Document result = null;
         IndexSearcher searcher = getSearcher();
@@ -1241,8 +1241,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @throws CmsSearchException if something goes wrong
      */
-    public synchronized CmsSearchResultList search(CmsObject cms, CmsSearchParameters params)
-    throws CmsSearchException {
+    public CmsSearchResultList search(CmsObject cms, CmsSearchParameters params) throws CmsSearchException {
 
         long timeTotal = -System.currentTimeMillis();
         long timeLucene;

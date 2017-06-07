@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -84,14 +84,14 @@ public class CmsJspNavBuilder {
     /** The current CMS context. */
     protected CmsObject m_cms;
 
+    /** The locale for which the property should be read. */
+    protected Locale m_locale;
+
     /** The current request URI. */
     protected String m_requestUri;
 
     /** The current request folder. */
     protected String m_requestUriFolder;
-
-    /** The locale for which the property should be read. */
-    protected Locale m_locale;
 
     /**
      * Empty constructor, so that this bean can be initialized from a JSP.<p>
@@ -646,6 +646,16 @@ public class CmsJspNavBuilder {
             }
         }
         return list;
+    }
+
+    /**
+     * Initializes this bean.<p>
+     *
+     * @param cms the current cms context
+     */
+    public void init(CmsObject cms) {
+
+        init(cms, null);
     }
 
     /**

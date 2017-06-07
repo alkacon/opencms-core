@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -28,11 +28,14 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
@@ -41,6 +44,8 @@ import org.opencms.xml.types.A_CmsXmlContentValue;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
@@ -54,6 +59,12 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
 
     /** Key post fix, so you can display different help text if used a "normal" widget, and a display widget. */
     private static final String DISABLED_POSTFIX = ".disabled";
+
+    /** The configuration key for the Google maps API key. */
+    public static final String CONFIG_API_KEY = "apiKey";
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLocationPickerWidget.class);
 
     /**
      * Creates a new input widget.<p>
@@ -94,9 +105,30 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
             try {
                 // make sure the configuration is a parsable JSON string
                 JSONObject conf = new JSONObject(config);
+                if (!conf.has(CONFIG_API_KEY)) {
+                    String sitePath;
+                    if (resource.getStructureId().isNullUUID()) {
+                        sitePath = "/";
+                    } else {
+                        sitePath = cms.getSitePath(resource);
+                    }
+                    try {
+                        String apiKey = cms.readPropertyObject(
+                            sitePath,
+                            CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY,
+                            true).getValue();
+
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(apiKey)) {
+                            conf.put(CONFIG_API_KEY, apiKey);
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
                 config = conf.toString();
             } catch (JSONException e) {
                 config = DEFAULT_CONFIG;
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return config;
@@ -181,10 +213,11 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
             if (widgetDialog.useNewStyle()) {
                 result.append(getJsHelpMouseHandler(widgetDialog, locKey, null));
             } else {
-                result.append(getJsHelpMouseHandler(
-                    widgetDialog,
-                    locKey,
-                    CmsEncoder.escape(locValue, cms.getRequestContext().getEncoding())));
+                result.append(
+                    getJsHelpMouseHandler(
+                        widgetDialog,
+                        locKey,
+                        CmsEncoder.escape(locValue, cms.getRequestContext().getEncoding())));
             }
             result.append("></td>");
             return result.toString();

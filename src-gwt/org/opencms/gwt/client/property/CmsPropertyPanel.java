@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
@@ -137,8 +138,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
      */
     public CmsPropertyPanel(boolean showShared, CmsListInfoBean info) {
 
-        CmsListItemWidget liWidget = createListItemWidget(info);
-        m_simpleTabWrapper.add(liWidget);
+        m_infoWidget = createListItemWidget(info);
+        m_simpleTabWrapper.add(m_infoWidget);
         m_simpleTabWrapper.add(m_simpleTab);
         m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_simpleTab.addStyleName(
@@ -388,7 +389,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
                         };
                         timer2.schedule(1);
-
                     }
                 }
 
@@ -401,7 +401,10 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
                     CmsTextBox box = (CmsTextBox)widget;
                     box.selectAll();
                     box.setFocus(true);
-
+                } else if (widget instanceof CmsTextArea) {
+                    CmsTextArea textarea = ((CmsTextArea)widget);
+                    textarea.selectAll();
+                    textarea.setFocus(true);
                 }
             }
         };

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -27,12 +27,8 @@
 
 package org.opencms.mail;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 
 /**
@@ -48,9 +44,6 @@ import org.apache.commons.mail.HtmlEmail;
  */
 public class CmsHtmlMail extends HtmlEmail {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHtmlMail.class);
-
     /**
      * Default constructor of a CmsHtmlMail.<p>
      *
@@ -62,24 +55,7 @@ public class CmsHtmlMail extends HtmlEmail {
 
         // call super constructor
         super();
-        // set the host to the default mail host
-        CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
-        setHostName(host.getHostname());
-        setSmtpPort(host.getPort());
-
-        // check if username and password are provided
-        String userName = host.getUsername();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userName)) {
-            // authentication needed, set user name and password
-            setAuthentication(userName, host.getPassword());
-        }
-        try {
-            // set default mail from address
-            setFrom(OpenCms.getSystemInfo().getMailSettings().getMailFromDefault());
-        } catch (EmailException e) {
-            // default email address is not valid, log error
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
-        }
+        CmsMailUtil.configureMail(OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost(), this);
     }
 
 }

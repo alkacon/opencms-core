@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -27,8 +27,10 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsLoginMessage;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -45,6 +47,9 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
+import org.opencms.lock.CmsLockActionRecord;
+import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -55,10 +60,12 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.site.CmsSite;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -158,6 +165,35 @@ class CmsShellCommands implements I_CmsShellCommands {
             principalName = OpenCms.getImportExportManager().translateUser(principalName);
         }
         m_cms.chacc(resourceName, principalType, principalName, permissionString);
+    }
+
+    /**
+     * Change the user settings concerned with the place where a user is taken on login
+     * @param username the name of the user for which the data should be changed
+     * @param startProject the start project
+     * @param startSite the start site
+     * @param startFolder the start folder (relative to the site root)
+     * @param startView the start view
+     *                  - Direct edit (/system/workplace/views/explorer/directEdit.jsp)
+     *                  - Explorer (/system/workplace/views/explorer/explorer_fs.jsp)
+     *                  - Administration (/system/workplace/views/admin/admin-fs.jsp)
+     * @throws CmsException thrown if user can't be read or settings can't be saved.
+     */
+    public void changeUserSettingsStartParameters(
+        String username,
+        String startProject,
+        String startSite,
+        String startFolder,
+        String startView)
+    throws CmsException {
+
+        CmsUser user = m_cms.readUser(username);
+        CmsUserSettings settings = new CmsUserSettings(user);
+        settings.setStartProject(startProject);
+        settings.setStartSite(startSite);
+        settings.setStartFolder(startFolder);
+        settings.setStartView(startView);
+        settings.save(m_cms);
     }
 
     /**
@@ -356,7 +392,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1233,6 +1269,25 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Sets a site parameter and writes back the updated system configuration.<p>
+     *
+     * @param siteRoot the root path used to identify the site
+     *
+     * @param key the parameter key
+     * @param value the parameter value
+     */
+    public void setSiteParam(String siteRoot, String key, String value) {
+
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(siteRoot);
+        if (site == null) {
+            throw new IllegalArgumentException("No site found for path: " + siteRoot);
+        } else {
+            site.getParameters().put(key, value);
+            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        }
+    }
+
+    /**
      * @see org.opencms.main.I_CmsShellCommands#shellExit()
      */
     public void shellExit() {
@@ -1257,6 +1312,48 @@ class CmsShellCommands implements I_CmsShellCommands {
         if (m_shell.isInteractive()) {
             // print the help information for interactive terminals
             help();
+        }
+    }
+
+    /**
+     * Sleeps for a duration given in milliseconds.<p>
+     *
+     * @param sleepMillis a string containing the number of milliseconds to wait
+     *
+     * @throws NumberFormatException if the sleepMillis parameter is not a valid number
+     */
+    public void sleep(String sleepMillis) throws NumberFormatException {
+
+        try {
+            Thread.sleep(Long.parseLong(sleepMillis));
+        } catch (InterruptedException e) {
+            // ignore
+        }
+    }
+
+    /**
+     * Touches a resource and all its children.<p>
+     *
+     * This method also rewrites the content for all files in the subtree.
+     *
+     * @param resourcePath the site path of the resource
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void touchResource(String resourcePath) throws Exception {
+
+        CmsResource resource = m_cms.readResource(resourcePath);
+        CmsLockActionRecord action = CmsLockUtil.ensureLock(m_cms, resource);
+        try {
+            OpenCms.getWorkplaceManager().flushMessageCache();
+            // One important reason for touching resources via the shell is to write mapped values containing
+            // localization macros to properties, so we flush the workplace messages immediately before the touch operation
+            // in case an older version of the workplace messages (not containing the keys we need) has already been cached
+            touchSingleResource(m_cms, resourcePath, System.currentTimeMillis(), true, true, true);
+        } finally {
+            if (action.getChange() == LockChange.locked) {
+                m_cms.unlockResource(resource);
+            }
         }
     }
 
@@ -1360,5 +1457,65 @@ class CmsShellCommands implements I_CmsShellCommands {
             // this will happen, if the user does not exist
         }
         return user != null;
+    }
+
+    /**
+     * Rewrites the content of the given file.<p>
+     *
+     * @param cms the CmsObject
+     * @param resource the resource to rewrite the content for
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void hardTouch(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsFile file = cms.readFile(resource);
+        cms = OpenCms.initCmsObject(cms);
+        cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+        file.setContents(file.getContents());
+        cms.writeFile(file);
+    }
+
+    /**
+     * Performs a touch operation for a single resource.<p>
+     *
+     * @param cms the CMS context
+     * @param resourceName the resource name of the resource to touch
+     * @param timeStamp the new time stamp
+     * @param recursive the flag if the touch operation is recursive
+     * @param correctDate the flag if the new time stamp is a correct date
+     * @param touchContent if the content has to be rewritten
+     *
+     * @throws CmsException if touching the resource fails
+     */
+    private void touchSingleResource(
+        CmsObject cms,
+        String resourceName,
+        long timeStamp,
+        boolean recursive,
+        boolean correctDate,
+        boolean touchContent)
+    throws CmsException {
+
+        CmsResource sourceRes = cms.readResource(resourceName, CmsResourceFilter.ALL);
+        if (!correctDate) {
+            // no date value entered, use current resource modification date
+            timeStamp = sourceRes.getDateLastModified();
+        }
+        cms.setDateLastModified(resourceName, timeStamp, recursive);
+
+        if (touchContent) {
+            if (sourceRes.isFile()) {
+                hardTouch(cms, sourceRes);
+            } else if (recursive) {
+                Iterator<CmsResource> it = cms.readResources(resourceName, CmsResourceFilter.ALL, true).iterator();
+                while (it.hasNext()) {
+                    CmsResource subRes = it.next();
+                    if (subRes.isFile()) {
+                        hardTouch(cms, subRes);
+                    }
+                }
+            }
+        }
     }
 }

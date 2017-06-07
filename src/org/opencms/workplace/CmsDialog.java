@@ -1,7 +1,7 @@
 /*
  * This library is part of OpenCms -
  * the Open Source Content Management System
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -355,7 +355,15 @@ public class CmsDialog extends CmsToolDialog {
         } else if (getParamCloseLink() != null) {
             // close link parameter present
             try {
-                if (Boolean.valueOf(getParamRedirect()).booleanValue()) {
+                if (CmsLinkManager.isWorkplaceLink(getParamCloseLink())) {
+                    // in case the close link points to the new workplace, make sure to set the new location on the top frame
+                    JspWriter out = getJsp().getJspContext().getOut();
+                    out.write(
+                        "<html><head><script type=\"text/javascript\">top.location.href=\""
+                            + getParamCloseLink()
+                            + "\";</script></head>\n");
+                    out.write("</html>\n");
+                } else if (Boolean.valueOf(getParamRedirect()).booleanValue()) {
                     // redirect parameter is true, redirect to given close link
                     getJsp().getResponse().sendRedirect(getParamCloseLink());
                 } else {

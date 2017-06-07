@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,16 +41,21 @@ import org.opencms.util.CmsUUID;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.Action;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 
 /**
  * The editor app. Will open the appropriate editor for a resource.<p>
  */
-public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener {
+public class CmsEditor
+implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions {
 
     /** The serial version id. */
     private static final long serialVersionUID = 7503052469189004387L;
@@ -93,6 +98,11 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
      */
     public static String getEditState(CmsUUID resourceId, boolean plainText, String backLink) {
 
+        try {
+            backLink = URLEncoder.encode(backLink, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
         String state = CmsEditor.RESOURCE_ID_PREFIX
             + resourceId.toString()
             + CmsEditor.STATE_SEPARATOR
@@ -151,6 +161,18 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
             return ((ViewChangeListener)m_editorInstance).beforeViewChange(event);
         } else {
             return true;
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsHasShortcutActions#getShortcutActions()
+     */
+    public Map<Action, Runnable> getShortcutActions() {
+
+        if (m_editorInstance instanceof I_CmsHasShortcutActions) {
+            return ((I_CmsHasShortcutActions)m_editorInstance).getShortcutActions();
+        } else {
+            return Collections.EMPTY_MAP;
         }
     }
 
@@ -278,7 +300,7 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
     }
 
     /**
-     * Returns if plain text/source editing is requested
+     * Returns if plain text/source editing is requested.
      *
      * @param state the state
      *

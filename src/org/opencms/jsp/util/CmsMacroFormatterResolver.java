@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -117,7 +117,7 @@ public class CmsMacroFormatterResolver {
     private String m_input;
 
     /** The request. */
-    private HttpServletRequest m_reqest;
+    private HttpServletRequest m_request;
 
     /** The response. */
     private HttpServletResponse m_response;
@@ -131,7 +131,7 @@ public class CmsMacroFormatterResolver {
      */
     public CmsMacroFormatterResolver(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         m_context = context;
-        m_reqest = req;
+        m_request = req;
         m_response = res;
         CmsFlexController controller = CmsFlexController.getController(req);
         if (controller == null) {
@@ -139,7 +139,7 @@ public class CmsMacroFormatterResolver {
             return;
         }
         m_cms = controller.getCmsObject();
-        m_contextBean = CmsJspStandardContextBean.getInstance(m_reqest);
+        m_contextBean = CmsJspStandardContextBean.getInstance(m_request);
         m_element = m_contextBean.getElement();
     }
 
@@ -358,7 +358,7 @@ public class CmsMacroFormatterResolver {
                         CmsContainerElementBean.cloneWithFormatter(m_element, formatter.getJspStructureId()),
                         formatter,
                         m_context,
-                        m_reqest,
+                        m_request,
                         m_response);
                 } catch (Exception e) {
                     LOG.error("Failed to display formatted content.", e);
@@ -418,7 +418,7 @@ public class CmsMacroFormatterResolver {
             // only as a fall back, should not be used
             m_formatterReferences = new HashMap<String, CmsUUID>();
             CmsResource macroContent = m_cms.readResource(m_element.getFormatterId());
-            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, macroContent, m_reqest);
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, macroContent, m_request);
             m_input = xmlContent.getStringValue(m_cms, CmsFormatterBeanParser.N_MACRO, CmsLocaleManager.MASTER_LOCALE);
             List<I_CmsXmlContentValue> formatters = xmlContent.getValues(
                 CmsFormatterBeanParser.N_FORMATTERS,

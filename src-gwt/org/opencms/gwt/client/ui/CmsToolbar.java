@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -169,6 +169,26 @@ public class CmsToolbar extends Composite {
     }
 
     /**
+     * Returns the quick launcher.<p>
+     *
+     * @return the quick launch menu button
+     */
+    public CmsQuickLauncher getQuickLauncher() {
+
+        return m_quickLauncher;
+    }
+
+    /**
+     * Returns the user info button.<p>
+     *
+     * @return the user info button
+     */
+    public CmsUserInfo getUserInfo() {
+
+        return m_userInfo;
+    }
+
+    /**
      * Inserts a widget into the left button panel.<p>
      *
      * @param widget the widget to add
@@ -220,6 +240,6 @@ public class CmsToolbar extends Composite {
      */
     public void setQuickLaunchHandler(I_QuickLaunchHandler quicklaunchHandler) {
 
-        m_quickLauncher.setHandler(quicklaunchHandler);
+        m_quickLauncher.setQuicklaunchHandler(quicklaunchHandler);
     }
 }

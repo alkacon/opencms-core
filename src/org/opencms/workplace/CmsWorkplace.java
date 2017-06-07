@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -47,6 +47,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
+import org.opencms.main.CmsStaticResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
@@ -69,7 +70,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Scanner;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -200,8 +200,11 @@ public abstract class CmsWorkplace {
     /** Constant for the direct edit view JSP. */
     public static final String VIEW_DIRECT_EDIT = VFS_PATH_VIEWS + "explorer/directEdit.jsp";
 
-    /** Constant for the direct edit view JSP. */
+    /** Constant for the explorer view JSP. */
     public static final String VIEW_WORKPLACE = VFS_PATH_VIEWS + "explorer/explorer_fs.jsp";
+
+    /** Constant for the admin view JSP. */
+    public static final String VIEW_ADMIN = CmsWorkplace.VFS_PATH_VIEWS + "admin/admin-fs.jsp";
 
     /** Key name for the request attribute to indicate a multipart request was already parsed. */
     protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";
@@ -411,7 +414,8 @@ public abstract class CmsWorkplace {
      *
      * @param cms the CMS context
      * @param path the path of a resource
-     * @return
+     *
+     * @return <code>true</code> if permissions for roles should be editable for the current user on the resource with the given path
      */
     public static boolean canEditPermissionsForRoles(CmsObject cms, String path) {
 
@@ -619,7 +623,25 @@ public abstract class CmsWorkplace {
      */
     public static String getStaticResourceUri(String resourceName) {
 
-        return CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getStaticResourceContext(), resourceName);
+        return getStaticResourceUri(resourceName, null);
+    }
+
+    /**
+     * Returns the URI to static resources served from the class path.<p>
+     *
+     * @param resourceName the resource name
+     * @param versionInfo add an additional version info parameter to avoid browser caching issues
+     *
+     * @return the URI
+     */
+    public static String getStaticResourceUri(String resourceName, String versionInfo) {
+
+        resourceName = CmsStaticResourceHandler.removeStaticResourcePrefix(resourceName);
+        String uri = CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getStaticResourceContext(), resourceName);
+        if (versionInfo != null) {
+            uri += "?v=" + versionInfo;
+        }
+        return uri;
     }
 
     /**
@@ -734,9 +756,6 @@ public abstract class CmsWorkplace {
     public static String getWorkplaceExplorerLink(final CmsObject cms, final String explorerRootPath) {
 
         // split the root site:
-        StringBuffer siteRoot = new StringBuffer();
-        StringBuffer path = new StringBuffer('/');
-        Scanner scanner = new Scanner(explorerRootPath);
         String targetSiteRoot = OpenCms.getSiteManager().getSiteRoot(explorerRootPath);
         if (targetSiteRoot == null) {
             if (OpenCms.getSiteManager().startsWithShared(explorerRootPath)) {
@@ -1642,9 +1661,9 @@ public abstract class CmsWorkplace {
         if (m_macroResolver == null) {
             // create a new macro resolver "with everything we got"
             m_macroResolver = CmsMacroResolver.newInstance()
-            // initialize resolver with the objects available
-            .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
-                (m_jsp == null) ? null : m_jsp.getJspContext());
+                // initialize resolver with the objects available
+                .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
+                    (m_jsp == null) ? null : m_jsp.getJspContext());
             m_macroResolver.setParameterMap(m_parameterMap);
         }
         return m_macroResolver;

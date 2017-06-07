@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -225,12 +225,14 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
     public void editPropertiesForNewResource(String propertyDataString) {
 
         try {
+            CmsVUI.clearStoredFocusForCurrentInstance(); // we need to control the focus for ourselves in the property dialog
             CmsPropertiesBean propData = (CmsPropertiesBean)(CmsRpcPrefetcher.getSerializedObjectFromString(
                 GWT.create(I_CmsVfsService.class),
                 propertyDataString));
             CmsEditProperties.PropertyEditingContext context = new CmsEditProperties.PropertyEditingContext();
             context.setPropertySaver(new PropertySaver());
             context.setAllowCreateProperties(false);
+            context.setFocusNameField(true);
             CmsEditProperties.openPropertyDialog(propData, new ContextMenuHandler(), true, new Runnable() {
 
                 @SuppressWarnings("synthetic-access")

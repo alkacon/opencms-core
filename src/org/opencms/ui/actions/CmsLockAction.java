@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -64,7 +64,6 @@ public class CmsLockAction extends A_CmsWorkplaceAction {
             /**
              * @see java.lang.Runnable#run()
              */
-            @SuppressWarnings("synthetic-access")
             public void run() {
 
                 m_context.finish(new ArrayList<CmsUUID>());
@@ -87,7 +86,7 @@ public class CmsLockAction extends A_CmsWorkplaceAction {
         }
 
         /** The dialog context. */
-        private I_CmsDialogContext m_context;
+        I_CmsDialogContext m_context;
 
         /**
          * Creates a new instance.<p>
@@ -101,7 +100,6 @@ public class CmsLockAction extends A_CmsWorkplaceAction {
         /**
          * Actually locks the resources.<p>
          */
-        @SuppressWarnings("synthetic-access")
         protected void doLock() {
 
             CmsObject cms = A_CmsUI.getCmsObject();
@@ -130,7 +128,6 @@ public class CmsLockAction extends A_CmsWorkplaceAction {
         /**
          * Executes the action.<p>
          */
-        @SuppressWarnings("synthetic-access")
         void executeAction() {
 
             CmsObject cms = A_CmsUI.getCmsObject();
@@ -161,8 +158,11 @@ public class CmsLockAction extends A_CmsWorkplaceAction {
         }
     }
 
+    /** The action id. */
+    public static final String ACTION_ID = "lock";
+
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLockAction.class);
+    static final Log LOG = CmsLog.getLog(CmsLockAction.class);
 
     /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -177,7 +177,7 @@ public class CmsLockAction extends A_CmsWorkplaceAction {
      */
     public String getId() {
 
-        return "lock";
+        return ACTION_ID;
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -76,6 +76,7 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
@@ -87,7 +88,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
-import org.opencms.search.CmsSearchManager;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
@@ -322,7 +323,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         listInfo.setResourceState(resource.getState());
 
-        String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        String title = cms.readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            false,
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).getValue();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
             listInfo.setTitle(title);
         } else {
@@ -340,6 +345,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 listInfo.setStateIcon(CmsListInfoBean.StateIcon.standard);
             }
         }
+        listInfo.setIsFolder(Boolean.valueOf(resource.isFolder()));
         String resTypeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
         String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
         Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -348,7 +354,17 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         listInfo.addAdditionalInfo(
             messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
             resTypeNiceName);
-        listInfo.setResourceType(resTypeName);
+        if (CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
+            listInfo.setResourceType(CmsGwtConstants.TYPE_NAVLEVEL);
+        } else {
+            if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(cms, resource)) {
+                resTypeName = CmsGwtConstants.TYPE_MODELGROUP_REUSE;
+            }
+            listInfo.setResourceType(resTypeName);
+            // set the default file and detail type info
+            String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
+            listInfo.setDetailResourceType(detailType);
+        }
         return listInfo;
     }
 
@@ -372,7 +388,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             cms.writeFile(file);
             tryUnlock(resource);
             // update the offline search indices
-            OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+            OpenCms.getSearchManager().updateOfflineIndexes();
         } catch (Exception e) {
             error(e);
         }
@@ -781,7 +797,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        CmsUUID detailContentId) throws CmsRpcException {
+        CmsUUID detailContentId)
+    throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -1060,7 +1077,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
             tryUnlock(res);
             // update the offline search indices
-            OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+            OpenCms.getSearchManager().updateOfflineIndexes();
         } catch (Exception e) {
             error(e);
         }
@@ -1289,7 +1306,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsObject cms,
         CmsResource historyRes,
         boolean offline,
-        int maxVersion) throws CmsException {
+        int maxVersion)
+    throws CmsException {
 
         CmsHistoryResourceBean result = new CmsHistoryResourceBean();
 
@@ -1351,11 +1369,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             path = cms.getSitePath(resource);
             cms.lockResource(path);
             cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-            // check if any detail container page resource exists to this resource
-            String detailContainers = CmsJspTagContainer.getDetailOnlyPageName(path);
-            if (cms.existsResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                deleteResource(cms.readResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION));
+            // check if any detail container page resources exist to this resource
+            List<CmsResource> detailContainers = CmsJspTagContainer.getDetailOnlyResources(cms, resource);
+            for (CmsResource detailContainer : detailContainers) {
+                deleteResource(detailContainer);
             }
         } finally {
             try {
@@ -1619,6 +1636,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             previewContent = "<img src=\"" + imageLink + "\" title=\"" + title + "\" style=\"display:block\" />";
             height = scaler.getHeight();
             width = scaler.getWidth();
+        } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)
+            || CmsResourceTypeXmlPage.isXmlPage(resource)) {
+            String link = "";
+            if (resource instanceof I_CmsHistoryResource) {
+                int version = ((I_CmsHistoryResource)resource).getVersion();
+                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                    cms,
+                    CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+            } else {
+                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+            }
+            return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
         } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             if (!locales.containsKey(locale.toString())) {
                 locale = CmsLocaleManager.getMainLocale(cms, resource);

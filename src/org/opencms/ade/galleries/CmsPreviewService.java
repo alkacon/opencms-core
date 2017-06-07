@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,6 +51,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -134,6 +135,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                         "PREVIEW",
                         CmsFormatterBean.PREVIEW_TYPE,
                         null,
+                        true,
                         1,
                         Collections.<CmsContainerElementBean> emptyList());
                     containerBean.setWidth(String.valueOf(CmsFormatterBean.PREVIEW_WIDTH));
@@ -177,10 +179,11 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             }
             CmsResource resource = readResourceFromCurrentOrRootSite(cms, resName);
             readResourceInfo(cms, resource, resInfo, locale);
-            resInfo.setViewLink(CmsStringUtil.joinPaths(
-                OpenCms.getSystemInfo().getOpenCmsContext(),
-                CmsPermalinkResourceHandler.PERMALINK_HANDLER,
-                resource.getStructureId().toString()));
+            resInfo.setViewLink(
+                CmsStringUtil.joinPaths(
+                    OpenCms.getSystemInfo().getOpenCmsContext(),
+                    CmsPermalinkResourceHandler.PERMALINK_HANDLER,
+                    resource.getStructureId().toString()));
             resInfo.setHash(resource.getStructureId().hashCode());
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
             int height = -1;
@@ -242,6 +245,9 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         resInfo.setDescription(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
         resInfo.setResourcePath(cms.getSitePath(resource));
         resInfo.setResourceType(type.getTypeName());
+        // set the default file and detail type info
+        String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
+        resInfo.setDetailResourceType(detailType);
         resInfo.setSize((resource.getLength() / 1024) + " kb");
         resInfo.setLastModified(new Date(resource.getDateLastModified()));
         resInfo.setNoEditReason(new CmsResourceUtil(cms, resource).getNoEditReason(wpLocale, true));
@@ -300,7 +306,8 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
     public CmsResourceInfoBean updateResourceProperties(
         String resourcePath,
         String locale,
-        Map<String, String> properties) throws CmsRpcException {
+        Map<String, String> properties)
+    throws CmsRpcException {
 
         try {
             saveProperties(resourcePath, properties);
@@ -338,7 +345,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         CmsResource resource = null;
         try {
             resource = cms.readResource(name, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+        } catch (CmsVfsResourceNotFoundException e) {
             String originalSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
                 cms.getRequestContext().setSiteRoot("");

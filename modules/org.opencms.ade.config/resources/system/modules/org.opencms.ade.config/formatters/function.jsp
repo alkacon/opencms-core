@@ -1,4 +1,6 @@
-<%@page taglibs="c,cms" %>
+<%@page session="false" %><%@ 
+	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%@ 
+	taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <cms:formatter var="content" val="value">
 	<c:set var="format" value="${cms.functionFormatFromContent[content]}" />
 	<c:choose>

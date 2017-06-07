@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -419,7 +419,7 @@ public class CmsSessionManager {
     public String switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
 
         // only user with root administrator role are allowed to switch the user
-        OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN.forOrgUnit(user.getOuFqn()));
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn()));
         CmsSessionInfo info = getSessionInfo(req);
         HttpSession session = req.getSession(false);
         if ((info == null) || (session == null)) {
@@ -679,12 +679,11 @@ public class CmsSessionManager {
             m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
             m_sessionCountTotal++;
             if (LOG.isInfoEnabled()) {
-                LOG.info(
-                    tid
-                        + Messages.get().getBundle().key(
-                            Messages.LOG_SESSION_CREATED_2,
-                            new Integer(m_sessionCountTotal),
-                            new Integer(m_sessionCountCurrent)));
+                LOG.info(tid
+                    + Messages.get().getBundle().key(
+                        Messages.LOG_SESSION_CREATED_2,
+                        new Integer(m_sessionCountTotal),
+                        new Integer(m_sessionCountCurrent)));
             }
         }
 

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,6 +39,7 @@ import org.opencms.site.CmsSite;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -149,7 +150,7 @@ public class CmsLocaleGroup {
             }
 
         });
-        Map<Locale, CmsResource> result = Maps.newHashMap();
+        Map<Locale, CmsResource> result = new LinkedHashMap<Locale, CmsResource>();
         for (CmsResource resource : resources) {
             result.put(m_localeCache.get(resource), resource);
         }
@@ -237,8 +238,8 @@ public class CmsLocaleGroup {
         if (mainLocale == null) {
             return false;
         }
-        Locale myLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, m_primaryResource);
-        return mainLocale.equals(myLocale);
+        Locale primaryLocale = getMainLocale();
+        return mainLocale.equals(primaryLocale);
 
     }
 

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -69,13 +69,18 @@ public class CmsResultListItem extends CmsListItem {
      *
      * @param resultItem the result item
      * @param hasPreview if the item has a preview option
+     * @param showPath <code>true</code> to show the resource path in sub title
      * @param dndHandler the drag and drop handler
      */
-    public CmsResultListItem(CmsResultItemBean resultItem, boolean hasPreview, CmsDNDHandler dndHandler) {
+    public CmsResultListItem(
+        CmsResultItemBean resultItem,
+        boolean hasPreview,
+        boolean showPath,
+        CmsDNDHandler dndHandler) {
 
         m_result = resultItem;
         resultItem.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_PATH_0), resultItem.getPath());
-        CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(resultItem);
+        CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(resultItem, showPath);
         ImageTile imageTile = resultItemWidget.getImageTile();
         resultItemWidget.setUnselectable();
         initContent(resultItemWidget);

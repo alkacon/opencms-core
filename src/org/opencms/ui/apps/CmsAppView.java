@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,6 +45,8 @@ import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Page.BrowserWindowResizeEvent;
+import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -53,7 +55,8 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Displays the selected app.<p>
  */
-public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener, I_CmsAppView, Handler {
+public class CmsAppView
+implements ViewChangeListener, I_CmsWindowCloseListener, I_CmsAppView, Handler, BrowserWindowResizeListener {
 
     /**
      * Enum representing caching status of a view.<p>
@@ -131,6 +134,9 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     /** The default shortcut actions. */
     private Map<Action, Runnable> m_defaultActions;
 
+    /** The requires restore from cache flag. */
+    private boolean m_requiresRestore;
+
     /**
      * Constructor.<p>
      *
@@ -179,6 +185,16 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
             return ((ViewChangeListener)m_app).beforeViewChange(event);
         }
         return true;
+    }
+
+    /**
+     * @see com.vaadin.server.Page.BrowserWindowResizeListener#browserWindowResized(com.vaadin.server.Page.BrowserWindowResizeEvent)
+     */
+    public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+        if (m_appLayout != null) {
+            m_appLayout.browserWindowResized(event);
+        }
     }
 
     /**
@@ -313,10 +329,18 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
         } else {
             m_app = m_appConfig.getAppInstance();
         }
-        m_appLayout = new CmsAppViewLayout();
+        m_appLayout = new CmsAppViewLayout(m_appConfig.getId());
         m_appLayout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
         m_app.initUI(m_appLayout);
         return m_appLayout;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsAppView#requiresRestore()
+     */
+    public boolean requiresRestore() {
+
+        return m_requiresRestore;
     }
 
     /**
@@ -325,6 +349,7 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     public void restoreFromCache() {
 
         ((I_CmsCachableApp)m_app).onRestoreFromCache();
+        m_requiresRestore = false;
     }
 
     /**
@@ -335,5 +360,13 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     public void setCacheStatus(CacheStatus status) {
 
         m_cacheStatus = status;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsAppView#setRequiresRestore(boolean)
+     */
+    public void setRequiresRestore(boolean restored) {
+
+        m_requiresRestore = restored;
     }
 }

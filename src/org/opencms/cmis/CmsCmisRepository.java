@@ -245,7 +245,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     private static PermissionDefinition createPermission(String permission, String description) {
 
         PermissionDefinitionDataImpl pd = new PermissionDefinitionDataImpl();
-        pd.setPermission(permission);
+        pd.setId(permission);
         pd.setDescription(description);
 
         return pd;
@@ -1052,7 +1052,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
         repositoryInfo.setProductName("OpenCms");
         repositoryInfo.setProductVersion(OpenCms.getSystemInfo().getVersion());
-        repositoryInfo.setVendorName("Alkacon Software GmbH");
+        repositoryInfo.setVendorName("Alkacon Software GmbH & Co. KG");
         repositoryInfo.setRootFolder(m_root.getStructureId().toString());
         repositoryInfo.setThinClientUri("");
         repositoryInfo.setPrincipalAnonymous(OpenCms.getDefaultUsers().getUserGuest());
@@ -1452,7 +1452,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         CmsResource resource,
         RelationshipDirection relationshipDirection,
         Set<String> filterSet,
-        boolean includeAllowableActions) throws CmsException {
+        boolean includeAllowableActions)
+    throws CmsException {
 
         List<ObjectData> resultObjects = new ArrayList<ObjectData>();
         CmsRelationFilter relationFilter;

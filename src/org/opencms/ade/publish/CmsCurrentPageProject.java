@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
@@ -131,18 +130,7 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 Set<CmsResource> result = Sets.newHashSet();
 
                 if (res.getStructureId().toString().equals(detailId)) {
-                    String detailContentPagePath = CmsJspTagContainer.getDetailOnlyPageName(
-                        cms.getRequestContext().removeSiteRoot(res.getRootPath()));
-                    try {
-                        CmsResource detailContentPage = cms.readResource(
-                            detailContentPagePath,
-                            CmsResourceFilter.IGNORE_EXPIRATION);
-                        result.add(detailContentPage);
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // ignore
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
+                    result.addAll(CmsJspTagContainer.getDetailOnlyResources(cms, res));
                 }
                 if (res.getStructureId().toString().equals(pageId)) {
 

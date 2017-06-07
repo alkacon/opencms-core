@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,15 +33,24 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 
 /**
@@ -111,7 +120,10 @@ public class CmsResourceSelectDialog extends CustomComponent {
     protected CmsResource m_root;
 
     /** The file tree (wrapped in an array, because Vaadin Declarative tries to bind it otherwise) .*/
-    private CmsResourceTree m_fileTree;
+    private CmsResourceTreeTable m_fileTree;
+
+    /** Boolean flag indicating whether the tree is currently filtered. */
+    private boolean m_isSitemapView = true;
 
     /** The site root. */
     private String m_siteRoot;
@@ -151,12 +163,13 @@ public class CmsResourceSelectDialog extends CustomComponent {
         });
 
         CmsResource root = cms.readResource("/");
-        CmsResourceTree fileTree = createTree(cms, root);
+        m_fileTree = createTree(cms, root);
+        m_treeData = m_fileTree.getTreeContainer();
         updateRoot(cms, root);
-        m_fileTree = fileTree;
-        m_treeData = fileTree.getTreeContainer();
-        getContents().getTreeContainer().addComponent(fileTree);
-        fileTree.setSizeFull();
+
+        getContents().getTreeContainer().addComponent(m_fileTree);
+        ((Component)m_fileTree).setSizeFull();
+        updateView();
     }
 
     /**
@@ -170,15 +183,89 @@ public class CmsResourceSelectDialog extends CustomComponent {
     }
 
     /**
+     * Opens the given path.<p>
+     *
+     * @param path the path to open
+     */
+    public void openPath(String path) {
+
+        if (!CmsStringUtil.isPrefixPath(m_root.getRootPath(), path)) {
+            CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(path);
+            if (site != null) {
+                // the given path is a root path switch to the determined site
+                getSiteSelector().setValue(site.getSiteRoot());
+                path = m_currentCms.getRequestContext().removeSiteRoot(path);
+            } else if (OpenCms.getSiteManager().startsWithShared(path)) {
+                getSiteSelector().setValue(OpenCms.getSiteManager().getSharedFolder());
+            } else if (path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                getSiteSelector().setValue("");
+            }
+        }
+        if (!"/".equals(path)) {
+            List<CmsUUID> idsToOpen = Lists.newArrayList();
+            try {
+                CmsResource currentFolder = m_currentCms.readResource(CmsResource.getParentFolder(path));
+                if (!m_root.getStructureId().equals(currentFolder.getStructureId())) {
+                    idsToOpen.add(currentFolder.getStructureId());
+                    CmsResource parentFolder = null;
+
+                    do {
+                        try {
+                            parentFolder = m_currentCms.readParentFolder(currentFolder.getStructureId());
+                            idsToOpen.add(parentFolder.getStructureId());
+                            currentFolder = parentFolder;
+                        } catch (CmsException e) {
+                            LOG.info(e.getLocalizedMessage(), e);
+                            break;
+                        }
+                    } while (!parentFolder.getStructureId().equals(m_root.getStructureId()));
+                    // we need to iterate from "top" to "bottom", so we reverse the list of folders
+                    Collections.reverse(idsToOpen);
+
+                    for (CmsUUID id : idsToOpen) {
+                        m_fileTree.expandItem(id);
+                    }
+                }
+
+            } catch (CmsException e) {
+                LOG.debug("Can not read parent folder of current path.", e);
+            }
+        }
+    }
+
+    /**
+     * Switches between the folders and sitemap view of the tree.<p>
+     *
+     * @param showSitemapView <code>true</code> to show the sitemap view
+     */
+    public void showSitemapView(boolean showSitemapView) {
+
+        if (m_isSitemapView != showSitemapView) {
+            m_isSitemapView = showSitemapView;
+            updateView();
+        }
+    }
+
+    /**
+     * Displays the start resource by opening all nodes in the tree leading to it.<p>
+     *
+     * @param startResource the resource which should be shown in the tree
+     */
+    public void showStartResource(CmsResource startResource) {
+
+        openPath(startResource.getRootPath());
+    }
+
+    /**
      * Creates the resource tree for the given root.<p>
      *
      * @param cms the CMS context
      * @param root the root resource
      * @return the resource tree
      */
-    protected CmsResourceTree createTree(CmsObject cms, CmsResource root) {
+    protected CmsResourceTreeTable createTree(CmsObject cms, CmsResource root) {
 
-        return new CmsResourceTree(cms, root, m_filter);
+        return new CmsResourceTreeTable(cms, root, m_filter);
     }
 
     /**
@@ -196,7 +283,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
      *
      * @return the file tree
      */
-    protected CmsResourceTree getFileTree() {
+    protected CmsResourceTreeTable getFileTree() {
 
         return m_fileTree;
     }
@@ -214,7 +301,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
             rootCms.getRequestContext().setSiteRoot("");
             CmsResource siteRootResource = rootCms.readResource(site);
 
-            m_treeData.initRoot(rootCms, siteRootResource, m_filter);
+            m_treeData.initRoot(rootCms, siteRootResource);
             m_fileTree.expandItem(siteRootResource.getStructureId());
             m_siteRoot = site;
             updateRoot(rootCms, siteRootResource);
@@ -233,6 +320,15 @@ public class CmsResourceSelectDialog extends CustomComponent {
 
         m_root = siteRootResource;
         m_currentCms = rootCms;
+        updateView();
+    }
+
+    /**
+     * Updates the filtering state.<p>
+     */
+    protected void updateView() {
+
+        m_fileTree.showSitemapView(m_isSitemapView);
     }
 
     /**

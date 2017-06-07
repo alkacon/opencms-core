@@ -85,6 +85,9 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
             m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
             m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
             m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
+            m_filteredActions.add(CmsGwtConstants.ACTION_SHOWLOCALE);
+            m_filteredActions.add(CmsGwtConstants.ACTION_VIEW_ONLINE);
+
             for (Class<?> cls : new Class[] {
                 CmsEditUserSettings.class,
                 CmsAbout.class,

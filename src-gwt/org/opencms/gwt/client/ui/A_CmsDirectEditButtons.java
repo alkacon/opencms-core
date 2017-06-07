@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -218,6 +218,9 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
                         m_edit.disable(m_editableData.getNoEditReason());
                     }
+                } else if (m_editableData.hasNew()) {
+                    String message = Messages.get().key(Messages.GUI_DIRECTEDIT_ONLY_CREATE_0);
+                    m_edit.disable(message);
                 }
             }
 

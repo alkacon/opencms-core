@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,7 @@
 
 package org.opencms.ui.dialogs;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -76,14 +77,19 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     /** The window used to display the dialog. */
     private Window m_window;
 
+    /** The app id. */
+    private String m_appId;
+
     /**
      * Constructor.<p>
      *
+     * @param appId the app id
      * @param contextType the context type
      * @param resources the resources
      */
-    public CmsEmbeddedDialogContext(ContextType contextType, List<CmsResource> resources) {
+    public CmsEmbeddedDialogContext(String appId, ContextType contextType, List<CmsResource> resources) {
         extend(UI.getCurrent());
+        m_appId = appId;
         m_contextType = contextType;
         m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
     }
@@ -125,8 +131,18 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
         if ((project != null) || (siteRoot != null)) {
             String sitePath = null;
             if (siteRoot != null) {
-                sitePath = CmsQuickLaunchLocationCache.getLocationCache(
-                    A_CmsUI.get().getHttpSession()).getFileExplorerLocation(siteRoot);
+                CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(
+                    A_CmsUI.get().getHttpSession());
+                sitePath = locationCache.getPageEditorLocation(siteRoot);
+                if (sitePath == null) {
+                    sitePath = locationCache.getFileExplorerLocation(siteRoot);
+                    if (sitePath != null) {
+                        int index = sitePath.indexOf("/" + CmsADEManager.CONTENT_FOLDER_NAME);
+                        if (index >= 0) {
+                            sitePath = sitePath.substring(0, index);
+                        }
+                    }
+                }
             } else if ((m_resources != null) && !m_resources.isEmpty()) {
                 sitePath = A_CmsUI.getCmsObject().getSitePath(m_resources.get(0));
             }
@@ -173,6 +189,14 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     public List<CmsUUID> getAllStructureIdsInView() {
 
         return Collections.emptyList();
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#getAppId()
+     */
+    public String getAppId() {
+
+        return m_appId;
     }
 
     /**
@@ -228,6 +252,23 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#setWindow(com.vaadin.ui.Window)
+     */
+    public void setWindow(Window window) {
+
+        m_window = window;
+        m_window.addCloseListener(new CloseListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void windowClose(CloseEvent e) {
+
+                handleWindowClose();
+            }
+        });
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#start(java.lang.String, com.vaadin.ui.Component)
      */
     public void start(String title, Component dialog) {
@@ -259,6 +300,14 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
                 ((CmsBasicDialog)dialog).initActionHandler(m_window);
             }
         }
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#updateUserInfo()
+     */
+    public void updateUserInfo() {
+
+        getClientRPC().reloadParent();
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,10 +29,13 @@ package org.opencms.ui.apps;
 
 import org.opencms.ui.components.OpenCmsTheme;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
+import com.vaadin.ui.Component;
 
 /**
  * Editor for the user quick launch configuration.<p>
@@ -47,7 +50,28 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsQuickLaunchEditor();
+        return new A_CmsWorkplaceApp() {
+
+            @Override
+            protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
+
+                return null;
+            }
+
+            @Override
+            protected Component getComponentForState(String state) {
+
+                CmsQuickLaunchEditor editor = new CmsQuickLaunchEditor();
+                editor.initAppIcons();
+                return editor;
+            }
+
+            @Override
+            protected List<NavEntry> getSubNavEntries(String state) {
+
+                return null;
+            }
+        };
     }
 
     /**

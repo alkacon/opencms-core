@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -483,6 +483,7 @@ public class CmsShell {
         boolean interactive) {
 
         setPrompt(prompt);
+        setInteractive(interactive);
         if (CmsStringUtil.isEmpty(servletMapping)) {
             servletMapping = "/opencms/*";
         }
@@ -654,13 +655,12 @@ public class CmsShell {
         try {
             LineNumberReader lnr = new LineNumberReader(reader);
             while (!m_exitCalled) {
+                if (m_interactive || m_echo) {
+                    // print the prompt in front of the commands to process only when 'interactive'
+                    printPrompt();
+                }
                 String line = lnr.readLine();
-                if (line != null) {
-                    if (m_interactive || m_echo) {
-                        // print the prompt in front of the commands to process only when 'interactive'
-                        printPrompt();
-                    }
-                } else {
+                if (line == null) {
                     // if null the file has been read to the end
                     try {
                         Thread.sleep(500);
@@ -877,6 +877,7 @@ public class CmsShell {
             // ignore
         }
         m_out.print(prompt);
+        m_out.flush();
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -28,6 +28,7 @@
 package org.opencms.workplace;
 
 import org.opencms.ade.configuration.CmsElementView;
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsExportPoint;
@@ -339,6 +340,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The configured account infos. */
     private List<CmsAccountInfo> m_accountInfos;
+
+    /** The element delete mode. */
+    private ElementDeleteMode m_elementDeleteMode;
 
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -994,6 +998,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns the element delete mode.<p>
+     *
+     * @return the element delete mode
+     */
+    public ElementDeleteMode getElementDeleteMode() {
+
+        return m_elementDeleteMode;
+    }
+
+    /**
      * Returns the configured workplace encoding.<p>
      *
      * @return the configured workplace encoding
@@ -1150,7 +1164,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         if (m_galleryDefaultScope != null) {
             try {
                 result = CmsGallerySearchScope.valueOf(m_galleryDefaultScope);
-            } catch (@SuppressWarnings("unused") Throwable t) {
+            } catch (Throwable t) {
                 // ignore
             }
         }
@@ -1603,7 +1617,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 // workplace encoding is set on the workplace parent folder /system/workplace/
                 CmsResource wpFolderRes = cms.readResource(CmsWorkplace.VFS_PATH_WORKPLACE);
                 m_encoding = CmsLocaleManager.getResourceEncoding(cms, wpFolderRes);
-            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+            } catch (CmsVfsResourceNotFoundException e) {
                 // workplace parent folder could not be read - use configured default encoding
                 m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }
@@ -1967,6 +1981,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 Messages.get().getBundle().key(
                     Messages.INIT_EDITOR_HANDLER_CLASS_1,
                     m_editorHandler.getClass().getName()));
+        }
+    }
+
+    /**
+     * Sets the element delete mode.<p>
+     *
+     * @param deleteMode the element delete mode
+     */
+    public void setElementDeleteMode(String deleteMode) {
+
+        try {
+            m_elementDeleteMode = ElementDeleteMode.valueOf(deleteMode);
+        } catch (Throwable t) {
+            m_elementDeleteMode = ElementDeleteMode.askDelete;
         }
     }
 
@@ -2456,7 +2484,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 try {
                     // create Float order object
                     orderValue = Float.valueOf(order);
-                } catch (@SuppressWarnings("unused") NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     // String was not formatted correctly, use loop counter
                     orderValue = Float.valueOf(i);
                 }

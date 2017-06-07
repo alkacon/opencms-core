@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -213,7 +213,8 @@ public class CmsJspTagEditable extends BodyTagSupport {
         PageContext context,
         I_CmsXmlContentContainer container,
         CmsDirectEditMode mode,
-        String id) throws CmsException, JspException {
+        String id)
+    throws CmsException, JspException {
 
         ServletRequest req = context.getRequest();
         if (isEditableRequest(req)
@@ -257,8 +258,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
     }
 
     /**
-     * Checks if the current request should be direct edit enabled.
-     * Online-, history-requests and temporary files will not be editable.
+     * Checks if the current request should be direct edit enabled.<p>
      *
      * @param req the servlet request
      *
@@ -266,7 +266,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
      */
     public static boolean isEditableRequest(ServletRequest req) {
 
-        boolean result = true;
+        boolean result = false;
         if (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEnableAde.isDirectEditDisabled(req)) {
             // don't display direct edit buttons on an historical resource
             result = false;
@@ -275,6 +275,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
             CmsObject cms = controller.getCmsObject();
             result = !cms.getRequestContext().getCurrentProject().isOnlineProject()
                 && !CmsResource.isTemporaryFileName(cms.getRequestContext().getUri());
+
         }
         return result;
     }

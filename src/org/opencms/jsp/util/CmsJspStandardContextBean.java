@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,6 +50,7 @@ import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
+import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -73,6 +74,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -667,6 +669,9 @@ public final class CmsJspStandardContextBean {
     /** Lazily initialized map from a category path to the path's category object. */
     private Map<String, CmsCategory> m_categories;
 
+    /** Lazily initialized map from a category path to all sub-categories of that category */
+    private Map<String, CmsJspCategoryAccessBean> m_allSubCategories;
+
     /** The container the currently rendered element is part of. */
     private CmsContainerBean m_container;
 
@@ -820,6 +825,16 @@ public final class CmsJspStandardContextBean {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the locales available for the currently requested URI.
+     *
+     * @return the locales available for the currently requested URI.
+     */
+    public List<Locale> getAvailableLocales() {
+
+        return OpenCms.getLocaleManager().getAvailableLocales(m_cms, getRequestContext().getUri());
     }
 
     /**
@@ -1022,6 +1037,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns true if the current request is a JSON request.<p>
+     *
+     * @return true if we are in a JSON request
+     */
+    public boolean getIsJSONRequest() {
+
+        return CmsJsonPartFilter.isJsonRequest(m_request);
+    }
+
+    /**
      * Returns if the current project is the online project.<p>
      *
      * @return <code>true</code> if the current project is the online project
@@ -1084,6 +1109,43 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns the parent container to the current container if available.<p>
+     *
+     * @return the parent container
+     */
+    public CmsContainerBean getParentContainer() {
+
+        CmsContainerBean result = null;
+        if ((getContainer() != null) && (getContainer().getParentInstanceId() != null)) {
+            result = m_parentContainers.get(getContainer().getParentInstanceId());
+        }
+        return result;
+    }
+
+    /**
+     * Returns the instance id parent container mapping.<p>
+     *
+     * @return the instance id parent container mapping
+     */
+    public Map<String, CmsContainerBean> getParentContainers() {
+
+        if (m_parentContainers == null) {
+            initPageData();
+        }
+        return Collections.unmodifiableMap(m_parentContainers);
+    }
+
+    /**
+     * Returns the parent element to the current element if available.<p>
+     *
+     * @return the parent element or null
+     */
+    public CmsContainerElementBean getParentElement() {
+
+        return getParentElement(getElement());
+    }
+
+    /**
      * JSP EL accessor method for retrieving the preview formatters.<p>
      *
      * @return a lazy map for accessing preview formatters
@@ -1121,6 +1183,39 @@ public final class CmsJspStandardContextBean {
             }
         };
         return CmsCollectionsGenericWrapper.createLazyMap(transformer);
+    }
+
+    /**
+     * Reads all sub-categories below the provided category.
+     * @return The map from the provided category to it's sub-categories in a {@link CmsJspCategoryAccessBean}.
+     */
+    public Map<String, CmsJspCategoryAccessBean> getReadAllSubCategories() {
+
+        if (null == m_allSubCategories) {
+            m_allSubCategories = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(Object categoryPath) {
+
+                    try {
+                        List<CmsCategory> categories = CmsCategoryService.getInstance().readCategories(
+                            m_cms,
+                            (String)categoryPath,
+                            true,
+                            m_cms.getRequestContext().getUri());
+                        CmsJspCategoryAccessBean result = new CmsJspCategoryAccessBean(
+                            categories,
+                            (String)categoryPath);
+                        return result;
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        return null;
+                    }
+                }
+
+            });
+        }
+        return m_allSubCategories;
     }
 
     /**
@@ -1397,7 +1492,8 @@ public final class CmsJspStandardContextBean {
                 String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
                     m_cms,
                     m_element.getResource().getRootPath(),
-                    m_cms.getRequestContext().getUri());
+                    m_cms.getRequestContext().getUri(),
+                    null);
                 result = detailPage != null;
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);

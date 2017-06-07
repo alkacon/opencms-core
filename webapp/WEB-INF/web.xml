@@ -6,300 +6,322 @@
      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
      version="3.0">
 
-	<display-name>OpenCms</display-name>
+    <display-name>OpenCms</display-name>
 
-	<description>
+    <description><![CDATA[
         OpenCms, the Open Source Content Management System. 
-        (c) Alkacon Software GmbH.
+        (c) Alkacon Software GmbH & Co. KG.
         For more details about OpenCms, please see http://www.opencms.org/.
-        For more details about Alkacon Software GmbH, please see http://www.alkacon.com/.    
-    </description>
+        For more details about Alkacon Software GmbH & Co. KG, please see http://www.alkacon.com/.    
+    ]]></description>
 
-	<!-- Changing the servlet name from "opencms" to something else requires 
-		2 changes in this file. For example, to change the servlet name to "mycms" 
-		you must: 1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*" 
-		to "/mycms/*" 2. Change the <servlet-mapping> for "OpenCmsServlet" from "/opencms/*" 
-		to "/mycms/*" -->
+    <!-- Changing the servlet name from "opencms" to something else requires 
+        2 changes in this file. For example, to change the servlet name to "mycms" 
+        you must: 1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*" 
+        to "/mycms/*" 2. Change the <servlet-mapping> for "OpenCmsServlet" from "/opencms/*" 
+        to "/mycms/*" -->
 
-	<!-- Changing the errorhandler servlet name from "opencms-errorhandler" 
-		to something else requires 3 changes in this file. For example, to change 
-		the servlet name to "mycms-errorhandler" you must: 1. Change the <servlet-mapping> 
-		for "OpenCmsServletErrorHandler" from "/opencms-errorhandler/*" to "/mycms-errorhandler/*" 
-		2. Change the <error-page> setting for the 404 error from "/opencms-errorhandler/handle404" 
-		to "/mycms-errorhandler/handle404" 3. Change the <error-page> setting for 
-		the 500 error from "/opencms-errorhandler/system/handler/handle500.html" 
-		to "/mycms-errorhandler/system/handler/handle500.html" -->
+    <!-- Changing the errorhandler servlet name from "opencms-errorhandler" 
+        to something else requires 3 changes in this file. For example, to change 
+        the servlet name to "mycms-errorhandler" you must: 1. Change the <servlet-mapping> 
+        for "OpenCmsServletErrorHandler" from "/opencms-errorhandler/*" to "/mycms-errorhandler/*" 
+        2. Change the <error-page> setting for the 404 error from "/opencms-errorhandler/handle404" 
+        to "/mycms-errorhandler/handle404" 3. Change the <error-page> setting for 
+        the 500 error from "/opencms-errorhandler/system/handler/handle500.html" 
+        to "/mycms-errorhandler/system/handler/handle500.html" -->
+        
+    <!-- Use the OpenCmsUrlServletFilter to remove the OpenCms servlet name from URLs.
+        When using the filter make sure to also adjust the file /WEB-INF/config/opencms-importexport.xml setting 
+        opencms/importexport/staticexport/rendersettings/vfs-prefix to ${CONTEXT_NAME}. -->
+    <filter>
+        <filter-name>OpenCmsUrlServletFilter</filter-name>
+        <filter-class>org.opencms.main.OpenCmsUrlServletFilter</filter-class>
+        <!-- Use the init-param to prevent rewriting for URI that start with the provided prefixes
+        <init-param>
+            <param-name>additionalExcludePrefixes</param-name>
+            <param-value>/my-servlet-1|/my-servlet-2</param-value>
+        </init-param>
+         -->
+    </filter> 
+    
+    <filter>
+        <filter-name>CmsJsonPartFilter</filter-name>
+        <filter-class>org.opencms.jsp.jsonpart.CmsJsonPartFilter</filter-class>
+    </filter>
 
-	<filter>
-		<filter-name>OpenCmsUrlServletFilter</filter-name>
-		<filter-class>org.opencms.main.OpenCmsUrlServletFilter</filter-class>
-		<!-- Use the init-param to prevent rewriting for URI that start with the provided prefixes
-		<init-param>
-			<param-name>additionalExcludePrefixes</param-name>
-			<param-value>/my-servlet-1|/my-servlet-2</param-value>
-		</init-param>
-		 -->
-	</filter>
-	<filter-mapping>
-		<filter-name>OpenCmsUrlServletFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 
-	<context-param>
-		<param-name>OpenCmsServlet</param-name>
-		<param-value>/opencms/*</param-value>
-	</context-param>
 
-	<context-param>
-		<param-name>DefaultWebApplication</param-name>
-		<param-value>ROOT</param-value>
-	</context-param>
+   <filter-mapping>
+        <filter-name>OpenCmsUrlServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping> 
 
-	<context-param>
-		<description>Vaadin production mode</description>
-		<param-name>productionMode</param-name>
-		<param-value>true</param-value>
-	</context-param>
+    <filter-mapping>
+        <filter-name>CmsJsonPartFilter</filter-name>
+        <url-pattern>/opencms/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
 
-	<!-- Uncomment this parameter in case you change the web application context 
-		using an application server specific deployment descriptor. E.g. in Jboss, 
-		you could use the jboss-web.xml file to deploy opencms under the context 
-		'myopencms' but still keep the files in the folder 'opencms.war' <context-param> 
-		<param-name>WebApplicationContext</param-name> <param-value>myopencms</param-value> 
-		</context-param> -->
 
-	<!-- *********************** Main OpenCms configuration ****************************** -->
 
-	<listener>
-		<listener-class>org.opencms.main.OpenCmsListener</listener-class>
-	</listener>
+    <context-param>
+        <param-name>OpenCmsServlet</param-name>
+        <param-value>/opencms/*</param-value>
+    </context-param>
 
-	<servlet>
-		<description>
+    <context-param>
+        <param-name>DefaultWebApplication</param-name>
+        <param-value>ROOT</param-value>
+    </context-param>
+
+    <context-param>
+        <description>Vaadin production mode</description>
+        <param-name>productionMode</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- Uncomment this parameter in case you change the web application context 
+        using an application server specific deployment descriptor. E.g. in Jboss, 
+        you could use the jboss-web.xml file to deploy opencms under the context 
+        'myopencms' but still keep the files in the folder 'opencms.war' <context-param> 
+        <param-name>WebApplicationContext</param-name> <param-value>myopencms</param-value> 
+        </context-param> -->
+
+    <!-- *********************** Main OpenCms configuration ****************************** -->
+
+    <listener>
+        <listener-class>org.opencms.main.OpenCmsListener</listener-class>
+    </listener>
+
+    <servlet>
+        <description>
             The error handling servlet, also serves as trigger for static export requests.  
         </description>
-		<servlet-name>OpenCmsServletErrorHandler</servlet-name>
-		<servlet-class>org.opencms.main.OpenCmsServletErrorHandler</servlet-class>
-		<load-on-startup>0</load-on-startup>
-	</servlet>
+        <servlet-name>OpenCmsServletErrorHandler</servlet-name>
+        <servlet-class>org.opencms.main.OpenCmsServletErrorHandler</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
 
-	<servlet>
-		<description>
+    <servlet>
+        <description>
             The main servlet that handles all requests to the OpenCms VFS.  
         </description>
-		<servlet-name>OpenCmsServlet</servlet-name>
-		<servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
+        <servlet-name>OpenCmsServlet</servlet-name>
+        <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 
-	<servlet>
-		<description>
+    <servlet>
+        <description>
             The servlet that handles all workplace UI requests.  
         </description>
-		<servlet-name>CmsUIServlet</servlet-name>
-		<servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
-		<init-param>
-			<param-name>UI</param-name>
-			<param-value>org.opencms.ui.apps.CmsAppWorkplaceUi</param-value>
-		</init-param>
-		<init-param>
-			<description>Widget Set to Use</description>
-			<param-name>widgetset</param-name>
-			<param-value>org.opencms.ui.WidgetSet</param-value>
-		</init-param>
-		<init-param>
-			<param-name>heartbeatInterval</param-name>
-			<param-value>60</param-value>
-		</init-param>
-	</servlet>
-	
-	<servlet>
-		<description>
+        <servlet-name>CmsUIServlet</servlet-name>
+        <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.opencms.ui.apps.CmsAppWorkplaceUi</param-value>
+        </init-param>
+        <init-param>
+            <description>Widget Set to Use</description>
+            <param-name>widgetset</param-name>
+            <param-value>org.opencms.ui.WidgetSet</param-value>
+        </init-param>
+        <init-param>
+            <param-name>heartbeatInterval</param-name>
+            <param-value>60</param-value>
+        </init-param>
+    </servlet>
+    
+    <servlet>
+        <description>
             The servlet that handles sitemap UI requests.  
         </description>
-		<servlet-name>CmsSitemapServlet</servlet-name>
-		<servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
-		<init-param>
-			<param-name>UI</param-name>
-			<param-value>org.opencms.ui.sitemap.CmsSitemapUI</param-value>
-		</init-param>
-		<init-param>
-			<description>Widget Set to Use</description>
-			<param-name>widgetset</param-name>
-			<param-value>org.opencms.ui.WidgetSet</param-value>
-		</init-param>
-		<init-param>
-			<param-name>heartbeatInterval</param-name>
-			<param-value>60</param-value>
-		</init-param>
-	</servlet>
-	
-	<servlet>
-		<description>
+        <servlet-name>CmsSitemapServlet</servlet-name>
+        <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.opencms.ui.sitemap.CmsSitemapUI</param-value>
+        </init-param>
+        <init-param>
+            <description>Widget Set to Use</description>
+            <param-name>widgetset</param-name>
+            <param-value>org.opencms.ui.WidgetSet</param-value>
+        </init-param>
+        <init-param>
+            <param-name>heartbeatInterval</param-name>
+            <param-value>60</param-value>
+        </init-param>
+    </servlet>
+    
+    <servlet>
+        <description>
             The servlet that handles all workplace UI requests.  
         </description>
-		<servlet-name>CmsDialogServlet</servlet-name>
-		<servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
-		<init-param>
-			<param-name>UI</param-name>
-			<param-value>org.opencms.ui.dialogs.CmsEmbeddedDialogsUI</param-value>
-		</init-param>
-		<init-param>
-			<description>Widget Set to Use</description>
-			<param-name>widgetset</param-name>
-			<param-value>org.opencms.ui.WidgetSet</param-value>
-		</init-param>
-		<init-param>
-			<param-name>heartbeatInterval</param-name>
-			<param-value>60</param-value>
-		</init-param>
-	</servlet>
+        <servlet-name>CmsDialogServlet</servlet-name>
+        <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.opencms.ui.dialogs.CmsEmbeddedDialogsUI</param-value>
+        </init-param>
+        <init-param>
+            <description>Widget Set to Use</description>
+            <param-name>widgetset</param-name>
+            <param-value>org.opencms.ui.WidgetSet</param-value>
+        </init-param>
+        <init-param>
+            <param-name>heartbeatInterval</param-name>
+            <param-value>60</param-value>
+        </init-param>
+    </servlet>
 
-	<servlet>
-		<description>
+    <servlet>
+        <description>
             Error servlet.
         </description>
-		<servlet-name>CmsErrorServlet</servlet-name>
-		<servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
-		<init-param>
-			<param-name>UI</param-name>
-			<param-value>org.opencms.ui.error.CmsErrorUI</param-value>
-		</init-param>
-		<init-param>
-			<param-name>widgetset</param-name>
-			<param-value>org.opencms.ui.WidgetSet</param-value>
-		</init-param>
-	</servlet>
+        <servlet-name>CmsErrorServlet</servlet-name>
+        <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.opencms.ui.error.CmsErrorUI</param-value>
+        </init-param>
+        <init-param>
+            <param-name>widgetset</param-name>
+            <param-value>org.opencms.ui.WidgetSet</param-value>
+        </init-param>
+    </servlet>
 
-	<servlet-mapping>
-		<servlet-name>OpenCmsServlet</servlet-name>
-		<url-pattern>/opencms/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OpenCmsServlet</servlet-name>
+        <url-pattern>/opencms/*</url-pattern>
+    </servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>CmsErrorServlet</servlet-name>
-		<url-pattern>/workplace/errorpage/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>CmsSitemapServlet</servlet-name>
-		<url-pattern>/workplace/sitemap/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>CmsDialogServlet</servlet-name>
-		<url-pattern>/workplace/dialogs/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CmsErrorServlet</servlet-name>
+        <url-pattern>/workplace/errorpage/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>CmsSitemapServlet</servlet-name>
+        <url-pattern>/workplace/sitemap/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>CmsDialogServlet</servlet-name>
+        <url-pattern>/workplace/dialogs/*</url-pattern>
+    </servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>CmsUIServlet</servlet-name>
-		<url-pattern>/workplace/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CmsUIServlet</servlet-name>
+        <url-pattern>/workplace/*</url-pattern>
+    </servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>CmsUIServlet</servlet-name>
-		<url-pattern>/VAADIN/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CmsUIServlet</servlet-name>
+        <url-pattern>/VAADIN/*</url-pattern>
+    </servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>OpenCmsServletErrorHandler</servlet-name>
-		<url-pattern>/opencms-errorhandler/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OpenCmsServletErrorHandler</servlet-name>
+        <url-pattern>/opencms-errorhandler/*</url-pattern>
+    </servlet-mapping>
 
-	<!-- ************************ Timeout and error handling ***************************** -->
+    <!-- ************************ Timeout and error handling ***************************** -->
 
-	<session-config>
-		<session-timeout>30</session-timeout>
-	</session-config>
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
 
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index_export.html</welcome-file>
-	</welcome-file-list>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index_export.html</welcome-file>
+    </welcome-file-list>
 
-	<error-page>
-		<error-code>404</error-code>
-		<location>/opencms-errorhandler/handle404</location>
-	</error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/opencms-errorhandler/handle404</location>
+    </error-page>
 
-	<error-page>
-		<error-code>500</error-code>
-		<location>/opencms-errorhandler/system/handler/handle500.html</location>
-	</error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/opencms-errorhandler/system/handler/handle500.html</location>
+    </error-page>
 
-	<jsp-config>
-		<taglib>
-			<taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>
-			<taglib-location>/WEB-INF/opencms.tld</taglib-location>
-		</taglib>
-	</jsp-config>
+    <jsp-config>
+        <taglib>
+            <taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>
+            <taglib-location>/WEB-INF/opencms.tld</taglib-location>
+        </taglib>
+    </jsp-config>
 
-	<!-- **************************** CMIS configuration ********************************* -->
+    <!-- **************************** CMIS configuration ********************************* -->
 
-	<listener>
-		<listener-class>org.apache.chemistry.opencmis.server.impl.CmisRepositoryContextListener</listener-class>
-	</listener>
+    <listener>
+        <listener-class>org.apache.chemistry.opencmis.server.impl.CmisRepositoryContextListener</listener-class>
+    </listener>
 
-	<listener>
-		<listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
-	</listener>
 
-	<servlet>
-		<servlet-name>cmisws</servlet-name>
-		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
-		<!-- do not load on startup by default -->
-		<load-on-startup>-1</load-on-startup>
-	</servlet>
+    <servlet>
+        <servlet-name>cmisws</servlet-name>
+        <servlet-class>org.apache.chemistry.opencmis.server.impl.webservices.CmisWebServicesServlet</servlet-class>
+        <init-param>
+            <description>CMIS version</description>
+            <param-name>cmisVersion</param-name>
+            <param-value>1.0</param-value>
+        </init-param>
+        <!-- do not load on startup by default -->
+        <load-on-startup>-1</load-on-startup>
+    </servlet>
 
-	<servlet>
-		<servlet-name>cmisatom</servlet-name>
-		<servlet-class>org.apache.chemistry.opencmis.server.impl.atompub.CmisAtomPubServlet</servlet-class>
-		<init-param>
-			<param-name>callContextHandler</param-name>
-			<param-value>org.apache.chemistry.opencmis.server.shared.BasicAuthCallContextHandler</param-value>
-		</init-param>
-		<!-- do not load on startup by default -->
-		<load-on-startup>-2</load-on-startup>
-	</servlet>
+    <servlet>
+        <servlet-name>cmisatom</servlet-name>
+        <servlet-class>org.apache.chemistry.opencmis.server.impl.atompub.CmisAtomPubServlet</servlet-class>
+        <init-param>
+            <param-name>callContextHandler</param-name>
+            <param-value>org.apache.chemistry.opencmis.server.shared.BasicAuthCallContextHandler</param-value>
+        </init-param>
+        <!-- do not load on startup by default -->
+        <load-on-startup>-2</load-on-startup>
+    </servlet>
 
-	<servlet-mapping>
-		<servlet-name>cmisws</servlet-name>
-		<url-pattern>/services/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>cmisws</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>cmisatom</servlet-name>
-		<url-pattern>/cmisatom/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>cmisatom</servlet-name>
+        <url-pattern>/cmisatom/*</url-pattern>
+    </servlet-mapping>
 
-	<!-- *************************** WebDAV configuration ******************************** -->
+    <!-- *************************** WebDAV configuration ******************************** -->
 
-	<servlet>
-		<description>
+    <servlet>
+        <description>
             Creates an access to OpenCms through WebDAV.
         </description>
-		<servlet-name>OpenCmsWebDavServlet</servlet-name>
-		<servlet-class>org.opencms.webdav.CmsWebdavServlet</servlet-class>
-		<init-param>
-			<param-name>listings</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
-			<param-name>readonly</param-name>
-			<param-value>false</param-value>
-		</init-param>
-		<init-param>
-			<param-name>repository</param-name>
-			<param-value>standard</param-value>
-		</init-param>
-		<!-- do not load on startup by default -->
-		<load-on-startup>-3</load-on-startup>
-	</servlet>
+        <servlet-name>OpenCmsWebDavServlet</servlet-name>
+        <servlet-class>org.opencms.webdav.CmsWebdavServlet</servlet-class>
+        <init-param>
+            <param-name>listings</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>readonly</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>repository</param-name>
+            <param-value>standard</param-value>
+        </init-param>
+        <!-- do not load on startup by default -->
+        <load-on-startup>-3</load-on-startup>
+    </servlet>
 
-	<servlet-mapping>
-		<servlet-name>OpenCmsWebDavServlet</servlet-name>
-		<url-pattern>/webdav/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OpenCmsWebDavServlet</servlet-name>
+        <url-pattern>/webdav/*</url-pattern>
+    </servlet-mapping>
 
 </web-app>

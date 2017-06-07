@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -82,7 +82,13 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             if (queryString.isEmpty() && m_config.getSearchForEmptyQueryParam()) {
                 queryString = "*";
             }
-            query.set("q", "{!tag=q}" + m_config.getModifiedQuery(queryString));
+            String modifiedQuery = m_config.getModifiedQuery(queryString);
+            if (modifiedQuery.startsWith("{!")) {
+                modifiedQuery = "{!tag=q " + modifiedQuery.substring(2);
+            } else {
+                modifiedQuery = "{!tag=q}" + modifiedQuery;
+            }
+            query.set("q", modifiedQuery);
         }
 
         if (m_config.getSolrIndex() != null) {

@@ -60,6 +60,9 @@ public class CmsXmlSeoConfiguration {
     public static final String N_EXCLUDE = "SitemapExclude";
 
     /** Node name. */
+    public static final String N_SERVER_URL = "ServerUrl";
+
+    /** Node name. */
     public static final String N_GENERATOR_CLASS = "GeneratorClass";
 
     /** Node name. */
@@ -91,6 +94,9 @@ public class CmsXmlSeoConfiguration {
 
     /** The sitemap generator class name. */
     private String m_generatorClassName;
+
+    /** The server URL replacement. */
+    private String m_serverUrl;
 
     /**
      * Gets the list of exclude paths.<p>
@@ -130,6 +136,19 @@ public class CmsXmlSeoConfiguration {
     public String getRobotsTxtText() {
 
         return m_robotsTxtText;
+    }
+
+    /**
+     * Gets the configured server URL.<p>
+     *
+     * This, if set, replaces the host/port used by getOnlineLink() for the URLs
+     * in the XML sitemap.<p>
+     *
+     * @return the server URL
+     */
+    public String getServerUrl() {
+
+        return m_serverUrl;
     }
 
     /**
@@ -195,6 +214,11 @@ public class CmsXmlSeoConfiguration {
         I_CmsXmlContentValue generatorClassValue = content.getValue(N_GENERATOR_CLASS, en);
         if (generatorClassValue != null) {
             m_generatorClassName = generatorClassValue.getStringValue(rootCms);
+        }
+
+        I_CmsXmlContentValue serverUrlValue = content.getValue(N_SERVER_URL, en);
+        if (serverUrlValue != null) {
+            m_serverUrl = serverUrlValue.getStringValue(rootCms);
         }
     }
 

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,6 +55,12 @@ public class CmsContainer implements IsSerializable {
 
     /** The content to display in case the container is empty. */
     private String m_emptyContainerContent;
+
+    /**
+     * Indicates whether this container not nested,
+     * or in case of a detail only container page the starting point of a detail only container hierarchy.
+     **/
+    private boolean m_isRootContainer;
 
     /** The maximum number of elements. */
     private int m_maxElements;
@@ -244,6 +250,17 @@ public class CmsContainer implements IsSerializable {
     }
 
     /**
+     * Returns if this container not nested,
+     * or in case of a detail only container page the starting point of a detail only container hierarchy.<p>
+     *
+     * @return <code>true</code> if this container not nested
+     */
+    public boolean isRootContainer() {
+
+        return m_isRootContainer;
+    }
+
+    /**
      * Returns if this is a sub container.<p>
      *
      * @return <code>true</code> this is a sub container
@@ -292,6 +309,17 @@ public class CmsContainer implements IsSerializable {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the if this container not nested,
+     * or in case of a detail only container page the starting point of a detail only container hierarchy.<p>
+     *
+     * @param isRootContainer <code>true</code> if this container not nested
+     */
+    public void setRootContainer(boolean isRootContainer) {
+
+        m_isRootContainer = isRootContainer;
     }
 
     /**

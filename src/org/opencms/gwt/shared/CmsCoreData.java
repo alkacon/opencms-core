@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -89,9 +89,6 @@ public class CmsCoreData implements IsSerializable {
      */
     public static class UserInfo implements IsSerializable {
 
-        /** The info HTML. */
-        private String m_infoHtml;
-
         /** True if the user is an administrator. */
         private boolean m_isAdmin;
 
@@ -104,6 +101,9 @@ public class CmsCoreData implements IsSerializable {
         /** True if the user is managed. */
         private boolean m_isManaged;
 
+        /** True if the user is a workplace user. */
+        private boolean m_isWorkplaceUser;
+
         /** The user name. */
         private String m_name;
 
@@ -115,28 +115,28 @@ public class CmsCoreData implements IsSerializable {
          *
          * @param name the user name
          * @param userIcon the user icon path
-         * @param infoHtml the info HTML
          * @param isAdmin true if the user is an administrator
          * @param isDeveloper true if the user is a template developer
          * @param isCategoryManager true if the user is a category manager
+         * @param isWorkplaceUser true if the user is a workplace user
          * @param isManaged true if the user is managed
          */
         public UserInfo(
             String name,
             String userIcon,
-            String infoHtml,
             boolean isAdmin,
             boolean isDeveloper,
             boolean isCategoryManager,
+            boolean isWorkplaceUser,
             boolean isManaged) {
 
             m_isDeveloper = isDeveloper;
             m_isCategoryManager = isCategoryManager;
             m_isAdmin = isAdmin;
             m_isManaged = isManaged;
+            m_isWorkplaceUser = isWorkplaceUser;
             m_name = name;
             m_userIcon = userIcon;
-            m_infoHtml = infoHtml;
         }
 
         /**
@@ -145,16 +145,6 @@ public class CmsCoreData implements IsSerializable {
         protected UserInfo() {
 
             // empty
-        }
-
-        /**
-         * Returns the info HTML.<p>
-         *
-         * @return the info HTML
-         */
-        public String getInfoHtml() {
-
-            return m_infoHtml;
         }
 
         /**
@@ -216,6 +206,16 @@ public class CmsCoreData implements IsSerializable {
 
             return m_isManaged;
         }
+
+        /**
+         * Returns true if the current user is a workplace user.<p>
+         *
+         * @return true if the current user is a workplace user
+         */
+        public boolean isWorkplaceUser() {
+
+            return m_isWorkplaceUser;
+        }
     }
 
     /** Name of the used js variable. */
@@ -260,6 +260,9 @@ public class CmsCoreData implements IsSerializable {
     /** The mappings of file extensions to resource types. */
     private Map<String, String> m_extensionMapping;
 
+    /** The file explorer link. */
+    private String m_fileExplorerLink;
+
     /** The show editor help flag. */
     private boolean m_isShowEditorHelp;
 
@@ -298,9 +301,6 @@ public class CmsCoreData implements IsSerializable {
 
     /** The current workplace locale. */
     private String m_wpLocale;
-
-    /** The file explorer link. */
-    private String m_fileExplorerLink;
 
     /**
      * Constructor.<p>

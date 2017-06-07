@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -47,7 +47,6 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
 
@@ -56,7 +55,7 @@ import org.apache.commons.logging.Log;
  *
  * @since 6.2.0
  */
-public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamParent {
+public class CmsJspTagImage extends CmsJspImageScalerTagSupport implements I_CmsJspTagParamParent {
 
     /** Optional HTML attribute constant. */
     private static final String ATTR_ALIGN = "align";
@@ -104,37 +103,13 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     private static final String SCALE_ATTR_FILTER = "scalefilter";
 
     /** Required image scaler attributes constant. */
-    private static final String SCALE_ATTR_HEIGHT = "height";
-
-    /** Required image scaler attributes constant. */
-    private static final String SCALE_ATTR_MAXHEIGHT = "maxHeight";
-
-    /** Required image scaler attributes constant. */
-    private static final String SCALE_ATTR_MAXWIDTH = "maxWidth";
-
-    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_NODIM = "nodim";
 
     /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_PARTIALTAG = "partialtag";
 
     /** Required image scaler attributes constant. */
-    private static final String SCALE_ATTR_POSITION = "scaleposition";
-
-    /** Required image scaler attributes constant. */
-    private static final String SCALE_ATTR_QUALITY = "scalequality";
-
-    /** Required image scaler attributes constant. */
-    private static final String SCALE_ATTR_RENDERMODE = "scalerendermode";
-
-    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_SRC = "src";
-
-    /** Required image scaler attributes constant. */
-    private static final String SCALE_ATTR_TYPE = "scaletype";
-
-    /** Required image scaler attributes constant. */
-    private static final String SCALE_ATTR_WIDTH = "width";
 
     /** Lists for fast lookup. */
     private static final String[] SCALER_ATTRS = {
@@ -167,19 +142,11 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     /** Controls if the created HTML image tag is a full or partial tag. */
     private boolean m_partialTag;
 
-    /** The given image scaler parameters. */
-    private transient CmsImageScaler m_scaler;
-
-    /** The image source. */
-    private String m_src;
-
     /**
      * Creates a new image scaling tag instance.<p>
      */
     public CmsJspTagImage() {
-
-        // initialize the image scaler parameter container
-        m_scaler = new CmsImageScaler();
+        super();
     }
 
     /**
@@ -235,7 +202,8 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         Map<String, String> attributes,
         boolean partialTag,
         boolean noDim,
-        ServletRequest req) throws CmsException {
+        ServletRequest req)
+    throws CmsException {
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
@@ -322,7 +290,8 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         CmsImageScaler scaler,
         Map<String, String> attributes,
         boolean partialTag,
-        ServletRequest req) throws CmsException {
+        ServletRequest req)
+    throws CmsException {
 
         return imageTagAction(src, scaler, attributes, partialTag, false, req);
     }
@@ -469,16 +438,6 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * Returns the scaling height for the image.<p>
-     *
-     * @return the scaling height for the image
-     */
-    public String getHeight() {
-
-        return String.valueOf(m_scaler.getHeight());
-    }
-
-    /**
      * Returns the value of the HTML "hspace" attribute.<p>
      *
      * @return the value of the HTML "hspace" attribute
@@ -510,26 +469,6 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * Returns the maximum scaling height for the image, only needed if scale type is 5.<p>
-     *
-     * @return the maximum scaling height for the image
-     */
-    public String getMaxHeight() {
-
-        return String.valueOf(m_scaler.getMaxHeight());
-    }
-
-    /**
-     * Returns the maximum scaling width for the image, only needed if scale type is 5.<p>
-     *
-     * @return the maximum scaling width for the image
-     */
-    public String getMaxWidth() {
-
-        return String.valueOf(m_scaler.getMaxWidth());
-    }
-
-    /**
      * Returns the value of the HTML "name" attribute.<p>
      *
      * @return the value of the HTML "name" attribute
@@ -548,77 +487,6 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     public String getNoDim() {
 
         return String.valueOf(m_noDim);
-    }
-
-    /**
-     * Returns the background color used by the image scaler.<p>
-     *
-     * @return the background color used by the image scaler
-     */
-    public String getScaleColor() {
-
-        return m_scaler.getColorString();
-    }
-
-    /**
-     * Returns the filter list used by the image scaler.<p>
-     *
-     * @return the filter list used by the image scaler
-     */
-    public String getScaleFilter() {
-
-        return m_scaler.getFiltersString();
-    }
-
-    /**
-     * Returns the position used by the image scaler.<p>
-     *
-     * @return the position used by the image scaler
-     */
-    public String getScalePosition() {
-
-        return String.valueOf(m_scaler.getPosition());
-    }
-
-    /**
-     * Returns the quality used by the image scaler.<p>
-     *
-     * @return the quality used by the image scaler
-     */
-    public String getScaleQuality() {
-
-        return String.valueOf(m_scaler.getQuality());
-    }
-
-    /**
-     * Returns the render mode used by the image scaler.<p>
-     *
-     * @return the render mode used by the image scaler
-     */
-    public String getScaleRendermode() {
-
-        return String.valueOf(m_scaler.getRenderMode());
-    }
-
-    /**
-     * Returns the scaling type for the image.<p>
-     *
-     * @return the scaling type for the image
-     */
-    public String getScaleType() {
-
-        return String.valueOf(m_scaler.getType());
-    }
-
-    /**
-     * Returns the source of the image to scale,
-     * which will have the OpenCms webapp / servlet prefix added.<p>
-     *
-     * @return the source of the image to scale
-     */
-    public String getSrc() {
-
-        return m_src;
     }
 
     /**
@@ -662,16 +530,6 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * Returns the scaling width for the image.<p>
-     *
-     * @return the scaling width for the image
-     */
-    public String getWidth() {
-
-        return String.valueOf(m_scaler.getWidth());
-    }
-
-    /**
      * Returns <code>"true"</code> if the HTML tag should only be created as partial tag.<p>
      *
      * @return <code>"true"</code> if the HTML tag should only be created as partial tag
@@ -688,10 +546,8 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     public void release() {
 
         m_attributes = null;
-        m_scaler = new CmsImageScaler();
         m_partialTag = false;
         m_noDim = false;
-        m_src = null;
         super.release();
     }
 
@@ -739,18 +595,6 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * Sets the scaling height for the image.<p>
-     *
-     * If no valid integer is given, then "0" is used as value.<p>
-     *
-     * @param value the scaling height for the image to set
-     */
-    public void setHeight(String value) {
-
-        m_scaler.setHeight(CmsStringUtil.getIntValueRounded(value, 0, SCALE_ATTR_HEIGHT));
-    }
-
-    /**
      * Sets the value of the HTML "hspace" attribute.<p>
      *
      * @param value the value of the HTML "hspace" attribute to set
@@ -785,30 +629,6 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * Sets the maximum scaling height for the image, only needed if scale type is 5.<p>
-     *
-     * If no valid integer is given, then the value of {@link #getHeight()} is used as value.<p>
-     *
-     * @param value the maximum scaling height for the image to set
-     */
-    public void setMaxHeight(String value) {
-
-        m_scaler.setMaxHeight(CmsStringUtil.getIntValueRounded(value, -1, SCALE_ATTR_MAXHEIGHT));
-    }
-
-    /**
-     * Sets the maximum scaling width for the image, only needed if scale type is 5.<p>
-     *
-     * If no valid integer is given, then the value of {@link #getWidth()} is used as value.<p>
-     *
-     * @param value the maximum scaling width for the image to set
-     */
-    public void setMaxWidth(String value) {
-
-        m_scaler.setMaxWidth(CmsStringUtil.getIntValueRounded(value, -1, SCALE_ATTR_MAXWIDTH));
-    }
-
-    /**
      * Sets the value of the HTML "name" attribute.<p>
      *
      * @param value the value of the HTML "name" attribute to set
@@ -837,81 +657,6 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     public void setPartialTag(String partialTag) {
 
         m_partialTag = Boolean.valueOf(partialTag).booleanValue();
-    }
-
-    /**
-     * Sets the background color used by the image scaler.<p>
-     *
-     * @param value the background color to set
-     */
-    public void setScaleColor(String value) {
-
-        m_scaler.setColor(value);
-    }
-
-    /**
-     * Sets the filter(s) used by the image scaler.<p>
-     *
-     * @param value the filter(s) to set
-     */
-    public void setScaleFilter(String value) {
-
-        m_scaler.setFilters(value);
-    }
-
-    /**
-     * Sets the position used by the image scaler.<p>
-     *
-     * @param value the position to set
-     */
-    public void setScalePosition(String value) {
-
-        m_scaler.setPosition(CmsStringUtil.getIntValue(value, 0, SCALE_ATTR_POSITION));
-    }
-
-    /**
-     * Sets the quality used by the image scaler.<p>
-     *
-     * @param value the quality to set
-     */
-    public void setScaleQuality(String value) {
-
-        m_scaler.setQuality(CmsStringUtil.getIntValue(value, 0, SCALE_ATTR_QUALITY));
-    }
-
-    /**
-     * Sets the render mode used by the image scaler.<p>
-     *
-     * @param value the render mode to set
-     */
-    public void setScaleRendermode(String value) {
-
-        m_scaler.setRenderMode(CmsStringUtil.getIntValue(value, 0, SCALE_ATTR_RENDERMODE));
-    }
-
-    /**
-     * Sets the scaling type for the image.<p>
-     *
-     * If no valid integer is given, then "0" is used as value.<p>
-     *
-     * @param value the scaling type for the image to set
-     */
-    public void setScaleType(String value) {
-
-        m_scaler.setType(CmsStringUtil.getIntValue(value, 0, SCALE_ATTR_TYPE));
-    }
-
-    /**
-     * Sets the source of the image.<p>
-     *
-     * The source must be an absolute path in the current users OpenCms site, without any
-     * webapp or servlet prefix.<p>
-     *
-     * @param value the image source to set
-     */
-    public void setSrc(String value) {
-
-        m_src = value;
     }
 
     /**
@@ -953,18 +698,6 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         setAttribute(ATTR_VSPACE, value);
 
-    }
-
-    /**
-     * Sets the scaling width for the image.<p>
-     *
-     * If no valid integer is given, then "0" is used as value.<p>
-     *
-     * @param value the scaling width for the image to set
-     */
-    public void setWidth(String value) {
-
-        m_scaler.setWidth(CmsStringUtil.getIntValueRounded(value, 0, SCALE_ATTR_WIDTH));
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -90,42 +90,12 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         + "function injectButton(){ "
         + "if (self === top){ "
         + "var injectElement=document.createElement(\"div\"); "
-        + "injectElement.innerHTML=\"<button id='opencms-leave-preview' class='opencms-icon opencms-icon-edit-point cmsState-up' onClick='openEditor()'></button>\"; "
+        + "injectElement.innerHTML=\"<button id='opencms-leave-preview' class='opencms-icon opencms-icon-edit-point cmsState-up' onClick='openEditor()' style='left:%s;' title='%s'></button>\"; "
         + "document.body.appendChild(injectElement); "
         + "}"
         + "} "
         + "document.addEventListener(\"DOMContentLoaded\",injectButton); "
         + "</script>\n";
-
-    /** The preview mode CSS include. */
-    private static final String PREVIEW_INCLUDE_STYLE = "<style type=\"text/css\"> "
-        + "button#opencms-leave-preview{"
-        + "font-size:32px; "
-        + "color:#474747; "
-        + "border:none; "
-        + "background:transparent; "
-        + "position:fixed; "
-        + "top:5px; "
-        + "left:%s; "
-        + "z-index:1000000; "
-        + "padding:4px;"
-        + "} "
-        + "button#opencms-leave-preview:hover{"
-        + "color:#356EE1;"
-        + "} "
-        + "button#opencms-leave-preview:after{"
-        + "content:\"\"; "
-        + "position:absolute; "
-        + "z-index:-1; "
-        + "background:#fff; "
-        + "top:0; "
-        + "left:0; "
-        + "right:0; "
-        + "bottom:0; "
-        + "opacity:0.7; "
-        + "border-radius:4px;"
-        + "} "
-        + "</style>\n";
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 8447599916548975733L;
@@ -169,7 +139,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 } else {
                     buttonLeft = "20%";
                 }
-                context.getOut().print(getPreviewInclude(buttonLeft));
+                String titleMessage = Messages.get().getBundle(
+                    OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(Messages.GUI_TOOLBAR_ENABLE_EDIT_MODE_0);
+                context.getOut().print(getPreviewInclude(buttonLeft, titleMessage));
             } catch (IOException e) {
                 throw new JspException(e);
             }
@@ -259,16 +231,16 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
      * Returns the preview mode include.<p>
      *
      * @param buttonLeft the button left parameter
+     * @param titleMessage the title attribute of the "Editor mode" button rendered by the include
      *
      * @return the preview mode include
      */
-    private static String getPreviewInclude(String buttonLeft) {
+    private static String getPreviewInclude(String buttonLeft, String titleMessage) {
 
         StringBuffer buffer = new StringBuffer();
         buffer.append("<style type=\"text/css\"> @import url(\"").append(
             CmsGwtActionElement.getFontIconCssLink()).append("\"); </style>\n");
-        buffer.append(String.format(PREVIEW_INCLUDE_STYLE, buttonLeft));
-        buffer.append(PREVIEW_INCLUDE_SCRIPT);
+        buffer.append(String.format(PREVIEW_INCLUDE_SCRIPT, buttonLeft, titleMessage));
         return buffer.toString();
     }
 

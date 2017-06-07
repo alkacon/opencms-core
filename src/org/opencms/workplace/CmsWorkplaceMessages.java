@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -237,6 +237,14 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
             result.add(bundle.getBundle(locale));
         }
 
+        /////////// collect bundles configured in module configurations ////////
+        Set<String> bundleNames = OpenCms.getADEManager().getConfiguredWorkplaceBundles();
+        for (String bundleName : bundleNames) {
+            CmsMessages msg = new CmsMessages(bundleName, locale);
+            if (msg.isInitialized()) {
+                result.add(msg);
+            }
+        }
         return result;
     }
 

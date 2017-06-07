@@ -160,8 +160,10 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
             int tabIndex = m_tabbedPanel.getSelectedIndex();
             FlowPanel tab = m_tabbedPanel.getWidget(tabIndex);
-            int height = CmsPositionBean.getInnerDimensions(tab.getElement()).getHeight();
-            m_context.getElement().getStyle().setHeight(50 + height, Unit.PX);
+            int height = CmsPositionBean.getInnerDimensions(tab.getElement()).getHeight()
+                + m_tabbedPanel.getTabBarHeight();
+
+            m_context.getElement().getStyle().setHeight(22 + height, Unit.PX);
         }
 
         /**
@@ -402,6 +404,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
             context.getElement().setAttribute("about", entity.getId());
             context.getElement().getStyle().setPadding(0, Unit.PX);
             CmsTabbedPanel<FlowPanel> tabbedPanel = new CmsTabbedPanel<FlowPanel>(CmsTabbedPanelStyle.classicTabs);
+            tabbedPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().wrapTabs());
             final TabSizeHandler tabSizeHandler = new TabSizeHandler(tabbedPanel, context);
             tabbedPanel.addSelectionHandler(tabSizeHandler);
             entity.addValueChangeHandler(tabSizeHandler);
@@ -836,7 +839,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 setAttributeChoice(valueWidget, attributeType);
             }
         } else {
-            CmsAttributeValueView valueWidget = new CmsAttributeValueView(handler, label, help);
+            CmsAttributeValueView valueWidget = new CmsAttributeValueView(handler, label, help); 
             attributeElement.add(valueWidget);
             if (attributeType.isSimpleType()) {
                 // create a deactivated widget, to add the attribute on click

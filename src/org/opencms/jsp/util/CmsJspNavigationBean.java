@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -152,6 +152,26 @@ public class CmsJspNavigationBean {
      * @param endLevel the optional end level
      * @param resource the optional resource for the navigation
      * @param param the optional parameter for the navigation
+     */
+    public CmsJspNavigationBean(
+        CmsObject cms,
+        CmsJspTagNavigation.Type type,
+        int startLevel,
+        int endLevel,
+        String resource,
+        String param) {
+        this(cms, type, startLevel, endLevel, resource, param, null);
+    }
+
+    /**
+     * Base constructor.<p>
+     *
+     * @param cms the current users OpenCms context to build the navigation for
+     * @param type the navigation type to generate
+     * @param startLevel the optional start level
+     * @param endLevel the optional end level
+     * @param resource the optional resource for the navigation
+     * @param param the optional parameter for the navigation
      * @param locale the locale, for which Properties should be read.
      */
     public CmsJspNavigationBean(
@@ -281,8 +301,8 @@ public class CmsJspNavigationBean {
                             Boolean.valueOf(m_param).booleanValue());
                     } else {
                         if (m_startLevel == Integer.MIN_VALUE) {
-                            // no start level
-                            m_items = m_builder.getNavigationBreadCrumb();
+                            // default start level is zero
+                            m_items = m_builder.getNavigationBreadCrumb(0, Boolean.valueOf(m_param).booleanValue());
                         } else {
                             if (m_endLevel != Integer.MIN_VALUE) {
                                 m_items = m_builder.getNavigationBreadCrumb(m_startLevel, m_endLevel);

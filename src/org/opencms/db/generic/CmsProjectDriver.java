@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -94,9 +94,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -209,7 +211,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String projectFqn,
         String description,
         int flags,
-        CmsProject.CmsProjectType type) throws CmsDataAccessException {
+        CmsProject.CmsProjectType type)
+    throws CmsDataAccessException {
 
         CmsProject project = null;
 
@@ -531,7 +534,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     public void deletePublishHistoryEntry(
         CmsDbContext dbc,
         CmsUUID publishHistoryId,
-        CmsPublishedResource publishedResource) throws CmsDataAccessException {
+        CmsPublishedResource publishedResource)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -604,7 +608,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsDbContext dbc,
         String resourceName,
         int linkType,
-        String linkParameter) throws CmsDataAccessException {
+        String linkParameter)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -948,7 +953,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsFolder currentFolder,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         try {
             report.print(
@@ -1169,7 +1175,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsResource offlineResource,
         Set<CmsUUID> publishedContentIds,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         /*
          * Never use onlineResource.getState() here!
@@ -1321,10 +1328,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         } finally {
             // notify the app. that the published file and it's properties have been modified offline
-            OpenCms.fireCmsEvent(
-                new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineResource)));
+            Map<String, Object> data = new HashMap<String, Object>(2);
+            data.put(I_CmsEventListener.KEY_RESOURCE, offlineResource);
+            data.put(I_CmsEventListener.KEY_SKIPINDEX, new Boolean(true));
+
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, data));
         }
     }
 
@@ -1338,7 +1346,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsResource offlineResource,
         Set<CmsUUID> publishedResourceIds,
         boolean needToUpdateContent,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         CmsFile newFile = null;
         try {
@@ -1428,7 +1437,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsFolder offlineFolder,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         try {
             report.print(
@@ -1638,7 +1648,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         I_CmsReport report,
         CmsProject onlineProject,
         CmsPublishList publishList,
-        int publishTag) throws CmsException {
+        int publishTag)
+    throws CmsException {
 
         int publishedFolderCount = 0;
         int deletedFolderCount = 0;
@@ -2860,7 +2871,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String resourceName,
         int linkType,
         String linkParameter,
-        long timestamp) throws CmsDataAccessException {
+        long timestamp)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2983,7 +2995,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         CmsResource onlineResource;
         // check if the resource has been moved since last publishing
@@ -3224,7 +3237,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsResourceState state,
         List<CmsProperty> properties,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         try {
             if (OpenCms.getSystemInfo().isHistoryEnabled()) {
@@ -3378,7 +3392,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsResource offlineResource,
         Set<CmsUUID> publishedResourceIds,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         CmsResource onlineResource = null;
         boolean needToUpdateContent = true;
@@ -3521,7 +3536,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         CmsResourceState resourceState = fixMovedResource(
             dbc,
@@ -3732,7 +3748,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsResource offlineResource,
         Set<CmsUUID> publishedContentIds,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException {
+        int publishTag)
+    throws CmsDataAccessException {
 
         CmsResourceState resourceState = fixMovedResource(
             dbc,

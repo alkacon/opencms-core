@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -323,6 +323,34 @@ public class CmsSearchTab extends A_CmsTab {
     public void enableExpiredResourcesSearch(boolean enable) {
 
         m_includeExpiredRow.getStyle().setDisplay(enable ? Display.BLOCK : Display.NONE);
+    }
+
+    /**
+     * Sets the form fields to the values from the stored  gallery search.<p>
+     *
+     * @param search a previously stored gallery search
+     */
+    public void fillParams(CmsGallerySearchBean search) {
+
+        m_localeSelection.setFormValue(search.getLocale(), false);
+        m_searchInput.setFormValueAsString(search.getQuery());
+        m_includeExpiredCheckBox.setChecked(search.isIncludeExpired());
+        if (search.getDateCreatedStart() > 9) {
+            m_dateCreatedStartDateBox.setValue(new Date(search.getDateCreatedStart()));
+        }
+        if (search.getDateCreatedEnd() > 0) {
+            m_dateCreatedEndDateBox.setValue(new Date(search.getDateCreatedEnd()));
+        }
+        if (search.getDateModifiedStart() > 0) {
+            m_dateModifiedStartDateBox.setValue(new Date(search.getDateModifiedStart()));
+        }
+        if (search.getDateModifiedEnd() > 0) {
+            m_dateModifiedEndDateBox.setValue(new Date(search.getDateModifiedEnd()));
+        }
+        if (search.getScope() != null) {
+            m_scopeSelection.setFormValue(search.getScope().name());
+        }
+
     }
 
     /**

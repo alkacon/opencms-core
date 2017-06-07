@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -33,7 +33,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.tika.metadata.DublinCore;
@@ -123,7 +123,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      */
     protected CmsExtractionResult extractText(InputStream in, Parser parser) throws Exception {
 
-        Map<String, String> contentItems = new HashMap<String, String>();
+        LinkedHashMap<String, String> contentItems = new LinkedHashMap<String, String>();
 
         StringWriter writer = new StringWriter();
         BodyContentHandler handler = new BodyContentHandler(writer);

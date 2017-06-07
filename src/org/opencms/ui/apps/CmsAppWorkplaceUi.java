@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -68,14 +68,13 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.Window;
 
 /**
  * The workplace ui.<p>
  */
 @Theme("opencms")
 public class CmsAppWorkplaceUi extends A_CmsUI
-implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
+implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener, BrowserWindowResizeListener {
 
     /**
      * View which directly changes the state to the launchpad.<p>
@@ -177,6 +176,17 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * @see com.vaadin.server.Page.BrowserWindowResizeListener#browserWindowResized(com.vaadin.server.Page.BrowserWindowResizeEvent)
+     */
+    public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+        markAsDirtyRecursive();
+        if ((m_currentView != null) && (m_currentView instanceof BrowserWindowResizeListener)) {
+            ((BrowserWindowResizeListener)m_currentView).browserWindowResized(event);
+        }
+    }
+
+    /**
      * Call to add a new browser history entry.<p>
      *
      * @param state the current app view state
@@ -228,13 +238,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
-     * Closes all opened dialog windows.<p>
+     * @see org.opencms.ui.A_CmsUI#closeWindows()
      */
+    @Override
     public void closeWindows() {
 
-        for (Window window : getWindows()) {
-            window.close();
-        }
+        super.closeWindows();
         if (m_currentView instanceof CmsAppView) {
             ((CmsAppView)m_currentView).getComponent().closePopupViews();
         }
@@ -316,11 +325,11 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
             if (view instanceof CmsAppView) {
                 CmsAppView appView = (CmsAppView)view;
                 if (appView.getCacheStatus() == CacheStatus.cache) {
-                    appView.restoreFromCache();
+                    appView.setRequiresRestore(true);
                     return appView;
                 } else if (appView.getCacheStatus() == CacheStatus.cacheOnce) {
                     appView.setCacheStatus(CacheStatus.noCache);
-                    appView.restoreFromCache();
+                    appView.setRequiresRestore(true);
                     return appView;
                 }
             }
@@ -380,8 +389,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
-     * Reloads the current UI.<p>
+     * @see org.opencms.ui.A_CmsUI#reload()
      */
+    @Override
     public void reload() {
 
         if (m_currentView instanceof I_CmsAppView) {
@@ -443,6 +453,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         m_currentView = view;
         Component component = null;
         if (view instanceof I_CmsAppView) {
+            if (((I_CmsAppView)view).requiresRestore()) {
+                ((I_CmsAppView)view).restoreFromCache();
+            }
             component = ((I_CmsAppView)view).getComponent();
         } else if (view instanceof Component) {
             component = (Component)view;
@@ -451,7 +464,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         if (component != null) {
             setContent(component);
         }
-
     }
 
     /**
@@ -475,15 +487,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         navigator.addProvider(this);
         setNavigator(navigator);
 
-        Page.getCurrent().addBrowserWindowResizeListener(new BrowserWindowResizeListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void browserWindowResized(BrowserWindowResizeEvent event) {
-
-                markAsDirtyRecursive();
-            }
-        });
+        Page.getCurrent().addBrowserWindowResizeListener(this);
         m_history = new CmsHistoryExtension(getCurrent());
         CmsWindowCloseExtension windowClose = new CmsWindowCloseExtension(getCurrent());
         windowClose.addWindowCloseListener(this);

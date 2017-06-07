@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -37,6 +37,7 @@ import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.widgets.CmsVfsImageWidget;
 import org.opencms.xml.types.CmsXmlCategoryValue;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlPlainTextStringValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsImageValue;
@@ -155,6 +156,7 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsXmlVfs {
             m_schemaData.put(CmsXmlVfsImageValue.class.getName(), CmsVfsImageWidget.class.getName());
             m_schemaData.put(CmsXmlPlainTextStringValue.class.getName(), CmsInputWidget.class.getName());
             m_schemaData.put(CmsXmlCategoryValue.class.getName(), CmsCategoryWidget.class.getName());
+            m_schemaData.put(CmsXmlDynamicCategoryValue.class.getName(), CmsCategoryWidget.class.getName());
         }
         return m_schemaData;
     }

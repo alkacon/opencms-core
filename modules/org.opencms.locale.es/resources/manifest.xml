@@ -17,7 +17,7 @@ writeProperty '/system/workplace/locales/es/' 'content-encoding' 'ISO-8859-1'
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains the Spanish language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the Spanish version of the OpenCms Workplace.</p>
-<p><i>&copy; 2016 by OpenCms Hispano (http://www.opencmshispano.com).</i></p>]]></description>
+<p><i>&copy; 2017 by OpenCms Hispano (http://www.opencmshispano.com).</i></p>]]></description>
 		<version>10.0.1</version>
 		<authorname><![CDATA[OpenCms Hispano]]></authorname>
 		<authoremail><![CDATA[info@opencmshispano.es]]></authoremail>

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,6 +35,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsHistoryResourceBean;
 import org.opencms.i18n.CmsLocaleManager;
@@ -82,6 +83,7 @@ public class CmsTextDiff implements I_CmsDiffProvider {
         if ((type instanceof CmsResourceTypeXmlContent)
             || (type instanceof CmsResourceTypePlain)
             || (type instanceof CmsResourceTypeJsp)
+            || (type instanceof CmsResourceTypeXmlPage)
             || (type instanceof CmsResourceTypePointer)
             || (type instanceof CmsResourceTypeBinary)) {
             CmsResource resource2 = A_CmsAttributeDiff.readResource(cms, v2);

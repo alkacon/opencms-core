@@ -3,7 +3,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -172,16 +172,50 @@ public class CmsVfsTab extends A_CmsListTab {
     }
 
     /**
+     * Checks the check boxes for the selected folders.<p>
+     *
+     * @param folders the folders for which to check the check boxes
+     */
+    public void checkFolders(Set<String> folders) {
+
+        if (folders != null) {
+            for (String folder : folders) {
+                CmsLazyTreeItem item = m_itemsByPath.get(folder);
+                if (item != null) {
+                    item.getCheckBox().setChecked(true);
+                }
+            }
+        }
+
+    }
+
+    /**
      * Sets the initial folders in the VFS tab.<p>
      *
      * @param entries the root folders to display
      */
     public void fillInitially(List<CmsVfsEntryBean> entries) {
 
+        fillInitially(entries, null);
+    }
+
+    /**
+     * Sets the initial folders in the VFS tab.<p>
+     *
+     * @param entries the root folders to display
+     * @param selectedSiteRoot site root that should be selected in the select box
+     */
+    public void fillInitially(List<CmsVfsEntryBean> entries, String selectedSiteRoot) {
+
         clear();
         for (CmsVfsEntryBean entry : entries) {
-            CmsLazyTreeItem item = createItem(entry);
-            addWidgetToList(item);
+            if (entry != null) {
+                CmsLazyTreeItem item = createItem(entry);
+                addWidgetToList(item);
+            }
+        }
+        if (null != selectedSiteRoot) {
+            selectSite(selectedSiteRoot);
         }
         m_initialized = true;
     }
@@ -220,11 +254,8 @@ public class CmsVfsTab extends A_CmsListTab {
      */
     public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
 
-        fillInitially(Collections.singletonList(vfsPreloadData));
         String siteRoot = vfsPreloadData.getSiteRoot();
-        if (siteRoot != null) {
-            selectSite(siteRoot);
-        }
+        fillInitially(Collections.singletonList(vfsPreloadData), siteRoot);
     }
 
     /**
@@ -278,6 +309,9 @@ public class CmsVfsTab extends A_CmsListTab {
             CmsIconUtil.getResourceIconClasses(I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER, true),
             name,
             vfsEntry.getDisplayName());
+        if (vfsEntry.isSearchMatch()) {
+            dataValue.setSearchMatch(true);
+        }
         dataValue.setUnselectable();
         if (vfsEntry.isEditable()) {
             dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath(), true));
@@ -413,6 +447,15 @@ public class CmsVfsTab extends A_CmsListTab {
     protected CmsVfsTabHandler getTabHandler() {
 
         return m_tabHandler;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     */
+    @Override
+    protected boolean hasQuickFilter() {
+
+        return true;
     }
 
     /**

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,26 +31,26 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.jsp.CmsJspNavBuilder;
+import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.CmsResourceTableProperty;
+import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -59,29 +59,17 @@ import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Resource;
 
 /**
- * Data container which is used as a data source for VFS file selectors.<p>
- *
+ * The data container for the sitmeap folder selection tree.<p>
  */
 public class CmsResourceTreeContainer extends HierarchicalContainer {
 
     /** Property which is used to store the CmsResource. */
-    public static final String PROPERTY_RESOURCE = "resource";
+    public static final String PROPERTY_RESOURCE = "RESOURCE";
 
-    /** The resource comparator. */
-    private static final Comparator<CmsResource> FILE_COMPARATOR = new Comparator<CmsResource>() {
-
-        public int compare(CmsResource o1, CmsResource o2) {
-
-            if (o1.isFolder() != o2.isFolder()) {
-                return o1.isFolder() ? -1 : 1;
-            }
-            return o1.getName().compareTo(o2.getName());
-        }
-    };
+    /** Property which is used to store the sitemap view caption HTML. */
+    public static final String PROPERTY_SITEMAP_CAPTION = "SITEMAP_CAPTION";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTreeContainer.class);
@@ -89,23 +77,17 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The resource filter. */
+    private CmsResourceFilter m_filter;
+
     /**
-     * Create a new instance.<p>
+     * Default constructor.<p>
+     *
+     * @param filter the resource filter to use
      */
-    public CmsResourceTreeContainer() {
+    public CmsResourceTreeContainer(CmsResourceFilter filter) {
+        m_filter = filter;
         defineProperties();
-    }
-
-    /**
-     * Gets the resource for the given item.<p>
-     *
-     * @param item the item
-     *
-     * @return the resource
-     */
-    public static CmsResource getResource(Item item) {
-
-        return (CmsResource)(item.getItemProperty(PROPERTY_RESOURCE).getValue());
     }
 
     /**
@@ -142,31 +124,40 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
     }
 
     /**
+     * @see com.vaadin.data.util.IndexedContainer#getSortableContainerPropertyIds()
+     */
+    @Override
+    public Collection<?> getSortableContainerPropertyIds() {
+
+        if (getItemSorter() instanceof I_CmsItemSorter) {
+            return ((I_CmsItemSorter)getItemSorter()).getSortableContainerPropertyIds(this);
+        } else {
+            return super.getSortableContainerPropertyIds();
+        }
+    }
+
+    /**
      * Initializes the root level of the tree.<p>
      *
      * @param cms the CMS context
      * @param root the root folder
-     * @param filter the resource filter
      */
-    public void initRoot(CmsObject cms, CmsResource root, CmsResourceFilter filter) {
+    public void initRoot(CmsObject cms, CmsResource root) {
 
         addTreeItem(cms, root, null);
-        readTreeLevel(cms, root.getStructureId(), filter);
+        readTreeLevel(cms, root.getStructureId());
     }
 
     /**
      * Reads the given tree level.<p>
      * @param cms the CMS context
      * @param parentId the parent id
-     * @param filter the resource filter to use
      */
-    public void readTreeLevel(CmsObject cms, CmsUUID parentId, CmsResourceFilter filter) {
+    public void readTreeLevel(CmsObject cms, CmsUUID parentId) {
 
         try {
-            CmsResource parent = cms.readResource(parentId, filter);
-            List<CmsResource> children = cms.readResources(parent, filter, false);
-
-            Collections.sort(children, FILE_COMPARATOR);
+            CmsResource parent = cms.readResource(parentId, m_filter);
+            List<CmsResource> children = cms.readResources(parent, m_filter, false);
 
             // sets the parent to leaf mode, in case no child folders are present
             setChildrenAllowed(parentId, !children.isEmpty());
@@ -232,16 +223,42 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
     }
 
     /**
+     * Updates the item order according to the latest sort setting.<p>
+     */
+    public void updateSort() {
+
+        doSort();
+
+        // Post sort updates
+        if (isFiltered()) {
+            filterAll();
+        } else {
+            fireItemSetChange();
+        }
+    }
+
+    /**
      * Defines the container properties.<p>
      */
     protected void defineProperties() {
 
         addContainerProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, String.class, null);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
-        addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION, String.class, null);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT, Boolean.class, Boolean.TRUE);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER, Boolean.class, Boolean.TRUE);
         addContainerProperty(PROPERTY_RESOURCE, CmsResource.class, null);
+
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION, Boolean.class, Boolean.FALSE);
+        addContainerProperty(
+            CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION,
+            Float.class,
+            Float.valueOf(Float.MAX_VALUE));
+        addContainerProperty(PROPERTY_SITEMAP_CAPTION, String.class, "");
+        addContainerProperty(
+            CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
+            CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.getColumnType(),
+            "");
     }
 
     /**
@@ -257,30 +274,53 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
         resourceItem.getItemProperty(PROPERTY_RESOURCE).setValue(resource);
         // use the root path as name in case of the root item
         String name = getName(cms, resource, parentId);
+        if (resource.isFolder() && !name.endsWith("/")) {
+            name += "/";
+        }
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(name);
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
-        String icon = getIcon(cms, resource);
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(new ExternalResource(icon));
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+
         resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER).setValue(
             Boolean.valueOf(resource.isFolder()));
-    }
+        try {
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsJspNavBuilder builder = new CmsJspNavBuilder(rootCms);
+            CmsJspNavElement nav = builder.getNavigationForResource(
+                resource.getRootPath(),
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            boolean inNavigation = nav.isInNavigation();
+            resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).setValue(
+                Boolean.valueOf(inNavigation));
 
-    /**
-     * Gets the icon for the given resource.<p>
-     *
-     * @param cms the CMS context
-     * @param resource a resource
-     *
-     * @return the icon for the given resource
-     */
-    protected String getIcon(CmsObject cms, CmsResource resource) {
+            if (inNavigation) {
+                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).setValue(
+                    Float.valueOf(nav.getNavPosition()));
+            }
+            String navText = null;
+            if (nav.getProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)) {
+                navText = nav.getProperties().get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+            } else if (nav.getProperties().containsKey(CmsPropertyDefinition.PROPERTY_TITLE)) {
+                navText = nav.getProperties().get(CmsPropertyDefinition.PROPERTY_TITLE);
+            }
+            resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT).setValue(navText);
+            String folderCaption;
+            folderCaption = CmsResourceIcon.getTreeCaptionHTML(name, resUtil, null, false);
+            resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TREE_CAPTION).setValue(folderCaption);
+            if (inNavigation) {
+                if (navText == null) {
+                    navText = name;
+                }
+                String sitemapCaption = CmsResourceIcon.getTreeCaptionHTML(navText, resUtil, null, false);
+                resourceItem.getItemProperty(PROPERTY_SITEMAP_CAPTION).setValue(sitemapCaption);
+            }
 
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        String icon = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable());
-        return icon;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
     }
 
     /**
@@ -296,5 +336,4 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
 
         return parentId == null ? resource.getRootPath() : resource.getName();
     }
-
 }

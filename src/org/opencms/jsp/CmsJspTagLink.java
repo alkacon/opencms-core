@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -62,6 +62,9 @@ public class CmsJspTagLink extends BodyTagSupport {
 
     /** The optional base URI to create the link from. */
     private String m_baseUri;
+
+    /** The target detail page path. */
+    private String m_detailPage;
 
     /** The optional locale attribute. */
     private Locale m_locale;
@@ -145,6 +148,43 @@ public class CmsJspTagLink extends BodyTagSupport {
      */
     public static String linkTagAction(String target, ServletRequest req, String baseUri, Locale locale) {
 
+        return linkTagAction(target, req, baseUri, null, locale);
+    }
+
+    /**
+     * Returns a link to a file in the OpenCms VFS
+     * that has been adjusted according to the web application path and the
+     * OpenCms static export rules.<p>
+     *
+     * <p>If the <code>baseUri</code> parameter is provided, this will be treated as the source of the link,
+     * if this is <code>null</code> then the current OpenCms user context URI will be used as source.</p>
+     *
+     * <p>If the <code>locale</code> parameter is provided, the locale in the request context will be switched
+     * to the provided locale. This influences only the behavior of the
+     * {@link org.opencms.staticexport.CmsLocalePrefixLinkSubstitutionHandler}.</p>
+     *
+     *
+     * Relative links are converted to absolute links, using the current element URI as base.<p>
+     *
+     * @param target the link that should be calculated, can be relative or absolute
+     * @param req the current request
+     * @param baseUri the base URI for the link source
+     * @param detailPage the target detail page, in case of linking to a specific detail page
+     * @param locale the locale for which the link should be created (see {@link org.opencms.staticexport.CmsLocalePrefixLinkSubstitutionHandler}
+     *
+     * @return the target link adjusted according to the web application path and the OpenCms static export rules
+     *
+     * @see #linkTagAction(String, ServletRequest)
+     *
+     * @since 8.0.3
+     */
+    public static String linkTagAction(
+        String target,
+        ServletRequest req,
+        String baseUri,
+        String detailPage,
+        Locale locale) {
+
         CmsFlexController controller = CmsFlexController.getController(req);
         // be sure the link is absolute
         String uri = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
@@ -158,12 +198,13 @@ public class CmsJspTagLink extends BodyTagSupport {
                 if (null != locale) {
                     cms.getRequestContext().setLocale(locale);
                 }
-            } catch (@SuppressWarnings("unused") CmsException e) {
+            } catch (CmsException e) {
                 // should not happen, if it does we can't do anything useful and will just keep the original object
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         // generate the link
-        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri);
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri, detailPage, false);
     }
 
     /**
@@ -185,7 +226,7 @@ public class CmsJspTagLink extends BodyTagSupport {
                 String link = getBodyContent().getString();
                 getBodyContent().clear();
                 // Calculate the link substitution
-                String newlink = linkTagAction(link, req, getBaseUri(), m_locale);
+                String newlink = linkTagAction(link, req, getBaseUri(), getDetailPage(), m_locale);
                 // Write the result back to the page
                 getBodyContent().print(newlink);
                 getBodyContent().writeOut(pageContext.getOut());
@@ -211,6 +252,16 @@ public class CmsJspTagLink extends BodyTagSupport {
     }
 
     /**
+     * Returns the target detail page path.<p>
+     *
+     * @return the target detail page path
+     */
+    public String getDetailPage() {
+
+        return m_detailPage;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
     @Override
@@ -227,6 +278,16 @@ public class CmsJspTagLink extends BodyTagSupport {
     public void setBaseUri(String baseUri) {
 
         m_baseUri = baseUri;
+    }
+
+    /**
+     * Sets the target detail page path.<p>
+     *
+     * @param detailPage the target detail page path
+     */
+    public void setDetailPage(String detailPage) {
+
+        m_detailPage = detailPage;
     }
 
     /**

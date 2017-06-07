@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,9 +35,13 @@ import org.opencms.ade.publish.shared.CmsPublishResourceInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
@@ -45,6 +49,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -62,6 +67,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -254,6 +260,31 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
         }
     }
 
+    /**
+     * Predicate which checks whether the current user has publish permissions for a resource.<p>
+     */
+    public class PublishPermissionFilter implements Predicate<CmsResource> {
+
+        /**
+         * @see com.google.common.base.Predicate#apply(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public boolean apply(CmsResource input) {
+
+            try {
+                return m_cms.hasPermissions(
+                    input,
+                    CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                    false,
+                    CmsResourceFilter.ALL);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return true;
+            }
+        }
+
+    }
+
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultPublishResourceFormatter.class);
 
@@ -315,6 +346,10 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
     public void initialize(CmsPublishOptions options, ResourceMap resources) throws CmsException {
 
         m_options = options;
+        Predicate<CmsResource> resourceMapFilter = getResourceMapFilter();
+        if (resourceMapFilter != null) {
+            resources = resources.filter(resourceMapFilter);
+        }
         for (CmsResource parentRes : resources.keySet()) {
             m_resources.put(parentRes.getStructureId(), parentRes);
             for (CmsResource childRes : resources.get(parentRes)) {
@@ -385,11 +420,25 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
         CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, null);
+
+        String typeName;
+        String detailTypeName = null;
+        if (CmsJspNavBuilder.isNavLevelFolder(m_cms, resource)) {
+            typeName = CmsGwtConstants.TYPE_NAVLEVEL;
+        } else if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, resource)) {
+            typeName = CmsGwtConstants.TYPE_MODELGROUP_REUSE;
+
+        } else {
+            typeName = resUtil.getResourceTypeName();
+            detailTypeName = CmsResourceIcon.getDefaultFileOrDetailType(m_cms, resource);
+        }
+
         CmsPublishResource pubResource = new CmsPublishResource(
             resource.getStructureId(),
             resUtil.getFullPath(),
             resUtil.getTitle(),
-            resUtil.getResourceTypeName(),
+            typeName,
+            detailTypeName,
             resource.getState(),
             permissionInfo,
             resource.getDateLastModified(),
@@ -409,6 +458,18 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
     protected Locale getLocale() {
 
         return OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+    }
+
+    /**
+     * Gets the resource map filter.<p>
+     *
+     * This can be used to remove resources which shouldn't be displayed.<p>
+     *
+     * @return a predicate whose
+     */
+    protected Predicate<CmsResource> getResourceMapFilter() {
+
+        return new PublishPermissionFilter();
     }
 
     /**

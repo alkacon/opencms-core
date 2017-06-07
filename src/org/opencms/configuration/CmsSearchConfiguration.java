@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -185,6 +185,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     public static final String N_OFFLINE_UPDATE_FREQUENCY = "offlineUpdateFrequency";
 
     /** Node name constant. */
+    public static final String N_MAX_INDEX_WAIT_TIME = "maxIndexWaitTime";
+
+    /** Node name constant. */
     public static final String N_PROJECT = "project";
 
     /** Node name constant. */
@@ -247,6 +250,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // offline update rule
         digester.addCallMethod(XPATH_SEARCH + "/" + N_OFFLINE_UPDATE_FREQUENCY, "setOfflineUpdateFrequency", 0);
+
+        // offline update rule
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_MAX_INDEX_WAIT_TIME, "setMaxIndexWaitTime", 0);
 
         // forceunlock rule
         digester.addCallMethod(XPATH_SEARCH + "/" + N_FORCEUNLOCK, "setForceunlock", 0);
@@ -403,6 +409,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         //add <offlineUpdateFrequency> element
         searchElement.addElement(N_OFFLINE_UPDATE_FREQUENCY).addText(
             String.valueOf(m_searchManager.getOfflineUpdateFrequency()));
+        //add <maxIndexWaitTime> element
+        searchElement.addElement(N_MAX_INDEX_WAIT_TIME).addText(String.valueOf(m_searchManager.getMaxIndexWaitTime()));
         // add <forceunlock> element
         if (m_searchManager.getForceunlock() != null) {
             searchElement.addElement(N_FORCEUNLOCK).addText(m_searchManager.getForceunlock().toString());

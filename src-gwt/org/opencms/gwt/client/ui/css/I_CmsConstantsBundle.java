@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -257,6 +257,41 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * @return the CSS constant value
          */
         String boxShadow();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorBlue();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorCyan();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorGray();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorOrange();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String buttonColorRed();
 
         /**
          * Access method.<p>

@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,10 +57,18 @@ public class CmsToolbarSettingsButton extends A_CmsToolbarOptionButton {
     @Override
     public boolean isOptionAvailable(CmsContainerPageElementPanel element) {
 
+        boolean hasValidId;
+        try {
+            element.getStructureId();
+            hasValidId = true;
+        } catch (Throwable t) {
+            hasValidId = false;
+        }
         boolean disableButtons = CmsContainerpageController.get().isEditingDisabled();
         boolean useTemplateContexts = CmsContainerpageController.get().getData().getTemplateContextInfo().shouldShowElementTemplateContextSelection();
         boolean isGroupContainer = element instanceof CmsGroupContainerElementPanel;
-        return (useTemplateContexts || (element.hasSettings() || CmsCoreProvider.get().getUserInfo().isDeveloper()))
+        return hasValidId
+            && (useTemplateContexts || (element.hasSettings() || CmsCoreProvider.get().getUserInfo().isDeveloper()))
             && !element.getParentTarget().isDetailView()
             && !disableButtons
             && !isGroupContainer;

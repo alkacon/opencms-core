@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -166,8 +166,6 @@ public class CmsSetupXmlManager {
         // search
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemovePageSearchIndexSource1());
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveSysSearchIndex());
-        m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddDEHelpSearchIndex());
-
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddSolrSearch());
 
         // system
@@ -230,6 +228,8 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v9.CmsXmlUpdateContextMenuEntries());
         m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdateFiletypeIcons());
         m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlChangeExplorerTypeAccess());
+        m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdateAvailabilityMenuEntries());
+        m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdatePreferences());
 
         setup();
     }

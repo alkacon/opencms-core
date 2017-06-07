@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,6 +49,9 @@ public class CmsPublishResource implements IsSerializable {
     /** The last modification date as a formatted string. */
     private String m_dateLastModifiedStr;
 
+    /** The detail resource type. */
+    private String m_detailResourceType;
+
     /** The resource id.*/
     private CmsUUID m_id;
 
@@ -86,6 +89,7 @@ public class CmsPublishResource implements IsSerializable {
      * @param name the resource name
      * @param title the resource title
      * @param resourceType the resource type name
+     * @param detailResourceType the detail resource type
      * @param state the resource state
      * @param permissionInfo the permission info
      * @param dateLastModified the last modification date
@@ -100,6 +104,7 @@ public class CmsPublishResource implements IsSerializable {
         String name,
         String title,
         String resourceType,
+        String detailResourceType,
         CmsResourceState state,
         CmsPermissionInfo permissionInfo,
         long dateLastModified,
@@ -110,6 +115,7 @@ public class CmsPublishResource implements IsSerializable {
         List<CmsPublishResource> related) {
 
         m_resourceType = resourceType;
+        m_detailResourceType = detailResourceType;
         m_id = id;
         m_name = name;
         m_related = ((related == null) ? new ArrayList<CmsPublishResource>() : related);
@@ -149,6 +155,16 @@ public class CmsPublishResource implements IsSerializable {
     public String getDateLastModifiedString() {
 
         return m_dateLastModifiedStr;
+    }
+
+    /**
+     * Returns the detail resource type.<p>
+     *
+     * @return the detail resource type
+     */
+    public String getDetailResourceType() {
+
+        return m_detailResourceType;
     }
 
     /**

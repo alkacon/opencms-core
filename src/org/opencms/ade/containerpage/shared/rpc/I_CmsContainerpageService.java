@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,13 +31,13 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
-import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -79,12 +79,14 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @param structureId the structure id of the resource
      * @param detailContentId the structure id of the detail content (may be null)
+     * @param contentLocale the content locale
      *
      * @return true if there were changes in the page or its elements
      *
      * @throws CmsRpcException if the RPC call fails
      */
-    boolean checkContainerpageOrElementsChanged(CmsUUID structureId, CmsUUID detailContentId) throws CmsRpcException;
+    boolean checkContainerpageOrElementsChanged(CmsUUID structureId, CmsUUID detailContentId, String contentLocale)
+    throws CmsRpcException;
 
     /**
      * To create a new element of the given type this method will check if a model resource needs to be selected, otherwise creates the new element.
@@ -105,7 +107,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         String clientId,
         String resourceType,
         CmsContainer container,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Checks whether the Acacia widgets are available for all fields of the content.<p>
@@ -146,7 +149,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         String clientId,
         String resourceType,
         CmsUUID modelResourceStructureId,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * This method is used for serialization purposes only.<p>
@@ -188,7 +192,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         boolean allowNested,
         boolean alwaysCopy,
         String dndSource,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Returns container element settings config data.<p>
@@ -210,7 +215,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         String containerId,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Gets the element data for an id and a map of settings.<p>
@@ -236,7 +242,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         Map<String, String> settings,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Returns the container element data of the favorite list.<p>
@@ -256,7 +263,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Returns the gallery configuration data according to the current page containers and the selected element view.<p>
@@ -270,11 +278,12 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsGalleryDataBean getGalleryDataForPage(
+    CmsContainerPageGalleryData getGalleryDataForPage(
         List<CmsContainer> containers,
         CmsUUID elementView,
         String uri,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Returns new container element data for the given resource type name.<p>
@@ -298,7 +307,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         String resourceType,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Returns the container element data of the recent list.<p>
@@ -318,7 +328,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
         boolean allowNested,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Gets the status of a removed element.<p>
@@ -400,7 +411,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         Map<String, String> settings,
         List<CmsContainer> containers,
         boolean allowNested,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Saves the favorite list.<p>
@@ -432,7 +444,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         String reqParams,
         CmsGroupContainer groupContainer,
         Collection<CmsContainer> containers,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Saves an inheritance container.<p>
@@ -452,7 +465,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID detailContentId,
         CmsInheritanceContainer inheritanceContainer,
         Collection<CmsContainer> containers,
-        String locale) throws CmsRpcException;
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Saves the recent list.<p>

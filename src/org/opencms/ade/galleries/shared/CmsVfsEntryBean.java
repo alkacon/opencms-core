@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,9 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
 
+    /** True if this is a filter search match. */
+    private boolean m_isSearchMatch;
+
     /** The list of children. */
     private List<CmsVfsEntryBean> m_preloadedChildren;
 
@@ -70,6 +73,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
      * @param isRoot flag indicating whether this is entry should be displayed at the top level of the tree
      * @param editable <code>true</code> if the user has write permissions to the folder
      * @param preloadedChildren the preloaded child nodes
+     * @param isMatch true if this entry bean is a search match for the filter string the user entered
      */
     public CmsVfsEntryBean(
         String rootPath,
@@ -77,7 +81,8 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
         String title,
         boolean isRoot,
         boolean editable,
-        List<CmsVfsEntryBean> preloadedChildren) {
+        List<CmsVfsEntryBean> preloadedChildren,
+        boolean isMatch) {
 
         m_rootPath = rootPath;
 
@@ -85,6 +90,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
         m_isRoot = isRoot;
         m_editable = editable;
         m_title = title;
+        m_isSearchMatch = isMatch;
         m_preloadedChildren = preloadedChildren;
     }
 
@@ -185,6 +191,16 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
     public boolean isRoot() {
 
         return m_isRoot;
+    }
+
+    /**
+     * Returns true if this entry bean is a search match.<p>
+     *
+     * @return true if this is a search match
+     */
+    public boolean isSearchMatch() {
+
+        return m_isSearchMatch;
     }
 
     /**
