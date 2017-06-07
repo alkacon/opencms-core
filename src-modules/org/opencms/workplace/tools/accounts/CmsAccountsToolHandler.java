@@ -333,14 +333,13 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         } else if (getLink().equals(getPath(OUROLES_FILE))) {
             return !m_webuserOu;
         } else if (getLink().equals(getPath(SWITCHUSER_FILE))) {
-            boolean visible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
+            boolean visible = false;
             CmsUUID userId = new CmsUUID(
                 CmsRequestUtil.getNotEmptyDecodedParameter(wp.getJsp().getRequest(), A_CmsEditUserDialog.PARAM_USERID));
             try {
-                visible &= OpenCms.getRoleManager().hasRole(
-                    cms,
-                    cms.readUser(userId).getName(),
-                    CmsRole.ELEMENT_AUTHOR);
+                CmsUser user = cms.readUser(userId);
+                visible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn()));
+                visible &= OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ELEMENT_AUTHOR);
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {

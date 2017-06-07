@@ -1472,10 +1472,11 @@ public class CmsMessageBundleEditorModel {
      */
     private boolean isDescriptorProperty(Object property) {
 
-        return (hasDescriptor()
-            && (property.equals(TableProperty.KEY)
-                || property.equals(TableProperty.DEFAULT)
-                || property.equals(TableProperty.DESCRIPTION)));
+        return (getBundleType().equals(BundleType.DESCRIPTOR)
+            || (hasDescriptor()
+                && (property.equals(TableProperty.KEY)
+                    || property.equals(TableProperty.DEFAULT)
+                    || property.equals(TableProperty.DESCRIPTION))));
     }
 
     /**

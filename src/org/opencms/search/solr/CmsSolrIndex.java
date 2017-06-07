@@ -299,7 +299,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 resultList.add(result);
             }
         } catch (CmsSearchException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
         return resultList;
     }

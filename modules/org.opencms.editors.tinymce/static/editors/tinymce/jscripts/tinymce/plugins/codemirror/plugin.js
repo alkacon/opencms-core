@@ -13,19 +13,33 @@ tinymce.PluginManager.requireLangPack('codemirror');
 tinymce.PluginManager.add('codemirror', function(editor, url) {
 
 	function showSourceEditor() {
-		// Insert caret marker
-		editor.focus();
-		editor.selection.collapse(true);
-		editor.selection.setContent('<span class="CmCaReT" style="display:none">&#0;</span>');
+        
+        editor.focus();
+        editor.selection.collapse(true);
+        
+        // Insert caret marker
+        if (editor.settings.codemirror.saveCursorPosition) {
+            editor.selection.setContent('<span style="display: none;" class="CmCaReT">&#x0;</span>');
+        }
 
-		// Open editor window
-		var win = editor.windowManager.open({
+        codemirrorWidth = 800;
+        if (editor.settings.codemirror.width) {
+            codemirrorWidth = editor.settings.codemirror.width;
+        }
+
+        codemirrorHeight = 550;
+        if (editor.settings.codemirror.width) {
+            codemirrorHeight = editor.settings.codemirror.height;
+        }
+        
+		var config = {
 			title: 'HTML source code',
 			url: url + '/source.html',
-			width: 800,
-			height: 550,
+			width: codemirrorWidth,
+			height: codemirrorHeight,
 			resizable : true,
 			maximizable : true,
+			fullScreen: editor.settings.codemirror.fullscreen,
 			buttons: [
 				{ text: 'Ok', subtype: 'primary', onclick: function(){
 					var doc = document.querySelectorAll('.mce-container-body>iframe')[0];
@@ -34,7 +48,13 @@ tinymce.PluginManager.add('codemirror', function(editor, url) {
 				}},
 				{ text: 'Cancel', onclick: 'close' }
 			]
-		});
+		};
+
+		var win = editor.windowManager.open(config);
+
+		if (editor.settings.codemirror.fullscreen) {
+			win.fullscreen(true);
+		}
 	};
 
 	// Add a button to the button bar

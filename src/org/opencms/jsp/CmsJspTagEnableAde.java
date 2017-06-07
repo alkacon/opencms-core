@@ -90,7 +90,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         + "function injectButton(){ "
         + "if (self === top){ "
         + "var injectElement=document.createElement(\"div\"); "
-        + "injectElement.innerHTML=\"<button id='opencms-leave-preview' class='opencms-icon opencms-icon-edit-point cmsState-up' onClick='openEditor()' style='left:%s;'></button>\"; "
+        + "injectElement.innerHTML=\"<button id='opencms-leave-preview' class='opencms-icon opencms-icon-edit-point cmsState-up' onClick='openEditor()' style='left:%s;' title='%s'></button>\"; "
         + "document.body.appendChild(injectElement); "
         + "}"
         + "} "
@@ -139,7 +139,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 } else {
                     buttonLeft = "20%";
                 }
-                context.getOut().print(getPreviewInclude(buttonLeft));
+                String titleMessage = Messages.get().getBundle(
+                    OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(Messages.GUI_TOOLBAR_ENABLE_EDIT_MODE_0);
+                context.getOut().print(getPreviewInclude(buttonLeft, titleMessage));
             } catch (IOException e) {
                 throw new JspException(e);
             }
@@ -229,15 +231,16 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
      * Returns the preview mode include.<p>
      *
      * @param buttonLeft the button left parameter
+     * @param titleMessage the title attribute of the "Editor mode" button rendered by the include
      *
      * @return the preview mode include
      */
-    private static String getPreviewInclude(String buttonLeft) {
+    private static String getPreviewInclude(String buttonLeft, String titleMessage) {
 
         StringBuffer buffer = new StringBuffer();
         buffer.append("<style type=\"text/css\"> @import url(\"").append(
             CmsGwtActionElement.getFontIconCssLink()).append("\"); </style>\n");
-        buffer.append(String.format(PREVIEW_INCLUDE_SCRIPT, buttonLeft));
+        buffer.append(String.format(PREVIEW_INCLUDE_SCRIPT, buttonLeft, titleMessage));
         return buffer.toString();
     }
 

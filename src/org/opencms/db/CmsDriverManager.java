@@ -5592,11 +5592,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc.setAttribute(ATTRIBUTE_LOGIN, newUser.getName());
         }
         getUserDriver(dbc).writeUser(dbc, newUser);
+        int changes = CmsUser.FLAG_LAST_LOGIN;
+
         // check if we need to update the password
         if (!OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), false)
             && OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), true)) {
             // the password does not check with the current hash algorithm but with the fall back, update the password
             getUserDriver(dbc).writePassword(dbc, userName, password, password);
+            changes = changes | CmsUser.FLAG_CORE_DATA;
         }
 
         // update cache
@@ -5617,10 +5620,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put(I_CmsEventListener.KEY_USER_ID, newUser.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, newUser.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
+        eventData.put(I_CmsEventListener.KEY_USER_CHANGES, Integer.valueOf(changes));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
 
         // return the user object read from the driver
-        return newUser;
+        return newUser.clone();
     }
 
     /**
@@ -8108,7 +8112,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             user = getUserDriver(dbc).readUser(dbc, id);
             m_monitor.cacheUser(user);
         }
-        return user;
+        // important: do not return the cached user object, but a clone to avoid unwanted changes on cached objects
+        return user.clone();
     }
 
     /**
@@ -8128,7 +8133,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             user = getUserDriver(dbc).readUser(dbc, username);
             m_monitor.cacheUser(user);
         }
-        return user;
+        // important: do not return the cached user object, but a clone to avoid unwanted changes on cached objects
+        return user.clone();
     }
 
     /**
@@ -8500,6 +8506,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             eventData.put(
                 I_CmsEventListener.KEY_USER_ACTION,
                 I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_RESET_PASSWORD);
+            eventData.put(
+                I_CmsEventListener.KEY_USER_CHANGES,
+                Integer.valueOf(CmsUser.FLAG_CORE_DATA | CmsUser.FLAG_CORE_DATA));
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
 
         } else if (CmsStringUtil.isEmpty(oldPassword)) {
@@ -8999,6 +9008,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE,
             "" + System.currentTimeMillis());
         getUserDriver(dbc).writeUser(dbc, user);
+
+        // fire user modified event
+        Map<String, Object> eventData = new HashMap<String, Object>();
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_RESET_PASSWORD);
+        eventData.put(
+            I_CmsEventListener.KEY_USER_CHANGES,
+            Integer.valueOf(CmsUser.FLAG_CORE_DATA | CmsUser.FLAG_CORE_DATA));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
     /**
@@ -9418,6 +9436,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
+        eventData.put(I_CmsEventListener.KEY_USER_CHANGES, Integer.valueOf(CmsUser.FLAG_LAST_LOGIN));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
@@ -10245,6 +10264,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, oldUser.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
+        eventData.put(I_CmsEventListener.KEY_USER_CHANGES, Integer.valueOf(user.getChanges(oldUser)));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 

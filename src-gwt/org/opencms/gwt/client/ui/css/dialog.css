@@ -49,7 +49,7 @@
     cursor: pointer;
     height: 31px;
     width: 28px;
-    z-index: value("constants.css.zIndexInline");
+    z-index: value("constants.css.zIndexDND");
 }
 span.closePopupImage:after{
 	content: "\00d7";

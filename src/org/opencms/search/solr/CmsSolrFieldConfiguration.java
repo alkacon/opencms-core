@@ -345,23 +345,43 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
 
+        List<String> systemFields = new ArrayList<String>();
+        // append field mappings directly stored in the extraction result
+        if (null != extractionResult) {
+            Map<String, String> fieldMappings = extractionResult.getFieldMappings();
+            for (String fieldName : fieldMappings.keySet()) {
+                String value = fieldMappings.get(fieldName);
+                CmsSolrField f = new CmsSolrField(fieldName, null, null, null, 0);
+                document.addSearchField(f, value);
+                systemFields.add(fieldName);
+            }
+        }
+
         Set<CmsSearchField> mappedFields = getXSDMappings(cms, resource);
         if (mappedFields != null) {
             for (CmsSearchField field : mappedFields) {
-                document = appendFieldMapping(
-                    document,
-                    field,
-                    cms,
-                    resource,
-                    extractionResult,
-                    properties,
-                    propertiesSearched);
+                if (!systemFields.contains(field.getName())) {
+                    document = appendFieldMapping(
+                        document,
+                        field,
+                        cms,
+                        resource,
+                        extractionResult,
+                        properties,
+                        propertiesSearched);
+                } else {
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_SOLR_ERR_MAPPING_TO_INTERNALLY_USED_FIELD_2,
+                            resource.getRootPath(),
+                            field.getName()));
+                }
             }
         }
 
         // add field mappings from elements of a container page
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-            document = appendFieldMappingsFromElementsOnThePage(document, cms, resource);
+            document = appendFieldMappingsFromElementsOnThePage(document, cms, resource, systemFields);
 
         }
 
@@ -376,15 +396,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 propertiesSearched);
         }
 
-        // append field mappings directly stored in the extraction result
-        if (null != extractionResult) {
-            Map<String, String> fieldMappings = extractionResult.getFieldMappings();
-            for (String fieldName : fieldMappings.keySet()) {
-                String value = fieldMappings.get(fieldName);
-                CmsSolrField f = new CmsSolrField(fieldName, null, null, null, 0);
-                document.addSearchField(f, value);
-            }
-        }
         return document;
     }
 
@@ -393,12 +404,14 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
      * @param document The document for the container page
      * @param cms The current CmsObject
      * @param resource The resource of the container page
+     * @param systemFields The list of field names for fields where mappings to should be discarded, since these fields are used system internally.
      * @return the manipulated document
      */
     protected I_CmsSearchDocument appendFieldMappingsFromElementsOnThePage(
         I_CmsSearchDocument document,
         CmsObject cms,
-        CmsResource resource) {
+        CmsResource resource,
+        List<String> systemFields) {
 
         try {
             CmsFile file = cms.readFile(resource);
@@ -412,14 +425,23 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     if (mappedFields != null) {
 
                         for (CmsSearchField field : mappedFields) {
-                            document = appendFieldMapping(
-                                document,
-                                field,
-                                cms,
-                                elemResource,
-                                CmsSolrDocumentXmlContent.extractXmlContent(cms, elemResource, getIndex()),
-                                cms.readPropertyObjects(resource, false),
-                                cms.readPropertyObjects(resource, true));
+                            if (!systemFields.contains(field.getName())) {
+                                document = appendFieldMapping(
+                                    document,
+                                    field,
+                                    cms,
+                                    elemResource,
+                                    CmsSolrDocumentXmlContent.extractXmlContent(cms, elemResource, getIndex()),
+                                    cms.readPropertyObjects(resource, false),
+                                    cms.readPropertyObjects(resource, true));
+                            } else {
+                                LOG.error(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_SOLR_ERR_MAPPING_TO_INTERNALLY_USED_FIELD_3,
+                                        elemResource.getRootPath(),
+                                        field.getName(),
+                                        resource.getRootPath()));
+                            }
                         }
                     }
                 }

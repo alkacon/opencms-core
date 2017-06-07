@@ -179,6 +179,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_TAG_USER_ADDITIONALINFO_0 = "GUI_TAG_USER_ADDITIONALINFO_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_ENABLE_EDIT_MODE_0 = "GUI_TOOLBAR_ENABLE_EDIT_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CONTAINER_NOT_FOUND_3 = "LOG_CONTAINER_NOT_FOUND_3";
 
     /** Message constant for key in the resource bundle. */
