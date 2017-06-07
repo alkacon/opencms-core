@@ -1017,86 +1017,79 @@
 		}
 	}
 	
-.o-report-overlay {
-	
-	@include o-loading-overlay;
-	z-index: 200000;
-	
-	.o-report-window{
-		visibility: hidden;
-		position: absolute;
-		top: 40px;
-		left: 20%;
-		width: 60%;
+	.o-report-overlay {
+		
+		@include o-loading-overlay;
+		z-index: 200000;
+		
+		.o-report-window{
+			visibility: hidden;
+			position: absolute;
+			top: 40px;
+			left: 20%;
+			width: 60%;
+		}
 	}
-}
 
-.o-report-show .o-report-overlay{
-	.oc-spin-center{
-		display: none;
-	}
-	.o-report-window{
-		visibility: visible;
-	}
-}
-	
-.o-report { 
-	box-sizing: border-box; 
-	padding: 10px; 
-	margin: 0; 
-	background-color: $v-app-background-color; 
-	font-size: 11px; 
-	white-space: nowrap;
-	overflow-y: auto;
-	border-radius: $v-border-radius;
-	
-	&.o-report-hidden {
-		display: none;
-	}
-	&.o-report-popup-view {
-		@include valo-overlay-style($animate-in: v-popup-animate-in 120ms, $animate-out: (valo-animate-out-fade 120ms));
-		position: fixed;
-		top:10%;
-		left: 20%;
-		height: 80%;
-		width: 60%;
-	}
-	
-	.o-report-content {
-		@include user-select(text);
-		.o-report-headline { 
-			color: #000099; font-weight: bold;
+	.o-report-show .o-report-overlay{
+		.oc-spin-center{
+			display: none;
 		}
-		.o-report-note { 
-			color: #666666; 
-		}
-		.o-report-ok { 
-			color: #009900;
-		}
-		.o-report-warn { 
-			color: #990000; 
-			padding-left: 40px; 
-		}
-		.o-report-error { 
-			color: #990000; 
-			font-weight: bold; 
-			padding-left: 40px; 
-		}
-		.o-report-exception {
-			color: #990000;
-			font-weight: bold;
-		}
-		.o-report-stacktraceline { 
-			margin-left: 6ex; 
+		.o-report-window{
+			visibility: visible;
 		}
 	}
-}
-
-
-
-
-	
-	
-	
-	
+		
+	.o-report { 
+		box-sizing: border-box; 
+		padding: 10px; 
+		margin: 0; 
+		background-color: $v-app-background-color; 
+		font-size: $v-font-size;
+		white-space: nowrap;
+		overflow-y: auto;
+		border-radius: $v-border-radius;
+		
+		&.o-report-hidden {
+			display: none;
+		}
+		&.o-report-popup-view {
+			@include valo-overlay-style($animate-in: v-popup-animate-in 120ms, $animate-out: (valo-animate-out-fade 120ms));
+			position: fixed;
+			top:10%;
+			left: 20%;
+			height: 80%;
+			width: 60%;
+		}
+		
+		.o-report-content {
+			@include user-select(text);
+			.o-report-headline { 
+				color: $blue; 
+				font-weight: bold;
+			}
+			.o-report-note { 
+				color: $gray-dark; 
+			}
+			.o-report-ok { 
+				color: $green;
+			}
+			.o-report-warn { 
+				color: $red; 
+				padding-left: 40px; 
+			}
+			.o-report-error { 
+				color: $red; 
+				font-weight: bold; 
+				padding-left: 40px; 
+			}
+			.o-report-exception {
+				color: $red;
+				font-weight: bold;
+			}
+			.o-report-stacktraceline { 
+				margin-left: 6ex; 
+			}
+		}
+	}
 }
