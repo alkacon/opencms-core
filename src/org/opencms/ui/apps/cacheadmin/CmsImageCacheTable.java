@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.cacheadmin.CmsCacheViewApp.Mode;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -157,9 +158,6 @@ public class CmsImageCacheTable extends Table {
     /**vaadin serial id.*/
     private static final long serialVersionUID = -5559186186646954045L;
 
-    /**instance of calling app.*/
-    CmsCacheAdminApp m_app;
-
     /**Image cache helper instance. */
     CmsImageCacheHelper m_cacheHelper;
 
@@ -177,14 +175,10 @@ public class CmsImageCacheTable extends Table {
 
     /**
      * public constructor.<p>
-     *
-     * @param app instance of calling app.
      */
-    public CmsImageCacheTable(CmsCacheAdminApp app) {
+    public CmsImageCacheTable() {
 
         CmsVariationsDialog.resetHandler();
-
-        m_app = app;
 
         //Set cachHelper
         m_cacheHelper = new CmsImageCacheHelper(A_CmsUI.getCmsObject(), false, false, false);
@@ -324,7 +318,7 @@ public class CmsImageCacheTable extends Table {
 
             }
 
-        }, m_app, CmsVariationsDialog.MODE_IMAGE);
+        }, Mode.ImageCache);
         try {
             CmsResource resourceObject = getRootCms().readResource(resource);
             variationsDialog.displayResourceInfo(Collections.singletonList(resourceObject));

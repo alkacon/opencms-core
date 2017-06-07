@@ -31,6 +31,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.cacheadmin.CmsCacheViewApp.Mode;
 import org.opencms.ui.components.CmsBasicDialog;
 
 import java.util.Iterator;
@@ -47,12 +48,6 @@ import com.vaadin.ui.Panel;
  * Class for the dialog to show variations of flex cache and image cache.<p>
  */
 public class CmsVariationsDialog extends CmsBasicDialog {
-
-    /**Mode to display Flex cache.*/
-    protected static int MODE_FLEX = 2;
-
-    /**Mode to display Image cache.*/
-    protected static int MODE_IMAGE = 1;
 
     /**Helper instance to read variations of images.*/
     private static CmsImageCacheHelper HELPER;
@@ -74,10 +69,9 @@ public class CmsVariationsDialog extends CmsBasicDialog {
      *
      * @param resource to show variations for.
      * @param cancel runnable
-     * @param app calling app instance
      * @param mode mode
      */
-    public CmsVariationsDialog(String resource, final Runnable cancel, CmsCacheAdminApp app, int mode) {
+    public CmsVariationsDialog(String resource, final Runnable cancel, CmsCacheViewApp.Mode mode) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
@@ -93,7 +87,7 @@ public class CmsVariationsDialog extends CmsBasicDialog {
 
         Iterator<String> variationsIterator = null;
 
-        if (mode == MODE_FLEX) {
+        if (Mode.FlexCache.equals(mode)) {
             //For FlexCache
             CmsFlexCache cache = OpenCms.getFlexCache();
             Set<String> variations = cache.getCachedVariations(resource, A_CmsUI.getCmsObject());
@@ -125,5 +119,4 @@ public class CmsVariationsDialog extends CmsBasicDialog {
         HELPER = null;
 
     }
-
 }

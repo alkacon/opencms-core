@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.cacheadmin.CmsCacheViewApp.Mode;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -130,11 +131,8 @@ public class CmsFlexCacheTable extends Table {
     /**vaadin serial id.*/
     private static final long serialVersionUID = 836377854954208442L;
 
-    /**CmsObject at root.*/
-    private CmsObject m_rootCms;
-
-    /**Instance of calling class.*/
-    CmsCacheAdminApp m_app;
+    /**App icon path.*/
+    private static final String TABLE_ICON = "apps/cache.png";
 
     /** The context menu. */
     CmsContextMenu m_menu;
@@ -148,14 +146,13 @@ public class CmsFlexCacheTable extends Table {
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
+    /**CmsObject at root.*/
+    private CmsObject m_rootCms;
+
     /**
      * public constructor. <p>
-     *
-     * @param app calling instance
      */
-    public CmsFlexCacheTable(CmsCacheAdminApp app) {
-
-        m_app = app;
+    public CmsFlexCacheTable() {
 
         m_cache = OpenCms.getFlexCache();
 
@@ -167,7 +164,7 @@ public class CmsFlexCacheTable extends Table {
         m_container.addContainerProperty(
             PROP_ICON,
             Resource.class,
-            new ExternalResource(OpenCmsTheme.getImageLink(CmsCacheAdminApp.TABLE_ICON)));
+            new ExternalResource(OpenCmsTheme.getImageLink(TABLE_ICON)));
         m_container.addContainerProperty(PROP_RESOURCENAME, String.class, "");
         m_container.addContainerProperty(PROP_PROJECT, String.class, "");
         m_container.addContainerProperty(PROP_KEY, String.class, "");
@@ -296,7 +293,7 @@ public class CmsFlexCacheTable extends Table {
 
             }
 
-        }, m_app, CmsVariationsDialog.MODE_FLEX);
+        }, Mode.FlexCache);
         try {
             CmsResource resourceObject = getRootCms().readResource(CmsFlexCacheKey.getResourceName(resource));
             variationsDialog.displayResourceInfo(Collections.singletonList(resourceObject));

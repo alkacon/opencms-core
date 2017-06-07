@@ -41,6 +41,9 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
+import org.opencms.ui.apps.cacheadmin.CmsCacheFolder;
+import org.opencms.ui.apps.cacheadmin.CmsCacheViewFlexConfiguration;
+import org.opencms.ui.apps.cacheadmin.CmsCacheViewImageConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbExportConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbImportHTTPConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbImportServerConfiguration;
@@ -561,7 +564,8 @@ public class CmsWorkplaceAppManager {
                 new CmsLinkValidationFolder(),
                 new CmsFileHistoryFolder(),
                 new CmsLogFileFolder(),
-                new CmsDbManagerFolder()));
+                new CmsDbManagerFolder(),
+                new CmsCacheFolder()));
         return result;
     }
 
@@ -640,6 +644,8 @@ public class CmsWorkplaceAppManager {
                 new CmsProjectManagerConfiguration(),
                 new CmsProjectOverviewConfiguration(),
                 new CmsCacheAdminConfiguration(),
+                new CmsCacheViewFlexConfiguration(),
+                new CmsCacheViewImageConfiguration(),
                 new CmsFileHistoryConfiguration(),
                 new CmsFileHistoryClearConfiguration(),
                 new CmsLinkValidationConfiguration(),

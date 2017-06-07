@@ -35,6 +35,7 @@ import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.cacheadmin.CmsCacheViewApp.Mode;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
@@ -43,15 +44,15 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
- * Configuration for Cache Administration vaadin-tool.<p>
+ * Configuration class for the view flex cache app.<p>
  */
-public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsCacheViewFlexConfiguration extends A_CmsWorkplaceAppConfiguration {
 
-    /**App icon path.*/
-    public static final String ICON = "apps/cacheAdmin/cache.png";
+    /**Icon for flex cache view.*/
+    private static final String ICON = "apps/cacheAdmin/cache_view_flex.png";
 
     /** The app id. */
-    public static final String APP_ID = "cache-admin";
+    public static final String APP_ID = "cache-admin-view";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -67,7 +68,7 @@ public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsCacheAdminApp();
+        return new CmsCacheViewApp(Mode.FlexCache);
     }
 
     /**
@@ -85,7 +86,7 @@ public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_CACHE_ADMIN_TOOL_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_CACHE_VIEW_FLEX_HELP_0);
     }
 
     /**
@@ -110,7 +111,7 @@ public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_CACHE_ADMIN_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_CACHE_VIEW_FLEX_0);
     }
 
     /**
@@ -119,7 +120,7 @@ public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public int getOrder() {
 
-        return 0;
+        return 1;
     }
 
     /**
