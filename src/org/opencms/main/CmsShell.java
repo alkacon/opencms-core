@@ -368,7 +368,7 @@ public class CmsShell {
     protected CmsObject m_cms;
 
     /** Additional shell commands object. */
-    private I_CmsShellCommands m_additionaShellCommands;
+    private I_CmsShellCommands m_additionalShellCommands;
 
     /** All shell callable objects. */
     private List<CmsCommandObject> m_commandObjects;
@@ -675,6 +675,8 @@ public class CmsShell {
                     m_out.println(line);
                     continue;
                 }
+                // In linux, the up and down arrows generate escape sequences that cannot be properly handled.
+                // If a escape sequence is detected, OpenCms prints a warning message
                 if (line.indexOf(KeyEvent.VK_ESCAPE) != -1) {
                     m_out.println(
                             m_messages.key(Messages.GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0));
@@ -691,9 +693,9 @@ public class CmsShell {
                         parameters.add(Integer.toString(new Double(st.nval).intValue()));
                     } else {
                         if (null != st.sval) {
-                        parameters.add(st.sval);
+                            parameters.add(st.sval);
+                        }
                     }
-                }
                 }
                 lineReader.close();
 
@@ -743,8 +745,8 @@ public class CmsShell {
         }
         m_exitCalled = true;
         try {
-            if (m_additionaShellCommands != null) {
-                m_additionaShellCommands.shellExit();
+            if (m_additionalShellCommands != null) {
+                m_additionalShellCommands.shellExit();
             } else {
                 m_shellCommands.shellExit();
             }
@@ -837,17 +839,17 @@ public class CmsShell {
 
         // initialize additional shell command object
         if (additionalShellCommands != null) {
-            m_additionaShellCommands = additionalShellCommands;
-            m_additionaShellCommands.initShellCmsObject(m_cms, this);
-            m_additionaShellCommands.shellStart();
+            m_additionalShellCommands = additionalShellCommands;
+            m_additionalShellCommands.initShellCmsObject(m_cms, this);
+            m_additionalShellCommands.shellStart();
         } else {
             m_shellCommands.shellStart();
         }
 
         m_commandObjects = new ArrayList<CmsCommandObject>();
-        if (m_additionaShellCommands != null) {
+        if (m_additionalShellCommands != null) {
             // get all shell callable methods from the additional shell command object
-            m_commandObjects.add(new CmsCommandObject(m_additionaShellCommands));
+            m_commandObjects.add(new CmsCommandObject(m_additionalShellCommands));
         }
         // get all shell callable methods from the CmsShellCommands
         m_commandObjects.add(new CmsCommandObject(m_shellCommands));
@@ -1008,12 +1010,6 @@ public class CmsShell {
 
         m_echo = echo;
     }
-
-    /**
-     * Executes all commands read from the given reader.<p>
-     *
-     * @param reader a Reader from which the commands are read
-     */
 
     /**
      * Sets the current shell prompt.<p>
