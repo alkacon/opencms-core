@@ -29,6 +29,7 @@ package org.opencms.ui.apps.cacheadmin;
 
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog;
 import org.opencms.ui.components.CmsBasicDialog;
 
 import com.vaadin.shared.ui.label.ContentMode;
@@ -40,10 +41,13 @@ import com.vaadin.ui.Label;
 /**
  * Dialog to confirm flush without any options.<p>
  */
-public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog {
+public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog implements I_CloseableDialog {
 
     /**Vaadin serial id.*/
     private static final long serialVersionUID = 6454462284178282427L;
+
+    /**Runnable for close action.*/
+    Runnable m_closeRunnable;
 
     /**Vaadin button.*/
     private Button m_cancelButton;
@@ -62,9 +66,8 @@ public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog {
      *
      * @param message to be shown
      * @param okAction runnable for ok Button
-     * @param closeAction runnable for close Button
      */
-    public CmsConfirmSimpleFlushDialog(String message, final Runnable okAction, final Runnable closeAction) {
+    public CmsConfirmSimpleFlushDialog(String message, final Runnable okAction) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_label.setValue(message);
@@ -79,6 +82,7 @@ public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 okAction.run();
+                m_closeRunnable.run();
             }
         });
 
@@ -88,8 +92,17 @@ public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                closeAction.run();
+                m_closeRunnable.run();
             }
         });
+    }
+
+    /**
+     * @see org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog#setCloseRunnable(java.lang.Runnable)
+     */
+    public void setCloseRunnable(Runnable closeRunnable) {
+
+        m_closeRunnable = closeRunnable;
+
     }
 }

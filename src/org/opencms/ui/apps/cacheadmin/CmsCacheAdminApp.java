@@ -130,9 +130,9 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
         //        image.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
         //
         //        layout.addComponent(image);
+        layout.addComponent(new CmsFlushCache());
         outer.addComponent(layout);
-        outer.addComponent(new CmsFlushCache());
-        outer.setComponentAlignment(outer.getComponent(1), com.vaadin.ui.Alignment.TOP_LEFT);
+        //        outer.setComponentAlignment(outer.getComponent(1), com.vaadin.ui.Alignment.TOP_LEFT);
         return outer;
     }
 }

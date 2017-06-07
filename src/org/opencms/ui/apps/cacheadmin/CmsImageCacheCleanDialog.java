@@ -33,6 +33,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
 
@@ -44,15 +45,17 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Window;
 
 /**
  * Dialog to clean Image Cache.<p>
  */
-public class CmsImageCacheCleanDialog extends CmsBasicDialog {
+public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_CloseableDialog {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -6902585433676013120L;
+
+    /**Runnable for close action.*/
+    Runnable m_closeRunnable;
 
     /**Vaadin component.*/
     private Button m_cancelButton;
@@ -68,10 +71,8 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog {
 
     /**
      * Public constructor.<p>
-     *
-     * @param window where the dialog gets displayed in
      */
-    public CmsImageCacheCleanDialog(final Window window) {
+    public CmsImageCacheCleanDialog() {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         //Setup icon
@@ -88,7 +89,7 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 flushCache();
-                window.close();
+                m_closeRunnable.run();
             }
         });
         m_cancelButton.addClickListener(new ClickListener() {
@@ -97,9 +98,18 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                window.close();
+                m_closeRunnable.run();
             }
         });
+    }
+
+    /**
+     * @see org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog#setCloseRunnable(java.lang.Runnable)
+     */
+    public void setCloseRunnable(Runnable closeRunnable) {
+
+        m_closeRunnable = closeRunnable;
+
     }
 
     /**

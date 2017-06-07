@@ -243,6 +243,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_NAME_0 = "GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_REINI_TOOL_CONF_0 = "GUI_CACHE_REINI_TOOL_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_REINI_TOOL_NAME_0 = "GUI_CACHE_REINI_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_REINI_TOOL_NAME_HELP_0 = "GUI_CACHE_REINI_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_FLEX_0 = "GUI_CACHE_VIEW_FLEX_0";
 
     /** Message constant for key in the resource bundle. */

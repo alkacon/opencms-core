@@ -33,6 +33,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog;
 import org.opencms.ui.components.CmsBasicDialog;
 
 import java.util.Collections;
@@ -43,15 +44,17 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.Window;
 
 /**
  * Dialog for clean flex cache.<p>
  */
-public class CmsFlexCacheCleanDialog extends CmsBasicDialog {
+public class CmsFlexCacheCleanDialog extends CmsBasicDialog implements I_CloseableDialog {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 142178694100824093L;
+
+    /**Runnable for close action.*/
+    Runnable m_closeRunnable;
 
     /**Vaadin component.*/
     private Button m_cancelButton;
@@ -68,9 +71,8 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog {
     /**
      * Public constructor.<p>
      *
-     * @param window where the dialog is displayed in
      */
-    public CmsFlexCacheCleanDialog(final Window window) {
+    public CmsFlexCacheCleanDialog() {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
@@ -83,7 +85,7 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                window.close();
+                m_closeRunnable.run();
             }
         });
         m_okButton.addClickListener(new ClickListener() {
@@ -93,9 +95,18 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 submit();
-                window.close();
+                m_closeRunnable.run();
             }
         });
+    }
+
+    /**
+     * @see org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog#setCloseRunnable(java.lang.Runnable)
+     */
+    public void setCloseRunnable(Runnable closeRunnable) {
+
+        m_closeRunnable = closeRunnable;
+
     }
 
     /**
