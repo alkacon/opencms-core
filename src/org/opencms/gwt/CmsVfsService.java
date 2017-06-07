@@ -66,7 +66,9 @@ import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
+import org.opencms.gwt.shared.CmsResourceHelpDialogType;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
+import org.opencms.gwt.shared.CmsResourceTypeHelpBean;
 import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -101,6 +103,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -152,9 +155,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
-
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -208,6 +208,73 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Gets page information of a resource and adds it to the given list info bean.<p>
+     *
+     * @param cms the CMS context
+     * @param resource the resource
+     * @param listInfo the list info bean to add the information to
+     *
+     * @return the list info bean
+     *
+     * @throws CmsException if the resource info can not be read
+     */
+    protected static CmsListInfoBean addPageInfo(CmsObject cms, CmsResource resource, CmsListInfoBean listInfo)
+    throws CmsException {
+
+        listInfo.setResourceState(resource.getState());
+
+        String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+            listInfo.setTitle(title);
+        } else {
+            listInfo.setTitle(resource.getName());
+        }
+        listInfo.setSubTitle(cms.getSitePath(resource));
+        String secure = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+        if (Boolean.parseBoolean(secure)) {
+            listInfo.setStateIcon(CmsListInfoBean.StateIcon.secure);
+        } else {
+            String export = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+            if (Boolean.parseBoolean(export)) {
+                listInfo.setStateIcon(CmsListInfoBean.StateIcon.export);
+            } else {
+                listInfo.setStateIcon(CmsListInfoBean.StateIcon.standard);
+            }
+        }
+        String resTypeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
+        Locale currentLocale = cms.getRequestContext().getLocale();
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
+        String resTypeNiceName = messages.key(key);
+        listInfo.addAdditionalInfo(
+            messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
+            resTypeNiceName);
+        listInfo.setResourceType(resTypeName);
+        return listInfo;
+    }
+
+    /**
+     * Converts CmsProperty objects to CmsClientProperty objects.<p>
+     *
+     * @param properties a list of server-side properties
+     *
+     * @return a map of client-side properties
+     */
+    protected static Map<String, CmsClientProperty> convertProperties(List<CmsProperty> properties) {
+
+        Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
+        for (CmsProperty prop : properties) {
+            CmsClientProperty clientProp = new CmsClientProperty(
+                prop.getName(),
+                prop.getStructureValue(),
+                prop.getResourceValue());
+            clientProp.setOrigin(prop.getOrigin());
+            result.put(clientProp.getName(), clientProp);
+        }
+        return result;
+    }
+
+    /**
      * Formats a date given the current user's workplace locale.<p>
      *
      * @param cms the current CMS context
@@ -221,6 +288,38 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             new Date(date),
             DateFormat.MEDIUM,
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+    }
+
+    /**
+     * Helper method to get the default property configuration for the given resource type.<p>
+     *
+     * @param typeName the name of the resource type
+     *
+     * @return the default property configuration for the given type
+     */
+    protected static Map<String, CmsXmlContentProperty> getDefaultPropertiesForType(String typeName) {
+
+        Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+        if (explorerType != null) {
+            List<String> defaultProps = explorerType.getProperties();
+            for (String propName : defaultProps) {
+                CmsXmlContentProperty property = new CmsXmlContentProperty(
+                    propName,
+                    "string",
+                    "string",
+                    "",
+                    "",
+                    "",
+                    "",
+                    null,
+                    "",
+                    "",
+                    "false");
+                propertyConfig.put(propName, property);
+            }
+        }
+        return propertyConfig;
     }
 
     /**
@@ -286,6 +385,30 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsListInfoBean result = getPageInfo(cms, resource);
         addLockInfo(cms, resource, result);
+        return result;
+    }
+
+    /**
+     * Internal method for computing the default property configurations for a list of structure ids.<p>
+     *
+     * @param cms the cms context
+     * @param structureIds the structure ids for which we want the default property configurations
+     * @return a map from the given structure ids to their default property configurations
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected static Map<CmsUUID, Map<String, CmsXmlContentProperty>> internalGetDefaultProperties(
+        CmsObject cms,
+        List<CmsUUID> structureIds)
+    throws CmsException {
+
+        Map<CmsUUID, Map<String, CmsXmlContentProperty>> result = Maps.newHashMap();
+        for (CmsUUID structureId : structureIds) {
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
+            String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+            Map<String, CmsXmlContentProperty> propertyConfig = getDefaultPropertiesForType(typeName);
+            result.put(structureId, propertyConfig);
+        }
         return result;
     }
 
@@ -370,124 +493,96 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         return path;
     }
 
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
+
     /**
-     * Gets page information of a resource and adds it to the given list info bean.<p>
+     * Adds additional info items for broken links.<p>
      *
-     * @param cms the CMS context
-     * @param resource the resource
-     * @param listInfo the list info bean to add the information to
-     *
-     * @return the list info bean
-     *
-     * @throws CmsException if the resource info can not be read
+     * @param cms the CMS context to use
+     * @param resource the resource from which the additional infos should be read
+     * @param result the result in which to store the additional info
      */
-    protected static CmsListInfoBean addPageInfo(CmsObject cms, CmsResource resource, CmsListInfoBean listInfo)
-    throws CmsException {
+    private void addBrokenLinkAdditionalInfo(CmsObject cms, CmsResource resource, CmsBrokenLinkBean result) {
 
-        listInfo.setResourceState(resource.getState());
+        String dateLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                org.opencms.workplace.commons.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
+        String dateLastModified = CmsVfsService.formatDateTime(cms, resource.getDateLastModified());
 
-        String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-            listInfo.setTitle(title);
-        } else {
-            listInfo.setTitle(resource.getName());
+        String userLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
+        String userLastModified = "" + resource.getUserLastModified();
+        try {
+            userLastModified = cms.readUser(resource.getUserLastModified()).getName();
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        listInfo.setSubTitle(cms.getSitePath(resource));
-        String secure = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-        if (Boolean.parseBoolean(secure)) {
-            listInfo.setStateIcon(CmsListInfoBean.StateIcon.secure);
-        } else {
-            String export = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
-            if (Boolean.parseBoolean(export)) {
-                listInfo.setStateIcon(CmsListInfoBean.StateIcon.export);
-            } else {
-                listInfo.setStateIcon(CmsListInfoBean.StateIcon.standard);
-            }
-        }
-        String resTypeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
-        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
-        Locale currentLocale = cms.getRequestContext().getLocale();
-        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
-        String resTypeNiceName = messages.key(key);
-        listInfo.addAdditionalInfo(
-            messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
-            resTypeNiceName);
-        listInfo.setResourceType(resTypeName);
-        return listInfo;
+
+        result.addInfo(dateLastModifiedLabel, dateLastModified);
+        result.addInfo(userLastModifiedLabel, userLastModified);
     }
 
     /**
-     * Converts CmsProperty objects to CmsClientProperty objects.<p>
+     * Creates a bean representing a historical resource version.<p>
      *
-     * @param properties a list of server-side properties
+     * @param cms the current CMS context
+     * @param historyRes the historical resource
+     * @param offline true if this resource was read from the offline project
+     * @param maxVersion the largest version number found
      *
-     * @return a map of client-side properties
-     */
-    protected static Map<String, CmsClientProperty> convertProperties(List<CmsProperty> properties) {
-
-        Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
-        for (CmsProperty prop : properties) {
-            CmsClientProperty clientProp = new CmsClientProperty(
-                prop.getName(),
-                prop.getStructureValue(),
-                prop.getResourceValue());
-            clientProp.setOrigin(prop.getOrigin());
-            result.put(clientProp.getName(), clientProp);
-        }
-        return result;
-    }
-
-    /**
-     * Helper method to get the default property configuration for the given resource type.<p>
-     *
-     * @param typeName the name of the resource type
-     *
-     * @return the default property configuration for the given type
-     */
-    protected static Map<String, CmsXmlContentProperty> getDefaultPropertiesForType(String typeName) {
-
-        Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
-        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-        if (explorerType != null) {
-            List<String> defaultProps = explorerType.getProperties();
-            for (String propName : defaultProps) {
-                CmsXmlContentProperty property = new CmsXmlContentProperty(
-                    propName,
-                    "string",
-                    "string",
-                    "",
-                    "",
-                    "",
-                    "",
-                    null,
-                    "",
-                    "",
-                    "false");
-                propertyConfig.put(propName, property);
-            }
-        }
-        return propertyConfig;
-    }
-
-    /**
-     * Internal method for computing the default property configurations for a list of structure ids.<p>
-     *
-     * @param cms the cms context
-     * @param structureIds the structure ids for which we want the default property configurations
-     * @return a map from the given structure ids to their default property configurations
-     *
+     * @return the bean representing the historical resource
      * @throws CmsException if something goes wrong
      */
-    protected static Map<CmsUUID, Map<String, CmsXmlContentProperty>> internalGetDefaultProperties(
+    private CmsHistoryResourceBean createHistoryResourceBean(
         CmsObject cms,
-        List<CmsUUID> structureIds) throws CmsException {
+        CmsResource historyRes,
+        boolean offline,
+        int maxVersion)
+    throws CmsException {
 
-        Map<CmsUUID, Map<String, CmsXmlContentProperty>> result = Maps.newHashMap();
-        for (CmsUUID structureId : structureIds) {
-            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
-            String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-            Map<String, CmsXmlContentProperty> propertyConfig = getDefaultPropertiesForType(typeName);
-            result.put(structureId, propertyConfig);
+        CmsHistoryResourceBean result = new CmsHistoryResourceBean();
+
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        result.setStructureId(historyRes.getStructureId());
+        result.setRootPath(historyRes.getRootPath());
+        result.setDateLastModified(formatDate(historyRes.getDateLastModified(), locale));
+        CmsUUID userId = historyRes.getUserLastModified();
+        String userName = userId.toString();
+        try {
+            CmsUser user = cms.readUser(userId);
+            userName = user.getName();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        result.setUserLastModified(userName);
+        result.setSize(historyRes.getLength());
+        if (historyRes instanceof I_CmsHistoryResource) {
+            int publishTag = ((I_CmsHistoryResource)historyRes).getPublishTag();
+            CmsHistoryProject project = cms.readHistoryProject(publishTag);
+            long publishDate = project.getPublishingDate();
+            result.setDatePublished(formatDate(publishDate, locale));
+            int version = ((I_CmsHistoryResource)historyRes).getVersion();
+            result.setVersion(
+                new CmsHistoryVersion(
+                    Integer.valueOf(historyRes.getVersion()),
+                    maxVersion == version ? OfflineOnline.online : null));
+
+            List<CmsProperty> historyProperties = cms.readHistoryPropertyObjects((I_CmsHistoryResource)historyRes);
+            Map<String, CmsProperty> historyPropertyMap = CmsProperty.toObjectMap(historyProperties);
+            CmsProperty titleProp = CmsProperty.wrapIfNull(
+                historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_TITLE));
+            CmsProperty descProp = CmsProperty.wrapIfNull(
+                historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+            result.setTitle(titleProp.getValue());
+            result.setDescription(descProp.getValue());
+        } else {
+            if (offline) {
+                result.setVersion(new CmsHistoryVersion(null, OfflineOnline.offline));
+            } else {
+                result.setVersion(new CmsHistoryVersion(null, OfflineOnline.online));
+            }
         }
         return result;
     }
@@ -529,6 +624,63 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
 
+    }
+
+    /**
+     * Creates a "broken link" bean based on a resource.<p>
+     *
+     * @param resource the resource
+     *
+     * @return the "broken link" bean with the data from the resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsBrokenLinkBean createSitemapBrokenLinkBean(CmsResource resource) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, true);
+        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        String defaultTitle = "";
+        String title = titleProp.getValue(defaultTitle);
+        String path = cms.getSitePath(resource);
+        String subtitle = path;
+
+        CmsBrokenLinkBean result = new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle, typeName);
+
+        return result;
+    }
+
+    /**
+     * Internal method to delete the given resource.<p>
+     *
+     * @param resource the resource to delete
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void deleteResource(CmsResource resource) throws CmsException {
+
+        String path = null;
+        CmsObject cms = getCmsObject();
+        try {
+            path = cms.getSitePath(resource);
+            cms.lockResource(path);
+            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+            // check if any detail container page resource exists to this resource
+            String detailContainers = CmsJspTagContainer.getDetailOnlyPageName(path);
+            if (cms.existsResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                deleteResource(cms.readResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION));
+            }
+        } finally {
+            try {
+                if (path != null) {
+                    getCmsObject().unlockResource(path);
+                }
+            } catch (Exception e) {
+                // should really never happen
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**
@@ -580,6 +732,32 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Converts a date to a date bean.<p>
+     *
+     * @param date the date to convert
+     * @param locale the locale to use for the conversion
+     *
+     * @return the date bean
+     */
+    private CmsClientDateBean formatDate(long date, Locale locale) {
+
+        return new CmsClientDateBean(date, formatDateTime(date));
+    }
+
+    /**
+     * Formats the date for the current user's locale.<p>
+     *
+     * @param date the date to format
+     *
+     * @return the formatted date for the current user's locale
+     */
+    private String formatDateTime(long date) {
+
+        CmsObject cms = getCmsObject();
+        return formatDateTime(cms, date);
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getAliasesForPage(org.opencms.util.CmsUUID)
      */
     public List<CmsAliasBean> getAliasesForPage(CmsUUID uuid) throws CmsRpcException {
@@ -589,6 +767,59 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (Throwable e) {
             error(e);
             return null;
+        }
+    }
+
+    /**
+     * Returns a bean that contains the infos for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}.<p>
+     *
+     * @param res the resource to get the availability infos for
+     *
+     * @return a bean for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    private CmsAvailabilityInfoBean getAvailabilityInfo(CmsResource res) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
+
+            result.setPageInfo(getPageInfo(res));
+
+            String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+            result.setVfsPath(resourceSitePath);
+
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+            result.setResType(type.getTypeName());
+
+            result.setDateReleased(res.getDateReleased());
+            result.setDateExpired(res.getDateExpired());
+
+            String notificationInterval = cms.readPropertyObject(
+                res,
+                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+                false).getValue();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationInterval)) {
+                result.setNotificationInterval(Integer.valueOf(notificationInterval).intValue());
+            }
+
+            String notificationEnabled = cms.readPropertyObject(
+                res,
+                CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
+                false).getValue();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationEnabled)) {
+                result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
+            }
+
+            result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
+
+            result.setResponsibles(getResponsibles(res.getRootPath()));
+
+            return result;
+        } catch (CmsException e) {
+            error(e);
+            return null; // will never be reached
         }
     }
 
@@ -618,6 +849,125 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
             return null; // will never be reached
         }
+    }
+
+    /**
+     * Returns the available locales mapped to there display name for the given resource
+     * or <code>null</code> in case of non xml-content/xml-page resources.<p>
+     *
+     * @param resource the resource
+     *
+     * @return the available locales
+     */
+    private LinkedHashMap<String, String> getAvailableLocales(CmsResource resource) {
+
+        LinkedHashMap<String, String> result = null;
+        List<Locale> locales = null;
+        try {
+            if (CmsResourceTypeXmlPage.isXmlPage(resource)) {
+                locales = CmsXmlPageFactory.unmarshal(getCmsObject(), resource, getRequest()).getLocales();
+            } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                locales = CmsXmlContentFactory.unmarshal(getCmsObject(), resource, getRequest()).getLocales();
+            } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                locales = CmsXmlContainerPageFactory.unmarshal(getCmsObject(), resource).getLocales();
+            }
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        if (locales != null) {
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+            result = new LinkedHashMap<String, String>();
+            for (Locale locale : locales) {
+                result.put(locale.toString(), locale.getDisplayName(wpLocale));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Helper method for converting a map which maps resources to resources to a list of "broken link" beans,
+     * which have beans representing the source of the corresponding link as children.<p>
+     *
+     * @param linkMap a multimap from resource to resources
+     *
+     * @return a list of beans representing links which will be broken
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private List<CmsBrokenLinkBean> getBrokenLinkBeans(Multimap<CmsResource, CmsResource> linkMap) throws CmsException {
+
+        CmsBrokenLinkRenderer brokenLinkRenderer = new CmsBrokenLinkRenderer(getCmsObject());
+
+        Multimap<CmsBrokenLinkBean, CmsBrokenLinkBean> resultMap = HashMultimap.create();
+
+        for (CmsResource source : linkMap.keySet()) {
+
+            for (CmsResource target : linkMap.get(source)) {
+                CmsBrokenLinkBean targetBean = createSitemapBrokenLinkBean(target);
+                addBrokenLinkAdditionalInfo(getCmsObject(), target, targetBean);
+                List<CmsBrokenLinkBean> brokenLinkBeans = brokenLinkRenderer.renderBrokenLink(target, source);
+                for (CmsBrokenLinkBean childBean : brokenLinkBeans) {
+                    addBrokenLinkAdditionalInfo(getCmsObject(), source, childBean);
+                    resultMap.put(childBean, targetBean);
+                }
+            }
+        }
+
+        // now convert multimap representation to parent/child representation
+        for (CmsBrokenLinkBean parent : resultMap.keySet()) {
+            for (CmsBrokenLinkBean child : resultMap.get(parent)) {
+                parent.addChild(child);
+            }
+        }
+        return Lists.newArrayList(resultMap.keySet());
+    }
+
+    /**
+     * Internal method to get the broken links information for the given resource.<p>
+     *
+     * @param entryResource the resource
+     *
+     * @return the broken links information
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private CmsDeleteResourceBean getBrokenLinks(CmsResource entryResource) throws CmsException {
+
+        CmsDeleteResourceBean result = null;
+
+        CmsListInfoBean info = null;
+        List<CmsBrokenLinkBean> brokenLinks = null;
+
+        CmsObject cms = getCmsObject();
+        String resourceSitePath = cms.getSitePath(entryResource);
+
+        ensureSession();
+
+        List<CmsResource> descendants = new ArrayList<CmsResource>();
+        HashSet<CmsUUID> deleteIds = new HashSet<CmsUUID>();
+
+        descendants.add(entryResource);
+        if (entryResource.isFolder()) {
+            descendants.addAll(cms.readResources(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
+        }
+
+        for (CmsResource deleteRes : descendants) {
+            deleteIds.add(deleteRes.getStructureId());
+        }
+        Multimap<CmsResource, CmsResource> linkMap = HashMultimap.create();
+        for (CmsResource resource : descendants) {
+            List<CmsResource> linkSources = getLinkSources(cms, resource, deleteIds);
+            for (CmsResource source : linkSources) {
+                linkMap.put(source, resource);
+            }
+        }
+
+        brokenLinks = getBrokenLinkBeans(linkMap);
+        info = getPageInfo(entryResource);
+
+        result = new CmsDeleteResourceBean(resourceSitePath, info, brokenLinks);
+
+        return result;
     }
 
     /**
@@ -749,6 +1099,34 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Gets the resources which link to a given structure id.<p>
+     *
+     * @param cms the current CMS context
+     * @param resource the relation target resource
+     * @param deleteIds set of resources to delete
+     *
+     * @return the list of resources which link to the given id
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private List<CmsResource> getLinkSources(CmsObject cms, CmsResource resource, HashSet<CmsUUID> deleteIds)
+    throws CmsException {
+
+        List<CmsRelation> relations = cms.getRelationsForResource(resource, CmsRelationFilter.SOURCES);
+        List<CmsResource> result = new ArrayList<CmsResource>();
+        for (CmsRelation relation : relations) {
+            // only add related resources that are not going to be deleted
+            if (!deleteIds.contains(relation.getSourceId())) {
+                CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
+                if (!source.getState().isDeleted()) {
+                    result.add(source);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getLockReportInfo(org.opencms.util.CmsUUID)
      */
     public CmsLockReportInfo getLockReportInfo(CmsUUID structureId) throws CmsRpcException {
@@ -769,6 +1147,22 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     *
+     * @param res the resource to get the page info for
+     *
+     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     *
+     * @throws CmsLoaderException if the resource type could not be found
+     * @throws CmsException if something else goes wrong
+     */
+    private CmsListInfoBean getPageInfo(CmsResource res) throws CmsException, CmsLoaderException {
+
+        CmsObject cms = getCmsObject();
+        return getPageInfo(cms, res);
     }
 
     /**
@@ -797,6 +1191,104 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
             return null; // will never be reached
         }
+    }
+
+    /**
+     * Returns the preview info for the given resource.<p>
+     *
+     *@param cms the CMS context
+     * @param resource the resource
+     * @param locale the requested locale
+     *
+     * @return the preview info
+     */
+    private CmsPreviewInfo getPreviewInfo(CmsObject cms, CmsResource resource, Locale locale) {
+
+        String title = "";
+        try {
+            CmsProperty titleProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+            title = titleProperty.getValue("");
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        String noPreviewReason = getNoPreviewReason(cms, resource);
+        String previewContent = null;
+        int height = 0;
+        int width = 0;
+        LinkedHashMap<String, String> locales = getAvailableLocales(resource);
+        if (noPreviewReason != null) {
+            previewContent = "<div>" + noPreviewReason + "</div>";
+            return new CmsPreviewInfo(
+                "<div>" + noPreviewReason + "</div>",
+                null,
+                false,
+                title,
+                cms.getSitePath(resource),
+                locale.toString());
+        } else if (CmsResourceTypeImage.getStaticTypeId() == resource.getTypeId()) {
+            CmsImageScaler scaler = new CmsImageScaler(cms, resource);
+            previewContent = "<img src=\""
+                + OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
+                + "\" title=\""
+                + title
+                + "\" style=\"display:block\" />";
+            height = scaler.getHeight();
+            width = scaler.getWidth();
+        } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            if (!locales.containsKey(locale.toString())) {
+                locale = CmsLocaleManager.getMainLocale(cms, resource);
+            }
+            previewContent = CmsPreviewService.getPreviewContent(getRequest(), getResponse(), cms, resource, locale);
+
+        } else if (CmsResourceTypePlain.getStaticTypeId() == resource.getTypeId()) {
+            try {
+                previewContent = "<pre><code>" + new String(cms.readFile(resource).getContents()) + "</code></pre>";
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                previewContent = "<div>"
+                    + Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
+                    + "</div>";
+            }
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
+            CmsPreviewInfo result = new CmsPreviewInfo(
+                previewContent,
+                null,
+                false,
+                title,
+                cms.getSitePath(resource),
+                locale.toString());
+            result.setHeight(height);
+            result.setWidth(width);
+            result.setLocales(locales);
+            return result;
+        }
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
+            CmsPreviewInfo result = new CmsPreviewInfo(
+                null,
+                OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
+                    + "?"
+                    + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+                    + "=true"
+                    + "&__locale="
+                    + locale.toString(),
+                false,
+                title,
+                cms.getSitePath(resource),
+                locale.toString());
+            result.setLocales(locales);
+            return result;
+        }
+        return new CmsPreviewInfo(
+            null,
+            OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
+                + "?"
+                + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+                + "=true",
+            true,
+            title,
+            cms.getSitePath(resource),
+            locale.toString());
     }
 
     /**
@@ -912,7 +1404,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        List<CmsUUID> additionalTargets) throws CmsRpcException {
+        List<CmsUUID> additionalTargets)
+    throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -922,6 +1415,120 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
             return null;
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceTypeHelp(org.opencms.util.CmsUUID, boolean)
+     */
+    public List<CmsResourceTypeHelpBean> getResourceTypeHelp(
+        CmsUUID structureId,
+        final CmsResourceHelpDialogType dialogType)
+    throws CmsRpcException {
+
+        final List<CmsResourceTypeHelpBean> result = new ArrayList<CmsResourceTypeHelpBean>();
+        try {
+            CmsObject onlineRootCms = OpenCms.initCmsObject(getCmsObject());
+            onlineRootCms.getRequestContext().setSiteRoot("");
+            CmsProject onlineProject = onlineRootCms.readProject(CmsProject.ONLINE_PROJECT_NAME);
+            onlineRootCms.getRequestContext().setCurrentProject(onlineProject);
+            final String pathToHelpDocuments;
+            if ((structureId != null) && dialogType.equals(CmsResourceHelpDialogType.RESOURCE)) {
+                CmsResource resource = onlineRootCms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                final String typeName = OpenCms.getResourceManager().getResourceType(
+                    resource.getTypeId()).getTypeName();
+                pathToHelpDocuments = dialogType.getPath() + typeName;
+            } else {
+                pathToHelpDocuments = dialogType.getPath();
+            }
+            final List<CmsResource> helpResourceList = new ArrayList<CmsResource>();
+            try {
+                helpResourceList.addAll(
+                    onlineRootCms.readResources(pathToHelpDocuments, CmsResourceFilter.IGNORE_EXPIRATION));
+            } catch (CmsException e1) {
+                return result;
+            }
+            for (CmsResource helpResource : helpResourceList) {
+                CmsResourceTypeHelpBean bean = new CmsResourceTypeHelpBean();
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(
+                    onlineRootCms,
+                    onlineRootCms.readFile(helpResource));
+                bean.setTitle(
+                    content.getStringValue(
+                        onlineRootCms,
+                        CmsResourceTypeHelpBean.HELP_DOCUMENT_TITLE_NODE,
+                        OpenCms.getWorkplaceManager().getWorkplaceLocale(onlineRootCms)));
+                bean.setContent(
+                    content.getStringValue(
+                        onlineRootCms,
+                        CmsResourceTypeHelpBean.HELP_DOCUMENT_TEXT_NODE,
+                        OpenCms.getWorkplaceManager().getWorkplaceLocale(onlineRootCms)));
+                result.add(bean);
+            }
+            return result;
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
+     * Returns a map of principals of responsible users together with the resource path where the
+     * responsibility was found.<p>
+     *
+     * @param vfsPath the path pointing on the resource to get the responsible users for
+     *
+     * @return a map of principal beans
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    private Map<CmsPrincipalBean, String> getResponsibles(String vfsPath) throws CmsRpcException {
+
+        Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
+        List<CmsResource> parentResources = new ArrayList<CmsResource>();
+
+        CmsObject cms = getCmsObject();
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(vfsPath);
+        try {
+            // get all parent folders of the current file
+            parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (CmsException e) {
+            error(e);
+        }
+
+        for (CmsResource resource : parentResources) {
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+            String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            try {
+
+                cms.getRequestContext().setSiteRoot("/");
+                List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
+                for (CmsAccessControlEntry ace : entries) {
+                    if (ace.isResponsible()) {
+                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
+                        if (principal != null) {
+                            CmsPrincipalBean prinBean = new CmsPrincipalBean(
+                                principal.getName(),
+                                principal.getDescription(),
+                                principal.isGroup());
+                            if (!resource.getRootPath().equals(vfsPath)) {
+                                if (resource.getRootPath().startsWith(storedSiteRoot)) {
+                                    result.put(prinBean, sitePath);
+                                } else {
+                                    result.put(prinBean, resource.getRootPath());
+                                }
+                            } else {
+                                result.put(prinBean, null);
+                            }
+                        }
+                    }
+                }
+            } catch (CmsException e) {
+                error(e);
+            } finally {
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
+            }
+        }
+        return result;
     }
 
     /**
@@ -998,6 +1605,117 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Saves a set of property changes.<p>
+     *
+     * @param changes the set of property changes
+     * @throws CmsException if something goes wrong
+     */
+    protected void internalSaveProperties(CmsPropertyChangeSet changes) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsResource resource = cms.readResource(changes.getTargetStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsLockActionRecord actionRecord = ensureLock(cms.getSitePath(resource));
+        try {
+            Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(resource, false));
+            // determine if the title property should be changed in case of a 'NavText' change
+            boolean changeOwnTitle = shouldChangeTitle(ownProps);
+
+            String hasNavTextChange = null;
+            List<CmsProperty> ownPropertyChanges = new ArrayList<CmsProperty>();
+            for (CmsPropertyModification propMod : changes.getChanges()) {
+                if (propMod.isFileNameProperty()) {
+                    // in case of the file name property, the resource needs to be renamed
+                    if (!resource.getStructureId().equals(propMod.getId())) {
+                        throw new IllegalStateException("Invalid structure id in property changes!");
+                    }
+                    CmsResource.checkResourceName(propMod.getValue());
+                    String oldSitePath = cms.getSitePath(resource);
+                    String parentPath = CmsResource.getParentFolder(oldSitePath);
+                    String newSitePath = CmsStringUtil.joinPaths(parentPath, propMod.getValue());
+                    cms.moveResource(oldSitePath, newSitePath);
+                    // read the resource again to update name and path
+                    resource = cms.readResource(resource.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                } else {
+                    CmsProperty propToModify = null;
+                    if (resource.getStructureId().equals(propMod.getId())) {
+
+                        if (CmsPropertyDefinition.PROPERTY_NAVTEXT.equals(propMod.getName())) {
+                            hasNavTextChange = propMod.getValue();
+                        } else if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propMod.getName())) {
+                            changeOwnTitle = false;
+                        }
+                        propToModify = ownProps.get(propMod.getName());
+                        if (propToModify == null) {
+                            propToModify = new CmsProperty(propMod.getName(), null, null);
+                        }
+                        ownPropertyChanges.add(propToModify);
+                    } else {
+                        throw new IllegalStateException("Invalid structure id in property changes!");
+                    }
+                    String newValue = propMod.getValue();
+                    if (newValue == null) {
+                        newValue = "";
+                    }
+                    if (propMod.isStructureValue()) {
+                        propToModify.setStructureValue(newValue);
+                    } else {
+                        propToModify.setResourceValue(newValue);
+                    }
+                }
+            }
+            if (hasNavTextChange != null) {
+                if (changeOwnTitle) {
+                    CmsProperty titleProp = ownProps.get(CmsPropertyDefinition.PROPERTY_TITLE);
+                    if (titleProp == null) {
+                        titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, null);
+                    }
+                    titleProp.setStructureValue(hasNavTextChange);
+                    ownPropertyChanges.add(titleProp);
+                }
+            }
+            if (!ownPropertyChanges.isEmpty()) {
+                cms.writePropertyObjects(resource, ownPropertyChanges);
+            }
+        } finally {
+            if (actionRecord.getChange() == LockChange.locked) {
+                cms.unlockResource(resource);
+            }
+        }
+
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#isHelpDialogAvailable(org.opencms.util.CmsUUID)
+     */
+    public boolean isHelpDialogAvailable(CmsUUID structureId) {
+
+        try {
+            CmsObject onlineRootCms = OpenCms.initCmsObject(getCmsObject());
+            onlineRootCms.getRequestContext().setSiteRoot("");
+            CmsProject onlineProject = onlineRootCms.readProject(CmsProject.ONLINE_PROJECT_NAME);
+            onlineRootCms.getRequestContext().setCurrentProject(onlineProject);
+            final String pathToHelpDocuments;
+            if (structureId != null) {
+                CmsResource resource = onlineRootCms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                final String typeName = OpenCms.getResourceManager().getResourceType(
+                    resource.getTypeId()).getTypeName();
+                pathToHelpDocuments = CmsResourceTypeHelpBean.HELP_DOCUMENTS_VFS_PATH + typeName;
+            } else {
+                return false;
+            }
+            final List<CmsResource> helpResourceList = onlineRootCms.readResources(
+                pathToHelpDocuments,
+                CmsResourceFilter.IGNORE_EXPIRATION);
+            if ((null == helpResourceList) || helpResourceList.isEmpty()) {
+                return false;
+            }
+            return true;
+        } catch (Throwable e) {
+            return false;
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#loadLinkInfo(org.opencms.util.CmsUUID)
      */
     public CmsExternalLinkInfoBean loadLinkInfo(CmsUUID structureId) throws CmsRpcException {
@@ -1030,6 +1748,55 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * Helper method for creating a VFS entry bean from a resource.<p>
+     *
+     * @param resource the resource whose data should be stored in the bean
+     * @param root true if the resource is a root resource
+     *
+     * @return the data bean representing the resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsVfsEntryBean makeEntryBean(CmsResource resource, boolean root) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        boolean isFolder = resource.isFolder();
+        String name = root ? "/" : resource.getName();
+        String path = cms.getSitePath(resource);
+        boolean hasChildren = false;
+        if (isFolder) {
+            List<CmsResource> children = cms.getResourcesInFolder(
+                cms.getRequestContext().getSitePath(resource),
+                CmsResourceFilter.DEFAULT);
+            if (!children.isEmpty()) {
+                hasChildren = true;
+            }
+        }
+        String resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+
+        return new CmsVfsEntryBean(path, name, resourceType, isFolder, hasChildren);
+    }
+
+    /**
+     * Helper method for creating a list of VFS entry beans from a list of the corresponding resources.<p>
+     *
+     * @param resources the list of resources which should be converted to entry beans
+     * @param root true if the resources in the list are root resources
+     *
+     * @return the list of VFS entry beans for the resources
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected List<CmsVfsEntryBean> makeEntryBeans(List<CmsResource> resources, boolean root) throws CmsException {
+
+        List<CmsVfsEntryBean> result = new ArrayList<CmsVfsEntryBean>();
+        for (CmsResource res : resources) {
+            result.add(makeEntryBean(res, root));
+        }
+        return result;
     }
 
     /**
@@ -1201,6 +1968,23 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Determines if the title property should be changed in case of a 'NavText' change.<p>
+     *
+     * @param properties the current resource properties
+     *
+     * @return <code>true</code> if the title property should be changed in case of a 'NavText' change
+     */
+    private boolean shouldChangeTitle(Map<String, CmsProperty> properties) {
+
+        return (properties == null)
+            || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE) == null)
+            || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue() == null)
+            || ((properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null)
+                && properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
+                    properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#substituteLinkForRootPath(java.lang.String, java.lang.String)
      */
     public String substituteLinkForRootPath(String currentSiteRoot, String rootPath) throws CmsRpcException {
@@ -1276,698 +2060,5 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         }
         return null;
 
-    }
-
-    /**
-     * Creates a "broken link" bean based on a resource.<p>
-     *
-     * @param resource the resource
-     *
-     * @return the "broken link" bean with the data from the resource
-     *
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsBrokenLinkBean createSitemapBrokenLinkBean(CmsResource resource) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, true);
-        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-        String defaultTitle = "";
-        String title = titleProp.getValue(defaultTitle);
-        String path = cms.getSitePath(resource);
-        String subtitle = path;
-
-        CmsBrokenLinkBean result = new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle, typeName);
-
-        return result;
-    }
-
-    /**
-     * Saves a set of property changes.<p>
-     *
-     * @param changes the set of property changes
-     * @throws CmsException if something goes wrong
-     */
-    protected void internalSaveProperties(CmsPropertyChangeSet changes) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsResource resource = cms.readResource(changes.getTargetStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsLockActionRecord actionRecord = ensureLock(cms.getSitePath(resource));
-        try {
-            Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(resource, false));
-            // determine if the title property should be changed in case of a 'NavText' change
-            boolean changeOwnTitle = shouldChangeTitle(ownProps);
-
-            String hasNavTextChange = null;
-            List<CmsProperty> ownPropertyChanges = new ArrayList<CmsProperty>();
-            for (CmsPropertyModification propMod : changes.getChanges()) {
-                if (propMod.isFileNameProperty()) {
-                    // in case of the file name property, the resource needs to be renamed
-                    if (!resource.getStructureId().equals(propMod.getId())) {
-                        throw new IllegalStateException("Invalid structure id in property changes!");
-                    }
-                    CmsResource.checkResourceName(propMod.getValue());
-                    String oldSitePath = cms.getSitePath(resource);
-                    String parentPath = CmsResource.getParentFolder(oldSitePath);
-                    String newSitePath = CmsStringUtil.joinPaths(parentPath, propMod.getValue());
-                    cms.moveResource(oldSitePath, newSitePath);
-                    // read the resource again to update name and path
-                    resource = cms.readResource(resource.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
-                } else {
-                    CmsProperty propToModify = null;
-                    if (resource.getStructureId().equals(propMod.getId())) {
-
-                        if (CmsPropertyDefinition.PROPERTY_NAVTEXT.equals(propMod.getName())) {
-                            hasNavTextChange = propMod.getValue();
-                        } else if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propMod.getName())) {
-                            changeOwnTitle = false;
-                        }
-                        propToModify = ownProps.get(propMod.getName());
-                        if (propToModify == null) {
-                            propToModify = new CmsProperty(propMod.getName(), null, null);
-                        }
-                        ownPropertyChanges.add(propToModify);
-                    } else {
-                        throw new IllegalStateException("Invalid structure id in property changes!");
-                    }
-                    String newValue = propMod.getValue();
-                    if (newValue == null) {
-                        newValue = "";
-                    }
-                    if (propMod.isStructureValue()) {
-                        propToModify.setStructureValue(newValue);
-                    } else {
-                        propToModify.setResourceValue(newValue);
-                    }
-                }
-            }
-            if (hasNavTextChange != null) {
-                if (changeOwnTitle) {
-                    CmsProperty titleProp = ownProps.get(CmsPropertyDefinition.PROPERTY_TITLE);
-                    if (titleProp == null) {
-                        titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, null);
-                    }
-                    titleProp.setStructureValue(hasNavTextChange);
-                    ownPropertyChanges.add(titleProp);
-                }
-            }
-            if (!ownPropertyChanges.isEmpty()) {
-                cms.writePropertyObjects(resource, ownPropertyChanges);
-            }
-        } finally {
-            if (actionRecord.getChange() == LockChange.locked) {
-                cms.unlockResource(resource);
-            }
-        }
-
-    }
-
-    /**
-     * Helper method for creating a VFS entry bean from a resource.<p>
-     *
-     * @param resource the resource whose data should be stored in the bean
-     * @param root true if the resource is a root resource
-     *
-     * @return the data bean representing the resource
-     *
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsVfsEntryBean makeEntryBean(CmsResource resource, boolean root) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        boolean isFolder = resource.isFolder();
-        String name = root ? "/" : resource.getName();
-        String path = cms.getSitePath(resource);
-        boolean hasChildren = false;
-        if (isFolder) {
-            List<CmsResource> children = cms.getResourcesInFolder(
-                cms.getRequestContext().getSitePath(resource),
-                CmsResourceFilter.DEFAULT);
-            if (!children.isEmpty()) {
-                hasChildren = true;
-            }
-        }
-        String resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
-
-        return new CmsVfsEntryBean(path, name, resourceType, isFolder, hasChildren);
-    }
-
-    /**
-     * Helper method for creating a list of VFS entry beans from a list of the corresponding resources.<p>
-     *
-     * @param resources the list of resources which should be converted to entry beans
-     * @param root true if the resources in the list are root resources
-     *
-     * @return the list of VFS entry beans for the resources
-     *
-     * @throws CmsException if something goes wrong
-     */
-    protected List<CmsVfsEntryBean> makeEntryBeans(List<CmsResource> resources, boolean root) throws CmsException {
-
-        List<CmsVfsEntryBean> result = new ArrayList<CmsVfsEntryBean>();
-        for (CmsResource res : resources) {
-            result.add(makeEntryBean(res, root));
-        }
-        return result;
-    }
-
-    /**
-     * Adds additional info items for broken links.<p>
-     *
-     * @param cms the CMS context to use
-     * @param resource the resource from which the additional infos should be read
-     * @param result the result in which to store the additional info
-     */
-    private void addBrokenLinkAdditionalInfo(CmsObject cms, CmsResource resource, CmsBrokenLinkBean result) {
-
-        String dateLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
-            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-                org.opencms.workplace.commons.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
-        String dateLastModified = CmsVfsService.formatDateTime(cms, resource.getDateLastModified());
-
-        String userLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
-            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-                org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
-        String userLastModified = "" + resource.getUserLastModified();
-        try {
-            userLastModified = cms.readUser(resource.getUserLastModified()).getName();
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-
-        result.addInfo(dateLastModifiedLabel, dateLastModified);
-        result.addInfo(userLastModifiedLabel, userLastModified);
-    }
-
-    /**
-     * Creates a bean representing a historical resource version.<p>
-     *
-     * @param cms the current CMS context
-     * @param historyRes the historical resource
-     * @param offline true if this resource was read from the offline project
-     * @param maxVersion the largest version number found
-     *
-     * @return the bean representing the historical resource
-     * @throws CmsException if something goes wrong
-     */
-    private CmsHistoryResourceBean createHistoryResourceBean(
-        CmsObject cms,
-        CmsResource historyRes,
-        boolean offline,
-        int maxVersion) throws CmsException {
-
-        CmsHistoryResourceBean result = new CmsHistoryResourceBean();
-
-        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        result.setStructureId(historyRes.getStructureId());
-        result.setRootPath(historyRes.getRootPath());
-        result.setDateLastModified(formatDate(historyRes.getDateLastModified(), locale));
-        CmsUUID userId = historyRes.getUserLastModified();
-        String userName = userId.toString();
-        try {
-            CmsUser user = cms.readUser(userId);
-            userName = user.getName();
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        result.setUserLastModified(userName);
-        result.setSize(historyRes.getLength());
-        if (historyRes instanceof I_CmsHistoryResource) {
-            int publishTag = ((I_CmsHistoryResource)historyRes).getPublishTag();
-            CmsHistoryProject project = cms.readHistoryProject(publishTag);
-            long publishDate = project.getPublishingDate();
-            result.setDatePublished(formatDate(publishDate, locale));
-            int version = ((I_CmsHistoryResource)historyRes).getVersion();
-            result.setVersion(
-                new CmsHistoryVersion(
-                    Integer.valueOf(historyRes.getVersion()),
-                    maxVersion == version ? OfflineOnline.online : null));
-
-            List<CmsProperty> historyProperties = cms.readHistoryPropertyObjects((I_CmsHistoryResource)historyRes);
-            Map<String, CmsProperty> historyPropertyMap = CmsProperty.toObjectMap(historyProperties);
-            CmsProperty titleProp = CmsProperty.wrapIfNull(
-                historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_TITLE));
-            CmsProperty descProp = CmsProperty.wrapIfNull(
-                historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION));
-            result.setTitle(titleProp.getValue());
-            result.setDescription(descProp.getValue());
-        } else {
-            if (offline) {
-                result.setVersion(new CmsHistoryVersion(null, OfflineOnline.offline));
-            } else {
-                result.setVersion(new CmsHistoryVersion(null, OfflineOnline.online));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Internal method to delete the given resource.<p>
-     *
-     * @param resource the resource to delete
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void deleteResource(CmsResource resource) throws CmsException {
-
-        String path = null;
-        CmsObject cms = getCmsObject();
-        try {
-            path = cms.getSitePath(resource);
-            cms.lockResource(path);
-            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-            // check if any detail container page resource exists to this resource
-            String detailContainers = CmsJspTagContainer.getDetailOnlyPageName(path);
-            if (cms.existsResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                deleteResource(cms.readResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION));
-            }
-        } finally {
-            try {
-                if (path != null) {
-                    getCmsObject().unlockResource(path);
-                }
-            } catch (Exception e) {
-                // should really never happen
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-        }
-    }
-
-    /**
-     * Converts a date to a date bean.<p>
-     *
-     * @param date the date to convert
-     * @param locale the locale to use for the conversion
-     *
-     * @return the date bean
-     */
-    private CmsClientDateBean formatDate(long date, Locale locale) {
-
-        return new CmsClientDateBean(date, formatDateTime(date));
-    }
-
-    /**
-     * Formats the date for the current user's locale.<p>
-     *
-     * @param date the date to format
-     *
-     * @return the formatted date for the current user's locale
-     */
-    private String formatDateTime(long date) {
-
-        CmsObject cms = getCmsObject();
-        return formatDateTime(cms, date);
-    }
-
-    /**
-     * Returns a bean that contains the infos for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}.<p>
-     *
-     * @param res the resource to get the availability infos for
-     *
-     * @return a bean for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}
-     *
-     * @throws CmsRpcException if something goes wrong
-     */
-    private CmsAvailabilityInfoBean getAvailabilityInfo(CmsResource res) throws CmsRpcException {
-
-        CmsObject cms = getCmsObject();
-        try {
-            CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
-
-            result.setPageInfo(getPageInfo(res));
-
-            String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-            result.setVfsPath(resourceSitePath);
-
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
-            result.setResType(type.getTypeName());
-
-            result.setDateReleased(res.getDateReleased());
-            result.setDateExpired(res.getDateExpired());
-
-            String notificationInterval = cms.readPropertyObject(
-                res,
-                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
-                false).getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationInterval)) {
-                result.setNotificationInterval(Integer.valueOf(notificationInterval).intValue());
-            }
-
-            String notificationEnabled = cms.readPropertyObject(
-                res,
-                CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
-                false).getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationEnabled)) {
-                result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
-            }
-
-            result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
-
-            result.setResponsibles(getResponsibles(res.getRootPath()));
-
-            return result;
-        } catch (CmsException e) {
-            error(e);
-            return null; // will never be reached
-        }
-    }
-
-    /**
-     * Returns the available locales mapped to there display name for the given resource
-     * or <code>null</code> in case of non xml-content/xml-page resources.<p>
-     *
-     * @param resource the resource
-     *
-     * @return the available locales
-     */
-    private LinkedHashMap<String, String> getAvailableLocales(CmsResource resource) {
-
-        LinkedHashMap<String, String> result = null;
-        List<Locale> locales = null;
-        try {
-            if (CmsResourceTypeXmlPage.isXmlPage(resource)) {
-                locales = CmsXmlPageFactory.unmarshal(getCmsObject(), resource, getRequest()).getLocales();
-            } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                locales = CmsXmlContentFactory.unmarshal(getCmsObject(), resource, getRequest()).getLocales();
-            } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-                locales = CmsXmlContainerPageFactory.unmarshal(getCmsObject(), resource).getLocales();
-            }
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        if (locales != null) {
-            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
-            result = new LinkedHashMap<String, String>();
-            for (Locale locale : locales) {
-                result.put(locale.toString(), locale.getDisplayName(wpLocale));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Helper method for converting a map which maps resources to resources to a list of "broken link" beans,
-     * which have beans representing the source of the corresponding link as children.<p>
-     *
-     * @param linkMap a multimap from resource to resources
-     *
-     * @return a list of beans representing links which will be broken
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private List<CmsBrokenLinkBean> getBrokenLinkBeans(Multimap<CmsResource, CmsResource> linkMap) throws CmsException {
-
-        CmsBrokenLinkRenderer brokenLinkRenderer = new CmsBrokenLinkRenderer(getCmsObject());
-
-        Multimap<CmsBrokenLinkBean, CmsBrokenLinkBean> resultMap = HashMultimap.create();
-
-        for (CmsResource source : linkMap.keySet()) {
-
-            for (CmsResource target : linkMap.get(source)) {
-                CmsBrokenLinkBean targetBean = createSitemapBrokenLinkBean(target);
-                addBrokenLinkAdditionalInfo(getCmsObject(), target, targetBean);
-                List<CmsBrokenLinkBean> brokenLinkBeans = brokenLinkRenderer.renderBrokenLink(target, source);
-                for (CmsBrokenLinkBean childBean : brokenLinkBeans) {
-                    addBrokenLinkAdditionalInfo(getCmsObject(), source, childBean);
-                    resultMap.put(childBean, targetBean);
-                }
-            }
-        }
-
-        // now convert multimap representation to parent/child representation
-        for (CmsBrokenLinkBean parent : resultMap.keySet()) {
-            for (CmsBrokenLinkBean child : resultMap.get(parent)) {
-                parent.addChild(child);
-            }
-        }
-        return Lists.newArrayList(resultMap.keySet());
-    }
-
-    /**
-     * Internal method to get the broken links information for the given resource.<p>
-     *
-     * @param entryResource the resource
-     *
-     * @return the broken links information
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private CmsDeleteResourceBean getBrokenLinks(CmsResource entryResource) throws CmsException {
-
-        CmsDeleteResourceBean result = null;
-
-        CmsListInfoBean info = null;
-        List<CmsBrokenLinkBean> brokenLinks = null;
-
-        CmsObject cms = getCmsObject();
-        String resourceSitePath = cms.getSitePath(entryResource);
-
-        ensureSession();
-
-        List<CmsResource> descendants = new ArrayList<CmsResource>();
-        HashSet<CmsUUID> deleteIds = new HashSet<CmsUUID>();
-
-        descendants.add(entryResource);
-        if (entryResource.isFolder()) {
-            descendants.addAll(cms.readResources(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
-        }
-
-        for (CmsResource deleteRes : descendants) {
-            deleteIds.add(deleteRes.getStructureId());
-        }
-        Multimap<CmsResource, CmsResource> linkMap = HashMultimap.create();
-        for (CmsResource resource : descendants) {
-            List<CmsResource> linkSources = getLinkSources(cms, resource, deleteIds);
-            for (CmsResource source : linkSources) {
-                linkMap.put(source, resource);
-            }
-        }
-
-        brokenLinks = getBrokenLinkBeans(linkMap);
-        info = getPageInfo(entryResource);
-
-        result = new CmsDeleteResourceBean(resourceSitePath, info, brokenLinks);
-
-        return result;
-    }
-
-    /**
-     * Gets the resources which link to a given structure id.<p>
-     *
-     * @param cms the current CMS context
-     * @param resource the relation target resource
-     * @param deleteIds set of resources to delete
-     *
-     * @return the list of resources which link to the given id
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private List<CmsResource> getLinkSources(CmsObject cms, CmsResource resource, HashSet<CmsUUID> deleteIds)
-    throws CmsException {
-
-        List<CmsRelation> relations = cms.getRelationsForResource(resource, CmsRelationFilter.SOURCES);
-        List<CmsResource> result = new ArrayList<CmsResource>();
-        for (CmsRelation relation : relations) {
-            // only add related resources that are not going to be deleted
-            if (!deleteIds.contains(relation.getSourceId())) {
-                CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
-                if (!source.getState().isDeleted()) {
-                    result.add(source);
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
-     *
-     * @param res the resource to get the page info for
-     *
-     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
-     *
-     * @throws CmsLoaderException if the resource type could not be found
-     * @throws CmsException if something else goes wrong
-     */
-    private CmsListInfoBean getPageInfo(CmsResource res) throws CmsException, CmsLoaderException {
-
-        CmsObject cms = getCmsObject();
-        return getPageInfo(cms, res);
-    }
-
-    /**
-     * Returns the preview info for the given resource.<p>
-     *
-     *@param cms the CMS context
-     * @param resource the resource
-     * @param locale the requested locale
-     *
-     * @return the preview info
-     */
-    private CmsPreviewInfo getPreviewInfo(CmsObject cms, CmsResource resource, Locale locale) {
-
-        String title = "";
-        try {
-            CmsProperty titleProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
-            title = titleProperty.getValue("");
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        String noPreviewReason = getNoPreviewReason(cms, resource);
-        String previewContent = null;
-        int height = 0;
-        int width = 0;
-        LinkedHashMap<String, String> locales = getAvailableLocales(resource);
-        if (noPreviewReason != null) {
-            previewContent = "<div>" + noPreviewReason + "</div>";
-            return new CmsPreviewInfo(
-                "<div>" + noPreviewReason + "</div>",
-                null,
-                false,
-                title,
-                cms.getSitePath(resource),
-                locale.toString());
-        } else if (CmsResourceTypeImage.getStaticTypeId() == resource.getTypeId()) {
-            CmsImageScaler scaler = new CmsImageScaler(cms, resource);
-            previewContent = "<img src=\""
-                + OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
-                + "\" title=\""
-                + title
-                + "\" style=\"display:block\" />";
-            height = scaler.getHeight();
-            width = scaler.getWidth();
-        } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-            if (!locales.containsKey(locale.toString())) {
-                locale = CmsLocaleManager.getMainLocale(cms, resource);
-            }
-            previewContent = CmsPreviewService.getPreviewContent(getRequest(), getResponse(), cms, resource, locale);
-
-        } else if (CmsResourceTypePlain.getStaticTypeId() == resource.getTypeId()) {
-            try {
-                previewContent = "<pre><code>" + new String(cms.readFile(resource).getContents()) + "</code></pre>";
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-                previewContent = "<div>"
-                    + Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
-                    + "</div>";
-            }
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
-            CmsPreviewInfo result = new CmsPreviewInfo(
-                previewContent,
-                null,
-                false,
-                title,
-                cms.getSitePath(resource),
-                locale.toString());
-            result.setHeight(height);
-            result.setWidth(width);
-            result.setLocales(locales);
-            return result;
-        }
-        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
-            CmsPreviewInfo result = new CmsPreviewInfo(
-                null,
-                OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
-                    + "?"
-                    + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-                    + "=true"
-                    + "&__locale="
-                    + locale.toString(),
-                false,
-                title,
-                cms.getSitePath(resource),
-                locale.toString());
-            result.setLocales(locales);
-            return result;
-        }
-        return new CmsPreviewInfo(
-            null,
-            OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
-                + "?"
-                + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-                + "=true",
-            true,
-            title,
-            cms.getSitePath(resource),
-            locale.toString());
-    }
-
-    /**
-     * Returns a map of principals of responsible users together with the resource path where the
-     * responsibility was found.<p>
-     *
-     * @param vfsPath the path pointing on the resource to get the responsible users for
-     *
-     * @return a map of principal beans
-     *
-     * @throws CmsRpcException if something goes wrong
-     */
-    private Map<CmsPrincipalBean, String> getResponsibles(String vfsPath) throws CmsRpcException {
-
-        Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
-        List<CmsResource> parentResources = new ArrayList<CmsResource>();
-
-        CmsObject cms = getCmsObject();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(vfsPath);
-        try {
-            // get all parent folders of the current file
-            parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
-            error(e);
-        }
-
-        for (CmsResource resource : parentResources) {
-            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-            String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            try {
-
-                cms.getRequestContext().setSiteRoot("/");
-                List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
-                for (CmsAccessControlEntry ace : entries) {
-                    if (ace.isResponsible()) {
-                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                        if (principal != null) {
-                            CmsPrincipalBean prinBean = new CmsPrincipalBean(
-                                principal.getName(),
-                                principal.getDescription(),
-                                principal.isGroup());
-                            if (!resource.getRootPath().equals(vfsPath)) {
-                                if (resource.getRootPath().startsWith(storedSiteRoot)) {
-                                    result.put(prinBean, sitePath);
-                                } else {
-                                    result.put(prinBean, resource.getRootPath());
-                                }
-                            } else {
-                                result.put(prinBean, null);
-                            }
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                error(e);
-            } finally {
-                cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Determines if the title property should be changed in case of a 'NavText' change.<p>
-     *
-     * @param properties the current resource properties
-     *
-     * @return <code>true</code> if the title property should be changed in case of a 'NavText' change
-     */
-    private boolean shouldChangeTitle(Map<String, CmsProperty> properties) {
-
-        return (properties == null)
-            || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE) == null)
-            || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue() == null)
-            || ((properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null)
-                && properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
-                    properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
     }
 }

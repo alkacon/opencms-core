@@ -222,6 +222,12 @@ div.groupcontainerPlaceholder{
     gwt-image: "images.editIconDeactivated";
 }
 
+@sprite .optionBar .cmsState-up-hovering .toolbarResourceHelp, .optionBar .cmsState-down-hovering .toolbarResourceHelp, .optionBar .cmsState-down .toolbarResourceHelp {
+    gwt-image: "images.resourceHelpIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarResourceHelp, .optionBar .cmsState-up-disabled .toolbarResourceHelp, .optionBar .cmsState-down-disabled .toolbarResourceHelp {
+    gwt-image: "images.resourceHelpIconDeactivated";
+}
 
 @sprite .optionBar .cmsState-up-hovering .toolbarSelection.lockedElement, .optionBar .cmsState-down-hovering .toolbarSelection.lockedElement, .optionBar .cmsState-down .toolbarSelection.lockedElement {
     gwt-image: "images.lockIconActive";

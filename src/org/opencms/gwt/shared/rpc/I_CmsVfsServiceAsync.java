@@ -38,7 +38,9 @@ import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
+import org.opencms.gwt.shared.CmsResourceHelpDialogType;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
+import org.opencms.gwt.shared.CmsResourceTypeHelpBean;
 import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -275,6 +277,18 @@ public interface I_CmsVfsServiceAsync {
         AsyncCallback<CmsResourceStatusBean> callback);
 
     /**
+     * Gets the help information about resource type
+     *
+     * @param structureId the structure id of the resource
+     * @param dialogType the dialog type
+     * @param resultCallback the callback for the results
+     */
+    void getResourceTypeHelp(
+        CmsUUID structureId,
+        final CmsResourceHelpDialogType dialogType,
+        AsyncCallback<List<CmsResourceTypeHelpBean>> resultCallback);
+
+    /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>
      *
      * @param structureId the structure id of the resource
@@ -296,6 +310,14 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback
      */
     void getSitePath(CmsUUID structureId, AsyncCallback<String> callback);
+
+    /**
+     * @param structureId the structure id
+     * @param callback the asynchronous callback
+     */
+
+    @SynchronizedRpcRequest
+    void isHelpDialogAvailable(CmsUUID structureId, AsyncCallback<Boolean> callback);
 
     /**
      * Loads the external link info.<p>

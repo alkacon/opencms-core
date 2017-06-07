@@ -466,6 +466,22 @@ public interface I_CmsBigIconBundle extends ClientBundle {
     @Source("images/icons/big/toggleHelpBigIconDeactivated.png")
     ImageResource toggleHelpBigIconDeactivated();
 
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/resourceHelpBigIconActive.png")
+    ImageResource resourceHelpBigIconActive();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/resourceHelpBigIconDeactivated.png")
+    ImageResource resourceHelpBigIconDeactivated();
+    
     /**
      * Access method.<p>
      * @return an image resource

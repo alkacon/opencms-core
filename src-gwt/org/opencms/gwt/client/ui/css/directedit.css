@@ -90,6 +90,7 @@ div.expiredListElementOverlay {
 
 @if user.agent ie6 {
 	.toolbarRemove .optionBar .toolbarRemove, 
+	.toolbarResourceHelp .optionBar .toolbarResourceHelp, 
 	.toolbarEdit .optionBar .toolbarEdit, 
 	.toolbarEdit .directEditButtons .toolbarNew,
 	.toolbarMove .optionBar .toolbarMove, 
@@ -101,6 +102,7 @@ div.expiredListElementOverlay {
 	}
 } @else {
 	.toolbarRemove .optionBar .toolbarRemove, 
+	.toolbarResourceHelp .optionBar .toolbarResourceHelp,
 	.toolbarEdit .optionBar .toolbarEdit, 
 	.toolbarEdit .directEditButtons .toolbarNew,
 	.toolbarMove .optionBar .toolbarMove, 
@@ -137,6 +139,13 @@ div.expiredListElementOverlay {
 @sprite .optionBar .cmsState-up .toolbarEdit, .cmsHovering.optionBar .toolbarEdit.cmsState-up .toolbarSelection{
 	gwt-image: "coreImages.icons.editIconDeactivated";
 }
+@sprite .optionBar .cmsState-up-hovering .toolbarResourceHelp, .optionBar .cmsState-down-hovering .toolbarResourceHelp, .optionBar .cmsState-down .toolbarResourceHelp {
+    gwt-image: "coreImages.icons.resourceHelpIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarResourceHelp, .optionBar .cmsState-up-disabled .toolbarResourceHelp, .optionBar .cmsState-down-disabled .toolbarResourceHelp {
+    gwt-image: "coreImages.icons.resourceHelpIconDeactivated";
+}
+
 @sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit {
     gwt-image: "coreImages.icons.lockIconDeactivated";
 }

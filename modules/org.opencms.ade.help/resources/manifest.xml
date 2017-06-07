@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>9.5.3 (comundus build) - OpenCms Basic 1.0.0 </opencms_version>
+		<createdate>Wed, 10 Aug 2016 14:49:35 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.ade.help</name>
+		<nicename><![CDATA[OpenCms 9 ADE Help]]></nicename>
+		<group>OpenCms ADE</group>
+		<class/>
+		<description><![CDATA[This module contains the files that contains help by using the ADE interface]]></description>
+		<version>9.5.3.4</version>
+		<authorname/>
+		<authoremail/>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/org.opencms.ade.help/"/>
+			<resource uri="/system/workplace/resources/filetypes/adehelp.png"/>
+			<resource uri="/system/workplace/resources/filetypes/adehelp_big.png"/>
+		</resources>
+		<parameters/>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="adehelp" id="29632">
+				<param name="schema">/system/modules/org.opencms.ade.help/schemas/adehelp.xsd</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="adehelp" key="fileicon.adehelp" icon="adehelp.png" bigicon="adehelp_big.png" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=adehelp" order="10" autosetnavigation="false" autosettitle="false" key="title.adehelp"/>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>2d977ea6-532f-11e6-8654-73f5125785b0</uuidstructure>
+			<datelastmodified>Tue, 26 Jul 2016 12:47:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Jul 2016 12:47:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>2f46b481-532f-11e6-8654-73f5125785b0</uuidstructure>
+			<datelastmodified>Tue, 26 Jul 2016 12:48:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Jul 2016 12:48:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help</destination>
+			<type>folder</type>
+			<uuidstructure>d465bfcb-5400-11e6-9b9d-73f5125785b0</uuidstructure>
+			<datelastmodified>Wed, 27 Jul 2016 13:48:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Jul 2016 13:48:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/documents</destination>
+			<type>folder</type>
+			<uuidstructure>f762c83b-5f05-11e6-9994-73f5125785b0</uuidstructure>
+			<datelastmodified>Wed, 10 Aug 2016 14:23:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 10 Aug 2016 14:23:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/documents/common</destination>
+			<type>folder</type>
+			<uuidstructure>f5e6bfe6-53cd-11e6-815d-73f5125785b0</uuidstructure>
+			<datelastmodified>Wed, 27 Jul 2016 07:44:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Jul 2016 07:44:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/documents/common/h_00001.html</source>
+			<destination>system/modules/org.opencms.ade.help/documents/common/h_00001.html</destination>
+			<type>adehelp</type>
+			<uuidstructure>cdde5cfe-548e-11e6-86e5-73f5125785b0</uuidstructure>
+			<uuidresource>cdde5cff-548e-11e6-86e5-73f5125785b0</uuidresource>
+			<datelastmodified>Wed, 10 Aug 2016 14:35:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jul 2016 06:44:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[The publishing mechanism]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/documents/editor</destination>
+			<type>folder</type>
+			<uuidstructure>884cdf7d-53f9-11e6-9b9d-73f5125785b0</uuidstructure>
+			<datelastmodified>Wed, 27 Jul 2016 12:56:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Jul 2016 12:56:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/documents/editor/h_00001.html</source>
+			<destination>system/modules/org.opencms.ade.help/documents/editor/h_00001.html</destination>
+			<type>adehelp</type>
+			<uuidstructure>fae72437-548e-11e6-86e5-73f5125785b0</uuidstructure>
+			<uuidresource>fae72438-548e-11e6-86e5-73f5125785b0</uuidresource>
+			<datelastmodified>Wed, 10 Aug 2016 14:37:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jul 2016 06:46:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ADE Editor]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/documents/function</destination>
+			<type>folder</type>
+			<uuidstructure>7105b2d7-5f06-11e6-9994-73f5125785b0</uuidstructure>
+			<datelastmodified>Wed, 10 Aug 2016 14:26:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 10 Aug 2016 14:26:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/documents/function/h_00001.html</source>
+			<destination>system/modules/org.opencms.ade.help/documents/function/h_00001.html</destination>
+			<type>adehelp</type>
+			<uuidstructure>7fdbea9f-5f06-11e6-9994-73f5125785b0</uuidstructure>
+			<uuidresource>7fdbeaa0-5f06-11e6-9994-73f5125785b0</uuidresource>
+			<datelastmodified>Wed, 10 Aug 2016 14:31:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 10 Aug 2016 14:27:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dynamic function]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/documents/start</destination>
+			<type>folder</type>
+			<uuidstructure>b6414a39-53ca-11e6-a822-73f5125785b0</uuidstructure>
+			<datelastmodified>Wed, 27 Jul 2016 07:21:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Jul 2016 07:21:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/documents/start/h_00001.html</source>
+			<destination>system/modules/org.opencms.ade.help/documents/start/h_00001.html</destination>
+			<type>adehelp</type>
+			<uuidstructure>d091ab5b-5490-11e6-86e5-73f5125785b0</uuidstructure>
+			<uuidresource>d091ab5c-5490-11e6-86e5-73f5125785b0</uuidresource>
+			<datelastmodified>Wed, 10 Aug 2016 14:36:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jul 2016 06:59:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Welcome to the OpenCms!]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/i18n</destination>
+			<type>folder</type>
+			<uuidstructure>241d4e63-5486-11e6-86e5-73f5125785b0</uuidstructure>
+			<datelastmodified>Thu, 28 Jul 2016 05:42:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jul 2016 05:42:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/i18n/org.opencms.ade.help.workplace</source>
+			<destination>system/modules/org.opencms.ade.help/i18n/org.opencms.ade.help.workplace</destination>
+			<type>xmlvfsbundle</type>
+			<uuidstructure>24227e85-5486-11e6-86e5-73f5125785b0</uuidstructure>
+			<uuidresource>24227e86-5486-11e6-86e5-73f5125785b0</uuidresource>
+			<datelastmodified>Thu, 04 Aug 2016 09:02:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jul 2016 05:42:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/resources</destination>
+			<type>folder</type>
+			<uuidstructure>dac5380d-5400-11e6-9b9d-73f5125785b0</uuidstructure>
+			<datelastmodified>Wed, 27 Jul 2016 13:48:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Jul 2016 13:48:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/resources/images</destination>
+			<type>imagegallery</type>
+			<uuidstructure>b219953d-5a3b-11e6-8819-bbad248c54e4</uuidstructure>
+			<datelastmodified>Thu, 04 Aug 2016 12:05:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Aug 2016 12:05:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/resources/images/addIconActive.png</source>
+			<destination>system/modules/org.opencms.ade.help/resources/images/addIconActive.png</destination>
+			<type>image</type>
+			<uuidstructure>9176af5a-5b04-11e6-8819-bbad248c54e4</uuidstructure>
+			<uuidresource>9176af5b-5b04-11e6-8819-bbad248c54e4</uuidresource>
+			<datelastmodified>Fri, 05 Aug 2016 12:03:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Aug 2016 12:03:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[addIconActive]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:14,h:14]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/resources/images/ade_panel.png</source>
+			<destination>system/modules/org.opencms.ade.help/resources/images/ade_panel.png</destination>
+			<type>image</type>
+			<uuidstructure>b10856ed-5a3c-11e6-8819-bbad248c54e4</uuidstructure>
+			<uuidresource>b10856ee-5a3c-11e6-8819-bbad248c54e4</uuidresource>
+			<datelastmodified>Fri, 05 Aug 2016 11:24:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Aug 2016 12:12:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ade_panel]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:347,h:36]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/resources/images/contentEditor_Example.png</source>
+			<destination>system/modules/org.opencms.ade.help/resources/images/contentEditor_Example.png</destination>
+			<type>image</type>
+			<uuidstructure>9199046e-5b04-11e6-8819-bbad248c54e4</uuidstructure>
+			<uuidresource>9199046f-5b04-11e6-8819-bbad248c54e4</uuidresource>
+			<datelastmodified>Fri, 05 Aug 2016 12:03:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Aug 2016 12:03:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[contentEditor_Example]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1259,h:1068]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/resources/images/element-edit-1.png</source>
+			<destination>system/modules/org.opencms.ade.help/resources/images/element-edit-1.png</destination>
+			<type>image</type>
+			<uuidstructure>62512a92-5a3d-11e6-8819-bbad248c54e4</uuidstructure>
+			<uuidresource>62512a93-5a3d-11e6-8819-bbad248c54e4</uuidresource>
+			<datelastmodified>Fri, 05 Aug 2016 11:24:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Aug 2016 12:17:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[element-edit-1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:261,h:92]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/resources/images/element-edit-2.png</source>
+			<destination>system/modules/org.opencms.ade.help/resources/images/element-edit-2.png</destination>
+			<type>image</type>
+			<uuidstructure>62601eb6-5a3d-11e6-8819-bbad248c54e4</uuidstructure>
+			<uuidresource>62601eb7-5a3d-11e6-8819-bbad248c54e4</uuidresource>
+			<datelastmodified>Fri, 05 Aug 2016 11:24:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Aug 2016 12:17:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[element-edit-2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:263,h:95]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/resources/images/OpenCms_Logo_800_transparent_24bit.png</source>
+			<destination>system/modules/org.opencms.ade.help/resources/images/OpenCms_Logo_800_transparent_24bit.png</destination>
+			<type>image</type>
+			<uuidstructure>d8ab6490-5a3b-11e6-8819-bbad248c54e4</uuidstructure>
+			<uuidresource>d8ab6491-5a3b-11e6-8819-bbad248c54e4</uuidresource>
+			<datelastmodified>Thu, 04 Aug 2016 12:06:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Aug 2016 12:06:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms_Logo_800_transparent_24bit]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:192]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/resources/images/removeIconActive.png</source>
+			<destination>system/modules/org.opencms.ade.help/resources/images/removeIconActive.png</destination>
+			<type>image</type>
+			<uuidstructure>91a11ac2-5b04-11e6-8819-bbad248c54e4</uuidstructure>
+			<uuidresource>91a11ac3-5b04-11e6-8819-bbad248c54e4</uuidresource>
+			<datelastmodified>Fri, 05 Aug 2016 12:03:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Aug 2016 12:03:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[removeIconActive]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:14,h:14]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.help/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>24107d1e-5486-11e6-86e5-73f5125785b0</uuidstructure>
+			<datelastmodified>Thu, 28 Jul 2016 05:42:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jul 2016 05:42:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.help/schemas/adehelp.xsd</source>
+			<destination>system/modules/org.opencms.ade.help/schemas/adehelp.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>24144db0-5486-11e6-86e5-73f5125785b0</uuidstructure>
+			<uuidresource>24144db1-5486-11e6-86e5-73f5125785b0</uuidresource>
+			<datelastmodified>Thu, 04 Aug 2016 09:01:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jul 2016 05:42:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample resource type schema]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/adehelp.png</source>
+			<destination>system/workplace/resources/filetypes/adehelp.png</destination>
+			<type>image</type>
+			<uuidstructure>89ae2ce5-5a22-11e6-b943-73f5125785b0</uuidstructure>
+			<uuidresource>89ae2ce6-5a22-11e6-b943-73f5125785b0</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Aug 2016 09:05:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/adehelp_big.png</source>
+			<destination>system/workplace/resources/filetypes/adehelp_big.png</destination>
+			<type>image</type>
+			<uuidstructure>8fd15f78-5a22-11e6-b943-73f5125785b0</uuidstructure>
+			<uuidresource>8fd15f79-5a22-11e6-b943-73f5125785b0</uuidresource>
+			<datelastmodified>Thu, 24 Feb 2011 16:23:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Aug 2016 09:05:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.util.CmsUniqueActiveItemContainer;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsResourceHelpDialogType;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
@@ -74,33 +75,6 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /** The vfs-service instance. */
     private static I_CmsVfsServiceAsync VFS_SERVICE;
-
-    /** The unique active item container for the flyout menu. */
-    private CmsUniqueActiveItemContainer m_activeFlyoutMenu = new CmsUniqueActiveItemContainer();
-
-    /** The client time when the data is loaded. */
-    private long m_clientTime;
-
-    /** Event bus for client side events. */
-    private EventBus m_eventBus = new SimpleEventBus();
-
-    /** Flag which indicates whether we are in Internet Explorer 7. */
-    private boolean m_isIe7;
-
-    /**
-     * Prevent instantiation.<p>
-     *
-     * @throws SerializationException if deserialization failed
-     */
-    protected CmsCoreProvider()
-    throws SerializationException {
-
-        super((CmsCoreData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(getService(), DICT_NAME));
-        m_clientTime = System.currentTimeMillis();
-
-        I_CmsUserAgentInfo userAgentInfo = GWT.create(I_CmsUserAgentInfo.class);
-        m_isIe7 = userAgentInfo.isIE7();
-    }
 
     /**
      * Returns the client message instance.<p>
@@ -170,6 +144,33 @@ public final class CmsCoreProvider extends CmsCoreData {
             ((ServiceDefTarget)VFS_SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return VFS_SERVICE;
+    }
+
+    /** The unique active item container for the flyout menu. */
+    private CmsUniqueActiveItemContainer m_activeFlyoutMenu = new CmsUniqueActiveItemContainer();
+
+    /** The client time when the data is loaded. */
+    private long m_clientTime;
+
+    /** Event bus for client side events. */
+    private EventBus m_eventBus = new SimpleEventBus();
+
+    /** Flag which indicates whether we are in Internet Explorer 7. */
+    private boolean m_isIe7;
+
+    /**
+     * Prevent instantiation.<p>
+     *
+     * @throws SerializationException if deserialization failed
+     */
+    protected CmsCoreProvider()
+    throws SerializationException {
+
+        super((CmsCoreData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(getService(), DICT_NAME));
+        m_clientTime = System.currentTimeMillis();
+
+        I_CmsUserAgentInfo userAgentInfo = GWT.create(I_CmsUserAgentInfo.class);
+        m_isIe7 = userAgentInfo.isIE7();
     }
 
     /**
@@ -342,6 +343,34 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * @param structureId the structureId of resource
+     * @return True if help for type element exist
+     */
+    public boolean isHelpDialogAvailable(final CmsUUID structureId) {
+
+        CmsRpcAction<Boolean> action = new CmsRpcAction<Boolean>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getVfsService().isHelpDialogAvailable(structureId, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Boolean result) {
+                // do nothing
+            }
+        };
+        return action.executeSync().booleanValue();
+    }
+
+    /**
      * Returns if the current user agent is IE7.<p>
      *
      * @return <code>true</code> if the current user agent is IE7
@@ -349,6 +378,63 @@ public final class CmsCoreProvider extends CmsCoreData {
     public boolean isIe7() {
 
         return m_isIe7;
+    }
+
+    /**
+     * @param dialogType the Dialog type
+     * @return startHelpActive
+     */
+    public boolean isResourceHelpDialogActive(final CmsResourceHelpDialogType dialogType) {
+
+        CmsRpcAction<Boolean> action = new CmsRpcAction<Boolean>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().isResourceHelpDialogActive(dialogType, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Boolean result) {
+
+                // nothing to do here
+            }
+        };
+        return action.executeSync().booleanValue();
+    }
+
+    /**
+     * @return startHelpActive
+     */
+    public boolean isStartHelpDialogActive() {
+
+        CmsRpcAction<Boolean> action = new CmsRpcAction<Boolean>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().isStartHelpActive(this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Boolean result) {
+
+                // nothing to do here
+            }
+        };
+        return action.executeSync().booleanValue();
     }
 
     /**
@@ -565,6 +651,34 @@ public final class CmsCoreProvider extends CmsCoreData {
             public void execute() {
 
                 getService().setShowEditorHelp(show, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                //nothing to do
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * @param startHelpActive startHelpActive
+     */
+    public void setStartHelpActive(final boolean startHelpActive) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().setStartHelpActive(startHelpActive, this);
             }
 
             /**

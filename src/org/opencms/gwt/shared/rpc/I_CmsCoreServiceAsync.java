@@ -36,6 +36,7 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
+import org.opencms.gwt.shared.CmsResourceHelpDialogType;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
@@ -169,6 +170,21 @@ public interface I_CmsCoreServiceAsync {
     void getWorkplaceLink(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
+     * Returns True if a common help dialog active for current user
+     * @param dialogType the dialogType
+     * @param callback the asynchronous callback
+     */
+    @SynchronizedRpcRequest
+    void isResourceHelpDialogActive(final CmsResourceHelpDialogType dialogType, AsyncCallback<Boolean> callback);
+
+    /**
+     * Returns True if start help dialog active for current user
+     * @param callback the asynchronous callback
+     */
+    @SynchronizedRpcRequest
+    void isStartHelpActive(AsyncCallback<Boolean> callback);
+
+    /**
      * Loads the user settings for the current user.<p>
      *
      * @param callback the callback to call with the result
@@ -261,6 +277,15 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the asynchronous callback
      */
     void setShowEditorHelp(boolean showHelp, AsyncCallback<Void> callback);
+
+    /**
+     * Writes the start help dialog visibility into the user additional info.<p>
+     *
+     * @param startHelpActive <code>true</code> if the start help dialog is active
+     * @param callback  the asynchronous callback
+     *
+     */
+    void setStartHelpActive(boolean startHelpActive, AsyncCallback<Void> callback);
 
     /**
      * Writes the tool-bar visibility into the session cache.<p>
