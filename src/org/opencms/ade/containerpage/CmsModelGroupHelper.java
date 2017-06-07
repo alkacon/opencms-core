@@ -304,7 +304,7 @@ public class CmsModelGroupHelper {
      * @param elements the requested elements
      * @param foundGroups list to add the found group element client ids to
      * @param page the page
-     * @param allwaysCopy <code>true</code> to create element copies in case of non model groups and createNew is set
+     * @param alwaysCopy <code>true</code> to create element copies in case of non model groups and createNew is set
      * @param locale the content locale
      *
      * @return the adjusted page
@@ -315,7 +315,7 @@ public class CmsModelGroupHelper {
         Map<String, CmsContainerElementBean> elements,
         List<String> foundGroups,
         CmsContainerPageBean page,
-        boolean allwaysCopy,
+        boolean alwaysCopy,
         Locale locale)
     throws CmsException {
 
@@ -369,7 +369,44 @@ public class CmsModelGroupHelper {
                         }
 
                         settings.remove(CmsContainerElement.ELEMENT_INSTANCE_ID);
-                        element = CmsContainerElementBean.cloneWithSettings(element, settings);
+
+                        boolean copyRoot = false;
+                        if (alwaysCopy && (modelInstanceId != null) && (modelPage != null)) {
+                            for (CmsContainerElementBean el : modelPage.getElements()) {
+                                if (modelInstanceId.equals(el.getInstanceId())) {
+                                    copyRoot = el.isCreateNew();
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (copyRoot) {
+                            CmsObject cloneCms = OpenCms.initCmsObject(m_cms);
+                            cloneCms.getRequestContext().setLocale(locale);
+                            String typeName = OpenCms.getResourceManager().getResourceType(
+                                element.getResource()).getTypeName();
+                            CmsResourceTypeConfig typeConfig = m_configData.getResourceType(typeName);
+                            if (typeConfig == null) {
+                                throw new IllegalArgumentException(
+                                    "Can not copy template model element '"
+                                        + element.getResource().getRootPath()
+                                        + "' because the resource type '"
+                                        + typeName
+                                        + "' is not available in this sitemap.");
+                            }
+                            CmsResource newResource = typeConfig.createNewElement(
+                                cloneCms,
+                                element.getResource(),
+                                m_configData.getBasePath());
+
+                            element = new CmsContainerElementBean(
+                                newResource.getStructureId(),
+                                element.getFormatterId(),
+                                settings,
+                                false);
+                        } else {
+                            element = CmsContainerElementBean.cloneWithSettings(element, settings);
+                        }
                         if (modelPage != null) {
                             Map<String, List<CmsContainerBean>> containerByParent = new HashMap<String, List<CmsContainerBean>>();
 
@@ -409,7 +446,7 @@ public class CmsModelGroupHelper {
                                     modelInstanceId,
                                     element.getInstanceId(),
                                     containerByParent);
-                                if (allwaysCopy) {
+                                if (alwaysCopy) {
                                     modelContainers = createNewElementsForModelGroup(m_cms, modelContainers, locale);
                                 }
                                 foundGroups.add(element.editorHash());

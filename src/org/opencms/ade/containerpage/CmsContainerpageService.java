@@ -689,6 +689,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             element.setClientId(newClientId);
             element.setSitePath(cms.getSitePath(newResource));
             element.setResourceType(resourceType);
+            element.setCreateNew(newBean.isCreateNew());
         } catch (CmsException e) {
             error(e);
         }

@@ -324,8 +324,8 @@ public class CmsContainerElementBean implements Cloneable {
             null,
             individualSettings,
             true,
-            resourceType.getTypeName() + getSettingsHash(individualSettings, !isCopyModels),
-            !isCopyModels);
+            resourceType.getTypeName() + getSettingsHash(individualSettings, isCopyModels),
+            isCopyModels);
         return elementBean;
     }
 
