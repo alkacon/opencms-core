@@ -189,7 +189,10 @@ public class CmsWorkplaceAppManager {
             "/history",
             "/sites",
             "/cache",
-            "/publishqueue"));
+            "/publishqueue",
+            "/database",
+            "/linkvalidation",
+            "/searchindex"));
 
     /** The standard quick launch apps. */
     private static final String[] STANDARD_APPS = new String[] {
