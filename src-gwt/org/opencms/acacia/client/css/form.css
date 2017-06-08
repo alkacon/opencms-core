@@ -1,4 +1,4 @@
-@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-panel, mce-tinymce-inline, mce-flow-layout, mce-window, mce-window-body, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
+@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-panel, mce-tinymce-inline, mce-flow-layout, mce-branding-powered-by, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -295,6 +295,10 @@ div.tinymceToolbarContainer > div{
 }
 .tinymceToolbarContainer .mce-tinymce-inline .mce-flow-layout{
 	white-space: normal;
+}
+
+.mce-branding-powered-by{
+	display: none !important;
 }
 
 /* this styles the tinymce toolbar */
