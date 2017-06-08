@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.CmsWidgetConfigurationException;
 import org.opencms.widgets.I_CmsADEWidget;
@@ -707,7 +708,8 @@ public class CmsContentTypeVisitor {
      */
     private CmsType readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 
-        String typeName = CmsContentService.getTypeUri(xmlContentDefinition);
+        String typeName = (CmsStringUtil.isEmptyOrWhitespaceOnly(path) ? "" : (path + ":"))
+            + CmsContentService.getTypeUri(xmlContentDefinition);
         if (m_registeredTypes.containsKey(typeName)) {
             return m_registeredTypes.get(typeName);
         }
