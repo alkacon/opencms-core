@@ -409,7 +409,7 @@ task workplaceTheme (type: JavaExec) {
 task "gwt_widgetSet" (dependsOn: gwtClasses, type: JavaExec) {
     ext.buildDir =  project.buildDir.toString()  +"/gwt/widgetSet"
     ext.extraDir =  project.buildDir.toString() + "/extra/widgetSet"
-    inputs.source sourceSets.gwt.java.srcDirs
+    inputs.file(sourceSets.gwt.java.srcDirs).skipWhenEmpty()
     inputs.dir sourceSets.gwt.output.resourcesDir
     outputs.dir buildDir
 
@@ -572,7 +572,6 @@ allModuleNames.split(',').each{ moduleName ->
         }
     }
     def propertyFile = file("${moduleFolder}/module.properties")
-    def gwtRename = null
     if (propertyFile.exists()){
         Properties moduleProperties= new Properties()
         moduleProperties.load(new FileInputStream(propertyFile))
@@ -582,10 +581,6 @@ allModuleNames.split(',').each{ moduleName ->
         if (moduleProperties['module.gwt']!=null){
             gwtModule = moduleProperties['module.gwt']
             def moduleXml = (new XmlParser()).parse(srcGwtDir.toString()+"/" +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
-            gwtRename = moduleXml['@rename-to']
-            if (gwtRename==null){
-                gwtRename=gwtModule
-            }
         }
     }
     def manifestFile = file("${moduleFolder}/resources/manifest.xml")
@@ -750,7 +745,7 @@ allModuleNames.split(',').each{ moduleName ->
         task "gwt_$moduleName" (dependsOn: gwtClasses, type: JavaExec) {
             ext.buildDir =  project.buildDir.toString()  +"/gwt/$moduleName"
             ext.extraDir =  project.buildDir.toString() + "/extra/$moduleName"
-            inputs.source sourceSets.gwt.java.srcDirs
+            inputs.file(sourceSets.gwt.java.srcDirs).skipWhenEmpty()
             inputs.dir sourceSets.gwt.output.resourcesDir
             outputs.dir buildDir
 
