@@ -175,16 +175,20 @@ task copyCompileDeps(type: Copy) {
 	into "${buildDir}/deps"
 }
 
-task enhance << {
-    ant.taskdef(
-    name      : 'openjpaenhancer',
-    classpath : sourceSets.modules.compileClasspath.asPath,
-    classname : 'org.apache.openjpa.ant.PCEnhancerTask'
-    )
+task enhance {
+    doLast {
+        ant.taskdef(
+                name: 'openjpaenhancer',
+                classpath: sourceSets.modules.compileClasspath.asPath,
+                classname: 'org.apache.openjpa.ant.PCEnhancerTask'
+        )
 
-    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
-        fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
-        config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
+        ant.openjpaenhancer(classpath: sourceSets.modules.compileClasspath.asPath) {
+            fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence") {
+                exclude(name: '*$*.class')
+            }
+            config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
+        }
     }
 }
 
@@ -405,7 +409,7 @@ task workplaceTheme (type: JavaExec) {
 task "gwt_widgetSet" (dependsOn: gwtClasses, type: JavaExec) {
     ext.buildDir =  project.buildDir.toString()  +"/gwt/widgetSet"
     ext.extraDir =  project.buildDir.toString() + "/extra/widgetSet"
-    inputs.source sourceSets.gwt.java.srcDirs
+    inputs.file(sourceSets.gwt.java.srcDirs).skipWhenEmpty()
     inputs.dir sourceSets.gwt.output.resourcesDir
     outputs.dir buildDir
 
@@ -568,7 +572,6 @@ allModuleNames.split(',').each{ moduleName ->
         }
     }
     def propertyFile = file("${moduleFolder}/module.properties")
-    def gwtRename = null
     if (propertyFile.exists()){
         Properties moduleProperties= new Properties()
         moduleProperties.load(new FileInputStream(propertyFile))
@@ -578,10 +581,6 @@ allModuleNames.split(',').each{ moduleName ->
         if (moduleProperties['module.gwt']!=null){
             gwtModule = moduleProperties['module.gwt']
             def moduleXml = (new XmlParser()).parse(srcGwtDir.toString()+"/" +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
-            gwtRename = moduleXml['@rename-to']
-            if (gwtRename==null){
-                gwtRename=gwtModule
-            }
         }
     }
     def manifestFile = file("${moduleFolder}/resources/manifest.xml")
@@ -746,7 +745,7 @@ allModuleNames.split(',').each{ moduleName ->
         task "gwt_$moduleName" (dependsOn: gwtClasses, type: JavaExec) {
             ext.buildDir =  project.buildDir.toString()  +"/gwt/$moduleName"
             ext.extraDir =  project.buildDir.toString() + "/extra/$moduleName"
-            inputs.source sourceSets.gwt.java.srcDirs
+            inputs.file(sourceSets.gwt.java.srcDirs).skipWhenEmpty()
             inputs.dir sourceSets.gwt.output.resourcesDir
             outputs.dir buildDir
 
@@ -836,10 +835,12 @@ tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
     }
 }
 
-task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')||task.name.startsWith('jar_')}) << {
-    println '======================================================'
-    println 'Done building modules'
-    println '======================================================'
+task allModules(dependsOn: tasks.matching { Task task -> task.name.startsWith('dist_') || task.name.startsWith('jar_') }) {
+    doLast {
+        println '======================================================'
+        println 'Done building modules'
+        println '======================================================'
+    }
 }
 
 task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
