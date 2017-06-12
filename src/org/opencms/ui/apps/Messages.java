@@ -504,6 +504,63 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_STATS_TITLE_0 = "GUI_DATABASEAPP_STATS_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_ADD_RESOURCE_0 = "GUI_DATABASEAPP_SYNC_ADD_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_DESTINATIONPATHINRFS_0 = "GUI_DATABASEAPP_SYNC_DESTINATIONPATHINRFS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_DESTINATIONPATHINRFS_HELP_0 = "GUI_DATABASEAPP_SYNC_DESTINATIONPATHINRFS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_ENABLED_0 = "GUI_DATABASEAPP_SYNC_ENABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_ENABLED_HELP_0 = "GUI_DATABASEAPP_SYNC_ENABLED_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_HELP_0 = "GUI_DATABASEAPP_SYNC_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_NAME_0 = "GUI_DATABASEAPP_SYNC_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_REMOVE_RESOURCE_0 = "GUI_DATABASEAPP_SYNC_REMOVE_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_RESOURCE_0 = "GUI_DATABASEAPP_SYNC_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_SOURCELISTINVFS_0 = "GUI_DATABASEAPP_SYNC_SOURCELISTINVFS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_SOURCELISTINVFS_HELP_0 = "GUI_DATABASEAPP_SYNC_SOURCELISTINVFS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_VALIDATION_EMPTY_RESOURCES_0 = "GUI_DATABASEAPP_SYNC_VALIDATION_EMPTY_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_VALIDATION_EMPTY_TARGET_0 = "GUI_DATABASEAPP_SYNC_VALIDATION_EMPTY_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNC_VALIDATION_RESOURCE_NOT_FOUND_1 = "GUI_DATABASEAPP_SYNC_VALIDATION_RESOURCE_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNCH_CONF_0 = "GUI_DATABASEAPP_SYNCH_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNCH_RUN_0 = "GUI_DATABASEAPP_SYNCH_RUN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNCH_THREAD_BEGIN_0 = "GUI_DATABASEAPP_SYNCH_THREAD_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNCH_THREAD_END_0 = "GUI_DATABASEAPP_SYNCH_THREAD_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_SYNCH_THREAD_NAME_1 = "GUI_DATABASEAPP_SYNCH_THREAD_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DB_PUBLOCKS_THREAD_NAME_0 = "GUI_DB_PUBLOCKS_THREAD_NAME_0";
 
     /** Message constant for key in the resource bundle. */

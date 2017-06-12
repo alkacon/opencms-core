@@ -196,7 +196,6 @@ public class CmsFlushCache extends Panel {
                 UI.getCurrent().addWindow(window);
             }
         });
-
         return ret;
     }
 

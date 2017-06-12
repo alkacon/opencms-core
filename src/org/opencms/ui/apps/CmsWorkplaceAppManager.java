@@ -51,6 +51,7 @@ import org.opencms.ui.apps.dbmanager.CmsDbManagerConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbManagerFolder;
 import org.opencms.ui.apps.dbmanager.CmsDbRemovePubLocksConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbStaticExportConfiguration;
+import org.opencms.ui.apps.dbmanager.CmsDbSynchronizationConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryClearConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryFolder;
@@ -659,6 +660,7 @@ public class CmsWorkplaceAppManager {
                 new CmsDbExportConfiguration(),
                 new CmsDbStaticExportConfiguration(),
                 new CmsDbRemovePubLocksConfiguration(),
+                new CmsDbSynchronizationConfiguration(),
                 new CmsSearchindexAppConfiguration(),
                 new CmsLogFileConfiguration(),
                 new CmsLogFileSettingConfiguration(),

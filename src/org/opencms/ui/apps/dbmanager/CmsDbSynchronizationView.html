@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-panel caption="%(key.GUI_DATABASEAPP_SYNC_NAME_0)">	
+			<v-form-layout _id="m_layout" margin spacing style-name="o-formlayout-workplace-main">
+				<v-check-box _id="m_enabled" caption="%(key.GUI_DATABASEAPP_SYNC_ENABLED_0)" description="%(key.GUI_DATABASEAPP_SYNC_ENABLED_HELP_0)" width="100%"></v-check-box> 
+				<v-text-field _id="m_target" caption="%(key.GUI_DATABASEAPP_SYNC_DESTINATIONPATHINRFS_0)" description="%(key.GUI_DATABASEAPP_SYNC_DESTINATIONPATHINRFS_HELP_0)" width="100%"/>
+			</v-form-layout>
+		</v-panel>		
+		<v-panel caption="%(key.GUI_DATABASEAPP_SYNC_SOURCELISTINVFS_0)">
+			<v-form-layout _id="m_resources" margin spacing style-name="o-formlayout-workplace-main">
+				<v-button _id="m_addResource">%(key.GUI_DATABASEAPP_SYNC_ADD_RESOURCE_0)</v-button>
+			</v-form-layout>
+		</v-panel>
+		<v-panel _id="m_startPanel">
+				<v-horizontal-layout width="100%">
+					<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+						<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+					</v-horizontal-layout>
+				</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>
