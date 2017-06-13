@@ -41,10 +41,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import javax.xml.parsers.SAXParserFactory;
-
 import org.apache.commons.logging.Log;
-import org.apache.xerces.parsers.SAXParser;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -67,44 +64,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public final class CmsXmlUtils {
 
-    /**
-     * This class is only used to expose the XML parser configuration implementation name.<p>
-     */
-    private static class ParserImpl extends SAXParser {
-
-        /**
-         * Constructor.<p>
-         */
-        ParserImpl() {
-            super();
-        }
-
-        /**
-         * Returns the implementation name of the used XML parser configuration.<p>
-         *
-         * @return the implementation name
-         */
-        String getConfigImplName() {
-
-            if (fConfiguration != null) {
-                return fConfiguration.getClass().getName();
-            } else {
-                return null;
-            }
-        }
-    }
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlUtils.class);
-
-    /** Key of the SAX parser configuration system property. */
-    private static final String SAX_PARSER_CONFIG_KEY = "org.apache.xerces.xni.parser.XMLParserConfiguration";
-
-    /** Key of the SAX parser factory system property. */
-    private static final String SAX_PARSER_FACTORY_KEY = "javax.xml.parsers.SAXParserFactory";
-
-    /** Key of the XML reader system property. */
-    private static final String XML_READER_KEY = "org.xml.sax.driver";
 
     /**
      * Prevents instances of this class from being generated.<p>
@@ -343,39 +304,6 @@ public final class CmsXmlUtils {
             // NOOP
         }
         return 1;
-    }
-
-    /**
-     * Initializes XML processing system properties to avoid evaluating the XML parser and reader implementation each time an XML document is read.<p>
-     * This is done for performance improvements only.<p>
-     */
-    public static void initSystemProperties() {
-
-        String implName;
-        // initialize system properties
-        if (System.getProperty(SAX_PARSER_FACTORY_KEY) == null) {
-            implName = SAXParserFactory.newInstance().getClass().getName();
-            LOG.info("Setting sax parser factory impl property to " + implName);
-            System.setProperty(SAX_PARSER_FACTORY_KEY, implName);
-        }
-        if (System.getProperty(XML_READER_KEY) == null) {
-            SAXReader reader = new SAXReader();
-            try {
-                implName = reader.getXMLReader().getClass().getName();
-                LOG.info("Setting xml reader impl property to " + implName);
-                System.setProperty(XML_READER_KEY, implName);
-            } catch (SAXException e) {
-                LOG.error("Error evaluating XMLReader impl.", e);
-            }
-        }
-        if (System.getProperty(SAX_PARSER_CONFIG_KEY) == null) {
-            ParserImpl saxParser = new ParserImpl();
-            implName = saxParser.getConfigImplName();
-            if (implName != null) {
-                LOG.info("Setting xml parser configuration impl property to " + implName);
-                System.setProperty(SAX_PARSER_CONFIG_KEY, implName);
-            }
-        }
     }
 
     /**
