@@ -51,6 +51,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsWorkflowResources;
@@ -117,6 +118,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         srv.setRequest(request);
         CmsPublishData result = null;
         HashMap<String, String> params = Maps.newHashMap();
+        params.put("prefetch", "true");
         try {
             result = srv.getInitData(params);
         } finally {
@@ -173,6 +175,16 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsPublishData result = null;
         CmsObject cms = getCmsObject();
         String closeLink = getRequest().getParameter(CmsDialog.PARAM_CLOSELINK);
+        if ((closeLink == null) && "true".equals(params.get("prefetch"))) {
+            CmsUserSettings settings = new CmsUserSettings(cms);
+            if (settings.usesNewWorkplace()) {
+                closeLink = CmsVaadinUtils.getWorkplaceLink();
+            } else {
+                closeLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                    cms,
+                    CmsWorkplace.JSP_WORKPLACE_URI);
+            }
+        }
         String confirmStr = getRequest().getParameter(PARAM_CONFIRM);
         boolean confirm = Boolean.parseBoolean(confirmStr);
         String workflowId = getRequest().getParameter(PARAM_WORKFLOW_ID);
