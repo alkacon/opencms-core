@@ -197,7 +197,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
     }
 
     /**
-     * Initializes the form with the given settings
+     * Initializes the form with the given settings.<p>
      *
      * @param settings the settings
      */

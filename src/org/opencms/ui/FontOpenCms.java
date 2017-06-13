@@ -42,7 +42,13 @@ public enum FontOpenCms implements FontIcon {
     APPS(0xe617),
 
     /** The brackets icon. */
-    BRACKETS(0xe921),
+    BRACKETS(0xe64f),
+
+    /** The broadcast icon. */
+    BROADCAST(0xe650),
+
+    /** The cache icon. */
+    CACHE(0xe62f),
 
     /** The check icon. */
     CHECK_SMALL(0xe916),
@@ -57,7 +63,7 @@ public enum FontOpenCms implements FontIcon {
     CIRCLE_CHECK(0xe61e),
 
     /** The circle info icon. */
-    CIRCLE_INFO(0xed6c),
+    CIRCLE_INFO(0xe640),
 
     /** The circle invert icon. */
     CIRCLE_INV(0xe62b),
@@ -99,7 +105,7 @@ public enum FontOpenCms implements FontIcon {
     CONTEXT_MENU(0xe616),
 
     /** The context menu dots icon. */
-    CONTEXT_MENU_DOTS(0xe91c),
+    CONTEXT_MENU_DOTS(0xe664a),
 
     /** The context menu icon. */
     CONTEXT_MENU_SMALL(0xe909),
@@ -107,11 +113,23 @@ public enum FontOpenCms implements FontIcon {
     /** The copy locale icon. */
     COPY_LOCALE(0xe61a),
 
+    /** The crop icon. */
+    CROP(0xe641),
+
+    /** The crop remove icon. */
+    CROP_REMOVE(0xe642),
+
     /** The cut icon. */
     CUT_SMALL(0xe906),
 
-    /** the delete icon. */
+    /** The database icon. */
+    DATABASE(0xe62c),
+
+    /** The delete icon. */
     DELETE_SMALL(0xe90c),
+
+    /** The download icon. */
+    DOWNLOAD(0xe605),
 
     /** The edit down icon. */
     EDIT_DOWN_SMALL(0xe90f),
@@ -129,7 +147,7 @@ public enum FontOpenCms implements FontIcon {
     EDIT_UP_SMALL(0xe910),
 
     /** The error icon. */
-    ERROR(0xed6b),
+    ERROR(0xe63f),
 
     /** The exit icon. */
     EXIT(0xe615),
@@ -137,11 +155,23 @@ public enum FontOpenCms implements FontIcon {
     /** The favorite icon. */
     FAVORITE_SMALL(0xe905),
 
+    /** The file icon. */
+    FILE(0xe63b),
+
+    /** The inverse file icon. */
+    FILE_INV(0xe63c),
+
     /** The filter icon. */
     FILTER(0xe60c),
 
+    /** The folder icon. */
+    FOLDER(0xe63d),
+
     /** The gallery icon. */
     GALLERY(0xe611),
+
+    /** The git icon. */
+    GIT(0xe633),
 
     /** The help icon. */
     HELP(0xe602),
@@ -153,7 +183,13 @@ public enum FontOpenCms implements FontIcon {
     HIDE(0xe609),
 
     /** The highlight icon. */
-    HIGHLIGHT(0xe91e),
+    HIGHLIGHT(0xe64c),
+
+    /** The history icon. */
+    HISTORY(0xe631),
+
+    /** The image icon. */
+    IMAGE(0xe632),
 
     /** The info icon. */
     INFO(0xe612),
@@ -162,10 +198,28 @@ public enum FontOpenCms implements FontIcon {
     INFO_SMALL(0xe903),
 
     /** The invisible chars icon. */
-    INVISIBLE_CHARS(0xe91f),
+    INVISIBLE_CHARS(0xe64d),
+
+    /** The link icon. */
+    LINK(0xe636),
+
+    /** The list icon. */
+    LIST(0xe634),
+
+    /** The lock closed icon. */
+    LOCK_CLOSED(0xe644),
+
+    /** The lock opened icon. */
+    LOCK_OPEN(0xe645),
 
     /** The lock icon. */
     LOCK_SMALL(0xe90d),
+
+    /** The log icon. */
+    LOG(0xe637),
+
+    /** The module icon. */
+    MODULE(0xe638),
 
     /** The move icon. */
     MOVE_SMALL(0xe902),
@@ -179,8 +233,14 @@ public enum FontOpenCms implements FontIcon {
     /** The preview icon. */
     PREVIEW_SMALL(0xe90e),
 
+    /** The project icon. */
+    PROJECT(0xe62e),
+
     /** The publish icon. */
     PUBLISH(0xe60e),
+
+    /** The quick launch editor icon. */
+    QUICKLAUNCH_EDITOR(0xe63a),
 
     /** The redo icon. */
     REDO(0xe607),
@@ -188,17 +248,23 @@ public enum FontOpenCms implements FontIcon {
     /** The remove locale icon. */
     REMOVE_LOCALE(0xe619),
 
+    /** The reset icon. */
+    RESET(0xe643),
+
     /** The save icon. */
     SAVE(0xe60b),
 
     /** The save and exit icon. */
     SAVE_EXIT(0xe60a),
 
+    /** The scheduler icon. */
+    SCHEDULER(0xe630),
+
     /** The search icon. */
     SEARCH(0xe60d),
 
     /** The search replace icon. */
-    SEARCH_REPLACE(0xe91d),
+    SEARCH_REPLACE(0xe64b),
 
     /** The search icon. */
     SEARCH_SMALL(0xe907),
@@ -212,6 +278,9 @@ public enum FontOpenCms implements FontIcon {
     /** The show icon. */
     SHOW(0xe608),
 
+    /** The site icon. */
+    SITE(0xe62d),
+
     /** The sitemap icon. */
     SITEMAP(0xe613),
 
@@ -221,14 +290,23 @@ public enum FontOpenCms implements FontIcon {
     /** An empty icon. */
     SPACE(0x0020),
 
+    /** The sphere icon. */
+    SPHERE(0xe635),
+
     /** The trash icon. */
     TRASH_SMALL(0xe913),
 
     /** 'minus' state icon for tree opener. */
-    TREE_MINUS(0xe919),
+    TREE_MINUS(0xe649),
 
     /** 'plus' state icon for tree opener. */
-    TREE_PLUS(0xe918),
+    TREE_PLUS(0xe648),
+
+    /** The triangle down icon. */
+    TRIANGLE_DOWN(0xe647),
+
+    /** The triangle right icon. */
+    TRIANGLE_RIGHT(0xe646),
 
     /** The undo icon. */
     UNDO(0xe606),
@@ -239,14 +317,17 @@ public enum FontOpenCms implements FontIcon {
     /** The upload icon. */
     UPLOAD_SMALL(0xe908),
 
+    /** The users icon. */
+    USERS(0xe639),
+
     /** The wand icon. */
     WAND(0xe610),
 
     /** The warning icon. */
-    WARNING(0xed50),
+    WARNING(0xe63e),
 
     /** The wrap lines icon. */
-    WRAP_LINES(0xe920);
+    WRAP_LINES(0xe64e);
 
     /** The font family. */
     public static final String FONT_FAMILY = "opencms-font";
@@ -261,6 +342,16 @@ public enum FontOpenCms implements FontIcon {
      */
     FontOpenCms(int codepoint) {
         m_codepoint = codepoint;
+    }
+
+    /**
+     * Returns the button overlay style classes for the icon.<p>
+     *
+     * @return the button overlay style
+     */
+    public String getButtonOverlayStyle() {
+
+        return "o-button-overlay o-button-overlay-" + name().toLowerCase().replace("_", "-");
     }
 
     /**

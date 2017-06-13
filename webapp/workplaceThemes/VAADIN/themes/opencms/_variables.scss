@@ -67,6 +67,7 @@ $v-font-color: #474747;
 $v-focus-color: $blue;  // #144382
 $v-selection-color: $o-button-blue;
 $v-selection-item-height: 25px;
+$v-font-size-small: 12px;
 $v-font-size: 14px;
 $v-font-weight: 400;
 $v-caption-font-size: $v-font-size;
@@ -77,6 +78,7 @@ $v-app-loading-text: "Loading ...";
 $v-window-background-color: #1F232A; // #1F232A
 $v-window-modality-curtain-background-color: $gray-light; // #E0E0E2
 $v-gradient: v-linear;
+$v-border-radius: 4px;
 
 $v-layout-margin-top: $o-layout-margin;
 $v-layout-margin-right: $o-layout-margin;
@@ -85,6 +87,3 @@ $v-layout-margin-left: $o-layout-margin;
 
 $v-layout-spacing-vertical: $o-layout-spacing;
 $v-layout-spacing-horizontal: $o-layout-spacing;
-
-
-@import "../valo/valo";

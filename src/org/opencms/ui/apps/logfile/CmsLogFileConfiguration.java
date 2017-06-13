@@ -30,6 +30,7 @@ package org.opencms.ui.apps.logfile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
@@ -39,7 +40,6 @@ import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -49,9 +49,6 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
     public static final String APP_ID = "logfile-app";
-
-    /**App icon path.*/
-    private static final String ICON = "apps/log/apps/fileview_view.png";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -76,7 +73,11 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+            + " "
+            + FontOpenCms.FILE_INV.getButtonOverlayStyle()
+            + " "
+            + OpenCmsTheme.BUTTON_OVERLAY_GRAY_LIGHT;
     }
 
     /**
@@ -93,7 +94,7 @@ public class CmsLogFileConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(ICON));
+        return FontOpenCms.LOG;
     }
 
     /**

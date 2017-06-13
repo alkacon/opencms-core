@@ -27,13 +27,12 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.FontOpenCms;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
@@ -42,7 +41,7 @@ import com.vaadin.ui.Component;
  */
 public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfiguration {
 
-    /** The app id */
+    /** The app id. */
     public static String APP_ID = "quicklaunch_editor";
 
     /**
@@ -75,6 +74,15 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
     }
 
     /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
+    @Override
+    public String getButtonStyle() {
+
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
+    }
+
+    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
      */
     @Override
@@ -88,7 +96,7 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/quicklaunch-editor.png"));
+        return FontOpenCms.QUICKLAUNCH_EDITOR;
     }
 
     /**
@@ -114,6 +122,6 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
     @Override
     public int getOrder() {
 
-        return 20;
+        return 30;
     }
 }

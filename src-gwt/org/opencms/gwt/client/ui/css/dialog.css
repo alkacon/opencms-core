@@ -254,12 +254,6 @@ div.menuArrowBottom:after {
 	margin-top: 5px;
 }
 
-.quickLaunchContainer {
-	padding: 10px; 
-	width: 352px;
-	background-color: white;
-}
-
 iframe.embeddedDialogFrame{
 	position: fixed; 
 	height: 100%; 

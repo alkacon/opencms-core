@@ -1,4 +1,4 @@
-@external cms-user-info, cms-user-image, opencms, o-color-blue, o-color-cyan, o-color-gray, o-color-orange, o-color-red, o-color-transparent, v-icon;
+@external cms-user-info, cms-user-image, opencms, o-color-blue, o-color-cyan, o-color-gray, o-color-orange, o-color-red, o-color-transparent, v-button, v-button-wrap, v-disabled, v-icon, v-button-caption;
 
 @def TOOLBAR_HEIGHT 52px;
 
@@ -432,9 +432,16 @@ div.toolbarToggle{
 	top: 1px; 
 }
 
-.quickButton.quickButton {
-	width: 166px;
-	height: 78px;
+
+/** Rules for the quick launch app buttons. 
+	Most of the styles used are defined in /webapp/WEB-INF/workplaceThemes/VAADIN/themes/opencms/_appButtons.scss. */
+div.quickLaunchContainer {
+	padding: 10px; 
+	width: 352px;
+	background-color: white;
+}
+	
+.quickLaunchContainer .v-button {
 	margin-bottom: 10px;
 	padding-left: 13px; 
 	padding-right: 13px;
@@ -444,88 +451,19 @@ div.toolbarToggle{
 	cursor: pointer; 
 }
 
-.quickButton .quickButtonWrap { 
-	text-align: center;
-}
-
-.quickButton .quickButtonWrap > div { 
-  text-align: center;
-}
-
-.quickButton .quickButtonImageContainer {
-  width: 48px;
-  height: 48px;
-  display: inline-block; 
-  text-align:center;
-  position: relative; 
-}
-
-.quickButton .quickButtonImageContainer .v-icon{
-	border-radius: value("constants.css.borderRadius");
-	font-size: 32px;
-	color: white;
-	height: 48px;
+.quickLaunchContainer .v-button-wrap{
 	display: inline-block;
-	line-height: 48px;
-	width: 48px;
-	text-align: center;
 }
 
-.quickButton .quickButtonImageContainer .v-icon.o-color-transparent{
-	color: inherit;
+.quickLaunchContainer span.v-button-caption { 
+  font-size: 12px;
+  font-weight: 500;
+  font-family: "Open Sans", sans-serif; 
+  color: #34345b;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.quickButton .quickButtonImageContainer .o-color-blue {
-	background-color: value("constants.css.buttonColorBlue");
-}
-.quickButton .quickButtonImageContainer .o-color-cyan {
-	background-color: value("constants.css.buttonColorCyan");
-}
-.quickButton .quickButtonImageContainer .o-color-gray {
-	background-color: value("constants.css.buttonColorGray");
-}
-.quickButton .quickButtonImageContainer .o-color-orange {
-	background-color: value("constants.css.buttonColorOrange");
-}
-.quickButton .quickButtonImageContainer .o-color-red {
-	background-color: value("constants.css.buttonColorRed");
-}
-
-.quickButton.quickButtonDeactivated{
+.quickLaunchContainer .v-disabled .v-button-wrap{
 	opacity: 0.5;
 }
- 
-
-.quickButton .quickButtonImageContainer > img {
-	display: block;
-    position: absolute;
-    margin: auto; 
-    left:0;
-    right:0;
-    top:0;
-    bottom:0;
-}
-
-.quickButton .quickButtonWrap > div > span {
-	white-space: nowrap;
-	font-family: "Open Sans", sans-serif; 
-	font-size: 12px; 
-	font-weight: 500;
-	color: #34345b;
-}
-
-.quickButton .quickButtonWrap > div:last-child {
-	overflow:hidden;
-	text-overflow: ellipsis;
-	position: relative;
-	top: -1px; 
-}  
-
- 
-.quickSlot {}
-
-.quickButtonLegacy .quickButtonImageContainer {
-	background-image: radial-gradient(#FFFFFF 30%, #BBBBBB 100%);
-	border-radius: 4px;
-} 
-

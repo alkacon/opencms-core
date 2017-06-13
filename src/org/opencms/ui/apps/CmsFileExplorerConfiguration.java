@@ -27,11 +27,10 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.FontOpenCms;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -65,7 +64,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_YELLOW_GRADIENT;
     }
 
     /**
@@ -82,7 +81,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/explorer.png"));
+        return FontOpenCms.GALLERY;
     }
 
     /**

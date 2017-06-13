@@ -59,6 +59,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     /** The app id. */
     public static final String APP_ID = "pageeditor";
 
+    /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPageEditorConfiguration.class);
 
     /**
@@ -98,7 +99,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_DARK_GRADIENT;
     }
 
     /**
@@ -115,7 +116,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/editor.png"));
+        return new ExternalResource(OpenCmsTheme.getImageLink("apps/editor.svg"));
     }
 
     /**

@@ -55,12 +55,16 @@ public class CmsQuickLaunchData implements IsSerializable {
     /** User readable title of the quick launch item. */
     private String m_title;
 
+    /** Additional button style classes. */
+    private String m_buttonStyle;
+
     /**
      * Creates a new instance.<p>
      *
      * @param defaultUrl the default URL
      * @param title the title
      * @param iconUrl the icon URL
+     * @param buttonStyle the additional button style classes
      * @param errorTitle the title for the error alert box
      * @param errorMessage the content for the error alert box
      * @param legacy true if this is a legacy dialog
@@ -71,6 +75,7 @@ public class CmsQuickLaunchData implements IsSerializable {
         String defaultUrl,
         String title,
         String iconUrl,
+        String buttonStyle,
         String errorTitle,
         String errorMessage,
         boolean legacy,
@@ -79,6 +84,7 @@ public class CmsQuickLaunchData implements IsSerializable {
         m_title = title;
         m_defaultUrl = defaultUrl;
         m_iconUrl = iconUrl;
+        m_buttonStyle = buttonStyle;
         m_legacy = legacy;
         m_reload = reload;
         m_errorTitle = errorTitle;
@@ -91,6 +97,16 @@ public class CmsQuickLaunchData implements IsSerializable {
      */
     protected CmsQuickLaunchData() {
         // Default constructor for serialization
+    }
+
+    /**
+     * Returns the additional button style classes.<p>
+     *
+     * @return the additional button style classes
+     */
+    public String getButtonStyle() {
+
+        return m_buttonStyle;
     }
 
     /**

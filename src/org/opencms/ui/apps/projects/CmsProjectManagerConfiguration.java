@@ -30,17 +30,16 @@ package org.opencms.ui.apps.projects;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -57,7 +56,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getAppCategory() {
 
-        return CmsWorkplaceAppManager.ADMINISTRATION_CATEGORY_ID;
+        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
     }
 
     /**
@@ -74,7 +73,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
     }
 
     /**
@@ -91,7 +90,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/project.png"));
+        return FontOpenCms.PROJECT;
     }
 
     /**
@@ -117,7 +116,7 @@ public class CmsProjectManagerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public int getOrder() {
 
-        return 5;
+        return 10;
     }
 
     /**

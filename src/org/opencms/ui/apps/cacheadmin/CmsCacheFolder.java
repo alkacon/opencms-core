@@ -30,16 +30,15 @@ package org.opencms.ui.apps.cacheadmin;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsFolderAppCategory;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -58,7 +57,7 @@ public class CmsCacheFolder implements I_CmsFolderAppCategory {
      */
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
     }
 
     /**
@@ -74,7 +73,7 @@ public class CmsCacheFolder implements I_CmsFolderAppCategory {
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(ICON));
+        return FontOpenCms.CACHE;
     }
 
     /**

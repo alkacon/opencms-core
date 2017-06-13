@@ -37,22 +37,37 @@ import com.vaadin.ui.Component;
 public interface I_CmsAppButtonProvider {
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_CYAN = OpenCmsTheme.COLOR_CYAN;
+    String BUTTON_STYLE_BLUE = OpenCmsTheme.COLOR_BLUE;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_RED = OpenCmsTheme.COLOR_RED;
+    String BUTTON_STYLE_BLUE_DARK_GRADIENT = OpenCmsTheme.COLOR_BLUE_DARK_GRADIENT;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_BLUE = OpenCmsTheme.COLOR_BLUE;
+    String BUTTON_STYLE_BLUE_GRADIENT = OpenCmsTheme.COLOR_BLUE_GRADIENT;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_ORANGE = OpenCmsTheme.COLOR_ORANGE;
+    String BUTTON_STYLE_CYAN = OpenCmsTheme.COLOR_CYAN;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_GRAY = OpenCmsTheme.COLOR_GRAY;
+    String BUTTON_STYLE_GRAY = OpenCmsTheme.COLOR_GRAY;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_TRANSPARENT = OpenCmsTheme.COLOR_TRANSPARENT;
+    String BUTTON_STYLE_GREEN_GRADIENT = OpenCmsTheme.COLOR_GREEN_GRADIENT;
+
+    /** Button color style. */
+    String BUTTON_STYLE_ORANGE = OpenCmsTheme.COLOR_ORANGE;
+
+    /** Button color style. */
+    String BUTTON_STYLE_ORANGE_GRADIENT = OpenCmsTheme.COLOR_ORANGE_GRADIENT;
+
+    /** Button color style. */
+    String BUTTON_STYLE_RED = OpenCmsTheme.COLOR_RED;
+
+    /** Button color style. */
+    String BUTTON_STYLE_TRANSPARENT = OpenCmsTheme.COLOR_TRANSPARENT;
+
+    /** Button color style. */
+    String BUTTON_STYLE_YELLOW_GRADIENT = OpenCmsTheme.COLOR_YELLOW_GRADIENT;
 
     /**
      * Creates an app launcher button.<p>
@@ -64,9 +79,9 @@ public interface I_CmsAppButtonProvider {
     Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig);
 
     /**
-     * Creates an app launcher button.<p>
+     * Creates an app folder button.<p>
      *
-     * @param appConfig the app configuration
+     * @param node the folder configuration
      *
      * @return the button component
      */

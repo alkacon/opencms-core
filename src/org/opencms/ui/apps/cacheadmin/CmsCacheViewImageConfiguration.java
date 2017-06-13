@@ -30,6 +30,7 @@ package org.opencms.ui.apps.cacheadmin;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
@@ -40,16 +41,12 @@ import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
  * Configuration class for the image cache view app.<p>
  */
 public class CmsCacheViewImageConfiguration extends A_CmsWorkplaceAppConfiguration {
-
-    /**Icon for flex cache view.*/
-    private static final String ICON = "apps/cacheAdmin/cache_view_image.png";
 
     /** The app id. */
     public static final String APP_ID = "cache-admin-view-image";
@@ -77,7 +74,11 @@ public class CmsCacheViewImageConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+            + " "
+            + FontOpenCms.IMAGE.getButtonOverlayStyle()
+            + " "
+            + OpenCmsTheme.BUTTON_OVERLAY_GREEN;
     }
 
     /**
@@ -94,7 +95,7 @@ public class CmsCacheViewImageConfiguration extends A_CmsWorkplaceAppConfigurati
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(ICON));
+        return FontOpenCms.CACHE;
     }
 
     /**

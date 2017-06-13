@@ -31,19 +31,18 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
@@ -95,7 +94,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
     }
 
     /**
@@ -112,7 +111,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/git.png"));
+        return FontOpenCms.GIT;
     }
 
     /**

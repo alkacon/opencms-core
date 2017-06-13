@@ -113,25 +113,19 @@ public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButto
             SafeHtml html;
             if (data.getIconUrl().startsWith(FONT_ICON_PREFIX)) {
                 SafeHtml iconHtml = new FontIconHtml(data.getIconUrl());
-                html = BUTTON_TEMPLATES.iconButtonHtml(
-                    toolbarCss.quickButtonWrap(),
-                    toolbarCss.quickButtonImageContainer(),
-                    iconHtml,
-                    data.getTitle());
+                html = BUTTON_TEMPLATES.iconButtonHtml(iconHtml, data.getTitle());
 
             } else {
-                html = BUTTON_TEMPLATES.imageButtonHtml(
-                    toolbarCss.quickButtonWrap(),
-                    toolbarCss.quickButtonImageContainer(),
-                    data.getIconUrl(),
-                    data.getTitle());
+                html = BUTTON_TEMPLATES.imageButtonHtml(data.getIconUrl(), data.getTitle());
             }
 
             setHTML(html);
             setStyleName(toolbarCss.quickButton());
-            if (data.isLegacy()) {
-                addStyleName(toolbarCss.quickButtonLegacy());
+            addStyleName("v-button-o-app-button");
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(data.getButtonStyle())) {
+                addStyleName(data.getButtonStyle());
             }
+
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(data.getErrorMessage())) {
                 setTitle(data.getErrorMessage());
                 addStyleName(toolbarCss.quickButtonDeactivated());
@@ -147,38 +141,6 @@ public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButto
                 }, ClickEvent.getType());
             }
         }
-    }
-
-    /**
-     * The button HTML generator templates.<p>
-     */
-    protected interface ButtonTemplates extends SafeHtmlTemplates {
-
-        /**
-         * Generates the icon button HTML.<p>
-         *
-         * @param buttonWrapClass the CSS class
-         * @param imageContainerClass the CSS class
-         * @param iconHtml the icon HTML
-         * @param titel the button title
-         *
-         * @return the HTML
-         */
-        @Template("<div class=\"{0}\"><div class=\"{1}\">{2}</div><div><span>{3}</span></div></div>")
-        SafeHtml iconButtonHtml(String buttonWrapClass, String imageContainerClass, SafeHtml iconHtml, String titel);
-
-        /**
-         * Generates the image button HTML.<p>
-         *
-         * @param buttonWrapClass the CSS class
-         * @param imageContainerClass the CSS class
-         * @param imageUri the image URI
-         * @param titel the button title
-         *
-         * @return the HTML
-         */
-        @Template("<div class=\"{0}\"><div class=\"{1}\"><img src=\"{2}\" /></div><div><span>{3}</span></div></div>")
-        SafeHtml imageButtonHtml(String buttonWrapClass, String imageContainerClass, String imageUri, String titel);
     }
 
     /** The font icon HTML. */
@@ -209,6 +171,34 @@ public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButto
 
     }
 
+    /**
+     * The button HTML generator templates.<p>
+     */
+    protected interface I_ButtonTemplates extends SafeHtmlTemplates {
+
+        /**
+         * Generates the icon button HTML.<p>
+         *
+         * @param iconHtml the icon HTML
+         * @param titel the button title
+         *
+         * @return the HTML
+         */
+        @Template("<span class=\"v-button-wrap\">{0}<span class=\"v-button-caption\">{1}</span></span>")
+        SafeHtml iconButtonHtml(SafeHtml iconHtml, String titel);
+
+        /**
+         * Generates the image button HTML.<p>
+         *
+         * @param imageUri the image URI
+         * @param titel the button title
+         *
+         * @return the HTML
+         */
+        @Template("<span class=\"v-button-wrap\"><img src=\"{0}\" class=\"v-icon\"/><span class=\"v-button-caption\">{1}</span></span>")
+        SafeHtml imageButtonHtml(String imageUri, String titel);
+    }
+
     /** Html for the menu button. */
     public static final String BUTTON_HTML = "<span class='"
         + I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarFontButton()
@@ -218,7 +208,7 @@ public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButto
     protected static final String FONT_ICON_PREFIX = "fonticon:";
 
     /** The button template generator instance. */
-    static final ButtonTemplates BUTTON_TEMPLATES = GWT.create(ButtonTemplates.class);
+    static final I_ButtonTemplates BUTTON_TEMPLATES = GWT.create(I_ButtonTemplates.class);
 
     /** The quick launch handler. */
     I_QuickLaunchHandler m_quickLaunchHandler;
@@ -246,7 +236,7 @@ public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButto
         setToolbarMode(true);
 
         FlowPanel panel = new FlowPanel();
-        panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().quickLaunchContainer());
+        panel.addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().quickLaunchContainer());
         m_itemContainer = panel;
         setMenuWidget(panel);
         addClickHandler(new ClickHandler() {

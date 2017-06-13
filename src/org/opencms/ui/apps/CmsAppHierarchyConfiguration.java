@@ -27,11 +27,10 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.FontOpenCms;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -65,7 +64,7 @@ public class CmsAppHierarchyConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
     }
 
     /**
@@ -82,7 +81,7 @@ public class CmsAppHierarchyConfiguration extends A_CmsWorkplaceAppConfiguration
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/launchpad.png"));
+        return FontOpenCms.APPS;
     }
 
     /**

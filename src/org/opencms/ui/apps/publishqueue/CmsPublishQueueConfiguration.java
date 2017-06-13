@@ -30,16 +30,15 @@ package org.opencms.ui.apps.publishqueue;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -64,7 +63,7 @@ public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
     }
 
     /**
@@ -81,7 +80,8 @@ public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(CmsPublishQueue.ICON));
+        return FontOpenCms.PUBLISH;
+
     }
 
     /**
@@ -117,7 +117,7 @@ public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR)
-        ? CmsAppVisibilityStatus.ACTIVE
+        ? new CmsAppVisibilityStatus(false, true, "")
         : CmsAppVisibilityStatus.INVISIBLE;
         return status;
     }

@@ -1,0 +1,166 @@
+@mixin o-app-buttons {
+  .v-button.v-button-o-app-button{
+   	font-size: $v-font-size-small;
+   	
+   	.v-button-wrap {
+   	
+   		text-align: center;
+   		line-height: 48px;
+   		width: 140px;
+   		height: 70px;
+   		position: relative;
+   		
+   		&:before {
+	  		content: "";
+	  		display: block;
+	  		height: 48px;
+  			width: 48px;
+  			border-radius: $v-border-radius;
+	  		left: 46px;
+	  		top: 1px;
+	  		position: absolute;
+	  		z-index: 0;
+	  		background-image: unquote("radial-gradient( #fff 30%, #bbb 100%)");
+  		}
+  	
+	  	span.v-button-caption{
+	  		text-overflow: ellipsis;
+	  		overflow: hidden;
+	  		display: block;
+	  		margin: 0;
+	  		line-height: 20px;
+	  		position:absolute;
+	  		left: 0;
+	  		right: 0;
+	  		height: 20px;
+	  		bottom: 0;
+	  	}
+	  	
+	  	.v-icon{
+	  		display: inline;
+	  		font-size: $app-icon-size;
+	  		line-height: 48px;
+	  		vertical-align: middle;
+	  		color: $white;
+	  		position: relative;
+	  		text-shadow: 1px -1px 2px #fff, -1px 1px 2px #fff, 1px 1px 2px #fff, -1px -1px 2px #fff;
+	  	}
+	}
+	
+	  &:hover:not(.v-disabled) {
+	    > span.v-button-wrap:before {
+	    	background-image: unquote("radial-gradient( #fff 30%, #f6b9c4 65%, #f5aab7 100%)") !important;
+	    }
+	    > span.v-button-wrap > span.v-icon{
+	  		color: $red;
+	  	}
+	  	
+	  	&.o-color-green-gradient, &.o-color-yellow-gradient{
+	  	    > span.v-button-wrap > span.v-icon{
+	  		    color: $blue;
+	  		}
+	  	}
+	  }
+	  
+	  &.o-color-cyan > span.v-button-wrap:before{
+	  	background: $cyan;
+	  }
+	  &.o-color-red > span.v-button-wrap:before{
+	  	background: $red;
+	  }
+	  &.o-color-blue  > span.v-button-wrap:before{
+	  	background: $blue;
+	  }
+	  &.o-color-orange  > span.v-button-wrap:before{
+	  	background: $orange-dark;
+	  }
+	  &.o-color-gray  > span.v-button-wrap:before{
+	  	background: $gray-dark;
+	  }
+	  &.v-disabled  > span.v-button-wrap{
+	  	&:before{
+	  		background-image: unquote("radial-gradient( #f3f4f5 40%, #e7e9eb 60%, #d0d3c7 100%)") !important;
+	  	}
+	  }
+	  &.o-color-blue-gradient  .v-button-wrap{
+	  	.v-icon{
+	  		color: $v-font-color;
+	  	}
+	  	&:before{
+	  		background-image: unquote("radial-gradient( #f2fafe 40%, #b3e2fd 70%, #99d8fd 100%)");
+	  	}
+	  }
+	  
+	  &.o-color-blue-gradient-red  .v-button-wrap{
+	  	.v-icon{
+	  		color: $red;
+	  	}
+	  	&:before{
+	  		background-image: unquote("radial-gradient( #f2fafe 40%, #b3e2fd 70%, #99d8fd 100%)");
+	  	}
+	  }
+	  
+	  &.o-color-green-gradient  .v-button-wrap{
+	  	.v-icon{
+	  		color: $red;
+	  	}
+	  	&:before{
+	  		background-image: unquote("radial-gradient( #ffffff 40%, #ace3da 60%, #82d5c7 100%)");
+	  	}
+	  }
+	  
+	  &.o-color-orange-gradient  .v-button-wrap{
+	  	.v-icon{
+	  		color: $blue-dark;
+	  	}
+	  	&:before{
+	  		background-image: unquote("linear-gradient(45deg, #fff 0%, #ffefd7 25%, #ffbf61 100%)");
+	  	}
+	  }
+	  
+	  &.o-color-yellow-gradient  .v-button-wrap{
+	  	.v-icon{
+	  		color: $red;
+	  	}
+	  	&:before{
+	  		background-image: unquote("linear-gradient(45deg, #fff 0%, #ffffca 25%, #ffdd63 100%)");
+	  	}
+	  }
+	  
+	  &.o-color-blue-dark-gradient  .v-button-wrap{
+	  	&:before{
+	  		background-image: unquote("linear-gradient(45deg,  #f9fdff 0%, #0856cd 100%)");
+	  	}
+	  }
+	  
+	  &.o-color-transparent > span.v-button-wrap{
+	  	.v-icon{
+	  		color: inherit;
+	  	}
+	  	&:before{
+	  		display: none;
+	  	}
+	  }
+	  &.o-button-overlay-blue span.v-button-wrap > .v-icon:after{
+	  	color: $blue;
+	  }
+	  &.o-button-overlay-blue-light span.v-button-wrap > .v-icon:after{
+	  	color: $blue-light;
+	  }
+	  &.o-button-overlay-cyan span.v-button-wrap > .v-icon:after{
+	  	color: $cyan;
+	  }
+	  &.o-button-overlay-red span.v-button-wrap > .v-icon:after{
+	  	color: $red;
+	  }
+	  &.o-button-overlay-orange span.v-button-wrap > .v-icon:after{
+	  	color: $orange;
+	  }
+	  &.o-button-overlay-gray-light span.v-button-wrap > .v-icon:after{
+	  	color: #7f8691;
+	  }
+	  &.o-button-overlay-green span.v-button-wrap > .v-icon:after{
+	  	color: $green;
+	  }
+  }
+  }

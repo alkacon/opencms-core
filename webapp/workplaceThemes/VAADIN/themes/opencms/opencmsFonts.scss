@@ -1,0 +1,82 @@
+@import "variables";
+@import "opencmsfont";
+@import "appButtons";
+
+
+@include opencmsfont;
+
+@font-face {
+	font-family: "Open Sans";
+	src: url(../valo/fonts/open-sans/OpenSans-Light-webfont.eot);
+	src: url(../valo/fonts/open-sans/OpenSans-Light-webfont.eot?#iefix) format("embedded-opentype"), url(fonts/OpenSans-Light-webfont.woff) format("woff"), url(fonts/OpenSans-Light-webfont.ttf) format("truetype");
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Open Sans";
+	src: url(../valo/fonts/open-sans/OpenSans-Regular-webfont.eot);
+	src: url(../valo/fonts/open-sans/OpenSans-Regular-webfont.eot?#iefix) format("embedded-opentype"), url(fonts/OpenSans-Regular-webfont.woff) format("woff"), url(fonts/OpenSans-Regular-webfont.ttf) format("truetype");
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Open Sans";
+	src: url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot);
+	src: url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix) format("embedded-opentype"), url(fonts/OpenSans-Semibold-webfont.woff) format("woff"), url(fonts/OpenSans-Semibold-webfont.ttf) format("truetype");
+	font-weight: 600;
+	font-style: normal;
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 700;
+    src: url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/OpenSans-Semibold-webfont.woff") format("woff"), url("fonts/OpenSans-Semibold-webfont.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 800;
+    src: url("../valo/fonts/open-sans/OpenSans-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/OpenSans-Bold-webfont.woff") format("woff"), url("fonts/OpenSans-Bold-webfont.ttf") format("truetype");
+}
+
+/* Styles for the leave preview mode button */
+button#opencms-leave-preview {
+	font-size:32px; 
+	color:#474747; 
+	border:none; 
+	background:transparent; 
+	position:fixed; 
+	top:5px; 
+	left:20%; 
+	z-index:1000000; 
+	padding:4px;
+} 
+button#opencms-leave-preview:hover {
+	color:#356EE1;
+} 
+button#opencms-leave-preview:after {
+	content:""; 
+	position:absolute; 
+	z-index:-1; 
+	background:#fff; 
+	top:0; 
+	left:0; 
+	right:0; 
+	bottom:0; 
+	opacity:0.7; 
+	border-radius:4px;
+}
+
+/* Defining the edit cursor style within the 'static' CSS to be able to support SVG cursor images */
+.inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
+	cursor: url(img/editCursor.svg), url(img/editCursor.ico), url(img/editCursor.gif), crosshair;
+	outline: none;
+}
+
+.-opencms{
+	@include o-app-buttons;
+}

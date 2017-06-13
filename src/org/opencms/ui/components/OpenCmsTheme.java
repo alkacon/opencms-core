@@ -57,6 +57,30 @@ public final class OpenCmsTheme {
     public static final String BUTTON_INVISIBLE = "o-button-invisible";
 
     /** CSS style name. */
+    public static final String BUTTON_OVERLAY = "o-button-overlay";
+
+    /** CSS style name. */
+    public static final String BUTTON_OVERLAY_BLUE = "o-button-overlay-blue";
+
+    /** CSS style name. */
+    public static final String BUTTON_OVERLAY_BLUE_LIGHT = "o-button-overlay-blue-light";
+
+    /** CSS style name. */
+    public static final String BUTTON_OVERLAY_CYAN = "o-button-overlay-cyan";
+
+    /** CSS style name. */
+    public static final String BUTTON_OVERLAY_GRAY_LIGHT = "o-button-overlay-gray-light";
+
+    /** CSS style name. */
+    public static final String BUTTON_OVERLAY_ORANGE = "o-button-overlay-orange";
+
+    /** CSS style name. */
+    public static final String BUTTON_OVERLAY_GREEN = "o-button-overlay-green";
+
+    /** CSS style name. */
+    public static final String BUTTON_OVERLAY_RED = "o-button-overlay-red";
+
+    /** CSS style name. */
     public static final String BUTTON_PRESSED = "o-button-pressed";
 
     /** CSS style name. */
@@ -76,6 +100,24 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String COLOR_GRAY = "o-color-gray";
+
+    /** CSS style name. */
+    public static final String COLOR_BLUE_GRADIENT = "o-color-blue-gradient";
+
+    /** CSS style name. */
+    public static final String COLOR_BLUE_GRADIENT_RED = "o-color-blue-gradient-red";
+
+    /** CSS style name. */
+    public static final String COLOR_GREEN_GRADIENT = "o-color-green-gradient";
+
+    /** CSS style name. */
+    public static final String COLOR_ORANGE_GRADIENT = "o-color-orange-gradient";
+
+    /** CSS style name. */
+    public static final String COLOR_YELLOW_GRADIENT = "o-color-yellow-gradient";
+
+    /** CSS style name. */
+    public static final String COLOR_BLUE_DARK_GRADIENT = "o-color-blue-dark-gradient";
 
     /** CSS style name. */
     public static final String COLOR_ORANGE = "o-color-orange";
@@ -126,13 +168,13 @@ public final class OpenCmsTheme {
     public static final String EXPIRED = "o-expired";
 
     /** CSS style name. */
+    public static final String FILE_TREE = "o-file-tree";
+
+    /** CSS style name. */
     public static final String FORMLAYOUT_WORKPLACE_MAIN = "o-formlayout-workplace-main";
 
     /** CSS style name. */
     public static final String FULL_WIDTH_PADDING = "o-full-width-padding";
-
-    /** CSS style name. */
-    public static final String FILE_TREE = "o-file-tree";
 
     /** CSS style name. */
     public static final String HIDDEN = "hidden";

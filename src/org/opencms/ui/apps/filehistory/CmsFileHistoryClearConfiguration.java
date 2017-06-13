@@ -30,6 +30,7 @@ package org.opencms.ui.apps.filehistory;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
@@ -39,7 +40,6 @@ import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -49,9 +49,6 @@ public class CmsFileHistoryClearConfiguration extends A_CmsWorkplaceAppConfigura
 
     /** The app id. */
     public static final String APP_ID = "file-history-clear";
-
-    /**App icon path.*/
-    public static final String ICON = "apps/filehistory/apps/history_clear.png";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -76,7 +73,11 @@ public class CmsFileHistoryClearConfiguration extends A_CmsWorkplaceAppConfigura
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+            + " "
+            + FontOpenCms.CIRCLE_INV_CANCEL.getButtonOverlayStyle()
+            + " "
+            + OpenCmsTheme.BUTTON_OVERLAY_RED;
     }
 
     /**
@@ -93,7 +94,7 @@ public class CmsFileHistoryClearConfiguration extends A_CmsWorkplaceAppConfigura
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(ICON));
+        return FontOpenCms.HISTORY;
     }
 
     /**

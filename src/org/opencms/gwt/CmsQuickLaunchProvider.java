@@ -64,13 +64,20 @@ import com.vaadin.server.Resource;
 /**
  * Provides the data for the buttons in the quick launch menu.<p>
  */
-public class CmsQuickLaunchProvider {
+public final class CmsQuickLaunchProvider {
 
     /** The font icon HTML format String. */
-    private static final String FONT_ICON_HTML = "fonticon:<span class=\"v-icon %1$s\" style=\"font-family: %2$s;\">&#x%3$x;</span>";
+    private static final String FONT_ICON_HTML = "fonticon:<span class=\"v-icon\" style=\"font-family: %1$s;\">&#x%2$x;</span>";
 
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsQuickLaunchProvider.class);
+
+    /**
+     * Hiding default constructor.<p>
+     */
+    private CmsQuickLaunchProvider() {
+        // nothing to do
+    }
 
     /**
      * Gets the quick launch data for the current user and context.<p>
@@ -185,14 +192,13 @@ public class CmsQuickLaunchProvider {
                 String imageLink = "";
                 if (icon instanceof ExternalResource) {
                     imageLink = ((ExternalResource)icon).getURL();
-                    // no icon if not an external resource
                 } else if (icon instanceof FontIcon) {
                     imageLink = String.format(
                         FONT_ICON_HTML,
-                        config.getButtonStyle(),
                         ((FontIcon)icon).getFontFamily(),
                         Integer.valueOf(((FontIcon)icon).getCodepoint()));
                 }
+
                 String name = config.getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
                 CmsAppVisibilityStatus visibility = config.getVisibility(cms);
                 if (!visibility.isActive()) {
@@ -203,6 +209,7 @@ public class CmsQuickLaunchProvider {
                     link,
                     name,
                     imageLink,
+                    config.getButtonStyle(),
                     errorTitle,
                     errorMessage,
                     useLegacyButtonStyle,

@@ -37,7 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
@@ -48,7 +48,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -102,7 +101,7 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_ORANGE_GRADIENT;
     }
 
     /**
@@ -119,7 +118,7 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/sitemap.png"));
+        return FontOpenCms.SITEMAP;
     }
 
     /**

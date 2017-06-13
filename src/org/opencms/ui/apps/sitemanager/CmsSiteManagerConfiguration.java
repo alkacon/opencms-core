@@ -30,16 +30,16 @@ package org.opencms.ui.apps.sitemanager;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
+import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -50,6 +50,15 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
 
     /** The app id. */
     public static final String APP_ID = "site-management";
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getAppCategory()
+     */
+    @Override
+    public String getAppCategory() {
+
+        return CmsWorkplaceAppManager.ADMINISTRATION_CATEGORY_ID;
+    }
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
@@ -65,7 +74,7 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
     }
 
     /**
@@ -82,7 +91,7 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(CmsSiteManager.ICON));
+        return FontOpenCms.SITE;
     }
 
     /**

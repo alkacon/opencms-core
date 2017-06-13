@@ -402,6 +402,38 @@ task workplaceTheme (type: JavaExec) {
     ]
     maxHeapSize = max_heap_size
 }
+task opencmsFonts (type: JavaExec) {
+    doFirst {
+        println '======================================================'
+        println "Building OpenCms fonts CSS"
+        println "Generating $project.buildDir/workplaceThemes/opencmsFonts/opencmsFonts.css"
+        println '======================================================'
+        def dir = file("$project.buildDir/workplaceThemes/opencmsFonts")
+        if (dir.exists()){
+            delete(dir)
+        }
+        dir.mkdirs()
+    }
+
+    main = 'com.vaadin.sass.SassCompiler'
+
+    classpath {
+        [
+            sourceSets.main.compileClasspath
+ 
+        ]
+    }
+
+	// opencmsFonts are generated into a different directory than the /opencms/styles.css 
+	// to avoid conflicts or dependencies between the build tasks 'workplaceTheme' and 'opencmsFonts'
+    args = [
+        "$projectDir/webapp/workplaceThemes/VAADIN/themes/opencms/opencmsFonts.scss",
+        "$project.buildDir/workplaceThemes/opencmsFonts/opencmsFonts.css"
+    ]
+    maxHeapSize = max_heap_size
+}
+
+
 
 task "gwt_widgetSet" (dependsOn: gwtClasses, type: JavaExec) {
     ext.buildDir =  project.buildDir.toString()  +"/gwt/widgetSet"
@@ -468,7 +500,7 @@ task "gwt_widgetSet" (dependsOn: gwtClasses, type: JavaExec) {
     maxHeapSize = max_heap_size
 }
 
-task widgetSetJar(type: Jar, dependsOn: [gwt_widgetSet, workplaceTheme]){
+task widgetSetJar(type: Jar, dependsOn: [gwt_widgetSet, workplaceTheme, opencmsFonts]){
     doFirst {
         println '======================================================'
         println "Building WidgetSet Jar"
@@ -480,8 +512,11 @@ task widgetSetJar(type: Jar, dependsOn: [gwt_widgetSet, workplaceTheme]){
     from ("${projectDir}/webapp/workplaceThemes"){
         exclude '**/*.scss'
     }
-    from ("${project.buildDir}/workplaceThemes/"){
-        into 'VAADIN/themes'
+    from ("${project.buildDir}/workplaceThemes/opencms"){
+        into 'VAADIN/themes/opencms'
+    }
+    from ("${project.buildDir}/workplaceThemes/opencmsFonts"){
+        into 'VAADIN/themes/opencms'
     }
     from ("${project.buildDir}/gwt/widgetSet"){
         include 'org.opencms.ui.WidgetSet/**'
