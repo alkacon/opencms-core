@@ -27,12 +27,12 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.ui.apps.CmsWorkplaceAppManager.ConfigurationComparator;
+
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 
 /**
@@ -41,7 +41,7 @@ import com.google.common.collect.Lists;
  * Contains a list of child nodes and a list of apps, which are the leaves of the tree.
  * Note that the list of children is not initialized after construction, it has to be filled manually.
  */
-public class CmsAppCategoryNode {
+public class CmsAppCategoryNode implements I_CmsHasOrder {
 
     /** The category data. */
     private I_CmsAppCategory m_data;
@@ -56,14 +56,6 @@ public class CmsAppCategoryNode {
     private int m_appCount;
 
     /**
-     * Creates a new root node.<p>
-     */
-    public CmsAppCategoryNode() {
-
-        m_data = new CmsAppCategory(null, null, 0, 0);
-    }
-
-    /**
      * Creates a new category node for the given category.
      *
      * @param appCategory the category data
@@ -71,6 +63,14 @@ public class CmsAppCategoryNode {
     public CmsAppCategoryNode(I_CmsAppCategory appCategory) {
 
         m_data = appCategory;
+    }
+
+    /**
+     * Creates a new root node.<p>
+     */
+    CmsAppCategoryNode() {
+
+        m_data = new CmsAppCategory(null, null, 0, 0);
     }
 
     /**
@@ -125,6 +125,14 @@ public class CmsAppCategoryNode {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsHasOrder#getOrder()
+     */
+    public int getOrder() {
+
+        return getCategory().getOrder();
+    }
+
+    /**
      * Recursively removes subtrees containing no app configurations.<p>
      */
     public void removeApplessSubtrees() {
@@ -137,23 +145,8 @@ public class CmsAppCategoryNode {
      */
     public void sort() {
 
-        Collections.sort(m_appConfigurations, new Comparator<I_CmsWorkplaceAppConfiguration>() {
-
-            public int compare(I_CmsWorkplaceAppConfiguration app1, I_CmsWorkplaceAppConfiguration app2) {
-
-                return ComparisonChain.start().compare(app1.getOrder(), app2.getOrder()).result();
-            }
-        });
-
-        Collections.sort(m_children, new Comparator<CmsAppCategoryNode>() {
-
-            public int compare(CmsAppCategoryNode o1, CmsAppCategoryNode o2) {
-
-                return ComparisonChain.start().compare(
-                    o1.getCategory().getOrder(),
-                    o2.getCategory().getOrder()).result();
-            }
-        });
+        Collections.sort(m_appConfigurations, new ConfigurationComparator<I_CmsWorkplaceAppConfiguration>());
+        Collections.sort(m_children, new ConfigurationComparator<CmsAppCategoryNode>());
     }
 
     /**

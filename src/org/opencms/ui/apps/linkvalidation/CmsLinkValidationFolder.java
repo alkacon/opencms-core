@@ -94,7 +94,7 @@ public class CmsLinkValidationFolder implements I_CmsFolderAppCategory {
      */
     public int getOrder() {
 
-        return 0;
+        return 20;
     }
 
     /**

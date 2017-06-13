@@ -98,6 +98,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -106,6 +107,22 @@ import com.google.common.collect.Sets;
  * The workplace app manager.<p>
  */
 public class CmsWorkplaceAppManager {
+
+    /**
+     * Comparator for configuration objects implementing I_CmsHasOrder.<p>
+     *
+     * @param <T> the type to compare
+     */
+    public static class ConfigurationComparator<T extends I_CmsHasOrder> implements Comparator<T> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(I_CmsHasOrder o1, I_CmsHasOrder o2) {
+
+            return ComparisonChain.start().compare(o1.getOrder(), o2.getOrder()).result();
+        }
+    }
 
     /**
      * Wrapper for the navigation state.<p>
@@ -165,11 +182,23 @@ public class CmsWorkplaceAppManager {
         }
     }
 
+    /** The administration category id. */
+    public static final String ADMINISTRATION_CATEGORY_ID = "Administration";
+
+    /** The legacy category id. */
+    public static final String LEGACY_CATEGORY_ID = "Legacy";
+
+    /** The main category id. */
+    public static final String MAIN_CATEGORY_ID = "Main";
+
     /** The workplace app settings additional info key. */
     public static String WORKPLACE_APP_SETTINGS_KEY = "WORKPLACE_APP_SETTINGS";
 
     /** The logger for this class. */
     protected static Log LOG = CmsLog.getLog(CmsWorkplaceAppManager.class.getName());
+
+    /** The default quick launch apps, these can be overridden by the user. */
+    private static final String[] DEFAULT_USER_APPS = new String[] {"/accounts", "/modules"};
 
     /** The available editors. */
     private static final I_CmsEditor[] EDITORS = new I_CmsEditor[] {
@@ -195,27 +224,15 @@ public class CmsWorkplaceAppManager {
             "/linkvalidation",
             "/searchindex"));
 
+    /** The additional info key for the user quick launch apps. */
+    private static final String QUICK_LAUCH_APPS_KEY = "quick_launch_apps";
+
     /** The standard quick launch apps. */
     private static final String[] STANDARD_APPS = new String[] {
         CmsPageEditorConfiguration.APP_ID,
         CmsSitemapEditorConfiguration.APP_ID,
         CmsFileExplorerConfiguration.APP_ID,
         CmsAppHierarchyConfiguration.APP_ID};
-
-    /** The default quick launch apps, these can be overridden by the user. */
-    private static final String[] DEFAULT_USER_APPS = new String[] {"/accounts", "/modules"};
-
-    /** The additional info key for the user quick launch apps. */
-    private static final String QUICK_LAUCH_APPS_KEY = "quick_launch_apps";
-
-    /** The main category id. */
-    public static final String MAIN_CATEGORY_ID = "Main";
-
-    /** The administration category id. */
-    public static final String ADMINISTRATION_CATEGORY_ID = "Administration";
-
-    /** The legacy category id. */
-    public static final String LEGACY_CATEGORY_ID = "Legacy";
 
     /** The admin cms context. */
     private CmsObject m_adminCms;
@@ -229,11 +246,11 @@ public class CmsWorkplaceAppManager {
     /** The user icon helper. */
     private CmsUserIconHelper m_iconHelper;
 
-    /** Menu item manager. */
-    private CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
-
     /** The standard quick launch apps. */
     private List<I_CmsWorkplaceAppConfiguration> m_standardQuickLaunchApps;
+
+    /** Menu item manager. */
+    private CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
 
     /**
      * Constructor.<p>

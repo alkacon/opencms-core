@@ -27,48 +27,15 @@
 
 package org.opencms.ui.apps;
 
-import java.util.Locale;
-
 /**
- * App category interface.<p>
+ * Sortable configuration item interface.<p>
  */
-public interface I_CmsAppCategory extends I_CmsHasOrder {
+public interface I_CmsHasOrder {
 
     /**
-     * Returns the id.<p>
+     * Gets an integer used to sort items.<p>
      *
-     * @return the id
+     * @return the integer used as a sort key
      */
-    String getId();
-
-    /**
-     * Gets the user readable name for the category for a given locale.<p>
-     *
-     * @param locale the locale for which to get the name
-     *
-     * @return the localized name
-     */
-    String getName(Locale locale);
-
-    /**
-     * Returns the parentId.<p>
-     *
-     * App categories can be nested. The method must return the id of the parent category
-     * if the category is nested. If it is on top level, <code>null</code> should be
-     * returned.<p>
-     *
-     * @return the parentId
-     */
-    String getParentId();
-
-    /**
-     * Returns the priority.<p>
-     *
-     * If more than one category with the same id is present, the one with higher priority
-     * is shown. The other categories with this id are discarded.<p>
-     *
-     * @return the priority
-     */
-    int getPriority();
-
+    int getOrder();
 }

@@ -36,10 +36,10 @@ import com.vaadin.server.Resource;
 /**
  * Contains the configuration of a single workplace app.<p>
  */
-public interface I_CmsWorkplaceAppConfiguration {
+public interface I_CmsWorkplaceAppConfiguration extends I_CmsHasOrder {
 
     /** Default priority. */
-    public static final int DEFAULT_PRIORIY = 100;
+    int DEFAULT_PRIORIY = 100;
 
     /**
      * Gets the id of the app category in which this app should be displayed (null for the root category).
@@ -93,13 +93,6 @@ public interface I_CmsWorkplaceAppConfiguration {
      * @return the app name
      */
     String getName(Locale locale);
-
-    /**
-     * Gets an integer used to sort apps in a category.<p>
-     *
-     * @return the integer used as a sort key
-     */
-    int getOrder();
 
     /**
      * Gets the priority of the app configuration.<p>

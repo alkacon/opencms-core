@@ -27,6 +27,11 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.ui.apps.CmsWorkplaceAppManager.ConfigurationComparator;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import com.vaadin.ui.HorizontalLayout;
@@ -85,18 +90,23 @@ public class CmsAppHierarchyPanel extends VerticalLayout {
      */
     public void fill(CmsAppCategoryNode rootNode, Locale locale) {
 
-        for (I_CmsWorkplaceAppConfiguration appConfig : rootNode.getAppConfigurations()) {
-            m_appPanel.addComponent(m_appButtonProvider.createAppButton(appConfig));
-        }
-        for (CmsAppCategoryNode childNode : rootNode.getChildren()) {
-            if (childNode.getCategory() instanceof I_CmsFolderAppCategory) {
-                m_appPanel.addComponent(m_appButtonProvider.createAppFolderButton(childNode));
+        List<I_CmsHasOrder> configurations = new ArrayList<I_CmsHasOrder>();
+        configurations.addAll(rootNode.getAppConfigurations());
+        configurations.addAll(rootNode.getChildren());
+        Collections.sort(configurations, new ConfigurationComparator<I_CmsHasOrder>());
+        for (I_CmsHasOrder config : configurations) {
+            if (config instanceof I_CmsWorkplaceAppConfiguration) {
+                m_appPanel.addComponent(m_appButtonProvider.createAppButton((I_CmsWorkplaceAppConfiguration)config));
             } else {
-                CmsAppHierarchyPanel childPanel = new CmsAppHierarchyPanel(m_appButtonProvider);
-                addChild(childNode.getCategory().getName(locale), childPanel);
-                childPanel.fill(childNode, locale);
+                CmsAppCategoryNode childNode = (CmsAppCategoryNode)config;
+                if (childNode.getCategory() instanceof I_CmsFolderAppCategory) {
+                    m_appPanel.addComponent(m_appButtonProvider.createAppFolderButton(childNode));
+                } else {
+                    CmsAppHierarchyPanel childPanel = new CmsAppHierarchyPanel(m_appButtonProvider);
+                    addChild(childNode.getCategory().getName(locale), childPanel);
+                    childPanel.fill(childNode, locale);
+                }
             }
         }
     }
-
 }
