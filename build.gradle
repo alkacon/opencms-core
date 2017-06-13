@@ -1567,3 +1567,13 @@ tasks.withType(Javadoc) {
     	options.addBooleanOption("-allow-script-in-comments",true);
     }
 }
+
+/**
+ * Generates the gradle wrapper. For repeatable builds, this should be used
+ * instead of invoking the gradle binary directly.
+ *
+ * See e.g.: https://docs.gradle.org/3.5/userguide/gradle_wrapper.html
+ */
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
