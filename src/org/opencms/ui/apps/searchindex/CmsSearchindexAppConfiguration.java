@@ -78,7 +78,7 @@ public class CmsSearchindexAppConfiguration extends A_CmsWorkplaceAppConfigurati
             + " "
             + FontOpenCms.SEARCH.getButtonOverlayStyle()
             + " "
-            + OpenCmsTheme.BUTTON_OVERLAY_ORANGE;
+            + OpenCmsTheme.BUTTON_OVERLAY_ORANGE_INVERSE;
     }
 
     /**

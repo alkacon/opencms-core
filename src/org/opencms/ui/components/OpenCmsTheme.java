@@ -63,16 +63,25 @@ public final class OpenCmsTheme {
     public static final String BUTTON_OVERLAY_BLUE = "o-button-overlay-blue";
 
     /** CSS style name. */
+    public static final String BUTTON_OVERLAY_BLUE_INVERSE = "o-button-overlay-blue-inv";
+
+    /** CSS style name. */
     public static final String BUTTON_OVERLAY_BLUE_LIGHT = "o-button-overlay-blue-light";
 
     /** CSS style name. */
     public static final String BUTTON_OVERLAY_CYAN = "o-button-overlay-cyan";
 
     /** CSS style name. */
+    public static final String BUTTON_OVERLAY_CYAN_INVERSE = "o-button-overlay-cyan-inv";
+
+    /** CSS style name. */
     public static final String BUTTON_OVERLAY_GRAY_LIGHT = "o-button-overlay-gray-light";
 
     /** CSS style name. */
     public static final String BUTTON_OVERLAY_ORANGE = "o-button-overlay-orange";
+
+    /** CSS style name. */
+    public static final String BUTTON_OVERLAY_ORANGE_INVERSE = "o-button-overlay-orange-inv";
 
     /** CSS style name. */
     public static final String BUTTON_OVERLAY_GREEN = "o-button-overlay-green";

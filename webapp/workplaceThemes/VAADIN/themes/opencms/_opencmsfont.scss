@@ -52,13 +52,14 @@
 		height: 16px;
 		background-color: white;
 		z-index: 2;
-		top: 20px;
+		top: 19px;
 		left: 20px;
 		line-height: 16px;
 		font-family: 'opencms-font';
 		font-size: 16px;
 		border-radius: 100%;
-		box-shadow: 0px 0px 1px 1px #ddd;
+		box-shadow: 0px 0px 1px 1px #d0d3c7;
+		border: 1px solid #fff;
 	}
 	// for square overlay icons use a different border-radius
 	.o-button-overlay-filter span.v-button-wrap>span.v-icon:after,
@@ -68,6 +69,7 @@
 	.o-button-overlay-save span.v-button-wrap>span.v-icon:after,
 	.o-button-overlay-clipboard span.v-button-wrap>span.v-icon:after,
 	.o-button-overlay-gallery span.v-button-wrap>span.v-icon:after,
+	.o-button-overlay-folder span.v-button-wrap>span.v-icon:after,
 	.o-button-overlay-info span.v-button-wrap>span.v-icon:after,
 	.o-button-overlay-context-menu span.v-button-wrap>span.v-icon:after,
 	.o-button-overlay-sitemap span.v-button-wrap>span.v-icon:after,
@@ -87,6 +89,12 @@
 	.o-button-overlay-image span.v-button-wrap>span.v-icon:after{
 		border-left: 1px solid white;
 		border-right: 1px solid white;
+	}
+	// no background for others
+	.o-button-overlay-warning span.v-button-wrap>span.v-icon:after, .o-button-overlay-error span.v-button-wrap>span.v-icon:after{
+		background-color: transparent;
+		box-shadow: none;
+		border: none;
 	}
 	
 	/* big icons 32x32 grid */

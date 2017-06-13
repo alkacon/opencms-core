@@ -144,17 +144,39 @@
 	  &.o-button-overlay-blue span.v-button-wrap > .v-icon:after{
 	  	color: $blue;
 	  }
+	  &.o-button-overlay-blue-inv span.v-button-wrap > .v-icon:after{
+	  	color: $white;
+	  	background: $blue;
+	  	border-color: $blue;
+	  	border-radius: $v-border-radius;
+	  	text-shadow: none;
+	  }
+	  
 	  &.o-button-overlay-blue-light span.v-button-wrap > .v-icon:after{
 	  	color: $blue-light;
 	  }
 	  &.o-button-overlay-cyan span.v-button-wrap > .v-icon:after{
 	  	color: $cyan;
 	  }
+	  &.o-button-overlay-cyan-inv span.v-button-wrap > .v-icon:after{
+	  	color: $white;
+	  	background: $cyan;
+	  	border-color: $cyan;
+	  	border-radius: $v-border-radius;
+	  	text-shadow: none;
+	  }
 	  &.o-button-overlay-red span.v-button-wrap > .v-icon:after{
 	  	color: $red;
 	  }
 	  &.o-button-overlay-orange span.v-button-wrap > .v-icon:after{
 	  	color: $orange;
+	  }
+	  &.o-button-overlay-orange-inv span.v-button-wrap > .v-icon:after{
+	  	color: $white;
+	  	background: $orange-darker;
+	  	border-color: $orange-darker;
+	  	border-radius: $v-border-radius;
+	  	text-shadow: none;
 	  }
 	  &.o-button-overlay-gray-light span.v-button-wrap > .v-icon:after{
 	  	color: #7f8691;
