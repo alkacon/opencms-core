@@ -296,27 +296,28 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     public String export() throws Exception {
 
-        return export(null);
+        return export(null, true);
     }
 
     /**
      * Returns the serialized data for the core provider wrapped into a script tag.<p>
      *
      * @param iconCssClassPrefix the prefix for icon css class rules
+     * @param includeFontCss <code>true</code> to include the OpenCms font CSS, not necessary in case VAADIN theme is loaded also
      *
      * @return the data
      *
      * @throws Exception if something goes wrong
      */
-    public String export(String iconCssClassPrefix) throws Exception {
+    public String export(String iconCssClassPrefix, boolean includeFontCss) throws Exception {
 
-        return exportCommon(getCmsObject(), getCoreData(), iconCssClassPrefix)
-            + "\n<style type=\"text/css\">\n @import url(\""
-            + getFontIconCssLink()
-            + "\");\n"
-            + " @import url(\""
-            + getToolbarCssLink()
-            + "\");\n </style>\n";
+        StringBuffer buffer = new StringBuffer(exportCommon(getCmsObject(), getCoreData(), iconCssClassPrefix));
+        buffer.append("\n<style type=\"text/css\">\n @import url(\"");
+        if (includeFontCss) {
+            buffer.append(getFontIconCssLink()).append("\");\n @import url(\"");
+        }
+        buffer.append(getToolbarCssLink()).append("\");\n </style>\n");
+        return buffer.toString();
     }
 
     /**
@@ -342,7 +343,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     public String exportAll(String cssIconClassPrefix) throws Exception {
 
-        return export(cssIconClassPrefix);
+        return export(cssIconClassPrefix, true);
     }
 
     /**

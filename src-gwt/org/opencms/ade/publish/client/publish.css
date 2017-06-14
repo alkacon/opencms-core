@@ -28,7 +28,7 @@
 	height: 32px;
 }
 .checkmark:before{
-	content: "\e916";
+	content: "\e917";
 	font-family: opencms-font;
 	font-size: 32px;
 	color: #2197DB;

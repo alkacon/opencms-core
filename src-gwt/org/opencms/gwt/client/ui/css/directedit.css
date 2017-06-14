@@ -104,7 +104,7 @@ div.expiredListElementOverlay {
 
 .optionBar.cmsHovering .editableElement.opencms-icon .opencms-icon-edit-point:before {
 	background: transparent;
-	content: "\e901";
+	content: "\e902";
 	opacity: 1;
 }
 

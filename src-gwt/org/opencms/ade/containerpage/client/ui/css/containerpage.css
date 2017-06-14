@@ -180,7 +180,7 @@ div.groupcontainerPlaceholder{
 }
 
 .optionBar .opencms-icon span.lockedElement.opencms-icon-edit-point:before{
-	content: "\e90d";
+	content: "\e90e";
 	opacity: 1;
 	background: transparent;
 }
@@ -197,7 +197,7 @@ div.groupcontainerPlaceholder{
 
 .optionBar.cmsHovering .opencms-icon .opencms-icon-edit-point:before {
 	background: transparent;
-	content: "\e901";
+	content: "\e902";
 	opacity: 1;
 }
 

@@ -436,8 +436,8 @@ div.toolbarToggle{
 /** Rules for the quick launch app buttons. 
 	Most of the styles used are defined in /webapp/WEB-INF/workplaceThemes/VAADIN/themes/opencms/_appButtons.scss. */
 div.quickLaunchContainer {
-	padding: 10px; 
-	width: 352px;
+	padding: 13px; 
+	width: 358px;
 	background-color: white;
 }
 	
@@ -449,8 +449,17 @@ div.quickLaunchContainer {
 	padding-bottom: 4px;
 	display: inline-block;
 	cursor: pointer; 
+	height: 78px;
+	border: none;
+	background: transparent;
+	box-shadow: none;
 }
-
+.quickLaunchContainer div.v-button:before{
+	display: none;
+}
+.quickLaunchContainer .v-button:hover:after{
+	background: transparent;
+}
 .quickLaunchContainer .v-button-wrap{
 	display: inline-block;
 }

@@ -187,7 +187,7 @@ div.textArea.textAreaGhostMode textarea {
 }
 
 .cmsState-down .checkBoxImage:before, .cmsState-down-hovering .checkBoxImage:before, .cmsState-down-disabled .checkBoxImage:before,.checkBoxImageChecked:before, .triState .triStateOn:before, .triState .triStateMedium:before {
-	content: "\e916";
+	content: "\e917";
 }
 .cmsState-down .radioButtonImage:before, .cmsState-down-hovering .radioButtonImage:before, .cmsState-down-disabled .radioButtonImage:before{
 	content: "\e62b";

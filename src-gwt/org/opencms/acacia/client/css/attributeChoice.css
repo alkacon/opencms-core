@@ -58,7 +58,7 @@ span.buttonIcon:before{
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	content: "\e90b";
+	content: "\e90c";
 	color: value("constants.css.textColorDisabledButton");
 }
 span.buttonIcon:hover:before{

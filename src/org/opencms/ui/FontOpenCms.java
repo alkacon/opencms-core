@@ -36,7 +36,7 @@ import com.vaadin.server.GenericFontIcon;
 public enum FontOpenCms implements FontIcon {
 
     /** The add icon. */
-    ADD_SMALL(0xe90b),
+    ADD_SMALL(0xe90c),
 
     /** The apps icon. */
     APPS(0xe617),
@@ -51,7 +51,7 @@ public enum FontOpenCms implements FontIcon {
     CACHE(0xe62f),
 
     /** The check icon. */
-    CHECK_SMALL(0xe916),
+    CHECK_SMALL(0xe917),
 
     /** The circle icon. */
     CIRCLE(0xe62a),
@@ -108,7 +108,7 @@ public enum FontOpenCms implements FontIcon {
     CONTEXT_MENU_DOTS(0xe664a),
 
     /** The context menu icon. */
-    CONTEXT_MENU_SMALL(0xe909),
+    CONTEXT_MENU_SMALL(0xe90a),
 
     /** The copy locale icon. */
     COPY_LOCALE(0xe61a),
@@ -120,19 +120,19 @@ public enum FontOpenCms implements FontIcon {
     CROP_REMOVE(0xe642),
 
     /** The cut icon. */
-    CUT_SMALL(0xe906),
+    CUT_SMALL(0xe907),
 
     /** The database icon. */
     DATABASE(0xe62c),
 
     /** The delete icon. */
-    DELETE_SMALL(0xe90c),
+    DELETE_SMALL(0xe90d),
 
     /** The download icon. */
     DOWNLOAD(0xe605),
 
     /** The edit down icon. */
-    EDIT_DOWN_SMALL(0xe90f),
+    EDIT_DOWN_SMALL(0xe910),
 
     /** The bulls eye edit icon. */
     EDIT_POINT(0xe600),
@@ -141,10 +141,10 @@ public enum FontOpenCms implements FontIcon {
     EDIT_POINT_DISABLED(0xe601),
 
     /** The bulls eye edit icon. */
-    EDIT_POINT_SMALL(0xe900),
+    EDIT_POINT_SMALL(0xe901),
 
     /** The edit up icon. */
-    EDIT_UP_SMALL(0xe910),
+    EDIT_UP_SMALL(0xe913),
 
     /** The error icon. */
     ERROR(0xe63f),
@@ -153,7 +153,7 @@ public enum FontOpenCms implements FontIcon {
     EXIT(0xe615),
 
     /** The favorite icon. */
-    FAVORITE_SMALL(0xe905),
+    FAVORITE_SMALL(0xe906),
 
     /** The file icon. */
     FILE(0xe63b),
@@ -195,7 +195,7 @@ public enum FontOpenCms implements FontIcon {
     INFO(0xe612),
 
     /** The info icon. */
-    INFO_SMALL(0xe903),
+    INFO_SMALL(0xe904),
 
     /** The invisible chars icon. */
     INVISIBLE_CHARS(0xe64d),
@@ -213,7 +213,7 @@ public enum FontOpenCms implements FontIcon {
     LOCK_OPEN(0xe645),
 
     /** The lock icon. */
-    LOCK_SMALL(0xe90d),
+    LOCK_SMALL(0xe90e),
 
     /** The log icon. */
     LOG(0xe637),
@@ -222,16 +222,16 @@ public enum FontOpenCms implements FontIcon {
     MODULE(0xe638),
 
     /** The move icon. */
-    MOVE_SMALL(0xe902),
+    MOVE_SMALL(0xe903),
 
     /** The pen/edit icon. */
     PEN(0xe614),
 
     /** The pen/edit icon. */
-    PEN_SMALL(0xe901),
+    PEN_SMALL(0xe902),
 
     /** The preview icon. */
-    PREVIEW_SMALL(0xe90e),
+    PREVIEW_SMALL(0xe90f),
 
     /** The project icon. */
     PROJECT(0xe62e),
@@ -267,13 +267,13 @@ public enum FontOpenCms implements FontIcon {
     SEARCH_REPLACE(0xe64b),
 
     /** The search icon. */
-    SEARCH_SMALL(0xe907),
+    SEARCH_SMALL(0xe908),
 
     /** The settings icon. */
     SETTINGS(0xe618),
 
     /** The settings icon. */
-    SETTINGS_SMALL(0xe904),
+    SETTINGS_SMALL(0xe905),
 
     /** The show icon. */
     SHOW(0xe608),
@@ -285,7 +285,7 @@ public enum FontOpenCms implements FontIcon {
     SITEMAP(0xe613),
 
     /** The sitemap icon. */
-    SITEMAP_SMALL(0xe90a),
+    SITEMAP_SMALL(0xe90b),
 
     /** An empty icon. */
     SPACE(0x0020),
@@ -294,7 +294,7 @@ public enum FontOpenCms implements FontIcon {
     SPHERE(0xe635),
 
     /** The trash icon. */
-    TRASH_SMALL(0xe913),
+    TRASH_SMALL(0xe916),
 
     /** 'minus' state icon for tree opener. */
     TREE_MINUS(0xe649),
@@ -315,7 +315,7 @@ public enum FontOpenCms implements FontIcon {
     UPLOAD(0xe604),
 
     /** The upload icon. */
-    UPLOAD_SMALL(0xe908),
+    UPLOAD_SMALL(0xe909),
 
     /** The users icon. */
     USERS(0xe639),

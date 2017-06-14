@@ -8,7 +8,7 @@
 @font-face {
 	font-family: "Open Sans";
 	src: url(../valo/fonts/open-sans/OpenSans-Light-webfont.eot);
-	src: url(../valo/fonts/open-sans/OpenSans-Light-webfont.eot?#iefix) format("embedded-opentype"), url(fonts/OpenSans-Light-webfont.woff) format("woff"), url(fonts/OpenSans-Light-webfont.ttf) format("truetype");
+	src: url(../valo/fonts/open-sans/OpenSans-Light-webfont.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/open-sans/OpenSans-Light-webfont.woff) format("woff"), url(../valo/fonts/open-sans/OpenSans-Light-webfont.ttf) format("truetype");
 	font-weight: 300;
 	font-style: normal;
 }
@@ -16,7 +16,7 @@
 @font-face {
 	font-family: "Open Sans";
 	src: url(../valo/fonts/open-sans/OpenSans-Regular-webfont.eot);
-	src: url(../valo/fonts/open-sans/OpenSans-Regular-webfont.eot?#iefix) format("embedded-opentype"), url(fonts/OpenSans-Regular-webfont.woff) format("woff"), url(fonts/OpenSans-Regular-webfont.ttf) format("truetype");
+	src: url(../valo/fonts/open-sans/OpenSans-Regular-webfont.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/open-sans/OpenSans-Regular-webfont.woff) format("woff"), url(../valo/fonts/open-sans/OpenSans-Regular-webfont.ttf) format("truetype");
 	font-weight: 400;
 	font-style: normal;
 }
@@ -24,7 +24,7 @@
 @font-face {
 	font-family: "Open Sans";
 	src: url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot);
-	src: url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix) format("embedded-opentype"), url(fonts/OpenSans-Semibold-webfont.woff) format("woff"), url(fonts/OpenSans-Semibold-webfont.ttf) format("truetype");
+	src: url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.woff) format("woff"), url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.ttf) format("truetype");
 	font-weight: 600;
 	font-style: normal;
 }
@@ -33,14 +33,14 @@
     font-family: "Open Sans";
     font-style: normal;
     font-weight: 700;
-    src: url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/OpenSans-Semibold-webfont.woff") format("woff"), url("fonts/OpenSans-Semibold-webfont.ttf") format("truetype");
+    src: url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix") format("embedded-opentype"), url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.woff") format("woff"), url("../valo/fonts/open-sans/OpenSans-Semibold-webfont.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "Open Sans";
     font-style: normal;
     font-weight: 800;
-    src: url("../valo/fonts/open-sans/OpenSans-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/OpenSans-Bold-webfont.woff") format("woff"), url("fonts/OpenSans-Bold-webfont.ttf") format("truetype");
+    src: url("../valo/fonts/open-sans/OpenSans-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("../valo/fonts/open-sans/OpenSans-Bold-webfont.woff") format("woff"), url("../valo/fonts/open-sans/OpenSans-Bold-webfont.ttf") format("truetype");
 }
 
 /* Styles for the leave preview mode button */

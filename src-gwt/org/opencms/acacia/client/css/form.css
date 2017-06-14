@@ -420,7 +420,7 @@ div.helpBubble{
 	-moz-osx-font-smoothing: grayscale;
 }
 .hasError .helpMessage .helpMessageIcon:before{
-	content: "\ed6b";
+	content: "\e63f";
 }
 .helpMessage{
 	display:none;
@@ -593,13 +593,13 @@ div.overlayButtonPanel > div{
     opacity: 0.45;
 }
 .multiButtonBar.hoverButton .cmsState:first-child span:before {
-	content:"\e902";
+	content:"\e903";
     background: transparent;
     opacity: 1;
 }
 
 .overlayButtonPanel .multiButtonBar.hoverButton .cmsState:first-child span:before {
-    content:"\e901";
+    content:"\e902";
 }
 
 .tabDescription.tabDescription {

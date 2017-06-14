@@ -45,7 +45,7 @@ div.titleRow div, .itemAdditional div {
 
 .itemContent div.stateIcon.export:after { 
 	font-family: opencms-font;
-	content:"\e90f";
+	content:"\e910";
 	font-size: 12px;
 	height: 12px;
 	width: 12px;
@@ -57,7 +57,7 @@ div.titleRow div, .itemAdditional div {
 
 .itemContent div.stateIcon.secure:after { 
 	font-family: opencms-font;
-	content:"\e904";
+	content:"\e905";
 	font-size: 12px;
 	height: 12px;
 	width: 12px;
@@ -68,7 +68,7 @@ div.titleRow div, .itemAdditional div {
 }
 .itemContent div.stateIcon.copyModel:after { 
 	font-family: opencms-font;
-	content:"\e90b";
+	content:"\e90c";
 	font-size: 12px;
 	height: 12px;
 	width: 12px;
