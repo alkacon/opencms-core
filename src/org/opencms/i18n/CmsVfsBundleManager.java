@@ -369,9 +369,7 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
                     CmsUUID publishId = new CmsUUID(publishIdStr);
                     try {
                         List<CmsPublishedResource> publishedResources = m_cms.readPublishedResources(publishId);
-                        if (publishedResources.isEmpty()) {
-                            scheduleReload();
-                        } else {
+                        if (!publishedResources.isEmpty()) {
                             String[] typesToMatch = new String[] {TYPE_PROPERTIES_BUNDLE, TYPE_XML_BUNDLE};
                             boolean reload = false;
                             for (CmsPublishedResource res : publishedResources) {
@@ -392,9 +390,9 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
                 }
                 break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-            default:
                 scheduleReload();
                 break;
+            default:
         }
     }
 
