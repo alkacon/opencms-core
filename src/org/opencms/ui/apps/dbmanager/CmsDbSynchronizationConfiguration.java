@@ -30,6 +30,7 @@ package org.opencms.ui.apps.dbmanager;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
@@ -39,16 +40,12 @@ import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
  * Configuration class for the synchronization app.<p>
  */
 public class CmsDbSynchronizationConfiguration extends A_CmsWorkplaceAppConfiguration {
-
-    /**Icon for the app.*/
-    private static final String ICON = "apps/dbmanager/synchro.png";
 
     /** The app id. */
     public static final String APP_ID = "db-admin-synchro";
@@ -76,7 +73,11 @@ public class CmsDbSynchronizationConfiguration extends A_CmsWorkplaceAppConfigur
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+            + " "
+            + FontOpenCms.FOLDER.getButtonOverlayStyle()
+            + " "
+            + OpenCmsTheme.BUTTON_OVERLAY_ORANGE;
     }
 
     /**
@@ -93,7 +94,7 @@ public class CmsDbSynchronizationConfiguration extends A_CmsWorkplaceAppConfigur
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink(ICON));
+        return FontOpenCms.DATABASE;
     }
 
     /**

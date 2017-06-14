@@ -75,9 +75,9 @@ public class CmsDbStaticExportConfiguration extends A_CmsWorkplaceAppConfigurati
 
         return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
             + " "
-            + FontOpenCms.FOLDER.getButtonOverlayStyle()
+            + FontOpenCms.FILE_INV.getButtonOverlayStyle()
             + " "
-            + OpenCmsTheme.BUTTON_OVERLAY_ORANGE;
+            + OpenCmsTheme.BUTTON_OVERLAY_GRAY_LIGHT;
     }
 
     /**
