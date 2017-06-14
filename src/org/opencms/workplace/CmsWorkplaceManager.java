@@ -818,6 +818,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         // clear the cached message objects
         m_messages = new HashMap<Locale, CmsWorkplaceMessages>();
+        if (LOG.isInfoEnabled()) {
+            try {
+                throw new RuntimeException("Tracing exception");
+            } catch (Exception e) {
+                LOG.info("Tracing call to CmsWorkplaceManager.flushMessageCache method.", e);
+            }
+        }
     }
 
     /**
@@ -1365,8 +1372,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         // messages have not been read so far
         synchronized (this) {
-            result = new CmsWorkplaceMessages(locale);
-            m_messages.put(locale, result);
+            // check again
+            result = m_messages.get(locale);
+            if (result == null) {
+                result = new CmsWorkplaceMessages(locale);
+                m_messages.put(locale, result);
+            }
         }
         return result;
     }

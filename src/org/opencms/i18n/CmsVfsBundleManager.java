@@ -107,6 +107,12 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
     /** The logger instance for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsVfsBundleManager.class);
 
+    /** Thread generation counter. */
+    private int m_threadCount;
+
+    /** Indicated if a reload is already scheduled. */
+    private boolean m_reloadIsScheduled;
+
     /** The set of bundle base names. */
     private Set<String> m_bundleBaseNames;
 
@@ -369,9 +375,7 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
                     CmsUUID publishId = new CmsUUID(publishIdStr);
                     try {
                         List<CmsPublishedResource> publishedResources = m_cms.readPublishedResources(publishId);
-                        if (publishedResources.isEmpty()) {
-                            scheduleReload();
-                        } else {
+                        if (!publishedResources.isEmpty()) {
                             String[] typesToMatch = new String[] {TYPE_PROPERTIES_BUNDLE, TYPE_XML_BUNDLE};
                             boolean reload = false;
                             for (CmsPublishedResource res : publishedResources) {
@@ -392,9 +396,9 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
                 }
                 break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-            default:
                 scheduleReload();
                 break;
+            default:
         }
     }
 
