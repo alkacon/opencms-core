@@ -47,7 +47,7 @@
 	  	}
 	}
 	
-	  &:hover:not(.v-disabled) {
+	  &:hover:not(.v-disabled), &:focus:not(.v-disabled) {
 	    > span.v-button-wrap:before {
 	    	background-image: unquote("radial-gradient( #fff 30%, #f6b9c4 65%, #f5aab7 100%)") !important;
 	    }
