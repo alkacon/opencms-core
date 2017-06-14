@@ -28,8 +28,11 @@
 package org.opencms.notification;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
@@ -42,6 +45,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 
@@ -56,8 +60,20 @@ import org.apache.commons.mail.EmailException;
  */
 public abstract class A_CmsNotification extends CmsHtmlMail {
 
+    /** Path to optional config file containing header and footer. */
+    public static final String HEADER_FOOTER_CONFIG_PATH = "/system/shared/notification-header-footer.html";
+
+    /** Separator between header and footer in optional config file. */
+    public static final String HEADER_FOOTER_SEPARATOR = Pattern.quote("$BODY");
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsNotification.class);
+
+    /** The configured header. */
+    protected String m_configuredHeader;
+
+    /** The configured footer. */
+    protected String m_configuredFooter;
 
     /** The xml-content to read subject, header and footer of the notification. */
     protected CmsXmlContent m_mailContent;
@@ -175,6 +191,22 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
             m_macroResolver.addMacro("firstname", m_receiver.getFirstname());
             m_macroResolver.addMacro("lastname", m_receiver.getLastname());
             m_macroResolver.addMacro("project", m_cms.getRequestContext().getCurrentProject().getName());
+            try {
+                CmsResource configRes = m_cms.readResource(HEADER_FOOTER_CONFIG_PATH);
+                CmsFile configFile = m_cms.readFile(configRes);
+                String configContent = new String(configFile.getContents(), "UTF-8");
+                String[] configParts = configContent.split(HEADER_FOOTER_SEPARATOR);
+                if (configParts.length == 2) {
+                    m_configuredHeader = configParts[0];
+                    m_configuredFooter = configParts[1];
+                } else {
+                    LOG.error("Invalid notification header/footer configuration: " + HEADER_FOOTER_CONFIG_PATH);
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
 
             StringBuffer msg = new StringBuffer();
 
@@ -182,9 +214,10 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
             appendHtmlHeader(msg);
 
             // append header from xmlcontent
-            msg.append(CmsMacroResolver.resolveMacros(
-                m_mailContent.getStringValue(m_cms, "Header", m_locale),
-                m_macroResolver));
+            msg.append(
+                CmsMacroResolver.resolveMacros(
+                    m_mailContent.getStringValue(m_cms, "Header", m_locale),
+                    m_macroResolver));
 
             // append body
             msg.append("\n<br/><br/>\n");
@@ -228,28 +261,33 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
      */
     protected void appendHtmlHeader(StringBuffer buffer) {
 
-        buffer.append("<html>\r\n");
-        buffer.append("  <head>\r\n");
-        buffer.append("    <style type=\"text/css\">\r\n");
-        buffer.append("      body { font-family: Verdana, Arial, Helvetica, sans-serif; background-color:white; }\r\n");
-        buffer.append("      a { color:#b31b43; text-decoration:none; font-weight: bold; }\r\n");
-        buffer.append("      a:hover { color:#b31b43; text-decoration:underline; font-weight: bold; }\r\n");
-        buffer.append("      div.publish_link { margin: 20px 0; }\r\n");
-        buffer.append("      table { white-space: nowrap; font-size: small; }\r\n");
-        buffer.append("      tr.trow1 { background-color: #cdc0b0; }\r\n");
-        buffer.append("      tr.trow2 { background-color: #eedfcc; }\r\n");
-        buffer.append("      tr.trow3 { background-color: #ffefdb; }\r\n");
-        buffer.append(
-            "      th.rescol { border-width: 1px 0 2px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
-        buffer.append(
-            "      th.titlecol { border-width: 1px 1px 2px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
-        buffer.append(
-            "      td.rescol { border-width: 0 0 1px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
-        buffer.append(
-            "      td.titlecol { border-width: 0 1px 1px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
-        buffer.append("    </style>\r\n");
-        buffer.append("  </head>\r\n");
-        buffer.append("  <body>\r\n");
+        if (m_configuredHeader != null) {
+            buffer.append(m_configuredHeader);
+        } else {
+            buffer.append("<html>\r\n");
+            buffer.append("  <head>\r\n");
+            buffer.append("    <style type=\"text/css\">\r\n");
+            buffer.append(
+                "      body { font-family: Verdana, Arial, Helvetica, sans-serif; background-color:white; }\r\n");
+            buffer.append("      a { color:#b31b43; text-decoration:none; font-weight: bold; }\r\n");
+            buffer.append("      a:hover { color:#b31b43; text-decoration:underline; font-weight: bold; }\r\n");
+            buffer.append("      div.publish_link { margin: 20px 0; }\r\n");
+            buffer.append("      table { white-space: nowrap; font-size: small; }\r\n");
+            buffer.append("      tr.trow1 { background-color: #cdc0b0; }\r\n");
+            buffer.append("      tr.trow2 { background-color: #eedfcc; }\r\n");
+            buffer.append("      tr.trow3 { background-color: #ffefdb; }\r\n");
+            buffer.append(
+                "      th.rescol { border-width: 1px 0 2px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
+            buffer.append(
+                "      th.titlecol { border-width: 1px 1px 2px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
+            buffer.append(
+                "      td.rescol { border-width: 0 0 1px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
+            buffer.append(
+                "      td.titlecol { border-width: 0 1px 1px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
+            buffer.append("    </style>\r\n");
+            buffer.append("  </head>\r\n");
+            buffer.append("  <body>\r\n");
+        }
     }
 
     /**
@@ -259,7 +297,11 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
      */
     protected void appenHtmlFooter(StringBuffer buffer) {
 
-        buffer.append("  </body>\r\n" + "</html>");
+        if (m_configuredFooter != null) {
+            buffer.append(m_configuredFooter);
+        } else {
+            buffer.append("  </body>\r\n" + "</html>");
+        }
     }
 
     /**
