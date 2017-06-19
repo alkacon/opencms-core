@@ -83,6 +83,7 @@ public class CmsSearchindexApp extends A_CmsWorkplaceApp {
     protected Component getComponentForState(String state) {
 
         if (state.isEmpty()) {
+            m_rootLayout.setMainHeightFull(true);
             return new CmsSearchIndexTable(this);
         }
         if (state.startsWith(PATH_REBUILD)) {
