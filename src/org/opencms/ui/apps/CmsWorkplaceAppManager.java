@@ -63,6 +63,7 @@ import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
 import org.opencms.ui.apps.logfile.CmsLogFileConfiguration;
 import org.opencms.ui.apps.logfile.CmsLogFileFolder;
 import org.opencms.ui.apps.logfile.CmsLogFileSettingConfiguration;
+import org.opencms.ui.apps.messages.CmsBroadCastConfigurtion;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectOverviewConfiguration;
 import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
@@ -685,7 +686,8 @@ public class CmsWorkplaceAppManager {
                 new CmsListManagerConfiguration(),
                 new CmsSiteManagerConfiguration(),
                 new CmsPublishQueueConfiguration(),
-                new CmsGitAppConfiguration()));
+                new CmsGitAppConfiguration(),
+                new CmsBroadCastConfigurtion()));
 
         return result;
     }

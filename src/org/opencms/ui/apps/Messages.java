@@ -1005,6 +1005,102 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MENU_TITLE_0 = "GUI_MENU_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_AND_0 = "GUI_MESSAGES_AND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_ADMIN_TOOL_HELP_0 = "GUI_MESSAGES_BROADCAST_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_ADMIN_TOOL_NAME_0 = "GUI_MESSAGES_BROADCAST_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_COLS_CREATION_0 = "GUI_MESSAGES_BROADCAST_COLS_CREATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_COLS_INACTIVE_0 = "GUI_MESSAGES_BROADCAST_COLS_INACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_COLS_ORGUNIT_0 = "GUI_MESSAGES_BROADCAST_COLS_ORGUNIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_COLS_PROJECT_0 = "GUI_MESSAGES_BROADCAST_COLS_PROJECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_COLS_SITE_0 = "GUI_MESSAGES_BROADCAST_COLS_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_COLS_USER_0 = "GUI_MESSAGES_BROADCAST_COLS_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_SEND_0 = "GUI_MESSAGES_BROADCAST_SEND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_SESSIONS_1 = "GUI_MESSAGES_BROADCAST_SESSIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_TO_ALL_0 = "GUI_MESSAGES_BROADCAST_TO_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_DESTROY_SESSION_0 = "GUI_MESSAGES_DESTROY_SESSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_DESTROY_SESSIONS_1 = "GUI_MESSAGES_DESTROY_SESSIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_FOLDER_NAME_0 = "GUI_MESSAGES_FOLDER_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_FOLDER_NAME_HELP_0 = "GUI_MESSAGES_FOLDER_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_ENABLED_0 = "GUI_MESSAGES_LOGINMESSAGE_ENABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_ENABLED_HELP_0 = "GUI_MESSAGES_LOGINMESSAGE_ENABLED_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_LOGINFORBIDDEN_0 = "GUI_MESSAGES_LOGINMESSAGE_LOGINFORBIDDEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_LOGINFORBIDDEN_HELP_0 = "GUI_MESSAGES_LOGINMESSAGE_LOGINFORBIDDEN_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_MESSAGE_0 = "GUI_MESSAGES_LOGINMESSAGE_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_MESSAGE_HELP_0 = "GUI_MESSAGES_LOGINMESSAGE_MESSAGE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_TIMEEND_0 = "GUI_MESSAGES_LOGINMESSAGE_TIMEEND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_TIMEEND_HELP_0 = "GUI_MESSAGES_LOGINMESSAGE_TIMEEND_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_TIMESTART_0 = "GUI_MESSAGES_LOGINMESSAGE_TIMESTART_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_TIMESTART_HELP_0 = "GUI_MESSAGES_LOGINMESSAGE_TIMESTART_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_TOOL_NAME_0 = "GUI_MESSAGES_LOGINMESSAGE_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_TOOL_NAME_HELP_0 = "GUI_MESSAGES_LOGINMESSAGE_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_VAL_DATE_0 = "GUI_MESSAGES_LOGINMESSAGE_VAL_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_VAL_EMPTY_MESSAGE_0 = "GUI_MESSAGES_LOGINMESSAGE_VAL_EMPTY_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_SESSION_COUNT_1 = "GUI_MESSAGES_SESSION_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_USER_COUNT_1 = "GUI_MESSAGES_USER_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_RESOURCE_TITLE_0 = "GUI_NEW_RESOURCE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

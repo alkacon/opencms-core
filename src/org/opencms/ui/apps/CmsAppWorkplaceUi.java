@@ -217,6 +217,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     public void checkBroadcasts() {
 
         CmsSessionInfo info = OpenCms.getSessionManager().getSessionInfo(getHttpSession());
+        if (info == null) {
+            return; //Session was killed..
+        }
         Buffer queue = info.getBroadcastQueue();
         if (!queue.isEmpty()) {
             StringBuffer broadcasts = new StringBuffer();
