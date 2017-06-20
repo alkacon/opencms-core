@@ -59,6 +59,7 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
 import org.opencms.staticexport.CmsLinkManager;
@@ -204,6 +205,17 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void clearCaches() throws Exception {
 
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>()));
+    }
+
+    /**
+     * Clears the login message.<p>
+     *
+     * @throws CmsRoleViolationException if this is not called with the correct privileges
+     */
+    public void clearLoginMessage() throws CmsRoleViolationException {
+
+        OpenCms.getLoginManager().setLoginMessage(m_cms, null);
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
     }
 
     /**
@@ -392,7 +404,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1210,6 +1222,18 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Sends a broadcast message.<p>
+     *
+     * This is only useful when the CmsShell is used via RMI.<p>
+     *
+     * @param message the broadcast message
+     */
+    public void sendBroadcast(String message) {
+
+        OpenCms.getSessionManager().sendBroadcast(m_cms, message);
+    }
+
+    /**
      * Sets the current project to the provided project id.<p>
      *
      * @param id the project id to set
@@ -1234,7 +1258,6 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-    <<<<<<< HEAD
      * Sets the rebuild mode for the requested index. Allowing to disable indexing during module import.<p>
      * This setting will not be written to the XML configuration file and will only take effect within the current shell instance.<p>
      *
@@ -1252,8 +1275,6 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-    =======
-    >>>>>>> 688e97b... Improved shell error handling to deal with report errors.
      * Set the locale of the current user logged in. <p>
      *
      * This method will always set a valid Locale for the current user!
@@ -1282,6 +1303,24 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         m_shell.setLocale(locale);
         m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_SETLOCALE_POST_1, locale));
+    }
+
+    /**
+     * Sets the login message.<p>
+     *
+     * @param start the start time in milliseconds
+     * @param end the end time in milliseconds
+     * @param messageText the message text
+     * @param loginDisabled true if login should be disabled
+     *
+     * @throws CmsRoleViolationException when this is not called with the correct privileges
+     */
+    public void setLoginMessage(long start, long end, String messageText, boolean loginDisabled)
+    throws CmsRoleViolationException {
+
+        CmsLoginMessage message = new CmsLoginMessage(start, end, messageText, loginDisabled);
+        OpenCms.getLoginManager().setLoginMessage(m_cms, message);
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
     }
 
     /**
