@@ -49,6 +49,7 @@ import org.opencms.main.I_CmsSessionStorageProvider;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.publish.CmsPublishManager;
+import org.opencms.rmi.CmsRemoteShellConstants;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.CmsDefaultAuthorizationHandler;
@@ -568,6 +569,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the user session mode. */
     private static final String N_USER_SESSION_MODE = "user-session-mode";
 
+    /** Node name for the shell server options. */
+    private static final String N_SHELL_SERVER = "shell-server";
+
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
 
@@ -688,6 +692,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
+
+    /** The shell server options. */
+    private CmsRemoteShellConfiguration m_shellServerOptions;
 
     /**
      * Adds an ADE configuration parameter.<p>
@@ -1248,6 +1255,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESTRICT_DETAIL_CONTENTS, "setRestrictDetailContents", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RESTRICT_DETAIL_CONTENTS, 0);
 
+        String shellServerPath = "*/" + N_SYSTEM + "/" + N_SHELL_SERVER;
+        digester.addCallMethod(shellServerPath, "setShellServerOptions", 2);
+        digester.addCallParam(shellServerPath, 0, A_ENABLED);
+        digester.addCallParam(shellServerPath, 1, A_PORT);
     }
 
     /**
@@ -1474,6 +1485,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                     secureElem.addAttribute(A_USE_PERMANENT_REDIRECTS, Boolean.TRUE.toString());
                 }
             }
+
             if ((site.getParameters() != null) && !site.getParameters().isEmpty()) {
                 Element parametersElem = siteElement.addElement(N_PARAMETERS);
                 for (Map.Entry<String, String> entry : site.getParameters().entrySet()) {
@@ -1482,6 +1494,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                     paramElem.addText(entry.getValue());
                 }
             }
+
             // create <alias server=""/> subnode(s)
             Iterator<CmsSiteMatcher> aliasIterator = site.getAliases().iterator();
             while (aliasIterator.hasNext()) {
@@ -1759,6 +1772,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             restrictDetailContentsElem.addText(m_restrictDetailContents);
         }
 
+        if (m_shellServerOptions != null) {
+            systemElement.addElement(N_SHELL_SERVER).addAttribute(
+                A_ENABLED,
+                "" + m_shellServerOptions.isEnabled()).addAttribute(A_PORT, "" + m_shellServerOptions.getPort());
+        }
         // return the system node
         return systemElement;
     }
@@ -2166,6 +2184,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 t);
             return new CmsDefaultSessionStorageProvider();
         }
+    }
+
+    /**
+     * Gets the shell server options.<p>
+     *
+     * @return the shell server options
+     */
+    public CmsRemoteShellConfiguration getShellServerOptions() {
+
+        return m_shellServerOptions;
     }
 
     /**
@@ -2726,6 +2754,24 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setSessionStorageProvider(String sessionStorageProviderClass) {
 
         m_sessionStorageProvider = sessionStorageProviderClass;
+    }
+
+    /**
+     * Sets the shell server options from the confriguration.<p>
+     *
+     * @param enabled the value of the 'enabled' attribute
+     * @param portStr the value of the 'port' attribute
+     */
+    public void setShellServerOptions(String enabled, String portStr) {
+
+        int port;
+        try {
+            port = Integer.parseInt(portStr);
+        } catch (NumberFormatException e) {
+            port = CmsRemoteShellConstants.DEFAULT_PORT;
+        }
+        m_shellServerOptions = new CmsRemoteShellConfiguration(Boolean.parseBoolean(enabled), port);
+
     }
 
     /**

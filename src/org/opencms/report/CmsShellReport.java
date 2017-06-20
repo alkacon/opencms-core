@@ -30,6 +30,7 @@ package org.opencms.report;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsShell;
 
+import java.io.PrintStream;
 import java.util.Locale;
 
 /**
@@ -51,7 +52,25 @@ public class CmsShellReport extends CmsPrintStreamReport {
      */
     public CmsShellReport(Locale locale) {
 
-        super(System.out, locale, false);
+        super(getOutputStream(), locale, false);
+    }
+
+    /**
+     * Retrieves the appropriate output stream to write the report to.<p>
+     *
+     * If we are running in a shell context, this will return the shell's assigned output stream, otherwise System.out is returned.<p>
+     *
+     * @return the output stream to write the report to
+     */
+    public static PrintStream getOutputStream() {
+
+        CmsShell shell = CmsShell.SHELL_INSTANCE.get();
+        if (shell != null) {
+            return shell.getOut();
+        } else {
+            return System.out;
+        }
+
     }
 
     /**

@@ -77,6 +77,7 @@ import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.publish.CmsPublishEngine;
 import org.opencms.publish.CmsPublishManager;
 import org.opencms.repository.CmsRepositoryManager;
+import org.opencms.rmi.CmsRemoteShellServer;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsOrgUnitManager;
@@ -310,6 +311,9 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
+
+    /** The remote shell server. */
+    private CmsRemoteShellServer m_remoteShellServer;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
@@ -1598,7 +1602,13 @@ public final class OpenCmsCore {
                 m_workflowManager = new CmsDefaultWorkflowManager();
                 m_workflowManager.setParameters(new HashMap<String, String>());
             }
-            m_workflowManager.initialize(initCmsObject(adminCms));
+            m_workflowManager.initialize(adminCms);
+            if ((systemConfiguration.getShellServerOptions() != null)
+                && systemConfiguration.getShellServerOptions().isEnabled()) {
+                m_remoteShellServer = new CmsRemoteShellServer(systemConfiguration.getShellServerOptions().getPort());
+                m_remoteShellServer.initServer();
+            }
+
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
@@ -1770,6 +1780,7 @@ public final class OpenCmsCore {
             resource = handleSecureResource(cms, req, res, resource, resourceName);
             if (resource == null) {
                 handledSecure = true;
+
             }
         }
 
@@ -1800,6 +1811,7 @@ public final class OpenCmsCore {
                     org.opencms.main.Messages.get().container(
                         org.opencms.main.Messages.ERR_PATH_NOT_FOUND_1,
                         resourceName));
+
             }
         } else {
             if (!handledSecure) {
@@ -2462,6 +2474,7 @@ public final class OpenCmsCore {
                 Messages.get().getBundle().key(
                     Messages.ERR_INVALID_INIT_USER_2,
                     OpenCms.getDefaultUsers().getUserAdmin(),
+
                     null),
                 e);
         }

@@ -230,7 +230,7 @@ public class CmsShell {
                         new Object[] {foundMethod.getName()}));
                 ite.getTargetException().printStackTrace(m_out);
                 if (m_errorCode != -1) {
-                    System.exit(m_errorCode);
+                    throw new CmsShellCommandException(ite.getCause());
                 }
             } catch (Throwable t) {
                 m_out.println(
@@ -239,11 +239,11 @@ public class CmsShell {
                         new Object[] {foundMethod.getName()}));
                 t.printStackTrace(m_out);
                 if (m_errorCode != -1) {
-                    System.exit(m_errorCode);
+                    throw new CmsShellCommandException(t);
                 }
             }
             if (m_hasReportError && (m_errorCode != -1)) {
-                System.exit(m_errorCode);
+                throw new CmsShellCommandException(true);
             }
             return true;
         }
@@ -358,7 +358,7 @@ public class CmsShell {
     }
 
     /** Thread local which stores the current shell instance while a command is executing. */
-    private static ThreadLocal<CmsShell> m_shellInstance = new ThreadLocal<CmsShell>();
+    public static final ThreadLocal<CmsShell> SHELL_INSTANCE = new ThreadLocal<CmsShell>();
 
     /** Prefix for "additional" parameter. */
     public static final String SHELL_PARAM_ADDITIONAL_COMMANDS = "-additional=";
@@ -652,7 +652,7 @@ public class CmsShell {
     */
     public static void setReportError() {
 
-        CmsShell instance = m_shellInstance.get();
+        CmsShell instance = SHELL_INSTANCE.get();
         if (instance != null) {
             instance.m_hasReportError = true;
         }
@@ -688,7 +688,7 @@ public class CmsShell {
     public void execute(Reader reader) {
 
         try {
-            m_shellInstance.set(this);
+            SHELL_INSTANCE.set(this);
             LineNumberReader lnr = new LineNumberReader(reader);
             while (!m_exitCalled) {
                 if (m_interactive || m_echo) {
@@ -741,12 +741,15 @@ public class CmsShell {
                 executeCommand(command, arguments);
             }
         } catch (Throwable t) {
-            t.printStackTrace(m_err);
+            if (!(t instanceof CmsShellCommandException)) {
+                // in case it's a shell command exception, the stack trace has already been written
+                t.printStackTrace(m_err);
+            }
             if (m_errorCode != -1) {
                 System.exit(m_errorCode);
             }
         } finally {
-            m_shellInstance.set(null);
+            SHELL_INSTANCE.set(null);
         }
     }
 
@@ -764,6 +767,51 @@ public class CmsShell {
     public void execute(String commands) {
 
         execute(new StringReader(commands));
+    }
+
+    /**
+     * Executes a shell command with a list of parameters.<p>
+     *
+     * @param command the command to execute
+     * @param parameters the list of parameters for the command
+     */
+    public void executeCommand(String command, List<String> parameters) {
+
+        if (m_echo) {
+            // echo the command to STDOUT
+            m_out.print(command);
+            for (int i = 0; i < parameters.size(); i++) {
+                m_out.print(" '");
+                m_out.print(parameters.get(i));
+                m_out.print("'");
+            }
+            m_out.println();
+        }
+
+        // prepare to lookup a method in CmsObject or CmsShellCommands
+        boolean executed = false;
+        Iterator<CmsCommandObject> i = m_commandObjects.iterator();
+        while (!executed && i.hasNext()) {
+            CmsCommandObject cmdObj = i.next();
+            executed = cmdObj.executeMethod(command, parameters);
+        }
+
+        if (!executed) {
+            // method not found
+            m_out.println();
+            StringBuffer commandMsg = new StringBuffer(command).append("(");
+            for (int j = 0; j < parameters.size(); j++) {
+                commandMsg.append("value");
+                if (j < (parameters.size() - 1)) {
+                    commandMsg.append(", ");
+                }
+            }
+            commandMsg.append(")");
+
+            m_out.println(m_messages.key(Messages.GUI_SHELL_METHOD_NOT_FOUND_1, commandMsg.toString()));
+            m_out.println(m_messages.key(Messages.GUI_SHELL_HR_0));
+            ((CmsShellCommands)m_shellCommands).help();
+        }
     }
 
     /**
@@ -805,6 +853,16 @@ public class CmsShell {
     }
 
     /**
+     * Gets the error code.<p>
+     *
+     * @return the error code
+     */
+    public int getErrorCode() {
+
+        return m_errorCode;
+    }
+
+    /**
      * Private internal helper for localization to the current user's locale
      * within OpenCms. <p>
      *
@@ -839,6 +897,28 @@ public class CmsShell {
     }
 
     /**
+     * Gets the prompt.<p>
+     *
+     * @return the prompt
+     */
+    public String getPrompt() {
+
+        String prompt = m_prompt;
+        try {
+            prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().getCurrentUser().getName());
+            prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
+            prompt = CmsStringUtil.substitute(
+                prompt,
+                "${project}",
+                m_cms.getRequestContext().getCurrentProject().getName());
+            prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
+        } catch (Throwable t) {
+            // ignore
+        }
+        return prompt;
+    }
+
+    /**
      * Obtain the additional settings related to the current user.
      *
      * @return the additional settings related to the current user.
@@ -846,6 +926,26 @@ public class CmsShell {
     public CmsUserSettings getSettings() {
 
         return m_settings;
+    }
+
+    /**
+     * Returns true if echo mode is on.<p>
+     *
+     * @return true if echo mode is on
+     */
+    public boolean hasEcho() {
+
+        return m_echo;
+    }
+
+    /**
+     * Checks whether a report error occurred during execution of the last command
+     *
+     * @return true if a report error occurred
+     */
+    public boolean hasReportError() {
+
+        return m_hasReportError;
     }
 
     /**
@@ -891,6 +991,16 @@ public class CmsShell {
     }
 
     /**
+     * Returns true if exit was called.<p>
+     *
+     * @return true if exit was called
+     */
+    public boolean isExitCalled() {
+
+        return m_exitCalled;
+    }
+
+    /**
      * If <code>true</code> this is an interactive session with a user sitting on a console.<p>
      *
      * @return <code>true</code> if this is an interactive session with a user sitting on a console
@@ -905,18 +1015,7 @@ public class CmsShell {
      */
     public void printPrompt() {
 
-        String prompt = m_prompt;
-        try {
-            prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().getCurrentUser().getName());
-            prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
-            prompt = CmsStringUtil.substitute(
-                prompt,
-                "${project}",
-                m_cms.getRequestContext().getCurrentProject().getName());
-            prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
-        } catch (Throwable t) {
-            // ignore
-        }
+        String prompt = getPrompt();
         m_out.print(prompt);
         m_out.flush();
     }
@@ -1032,6 +1131,12 @@ public class CmsShell {
     }
 
     /**
+     * Executes all commands read from the given reader.<p>
+     *
+     * @param reader a Reader from which the commands are read
+     */
+
+    /**
      * Sets the echo status.<p>
      *
      * @param echo the echo status to set
@@ -1040,12 +1145,6 @@ public class CmsShell {
 
         m_echo = echo;
     }
-
-    /**
-     * Executes all commands read from the given reader.<p>
-     *
-     * @param reader a Reader from which the commands are read
-     */
 
     /**
      * Sets the current shell prompt.<p>
@@ -1061,51 +1160,6 @@ public class CmsShell {
     protected void setPrompt(String prompt) {
 
         m_prompt = prompt;
-    }
-
-    /**
-     * Executes a shell command with a list of parameters.<p>
-     *
-     * @param command the command to execute
-     * @param parameters the list of parameters for the command
-     */
-    private void executeCommand(String command, List<String> parameters) {
-
-        if (m_echo) {
-            // echo the command to STDOUT
-            m_out.print(command);
-            for (int i = 0; i < parameters.size(); i++) {
-                m_out.print(" '");
-                m_out.print(parameters.get(i));
-                m_out.print("'");
-            }
-            m_out.println();
-        }
-
-        // prepare to lookup a method in CmsObject or CmsShellCommands
-        boolean executed = false;
-        Iterator<CmsCommandObject> i = m_commandObjects.iterator();
-        while (!executed && i.hasNext()) {
-            CmsCommandObject cmdObj = i.next();
-            executed = cmdObj.executeMethod(command, parameters);
-        }
-
-        if (!executed) {
-            // method not found
-            m_out.println();
-            StringBuffer commandMsg = new StringBuffer(command).append("(");
-            for (int j = 0; j < parameters.size(); j++) {
-                commandMsg.append("value");
-                if (j < (parameters.size() - 1)) {
-                    commandMsg.append(", ");
-                }
-            }
-            commandMsg.append(")");
-
-            m_out.println(m_messages.key(Messages.GUI_SHELL_METHOD_NOT_FOUND_1, commandMsg.toString()));
-            m_out.println(m_messages.key(Messages.GUI_SHELL_HR_0));
-            ((CmsShellCommands)m_shellCommands).help();
-        }
     }
 
 }

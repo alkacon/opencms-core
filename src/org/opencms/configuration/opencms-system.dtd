@@ -42,7 +42,8 @@
 	user-session-mode?,
 	credentials-resolver?,
 	publish-list-remove-mode?,
-	restrict-detail-contents?
+	restrict-detail-contents?,
+	shell-server?
 	)>
 
 <!--
@@ -692,3 +693,11 @@ Each job can have an optional list of parameters.
 # If this is not set explicitly, defaults to 'true'. 
 -->
 <!ELEMENT restrict-detail-contents (#PCDATA) >
+
+<!-- 
+# RMI based CmsShell server configuration.
+# Can be enabled or disabled, also the RMI registry port can be configured 
+-->
+<!ELEMENT shell-server EMPTY>
+<!ATTLIST shell-server enabled CDATA #REQUIRED>
+<!ATTLIST shell-server port CDATA #IMPLIED>
