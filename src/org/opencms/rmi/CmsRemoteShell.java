@@ -50,23 +50,23 @@ import org.apache.commons.logging.Log;
  */
 public class CmsRemoteShell extends UnicastRemoteObject implements I_CmsRemoteShell {
 
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsRemoteShell.class);
+
     /** Serial version id. */
     private static final long serialVersionUID = -243325251951003282L;
 
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsRemoteShell.class);
+    /** Byte array stream used to capture output of shell commands; will be cleared for each individual command. */
+    private ByteArrayOutputStream m_baos = new ByteArrayOutputStream();
+
+    /** Random id string for debugging purposes. */
+    private String m_id;
 
     /** The output stream used to capture the shell command output. */
     private PrintStream m_out;
 
     /** The wrapped shell instance. */
     private CmsShell m_shell;
-
-    /** Random id string for debugging purposes. */
-    private String m_id;
-
-    /** Byte array stream used to capture output of shell commands; will be cleared for each individual command. */
-    private ByteArrayOutputStream m_baos = new ByteArrayOutputStream();
 
     /**
      * Creates a new instance.<p>

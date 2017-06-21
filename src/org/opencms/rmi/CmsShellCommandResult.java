@@ -127,7 +127,7 @@ public class CmsShellCommandResult implements Serializable {
     }
 
     /**
-     * Sets the error code
+     * Sets the error code.<p>
      *
      * @param errorCode the error code
      */

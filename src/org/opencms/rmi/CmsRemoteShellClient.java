@@ -51,29 +51,23 @@ import java.util.Set;
  */
 public class CmsRemoteShellClient {
 
-    /** Command parameter for passing a shell script file name. */
-    public static final String PARAM_SCRIPT = "script";
-
     /** Command parameter for passing an additional shell commands class name. */
     public static final String PARAM_ADDITIONAL = "additional";
 
     /** Command parameter for controlling the port to use for the initial RMI lookup. */
     public static final String PARAM_REGISTRY_PORT = "registryPort";
 
-    /** Controls whether shell is interactive. */
-    private boolean m_interactive;
+    /** Command parameter for passing a shell script file name. */
+    public static final String PARAM_SCRIPT = "script";
 
-    /** The output stream. */
-    private PrintStream m_out;
+    /** The name of the additional commands class. */
+    private String m_additionalCommands;
+
+    /** True if echo mode is turned on. */
+    private boolean m_echo;
 
     /** The error code which should be returned in case of errors. */
     private int m_errorCode;
-
-    /** The prompt. */
-    private String m_prompt;
-
-    /** The RMI referencce to the shell server. */
-    private I_CmsRemoteShell m_remoteShell;
 
     /** True if exit was called. */
     private boolean m_exitCalled;
@@ -84,14 +78,20 @@ public class CmsRemoteShellClient {
     /** The input stream to read the commands from. */
     private InputStream m_input;
 
-    /** The name of the additional commands class. */
-    private String m_additionalCommands;
+    /** Controls whether shell is interactive. */
+    private boolean m_interactive;
+
+    /** The output stream. */
+    private PrintStream m_out;
+
+    /** The prompt. */
+    private String m_prompt;
 
     /** The port used for the RMI registry. */
     private int m_registryPort;
 
-    /** True if echo mode is turned on. */
-    private boolean m_echo;
+    /** The RMI referencce to the shell server. */
+    private I_CmsRemoteShell m_remoteShell;
 
     /**
      * Creates a new instance.<p>
@@ -179,7 +179,8 @@ public class CmsRemoteShellClient {
     public void run() throws Exception {
 
         Registry registry = LocateRegistry.getRegistry(m_registryPort);
-        I_CmsRemoteShellProvider provider = (I_CmsRemoteShellProvider)(registry.lookup(CmsRemoteShellConstants.PROVIDER));
+        I_CmsRemoteShellProvider provider = (I_CmsRemoteShellProvider)(registry.lookup(
+            CmsRemoteShellConstants.PROVIDER));
         m_remoteShell = provider.createShell(m_additionalCommands);
         m_prompt = m_remoteShell.getPrompt();
         m_out = new PrintStream(System.out);

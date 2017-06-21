@@ -30,12 +30,19 @@ package org.opencms.rmi;
 /**
  * Constants used by both the shell server and the client application.<p>
  */
-public class CmsRemoteShellConstants {
+public final class CmsRemoteShellConstants {
 
     /** The name used to look up the shell provider via RMI. */
     public static final String PROVIDER = "RemoteShellProvider";
 
     /** The default RMI registry port. */
     public static final int DEFAULT_PORT = 1101;
+
+    /**
+     * Hidden default constructor.<p>
+     */
+    private CmsRemoteShellConstants() {
+        // hidden default constructor
+    }
 
 }

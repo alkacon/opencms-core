@@ -46,14 +46,14 @@ public class CmsRemoteShellServer {
     /** Indicates whether the remote shell server has been initialized. */
     private static boolean m_initialized;
 
+    /** The port for the RMI registry. */
+    private int m_port = CmsRemoteShellConstants.DEFAULT_PORT;
+
     /** The real instance of the shell provider. */
     private I_CmsRemoteShellProvider m_provider;
 
     /** The RMI registry. */
     private Registry m_registry;
-
-    /** The port for the RMI registry. */
-    private int m_port = CmsRemoteShellConstants.DEFAULT_PORT;
 
     /**
      * Creates a new instance.<p>

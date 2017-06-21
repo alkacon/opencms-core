@@ -404,7 +404,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-    
+
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1508,7 +1508,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         CmsUser user = null;
         try {
             user = m_cms.readUser(name);
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             // this will happen, if the user does not exist
         }
         return user != null;

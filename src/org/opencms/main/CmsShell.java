@@ -120,6 +120,7 @@ public class CmsShell {
          * @param parameters the parameters entered by the user in the shell
          * @return true if a method was executed, false otherwise
          */
+        @SuppressWarnings("synthetic-access")
         protected boolean executeMethod(String command, List<String> parameters) {
 
             m_hasReportError = false;
@@ -369,6 +370,7 @@ public class CmsShell {
     /** Prefix for "servletMapping" parameter. */
     public static final String SHELL_PARAM_DEFAULT_WEB_APP = "-defaultWebApp=";
 
+    /** Prefix for errorCode parameter. */
     public static final String SHELL_PARAM_ERROR_CODE = "-errorCode=";
 
     /** Prefix for "script" parameter. */
@@ -379,6 +381,15 @@ public class CmsShell {
 
     /** The OpenCms context object. */
     protected CmsObject m_cms;
+
+    /** Stream to write the error messages output to. */
+    protected PrintStream m_err;
+
+    /** The code which the process should exit with in case of errors; -1 means exit is not called. */
+    protected int m_errorCode = -1;
+
+    /** Stream to write the regular output messages to. */
+    protected PrintStream m_out;
 
     /** Additional shell commands object. */
     private I_CmsShellCommands m_additionaShellCommands;
@@ -391,6 +402,12 @@ public class CmsShell {
 
     /** Indicates if the 'exit' command has been called. */
     private boolean m_exitCalled;
+
+    /** Flag to indicate whether an error was added to a shell report during the last command execution. */
+    private boolean m_hasReportError;
+
+    /** Indicates if this is an interactive session with a user sitting on a console. */
+    private boolean m_interactive;
 
     /** The messages object. */
     private CmsMessages m_messages;
@@ -406,21 +423,6 @@ public class CmsShell {
 
     /** Internal shell command object. */
     private I_CmsShellCommands m_shellCommands;
-
-    /** Stream to write the regular output messages to. */
-    protected PrintStream m_out;
-
-    /** Stream to write the error messages output to. */
-    protected PrintStream m_err;
-
-    /** Indicates if this is an interactive session with a user sitting on a console. */
-    private boolean m_interactive;
-
-    /** The code which the process should exit with in case of errors; -1 means exit is not called. */
-    protected int m_errorCode = -1;
-
-    /** Flag to indicate whether an error was added to a shell report during the last command execution. */
-    private boolean m_hasReportError;
 
     /**
      * Creates a new CmsShell.<p>
@@ -591,7 +593,7 @@ public class CmsShell {
                 } else if (arg.startsWith(SHELL_PARAM_ADDITIONAL_COMMANDS)) {
                     additional = arg.substring(SHELL_PARAM_ADDITIONAL_COMMANDS.length());
                 } else if (arg.startsWith(SHELL_PARAM_ERROR_CODE)) {
-                    errorCode = Integer.valueOf(arg.substring(SHELL_PARAM_ERROR_CODE.length()));
+                    errorCode = Integer.valueOf(arg.substring(SHELL_PARAM_ERROR_CODE.length())).intValue();
                 } else {
                     System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_WRONG_USAGE_0));
                     wrongUsage = true;
@@ -647,7 +649,7 @@ public class CmsShell {
         }
     }
 
-    /*
+    /**
     * If running in the context of a CmsShell, this method notifies the running shell instance that an error has occured in a report.<p>
     */
     public static void setReportError() {
@@ -939,7 +941,7 @@ public class CmsShell {
     }
 
     /**
-     * Checks whether a report error occurred during execution of the last command
+     * Checks whether a report error occurred during execution of the last command.<p>
      *
      * @return true if a report error occurred
      */
@@ -1078,7 +1080,7 @@ public class CmsShell {
         try {
             CmsUser user = m_cms.readUser(userName, password);
             result = OpenCms.getRoleManager().hasRole(m_cms, user.getName(), requiredRole);
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             // nothing to do
         }
         return result;
