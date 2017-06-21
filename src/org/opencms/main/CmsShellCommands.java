@@ -1308,17 +1308,14 @@ class CmsShellCommands implements I_CmsShellCommands {
     /**
      * Sets the login message.<p>
      *
-     * @param start the start time in milliseconds
-     * @param end the end time in milliseconds
      * @param messageText the message text
      * @param loginDisabled true if login should be disabled
      *
      * @throws CmsRoleViolationException when this is not called with the correct privileges
      */
-    public void setLoginMessage(long start, long end, String messageText, boolean loginDisabled)
-    throws CmsRoleViolationException {
+    public void setLoginMessage(String messageText, boolean loginDisabled) throws CmsRoleViolationException {
 
-        CmsLoginMessage message = new CmsLoginMessage(start, end, messageText, loginDisabled);
+        CmsLoginMessage message = new CmsLoginMessage(0, 0, messageText, loginDisabled);
         OpenCms.getLoginManager().setLoginMessage(m_cms, message);
         OpenCms.writeConfiguration(CmsSystemConfiguration.class);
     }
