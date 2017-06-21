@@ -40,19 +40,37 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * Class for the synchronization dialog.<p>
+ */
 public class CmsDbSynchDialog extends CmsBasicDialog {
 
-    Runnable m_closeRunnable;
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = -1818182416175306822L;
 
-    Button m_okButton;
-
-    Label m_icon;
-
+    /**cancel button.*/
     Button m_cancelButton;
 
+    /**Runnable for close action.*/
+    Runnable m_closeRunnable;
+
+    /**Vaadin component.*/
     HorizontalLayout m_confirm;
+
+    /**icon. */
+    Label m_icon;
+
+    /**Ok button. */
+    Button m_okButton;
+
+    /**Vaadin component. */
     VerticalLayout m_report;
 
+    /**
+     * public constructor.<p>
+     *
+     * @param closeRunnable gets called on cancel
+     */
     public CmsDbSynchDialog(Runnable closeRunnable) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
@@ -65,6 +83,8 @@ public class CmsDbSynchDialog extends CmsBasicDialog {
 
         m_okButton.addClickListener(new Button.ClickListener() {
 
+            private static final long serialVersionUID = 7329358907650680436L;
+
             public void buttonClick(ClickEvent event) {
 
                 showReport();
@@ -74,6 +94,8 @@ public class CmsDbSynchDialog extends CmsBasicDialog {
 
         m_cancelButton.addClickListener(new Button.ClickListener() {
 
+            private static final long serialVersionUID = 4143312166220501488L;
+
             public void buttonClick(ClickEvent event) {
 
                 m_closeRunnable.run();
@@ -82,6 +104,9 @@ public class CmsDbSynchDialog extends CmsBasicDialog {
         });
     }
 
+    /**
+     * shows the synchronization report.<p>
+     */
     protected void showReport() {
 
         m_confirm.setVisible(false);
