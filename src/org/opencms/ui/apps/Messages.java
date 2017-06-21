@@ -51,6 +51,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PQUEUE_STATUS_RUNNING_0 = "GUI_PQUEUE_STATUS_RUNNING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PQUEUE_STATUS_ENQUEUE_0 = "GUI_PQUEUE_STATUS_ENQUEUE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

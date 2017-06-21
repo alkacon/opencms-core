@@ -120,6 +120,24 @@ public final class OpenCmsTheme {
     public static final String COLOR_GREEN_GRADIENT = "o-color-green-gradient";
 
     /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_GREEN = " o-box-green";
+
+    /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_RED = " o-box-red";
+
+    /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_YELLOW = " o-box-yellow";
+
+    /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_ORANGE = " o-box-orange";
+
+    /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_GRAY = " o-box-gray";
+
+    /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_DARKGRAY = " o-box-darkgray";
+
+    /** CSS style name. */
     public static final String COLOR_ORANGE_GRADIENT = "o-color-orange-gradient";
 
     /** CSS style name. */

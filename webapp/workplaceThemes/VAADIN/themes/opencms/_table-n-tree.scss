@@ -260,4 +260,54 @@
 	.o-table-cell-padding .v-table-cell-wrapper { 
 		padding: 10px 10px; 
 	}
+		
 }
+	.o-box-green .v-table-cell-wrapper{
+	
+		color: $white;
+		background-color: $green;
+		border-radius: 100px;
+		padding: 2px !important;
+	}
+	
+	.o-box-yellow .v-table-cell-wrapper{
+	
+		color: $white;
+		background-color: $orange-dark;
+		border-radius: 100px;
+		padding: 2px !important;
+	}
+	
+	.o-box-orange .v-table-cell-wrapper{
+	
+		color: $white;
+		background-color: $orange-darker;
+		border-radius: 100px;
+		padding: 2px !important;		
+	}
+	
+	.o-box-red .v-table-cell-wrapper{
+	
+		color: $white;
+		background-color: $red-dark;
+		border-radius: 100px;
+		padding: 2px !important;		
+	}
+	
+	.o-box-gray .v-table-cell-wrapper{
+	
+		color: $white;
+		background-color: $gray;
+		border-radius: 100px;
+		padding: 2px !important;		
+	}
+	
+	.o-box-darkgray .v-table-cell-wrapper{
+	
+		color: $white;
+		background-color: $gray-darker;
+		border-radius: 100px;
+		padding: 2px !important;		
+	}
+		
+	
