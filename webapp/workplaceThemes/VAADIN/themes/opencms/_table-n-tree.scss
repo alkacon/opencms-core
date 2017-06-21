@@ -268,14 +268,16 @@
 		background-color: $green;
 		border-radius: 100px;
 		padding: 2px !important;
+		text-align: center !important;
 	}
 	
 	.o-box-yellow .v-table-cell-wrapper{
 	
 		color: $white;
-		background-color: $orange-dark;
+		background-color: $orange-light;
 		border-radius: 100px;
 		padding: 2px !important;
+		text-align: center !important;
 	}
 	
 	.o-box-orange .v-table-cell-wrapper{
@@ -283,15 +285,17 @@
 		color: $white;
 		background-color: $orange-darker;
 		border-radius: 100px;
-		padding: 2px !important;		
+		padding: 2px !important;
+		text-align: center !important;		
 	}
 	
 	.o-box-red .v-table-cell-wrapper{
 	
 		color: $white;
-		background-color: $red-dark;
+		background-color: $red-light;
 		border-radius: 100px;
-		padding: 2px !important;		
+		padding: 2px !important;
+		text-align: center !important;		
 	}
 	
 	.o-box-gray .v-table-cell-wrapper{
@@ -299,7 +303,8 @@
 		color: $white;
 		background-color: $gray;
 		border-radius: 100px;
-		padding: 2px !important;		
+		padding: 2px !important;
+		text-align: center !important;		
 	}
 	
 	.o-box-darkgray .v-table-cell-wrapper{
@@ -307,7 +312,19 @@
 		color: $white;
 		background-color: $gray-darker;
 		border-radius: 100px;
-		padding: 2px !important;		
+		padding: 2px !important;
+		text-align: center !important;		
 	}
+	
+	.o-box-darkred .v-table-cell-wrapper{
+	
+		color: $white;
+		background-color: $red-dark;
+		border-radius: 100px;
+		padding: 2px !important;
+		text-align: center !important;		
+	}
+		
+		
 		
 	

@@ -58,11 +58,7 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 
 /**
@@ -83,23 +79,7 @@ public class CmsLogChannelTable extends Table {
          */
         public Object generateCell(Table source, final Object itemId, Object columnId) {
 
-            Image image = new Image(
-                "",
-                new ExternalResource(
-                    OpenCmsTheme.getImageLink(
-                        ((LoggerLevel)source.getItem(itemId).getItemProperty(
-                            TableColumn.Level).getValue()).getPath())));
-            image.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = -7281805014773351493L;
-
-                public void click(ClickEvent event) {
-
-                    onItemClick(event, itemId, TableColumn.Level);
-
-                }
-            });
-            return image;
+            return ((LoggerLevel)(source.getItem(itemId).getItemProperty(columnId).getValue())).getLevel().toString();
         }
 
     }
@@ -201,25 +181,25 @@ public class CmsLogChannelTable extends Table {
     private enum LoggerLevel {
 
         /**Fatal level.*/
-        Fatal(Level.FATAL, "apps/log/levelbuttons/log_button_fatal_a_2.png"),
+        Fatal(Level.FATAL, OpenCmsTheme.TABLE_COLUMN_BOX_DARKRED),
 
         /**Error level. */
-        Error(Level.ERROR, "apps/log/levelbuttons/log_button_error_a_2.png"),
+        Error(Level.ERROR, OpenCmsTheme.TABLE_COLUMN_BOX_RED),
 
         /**Warning level. */
-        Warn(Level.WARN, "apps/log/levelbuttons/log_button_warn_a_2.png"),
+        Warn(Level.WARN, OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE),
 
         /**Info level. */
-        Info(Level.INFO, "apps/log/levelbuttons/log_button_info_a_2.png"),
+        Info(Level.INFO, OpenCmsTheme.TABLE_COLUMN_BOX_YELLOW),
 
         /**Debug level.*/
-        Debug(Level.DEBUG, "apps/log/levelbuttons/log_button_debug_a_2.png"),
+        Debug(Level.DEBUG, OpenCmsTheme.TABLE_COLUMN_BOX_GREEN),
 
         /**Off level. */
-        Off(Level.OFF, "apps/log/levelbuttons/log_button_off_a_2.png");
+        Off(Level.OFF, OpenCmsTheme.TABLE_COLUMN_BOX_GRAY);
 
-        /**Path to icon.*/
-        private String m_path;
+        /**CSS class.*/
+        private String m_css;
 
         /**Corresponging log4j Level.*/
         private Level m_level;
@@ -228,10 +208,10 @@ public class CmsLogChannelTable extends Table {
          * constructor.<p>
          *
          * @param level of logger
-         * @param path to icon
+         * @param css class
          */
-        private LoggerLevel(Level level, String path) {
-            m_path = path;
+        private LoggerLevel(Level level, String css) {
+            m_css = css;
             m_level = level;
         }
 
@@ -252,22 +232,22 @@ public class CmsLogChannelTable extends Table {
         }
 
         /**
+         * Returns path to icon.<p>
+         *
+         * @return path to icon
+         */
+        protected String getCssClass() {
+
+            return m_css;
+        }
+
+        /**
          * Returns level. <p>
          * @return log4j Level
          */
         protected Level getLevel() {
 
             return m_level;
-        }
-
-        /**
-         * Returns path to icon.<p>
-         *
-         * @return path to icon
-         */
-        protected String getPath() {
-
-            return m_path;
         }
     }
 
@@ -322,6 +302,11 @@ public class CmsLogChannelTable extends Table {
                 if (TableColumn.Channel.equals(propertyId)) {
                     return " " + OpenCmsTheme.HOVER_COLUMN;
                 }
+
+                if (TableColumn.Level.equals(propertyId)) {
+                    return ((LoggerLevel)source.getItem(itemId).getItemProperty(propertyId).getValue()).getCssClass();
+                }
+
                 return null;
             }
         });

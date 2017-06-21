@@ -123,6 +123,9 @@ public final class OpenCmsTheme {
     public static final String TABLE_COLUMN_BOX_GREEN = " o-box-green";
 
     /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_DARKRED = " o-box-darkred";
+
+    /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_RED = " o-box-red";
 
     /** CSS style name. */
