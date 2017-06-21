@@ -262,67 +262,55 @@
 	}
 		
 }
-	.o-box-green .v-table-cell-wrapper{
+
+	[class^="o-box-"], [class*="o-box"]{
 	
+	position:relative;
+		& .v-table-cell-wrapper{
+		position:relative;
+		z-index: 2;
 		color: $white;
+		text-align: center !important;			
+		}
+		&::before{
+			content:"";
+			position:absolute;
+			top: 5px;
+			bottom:5px;
+			left:5px;
+			right:5px;
+			z-index: 1;
+			border-radius: 100px;
+		}
+	}
+
+	.o-box-green::before{
+	
 		background-color: $green;
-		border-radius: 100px;
-		padding: 2px !important;
-		text-align: center !important;
 	}
 	
-	.o-box-yellow .v-table-cell-wrapper{
-	
-		color: $white;
+	.o-box-yellow::before{
 		background-color: $orange-light;
-		border-radius: 100px;
-		padding: 2px !important;
-		text-align: center !important;
 	}
 	
-	.o-box-orange .v-table-cell-wrapper{
-	
-		color: $white;
-		background-color: $orange-darker;
-		border-radius: 100px;
-		padding: 2px !important;
-		text-align: center !important;		
+	.o-box-orange::before{
+		background-color: $orange-darker;	
 	}
 	
-	.o-box-red .v-table-cell-wrapper{
-	
-		color: $white;
+	.o-box-red::before{
 		background-color: $red-light;
-		border-radius: 100px;
-		padding: 2px !important;
-		text-align: center !important;		
 	}
 	
-	.o-box-gray .v-table-cell-wrapper{
-	
-		color: $white;
+	.o-box-gray::before{
 		background-color: $gray;
-		border-radius: 100px;
-		padding: 2px !important;
-		text-align: center !important;		
 	}
 	
-	.o-box-darkgray .v-table-cell-wrapper{
-	
-		color: $white;
+	.o-box-darkgray::before{
 		background-color: $gray-darker;
-		border-radius: 100px;
-		padding: 2px !important;
-		text-align: center !important;		
 	}
 	
-	.o-box-darkred .v-table-cell-wrapper{
-	
-		color: $white;
-		background-color: $red-dark;
-		border-radius: 100px;
-		padding: 2px !important;
-		text-align: center !important;		
+	.o-box-darkred::before{
+		background-color: $red-dark;	
 	}
 		
 		

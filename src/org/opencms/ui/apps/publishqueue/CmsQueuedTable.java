@@ -374,10 +374,8 @@ public class CmsQueuedTable extends Table {
         setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_USER_0));
         setColumnHeader(PROP_FILESCOUNT, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_SIZE_0));
 
-        setColumnAlignment(PROP_STATUS_LOCALE, Align.CENTER);
-
         setColumnWidth(PROP_ICON, 40);
-        setColumnWidth(PROP_STATUS_LOCALE, 100);
+        //        setColumnWidth(PROP_STATUS_LOCALE, 100);
         setColumnWidth(PROP_START, 200);
         setColumnWidth(PROP_STOP, 200);
         setColumnWidth(PROP_RESOURCES, 550);
