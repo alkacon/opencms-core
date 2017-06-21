@@ -254,6 +254,9 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     private void iniUI(CmsLoginMessage message) {
 
+        if (message == null) {
+            message = new CmsLoginMessage();
+        }
         m_enabled.setValue(new Boolean(message.isActive()));
         m_logout.setValue(new Boolean(message.isLoginCurrentlyForbidden()));
         m_message.setValue(message.getMessage());
