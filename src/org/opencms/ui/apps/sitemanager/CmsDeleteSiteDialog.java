@@ -216,7 +216,7 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
         List<CmsResourceInfo> infos = new ArrayList<CmsResourceInfo>();
         for (CmsSite site : m_sitesToDelete) {
             infos.add(
-                new CmsResourceInfo(site.getTitle(), site.getSiteRoot(), m_manager.getFavIconPath(site.getSiteRoot())));
+                new CmsResourceInfo(site.getTitle(), site.getSiteRoot(), m_manager.getFavIcon(site.getSiteRoot())));
         }
         return infos;
     }

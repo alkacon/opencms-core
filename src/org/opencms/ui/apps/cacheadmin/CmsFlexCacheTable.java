@@ -34,6 +34,7 @@ import org.opencms.flex.CmsFlexCacheKey;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.cacheadmin.CmsCacheViewApp.Mode;
@@ -58,7 +59,6 @@ import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
@@ -131,9 +131,6 @@ public class CmsFlexCacheTable extends Table {
     /**vaadin serial id.*/
     private static final long serialVersionUID = 836377854954208442L;
 
-    /**App icon path.*/
-    private static final String TABLE_ICON = "apps/cache.png";
-
     /** The context menu. */
     CmsContextMenu m_menu;
 
@@ -161,10 +158,7 @@ public class CmsFlexCacheTable extends Table {
 
         m_container = new IndexedContainer();
 
-        m_container.addContainerProperty(
-            PROP_ICON,
-            Resource.class,
-            new ExternalResource(OpenCmsTheme.getImageLink(TABLE_ICON)));
+        m_container.addContainerProperty(PROP_ICON, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_CACHE));
         m_container.addContainerProperty(PROP_RESOURCENAME, String.class, "");
         m_container.addContainerProperty(PROP_PROJECT, String.class, "");
         m_container.addContainerProperty(PROP_KEY, String.class, "");

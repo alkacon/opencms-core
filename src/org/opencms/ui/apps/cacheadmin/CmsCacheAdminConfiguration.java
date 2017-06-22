@@ -47,9 +47,6 @@ import com.vaadin.server.Resource;
  */
 public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
 
-    /**App icon path.*/
-    public static final String ICON = "apps/cacheAdmin/cache.png";
-
     /** The app id. */
     public static final String APP_ID = "cache-admin";
 

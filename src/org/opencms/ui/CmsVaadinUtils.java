@@ -45,6 +45,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -470,8 +471,7 @@ public final class CmsVaadinUtils {
                 typeItem.getItemProperty(PropertyId.caption).setValue(
                     CmsVaadinUtils.getMessageText(typeSetting.getKey()));
                 typeItem.getItemProperty(PropertyId.icon).setValue(
-                    new ExternalResource(
-                        CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSetting.getIcon())));
+                    CmsResourceUtil.getSmallIconResource(typeSetting, null));
                 typeItem.getItemProperty(PropertyId.isXmlContent).setValue(
                     Boolean.valueOf(type instanceof CmsResourceTypeXmlContent));
                 typeItem.getItemProperty(PropertyId.isFolder).setValue(
@@ -756,7 +756,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

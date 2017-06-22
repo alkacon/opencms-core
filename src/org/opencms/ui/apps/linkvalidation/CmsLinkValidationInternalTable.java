@@ -61,10 +61,8 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 
 /**
@@ -128,7 +126,7 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
         DateReleased(Messages.GUI_LINKVALIDATION_RELEASE_DATE_0, Date.class, null, true),
 
         /**Icon column.*/
-        Icon(null, Image.class, null, false),
+        Icon(null, Resource.class, null, false),
 
         /**Last modified column. */
         LastModified(Messages.GUI_LINKVALIDATION_LASTMODIFIED_0, Date.class, null, false),
@@ -269,10 +267,7 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
             }
         }
 
-        setColumnWidth(TableProperty.Icon, 40);
-
         setVisibleColumns(
-            TableProperty.Icon,
             TableProperty.Path,
             TableProperty.Title,
             TableProperty.Type,
@@ -281,7 +276,9 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
             TableProperty.DateExpired,
             TableProperty.LastModified,
             TableProperty.BrokenLinks);
-
+        setItemIconPropertyId(TableProperty.Icon);
+        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
+        setColumnWidth(null, 40);
         setSelectable(true);
         setMultiSelect(true);
         m_menu = new CmsContextMenu();
@@ -395,7 +392,7 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
             select(itemId);
 
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == TableProperty.Icon)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
 
                 m_menu.setEntries(
                     getMenuEntries(),
@@ -484,22 +481,9 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
      * @param resource to get icon for
      * @return icon
      */
-    private Image getTypeImage(final CmsResource resource) {
+    private Resource getTypeImage(final CmsResource resource) {
 
-        Image ret = new Image(
-            String.valueOf(System.currentTimeMillis()),
-            CmsResourceIcon.getSitemapResourceIcon(A_CmsUI.getCmsObject(), resource, IconMode.localeCompare));
-        ret.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = -5277521979482801748L;
-
-            public void click(ClickEvent event) {
-
-                onItemClick(event, resource, TableProperty.Icon);
-
-            }
-        });
-        return ret;
+        return CmsResourceIcon.getSitemapResourceIcon(A_CmsUI.getCmsObject(), resource, IconMode.localeCompare);
     }
 
     /**

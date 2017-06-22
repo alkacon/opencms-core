@@ -91,7 +91,7 @@ public class CmsProjectsTable extends Table {
 
             List<CmsResourceInfo> projectInfos = new ArrayList<CmsResourceInfo>();
             String message;
-            CmsCssIcon projectIcon = new CmsCssIcon(CmsProjectManager.ICON_PROJECT_SMALL);
+            CmsCssIcon projectIcon = new CmsCssIcon(CmsProjectManager.ICON_PROJECT);
             if (data.size() == 1) {
                 Item item = m_container.getItem(data.iterator().next());
                 message = CmsVaadinUtils.getMessageText(
@@ -398,7 +398,7 @@ public class CmsProjectsTable extends Table {
         m_container.addContainerProperty(
             PROP_ICON,
             Resource.class,
-            new CmsCssIcon(CmsProjectManager.ICON_PROJECT_SMALL));
+            new CmsCssIcon(CmsProjectManager.ICON_PROJECT));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DESCRIPTION, String.class, "");
         m_container.addContainerProperty(PROP_ORG_UNIT, String.class, "");

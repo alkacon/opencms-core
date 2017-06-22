@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
@@ -50,7 +51,9 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -72,21 +75,6 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     /**Constant.*/
     public static final String FAVICON = "favicon.ico";
 
-    /** The site icon path. */
-    public static final String ICON = "apps/sitemanager/sites.png";
-
-    /**The icon for adding a new site. */
-    public static final String ICON_ADD = "apps/sitemanager/site-new.png";
-
-    /**Icon for site folder.*/
-    public static final String ICON_FOLDER = "apps/sitemanager/folder.png";
-
-    /**Icon for the global site settings. */
-    public static final String ICON_SITES_GLOBAL = "apps/sitemanager/site-global.png";
-
-    /**Icon for the webserver configuration. */
-    public static final String ICON_SITES_WEBSERVER = "apps/sitemanager/sites-webserver.png";
-
     /** Name of the macros folder for site templates.*/
     public static final String MACRO_FOLDER = ".macros";
 
@@ -104,9 +92,6 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
 
     /**path attribute to transmit root of a site to be edited. */
     public static final String SITE_ROOT = "siteRoot";
-
-    /** The site icon path. */
-    public static final String TABLE_ICON = "apps/sites.png";
 
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsSiteManager.class.getName());
@@ -170,7 +155,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
      *
      * @return the icon path
      */
-    public String getFavIconPath(String siteRoot) {
+    public Resource getFavIcon(String siteRoot) {
 
         CmsResource iconResource = null;
         try {
@@ -179,9 +164,10 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             //no favicon there
         }
         if (iconResource != null) {
-            return OpenCms.getLinkManager().getPermalink(getRootCmsObject(), iconResource.getRootPath());
+            return new ExternalResource(
+                OpenCms.getLinkManager().getPermalink(getRootCmsObject(), iconResource.getRootPath()));
         }
-        return OpenCmsTheme.getImageLink(CmsSiteManager.TABLE_ICON);
+        return new CmsCssIcon(OpenCmsTheme.ICON_SITE);
     }
 
     /**

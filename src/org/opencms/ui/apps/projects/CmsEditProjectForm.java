@@ -206,7 +206,7 @@ public class CmsEditProjectForm extends CmsBasicDialog {
                     new CmsResourceInfo(
                         m_project.getName(),
                         m_project.getDescription(),
-                        new CmsCssIcon(CmsProjectManager.ICON_PROJECT_SMALL))));
+                        new CmsCssIcon(CmsProjectManager.ICON_PROJECT))));
             m_fieldName.setValue(m_project.getName());
             m_fieldName.setEnabled(false);
             m_fieldDescription.setValue(m_project.getDescription());

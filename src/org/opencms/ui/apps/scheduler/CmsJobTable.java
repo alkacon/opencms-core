@@ -35,6 +35,7 @@ import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
@@ -45,7 +46,6 @@ import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
@@ -62,20 +62,15 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table used to display scheduled jobs, together with buttons for modifying the jobs.<p>
  * The columns containing the buttons are implemented as generated columns.
  */
-public class CmsJobTable extends Table implements ColumnGenerator {
+public class CmsJobTable extends Table {
 
     /**
      * Enum representing the actions for which buttons exist in the table rows.<p>
@@ -453,7 +448,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
     CmsJobManagerApp m_manager;
 
     /** Bean container for the table. */
-    private BeanItemContainer<CmsJobBean> m_beanContainer = new BeanItemContainer<CmsJobBean>(CmsJobBean.class);
+    private BeanItemContainer<CmsJobBean> m_beanContainer;
 
     /** The context menu. */
     private CmsContextMenu m_menu;
@@ -468,20 +463,16 @@ public class CmsJobTable extends Table implements ColumnGenerator {
      */
     public CmsJobTable(CmsJobManagerApp manager) {
         m_manager = manager;
+        m_beanContainer = new BeanItemContainer<CmsJobBean>(CmsJobBean.class);
         setContainerDataSource(m_beanContainer);
-
-        setVisibleColumns();
-
-        addGeneratedColumn(TableProperty.icon.toString(), this);
-        setColumnWidth(TableProperty.icon.toString(), 40);
-        setColumnHeader(TableProperty.icon.toString(), "");
-
         setVisibleColumns(
-            TableProperty.icon.toString(),
             TableProperty.className.toString(),
             TableProperty.name.toString(),
             TableProperty.lastExecution.toString(),
             TableProperty.nextExecution.toString());
+        setItemIconPropertyId(TableProperty.icon.toString());
+        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
+        setColumnWidth(null, 40);
 
         for (TableProperty prop : TableProperty.withHeader()) {
             setColumnExpandRatio(prop.toString(), 1);
@@ -534,30 +525,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
      */
     public static CmsResourceInfo getJobInfo(String name, String className) {
 
-        return new CmsResourceInfo(name, className, OpenCmsTheme.getImageLink("apps/scheduler.png"));
-    }
-
-    /**
-     * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
-     */
-    public Object generateCell(Table source, final Object itemId, Object columnId) {
-
-        Image image = new Image(
-            String.valueOf(System.currentTimeMillis()),
-            new ExternalResource(OpenCmsTheme.getImageLink("apps/scheduler.png")));
-
-        image.addClickListener(new ClickListener() {
-
-            /**vaadin serial id.*/
-            private static final long serialVersionUID = 8006490459561309427L;
-
-            public void click(ClickEvent event) {
-
-                onItemClick(event, itemId, TableProperty.icon.toString());
-            }
-        });
-
-        return image;
+        return new CmsResourceInfo(name, className, new CmsCssIcon(OpenCmsTheme.ICON_JOB));
     }
 
     /**
@@ -584,19 +552,6 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         String stateEdit = CmsScheduledJobsAppConfig.APP_ID + "/" + CmsJobManagerApp.PATH_NAME_EDIT;
         stateEdit = A_CmsWorkplaceApp.addParamToState(stateEdit, CmsJobManagerApp.PARAM_JOB_ID, jobId);
         CmsAppWorkplaceUi.get().getNavigator().navigateTo(stateEdit);
-    }
-
-    /**
-     * Gets the icon resource for the given workplace resource path.<p>
-     *
-     * @param subPath the path relative to the workplace resources
-     *
-     * @return the icon resource
-     */
-    ExternalResource getIconResource(String subPath) {
-
-        String resPath = CmsWorkplace.getResourceUri(subPath);
-        return new ExternalResource(resPath);
     }
 
     /**
@@ -630,7 +585,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         if (!event.isCtrlKey() && !event.isShiftKey()) {
             changeValueIfNotMultiSelect(itemId);
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == TableProperty.icon.toString())) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
                 Set<String> jobIds = new HashSet<String>();
                 for (CmsJobBean job : (Set<CmsJobBean>)getValue()) {
                     jobIds.add(job.getJob().getId());

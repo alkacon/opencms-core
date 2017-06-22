@@ -338,12 +338,18 @@ public final class CmsIconUtil implements I_CmsEventListener {
         }
         if (result == null) {
             if (small && (typeSettings.getSmallIconStyle() != null)) {
-                result = CmsGwtConstants.TYPE_ICON_CLASS + " " + typeSettings.getSmallIconStyle();
+                result = typeSettings.getSmallIconStyle();
+            } else if (small && (typeSettings.getIcon() == null)) {
+                result = CmsExplorerTypeSettings.ICON_STYLE_DEFAULT_SMALL;
             } else if (!small && (typeSettings.getBigIconStyle() != null)) {
-                result = CmsGwtConstants.TYPE_ICON_CLASS + " " + typeSettings.getBigIconStyle();
+                result = typeSettings.getBigIconStyle();
+            } else if (!small && (typeSettings.getBigIcon() == null)) {
+                result = CmsExplorerTypeSettings.ICON_STYLE_DEFAULT_BIG;
             }
 
-            if (result == null) {
+            if (result != null) {
+                result = CmsGwtConstants.TYPE_ICON_CLASS + " " + result;
+            } else {
                 result = getResourceIconClasses(typeSettings.getName(), resourceName, small);
             }
         }
@@ -391,42 +397,6 @@ public final class CmsIconUtil implements I_CmsEventListener {
     }
 
     /**
-     * Returns the CSS classes of the resource icon for the given resource type name.<p>
-     *
-     * Use this function, if the resource type is known, but not the filename. If the filename is available use {@link CmsIconUtil#getResourceIconClasses(String, String, boolean)}<p>
-     *
-     * @param resourceTypeName the resource type name
-     * @param small if true, get the icon classes for the small icon, else for the biggest one available
-     *
-     * @return the CSS classes
-     */
-    public static String getResourceIconClasses(String resourceTypeName, boolean small) {
-
-        StringBuffer sb = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS);
-        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName, small));
-        return sb.toString();
-    }
-
-    /**
-     * Returns the CSS classes of the resource icon for the given resource type and filename.<p>
-     *
-     * Use this the resource type and filename is known. Otherwise use {@link CmsIconUtil#getResourceIconClasses(String,boolean)}<p>
-     *
-     * @param resourceTypeName the resource type name
-     * @param fileName the filename
-     * @param small if true, get the icon classes for the small icon, else for the biggest one available
-     *
-     * @return the CSS classes
-     */
-    public static String getResourceIconClasses(String resourceTypeName, String fileName, boolean small) {
-
-        StringBuffer sb = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS);
-        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName, small)).append(" ").append(
-            getFileTypeIconClass(resourceTypeName, fileName, small));
-        return sb.toString();
-    }
-
-    /**
      * Returns the CSS class for a given resource type name and file name extension.<p>
      *
      * @param resourceTypeName the resource type name
@@ -435,7 +405,7 @@ public final class CmsIconUtil implements I_CmsEventListener {
      *
      * @return the CSS class for the type and extension
      */
-    public static String getResourceSubTypeIconClass(String resourceTypeName, String suffix, boolean small) {
+    static String getResourceSubTypeIconClass(String resourceTypeName, String suffix, boolean small) {
 
         StringBuffer buffer = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS).append("_").append(
             resourceTypeName.hashCode()).append("_").append(suffix);
@@ -453,7 +423,7 @@ public final class CmsIconUtil implements I_CmsEventListener {
      *
      * @return the CSS class
      */
-    public static String getResourceTypeIconClass(String resourceTypeName, boolean small) {
+    static String getResourceTypeIconClass(String resourceTypeName, boolean small) {
 
         StringBuffer sb = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS);
         sb.append("_").append(resourceTypeName.hashCode());
@@ -472,7 +442,7 @@ public final class CmsIconUtil implements I_CmsEventListener {
      *
      * @return the CSS class
      */
-    protected static String getFileTypeIconClass(String resourceTypeName, String fileName, boolean small) {
+    private static String getFileTypeIconClass(String resourceTypeName, String fileName, boolean small) {
 
         if ((fileName != null) && fileName.contains(".")) {
             int last = fileName.lastIndexOf(".");
@@ -483,6 +453,25 @@ public final class CmsIconUtil implements I_CmsEventListener {
         }
         return "";
 
+    }
+
+    /**
+     * Returns the CSS classes of the resource icon for the given resource type and filename.<p>
+     *
+     * Use this the resource type and filename is known.<p>
+     *
+     * @param resourceTypeName the resource type name
+     * @param fileName the filename
+     * @param small if true, get the icon classes for the small icon, else for the biggest one available
+     *
+     * @return the CSS classes
+     */
+    private static String getResourceIconClasses(String resourceTypeName, String fileName, boolean small) {
+
+        StringBuffer sb = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS);
+        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName, small)).append(" ").append(
+            getFileTypeIconClass(resourceTypeName, fileName, small));
+        return sb.toString();
     }
 
     /**

@@ -431,12 +431,15 @@ public class CmsResourceIcon extends Label {
         if (typeSettings != null) {
             if (typeSettings.getSmallIconStyle() != null) {
                 result = "<span class=\"v-icon o-icon-overlay " + typeSettings.getSmallIconStyle() + "\">&nbsp;</span>";
-            } else {
+            } else if (typeSettings.getIcon() == null) {
                 result = "<img src=\""
                     + CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSettings.getIcon())
                     + "\" class=\"o-icon-overlay\" />";
+            } else {
+                result = "<span class=\"v-icon o-icon-overlay "
+                    + CmsExplorerTypeSettings.ICON_STYLE_DEFAULT_SMALL
+                    + "\">&nbsp;</span>";
             }
-
         }
         return result;
     }

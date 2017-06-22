@@ -776,7 +776,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
         displayResourceInfoDirectly(
             Collections.singletonList(
-                new CmsResourceInfo(m_site.getTitle(), m_site.getSiteRoot(), m_manager.getFavIconPath(siteRoot))));
+                new CmsResourceInfo(m_site.getTitle(), m_site.getSiteRoot(), m_manager.getFavIcon(siteRoot))));
 
         m_tab.removeTab(m_tab.getTab(4));
         m_simpleFieldTitle.removeTextChangeListener(null);
@@ -1082,7 +1082,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
                 return new ByteArrayInputStream(imageData);
             }
-        }, String.valueOf(System.currentTimeMillis())));
+        }, ""));
         m_fieldFavIcon.setImmediate(true);
     }
 

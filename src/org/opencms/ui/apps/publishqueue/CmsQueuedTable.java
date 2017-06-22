@@ -36,6 +36,7 @@ import org.opencms.publish.CmsPublishJobFinished;
 import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
@@ -71,6 +72,7 @@ import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -352,7 +354,7 @@ public class CmsQueuedTable extends Table {
         m_menu.setAsTableContextMenu(this);
 
         m_container = new IndexedContainer();
-        m_container.addContainerProperty(PROP_ICON, Label.class, new Label());
+        m_container.addContainerProperty(PROP_ICON, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_PUBLISH));
         m_container.addContainerProperty(PROP_STATUS, String.class, null);
         m_container.addContainerProperty(PROP_STATUS_LOCALE, String.class, null);
         m_container.addContainerProperty(PROP_PROJECT, String.class, "");
@@ -366,7 +368,6 @@ public class CmsQueuedTable extends Table {
         //        setItemIconPropertyId(PROP_ICON);
         //        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setColumnHeader(PROP_STATUS_LOCALE, "");
-        setColumnHeader(PROP_ICON, "");
         setColumnHeader(PROP_RESOURCES, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_RESOURCES_0));
         setColumnHeader(PROP_PROJECT, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_PROJECT_0));
         setColumnHeader(PROP_START, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_STARTDATE_0));
@@ -374,11 +375,21 @@ public class CmsQueuedTable extends Table {
         setColumnHeader(PROP_USER, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_USER_0));
         setColumnHeader(PROP_FILESCOUNT, CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_SIZE_0));
 
-        setColumnWidth(PROP_ICON, 40);
-        //        setColumnWidth(PROP_STATUS_LOCALE, 100);
+        setVisibleColumns(
+            PROP_STATUS_LOCALE,
+            PROP_PROJECT,
+            PROP_START,
+            PROP_STOP,
+            PROP_USER,
+            PROP_RESOURCES,
+            PROP_FILESCOUNT);
         setColumnWidth(PROP_START, 200);
         setColumnWidth(PROP_STOP, 200);
         setColumnWidth(PROP_RESOURCES, 550);
+
+        setItemIconPropertyId(PROP_ICON);
+        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
+        setColumnWidth(null, 40);
 
         setSelectable(true);
 
@@ -437,6 +448,11 @@ public class CmsQueuedTable extends Table {
         loadJobs();
     }
 
+    /**
+     * Returns the status message map.<p>
+     *
+     * @return the status message map
+     */
     private static Map<String, String> getStatusMap() {
 
         Map<String, String> map = new HashMap<String, String>();
@@ -536,9 +552,7 @@ public class CmsQueuedTable extends Table {
     Image getImageFromState(String state, final Object itemId) {
 
         if (state == null) {
-            Image ret = new Image(
-                String.valueOf(System.currentTimeMillis()),
-                new ExternalResource(OpenCmsTheme.getImageLink(CmsPublishQueue.TABLE_ICON)));
+            Image ret = new Image("", new CmsCssIcon(OpenCmsTheme.ICON_PUBLISH));
             ret.setDescription("");
             ret.addClickListener(new ClickListener() {
 
@@ -564,9 +578,7 @@ public class CmsQueuedTable extends Table {
             description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_STATUS_OK_0);
         }
 
-        Image ret = new Image(
-            String.valueOf(System.currentTimeMillis()),
-            new ExternalResource(OpenCmsTheme.getImageLink(path)));
+        Image ret = new Image("", new ExternalResource(OpenCmsTheme.getImageLink(path)));
         ret.setDescription(description);
         ret.addClickListener(new ClickListener() {
 
@@ -615,7 +627,7 @@ public class CmsQueuedTable extends Table {
 
         setValue(null);
         select(itemId);
-        if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == PROP_ICON)) {
+        if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
             m_menu.setEntries(
                 getMenuEntries(),
                 Collections.singleton((((CmsPublishJobBase)getValue()).getPublishHistoryId()).getStringValue()));
@@ -678,16 +690,6 @@ public class CmsQueuedTable extends Table {
      */
     private void loadJobs() {
 
-        setVisibleColumns(
-            PROP_ICON,
-            PROP_STATUS_LOCALE,
-            PROP_PROJECT,
-            PROP_START,
-            PROP_STOP,
-            PROP_USER,
-            PROP_RESOURCES,
-            PROP_FILESCOUNT);
-
         List<CmsPublishJobFinished> publishJobs;
         if (OpenCms.getRoleManager().hasRole(A_CmsUI.getCmsObject(), CmsRole.ROOT_ADMIN)) {
             publishJobs = OpenCms.getPublishManager().getPublishHistory();
@@ -712,9 +714,6 @@ public class CmsQueuedTable extends Table {
             item.getItemProperty(PROP_STOP).setValue(new Date(job.getFinishTime()));
             item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
             item.getItemProperty(PROP_FILESCOUNT).setValue(Integer.valueOf(job.getSize()));
-            Label textfield = new Label(FontAwesome.SUITCASE.getHtml());
-            textfield.setContentMode(ContentMode.HTML);
-            item.getItemProperty(PROP_ICON).setValue(textfield);
 
         }
         //Sort table according to start time of jobs

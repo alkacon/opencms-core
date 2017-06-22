@@ -75,6 +75,17 @@ public class CmsCssIcon implements FontIcon {
         return "<span class=\"v-icon " + m_styleName + "\">&#x" + Integer.toHexString(getCodepoint()) + ";</span>";
     }
 
+    public String getHtml(String title) {
+
+        return "<span class=\"v-icon "
+            + m_styleName
+            + "\" title=\""
+            + title
+            + "\">&#x"
+            + Integer.toHexString(getCodepoint())
+            + ";</span>";
+    }
+
     /**
      * @see com.vaadin.server.Resource#getMIMEType()
      */
@@ -83,5 +94,4 @@ public class CmsCssIcon implements FontIcon {
         throw new UnsupportedOperationException(
             FontIcon.class.getSimpleName() + " should not be used where a MIME type is needed.");
     }
-
 }

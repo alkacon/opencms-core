@@ -43,15 +43,6 @@ import com.vaadin.ui.TextField;
  */
 public class CmsPublishQueue extends A_CmsWorkplaceApp {
 
-    /**The icon for history. */
-    public static final String ICON_HISTORY = "apps/publishqueue/publish_queue_history.png";
-
-    /**The icon for history. */
-    public static final String ICON = "apps/publishqueue/publish_queue.png";
-
-    /**The icon for history. */
-    public static final String TABLE_ICON = "apps/publish_queue.png";
-
     /** The file table filter input. */
     private TextField m_siteTableFilter;
 

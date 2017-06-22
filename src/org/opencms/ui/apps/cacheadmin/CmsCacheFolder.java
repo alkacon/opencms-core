@@ -49,9 +49,6 @@ public class CmsCacheFolder implements I_CmsFolderAppCategory {
     /**Folder id.*/
     public static final String ID = "cache";
 
-    /**App icon path.*/
-    public static final String ICON = "apps/cacheAdmin/cache.png";
-
     /**
      * @see org.opencms.ui.apps.I_CmsFolderAppCategory#getButtonStyle()
      */

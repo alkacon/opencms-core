@@ -64,6 +64,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
@@ -89,9 +90,9 @@ import com.google.common.collect.Sets;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.dd.DropHandler;
-import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
 import com.vaadin.ui.Table.TableDragMode;
@@ -364,27 +365,24 @@ public class CmsResourceTable extends CustomComponent {
         }
 
         if (resourceItem.getItemProperty(PROPERTY_PROJECT) != null) {
-            Image projectFlag = null;
+            Label projectFlag = null;
             switch (resUtil.getProjectState().getMode()) {
                 case 1:
-                    projectFlag = new Image(
-                        resUtil.getLockedInProjectName(),
-                        new ThemeResource(OpenCmsTheme.PROJECT_CURRENT_PATH));
+                    projectFlag = new Label(
+                        new CmsCssIcon(OpenCmsTheme.ICON_PROJECT_CURRENT).getHtml(resUtil.getLockedInProjectName()),
+                        ContentMode.HTML);
                     break;
                 case 2:
-                    projectFlag = new Image(
-                        resUtil.getLockedInProjectName(),
-                        new ThemeResource(OpenCmsTheme.PROJECT_OTHER_PATH));
+                    projectFlag = new Label(
+                        new CmsCssIcon(OpenCmsTheme.ICON_PROJECT_OTHER).getHtml(resUtil.getLockedInProjectName()),
+                        ContentMode.HTML);
                     break;
                 case 5:
-                    projectFlag = new Image(
-                        resUtil.getLockedInProjectName(),
-                        new ThemeResource(OpenCmsTheme.PROJECT_PUBLISH_PATH));
+                    projectFlag = new Label(
+                        new CmsCssIcon(OpenCmsTheme.ICON_PUBLISH).getHtml(resUtil.getLockedInProjectName()),
+                        ContentMode.HTML);
                     break;
                 default:
-            }
-            if (projectFlag != null) {
-                projectFlag.setDescription(resUtil.getLockedInProjectName());
             }
             resourceItem.getItemProperty(PROPERTY_PROJECT).setValue(projectFlag);
         }

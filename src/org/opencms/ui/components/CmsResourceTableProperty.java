@@ -260,7 +260,7 @@ public class CmsResourceTableProperty implements Serializable {
         GUI_LABEL_PROJECT_0,
         true,
         0,
-        32);
+        40);
 
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_RELEASED_NOT_EXPIRED = new CmsResourceTableProperty(

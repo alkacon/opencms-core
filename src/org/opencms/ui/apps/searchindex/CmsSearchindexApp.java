@@ -42,9 +42,6 @@ import com.vaadin.ui.Component;
  */
 public class CmsSearchindexApp extends A_CmsWorkplaceApp {
 
-    /**Path to the icon of the app.*/
-    protected static final String APP_ICON = "apps/searchindex/searchindex.png";
-
     /**Name of indexes to submit with state.*/
     protected static final String INDEXNAMES = "indexnames";
 
@@ -53,9 +50,6 @@ public class CmsSearchindexApp extends A_CmsWorkplaceApp {
 
     /**Seperator used when several index names are submitted.*/
     protected static final String SEPERATOR_INDEXNAMES = ";";
-
-    /**Icon for table line.*/
-    protected static final String TABLE_ICON = "apps/searchindex.png";
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)

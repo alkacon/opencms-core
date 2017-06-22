@@ -80,7 +80,6 @@ import org.opencms.ui.components.categoryselect.CmsCategorySelectField;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -110,7 +109,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
@@ -912,8 +910,7 @@ public class CmsListConfigurationForm extends TabSheet implements I_ResourceProp
                         typeName);
                     if (typeSetting != null) {
                         item.getItemProperty(ICON_PROP).setValue(
-                            new ExternalResource(
-                                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSetting.getIcon())));
+                            CmsResourceUtil.getSmallIconResource(typeSetting, null));
                     }
                 }
             }

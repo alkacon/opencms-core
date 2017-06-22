@@ -28,15 +28,22 @@
 package org.opencms.ui.apps.scheduler;
 
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.ui.CmsCssIcon;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsUUID;
 
 import java.util.Date;
+
+import com.vaadin.server.Resource;
 
 /**
  * Don't use CmsScheduledJobInfo directly, so we don't need to change it if we want to change how the values are
  * rendered, and having only the fields we want displayed in the table makes it easier to understand.
  */
 public class CmsJobBean {
+
+    /** The job icon resource. */
+    private static CmsCssIcon ICON = new CmsCssIcon(OpenCmsTheme.ICON_JOB);
 
     /** Internal id. */
     private CmsUUID m_id = new CmsUUID();
@@ -74,6 +81,16 @@ public class CmsJobBean {
     public String getClassName() {
 
         return m_jobInfo.getClassName();
+    }
+
+    /**
+     * Returns the job icon resource.<p>
+     *
+     * @return the job icon resource
+     */
+    public Resource getIcon() {
+
+        return ICON;
     }
 
     /**
@@ -124,5 +141,4 @@ public class CmsJobBean {
 
         return m_id.hashCode();
     }
-
 }

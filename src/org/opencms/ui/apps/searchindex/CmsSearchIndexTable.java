@@ -29,6 +29,7 @@ package org.opencms.ui.apps.searchindex;
 
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
@@ -50,11 +51,8 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -152,7 +150,7 @@ public class CmsSearchIndexTable extends Table {
         FieldConfig(Messages.GUI_SEARCHINDEX_COL_CONFIGURATION_0, String.class, "", false),
 
         /**Icon column.*/
-        Icon(null, Image.class, null, false),
+        Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_DATABASE), false),
 
         /**Locale column. */
         Locale(Messages.GUI_SEARCHINDEX_COL_LOCALE_0, String.class, "", false),
@@ -289,17 +287,15 @@ public class CmsSearchIndexTable extends Table {
 
         m_menu = new CmsContextMenu();
         m_menu.setAsTableContextMenu(this);
-
-        setColumnWidth(TableProperty.Icon, 40);
-
         setVisibleColumns(
-            TableProperty.Icon,
             TableProperty.Name,
             TableProperty.FieldConfig,
             TableProperty.Rebuild,
             TableProperty.Project,
             TableProperty.Locale);
-
+        setItemIconPropertyId(TableProperty.Icon);
+        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
+        setColumnWidth(null, 40);
         List<CmsSearchIndex> indexes = OpenCms.getSearchManager().getSearchIndexesAll();
 
         addItemClickListener(new ItemClickListener() {
@@ -320,7 +316,6 @@ public class CmsSearchIndexTable extends Table {
         for (CmsSearchIndex index : indexes) {
             Item item = m_container.addItem(index);
             item.getItemProperty(TableProperty.Name).setValue(index.getName());
-            item.getItemProperty(TableProperty.Icon).setValue(getTableIconImage(index));
             item.getItemProperty(TableProperty.FieldConfig).setValue(index.getFieldConfiguration().getName());
             item.getItemProperty(TableProperty.Locale).setValue(index.getLocale().getDisplayName());
             item.getItemProperty(TableProperty.Project).setValue(index.getProject());
@@ -371,11 +366,11 @@ public class CmsSearchIndexTable extends Table {
             changeValueIfNotMultiSelect(itemId);
 
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == TableProperty.Icon)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
                 m_menu.setEntries(getMenuEntries(), getSearchIndexNames());
                 m_menu.openForTable(event, itemId, propertyId, this);
             } else if (event.getButton().equals(MouseButton.LEFT) && TableProperty.Name.equals(propertyId)) {
-                showSourcesWindow(((CmsSearchIndex)((Set)getValue()).iterator().next()).getName());
+                showSourcesWindow(((CmsSearchIndex)((Set<?>)getValue()).iterator().next()).getName());
             }
         }
     }
@@ -434,29 +429,5 @@ public class CmsSearchIndexTable extends Table {
             names.add(index.getName());
         }
         return names;
-    }
-
-    /**
-     * Returns the icon for the icon table property.<p>
-     *
-     * @param itemId to get a icon for
-     * @return an image object
-     */
-    private Image getTableIconImage(final Object itemId) {
-
-        Image image = new Image(
-            String.valueOf(System.currentTimeMillis()),
-            new ExternalResource(OpenCmsTheme.getImageLink(CmsSearchindexApp.TABLE_ICON)));
-        image.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 2414489077515632725L;
-
-            public void click(ClickEvent event) {
-
-                onItemClick(event, itemId, TableProperty.Icon);
-
-            }
-        });
-        return image;
     }
 }
