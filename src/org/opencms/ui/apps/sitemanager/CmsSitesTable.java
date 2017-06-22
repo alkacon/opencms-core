@@ -329,10 +329,7 @@ public class CmsSitesTable extends Table {
         m_manager = manager;
 
         m_container = new IndexedContainer();
-        m_container.addContainerProperty(
-            PROP_ICON,
-            Label.class,
-            new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML));
+        m_container.addContainerProperty(PROP_ICON, Label.class, null);
         m_container.addContainerProperty(PROP_FAVICON, Image.class, null);
         m_container.addContainerProperty(PROP_SERVER, String.class, "");
         m_container.addContainerProperty(PROP_TITLE, String.class, "");
@@ -432,6 +429,8 @@ public class CmsSitesTable extends Table {
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
                 Item item = m_container.addItem(site.getSiteRoot());
+                item.getItemProperty(PROP_ICON).setValue(
+                    new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML));
                 item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
                 item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
                 item.getItemProperty(PROP_IS_WEBSERVER).setValue(new Boolean(site.isWebserver()));
