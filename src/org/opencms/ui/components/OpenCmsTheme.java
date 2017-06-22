@@ -390,6 +390,9 @@ public final class OpenCmsTheme {
     /** The job icon CSS class. */
     public static final String ICON_JOB = "oc-icon-24-scheduler_app";
 
+    /**The session icon.*/
+    public static final String ICON_SESSION = "oc-icon-24-session_app";
+
     /**
      * Hidden default constructor.
      */

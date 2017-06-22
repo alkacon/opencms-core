@@ -34,6 +34,7 @@ import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
@@ -60,6 +61,7 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
@@ -163,7 +165,7 @@ public class CmsBroadcastTable extends Table {
         /**Date of release column.*/
         DateCreated(Messages.GUI_MESSAGES_BROADCAST_COLS_CREATION_0, String.class, "", false),
         /**Icon.*/
-        Icon(null, Label.class, null, false),
+        Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_SESSION), false),
 
         /**Icon column.*/
         InactiveTime(Messages.GUI_MESSAGES_BROADCAST_COLS_INACTIVE_0, String.class, "", false),
@@ -398,8 +400,10 @@ public class CmsBroadcastTable extends Table {
             m_container.addContainerProperty(prop, prop.getType(), prop.getDefaultValue());
             setColumnHeader(prop, prop.getLocalizedMessage());
         }
+        setItemIconPropertyId(TableProperty.Icon);
+        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
 
-        setColumnWidth(TableProperty.Icon, 30);
+        setColumnWidth(null, 40);
         setSelectable(true);
         setMultiSelect(true);
 
@@ -433,16 +437,13 @@ public class CmsBroadcastTable extends Table {
             item.getItemProperty(TableProperty.Project).setValue(
                 A_CmsUI.getCmsObject().readProject(session.getProject()).getName());
             item.getItemProperty(TableProperty.Site).setValue(session.getSiteRoot());
-            Label textfield = new Label(FontOpenCms.CIRCLE.getHtml());
-            textfield.setContentMode(ContentMode.HTML);
-            item.getItemProperty(TableProperty.Icon).setValue(textfield);
+
             item.getItemProperty(TableProperty.IS_WAITING).setValue(
                 new Boolean(!session.getBroadcastQueue().isEmpty()));
 
         }
 
         setVisibleColumns(
-            TableProperty.Icon,
             TableProperty.IS_WAITING,
             TableProperty.UserName,
             TableProperty.DateCreated,
@@ -481,7 +482,7 @@ public class CmsBroadcastTable extends Table {
             changeValueIfNotMultiSelect(itemId);
 
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == TableProperty.Icon)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
 
                 m_menu.setEntries(getMenuEntries(), (Set<String>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
