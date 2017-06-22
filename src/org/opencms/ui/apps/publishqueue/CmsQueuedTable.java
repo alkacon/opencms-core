@@ -61,22 +61,17 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -210,25 +205,6 @@ public class CmsQueuedTable extends Table {
             return (data != null) && (data.size() == 1)
             ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
             : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        }
-
-    }
-
-    /**
-     * Column for status.<p>
-     */
-    class StatusColumn implements Table.ColumnGenerator {
-
-        /**vaadin serial id. */
-        private static final long serialVersionUID = -7953703707788778747L;
-
-        /**
-         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
-         */
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            Property<Object> prop = source.getItem(itemId).getItemProperty(PROP_STATUS);
-            return getImageFromState((String)prop.getValue(), itemId);
         }
 
     }
@@ -443,8 +419,6 @@ public class CmsQueuedTable extends Table {
         });
 
         addGeneratedColumn(PROP_RESOURCES, new CmsResourcesCellGenerator(50));
-        //   addGeneratedColumn(PROP_STATUS, new StatusColumn());
-
         loadJobs();
     }
 
@@ -540,56 +514,6 @@ public class CmsQueuedTable extends Table {
         window.setContent(dialog);
         window.setCaption(pResources.getCaption());
         A_CmsUI.get().addWindow(window);
-    }
-
-    /**
-     * Returns image for given state.<p>
-     *
-     * @param state state
-     * @param itemId item id
-     * @return image
-     */
-    Image getImageFromState(String state, final Object itemId) {
-
-        if (state == null) {
-            Image ret = new Image("", new CmsCssIcon(OpenCmsTheme.ICON_PUBLISH));
-            ret.setDescription("");
-            ret.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = -8488944762446212367L;
-
-                public void click(ClickEvent event) {
-
-                    onItemClick(event, itemId, PROP_STATUS);
-                }
-            });
-            return ret;
-        }
-
-        String description = "";
-        String path = ICON_OK;
-        if (state.equals(STATE_ERROR)) {
-            path = ICON_ERROR;
-            description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_STATUS_ERROR_0);
-        } else if (state.equals(STATE_WARNING)) {
-            path = ICON_WARNINGS;
-            description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_STATUS_WARNING_0);
-        } else {
-            description = CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_STATUS_OK_0);
-        }
-
-        Image ret = new Image("", new ExternalResource(OpenCmsTheme.getImageLink(path)));
-        ret.setDescription(description);
-        ret.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = -8488944762446212367L;
-
-            public void click(ClickEvent event) {
-
-                onItemClick(event, itemId, PROP_STATUS);
-            }
-        });
-        return ret;
     }
 
     /**
