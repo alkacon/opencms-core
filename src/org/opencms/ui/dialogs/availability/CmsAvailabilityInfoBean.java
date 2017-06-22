@@ -80,9 +80,6 @@ public class CmsAvailabilityInfoBean implements Serializable {
     /** The current resource type. */
     private String m_resType;
 
-    /** The vfs path. */
-    private String m_vfsPath;
-
     /**
      * The default constructor.<p>
      */
@@ -103,7 +100,6 @@ public class CmsAvailabilityInfoBean implements Serializable {
      * @param hasSiblings the sibling flag
      * @param modifySiblings the modify sibling flag
      * @param responsibles the responsible users map
-     * @param vfsPath the vfsPath for the resource
      * @param pageInfo the page info
      */
     public CmsAvailabilityInfoBean(
@@ -116,7 +112,6 @@ public class CmsAvailabilityInfoBean implements Serializable {
         boolean hasSiblings,
         boolean modifySiblings,
         Map<CmsPrincipalBean, String> responsibles,
-        String vfsPath,
         CmsListInfoBean pageInfo) {
 
         m_resType = resType;
@@ -128,7 +123,6 @@ public class CmsAvailabilityInfoBean implements Serializable {
         m_hasSiblings = hasSiblings;
         m_modifySiblings = modifySiblings;
         m_responsibles = responsibles;
-        m_vfsPath = vfsPath;
         m_pageInfo = pageInfo;
     }
 
@@ -200,16 +194,6 @@ public class CmsAvailabilityInfoBean implements Serializable {
     public String getResType() {
 
         return m_resType;
-    }
-
-    /**
-     * Returns the vfsPath.<p>
-     *
-     * @return the vfsPath
-     */
-    public String getVfsPath() {
-
-        return m_vfsPath;
     }
 
     /**
@@ -340,15 +324,5 @@ public class CmsAvailabilityInfoBean implements Serializable {
     public void setResType(String resType) {
 
         m_resType = resType;
-    }
-
-    /**
-     * Sets the vfsPath.<p>
-     *
-     * @param vfsPath the vfsPath to set
-     */
-    public void setVfsPath(String vfsPath) {
-
-        m_vfsPath = vfsPath;
     }
 }
