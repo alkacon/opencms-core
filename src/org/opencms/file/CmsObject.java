@@ -2774,6 +2774,21 @@ public final class CmsObject {
     /**
      * Builds a list of resources for a given path.<p>
      *
+     * @param resource the resource to read the path for
+     * @param filter a filter object (only "includeDeleted" information is used!)
+     *
+     * @return list of <code>{@link CmsResource}</code>s
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readPath(CmsResource resource, CmsResourceFilter filter) throws CmsException {
+
+        return m_securityManager.readPath(m_context, resource.getRootPath(), filter);
+    }
+
+    /**
+     * Builds a list of resources for a given path.<p>
+     *
      * @param path the requested path
      * @param filter a filter object (only "includeDeleted" information is used!)
      *
@@ -4009,7 +4024,7 @@ public final class CmsObject {
      *
      * @param publishTag the correlative publish tag
      * @param publishDate the date of publishing
-    
+
      * @throws CmsException if operation was not successful
      */
     public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {

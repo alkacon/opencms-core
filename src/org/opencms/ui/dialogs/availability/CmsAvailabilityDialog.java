@@ -55,6 +55,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -360,9 +361,6 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
     CmsAvailabilityInfoBean getAvailabilityInfo(CmsObject cms, CmsResource res) throws CmsException {
 
         CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-        result.setVfsPath(resourceSitePath);
-
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
         result.setResType(type.getTypeName());
 
@@ -385,9 +383,9 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
             result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
         }
 
-        result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
+        result.setHasSiblings(cms.readSiblings(res, CmsResourceFilter.ALL).size() > 1);
 
-        result.setResponsibles(getResponsibles(cms, res.getRootPath()));
+        result.setResponsibles(getResponsibles(cms, res));
 
         return result;
     }
@@ -396,20 +394,17 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
      * Returns the responsibles.<p>
      *
      * @param cms the cms context
-     * @param rootPath the resource root path
+     * @param res the resource
      *
      * @return the responsibles
-     *
-     * @throws CmsException in case reading the resource fails
      */
-    Map<CmsPrincipalBean, String> getResponsibles(CmsObject cms, String rootPath) throws CmsException {
+    Map<CmsPrincipalBean, String> getResponsibles(CmsObject cms, CmsResource res) {
 
         Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
         List<CmsResource> parentResources = new ArrayList<CmsResource>();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(rootPath);
         // get all parent folders of the current file
         try {
-            parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+            parentResources = cms.readPath(res, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -428,7 +423,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                                 principal.getName(),
                                 principal.getDescription(),
                                 principal.isGroup());
-                            if (!resource.getRootPath().equals(rootPath)) {
+                            if (!resource.getRootPath().equals(res.getRootPath())) {
                                 if (resource.getRootPath().startsWith(storedSiteRoot)) {
                                     result.put(prinBean, sitePath);
                                 } else {
@@ -486,7 +481,8 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         boolean resetReleased,
         Date expired,
         boolean resetExpired,
-        boolean modifySubresources) throws CmsException {
+        boolean modifySubresources)
+    throws CmsException {
 
         CmsObject cms = m_dialogContext.getCms();
         CmsLockActionRecord lockActionRecord = CmsLockUtil.ensureLock(cms, resource);
@@ -554,7 +550,8 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         String resName,
         boolean enableNotification,
         int notificationInterval,
-        boolean modifySiblings) throws CmsException {
+        boolean modifySiblings)
+    throws CmsException {
 
         List<CmsResource> resources = new ArrayList<CmsResource>();
         if (modifySiblings) {
@@ -567,19 +564,18 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
             CmsResource resource = i.next();
-            String resourcePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
             // lock resource if auto lock is enabled
             CmsLockActionRecord lockRecord = CmsLockUtil.ensureLock(cms, resource);
             try {
                 // write notification settings
                 writeProperty(
                     cms,
-                    resourcePath,
+                    resource,
                     CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
                     String.valueOf(notificationInterval));
                 writeProperty(
                     cms,
-                    resourcePath,
+                    resource,
                     CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
                     String.valueOf(enableNotification));
             } finally {
@@ -604,13 +600,13 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
      * Writes a property value for a resource.<p>
      *
      * @param cms the cms context
-     * @param resourcePath the path of the resource
+     * @param resource the path of the resource
      * @param propertyName the name of the property
      * @param propertyValue the new value of the property
      *
      * @throws CmsException if something goes wrong
      */
-    private void writeProperty(CmsObject cms, String resourcePath, String propertyName, String propertyValue)
+    private void writeProperty(CmsObject cms, CmsResource resource, String propertyName, String propertyValue)
     throws CmsException {
 
         if (CmsStringUtil.isEmpty(propertyValue)) {
@@ -619,7 +615,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
 
         CmsProperty newProp = new CmsProperty();
         newProp.setName(propertyName);
-        CmsProperty oldProp = cms.readPropertyObject(resourcePath, propertyName, false);
+        CmsProperty oldProp = cms.readPropertyObject(resource, propertyName, false);
         if (oldProp.isNullProperty()) {
             // property value was not already set
             if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
@@ -658,7 +654,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
 
         // change property only if it has been changed
         if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
-            cms.writePropertyObject(resourcePath, newProp);
+            cms.writePropertyObjects(resource, Collections.singletonList(newProp));
         }
     }
 }

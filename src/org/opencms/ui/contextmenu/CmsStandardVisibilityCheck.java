@@ -279,15 +279,11 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         boolean prioritize = false;
         String inActiveKey = null;
         if (resource != null) {
-            if (flag(roleeditor)
-                && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.EDITOR, cms.getSitePath(resource))) {
+            if (flag(roleeditor) && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.EDITOR, resource)) {
                 return VISIBILITY_INVISIBLE;
             }
             if (flag(rolewpuser)
-                && !OpenCms.getRoleManager().hasRoleForResource(
-                    cms,
-                    CmsRole.WORKPLACE_USER,
-                    cms.getSitePath(resource))) {
+                && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.WORKPLACE_USER, resource)) {
                 return VISIBILITY_INVISIBLE;
             }
         } else {

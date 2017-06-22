@@ -454,6 +454,24 @@ public class CmsRoleManager {
      *
      * @param cms the opencms context
      * @param role the role to check
+     * @param resource the resource to check
+     *
+     * @return <code>true</code> if the given context user has the given role for the given resource
+     */
+    public boolean hasRoleForResource(CmsObject cms, CmsRole role, CmsResource resource) {
+
+        return m_securityManager.hasRoleForResource(
+            cms.getRequestContext(),
+            cms.getRequestContext().getCurrentUser(),
+            role,
+            resource);
+    }
+
+    /**
+     * Checks if the given context user has the given role for the given resource.<p>
+     *
+     * @param cms the opencms context
+     * @param role the role to check
      * @param resourceName the name of the resource to check
      *
      * @return <code>true</code> if the given context user has the given role for the given resource
