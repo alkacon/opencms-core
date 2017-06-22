@@ -64,8 +64,14 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     /** Flag indicating the resource needs to removed on cancel. */
     private boolean m_deleteOnCancel;
 
+    /** Indicates that editor change handlers are configured. */
+    private Set<String> m_editorChangeScopes;
+
     /** The external widget configurations. */
     private List<CmsExternalWidgetConfiguration> m_externalWidgetConfigurations;
+
+    /** The resource icon classes. */
+    private String m_iconClasses;
 
     /** The direct edit flag (set to true for classic direct edit mode). */
     private boolean m_isDirectEdit;
@@ -99,9 +105,6 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /** The content title. */
     private String m_title;
-
-    /** Indicates that editor change handlers are configured. */
-    private Set<String> m_editorChangeScopes;
 
     /**
      * Constructor for model file informations object.<p>
@@ -142,6 +145,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
      * @param title the content title
      * @param sitePath the site path
      * @param resourceType the resource type name
+     * @param iconClasses the resource icon classes
      * @param performedAutocorrection flag indicating the current content has an invalid XML structure and was auto corrected
      * @param autoUnlock false if the editor should not unlock resources automatically in standalone mode
      * @param editorChangeScopes the editor change handler scopes
@@ -163,6 +167,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
         String title,
         String sitePath,
         String resourceType,
+        String iconClasses,
         boolean performedAutocorrection,
         boolean autoUnlock,
         Set<String> editorChangeScopes) {
@@ -177,6 +182,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
         m_title = title;
         m_sitePath = sitePath;
         m_resourceType = resourceType;
+        m_iconClasses = iconClasses;
         m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
         m_performedAutocorrection = performedAutocorrection;
         m_autoUnlock = autoUnlock;
@@ -452,6 +458,16 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     }
 
     /**
+     * Returns the resource icon classes.<p>
+     *
+     * @return the resource icon classes
+     */
+    public String getIconClasses() {
+
+        return m_iconClasses;
+    }
+
+    /**
      * Returns the model file informations.<p>
      *
      * @return the model file informations
@@ -630,5 +646,4 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
         m_isDirectEdit = isDirectEdit;
     }
-
 }

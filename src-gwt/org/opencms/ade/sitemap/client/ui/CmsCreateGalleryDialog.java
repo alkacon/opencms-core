@@ -39,7 +39,6 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -93,9 +92,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         m_parentId = parentId;
         m_controller = controller;
         CmsGalleryType type = m_controller.getGalleryType(new Integer(resourceTypeId));
-        CmsListInfoBean listInfo = new CmsListInfoBean(type.getNiceName(), type.getDescription(), null);
-        listInfo.setResourceType(type.getTypeName());
-        m_dialogContent = new CmsFieldsetFormFieldPanel(listInfo, null);
+        m_dialogContent = new CmsFieldsetFormFieldPanel(type, null);
         m_dialogContent.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
         m_dialogContent.getFieldSet().setOpenerVisible(false);
         m_dialogContent.getFieldSet().getElement().getStyle().setMarginTop(4, Style.Unit.PX);

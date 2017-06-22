@@ -354,6 +354,23 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * Returns the resource type name for a given filename.<p>
+     *
+     * @param file the file info
+     *
+     * @return the resource type name
+     */
+    public String getResourceTypeIcon(CmsFileInfo file) {
+
+        String typeName = null;
+        typeName = getIconMapping().get(file.getFileSuffix().toLowerCase());
+        if (typeName == null) {
+            typeName = getIconMapping().get("");
+        }
+        return typeName;
+    }
+
+    /**
      * Returns if the current user agent is IE7.<p>
      *
      * @return <code>true</code> if the current user agent is IE7

@@ -37,7 +37,6 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -73,7 +72,7 @@ public class CmsMenuListItem extends CmsListItem {
                 new CmsAdditionalInfoBean("", Messages.get().key(Messages.GUI_NO_SETTINGS_TITLE_0), null));
         }
         setId(element.getClientId());
-        getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
+        getListItemWidget().setIcon(element.getBigIconClasses());
 
         m_removeButton = new CmsPushButton();
         m_removeButton.setImageClass(I_CmsButton.CUT_SMALL);

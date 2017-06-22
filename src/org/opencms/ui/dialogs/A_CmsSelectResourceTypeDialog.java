@@ -46,8 +46,8 @@ import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -270,19 +270,15 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
             String title = typeName;
             String subtitle = getSubtitle(type, useDefault);
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-            String iconUri = explorerType.getBigIconIfAvailable();
+
             title = CmsVaadinUtils.getMessageText(explorerType.getKey());
             CmsResourceInfo info = new CmsResourceInfo(
                 title,
                 subtitle,
-                CmsWorkplace.getResourceUri("filetypes/" + iconUri));
+                CmsResourceUtil.getBigIconResource(explorerType, null));
             info.setData(type);
             m_resourceInfoMap.put(type, info);
             getVerticalLayout().addComponent(info);
-            //            info.getButtonLabel().setContentMode(ContentMode.HTML);
-            //            String labelClass = getLabelClass();
-            //            info.getButtonLabel().setValue("<span class='" + labelClass + "'>");
-            //            info.getButtonLabel().addStyleName(OpenCmsTheme.RESINFO_HIDDEN_ICON);
         }
     }
 

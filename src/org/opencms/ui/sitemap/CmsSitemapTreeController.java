@@ -76,6 +76,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -348,7 +349,7 @@ public class CmsSitemapTreeController {
     class EntryInfo implements I_CmsSimpleContextMenuEntry<MenuContext> {
 
         /**
-        
+
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(MenuContext context) {
@@ -952,7 +953,7 @@ public class CmsSitemapTreeController {
             }
 
         });
-        String icon = CmsResourceIcon.getSitemapResourceIcon(
+        Resource icon = CmsResourceIcon.getSitemapResourceIcon(
             A_CmsUI.getCmsObject(),
             entry.getResource(),
             IconMode.localeCompare);

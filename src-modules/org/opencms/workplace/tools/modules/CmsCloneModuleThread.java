@@ -569,11 +569,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix());
             String newBigIcon = alterPrefix(
-                expSetting.getBigIconIfAvailable(),
+                expSetting.getBigIcon(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix());
             iconPaths.put(expSetting.getIcon(), newIcon);
-            iconPaths.put(expSetting.getBigIconIfAvailable(), newBigIcon);
+            iconPaths.put(expSetting.getBigIcon(), newBigIcon);
             String oldExpTypeName = expSetting.getName();
             String newExpTypeName = alterPrefix(
                 oldExpTypeName,
@@ -593,7 +593,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                     m_cloneInfo.getTargetNamePrefix()));
             expSetting.setBigIcon(
                 alterPrefix(
-                    expSetting.getBigIconIfAvailable(),
+                    expSetting.getBigIcon(),
                     m_cloneInfo.getSourceNamePrefix(),
                     m_cloneInfo.getTargetNamePrefix()));
             expSetting.setNewResourceUri(expSetting.getNewResourceUri().replaceFirst(oldExpTypeName, newExpTypeName));
@@ -747,7 +747,8 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
     private void createTargetClassesFolder(
         CmsModule targetModule,
         String sourceClassesPath,
-        String targetBaseClassesPath) throws CmsException {
+        String targetBaseClassesPath)
+    throws CmsException {
 
         StringTokenizer tok = new StringTokenizer(targetModule.getName(), ".");
         int folderId = CmsResourceTypeFolder.getStaticTypeId();

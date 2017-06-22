@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
@@ -52,6 +53,7 @@ import org.opencms.report.CmsWorkplaceReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.components.CmsResourceIcon;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -324,18 +326,15 @@ public class CmsPublish {
      * @param relation the relation to use
      *
      * @return the publish resource bean for the relation target
-     *
-     * @throws CmsException if something goes wrong
      */
-    public CmsPublishResource relationToBean(CmsRelation relation) throws CmsException {
+    public CmsPublishResource relationToBean(CmsRelation relation) {
 
         CmsPermissionInfo permissionInfo = new CmsPermissionInfo(true, false, "");
-        return new CmsPublishResource(
+        CmsPublishResource bean = new CmsPublishResource(
             relation.getTargetId(),
             relation.getTargetPath(),
             relation.getTargetPath(),
             CmsResourceTypePlain.getStaticTypeName(),
-            null,
             CmsResourceState.STATE_UNCHANGED,
             permissionInfo,
             0,
@@ -344,6 +343,8 @@ public class CmsPublish {
             false,
             null,
             null);
+        bean.setBigIconClasses(CmsIconUtil.getIconClasses(CmsResourceTypePlain.getStaticTypeName(), null, false));
+        return bean;
     }
 
     /**
@@ -396,7 +397,6 @@ public class CmsPublish {
             resUtil.getFullPath(),
             resUtil.getTitle(),
             typeName,
-            detailTypeName,
             resource.getState(),
             permissionInfo,
             resource.getDateLastModified(),
@@ -405,6 +405,10 @@ public class CmsPublish {
             removable,
             info,
             related);
+        pubResource.setBigIconClasses(CmsIconUtil.getIconClasses(typeName, null, false));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailTypeName)) {
+            pubResource.setSmallIconClasses(CmsIconUtil.getIconClasses(detailTypeName, null, true));
+        }
         return pubResource;
     }
 

@@ -481,8 +481,8 @@ public class TestLiveConfig extends OpenCmsTestCase {
             CmsObject cms = rootCms();
             CmsResource page1 = cms.readResource("/sites/default/today");
             CmsResource page2 = cms.readResource("/sites/default/today/events");
-            CmsDetailPageInfo info1 = new CmsDetailPageInfo(page1.getStructureId(), page1.getRootPath(), "foo");
-            CmsDetailPageInfo info2 = new CmsDetailPageInfo(page2.getStructureId(), page2.getRootPath(), "bar");
+            CmsDetailPageInfo info1 = new CmsDetailPageInfo(page1.getStructureId(), page1.getRootPath(), "foo", "");
+            CmsDetailPageInfo info2 = new CmsDetailPageInfo(page2.getStructureId(), page2.getRootPath(), "bar", "");
             cms.lockResource("/sites/default/.content/.config");
             manager.saveDetailPages(cms, "/sites/default/today", list(info1, info2), new CmsUUID());
             waitForUpdate(false);

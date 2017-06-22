@@ -39,7 +39,13 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  * @since 8.0.0
  */
-public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializable {
+public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializable, I_CmsHasIconClasses {
+
+    /** The big category type icon classes. */
+    public static final String BIG_ICON_CLASSES = CmsGwtConstants.TYPE_ICON_CLASS + "  oc-icon-24-category";
+
+    /** The small category type icon classes. */
+    public static final String SMALL_ICON_CLASSES = CmsGwtConstants.TYPE_ICON_CLASS + "  oc-icon-16-category";
 
     /** The category's base path. */
     private String m_basePath;
@@ -140,6 +146,14 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
     }
 
     /**
+     * @see org.opencms.gwt.shared.I_CmsHasIconClasses#getBigIconClasses()
+     */
+    public String getBigIconClasses() {
+
+        return BIG_ICON_CLASSES;
+    }
+
+    /**
      * Returns the description.<p>
      *
      * @return the description
@@ -187,6 +201,14 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.I_CmsHasIconClasses#getSmallIconClasses()
+     */
+    public String getSmallIconClasses() {
+
+        return SMALL_ICON_CLASSES;
     }
 
     /**

@@ -42,8 +42,10 @@ public class CmsCreatableListItem extends CmsListItem {
     /** The types of creatable sitemap entries. */
     public enum NewEntryType {
         /** A detail page. */
-        detailpage, /** A redirect entry. */
-        redirect, /** A regular entry. */
+        detailpage,
+        /** A redirect entry. */
+        redirect,
+        /** A regular entry. */
         regular
     }
 
@@ -114,6 +116,6 @@ public class CmsCreatableListItem extends CmsListItem {
      */
     public String getTypeName() {
 
-        return m_typeInfo.getTypeName();
+        return m_typeInfo.getResourceType();
     }
 }

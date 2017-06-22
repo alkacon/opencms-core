@@ -16,7 +16,7 @@
 	newresource,
 	accesscontrol?,
 	editoptions?, iconrules?)>
-<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #IMPLIED bigicon CDATA #IMPLIED reference CDATA #IMPLIED elementview CDATA #IMPLIED isview CDATA #IMPLIED name-pattern CDATA #IMPLIED view-order CDATA #IMPLIED>
+<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #IMPLIED bigicon CDATA #IMPLIED smalliconstyle CDATA #IMPLIED bigiconstyle CDATA #IMPLIED reference CDATA #IMPLIED elementview CDATA #IMPLIED isview CDATA #IMPLIED name-pattern CDATA #IMPLIED view-order CDATA #IMPLIED>
 
 
 <!--
@@ -26,7 +26,7 @@
 -->
 <!ELEMENT iconrules (iconrule*)>
 <!ELEMENT iconrule EMPTY>
-<!ATTLIST iconrule extension CDATA #REQUIRED icon CDATA #REQUIRED bigicon CDATA #IMPLIED> 
+<!ATTLIST iconrule extension CDATA #REQUIRED icon CDATA #IMPLIED bigicon CDATA #IMPLIED smalliconstyle CDATA #IMPLIED bigiconstyle CDATA #IMPLIED> 
 
 <!--
 # The URI for the new resource dialog and the ranking is required.

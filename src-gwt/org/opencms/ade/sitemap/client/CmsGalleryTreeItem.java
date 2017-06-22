@@ -43,7 +43,6 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
@@ -142,9 +141,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
      */
     public static CmsListItemWidget createListWidget(CmsGalleryType galleryType) {
 
-        CmsListInfoBean infoBean = new CmsListInfoBean(galleryType.getNiceName(), galleryType.getDescription(), null);
-        CmsListItemWidget result = new CmsListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses(galleryType.getTypeName(), null, false));
+        CmsListItemWidget result = new CmsListItemWidget(galleryType);
         return result;
     }
 
@@ -253,8 +250,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
         }
         CmsListInfoBean infoBean = new CmsListInfoBean(title, galleryFolder.getSitePath(), null);
         CmsListItemWidget result = new CmsGalleryListItemWidget(infoBean);
-        result.setIcon(
-            CmsIconUtil.getResourceIconClasses(galleryFolder.getResourceType(), galleryFolder.getSitePath(), false));
+        result.setIcon(galleryFolder.getIconClasses());
         result.addIconClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -263,17 +259,17 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
                     getSitePath(),
                     new AsyncCallback<CmsClientSitemapEntry>() {
 
-                    public void onFailure(Throwable caught) {
+                        public void onFailure(Throwable caught) {
 
-                        // nothing to do
+                            // nothing to do
 
-                    }
+                        }
 
-                    public void onSuccess(CmsClientSitemapEntry entry) {
+                        public void onSuccess(CmsClientSitemapEntry entry) {
 
-                        showGallery(entry);
-                    }
-                });
+                            showGallery(entry);
+                        }
+                    });
             }
         });
         if ((CmsSitemapView.getInstance().getController().getEntryById(galleryFolder.getStructureId()) == null)
@@ -291,18 +287,18 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
                         getSitePath(),
                         new AsyncCallback<CmsClientSitemapEntry>() {
 
-                        public void onFailure(Throwable caught) {
+                            public void onFailure(Throwable caught) {
 
-                            // nothing to do
-                        }
+                                // nothing to do
+                            }
 
-                        public void onSuccess(CmsClientSitemapEntry editEntry) {
+                            public void onSuccess(CmsClientSitemapEntry editEntry) {
 
-                            CmsGalleryTreeItem.this.handleEdit(editEntry, box.getText());
-                            box.removeFromParent();
-                            titleLabel.setVisible(true);
-                        }
-                    });
+                                CmsGalleryTreeItem.this.handleEdit(editEntry, box.getText());
+                                box.removeFromParent();
+                                titleLabel.setVisible(true);
+                            }
+                        });
                 }
             });
         }

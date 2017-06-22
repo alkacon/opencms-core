@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -1135,7 +1136,17 @@ public class CmsADEConfigData {
                 String rootPath = OpenCms.getADEManager().getRootPath(
                     structureId,
                     getCms().getRequestContext().getCurrentProject().isOnlineProject());
-                CmsDetailPageInfo correctedPage = new CmsDetailPageInfo(structureId, rootPath, page.getType());
+                String iconClasses;
+                if (page.getType().startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
+                    iconClasses = CmsIconUtil.getIconClasses(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION, null, false);
+                } else {
+                    iconClasses = CmsIconUtil.getIconClasses(page.getType(), null, false);
+                }
+                CmsDetailPageInfo correctedPage = new CmsDetailPageInfo(
+                    structureId,
+                    rootPath,
+                    page.getType(),
+                    iconClasses);
                 result.add(page.isInherited() ? correctedPage.copyAsInherited() : correctedPage);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);

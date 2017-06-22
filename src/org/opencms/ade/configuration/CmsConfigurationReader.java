@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -48,6 +49,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -768,7 +770,14 @@ public class CmsConfigurationReader {
             String page = pageLoc.asString(m_cms);
             CmsResource detailPageRes = m_cms.readResource(page);
             CmsUUID id = detailPageRes.getStructureId();
-            CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName);
+            String iconClasses;
+            if (typeName.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
+                iconClasses = CmsIconUtil.getIconClasses(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION, null, false);
+            } else {
+                iconClasses = CmsIconUtil.getIconClasses(typeName, null, false);
+            }
+
+            CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName, iconClasses);
             m_detailPageConfigs.add(detailPage);
         } catch (CmsVfsResourceNotFoundException e) {
             CmsUUID structureId = pageLoc.asId(m_cms);
@@ -776,7 +785,8 @@ public class CmsConfigurationReader {
             CmsDetailPageInfo detailPage = new CmsDetailPageInfo(
                 structureId,
                 m_cms.getSitePath(detailPageRes),
-                typeName);
+                typeName,
+                CmsIconUtil.getIconClasses(typeName, null, false));
             m_detailPageConfigs.add(detailPage);
         }
     }

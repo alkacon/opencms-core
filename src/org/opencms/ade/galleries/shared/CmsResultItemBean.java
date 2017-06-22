@@ -29,8 +29,6 @@ package org.opencms.ade.galleries.shared;
 
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.sort.I_CmsHasPath;
-import org.opencms.gwt.shared.sort.I_CmsHasTitle;
-import org.opencms.gwt.shared.sort.I_CmsHasType;
 import org.opencms.util.CmsStringUtil;
 
 /**
@@ -40,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  *
  * @since 8.0.0
  */
-public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasType {
+public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasPath {
 
     /** The structured id of the resource. */
     private String m_clientId;
@@ -180,16 +178,6 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
             return fieldSubTitle;
         }
         return m_userLastModified + " / " + m_dateLastModified;
-    }
-
-    /**
-     * Returns the resource type name.<p>
-     *
-     * @return the resource type name
-     */
-    public String getType() {
-
-        return getResourceType();
     }
 
     /**

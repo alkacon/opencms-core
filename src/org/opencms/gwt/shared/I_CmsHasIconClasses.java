@@ -25,60 +25,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.shared;
-
-import org.opencms.gwt.shared.CmsListInfoBean;
-
-import java.util.List;
+package org.opencms.gwt.shared;
 
 /**
- * The gallery type bean.<p>
+ * Interface for elements with icons.<p>
  */
-public class CmsGalleryType extends CmsListInfoBean {
-
-    /** The gallery content type names. */
-    private List<String> m_contentTypeNames;
-
-    /** The resource type id. */
-    private int m_typeId;
+public interface I_CmsHasIconClasses {
 
     /**
-     * Returns the gallery content type names.<p>
+     * Returns the big icon CSS classes.<p>
      *
-     * @return the gallery content type names
+     * @return the big icon CSS classes
      */
-    public List<String> getContentTypeNames() {
-
-        return m_contentTypeNames;
-    }
+    String getBigIconClasses();
 
     /**
-     * Returns the type id.<p>
+     * Returns the small icon CSS classes.<p>
      *
-     * @return the type id
+     * @return the small icon CSS classes
      */
-    public int getTypeId() {
-
-        return m_typeId;
-    }
-
-    /**
-     * Sets the gallery content type names.<p>
-     *
-     * @param contentTypeNames the gallery content type names to set
-     */
-    public void setContentTypeNames(List<String> contentTypeNames) {
-
-        m_contentTypeNames = contentTypeNames;
-    }
-
-    /**
-     * Sets the type id.<p>
-     *
-     * @param typeId the type id to set
-     */
-    public void setTypeId(int typeId) {
-
-        m_typeId = typeId;
-    }
+    String getSmallIconClasses();
 }

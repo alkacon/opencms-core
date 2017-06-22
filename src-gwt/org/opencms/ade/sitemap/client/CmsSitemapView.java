@@ -82,9 +82,9 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.client.util.CmsScriptCallbackHelper;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
@@ -329,10 +329,12 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
         CmsListInfoBean localRootInfo = new CmsListInfoBean(localLabel, localSubtitle, null);
         localRootInfo.setResourceType("category");
+        localRootInfo.setBigIconClasses(CmsCategoryBean.BIG_ICON_CLASSES);
         final CmsTreeItem localRoot = new CmsTreeItem(true, new CmsListItemWidget(localRootInfo));
 
         CmsListInfoBean nonlocalRootInfo = new CmsListInfoBean(nonlocalLabel, nonlocalSubtitle, null);
         nonlocalRootInfo.setResourceType("category");
+        nonlocalRootInfo.setBigIconClasses(CmsCategoryBean.BIG_ICON_CLASSES);
         final CmsTreeItem nonlocalRoot = new CmsTreeItem(true, new CmsListItemWidget(nonlocalRootInfo));
 
         m_categoryTree.add(localRoot);
@@ -445,7 +447,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
             public int compare(CmsGalleryType o1, CmsGalleryType o2) {
 
-                return o1.getNiceName().compareTo(o2.getNiceName());
+                return o1.getTitle().compareTo(o2.getTitle());
             }
         });
         m_toolbar.setGalleryTypes(types);
@@ -463,7 +465,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                 createButton.setHoverbar(hoverbar);
                 hoverbar.setAlwaysVisible();
             }
-            m_galleryTypeItems.put(type.getTypeName(), typeItem);
+            m_galleryTypeItems.put(type.getResourceType(), typeItem);
             if (galleries.get(type).isEmpty()) {
                 // hide all empty gallery types
                 typeItem.getElement().getStyle().setDisplay(Display.NONE);
@@ -696,21 +698,17 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      */
     public String getIconForEntry(CmsClientSitemapEntry entry) {
 
-        if (!entry.isSubSitemapType() && entry.isNavigationLevelType()) {
-            return CmsIconUtil.getResourceIconClasses(CmsGwtConstants.TYPE_NAVLEVEL, false);
-        }
-        String iconClass = CmsIconUtil.getResourceIconClasses(entry.getResourceTypeName(), entry.getSitePath(), false);
+        String result;
         if (isNavigationMode()) {
             if (m_controller.isDetailPage(entry.getId())) {
-                iconClass = CmsIconUtil.getResourceIconClasses(
-                    m_controller.getDetailPageInfo(entry.getId()).getIconType(),
-                    false);
-            } else if (!entry.isSubSitemapType()
-                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())) {
-                iconClass = CmsIconUtil.getResourceIconClasses(entry.getDefaultFileType(), false);
+                result = m_controller.getDetailPageInfo(entry.getId()).getIconClasses();
+            } else {
+                result = entry.getNavModeIcon();
             }
+        } else {
+            result = entry.getVfsModeIcon();
         }
-        return iconClass;
+        return result;
     }
 
     /**
@@ -1079,7 +1077,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             info.getDescription(),
             info.getSiteHost(),
             info.getSiteLocale(),
-            CmsIconUtil.getResourceIconClasses(m_controller.getData().getRoot().getResourceTypeName(), false));
+            m_controller.getData().getRoot().getVfsModeIcon());
 
         FlowPanel headerContainer = new FlowPanel();
         m_headerContainer = headerContainer;
@@ -1525,13 +1523,16 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
             case undelete:
             case create:
-                String typeName = m_controller.getGalleryType(new Integer(change.getNewResourceTypeId())).getTypeName();
+                String typeName = m_controller.getGalleryType(
+                    new Integer(change.getNewResourceTypeId())).getResourceType();
                 if (typeName != null) {
                     CmsGalleryFolderEntry galleryFolder = new CmsGalleryFolderEntry();
                     galleryFolder.setSitePath(change.getSitePath());
                     galleryFolder.setResourceType(typeName);
                     galleryFolder.setStructureId(change.getEntryId());
                     galleryFolder.setOwnProperties(change.getOwnProperties());
+                    galleryFolder.setIconClasses(
+                        m_controller.getGalleryType(new Integer(change.getNewResourceTypeId())).getBigIconClasses());
                     CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
                     CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
                     m_galleryTypeItems.get(typeName).addChild(folderItem);
@@ -1584,7 +1585,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
             case undelete:
             case create:
-                String typeName = m_controller.getGalleryType(new Integer(change.getNewResourceTypeId())).getTypeName();
+                String typeName = m_controller.getGalleryType(
+                    new Integer(change.getNewResourceTypeId())).getResourceType();
                 if (typeName != null) {
                     CmsModelPageEntry modelPage = new CmsModelPageEntry();
                     modelPage.setSitePath(change.getSitePath());

@@ -50,6 +50,7 @@ import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.i18n.CmsEncoder;
@@ -1561,6 +1562,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             title,
             cms.getSitePath(file),
             typeName,
+            CmsIconUtil.getIconClasses(typeName, file.getName(), false),
             performedAutoCorrection,
             autoUnlock,
             getChangeHandlerScopes(content.getContentDefinition()));

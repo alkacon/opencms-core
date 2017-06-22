@@ -60,7 +60,6 @@ import org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog;
 import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
@@ -1058,9 +1057,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
         CmsListInfoBean infoBean = createInfoBean(file);
         CmsListItemWidget listItemWidget = new CmsListItemWidget(infoBean);
-        String icon = CmsIconUtil.getResourceIconClasses(getResourceType(file), file.getFileName(), false);
-        listItemWidget.setIcon(icon);
-
+        listItemWidget.setIcon(CmsCoreProvider.get().getResourceTypeIcon(file));
         CmsCheckBox check = new CmsCheckBox();
         check.setChecked(false);
         if (!invalid && !isTooLarge && !existingDeleted) {

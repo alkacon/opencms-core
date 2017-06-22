@@ -182,6 +182,8 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
                 m_resInfo.getNiceName(),
                 m_resInfo.getSmallIcon(),
                 m_resInfo.getBigIcon(),
+                null,
+                null,
                 "xmlcontent",
                 null,
                 "false",

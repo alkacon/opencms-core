@@ -25,60 +25,54 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.shared;
+package org.opencms.gwt.shared;
 
-import org.opencms.gwt.shared.CmsListInfoBean;
-
-import java.util.List;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The gallery type bean.<p>
+ * A bean carrying icon CSS class information.<p>
  */
-public class CmsGalleryType extends CmsListInfoBean {
+public class CmsIconBean implements I_CmsHasIconClasses, IsSerializable {
 
-    /** The gallery content type names. */
-    private List<String> m_contentTypeNames;
+    /** The big icon rules. */
+    private String m_bigIconClasses;
 
-    /** The resource type id. */
-    private int m_typeId;
+    /** The small icon rules. */
+    private String m_smallIconClasses;
 
     /**
-     * Returns the gallery content type names.<p>
-     *
-     * @return the gallery content type names
+     * @see org.opencms.gwt.shared.I_CmsHasIconClasses#getBigIconClasses()
      */
-    public List<String> getContentTypeNames() {
+    public String getBigIconClasses() {
 
-        return m_contentTypeNames;
+        return m_bigIconClasses;
     }
 
     /**
-     * Returns the type id.<p>
-     *
-     * @return the type id
+     * @see org.opencms.gwt.shared.I_CmsHasIconClasses#getSmallIconClasses()
      */
-    public int getTypeId() {
+    public String getSmallIconClasses() {
 
-        return m_typeId;
+        return m_smallIconClasses;
     }
 
     /**
-     * Sets the gallery content type names.<p>
+     * Sets the big icon CSS classes.<p>
      *
-     * @param contentTypeNames the gallery content type names to set
+     * @param bigIconClasses the big icon CSS classes to set
      */
-    public void setContentTypeNames(List<String> contentTypeNames) {
+    public void setBigIconClasses(String bigIconClasses) {
 
-        m_contentTypeNames = contentTypeNames;
+        m_bigIconClasses = bigIconClasses;
     }
 
     /**
-     * Sets the type id.<p>
+     * Sets the small icon CSS classes.<p>
      *
-     * @param typeId the type id to set
+     * @param smallIconClasses the small icon CSS classes to set
      */
-    public void setTypeId(int typeId) {
+    public void setSmallIconClasses(String smallIconClasses) {
 
-        m_typeId = typeId;
+        m_smallIconClasses = smallIconClasses;
     }
 }

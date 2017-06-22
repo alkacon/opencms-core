@@ -62,10 +62,10 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtService;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -519,6 +519,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             rootPath,
             structureId,
             title,
+            CmsIconUtil.getIconClasses(
+                OpenCms.getResourceManager().getResourceType(resource).getTypeName(),
+                resource.getName(),
+                true),
             isRoot,
             isEditable,
             children,
@@ -670,11 +674,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 result.setTitle(messageBundle.key(Messages.GUI_EXTERNAL_LINK_0));
                 result.setSubTitle("");
                 result.setType(CmsResourceTypePointer.getStaticTypeName());
+                result.setBigIconClasses(
+                    CmsIconUtil.getIconClasses(CmsResourceTypePointer.getStaticTypeName(), null, false));
             } else if (CmsStaticResourceHandler.isStaticResourceUri(linkPath)) {
                 result = new CmsResultItemBean();
                 result.setTitle(messageBundle.key(Messages.GUI_STATIC_RESOURCE_0));
                 result.setSubTitle(CmsStaticResourceHandler.removeStaticResourcePrefix(linkPath));
                 result.setType(CmsResourceTypeBinary.getStaticTypeName());
+                result.setBigIconClasses(
+                    CmsIconUtil.getIconClasses(CmsResourceTypeBinary.getStaticTypeName(), null, false));
             } else {
                 boolean notFound = false;
                 String path = linkPath;
@@ -717,6 +725,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         isInTimeRange = selectedResource.isReleasedAndNotExpired(currentTime);
                         if (selectedResource.isFolder()) {
                             result = new CmsResultItemBean();
+
                             CmsJspNavElement folderNav = new CmsJspNavBuilder(rootCms).getNavigationForResource(
                                 selectedResource.getRootPath(),
                                 CmsResourceFilter.IGNORE_EXPIRATION);
@@ -730,11 +739,22 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                                     log(e.getMessage(), e);
                                 }
                             }
+                            result.setBigIconClasses(
+                                CmsIconUtil.getIconClasses(
+                                    OpenCms.getResourceManager().getResourceType(selectedResource).getTypeName(),
+                                    path,
+                                    false));
                             CmsResource resourceForType = defaultFileResource != null
                             ? defaultFileResource
                             : selectedResource;
                             result.setType(OpenCms.getResourceManager().getResourceType(resourceForType).getTypeName());
-
+                            if (defaultFileResource != null) {
+                                result.setSmallIconClasses(
+                                    CmsIconUtil.getIconClasses(
+                                        OpenCms.getResourceManager().getResourceType(defaultFileResource).getTypeName(),
+                                        defaultFileResource.getName(),
+                                        true));
+                            }
                             String title = folderNav.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
                             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                                 title = folderNav.getTitle();
@@ -782,9 +802,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     result.setTitle(messageBundle.key(Messages.GUI_RESOURCE_NOT_FOUND_0));
                     result.setSubTitle("");
                     result.setType(CmsIconUtil.TYPE_RESOURCE_NOT_FOUND);
+                    result.setBigIconClasses(
+                        CmsIconUtil.getIconClasses(CmsIconUtil.TYPE_RESOURCE_NOT_FOUND, null, false));
                 } else if (!isInTimeRange && (result != null)) {
                     result.setType(CmsIconUtil.TYPE_RESOURCE_NOT_FOUND);
                     result.setTitle(messageBundle.key(Messages.GUI_RESOURCE_OUT_OF_TIME_RANGE_1, result.getTitle()));
+                    result.setBigIconClasses(
+                        CmsIconUtil.getIconClasses(CmsIconUtil.TYPE_RESOURCE_NOT_FOUND, null, false));
                 }
             }
         } catch (Throwable t) {
@@ -1573,8 +1597,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 // title
                 bean.setTitle(title);
                 // gallery type name
-                bean.setType(tInfo.getResourceType().getTypeName());
+                bean.setResourceType(tInfo.getResourceType().getTypeName());
                 bean.setEditable(isEditable(getCmsObject(), res));
+                bean.setBigIconClasses(
+                    CmsIconUtil.getIconClasses(tInfo.getResourceType().getTypeName(), sitePath, false));
                 list.add(bean);
             }
         }
@@ -1665,10 +1691,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setRawTitle(rawTitle);
         // resource type
         bean.setType(sResult.getResourceType());
+        bean.setBigIconClasses(CmsIconUtil.getIconClasses(sResult.getResourceType(), path, false));
         CmsResource resultResource = cms.readResource(
             new CmsUUID(sResult.getStructureId()),
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-        bean.setDetailResourceType(CmsResourceIcon.getDefaultFileOrDetailType(cms, resultResource));
+        String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resultResource);
+        if (detailType != null) {
+            bean.setSmallIconClasses(CmsIconUtil.getIconClasses(detailType, null, true));
+        }
         // structured id
         bean.setClientId(sResult.getStructureId());
 
@@ -1862,6 +1892,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             rootPath,
             resource.getStructureId(),
             title,
+            CmsIconUtil.getIconClasses(
+                OpenCms.getResourceManager().getResourceType(resource).getTypeName(),
+                resource.getName(),
+                true),
             isRoot,
             isEditable(cms, resource),
             childBeans,
@@ -1956,12 +1990,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         CmsResourceTypeBean result = new CmsResourceTypeBean();
 
-        result.setType(type.getTypeName());
+        result.setResourceType(type.getTypeName());
         result.setTypeId(type.getTypeId());
         Locale wpLocale = getWorkplaceLocale();
         // type title and subtitle
         result.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
-        result.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
+        result.setSubTitle(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
+        result.setBigIconClasses(CmsIconUtil.getIconClasses(type.getTypeName(), null, false));
         // gallery id of corresponding galleries
         ArrayList<String> galleryNames = new ArrayList<String>();
         Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
@@ -2756,7 +2791,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } else {
             type = OpenCms.getResourceManager().getResourceType(ownResource.getTypeId()).getTypeName();
         }
-        boolean isNavLevel = ownResource.isFolder() && navElement.isNavigationLevel();
         // make sure not to show ??? NavText ???
         String title = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT))) {
@@ -2794,10 +2828,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             type,
             ownResource.isFolder(),
             isRoot,
-            navElement.isHiddenNavigationEntry(),
-            isNavLevel);
+            navElement.isHiddenNavigationEntry());
         result.setSiteRoot(OpenCms.getSiteManager().getSiteRoot(ownResource.getRootPath()));
-
+        result.setBigIconClasses(
+            CmsIconUtil.getIconClasses(
+                type,
+                defaultFileResource != null ? defaultFileResource.getName() : ownResource.getName(),
+                false));
+        result.setSmallIconClasses(
+            CmsIconUtil.getIconClasses(
+                type,
+                defaultFileResource != null ? defaultFileResource.getName() : ownResource.getName(),
+                true));
         if (checkHasChildren && noChildren) {
             result.setChildren(new ArrayList<CmsSitemapEntryBean>());
         }

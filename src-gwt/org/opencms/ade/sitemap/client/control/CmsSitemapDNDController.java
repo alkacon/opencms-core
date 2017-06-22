@@ -320,9 +320,10 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         final boolean appendSlash;
         switch (createItem.getNewEntryType()) {
             case detailpage:
-                name = CmsDetailPageInfo.removeFunctionPrefix(typeInfo.getTypeName());
+                name = CmsDetailPageInfo.removeFunctionPrefix(typeInfo.getResourceType());
                 appendSlash = true;
-                entry.setDetailpageTypeName(typeInfo.getTypeName());
+                entry.setDetailpageTypeName(typeInfo.getResourceType());
+                entry.setVfsModeIcon(typeInfo.getBigIconClasses());
                 if (typeInfo.isFunction()) {
 
                     CmsClientProperty titleProp = new CmsClientProperty(
@@ -340,16 +341,17 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                 entry.setResourceTypeName("folder");
                 break;
             case redirect:
-                name = typeInfo.getTypeName();
+                name = typeInfo.getResourceType();
                 entry.setEntryType(EntryType.redirect);
-
-                entry.setResourceTypeName(typeInfo.getTypeName());
+                entry.setVfsModeIcon(typeInfo.getBigIconClasses());
+                entry.setResourceTypeName(typeInfo.getResourceType());
                 appendSlash = false;
                 break;
             default:
                 name = CmsSitemapController.NEW_ENTRY_NAME;
                 appendSlash = true;
                 entry.setResourceTypeName("folder");
+                entry.setVfsModeIcon(typeInfo.getBigIconClasses());
         }
 
         m_controller.ensureUniqueName(parent, name, new I_CmsSimpleCallback<String>() {

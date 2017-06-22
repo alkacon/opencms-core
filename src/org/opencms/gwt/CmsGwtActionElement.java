@@ -37,9 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -113,13 +111,12 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      *
      * @param cms the CMS context
      * @param coreData the core data to write into the page
-     * @param iconCssClassPrefix the prefix for icon css class rules
      *
      * @return the data
      *
      * @throws Exception if something goes wrong
      */
-    public static String exportCommon(CmsObject cms, CmsCoreData coreData, String iconCssClassPrefix) throws Exception {
+    public static String exportCommon(CmsObject cms, CmsCoreData coreData) throws Exception {
 
         // determine the workplace locale
         String wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage();
@@ -159,8 +156,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             coreData);
         sb.append(prefetchedData);
         //       sb.append(ClientMessages.get().export(wpLocale));
-        sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(cms, iconCssClassPrefix)).append(
-            "\");\n </style>\n");
+        sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(cms)).append("\");\n </style>\n");
         // append the workplace locale information
         sb.append("<meta name=\"gwt:property\" content=\"locale=").append(wpLocale).append("\" />\n");
         return sb.toString();
@@ -257,21 +253,12 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      * Generates the link to the icon CSS JSP, and appends a "prefix" request parameter with the given value.<p>
      *
      * @param cms the CMS context
-     * @param prefix the value to put into the "prefix" request parameter
      *
      * @return the link to the icon CSS
      */
-    private static String iconCssLink(CmsObject cms, String prefix) {
+    private static String iconCssLink(CmsObject cms) {
 
-        String param = "";
-        if (!CmsStringUtil.isEmpty(prefix)) {
-            try {
-                param = "?prefix=" + URLEncoder.encode(prefix, OpenCms.getSystemInfo().getDefaultEncoding());
-            } catch (UnsupportedEncodingException e) {
-                //ignore, default encoding should be available
-            }
-        }
-        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, ICON_CSS_URI) + param;
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, ICON_CSS_URI);
     }
 
     /**
@@ -296,22 +283,21 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     public String export() throws Exception {
 
-        return export(null, true);
+        return export(true);
     }
 
     /**
      * Returns the serialized data for the core provider wrapped into a script tag.<p>
      *
-     * @param iconCssClassPrefix the prefix for icon css class rules
      * @param includeFontCss <code>true</code> to include the OpenCms font CSS, not necessary in case VAADIN theme is loaded also
      *
      * @return the data
      *
      * @throws Exception if something goes wrong
      */
-    public String export(String iconCssClassPrefix, boolean includeFontCss) throws Exception {
+    public String export(boolean includeFontCss) throws Exception {
 
-        StringBuffer buffer = new StringBuffer(exportCommon(getCmsObject(), getCoreData(), iconCssClassPrefix));
+        StringBuffer buffer = new StringBuffer(exportCommon(getCmsObject(), getCoreData()));
         buffer.append("\n<style type=\"text/css\">\n @import url(\"");
         if (includeFontCss) {
             buffer.append(getFontIconCssLink()).append("\");\n @import url(\"");
@@ -330,20 +316,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public String exportAll() throws Exception {
 
         return export();
-    }
-
-    /**
-     * Exports everything, using the given CSS selector prefix.<p>
-     *
-     * @param cssIconClassPrefix the CSS selector prefix
-     *
-     * @return the exported data
-     *
-     * @throws Exception if something goes wrong
-     */
-    public String exportAll(String cssIconClassPrefix) throws Exception {
-
-        return export(cssIconClassPrefix, true);
     }
 
     /**

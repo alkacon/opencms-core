@@ -27,19 +27,16 @@
 
 package org.opencms.ade.galleries.shared;
 
-import org.opencms.gwt.shared.sort.I_CmsHasTitle;
-import org.opencms.gwt.shared.sort.I_CmsHasType;
+import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Bean representing resource type information.<p>
  *
  * @since 8.0.0
  */
-public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSerializable {
+public class CmsResourceTypeBean extends CmsListInfoBean {
 
     /** Enum for data source from which resource type bean was constructed. */
     public enum Origin {
@@ -71,9 +68,6 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     /** The deactivated flag. */
     private boolean m_deactivated;
 
-    /** The description. */
-    private String m_description;
-
     /** An array of gallery type names associated with this content type. */
     private ArrayList<String> m_galleryTypeNames;
 
@@ -85,12 +79,6 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /** The name of the preview provider. */
     private String m_previewProviderName;
-
-    /** The title. */
-    private String m_title;
-
-    /** The resource type name as a unique id. */
-    private String m_type;
 
     /** The resource type id. */
     private int m_typeId;
@@ -115,7 +103,7 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
      */
     public String getDescription() {
 
-        return m_description;
+        return getSubTitle();
     }
 
     /**
@@ -156,26 +144,6 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public String getPreviewProviderName() {
 
         return m_previewProviderName;
-    }
-
-    /**
-     * Returns the title.<p>
-     *
-     * @return the title
-     */
-    public String getTitle() {
-
-        return m_title;
-    }
-
-    /**
-     * Returns the resource type name.<p>
-     *
-     * @return the resource type name
-     */
-    public String getType() {
-
-        return m_type;
     }
 
     /**
@@ -249,16 +217,6 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     }
 
     /**
-     * Sets the description.<p>
-     *
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-
-        m_description = description;
-    }
-
-    /**
      * Sets the list with the gallery types names associated with this resource type.<p>
      *
      * @param galleryNames the list with gallery type names to set
@@ -296,26 +254,6 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public void setPreviewProviderName(String previewProviderName) {
 
         m_previewProviderName = previewProviderName;
-    }
-
-    /**
-     * Sets the title.<p>
-     *
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-
-        m_title = title;
-    }
-
-    /**
-     * Sets the resource type name.<p>
-     *
-     * @param type the resource type name to set
-     */
-    public void setType(String type) {
-
-        m_type = type;
     }
 
     /**

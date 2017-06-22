@@ -78,6 +78,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsDefaultResourceStatusProvider;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsGwtService;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -689,6 +690,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             element.setClientId(newClientId);
             element.setSitePath(cms.getSitePath(newResource));
             element.setResourceType(resourceType);
+            element.setIconClasses(CmsIconUtil.getIconClasses(resourceType, null, false));
             element.setCreateNew(newBean.isCreateNew());
         } catch (CmsException e) {
             error(e);

@@ -57,11 +57,23 @@ import org.apache.commons.logging.Log;
  */
 public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettings> {
 
-    /** File name for the big default icon. */
-    public static final String DEFAULT_BIG_ICON = "document_big.png";
+    /** The default big file type icon style class. */
+    public static final String ICON_STYLE_DEFAULT_BIG = "oc-icon-24-default";
 
-    /** File name for the normal default icon. */
-    public static final String DEFAULT_NORMAL_ICON = "document.png";
+    /** The default small file type icon style class. */
+    public static final String ICON_STYLE_DEFAULT_SMALL = "oc-icon-16-default";
+
+    /** The model group reuse big file type icon style class. */
+    public static final String ICON_STYLE_MODEL_GROUP_REUSE_BIG = "oc-icon-24-modelgroup_reuse";
+
+    /** The model group reuse small file type icon style class. */
+    public static final String ICON_STYLE_MODEL_GROUP_REUSE_SMALL = "oc-icon-16-modelgroup_reuse";
+
+    /** The nav level big file type icon style class. */
+    public static final String ICON_STYLE_NAV_LEVEL_BIG = "oc-icon-24-navlevel";
+
+    /** The nav level small file type icon style class. */
+    public static final String ICON_STYLE_NAV_LEVEL_SMALL = "oc-icon-16-navlevel";
 
     /** The default order start value for context menu entries. */
     public static final int ORDER_VALUE_DEFAULT_START = 100000;
@@ -125,6 +137,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     /** The name of the big icon for this explorer type. */
     private String m_bigIcon;
 
+    /** The big icon CSS style class. */
+    private String m_bigIconStyle;
+
     /** The context menu. */
     private CmsExplorerContextMenu m_contextMenu;
 
@@ -184,6 +199,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /** The show in navigation flag. */
     private boolean m_showNavigation;
+
+    /** The small icon CSS style class. */
+    private String m_smallIconStyle;
 
     /** The title key. */
     private String m_titleKey;
@@ -255,10 +273,12 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      * @param extension the extension for the icon rule
      * @param icon the small icon
      * @param bigIcon the big icon
+     * @param smallIconStyle the small icon CSS style class
+     * @param bigIconStyle the big icon CSS style class
      */
-    public void addIconRule(String extension, String icon, String bigIcon) {
+    public void addIconRule(String extension, String icon, String bigIcon, String smallIconStyle, String bigIconStyle) {
 
-        CmsIconRule rule = new CmsIconRule(extension, icon, bigIcon);
+        CmsIconRule rule = new CmsIconRule(extension, icon, bigIcon, smallIconStyle, bigIconStyle);
         m_iconRules.put(extension, rule);
     }
 
@@ -405,13 +425,13 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     }
 
     /**
-     * Returns the biggest icon available.<p>
+     * Returns the big icon CSS style class.<p>
      *
-     * @return the biggest icon available
+     * @return the big icon style
      */
-    public String getBigIconIfAvailable() {
+    public String getBigIconStyle() {
 
-        return m_bigIcon != null ? m_bigIcon : (m_icon != null ? m_icon : DEFAULT_BIG_ICON);
+        return m_bigIconStyle;
     }
 
     /**
@@ -464,11 +484,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      */
     public String getIcon() {
 
-        if (m_icon != null) {
-
-            return m_icon;
-        }
-        return DEFAULT_NORMAL_ICON;
+        return m_icon;
     }
 
     /**
@@ -616,6 +632,16 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     public String getReference() {
 
         return m_reference;
+    }
+
+    /**
+     * Returns the small icon CSS style class.<p>
+     *
+     * @return the small icon style
+     */
+    public String getSmallIconStyle() {
+
+        return m_smallIconStyle;
     }
 
     /**
@@ -803,6 +829,16 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     public void setBigIcon(String bigIcon) {
 
         m_bigIcon = bigIcon;
+    }
+
+    /**
+     * Sets the big icon CSS style class.<p>
+     *
+     * @param bigIconStyle the big icon style to set
+     */
+    public void setBigIconStyle(String bigIconStyle) {
+
+        m_bigIconStyle = bigIconStyle;
     }
 
     /**
@@ -1018,6 +1054,16 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     }
 
     /**
+     * Sets the small icon CSS style class.<p>
+     *
+     * @param smallIconStyle the small icon CSS style class to set
+     */
+    public void setSmallIconStyle(String smallIconStyle) {
+
+        m_smallIconStyle = smallIconStyle;
+    }
+
+    /**
      * Sets the titleKey.<p>
      *
      * @param titleKey the titleKey to set
@@ -1051,6 +1097,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      * @param key the key name of the explorer type setting
      * @param icon the icon path and file name of the explorer type setting
      * @param bigIcon the file name of the big icon
+     * @param smallIconStyle the small icon CSS style class
+     * @param bigIconStyle the big icon CSS style class
      * @param reference the reference of the explorer type setting
      * @param elementView the element view
      * @param isView 'true' if this type represents an element view
@@ -1062,6 +1110,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         String key,
         String icon,
         String bigIcon,
+        String smallIconStyle,
+        String bigIconStyle,
         String reference,
         String elementView,
         String isView,
@@ -1072,6 +1122,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         setKey(key);
         setIcon(icon);
         setBigIcon(bigIcon);
+        setSmallIconStyle(smallIconStyle);
+        setBigIconStyle(bigIconStyle);
         setReference(reference);
         setElementView(elementView);
         try {

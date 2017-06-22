@@ -364,7 +364,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 publishOptions.getParameters().get(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
             addContent = Boolean.parseBoolean(
                 publishOptions.getParameters().get(CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
-        } catch (@SuppressWarnings("unused") Exception e) {
+        } catch (Exception e) {
             // ignore; enableAddContents remains the default value
         }
         m_checkboxAddContents.setVisible(enableAddContents);
@@ -523,8 +523,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             String parentPath = CmsResource.getParentFolder(pubResource.getName());
             CmsPublishResource parent = m_model.getPublishResourcesByPath().get(parentPath);
             if (parent != null) {
-                boolean parentIsNew = parent.getState().isNew();
-                boolean parentIsDeleted = parent.getState().isDeleted();
+                boolean parentIsNew = parent.getResourceState().isNew();
+                boolean parentIsDeleted = parent.getResourceState().isDeleted();
                 if (parentIsNew || parentIsDeleted) {
                     if (!resourceIds.contains(parent.getId())) {
                         String title = Messages.get().key(Messages.ERR_CANT_PUBLISH_RESOURCE_TITLE_0);

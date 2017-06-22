@@ -45,6 +45,9 @@ public class CmsDetailPageInfo implements Serializable {
     /** ID for serialization. */
     private static final long serialVersionUID = 7714334294682534900L;
 
+    /** The resource icon style classes. */
+    private String m_iconClasses;
+
     /** The id of the detail page. */
     private CmsUUID m_id;
 
@@ -63,12 +66,14 @@ public class CmsDetailPageInfo implements Serializable {
      * @param id the id of the detail page
      * @param uri the original URI of the page
      * @param type the resource type for which the detail page is used
+     * @param iconClasses the resource icon style classes
      */
-    public CmsDetailPageInfo(CmsUUID id, String uri, String type) {
+    public CmsDetailPageInfo(CmsUUID id, String uri, String type, String iconClasses) {
 
         m_id = id;
         m_type = type;
         m_uri = uri;
+        m_iconClasses = iconClasses;
     }
 
     /**
@@ -98,7 +103,7 @@ public class CmsDetailPageInfo implements Serializable {
      */
     public CmsDetailPageInfo copyAsInherited() {
 
-        CmsDetailPageInfo result = new CmsDetailPageInfo(m_id, m_uri, m_type);
+        CmsDetailPageInfo result = new CmsDetailPageInfo(m_id, m_uri, m_type, m_iconClasses);
         result.m_inherited = true;
         return result;
     }
@@ -125,6 +130,16 @@ public class CmsDetailPageInfo implements Serializable {
     public String getDisplayType() {
 
         return m_type != null ? removeFunctionPrefix(m_type) : "";
+    }
+
+    /**
+     * Returns the resource icon style classes.<p>
+     *
+     * @return the resource icon style classes
+     **/
+    public String getIconClasses() {
+
+        return m_iconClasses;
     }
 
     /**

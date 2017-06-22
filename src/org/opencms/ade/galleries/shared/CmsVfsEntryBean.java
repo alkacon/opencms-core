@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.gwt.shared.I_CmsHasIconClasses;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -38,10 +39,13 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * Represents a single VFS resource entry for use by the VFS tab of the galleries.<p>
  */
-public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<CmsVfsEntryBean> {
+public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<CmsVfsEntryBean>, I_CmsHasIconClasses {
 
     /** Flag to indicate if the user has write permissions to the folder. */
     private boolean m_editable;
+
+    /** The small folder icon classes. */
+    private String m_iconClasses;
 
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
@@ -70,6 +74,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
      * @param rootPath the root path
      * @param structureId the structure id
      * @param title the folder title
+     * @param iconClasses the resource icon classes
      * @param isRoot flag indicating whether this is entry should be displayed at the top level of the tree
      * @param editable <code>true</code> if the user has write permissions to the folder
      * @param preloadedChildren the preloaded child nodes
@@ -79,6 +84,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
         String rootPath,
         CmsUUID structureId,
         String title,
+        String iconClasses,
         boolean isRoot,
         boolean editable,
         List<CmsVfsEntryBean> preloadedChildren,
@@ -90,6 +96,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
         m_isRoot = isRoot;
         m_editable = editable;
         m_title = title;
+        m_iconClasses = iconClasses;
         m_isSearchMatch = isMatch;
         m_preloadedChildren = preloadedChildren;
     }
@@ -111,6 +118,15 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
             m_preloadedChildren = new ArrayList<CmsVfsEntryBean>();
         }
         m_preloadedChildren.add(child);
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.I_CmsHasIconClasses#getBigIconClasses()
+     */
+    public String getBigIconClasses() {
+
+        // not needed
+        return null;
     }
 
     /**
@@ -161,6 +177,14 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
     public String getSiteRoot() {
 
         return m_siteRoot;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.I_CmsHasIconClasses#getSmallIconClasses()
+     */
+    public String getSmallIconClasses() {
+
+        return m_iconClasses;
     }
 
     /**

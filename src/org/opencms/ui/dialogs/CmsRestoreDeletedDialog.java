@@ -30,6 +30,8 @@ package org.opencms.ui.dialogs;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeUnknownFile;
+import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.main.CmsException;
@@ -40,8 +42,8 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -280,12 +282,16 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
                 org.opencms.ui.Messages.GUI_RESTOREDELETED_DATE_VERSION_2,
                 CmsVfsService.formatDateTime(cms, deleted.getDateLastModified()),
                 "" + deleted.getVersion());
-            String iconPath = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                deleted.isFile() ? "unknown_file" : "unknown_folder").getBigIconIfAvailable();
-            if (explorerType != null) {
-                iconPath = CmsWorkplace.RES_PATH_FILETYPES + explorerType.getBigIconIfAvailable();
+            if (explorerType == null) {
+                explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    deleted.isFile()
+                    ? CmsResourceTypeUnknownFile.RESOURCE_TYPE_NAME
+                    : CmsResourceTypeUnknownFolder.RESOURCE_TYPE_NAME);
             }
-            CmsResourceInfo info = new CmsResourceInfo(title, subtitle, CmsWorkplace.getResourceUri(iconPath));
+            CmsResourceInfo info = new CmsResourceInfo(
+                title,
+                subtitle,
+                CmsResourceUtil.getBigIconResource(explorerType, deleted.getName()));
             info.setWidth("100%");
             HorizontalLayout hl = new HorizontalLayout();
             hl.setWidth("100%");

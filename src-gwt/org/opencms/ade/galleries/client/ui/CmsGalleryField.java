@@ -55,7 +55,6 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -670,7 +669,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             OpenCloseHandler handler = new OpenCloseHandler();
             widget.addCloseHandler(handler);
             widget.addOpenHandler(handler);
-            widget.setIcon(CmsIconUtil.getResourceIconClasses(info.getType(), info.getPath(), false));
             m_resourceInfoPanel.add(widget);
             int width = m_resourceInfoPanel.getOffsetWidth();
             if (width > 0) {
@@ -834,39 +832,39 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * @param element the drop zone element
      */
     private native void initUploadZone(JavaScriptObject element)/*-{
-		// check for file api support
-		if ((typeof FileReader == 'function' || typeof FileReader == 'object')
-				&& (typeof FormData == 'function' || typeof FormData == 'object')) {
-			var self = this;
+        // check for file api support
+        if ((typeof FileReader == 'function' || typeof FileReader == 'object')
+                && (typeof FormData == 'function' || typeof FormData == 'object')) {
+            var self = this;
 
-			function dragover(event) {
-				event.stopPropagation();
-				event.preventDefault();
-				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
-			}
+            function dragover(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
+            }
 
-			function dragleave(event) {
-				event.stopPropagation();
-				event.preventDefault();
-				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
-			}
+            function dragleave(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+            }
 
-			function drop(event) {
-				event.preventDefault();
-				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
-				if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget != null) {
-					var dt = event.dataTransfer;
-					var files = dt.files;
-					self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
-				}
-			}
+            function drop(event) {
+                event.preventDefault();
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+                if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget != null) {
+                    var dt = event.dataTransfer;
+                    var files = dt.files;
+                    self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+                }
+            }
 
-			element.addEventListener("dragover", dragover, false);
-			element.addEventListener("dragexit", dragleave, false);
-			element.addEventListener("dragleave", dragleave, false);
-			element.addEventListener("dragend", dragleave, false);
-			element.addEventListener("drop", drop, false);
-		}
+            element.addEventListener("dragover", dragover, false);
+            element.addEventListener("dragexit", dragleave, false);
+            element.addEventListener("dragleave", dragleave, false);
+            element.addEventListener("dragend", dragleave, false);
+            element.addEventListener("drop", drop, false);
+        }
     }-*/;
 
     /**

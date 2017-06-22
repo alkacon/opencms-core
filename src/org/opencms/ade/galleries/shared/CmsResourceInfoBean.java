@@ -27,26 +27,22 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.gwt.shared.CmsIconBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * This bean contains the preview content for the selected item.<p>
  *
  * @since 8.0.0
  */
-public class CmsResourceInfoBean implements IsSerializable {
+public class CmsResourceInfoBean extends CmsIconBean {
 
     /** The description of the resource. */
     private String m_description;
-
-    /** The detail resource type. */
-    private String m_detailResourceType;
 
     /** The last modification date. */
     private Date m_lastModified;
@@ -91,16 +87,6 @@ public class CmsResourceInfoBean implements IsSerializable {
     public String getDescription() {
 
         return m_description;
-    }
-
-    /**
-     * Returns the detail resource type.<p>
-     *
-     * @return the detail resource type
-     */
-    public String getDetailResourceType() {
-
-        return m_detailResourceType;
     }
 
     /**
@@ -200,16 +186,6 @@ public class CmsResourceInfoBean implements IsSerializable {
     public void setDescription(String description) {
 
         m_description = description;
-    }
-
-    /**
-     * Sets the detail resource type.<p>
-     *
-     * @param detailResourceType the detail resource type to set
-     */
-    public void setDetailResourceType(String detailResourceType) {
-
-        m_detailResourceType = detailResourceType;
     }
 
     /**

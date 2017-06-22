@@ -42,8 +42,6 @@ import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
-import org.opencms.gwt.shared.CmsIconUtil;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -477,9 +475,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         List<String> selectedGalleries,
         boolean forTree) {
 
-        CmsListItemWidget listItemWidget = new CmsListItemWidget(
-            new CmsListInfoBean(galleryInfo.getTitle(), galleryInfo.getPath(), null));
-        listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(galleryInfo.getType(), false));
+        CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryInfo);
         listItemWidget.setUnselectable();
         CmsCheckBox checkBox = new CmsCheckBox();
         SelectionHandler selectionHandler = new SelectionHandler(galleryInfo.getPath(), checkBox);

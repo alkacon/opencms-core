@@ -28,6 +28,6 @@
     </script>
     <% } %>
   </head>
-  <body>
+  <body class="-opencms">
   </body>
 </html>

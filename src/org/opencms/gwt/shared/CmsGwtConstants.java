@@ -141,6 +141,9 @@ public final class CmsGwtConstants {
     /** Type name for container pages. */
     public static final String TYPE_CONTAINERPAGE = "containerpage";
 
+    /** The resource icon CSS class prefix. */
+    public static final String TYPE_ICON_CLASS = "cms_type_icon";
+
     /** The image resource type name. */
     public static final String TYPE_IMAGE = "image";
 

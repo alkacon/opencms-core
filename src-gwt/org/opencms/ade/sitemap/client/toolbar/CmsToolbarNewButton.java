@@ -27,7 +27,6 @@
 
 package org.opencms.ade.sitemap.client.toolbar;
 
-import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
@@ -39,8 +38,7 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
-import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -60,14 +58,14 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
     /** The tag for identifying items from the special tab. */
     public static final String TAG_SPECIAL = "special";
 
+    /** The special elements list. */
+    private CmsList<I_CmsListItem> m_detailList;
+
     /** The function element list. */
     private CmsList<I_CmsListItem> m_functionList;
 
     /** The new-elements list. */
     private CmsList<I_CmsListItem> m_newElementsList;
-
-    /** The special elements list. */
-    private CmsList<I_CmsListItem> m_detailList;
 
     /**
      * Constructor.<p>
@@ -164,11 +162,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setTitle(title);
         info.setSubTitle(subtitle);
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        String iconTypeName = typeInfo.getTypeName();
-        if (iconTypeName.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
-            iconTypeName = "function";
-        }
-        widget.setIcon(CmsIconUtil.getResourceIconClasses(iconTypeName, false));
+        widget.setIcon(typeInfo.getBigIconClasses());
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.detailpage);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;
@@ -182,11 +176,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
     private CmsCreatableListItem makeNavigationLevelItem() {
 
         CmsNewResourceInfo typeInfo = getController().getData().getNewNavigationLevelElementInfo();
-        CmsListInfoBean info = new CmsListInfoBean();
-        info.setTitle(typeInfo.getTitle());
-        info.setSubTitle(typeInfo.getSubTitle());
-        CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(CmsIconUtil.getResourceIconClasses(CmsGwtConstants.TYPE_NAVLEVEL, false));
+        CmsListItemWidget widget = new CmsListItemWidget(typeInfo);
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;
@@ -201,20 +191,25 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
      */
     private CmsCreatableListItem makeNewElementItem(final CmsNewResourceInfo typeInfo) {
 
-        CmsListInfoBean info = new CmsListInfoBean();
-        info.setTitle(typeInfo.getTitle());
-        info.setSubTitle(typeInfo.getSubTitle());
+        CmsListItemWidget widget = new CmsListItemWidget(typeInfo);
         if ((typeInfo.getDescription() != null) && (typeInfo.getDescription().trim().length() > 0)) {
-            info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DESCRIPTION_0), typeInfo.getDescription());
+            widget.addAdditionalInfo(
+                new CmsAdditionalInfoBean(
+                    Messages.get().key(Messages.GUI_LABEL_DESCRIPTION_0),
+                    typeInfo.getDescription(),
+                    null));
         }
         if (typeInfo.getVfsPath() != null) {
-            info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_VFSPATH_0), typeInfo.getVfsPath());
+            widget.addAdditionalInfo(
+                new CmsAdditionalInfoBean(
+                    Messages.get().key(Messages.GUI_LABEL_VFSPATH_0),
+                    typeInfo.getVfsPath(),
+                    null));
         }
         if (typeInfo.getDate() != null) {
-            info.addAdditionalInfo(Messages.get().key(Messages.GUI_LABEL_DATE_0), typeInfo.getDate());
+            widget.addAdditionalInfo(
+                new CmsAdditionalInfoBean(Messages.get().key(Messages.GUI_LABEL_DATE_0), typeInfo.getDate(), null));
         }
-        CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(CmsIconUtil.getResourceIconClasses(CmsGwtConstants.TYPE_CONTAINERPAGE, false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler(), true);
         return listItem;
@@ -232,7 +227,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setTitle(typeInfo.getTitle());
         info.setSubTitle(Messages.get().key(Messages.GUI_REDIRECT_SUBTITLE_0));
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(CmsIconUtil.getResourceIconClasses("htmlredirect", false));
+        widget.setIcon(typeInfo.getBigIconClasses());
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.redirect);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;

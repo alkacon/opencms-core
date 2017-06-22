@@ -41,6 +41,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsGalleryFolderEntry implements IsSerializable {
 
+    /** The resource icon style classes. */
+    private String m_iconClasses;
+
     /** The resource properties. */
     private Map<String, CmsClientProperty> m_ownProperties;
 
@@ -72,6 +75,16 @@ public class CmsGalleryFolderEntry implements IsSerializable {
     public void addSubGallery(CmsGalleryFolderEntry gallery) {
 
         m_subGalleries.add(gallery);
+    }
+
+    /**
+     * Returns the resource icon style classes.<p>
+     *
+     * @return the resource icon style classes
+     **/
+    public String getIconClasses() {
+
+        return m_iconClasses;
     }
 
     /**
@@ -122,6 +135,16 @@ public class CmsGalleryFolderEntry implements IsSerializable {
     public List<CmsGalleryFolderEntry> getSubGalleries() {
 
         return m_subGalleries;
+    }
+
+    /**
+     * Sets the resource icon style classes.<p>
+     *
+     * @param iconClasses the resource icon style classes
+     **/
+    public void setIconClasses(String iconClasses) {
+
+        m_iconClasses = iconClasses;
     }
 
     /**

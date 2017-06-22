@@ -42,6 +42,7 @@ import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
@@ -159,7 +160,6 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             }
         } catch (Exception e) {
             LOG.warn(e.getLocalizedMessage(), e);
-            //TODO: logging
         }
         return null;
     }
@@ -245,9 +245,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         resInfo.setDescription(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
         resInfo.setResourcePath(cms.getSitePath(resource));
         resInfo.setResourceType(type.getTypeName());
+        resInfo.setBigIconClasses(CmsIconUtil.getIconClasses(type.getTypeName(), resource.getName(), false));
         // set the default file and detail type info
         String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
-        resInfo.setDetailResourceType(detailType);
+        if (detailType != null) {
+            resInfo.setSmallIconClasses(CmsIconUtil.getIconClasses(detailType, null, true));
+        }
         resInfo.setSize((resource.getLength() / 1024) + " kb");
         resInfo.setLastModified(new Date(resource.getDateLastModified()));
         resInfo.setNoEditReason(new CmsResourceUtil(cms, resource).getNoEditReason(wpLocale, true));

@@ -54,8 +54,10 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public enum EditStatus {
         /** edit status constant. */
-        created, /** edit status constant. */
-        edited, /** edit status constant. */
+        created,
+        /** edit status constant. */
+        edited,
+        /** edit status constant. */
         normal
     }
 
@@ -101,6 +103,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The default file properties. */
     private Map<String, CmsClientProperty> m_defaultFileProperties = new HashMap<String, CmsClientProperty>();
 
+    /** The default file is released and not expired flag. */
+    private boolean m_defaultFileReleased;
+
     /** The default file resource type name. */
     private String m_defaultFileType;
 
@@ -134,6 +139,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The entry name. */
     private String m_name;
 
+    /** The nav mode icon style classes. */
+    private String m_navModeIcon;
+
     /** True if this entry has been just created, and its name hasn't been directly changed. */
     private boolean m_new;
 
@@ -164,11 +172,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The children. */
     private List<CmsClientSitemapEntry> m_subEntries;
 
+    /** The vfs mode icon style classes. */
+    private String m_vfsModeIcon;
+
     /** The VFS path. */
     private String m_vfsPath;
-
-    /** The default file is released and not expired flag. */
-    private boolean m_defaultFileReleased;
 
     /**
      * Constructor.<p>
@@ -337,6 +345,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the nav mode icon style classes.<p>
+     *
+     * @return the nav mode icon style classes
+     */
+    public String getNavModeIcon() {
+
+        return m_navModeIcon != null ? m_navModeIcon : m_vfsModeIcon;
+    }
+
+    /**
      * Returns the no edit reason.<p>
      *
      * @return the no edit reason
@@ -456,6 +474,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
             title = m_name;
         }
         return title;
+    }
+
+    /**
+     * Returns the vfs mode icon style classes.<p>
+     *
+     * @return the vfs mode icon style classes
+     */
+    public String getVfsModeIcon() {
+
+        return m_vfsModeIcon;
     }
 
     /**
@@ -884,6 +912,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the nav mode icon style classes.<p>
+     *
+     * @param iconClasses the nav mode icon style classes to set
+     */
+    public void setNavModeIcon(String iconClasses) {
+
+        m_navModeIcon = iconClasses;
+    }
+
+    /**
      * Sets the "new" flag of the client sitemap entry.<p>
      *
      * @param isNew the new new
@@ -1004,6 +1042,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
                 child.updateSitePath(CmsStringUtil.joinPaths(m_sitePath, child.getName()), controller);
             }
         }
+    }
+
+    /**
+     * Sets the vfs mode icon style classes.<p>
+     *
+     * @param iconClasses the vfs mode icon style classes to set
+     */
+    public void setVfsModeIcon(String iconClasses) {
+
+        m_vfsModeIcon = iconClasses;
     }
 
     /**

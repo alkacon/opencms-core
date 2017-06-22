@@ -49,46 +49,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<resource uri="/system/workplace/commons/upload.jsp"/>
 			<resource uri="/system/workplace/commons/uploadAction.jsp"/>
 			<resource uri="/system/workplace/resources/commons/notemplate.png"/>
-			<resource uri="/system/workplace/resources/filetypes/category.png"/>
-			<resource uri="/system/workplace/resources/filetypes/category_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/configfolder.png"/>
-			<resource uri="/system/workplace/resources/filetypes/configfolder_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/containerpage.png"/>
-			<resource uri="/system/workplace/resources/filetypes/containerpage_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/containerpage_template.png"/>
-			<resource uri="/system/workplace/resources/filetypes/containerpage_template_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/elementgroup.png"/>
-			<resource uri="/system/workplace/resources/filetypes/elementgroup_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/formatter_config.png"/>
-			<resource uri="/system/workplace/resources/filetypes/formatter_config_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/function.png"/>
-			<resource uri="/system/workplace/resources/filetypes/function_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/htmlredirect.png"/>
-			<resource uri="/system/workplace/resources/filetypes/htmlredirect_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/image_xml.png"/>
-			<resource uri="/system/workplace/resources/filetypes/image_xml_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/inheritancegroup.png"/>
-			<resource uri="/system/workplace/resources/filetypes/inheritancegroup_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/modelgroup_copy.png"/>
-			<resource uri="/system/workplace/resources/filetypes/modelgroup_copy_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/modelgroup_reuse.png"/>
-			<resource uri="/system/workplace/resources/filetypes/modelgroup_reuse_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/modelpage.png"/>
-			<resource uri="/system/workplace/resources/filetypes/modelpage_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/modelpage_groups.png"/>
-			<resource uri="/system/workplace/resources/filetypes/modelpage_groups_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/module_config.png"/>
-			<resource uri="/system/workplace/resources/filetypes/module_config_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/navlevel.png"/>
-			<resource uri="/system/workplace/resources/filetypes/navlevel_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png"/>
-			<resource uri="/system/workplace/resources/filetypes/sitemap_config_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/subsitemap.png"/>
-			<resource uri="/system/workplace/resources/filetypes/subsitemap_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/localization.png"/>
-			<resource uri="/system/workplace/resources/filetypes/localization_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/localization_descriptor.png"/>
-			<resource uri="/system/workplace/resources/filetypes/localization_descriptor_big.png"/>
 		</resources>
 		<excluderesources/>
 		<parameters/>
@@ -351,22 +311,22 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</type>	
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="subsitemap" key="fileicon.subsitemap" icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
+			<explorertype name="subsitemap" key="fileicon.subsitemap" smalliconstyle="oc-icon-16-subsitemap" bigiconstyle="oc-icon-24-subsitemap" reference="folder">
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=subsitemap" order="490" autosetnavigation="false" autosettitle="false" info="desc.subsitemap"/>
 			</explorertype>
-			<explorertype name="modelpage" key="fileicon.modelpage" icon="modelpage.png" bigicon="modelpage_big.png" reference="folder">
+			<explorertype name="modelpage" key="fileicon.modelpage" smalliconstyle="oc-icon-16-modelpage" bigiconstyle="oc-icon-24-modelpage" reference="folder">
 				<newresource page="none" uri="" order="490" autosetnavigation="false" autosettitle="false" info=""/>
 			</explorertype>
-			<explorertype name="category" key="fileicon.category" icon="category.png" bigicon="category_big.png" reference="folder">
+			<explorertype name="category" key="fileicon.category" smalliconstyle="oc-icon-16-category" bigiconstyle="oc-icon-24-category" reference="folder">
 				<newresource page="none" uri="" order="490" autosetnavigation="false" autosettitle="false" info=""/>
 			</explorertype>
-			<explorertype name="htmlredirect" key="fileicon.htmlredirect" icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
+			<explorertype name="htmlredirect" key="fileicon.htmlredirect" smalliconstyle="oc-icon-16-htmlredirect" bigiconstyle="oc-icon-24-htmlredirect" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect" order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="containerpage" key="fileicon.containerpage" icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
+			<explorertype name="containerpage" key="fileicon.containerpage" smalliconstyle="oc-icon-16-containerpage" bigiconstyle="oc-icon-24-containerpage" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=containerpage" order="25" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c"/>
@@ -439,20 +399,20 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					</contextmenu>
 				</editoptions>
 			</explorertype>
-			<explorertype name="groupcontainer" key="fileicon.groupcontainer" icon="elementgroup.png" bigicon="elementgroup_big.png" reference="xmlcontent">
+			<explorertype name="groupcontainer" key="fileicon.groupcontainer" smalliconstyle="oc-icon-16-elementgroup" bigiconstyle="oc-icon-24-elementgroup" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer" order="26" autosetnavigation="false" autosettitle="false" info="desc.groupcontainer"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="elementview" key="fileicon.elementview" icon="function.png" bigicon="function_big.png" reference="xmlcontent">
+			<explorertype name="elementview" key="fileicon.elementview" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=elementview" order="999" autosetnavigation="false" autosettitle="false" info="desc.elementview"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v-w-c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="function" key="fileicon.function" icon="function.png" bigicon="function_big.png" reference="xmlcontent">
+			<explorertype name="function" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
@@ -462,16 +422,16 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<explorertype name="seo_file" key="fileicon.seo_file" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=seo_file" order="998" autosetnavigation="false" autosettitle="false" info="desc.seo_file"/>
 			</explorertype>
-			<explorertype name="containerpage_template" key="fileicon.containerpage_template" icon="containerpage_template.png" bigicon="containerpage_template_big.png" reference="jsp">
+			<explorertype name="containerpage_template" key="fileicon.containerpage_template" smalliconstyle="oc-icon-16-containerpage_template" bigiconstyle="oc-icon-24-containerpage_template" reference="jsp">
 				<newresource page="otheroptions" uri="newresource.jsp?newresourcetype=containerpage_template" order="22" autosetnavigation="false" autosettitle="false" info="desc.containerpage_template"/>
 			</explorertype>
-			<explorertype name="content_folder" key="fileicon.configfolder" icon="configfolder.png" bigicon="configfolder_big.png" reference="folder">
+			<explorertype name="content_folder" key="fileicon.configfolder" smalliconstyle="oc-icon-16-configfolder" bigiconstyle="oc-icon-24-configfolder" reference="folder">
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=content_folder" order="491" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
+			<explorertype name="sitemap_config" key="fileicon.sitemap_config" smalliconstyle="oc-icon-16-sitemap_config" bigiconstyle="oc-icon-24-sitemap_config" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c"/>
@@ -533,87 +493,87 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					</contextmenu>
 				</editoptions>
 			</explorertype>
-			<explorertype name="module_config" key="fileicon.module_config" icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+			<explorertype name="module_config" key="fileicon.module_config" smalliconstyle="oc-icon-16-module_config" bigiconstyle="oc-icon-24-module_config" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=module_config" order="22" autosetnavigation="false" autosettitle="false" info="desc.module_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="sitemap_master_config" key="fileicon.sitemap_master_config" icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+			<explorertype name="sitemap_master_config" key="fileicon.sitemap_master_config" smalliconstyle="oc-icon-16-module_config" bigiconstyle="oc-icon-24-module_config" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_master_config" order="23" autosetnavigation="false" autosettitle="false" info="desc.sitemap_master_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="formatter_config" key="fileicon.formatter_config" icon="formatter_config.png" bigicon="formatter_config_big.png" reference="xmlcontent">
+			<explorertype name="formatter_config" key="fileicon.formatter_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config" order="23" autosetnavigation="false" autosettitle="false" info="desc.formatter_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="inheritance_group" key="fileicon.inheritance_group" icon="inheritancegroup.png" bigicon="inheritancegroup_big.png" reference="xmlcontent">
+			<explorertype name="inheritance_group" key="fileicon.inheritance_group" smalliconstyle="oc-icon-16-inheritancegroup" bigiconstyle="oc-icon-24-inheritancegroup" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_group" order="27" autosetnavigation="false" autosettitle="false" info="desc.inheritance_group"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="inheritance_config" key="fileicon.inheritance_config" icon="inheritancegroup.png" bigicon="inheritancegroup_big.png" reference="xmlcontent">
+			<explorertype name="inheritance_config" key="fileicon.inheritance_config" smalliconstyle="oc-icon-16-inheritancegroup" bigiconstyle="oc-icon-24-inheritancegroup" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config" order="28" autosetnavigation="false" autosettitle="false" info="desc.inheritance_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle" icon="localization.png" bigicon="localization_big.png" reference="xmlcontent">
+			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle" smalliconstyle="oc-icon-16-localization" bigiconstyle="oc-icon-24-localization" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=xmlvfsbundle" order="28" autosetnavigation="false" autosettitle="false" info="desc.xmlvfsbundle"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle" icon="localization.png" bigicon="localization_big.png" reference="plain">
+			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle" smalliconstyle="oc-icon-16-localization" bigiconstyle="oc-icon-24-localization" reference="plain">
 				<newresource page="otheroptions" uri="newresource.jsp?newresourcetype=propertyvfsbundle" order="30" autosetnavigation="false" autosettitle="false" info="desc.propertyvfsbundle"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="modelgroup" key="fileicon.modelgroup" icon="containerpage.png" bigicon="modelgroup_copy_big.png" reference="xmlcontent">
+			<explorertype name="modelgroup" key="fileicon.modelgroup" smalliconstyle="oc-icon-16-modelgroup_copy" bigiconstyle="oc-icon-24-modelgroup_copy" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=modelgroup" order="50" autosetnavigation="false" autosettitle="false" info="desc.modelgroup"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="macro_formatter" key="fileicon.macro_formatter" icon="formatter_config.png" bigicon="formatter_config_big.png" reference="xmlcontent">
+			<explorertype name="macro_formatter" key="fileicon.macro_formatter" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=macro_formatter" order="24" autosetnavigation="false" autosettitle="false" info="desc.macro_formatter"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="view_basic" key="fileicon.view_basic" icon="menu.png" reference="folder" isview="true">
+			<explorertype name="view_basic" key="fileicon.view_basic" reference="folder" isview="true">
 				<newresource uri="" order="1000" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="view_folders" key="fileicon.view_folders" icon="menu.png" reference="folder" isview="true">
+			<explorertype name="view_folders" key="fileicon.view_folders" reference="folder" isview="true">
 				<newresource uri="" order="2100" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="view_configs" key="fileicon.view_configs" icon="menu.png" reference="folder" isview="true">
+			<explorertype name="view_configs" key="fileicon.view_configs" reference="folder" isview="true">
 				<newresource uri="" order="2200" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="view_other" key="fileicon.view_other" icon="menu.png" reference="folder" isview="true">
+			<explorertype name="view_other" key="fileicon.view_other" reference="folder" isview="true">
 				<newresource uri="" order="2300" autosetnavigation="false" autosettitle="false" info=""/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="bundledescriptor" key="fileicon.bundledescriptor"
-				icon="localization_descriptor.png" bigicon="localization_descriptor_big.png"
+				smalliconstyle="oc-icon-16-localization_descriptor" bigiconstyle="oc-icon-24-localization_descriptor"
 				reference="xmlcontent">
 				<newresource page="otheroptions"
 					uri="newresource_xmlcontent.jsp?newresourcetype=bundledescriptor"
@@ -625,7 +585,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="listconfig" key="fileicon.listconfig"
-				icon="localization_descriptor.png" bigicon="localization_descriptor_big.png"
+				smalliconstyle="oc-icon-16-list_app" bigiconstyle="oc-icon-24-list_app"
 				reference="xmlcontent">
 				<newresource page="otheroptions"
 					uri="newresource_xmlcontent.jsp?newresourcetype=listconfig"
@@ -1475,731 +1435,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:64,h:64]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/filetypes</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/category.png</source>
-			<destination>system/workplace/resources/filetypes/category.png</destination>
-			<type>image</type>
-			<uuidstructure>ef02fdfe-c532-4f97-8967-8455abb8d0f0</uuidstructure>
-			<uuidresource>2878c13e-c298-432a-b623-90ac86daa5f9</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/category_big.png</source>
-			<destination>system/workplace/resources/filetypes/category_big.png</destination>
-			<type>image</type>
-			<uuidstructure>47268356-aa5c-4161-b375-1e423de7bd7c</uuidstructure>
-			<uuidresource>6f602324-0386-403b-8fba-d456c23f860b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/configfolder.png</source>
-			<destination>system/workplace/resources/filetypes/configfolder.png</destination>
-			<type>image</type>
-			<uuidstructure>22e6582d-758b-11e0-bb02-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>22e6582e-758b-11e0-bb02-a1b7a1ca2b7f</uuidresource>
-			<datecreated>Tue, 03 May 2011 13:42:06 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/configfolder_big.png</source>
-			<destination>system/workplace/resources/filetypes/configfolder_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d05e83de-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d05e83df-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/containerpage.png</source>
-			<destination>system/workplace/resources/filetypes/containerpage.png</destination>
-			<type>image</type>
-			<uuidstructure>b690907a-7591-11e0-a914-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>b690907b-7591-11e0-a914-a1b7a1ca2b7f</uuidresource>
-			<datecreated>Tue, 03 May 2011 14:29:11 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/containerpage_big.png</source>
-			<destination>system/workplace/resources/filetypes/containerpage_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d06365e2-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d06365e3-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/containerpage_template.png</source>
-			<destination>system/workplace/resources/filetypes/containerpage_template.png</destination>
-			<type>image</type>
-			<uuidstructure>2f19b03c-759e-11e0-bda2-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>2f19b03d-759e-11e0-bda2-a1b7a1ca2b7f</uuidresource>
-			<datecreated>Tue, 03 May 2011 15:58:27 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/containerpage_template_big.png</source>
-			<destination>system/workplace/resources/filetypes/containerpage_template_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d06f4cca-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d06f4ccb-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/elementgroup.png</source>
-			<destination>system/workplace/resources/filetypes/elementgroup.png</destination>
-			<type>image</type>
-			<uuidstructure>7cf8f7e7-7596-11e0-b62c-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>7cf8f7e8-7596-11e0-b62c-a1b7a1ca2b7f</uuidresource>
-			<datecreated>Tue, 03 May 2011 15:03:22 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/elementgroup_big.png</source>
-			<destination>system/workplace/resources/filetypes/elementgroup_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d07d7da6-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d07d7da7-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/formatter_config.png</source>
-			<destination>system/workplace/resources/filetypes/formatter_config.png</destination>
-			<type>image</type>
-			<uuidstructure>5d011d07-c390-4eee-a3e7-a1f3be8348a5</uuidstructure>
-			<uuidresource>93c70ec4-cf18-45f2-87db-bd157a2d087d</uuidresource>
-			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/formatter_config_big.png</source>
-			<destination>system/workplace/resources/filetypes/formatter_config_big.png</destination>
-			<type>image</type>
-			<uuidstructure>eb5a0089-8f53-4c56-b050-ad80e0319c3e</uuidstructure>
-			<uuidresource>b35e207c-1df5-48ad-bfd2-9a1fa36d7bc8</uuidresource>
-			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/function.png</source>
-			<destination>system/workplace/resources/filetypes/function.png</destination>
-			<type>image</type>
-			<uuidstructure>fd4ead16-608c-4a1b-92c0-3a417a55ae07</uuidstructure>
-			<uuidresource>fd4ead16-608c-4a1b-92c0-3a417a55ae08</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/function_big.png</source>
-			<destination>system/workplace/resources/filetypes/function_big.png</destination>
-			<type>image</type>
-			<uuidstructure>afbccf5a-bce4-4fe9-8c8d-246265f1b3d0</uuidstructure>
-			<uuidresource>afbccf5a-bce4-4fe9-8c8d-246265f1b3d1</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/htmlredirect.png</source>
-			<destination>system/workplace/resources/filetypes/htmlredirect.png</destination>
-			<type>image</type>
-			<uuidstructure>77120f85-7584-11e0-a519-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>77120f86-7584-11e0-a519-a1b7a1ca2b7f</uuidresource>
-			<datecreated>Tue, 03 May 2011 12:54:21 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/htmlredirect_big.png</source>
-			<destination>system/workplace/resources/filetypes/htmlredirect_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d08bd58e-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d08bd58f-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/image_xml.png</source>
-			<destination>system/workplace/resources/filetypes/image_xml.png</destination>
-			<type>image</type>
-			<uuidstructure>c9eee56b-61cb-11e5-bd18-a1aa1f21b3dc</uuidstructure>
-			<uuidresource>c9eee56c-61cb-11e5-bd18-a1aa1f21b3dc</uuidresource>
-			<datecreated>Wed, 23 Sep 2015 08:19:19 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[image_xml]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/image_xml_big.png</source>
-			<destination>system/workplace/resources/filetypes/image_xml_big.png</destination>
-			<type>image</type>
-			<uuidstructure>c9f59c2f-61cb-11e5-bd18-a1aa1f21b3dc</uuidstructure>
-			<uuidresource>c9f59c30-61cb-11e5-bd18-a1aa1f21b3dc</uuidresource>
-			<datecreated>Wed, 23 Sep 2015 08:19:19 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[image_xml_big]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/inheritancegroup.png</source>
-			<destination>system/workplace/resources/filetypes/inheritancegroup.png</destination>
-			<type>image</type>
-			<uuidstructure>fa1b3707-6c26-11e1-8c1e-91bd90e3b856</uuidstructure>
-			<uuidresource>fa1b3708-6c26-11e1-8c1e-91bd90e3b856</uuidresource>
-			<datecreated>Mon, 12 Mar 2012 09:37:25 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[inheritancegroup]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/inheritancegroup_big.png</source>
-			<destination>system/workplace/resources/filetypes/inheritancegroup_big.png</destination>
-			<type>image</type>
-			<uuidstructure>fa20190b-6c26-11e1-8c1e-91bd90e3b856</uuidstructure>
-			<uuidresource>fa20190c-6c26-11e1-8c1e-91bd90e3b856</uuidresource>
-			<datecreated>Mon, 12 Mar 2012 09:37:25 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[inheritancegroup_big]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/localization.png</source>
-			<destination>system/workplace/resources/filetypes/localization.png</destination>
-			<type>image</type>
-			<uuidstructure>c62ed49f-3d04-11e6-8bb0-155d29dc604a</uuidstructure>
-			<uuidresource>c62ed4a0-3d04-11e6-8bb0-155d29dc604a</uuidresource>
-			<datecreated>Tue, 28 Jun 2016 07:48:59 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/localization_big.png</source>
-			<destination>system/workplace/resources/filetypes/localization_big.png</destination>
-			<type>image</type>
-			<uuidstructure>c637fc63-3d04-11e6-8bb0-155d29dc604a</uuidstructure>
-			<uuidresource>c637fc64-3d04-11e6-8bb0-155d29dc604a</uuidresource>
-			<datecreated>Tue, 28 Jun 2016 07:48:59 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/localization_descriptor.png</source>
-			<destination>system/workplace/resources/filetypes/localization_descriptor.png</destination>
-			<type>image</type>
-			<uuidstructure>c63d5397-3d04-11e6-8bb0-155d29dc604a</uuidstructure>
-			<uuidresource>c63d5398-3d04-11e6-8bb0-155d29dc604a</uuidresource>
-			<datecreated>Tue, 28 Jun 2016 07:48:59 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/localization_descriptor_big.png</source>
-			<destination>system/workplace/resources/filetypes/localization_descriptor_big.png</destination>
-			<type>image</type>
-			<uuidstructure>c642d1db-3d04-11e6-8bb0-155d29dc604a</uuidstructure>
-			<uuidresource>c642d1dc-3d04-11e6-8bb0-155d29dc604a</uuidresource>
-			<datecreated>Tue, 28 Jun 2016 07:48:59 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>		
-		<file>
-			<source>system/workplace/resources/filetypes/modelgroup_copy.png</source>
-			<destination>system/workplace/resources/filetypes/modelgroup_copy.png</destination>
-			<type>image</type>
-			<uuidstructure>1e613685-610b-11e5-afa4-a1aa1f21b3dc</uuidstructure>
-			<uuidresource>1e613686-610b-11e5-afa4-a1aa1f21b3dc</uuidresource>
-			<datecreated>Tue, 22 Sep 2015 09:20:08 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[modelgroup_copy]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/modelgroup_copy_big.png</source>
-			<destination>system/workplace/resources/filetypes/modelgroup_copy_big.png</destination>
-			<type>image</type>
-			<uuidstructure>7f1699d3-603c-11e5-85f9-377ea9708e4d</uuidstructure>
-			<uuidresource>7f1699d4-603c-11e5-85f9-377ea9708e4d</uuidresource>
-			<datecreated>Mon, 21 Sep 2015 08:41:05 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[modelgroup_copy_big]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/modelgroup_reuse.png</source>
-			<destination>system/workplace/resources/filetypes/modelgroup_reuse.png</destination>
-			<type>image</type>
-			<uuidstructure>1e6ad379-610b-11e5-afa4-a1aa1f21b3dc</uuidstructure>
-			<uuidresource>1e6ad37a-610b-11e5-afa4-a1aa1f21b3dc</uuidresource>
-			<datecreated>Tue, 22 Sep 2015 09:20:08 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[modelgroup_reuse]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/modelgroup_reuse_big.png</source>
-			<destination>system/workplace/resources/filetypes/modelgroup_reuse_big.png</destination>
-			<type>image</type>
-			<uuidstructure>7f1adf97-603c-11e5-85f9-377ea9708e4d</uuidstructure>
-			<uuidresource>7f1adf98-603c-11e5-85f9-377ea9708e4d</uuidresource>
-			<datecreated>Mon, 21 Sep 2015 08:41:05 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[modelgroup_reuse_big]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/modelpage.png</source>
-			<destination>system/workplace/resources/filetypes/modelpage.png</destination>
-			<type>image</type>
-			<uuidstructure>79b4873a-11df-4f02-b9a9-bb5ed9759a7d</uuidstructure>
-			<uuidresource>b12b5a77-476e-424c-aa5d-35959979221c</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/modelpage_big.png</source>
-			<destination>system/workplace/resources/filetypes/modelpage_big.png</destination>
-			<type>image</type>
-			<uuidstructure>070319ec-c325-4e65-89e1-700aa387a8d7</uuidstructure>
-			<uuidresource>7cb655af-d7d4-43ec-ab82-b8867c371464</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/modelpage_groups.png</source>
-			<destination>system/workplace/resources/filetypes/modelpage_groups.png</destination>
-			<type>image</type>
-			<uuidstructure>1e6ca83d-610b-11e5-afa4-a1aa1f21b3dc</uuidstructure>
-			<uuidresource>1e6ca83e-610b-11e5-afa4-a1aa1f21b3dc</uuidresource>
-			<datecreated>Tue, 22 Sep 2015 09:20:08 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[modelpage_groups]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/modelpage_groups_big.png</source>
-			<destination>system/workplace/resources/filetypes/modelpage_groups_big.png</destination>
-			<type>image</type>
-			<uuidstructure>7f1cb45b-603c-11e5-85f9-377ea9708e4d</uuidstructure>
-			<uuidresource>7f1cb45c-603c-11e5-85f9-377ea9708e4d</uuidresource>
-			<datecreated>Mon, 21 Sep 2015 08:41:05 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[modelpage_groups_big]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/module_config.png</source>
-			<destination>system/workplace/resources/filetypes/module_config.png</destination>
-			<type>image</type>
-			<uuidstructure>7f364afd-a22c-11e0-9ff0-afd4b35f6004</uuidstructure>
-			<uuidresource>7f364afe-a22c-11e0-9ff0-afd4b35f6004</uuidresource>
-			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/module_config_big.png</source>
-			<destination>system/workplace/resources/filetypes/module_config_big.png</destination>
-			<type>image</type>
-			<uuidstructure>7f3b05f1-a22c-11e0-9ff0-afd4b35f6004</uuidstructure>
-			<uuidresource>7f3b05f2-a22c-11e0-9ff0-afd4b35f6004</uuidresource>
-			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/navlevel.png</source>
-			<destination>system/workplace/resources/filetypes/navlevel.png</destination>
-			<type>image</type>
-			<uuidstructure>e20c5421-a4b5-4389-958e-5323d4b6843f</uuidstructure>
-			<uuidresource>4d1f707c-3e04-472b-b825-0ff4783f5a2f</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/navlevel_big.png</source>
-			<destination>system/workplace/resources/filetypes/navlevel_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d1180e28-5c7d-11e5-b2da-a1aa1f21b3dc</uuidstructure>
-			<uuidresource>d1180e29-5c7d-11e5-b2da-a1aa1f21b3dc</uuidresource>
-			<datecreated>Wed, 16 Sep 2015 14:18:35 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/sitemap_config.png</source>
-			<destination>system/workplace/resources/filetypes/sitemap_config.png</destination>
-			<type>image</type>
-			<uuidstructure>231864b1-758b-11e0-bb02-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>231864b2-758b-11e0-bb02-a1b7a1ca2b7f</uuidresource>
-			<datecreated>Tue, 03 May 2011 13:42:07 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/sitemap_config_big.png</source>
-			<destination>system/workplace/resources/filetypes/sitemap_config_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d0afb15e-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d0afb15f-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/subsitemap.png</source>
-			<destination>system/workplace/resources/filetypes/subsitemap.png</destination>
-			<type>image</type>
-			<uuidstructure>770d2d81-7584-11e0-a519-a1b7a1ca2b7f</uuidstructure>
-			<uuidresource>770d2d82-7584-11e0-a519-a1b7a1ca2b7f</uuidresource>
-			<datecreated>Tue, 03 May 2011 12:54:21 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/subsitemap_big.png</source>
-			<destination>system/workplace/resources/filetypes/subsitemap_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d0b92742-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d0b92743-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
 			<relations/>

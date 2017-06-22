@@ -45,7 +45,6 @@ import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadProgressInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploader;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
@@ -593,8 +592,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
         }
         CmsListInfoBean infoBean = new CmsListInfoBean(file.getFileName(), subTitle, null);
         m_fileWidget = new CmsListItemWidget(infoBean);
-        String icon = CmsIconUtil.getResourceIconClasses(resourceType, file.getFileName(), false);
-        m_fileWidget.setIcon(icon);
+        m_fileWidget.setIcon(CmsCoreProvider.get().getResourceTypeIcon(file));
         checkFileType();
         return m_fileWidget;
     }

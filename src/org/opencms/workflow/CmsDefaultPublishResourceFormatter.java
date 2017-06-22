@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
@@ -50,6 +51,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.ui.components.CmsResourceIcon;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -438,7 +440,6 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
             resUtil.getFullPath(),
             resUtil.getTitle(),
             typeName,
-            detailTypeName,
             resource.getState(),
             permissionInfo,
             resource.getDateLastModified(),
@@ -447,6 +448,10 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
             false,
             null,
             new ArrayList<CmsPublishResource>());
+        pubResource.setBigIconClasses(CmsIconUtil.getIconClasses(typeName, null, false));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailTypeName)) {
+            pubResource.setSmallIconClasses(CmsIconUtil.getIconClasses(detailTypeName, null, true));
+        }
         return pubResource;
     }
 

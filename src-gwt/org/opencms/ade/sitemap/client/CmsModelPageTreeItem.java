@@ -32,13 +32,12 @@ import org.opencms.ade.sitemap.client.hoverbar.CmsEditModelPageMenuEntry;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
@@ -75,17 +74,17 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     }
 
+    /** The disabled flag. */
+    private boolean m_disabled;
+
     /** The folder entry id. */
     private CmsUUID m_entryId;
-
-    /** The parent model flag. */
-    private boolean m_isParentModel;
 
     /** The model group flag. */
     private boolean m_isModelGroup;
 
-    /** The disabled flag. */
-    private boolean m_disabled;
+    /** The parent model flag. */
+    private boolean m_isParentModel;
 
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
@@ -100,10 +99,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         m_isModelGroup = isModelGroup;
         CmsListInfoBean infoBean = new CmsListInfoBean(title, subTitle, null);
         CmsListItemWidget content = new CmsListItemWidget(infoBean);
-        content.setIcon(
-            CmsIconUtil.getResourceIconClasses(
-                isModelGroup ? CmsGwtConstants.TYPE_MODELGROUP_PAGE : CmsGwtConstants.TYPE_MODELPAGE,
-                false));
+        content.setIcon(isModelGroup ? CmsIconUtil.ICON_MODEL_GROUP_REUSE_BIG : CmsIconUtil.ICON_MODEL_GROUP_BIG);
         initContent(content);
     }
 
@@ -258,11 +254,6 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
             label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());
             result.setExtraInfo("(*)");
         }
-        result.setIcon(
-            CmsIconUtil.getResourceIconClasses(
-                m_isModelGroup ? CmsGwtConstants.TYPE_MODELGROUP_PAGE : CmsGwtConstants.TYPE_MODELPAGE,
-                modelPage.getRootPath(),
-                false));
         if (m_isModelGroup || CmsEditModelPageMenuEntry.checkVisible(modelPage.getStructureId())) {
             result.addIconClickHandler(new ClickHandler() {
 

@@ -263,6 +263,9 @@ public class CmsCoreData implements IsSerializable {
     /** The file explorer link. */
     private String m_fileExplorerLink;
 
+    /** The resource icon mapping. */
+    private Map<String, String> m_iconMapping;
+
     /** The show editor help flag. */
     private boolean m_isShowEditorHelp;
 
@@ -332,6 +335,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getNavigationUri(),
             clone.getStructureId(),
             clone.getExtensionMapping(),
+            clone.getIconMapping(),
             clone.getServerTime(),
             clone.isShowEditorHelp(),
             clone.isToolbarVisible(),
@@ -360,6 +364,7 @@ public class CmsCoreData implements IsSerializable {
      * @param structureId the structure id of tbe resource
      * @param navigationUri the current navigation URI
      * @param extensionMapping the mappings of file extensions to resource types
+     * @param iconMapping the resource icon mapping
      * @param serverTime the current time
      * @param isShowEditorHelp the show editor help flag
      * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
@@ -385,6 +390,7 @@ public class CmsCoreData implements IsSerializable {
         String navigationUri,
         CmsUUID structureId,
         Map<String, String> extensionMapping,
+        Map<String, String> iconMapping,
         long serverTime,
         boolean isShowEditorHelp,
         boolean toolbarVisible,
@@ -407,6 +413,7 @@ public class CmsCoreData implements IsSerializable {
         m_uri = uri;
         m_navigationUri = navigationUri;
         m_extensionMapping = extensionMapping;
+        m_iconMapping = iconMapping;
         m_serverTime = serverTime;
         m_isShowEditorHelp = isShowEditorHelp;
         m_toolbarVisible = toolbarVisible;
@@ -488,6 +495,16 @@ public class CmsCoreData implements IsSerializable {
     public Map<String, String> getExtensionMapping() {
 
         return m_extensionMapping;
+    }
+
+    /**
+     * Returns the resource icon mapping.<p>
+     *
+     * @return the resource icon mapping
+     */
+    public Map<String, String> getIconMapping() {
+
+        return m_iconMapping;
     }
 
     /**

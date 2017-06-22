@@ -94,7 +94,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     public String exportAll() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(export(".vfsMode", false));
+        sb.append(export(false));
         sb.append(
             exportDictionary(
                 CmsSitemapData.DICT_NAME,

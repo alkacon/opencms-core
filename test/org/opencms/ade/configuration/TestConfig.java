@@ -292,11 +292,9 @@ public class TestConfig extends OpenCmsTestCase {
             set(typeConfigs.get(0).getFolderPath(rootCms(), null), typeConfigs.get(1).getFolderPath(rootCms(), null)));
 
         assertEquals(2, config2.getResourceTypes().size());
-        assertEquals(
-            set("/sites/default/foo/.content/foo", "/sites/default/.content/plain"),
-            set(
-                config2.getResourceTypes().get(0).getFolderPath(rootCms(), null),
-                config2.getResourceTypes().get(1).getFolderPath(rootCms(), null)));
+        assertEquals(set("/sites/default/foo/.content/foo", "/sites/default/.content/plain"), set(
+            config2.getResourceTypes().get(0).getFolderPath(rootCms(), null),
+            config2.getResourceTypes().get(1).getFolderPath(rootCms(), null)));
     }
 
     /**
@@ -484,13 +482,13 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testDetailPages2() throws Exception {
 
-        CmsDetailPageInfo a1 = new CmsDetailPageInfo(getId("/sites/default/a1"), "/sites/default/a1", "a");
-        CmsDetailPageInfo a2 = new CmsDetailPageInfo(getId("/sites/default/a2"), "/sites/default/a2", "a");
-        CmsDetailPageInfo a3 = new CmsDetailPageInfo(getId("/sites/default/a3"), "/sites/default/a3", "a");
-        CmsDetailPageInfo a4 = new CmsDetailPageInfo(getId("/sites/default/a4"), "/sites/default/a4", "a");
+        CmsDetailPageInfo a1 = new CmsDetailPageInfo(getId("/sites/default/a1"), "/sites/default/a1", "a", "");
+        CmsDetailPageInfo a2 = new CmsDetailPageInfo(getId("/sites/default/a2"), "/sites/default/a2", "a", "");
+        CmsDetailPageInfo a3 = new CmsDetailPageInfo(getId("/sites/default/a3"), "/sites/default/a3", "a", "");
+        CmsDetailPageInfo a4 = new CmsDetailPageInfo(getId("/sites/default/a4"), "/sites/default/a4", "a", "");
 
-        CmsDetailPageInfo b1 = new CmsDetailPageInfo(getId("/sites/default/b1"), "/sites/default/b1", "b");
-        CmsDetailPageInfo b2 = new CmsDetailPageInfo(getId("/sites/default/b2"), "/sites/default/b2", "b");
+        CmsDetailPageInfo b1 = new CmsDetailPageInfo(getId("/sites/default/b1"), "/sites/default/b1", "b", "");
+        CmsDetailPageInfo b2 = new CmsDetailPageInfo(getId("/sites/default/b2"), "/sites/default/b2", "b", "");
 
         List<CmsDetailPageInfo> parentDetailPages = list(a1, a2, b1, b2);
         List<CmsDetailPageInfo> childDetailPages = list(a3, a4);

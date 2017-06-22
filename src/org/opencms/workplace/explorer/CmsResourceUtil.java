@@ -37,9 +37,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeUnknownFile;
+import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.gwt.CmsIconUtil;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.lock.CmsLock;
@@ -52,6 +53,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -65,6 +67,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 
 /**
  * Provides {@link CmsResource} utility functions.<p>
@@ -227,10 +231,11 @@ public final class CmsResourceUtil {
     /** The current resource type. */
     private I_CmsResourceType m_resourceType;
 
+    /** The search result map. */
+    private Map<Locale, CmsGallerySearchResult> m_searchResultMap = Maps.newHashMap();
+
     /** The current site mode. */
     private CmsResourceUtilSiteMode m_siteMode = SITE_MODE_CURRENT;
-
-    private Map<Locale, CmsGallerySearchResult> m_searchResultMap = Maps.newHashMap();
 
     /**
      * Creates a new {@link CmsResourceUtil} object.<p>
@@ -265,6 +270,75 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Returns the big icon resource for the given resource.<p>
+     *
+     * @param explorerType the resource explorer type settings
+     * @param resourceName the resource name
+     *
+     * @return the icon resource
+     */
+    public static Resource getBigIconResource(CmsExplorerTypeSettings explorerType, String resourceName) {
+
+        if (explorerType == null) {
+            explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                (resourceName == null) && !CmsResource.isFolder(resourceName)
+                ? CmsResourceTypeUnknownFile.RESOURCE_TYPE_NAME
+                : CmsResourceTypeUnknownFolder.RESOURCE_TYPE_NAME);
+        }
+        if (!explorerType.getIconRules().isEmpty() && (resourceName != null)) {
+            String extension = CmsResource.getExtension(resourceName);
+            if (extension != null) {
+                CmsIconRule rule = explorerType.getIconRules().get(extension);
+                if ((rule != null) && (rule.getBigIconStyle() != null)) {
+                    return new CmsCssIcon(rule.getBigIconStyle());
+                }
+            }
+        }
+        if (explorerType.getBigIconStyle() != null) {
+            return new CmsCssIcon(explorerType.getBigIconStyle());
+        } else if (explorerType.getBigIcon() != null) {
+            return new ExternalResource(
+                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + explorerType.getBigIcon()));
+        } else {
+            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_DEFAULT_BIG);
+        }
+    }
+
+    /**
+     * Returns the small icon resource for the given resource.<p>
+     *
+     * @param explorerType the resource explorer type settings
+     * @param resourceName the resource name
+     *
+     * @return the icon resource
+     */
+    public static Resource getSmallIconResource(CmsExplorerTypeSettings explorerType, String resourceName) {
+
+        if (explorerType == null) {
+            explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                (resourceName == null) && !CmsResource.isFolder(resourceName)
+                ? CmsResourceTypeUnknownFile.RESOURCE_TYPE_NAME
+                : "unknown_folder");
+        }
+
+        if (!explorerType.getIconRules().isEmpty() && (resourceName != null)) {
+            String extension = CmsResource.getExtension(resourceName);
+            if (extension != null) {
+                CmsIconRule rule = explorerType.getIconRules().get(extension);
+                if ((rule != null) && (rule.getSmallIconStyle() != null)) {
+                    return new CmsCssIcon(rule.getSmallIconStyle());
+                }
+            }
+        }
+        if (explorerType.getSmallIconStyle() != null) {
+            return new CmsCssIcon(explorerType.getSmallIconStyle());
+        } else {
+            return new ExternalResource(
+                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + explorerType.getOriginalIcon()));
+        }
+    }
+
+    /**
      * Returns the path abbreviation length.<p>
      *
      * If greater than zero, the path will be formatted to this number of chars.<p>
@@ -279,28 +353,21 @@ public final class CmsResourceUtil {
     }
 
     /**
-     * Gets the full path for the big icon.<p>
+     * Returns the big icon resource of the current resource.<p>
      *
-     * @return the full path for the big icon
+     * @return the icon resource
      */
-    public String getBigIconPath() {
+    public Resource getBigIconResource() {
 
         if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
-            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_BIG);
+            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_NAV_LEVEL_BIG);
         }
         if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
-            return CmsWorkplace.getResourceUri(
-                CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_MODEL_GROUP_REUSE_BIG);
+            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_REUSE_BIG);
         }
         I_CmsResourceType type = getResourceType();
         CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        String typeIcon = "";
-        if (explorerType != null) {
-            typeIcon = CmsWorkplace.getResourceUri(
-                CmsWorkplace.RES_PATH_FILETYPES + explorerType.getBigIconIfAvailable());
-        }
-        return typeIcon;
-
+        return getBigIconResource(explorerType, m_resource != null ? m_resource.getName() : null);
     }
 
     /**
@@ -360,11 +427,25 @@ public final class CmsResourceUtil {
         return path;
     }
 
+    /**
+     * Returns the gallery description of the current resource.<p>
+     *
+     * @param locale the content locale
+     *
+     * @return the gallery description
+     */
     public String getGalleryDescription(Locale locale) {
 
         return getSearchResult(locale).getDescription();
     }
 
+    /**
+     * Returns the gallery title of the current resource.<p>
+     *
+     * @param locale the content locale
+     *
+     * @return the gallery title
+     */
     public String getGalleryTitle(Locale locale) {
 
         return getSearchResult(locale).getTitle();
@@ -462,13 +543,6 @@ public final class CmsResourceUtil {
      */
     public String getIconPathResourceType() {
 
-        if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
-            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_SMALL);
-        }
-        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
-            return CmsWorkplace.getResourceUri(
-                CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_MODEL_GROUP_REUSE_SMALL);
-        }
         if (!isEditable()) {
             return CmsWorkplace.RES_PATH_FILETYPES
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(
@@ -916,6 +990,13 @@ public final class CmsResourceUtil {
         return getResourceType().getTypeName();
     }
 
+    /**
+     * Returns the SOLR search result for the current resource.<p>
+     *
+     * @param locale the content locale
+     *
+     * @return the search result
+     */
     public CmsGallerySearchResult getSearchResult(Locale locale) {
 
         if (!m_searchResultMap.containsKey(locale)) {
@@ -991,6 +1072,24 @@ public final class CmsResourceUtil {
     public String getSizeString() {
 
         return m_resource.getLength() == -1 ? SIZE_DIR : "" + m_resource.getLength();
+    }
+
+    /**
+     * Returns the small icon resource of the current resource.<p>
+     *
+     * @return the icon resource
+     */
+    public Resource getSmallIconResource() {
+
+        if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
+            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_NAV_LEVEL_BIG);
+        }
+        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
+            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_REUSE_BIG);
+        }
+        I_CmsResourceType type = getResourceType();
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        return getSmallIconResource(explorerType, m_resource != null ? m_resource.getName() : null);
     }
 
     /**

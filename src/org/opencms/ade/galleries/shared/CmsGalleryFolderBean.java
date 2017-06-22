@@ -27,20 +27,17 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.sort.I_CmsHasPath;
-import org.opencms.gwt.shared.sort.I_CmsHasTitle;
-import org.opencms.gwt.shared.sort.I_CmsHasType;
 
 import java.util.ArrayList;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Represents a gallery folder.<p>
  *
  * @since 8.0.0
  */
-public class CmsGalleryFolderBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasType, IsSerializable {
+public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPath {
 
     /** A list with content types corresponding to this gallery type. */
     private ArrayList<String> m_contentTypes;
@@ -50,12 +47,6 @@ public class CmsGalleryFolderBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsH
 
     /** The folder site-path. */
     private String m_path;
-
-    /** The gallery folder title. */
-    private String m_title;
-
-    /** The gallery type name. */
-    private String m_type;
 
     /**
      * Returns the content types which can be used within this gallery type.<p>
@@ -78,23 +69,12 @@ public class CmsGalleryFolderBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsH
     }
 
     /**
-     * Returns the title.<p>
-     *
-     * @return the title
+     * @see org.opencms.gwt.shared.CmsListInfoBean#getSubTitle()
      */
-    public String getTitle() {
+    @Override
+    public String getSubTitle() {
 
-        return m_title;
-    }
-
-    /**
-     * Returns the gallery type name.<p>
-     *
-     * @return the gallery type name
-     */
-    public String getType() {
-
-        return m_type;
+        return getPath();
     }
 
     /**
@@ -117,7 +97,7 @@ public class CmsGalleryFolderBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsH
     public boolean matchesFilter(String filter) {
 
         filter = filter.toLowerCase();
-        return m_title.toLowerCase().contains(filter) || m_path.toLowerCase().contains(filter);
+        return getTitle().toLowerCase().contains(filter) || m_path.toLowerCase().contains(filter);
     }
 
     /**
@@ -148,25 +128,5 @@ public class CmsGalleryFolderBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsH
     public void setPath(String path) {
 
         m_path = path;
-    }
-
-    /**
-     * Sets the title.<p>
-     *
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-
-        m_title = title;
-    }
-
-    /**
-     * Sets the gallery type name.<p>
-     *
-     * @param type the type name of this gallery
-     */
-    public void setType(String type) {
-
-        m_type = type;
     }
 }

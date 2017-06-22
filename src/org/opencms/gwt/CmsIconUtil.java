@@ -27,28 +27,35 @@
 
 package org.opencms.gwt;
 
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeUnknownFile;
+import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsIconRule;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Utility class to generate the resource icon CSS.<p>
  *
  * @since 8.0.0
  */
-public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implements I_CmsEventListener {
+public final class CmsIconUtil implements I_CmsEventListener {
 
     /**
      * Inner helper class for building the CSS rules.<p>
      */
-    public static class CssBuilder {
+    static class CssBuilder {
 
         /** The buffer into which the CSS is written. */
         private StringBuffer m_buffer = new StringBuffer(1024);
@@ -60,28 +67,10 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
          */
         public String buildResourceIconCss() {
 
-            m_buffer.append(buildUnknownIconCss());
             for (CmsExplorerTypeSettings type : OpenCms.getWorkplaceManager().getExplorerTypeSettings()) {
                 addCssForType(type);
             }
-            addPseudoTypes();
-            addResourceNotFoundIconRule();
             return m_buffer.toString();
-        }
-
-        /**
-         * Builds the CSS for the icon for unknown resource types.<p>
-         *
-         * @return the CSS for unknown resource type icons
-         */
-        public String buildUnknownIconCss() {
-
-            String unknown = getIconUri(
-                OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                    CmsResourceTypeUnknownFile.getStaticTypeName()).getBigIconIfAvailable());
-            String template = "div.%1$s, span.%1$s { background: transparent scroll 50%% 50%% no-repeat url(\"%2$s\");} ";
-
-            return String.format(template, TYPE_ICON_CLASS, unknown);
         }
 
         /**
@@ -94,18 +83,18 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
             String extension = rule.getExtension();
             if (rule.getBigIcon() != null) {
-                CmsIconCssRuleBuilder cssBig = new CmsIconCssRuleBuilder();
+                IconCssRuleBuilder cssBig = new IconCssRuleBuilder();
                 cssBig.addSelectorForSubType(typeName, extension, false);
                 cssBig.setImageUri(getIconUri(rule.getBigIcon()));
                 cssBig.writeCss(m_buffer);
 
-                CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
+                IconCssRuleBuilder cssSmall = new IconCssRuleBuilder();
                 cssSmall.addSelectorForSubType(typeName, extension, true);
                 cssSmall.setImageUri(getIconUri(rule.getIcon()));
                 cssSmall.writeCss(m_buffer);
 
             } else {
-                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
+                IconCssRuleBuilder css = new IconCssRuleBuilder();
                 css.addSelectorForSubType(typeName, extension, false);
                 css.addSelectorForSubType(typeName, extension, true);
                 css.setImageUri(getIconUri(rule.getIcon()));
@@ -122,77 +111,30 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
         private void addCssForType(CmsExplorerTypeSettings explorerType) {
 
             String typeName = explorerType.getName();
-            if (explorerType.getBigIcon() != null) {
-                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
-                css.setImageUri(getIconUri(explorerType.getBigIcon()));
-                css.addSelectorForType(typeName, false);
-                css.writeCss(m_buffer);
+            if (explorerType.getBigIconStyle() == null) {
+                if (explorerType.getBigIcon() != null) {
+                    IconCssRuleBuilder css = new IconCssRuleBuilder();
+                    css.setImageUri(getIconUri(explorerType.getBigIcon()));
+                    css.addSelectorForType(typeName, false);
+                    css.writeCss(m_buffer);
 
-                CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
-                cssSmall.setImageUri(getIconUri(explorerType.getIcon()));
-                cssSmall.addSelectorForType(typeName, true);
-                cssSmall.writeCss(m_buffer);
-            } else if (explorerType.getOriginalIcon() != null) {
-                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
-                css.setImageUri(getIconUri(explorerType.getIcon()));
-                css.addSelectorForType(typeName, true);
-                css.addSelectorForType(typeName, false);
-                css.writeCss(m_buffer);
-            } else {
-                CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
-                css.setImageUri(getIconUri(CmsExplorerTypeSettings.DEFAULT_BIG_ICON));
-                css.addSelectorForType(typeName, false);
-                css.writeCss(m_buffer);
-
-                CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
-                cssSmall.setImageUri(getIconUri(CmsExplorerTypeSettings.DEFAULT_NORMAL_ICON));
-                cssSmall.addSelectorForType(typeName, true);
-                cssSmall.writeCss(m_buffer);
+                    IconCssRuleBuilder cssSmall = new IconCssRuleBuilder();
+                    cssSmall.setImageUri(getIconUri(explorerType.getIcon()));
+                    cssSmall.addSelectorForType(typeName, true);
+                    cssSmall.writeCss(m_buffer);
+                } else if (explorerType.getOriginalIcon() != null) {
+                    IconCssRuleBuilder css = new IconCssRuleBuilder();
+                    css.setImageUri(getIconUri(explorerType.getIcon()));
+                    css.addSelectorForType(typeName, true);
+                    css.addSelectorForType(typeName, false);
+                    css.writeCss(m_buffer);
+                }
             }
-
             Map<String, CmsIconRule> iconRules = explorerType.getIconRules();
             for (Map.Entry<String, CmsIconRule> entry : iconRules.entrySet()) {
                 CmsIconRule rule = entry.getValue();
                 addCssForIconRule(typeName, rule);
             }
-        }
-
-        /**
-         * Adds icon rule for pseudo resource types.<p>
-         */
-        private void addPseudoTypes() {
-
-            CmsExplorerTypeSettings navlevel = new CmsExplorerTypeSettings();
-            navlevel.setName(CmsGwtConstants.TYPE_NAVLEVEL);
-            navlevel.setIcon(ICON_NAV_LEVEL_SMALL);
-            navlevel.setBigIcon(ICON_NAV_LEVEL_BIG);
-            addCssForType(navlevel);
-            CmsExplorerTypeSettings modelgroupReuse = new CmsExplorerTypeSettings();
-            modelgroupReuse.setName(CmsGwtConstants.TYPE_MODELGROUP_REUSE);
-            modelgroupReuse.setIcon(ICON_MODEL_GROUP_REUSE_SMALL);
-            modelgroupReuse.setBigIcon(ICON_MODEL_GROUP_REUSE_BIG);
-            addCssForType(modelgroupReuse);
-            CmsExplorerTypeSettings modelgroupPage = new CmsExplorerTypeSettings();
-            modelgroupPage.setName(CmsGwtConstants.TYPE_MODELGROUP_PAGE);
-            modelgroupPage.setIcon(ICON_MODEL_GROUP_SMALL);
-            modelgroupPage.setBigIcon(ICON_MODEL_GROUP_BIG);
-            addCssForType(modelgroupPage);
-        }
-
-        /**
-         * Adds an icon rule for resource not found.<p>
-         */
-        private void addResourceNotFoundIconRule() {
-
-            CmsIconCssRuleBuilder cssBig = new CmsIconCssRuleBuilder();
-            cssBig.addSelectorForType(TYPE_RESOURCE_NOT_FOUND, false);
-            cssBig.setImageUri(getIconUri(NOT_FOUND_ICON_BIG));
-            cssBig.writeCss(m_buffer);
-
-            CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
-            cssSmall.addSelectorForType(TYPE_RESOURCE_NOT_FOUND, true);
-            cssSmall.setImageUri(getIconUri(NOT_FOUND_ICON_SMALL));
-            cssSmall.writeCss(m_buffer);
         }
 
         /**
@@ -209,32 +151,115 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
     }
 
-    /** Pseudo type icon. */
-    public static final String ICON_MODEL_GROUP_BIG = "modelpage_groups_big.png";
+    /**
+     * Helper class for creating the text of the CSS rule for a single icon based on resource type and file suffix.<p>
+     */
+    static class IconCssRuleBuilder {
+
+        /** The uri of the icon image. */
+        private String m_imageUri = "INVALID_ICON";
+
+        /** The list of selector strings. */
+        private List<String> m_selectors = new ArrayList<String>();
+
+        /**
+         * Adds a selector for a resource type and a file suffix.<p>
+         *
+         * @param type the resource type name
+         * @param suffix the file suffix
+         * @param small true if the selector should be for the small icon
+         */
+        public void addSelectorForSubType(String type, String suffix, boolean small) {
+
+            String template = " .%1$s.%2$s.%3$s";
+            String selector = String.format(
+                template,
+                CmsGwtConstants.TYPE_ICON_CLASS,
+                getResourceTypeIconClass(type, small),
+                getResourceSubTypeIconClass(type, suffix, small));
+            m_selectors.add(selector);
+        }
+
+        /**
+         * Adds a selector for a resource type.<p>
+         *
+         * @param type the name of the resource type
+         * @param small true if the selector should be for the small icon
+         */
+        public void addSelectorForType(String type, boolean small) {
+
+            String template = " div.%1$s.%2$s, span.%1$s.%2$s";
+            String selector = String.format(
+                template,
+                CmsGwtConstants.TYPE_ICON_CLASS,
+                getResourceTypeIconClass(type, small));
+            m_selectors.add(selector);
+        }
+
+        /**
+         * Sets the URI of the icon image file.<p>
+         *
+         * @param imageUri the URI of the icon image file
+         */
+        public void setImageUri(String imageUri) {
+
+            m_imageUri = imageUri;
+        }
+
+        /**
+         * Writes the CSS to a string buffer.<p>
+         *
+         * @param buffer the string buffer to which the
+         */
+        public void writeCss(StringBuffer buffer) {
+
+            buffer.append(CmsStringUtil.listAsString(m_selectors, ", "));
+            buffer.append(" { background-image: url(\"");
+            buffer.append(m_imageUri);
+            buffer.append("\");} ");
+        }
+    }
 
     /** Pseudo type icon. */
-    public static final String ICON_MODEL_GROUP_REUSE_BIG = "modelgroup_reuse_big.png";
+    public static final String ICON_MODEL_GROUP_BIG = CmsGwtConstants.TYPE_ICON_CLASS + " oc-icon-24-modelgroup_copy";
 
     /** Pseudo type icon. */
-    public static final String ICON_MODEL_GROUP_REUSE_SMALL = "modelgroup_reuse.png";
+    public static final String ICON_MODEL_GROUP_REUSE_BIG = CmsGwtConstants.TYPE_ICON_CLASS
+        + " "
+        + CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_REUSE_BIG;
 
     /** Pseudo type icon. */
-    public static final String ICON_MODEL_GROUP_SMALL = "modelpage_groups.png";
+    public static final String ICON_MODEL_GROUP_REUSE_SMALL = CmsGwtConstants.TYPE_ICON_CLASS
+        + " "
+        + CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_REUSE_SMALL;
 
     /** Pseudo type icon. */
-    public static final String ICON_NAV_LEVEL_BIG = "navlevel_big.png";
+    public static final String ICON_NAV_LEVEL_BIG = CmsGwtConstants.TYPE_ICON_CLASS
+        + " "
+        + CmsExplorerTypeSettings.ICON_STYLE_NAV_LEVEL_BIG;
 
     /** Pseudo type icon. */
-    public static final String ICON_NAV_LEVEL_SMALL = "navlevel.png";
+    public static final String ICON_NAV_LEVEL_SMALL = CmsGwtConstants.TYPE_ICON_CLASS
+        + " "
+        + CmsExplorerTypeSettings.ICON_STYLE_NAV_LEVEL_SMALL;
 
     /** The big resource not found icon name. */
-    public static final String NOT_FOUND_ICON_BIG = "resourceNotFoundBig.png";
+    public static final String NOT_FOUND_ICON_BIG = CmsGwtConstants.TYPE_ICON_CLASS + " oc-icon-24-warning";
 
     /** The small resource not found icon name. */
-    public static final String NOT_FOUND_ICON_SMALL = "resourceNotFoundSmall.png";
+    public static final String NOT_FOUND_ICON_SMALL = CmsGwtConstants.TYPE_ICON_CLASS + " oc-icon-16-warning";
+
+    /** The suffix for the CSS classes for small icons. */
+    public static final String SMALL_SUFFIX = "_small";
+
+    /** Type for resource not found. */
+    public static final String TYPE_RESOURCE_NOT_FOUND = "cms_resource_not_found";
 
     /** The cached CSS. */
     private static String m_cachedCss;
+
+    /** The extension icon mapping. */
+    private static Map<String, String> m_extensionIconMapping;
 
     /** Flag indicating the 'clear caches' event listener has been registered. */
     private static boolean m_listenerRegistered;
@@ -260,6 +285,204 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
             rebuildCss();
         }
         return m_cachedCss;
+    }
+
+    /**
+     * Returns the extension icon mapping used when uploading files.<p>
+     *
+     * @return the extension icon mapping
+     */
+    public static Map<String, String> getExtensionIconMapping() {
+
+        if (m_extensionIconMapping == null) {
+            m_extensionIconMapping = new HashMap<String, String>();
+            for (Entry<String, String> entry : OpenCms.getResourceManager().getExtensionMapping().entrySet()) {
+                m_extensionIconMapping.put(
+                    entry.getKey(),
+                    getIconClasses(entry.getValue(), "_." + entry.getKey(), false));
+            }
+            m_extensionIconMapping.put("", getIconClasses("plain", null, false));
+        }
+        // returning a copy of the icon map, as GWT will not work with unmodifiable maps
+        return new HashMap<String, String>(m_extensionIconMapping);
+    }
+
+    /**
+     * Returns the resource type icon CSS classes for the given type.<p>
+     * Use within ADE context only.<p>
+     *
+     * @param typeSettings the explorer type settings
+     * @param resourceName the resource name
+     * @param small <code>true</code> to get the small icon classes
+     *
+     * @return the icon CSS classes
+     */
+    public static String getIconClasses(CmsExplorerTypeSettings typeSettings, String resourceName, boolean small) {
+
+        String result = null;
+        if (typeSettings == null) {
+            typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                (resourceName != null) && CmsResource.isFolder(resourceName)
+                ? CmsResourceTypeUnknownFile.RESOURCE_TYPE_NAME
+                : CmsResourceTypeUnknownFolder.RESOURCE_TYPE_NAME);
+        }
+        if (!typeSettings.getIconRules().isEmpty() && (resourceName != null)) {
+            String extension = CmsResource.getExtension(resourceName);
+            if (extension != null) {
+                // check for a matching sub type icon rule
+                CmsIconRule rule = typeSettings.getIconRules().get(extension);
+                if (rule != null) {
+                    result = small ? rule.getSmallIconStyle() : rule.getBigIconStyle();
+                }
+            }
+        }
+        if (result == null) {
+            if (small && (typeSettings.getSmallIconStyle() != null)) {
+                result = CmsGwtConstants.TYPE_ICON_CLASS + " " + typeSettings.getSmallIconStyle();
+            } else if (!small && (typeSettings.getBigIconStyle() != null)) {
+                result = CmsGwtConstants.TYPE_ICON_CLASS + " " + typeSettings.getBigIconStyle();
+            }
+
+            if (result == null) {
+                result = getResourceIconClasses(typeSettings.getName(), resourceName, small);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the resource type icon CSS classes for the given type.<p>
+     * Use within ADE context only.<p>
+     *
+     * @param resourceType the resource type name
+     * @param resourceName the resource name
+     * @param small <code>true</code> to get the small icon classes
+     *
+     * @return the icon CSS classes
+     */
+    public static String getIconClasses(String resourceType, String resourceName, boolean small) {
+
+        String result;
+        if (resourceType.equals(CmsGwtConstants.TYPE_NAVLEVEL)) {
+            if (small) {
+                result = ICON_NAV_LEVEL_SMALL;
+            } else {
+                result = ICON_NAV_LEVEL_BIG;
+            }
+        } else if (resourceType.equals(CmsGwtConstants.TYPE_MODELGROUP_REUSE)) {
+            if (small) {
+                result = ICON_MODEL_GROUP_REUSE_SMALL;
+            } else {
+                result = ICON_MODEL_GROUP_REUSE_BIG;
+            }
+        } else if (resourceType.equals(TYPE_RESOURCE_NOT_FOUND)) {
+            if (small) {
+                result = NOT_FOUND_ICON_SMALL;
+            } else {
+                result = NOT_FOUND_ICON_BIG;
+            }
+        } else {
+            result = getIconClasses(
+                OpenCms.getWorkplaceManager().getExplorerTypeSetting(resourceType),
+                resourceName,
+                small);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the CSS classes of the resource icon for the given resource type name.<p>
+     *
+     * Use this function, if the resource type is known, but not the filename. If the filename is available use {@link CmsIconUtil#getResourceIconClasses(String, String, boolean)}<p>
+     *
+     * @param resourceTypeName the resource type name
+     * @param small if true, get the icon classes for the small icon, else for the biggest one available
+     *
+     * @return the CSS classes
+     */
+    public static String getResourceIconClasses(String resourceTypeName, boolean small) {
+
+        StringBuffer sb = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS);
+        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName, small));
+        return sb.toString();
+    }
+
+    /**
+     * Returns the CSS classes of the resource icon for the given resource type and filename.<p>
+     *
+     * Use this the resource type and filename is known. Otherwise use {@link CmsIconUtil#getResourceIconClasses(String,boolean)}<p>
+     *
+     * @param resourceTypeName the resource type name
+     * @param fileName the filename
+     * @param small if true, get the icon classes for the small icon, else for the biggest one available
+     *
+     * @return the CSS classes
+     */
+    public static String getResourceIconClasses(String resourceTypeName, String fileName, boolean small) {
+
+        StringBuffer sb = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS);
+        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName, small)).append(" ").append(
+            getFileTypeIconClass(resourceTypeName, fileName, small));
+        return sb.toString();
+    }
+
+    /**
+     * Returns the CSS class for a given resource type name and file name extension.<p>
+     *
+     * @param resourceTypeName the resource type name
+     * @param suffix the file name extension
+     * @param small if true, get the icon class for the small icon, else for the biggest one available
+     *
+     * @return the CSS class for the type and extension
+     */
+    public static String getResourceSubTypeIconClass(String resourceTypeName, String suffix, boolean small) {
+
+        StringBuffer buffer = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS).append("_").append(
+            resourceTypeName.hashCode()).append("_").append(suffix);
+        if (small) {
+            buffer.append(SMALL_SUFFIX);
+        }
+        return buffer.toString();
+    }
+
+    /**
+     * Returns the CSS class for the given resource type.<p>
+     *
+     * @param resourceTypeName the resource type name
+     * @param small if true, get the icon class for the small icon, else for the biggest one available
+     *
+     * @return the CSS class
+     */
+    public static String getResourceTypeIconClass(String resourceTypeName, boolean small) {
+
+        StringBuffer sb = new StringBuffer(CmsGwtConstants.TYPE_ICON_CLASS);
+        sb.append("_").append(resourceTypeName.hashCode());
+        if (small) {
+            sb.append(SMALL_SUFFIX);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Returns the CSS class for the given filename.<p>
+     *
+     * @param resourceTypeName the resource type name
+     * @param fileName the filename
+     * @param small if true, get the CSS class for the small icon, else for the biggest one available
+     *
+     * @return the CSS class
+     */
+    protected static String getFileTypeIconClass(String resourceTypeName, String fileName, boolean small) {
+
+        if ((fileName != null) && fileName.contains(".")) {
+            int last = fileName.lastIndexOf(".");
+            if (fileName.length() > (last + 1)) {
+                String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+                return getResourceSubTypeIconClass(resourceTypeName, suffix, small);
+            }
+        }
+        return "";
+
     }
 
     /**
@@ -293,5 +516,4 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
         m_cachedCss = null;
     }
-
 }

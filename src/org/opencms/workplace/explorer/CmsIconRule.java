@@ -40,11 +40,17 @@ public class CmsIconRule {
     /** The big icon. */
     private String m_bigIcon;
 
+    /** The big icon CSS style class. */
+    private String m_bigIconStyle;
+
     /** The file name extension. */
     private String m_extension;
 
     /** The small icon. */
     private String m_icon;
+
+    /** The small icon CSS style class. */
+    private String m_smallIconStyle;
 
     /**
      * Creates a new icon rule.<p>
@@ -52,12 +58,16 @@ public class CmsIconRule {
      * @param extension the file name extension
      * @param icon the small icon's file name
      * @param bigIcon the big icon's file name
+     * @param smallIconStyle the small icon CSS style class
+     * @param bigIconStyle the big icon CSS style class
      */
-    public CmsIconRule(String extension, String icon, String bigIcon) {
+    public CmsIconRule(String extension, String icon, String bigIcon, String smallIconStyle, String bigIconStyle) {
 
         m_icon = icon;
         m_bigIcon = bigIcon;
         m_extension = extension;
+        m_smallIconStyle = smallIconStyle;
+        m_bigIconStyle = bigIconStyle;
     }
 
     /**
@@ -66,7 +76,7 @@ public class CmsIconRule {
     @Override
     public Object clone() {
 
-        return new CmsIconRule(m_extension, m_icon, m_bigIcon);
+        return new CmsIconRule(m_extension, m_icon, m_bigIcon, m_smallIconStyle, m_bigIconStyle);
     }
 
     /**
@@ -90,6 +100,16 @@ public class CmsIconRule {
     }
 
     /**
+     * Returns the big icon CSS style class.<p>
+     *
+     * @return the big icon style
+     */
+    public String getBigIconStyle() {
+
+        return m_bigIconStyle;
+    }
+
+    /**
      * Returns the file name extension for this rule.<p>
      *
      * @return the file name extension for this rule
@@ -108,5 +128,15 @@ public class CmsIconRule {
     public String getIcon() {
 
         return m_icon;
+    }
+
+    /**
+     * Returns the small icon CSS style class.<p>
+     *
+     * @return the small icon style
+     */
+    public String getSmallIconStyle() {
+
+        return m_smallIconStyle;
     }
 }

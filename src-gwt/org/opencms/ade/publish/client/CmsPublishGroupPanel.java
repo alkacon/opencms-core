@@ -31,7 +31,6 @@ import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.client.CmsPublishSelectPanel.CheckBoxUpdate;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.CmsList;
@@ -54,7 +53,7 @@ import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox.State;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
-import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -201,27 +200,22 @@ public class CmsPublishGroupPanel extends Composite {
      *
      * @return the list item widget representing the publish resource bean
      */
-    public static CmsListItemWidget createListItemWidget(final CmsPublishResource resourceBean, int[] slotMapping) {
+    public static CmsListItemWidget createListItemWidget(CmsPublishResource resourceBean, int[] slotMapping) {
 
-        CmsListInfoBean info = new CmsListInfoBean();
-        info.setTitle(getTitle(resourceBean));
-        info.setSubTitle(resourceBean.getName());
-        info.setResourceState(resourceBean.getState());
+        CmsListItemWidget itemWidget = new CmsListItemWidget(resourceBean);
         if (resourceBean.getUserLastModified() != null) {
             String userLabel = org.opencms.ade.publish.client.Messages.get().key(
                 org.opencms.ade.publish.client.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
-            info.addAdditionalInfo(userLabel, resourceBean.getUserLastModified());
+            itemWidget.addAdditionalInfo(
+                new CmsAdditionalInfoBean(userLabel, resourceBean.getUserLastModified(), null));
         }
         if (resourceBean.getDateLastModifiedString() != null) {
             String dateLabel = org.opencms.ade.publish.client.Messages.get().key(
                 org.opencms.ade.publish.client.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
-            info.addAdditionalInfo(dateLabel, resourceBean.getDateLastModifiedString());
+            itemWidget.addAdditionalInfo(
+                new CmsAdditionalInfoBean(dateLabel, resourceBean.getDateLastModifiedString(), null));
         }
 
-        info.setMarkChangedState(false);
-        info.setResourceType(resourceBean.getResourceType());
-        info.setDetailResourceType(resourceBean.getDetailResourceType());
-        CmsListItemWidget itemWidget = new CmsListItemWidget(info);
         String resourceUser = resourceBean.getUserLastModified();
         String currentUser = CmsCoreProvider.get().getUserInfo().getName();
         if (!currentUser.equals(resourceUser)) {
@@ -265,23 +259,6 @@ public class CmsPublishGroupPanel extends Composite {
             panel.clear();
             panel.add(widget);
         }
-    }
-
-    /**
-     * Utility method for getting the title of a publish resource bean, or a default title
-     * if the bean has no title.<p>
-     *
-     * @param resourceBean the resource bean for which the title should be retrieved
-     *
-     * @return the bean's title, or a default title
-     */
-    private static String getTitle(CmsPublishResource resourceBean) {
-
-        String title = resourceBean.getTitle();
-        if ((title == null) || title.equals("")) {
-            title = CmsResource.getName(resourceBean.getName());
-        }
-        return title;
     }
 
     /**

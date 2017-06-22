@@ -74,6 +74,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtService;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
@@ -132,6 +133,7 @@ import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -1474,11 +1476,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         if (A_CmsAjaxGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
                             CmsGalleryType gallery = new CmsGalleryType();
                             gallery.setTypeId(resourceType.getTypeId());
-                            gallery.setTypeName(resourceType.getTypeName());
-                            gallery.setNiceName(
+                            gallery.setResourceType(resourceType.getTypeName());
+                            gallery.setTitle(
                                 CmsWorkplaceMessages.getResourceTypeName(wpLocale, resourceType.getTypeName()));
-                            gallery.setDescription(
+                            gallery.setSubTitle(
                                 CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, resourceType.getTypeName()));
+                            gallery.setBigIconClasses(
+                                CmsIconUtil.getIconClasses(resourceType.getTypeName(), null, false));
                             result.add(gallery);
                         }
                     } catch (Exception e) {
@@ -1500,7 +1504,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
         }
         for (CmsGalleryType galleryType : result) {
-            galleryType.setContentTypeNames(galleryContentTypes.get(galleryType.getTypeName()));
+            galleryType.setContentTypeNames(galleryContentTypes.get(galleryType.getResourceType()));
         }
         return result;
     }
@@ -1603,6 +1607,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             getCmsObject().readResource(SUB_LEVEL_REDIRECT_COPY_PAGE).getStructureId(),
             false,
             subtitle);
+        result.setBigIconClasses(CmsIconUtil.ICON_NAV_LEVEL_BIG);
         result.setCreateParameter(CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER);
         return result;
     }
@@ -1894,6 +1899,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             modelResource.getStructureId(),
             editable,
             description);
+        info.setBigIconClasses(CmsIconUtil.getIconClasses(name, null, false));
         Float navpos = null;
         try {
             CmsProperty navposProp = cms.readPropertyObject(modelResource, CmsPropertyDefinition.PROPERTY_NAVPOS, true);
@@ -1934,7 +1940,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             subtitle = CmsWorkplaceMessages.getResourceTypeName(locale, name);
         }
         if (copyResource != null) {
-            return new CmsNewResourceInfo(
+            CmsNewResourceInfo info = new CmsNewResourceInfo(
                 copyResource.getTypeId(),
                 name,
                 CmsWorkplaceMessages.getResourceTypeName(locale, name),
@@ -1942,8 +1948,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 copyResource.getStructureId(),
                 false,
                 subtitle);
+            info.setBigIconClasses(CmsIconUtil.getIconClasses(name, null, false));
+            return info;
         } else {
-            return new CmsNewResourceInfo(
+            CmsNewResourceInfo info = new CmsNewResourceInfo(
                 resType.getTypeId(),
                 name,
                 CmsWorkplaceMessages.getResourceTypeName(locale, name),
@@ -1951,6 +1959,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 null,
                 false,
                 subtitle);
+            info.setBigIconClasses(CmsIconUtil.getIconClasses(name, null, false));
+            return info;
         }
     }
 
@@ -2276,7 +2286,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         for (CmsResource folder : galleryFolders) {
             try {
                 if (!isInSubsite(subSitePaths, folder.getRootPath())) {
-                    galleries.add(readGalleryFolderEntry(folder, galleryType.getTypeName()));
+                    galleries.add(readGalleryFolderEntry(folder, galleryType.getResourceType()));
                 }
             } catch (CmsException ex) {
                 log(ex.getLocalizedMessage(), ex);
@@ -2473,6 +2483,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     subtitle);
                 info.setCreateParameter(functionRef.getStructureId().toString());
                 info.setIsFunction(true);
+                info.setBigIconClasses(
+                    CmsIconUtil.getIconClasses(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION, null, false));
                 result.add(info);
             } catch (CmsVfsResourceNotFoundException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
@@ -2853,6 +2865,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         folderEntry.setSitePath(cms.getSitePath(folder));
         folderEntry.setStructureId(folder.getStructureId());
         folderEntry.setOwnProperties(getClientProperties(cms, folder, false));
+        folderEntry.setIconClasses(CmsIconUtil.getIconClasses(typeName, null, false));
         return folderEntry;
     }
 
@@ -3111,6 +3124,16 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         clientEntry.setInNavigation(isRoot || navElement.isInNavigation());
         String type = OpenCms.getResourceManager().getResourceType(ownResource).getTypeName();
         clientEntry.setResourceTypeName(type);
+        clientEntry.setVfsModeIcon(CmsIconUtil.getIconClasses(type, ownResource.getName(), false));
+
+        if (!clientEntry.isSubSitemapType()) {
+            if (clientEntry.isNavigationLevelType()) {
+                clientEntry.setNavModeIcon(CmsIconUtil.ICON_NAV_LEVEL_BIG);
+            } else if (defaultFileResource != null) {
+                clientEntry.setNavModeIcon(
+                    CmsIconUtil.getIconClasses(clientEntry.getDefaultFileType(), defaultFileResource.getName(), false));
+            }
+        }
         clientEntry.setPermissionInfo(OpenCms.getADEManager().getPermissionInfo(cms, ownResource, null));
         return clientEntry;
     }

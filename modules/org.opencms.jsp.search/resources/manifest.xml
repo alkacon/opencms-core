@@ -36,7 +36,7 @@
 			</type>
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="jsp-search" key="fileicon.jsp-search" icon="jsp-search.png" bigicon="jsp-search_big.png" reference="xmlcontent">
+			<explorertype name="jsp-search" key="fileicon.jsp-search" smalliconstyle="oc-icon-16-jsp_search" bigiconstyle="oc-icon-24-jsp_search" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=jsp-search" order="10" autosetnavigation="false" autosettitle="false" info="desc.jsp-search" key="title.jsp-search"/>
 			</explorertype>
 		</explorertypes>

@@ -63,7 +63,6 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
@@ -489,8 +488,7 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
 
         Image ret = new Image(
             String.valueOf(System.currentTimeMillis()),
-            new ExternalResource(
-                CmsResourceIcon.getSitemapResourceIcon(A_CmsUI.getCmsObject(), resource, IconMode.localeCompare)));
+            CmsResourceIcon.getSitemapResourceIcon(A_CmsUI.getCmsObject(), resource, IconMode.localeCompare));
         ret.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = -5277521979482801748L;

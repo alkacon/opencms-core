@@ -70,7 +70,6 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -277,6 +276,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** The hide help bubbles button. */
     private CmsToggleButton m_hideHelpBubblesButton;
+
+    /** The resource icon classes. */
+    private String m_iconClasses;
 
     /** Flag which indicate whether the directedit parameter was set to true when loading the editor. */
     private boolean m_isDirectEdit;
@@ -1680,12 +1682,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         initLocaleSelect();
         setNativeResourceInfo(m_sitePath, m_locale);
-        CmsInfoHeader header = new CmsInfoHeader(
-            m_title,
-            null,
-            m_sitePath,
-            m_locale,
-            CmsIconUtil.getResourceIconClasses(m_resourceTypeName, m_sitePath, false));
+        CmsInfoHeader header = new CmsInfoHeader(m_title, null, m_sitePath, m_locale, m_iconClasses);
         m_basePanel.add(header);
         SimplePanel content = new SimplePanel();
         content.setStyleName(org.opencms.acacia.client.css.I_CmsLayoutBundle.INSTANCE.form().formParent());
@@ -1767,6 +1764,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_resourceTypeName = definition.getResourceType();
         m_registeredEntities.add(definition.getEntityId());
         m_tabInfos = definition.getTabInfos();
+        m_iconClasses = definition.getIconClasses();
         addContentDefinition(definition);
         CmsDefaultWidgetService service = (CmsDefaultWidgetService)getWidgetService();
         service.addConfigurations(definition.getConfigurations());

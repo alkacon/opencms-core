@@ -5,6 +5,6 @@
 	<head>
 		<%=(new CmsPropertiesActionElement(pageContext, request, response)).exportAll() %>
 	</head>
-	<body>
+	<body class="-opencms">
 	</body>
 </html>

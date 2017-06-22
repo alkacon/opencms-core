@@ -1131,6 +1131,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             navigationUri,
             structureId,
             new HashMap<String, String>(OpenCms.getResourceManager().getExtensionMapping()),
+            CmsIconUtil.getExtensionIconMapping(),
             System.currentTimeMillis(),
             isShowHelp,
             toolbarVisible,

@@ -7,5 +7,5 @@ CmsPublishActionElement publish = new CmsPublishActionElement(pageContext, reque
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <%= publish.exportAll() %>
   </head>
-  <body style="margin: 0px;">&nbsp;</body>
+  <body class="-opencms" style="margin: 0px;">&nbsp;</body>
 </html>

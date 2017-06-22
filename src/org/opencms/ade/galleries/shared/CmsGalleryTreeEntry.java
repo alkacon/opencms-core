@@ -55,7 +55,8 @@ public class CmsGalleryTreeEntry extends CmsGalleryFolderBean {
         setEditable(master.isEditable());
         setPath(master.getPath());
         setTitle(master.getTitle());
-        setType(master.getType());
+        setResourceType(master.getType());
+        setBigIconClasses(master.getBigIconClasses());
     }
 
     /**

@@ -37,12 +37,12 @@ import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.gwt.CmsIconUtil;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -55,6 +55,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontIcon;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 
@@ -196,7 +199,7 @@ public class CmsResourceIcon extends Label {
      * @param iconMode the icon mode
      * @return the path for the resource icon
      */
-    public static String getSitemapResourceIcon(CmsObject cms, CmsResource resource, IconMode iconMode) {
+    public static Resource getSitemapResourceIcon(CmsObject cms, CmsResource resource, IconMode iconMode) {
 
         CmsResource defaultFile = null;
         List<CmsResource> resourcesForType = Lists.newArrayList();
@@ -217,7 +220,7 @@ public class CmsResourceIcon extends Label {
             }
         }
         if (CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
-            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_BIG);
+            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_NAV_LEVEL_BIG);
         }
         CmsResource maybePage = resourcesForType.get(0);
         if (CmsResourceTypeXmlContainerPage.isContainerPage(maybePage)) {
@@ -228,23 +231,22 @@ public class CmsResourceIcon extends Label {
                     CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                         realInfo.getIconType());
                     if (settings != null) {
-                        return CmsWorkplace.getResourceUri(
-                            CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable());
+                        return CmsResourceUtil.getBigIconResource(settings, resource.getName());
                     }
                 }
             }
         }
 
-        String result = null;
+        Resource result = null;
         for (CmsResource res : resourcesForType) {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res);
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
             if (settings != null) {
-                result = CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable();
+                result = CmsResourceUtil.getBigIconResource(settings, res.getName());
                 break;
             }
         }
-        return CmsWorkplace.getResourceUri(result);
+        return result;
     }
 
     /**
@@ -285,14 +287,16 @@ public class CmsResourceIcon extends Label {
         boolean showLocks,
         boolean showDetailIcon) {
 
-        return getIconInnerHTML(resUtil, resUtil.getBigIconPath(), state, showLocks, showDetailIcon);
+        Resource iconResource = resUtil.getBigIconResource();
+
+        return getIconInnerHTML(resUtil, iconResource, state, showLocks, showDetailIcon);
     }
 
     /**
      * Returns the icon inner HTML.<p>
      *
      * @param resUtil the resource util for the resource
-     * @param iconPath the icon path
+     * @param iconResource the icon path
      * @param state the resource state
      * @param showLocks <code>true</code> to show lock state overlay
      * @param showDetailIcon <code>true</code> to show the detail icon overlay
@@ -301,29 +305,39 @@ public class CmsResourceIcon extends Label {
      */
     private static String getIconInnerHTML(
         CmsResourceUtil resUtil,
-        String iconPath,
+        Resource iconResource,
         CmsResourceState state,
         boolean showLocks,
         boolean showDetailIcon) {
 
-        String content = "<img src=\"" + iconPath + "\" />";
+        String content;
+        if (iconResource instanceof FontIcon) {
+            content = ((FontIcon)iconResource).getHtml();
+        } else if (iconResource instanceof ExternalResource) {
+            content = "<img src=\"" + ((ExternalResource)iconResource).getURL() + "\" />";
+        } else {
+            content = "";
+        }
+
+        boolean isNavLevel = false;
+
         if (resUtil != null) {
-            if (showDetailIcon && !iconPath.endsWith(CmsIconUtil.ICON_NAV_LEVEL_BIG)) {
+            if (showDetailIcon && !isNavLevel) {
 
                 if (resUtil.getResource().isFolder()) {
                     String detailType = getDefaultFileOrDetailType(resUtil.getCms(), resUtil.getResource());
                     if (detailType != null) {
-                        String smallIconUri = getSmallTypeIconURI(detailType);
+                        String smallIconUri = getSmallTypeIconHTML(detailType);
                         if (smallIconUri != null) {
-                            content += "<img src=\"" + smallIconUri + "\" class=\"o-icon-overlay\" />";
+                            content += smallIconUri;
                         }
                     }
                 } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resUtil.getResource())) {
                     String detailType = getDefaultFileOrDetailType(resUtil.getCms(), resUtil.getResource());
                     if (detailType != null) {
-                        String smallIconUri = getSmallTypeIconURI(detailType);
+                        String smallIconUri = getSmallTypeIconHTML(detailType);
                         if (smallIconUri != null) {
-                            content += "<img src=\"" + smallIconUri + "\" class=\"o-page-icon-overlay\" />";
+                            content += smallIconUri;
                         }
                     }
 
@@ -407,15 +421,24 @@ public class CmsResourceIcon extends Label {
      *
      * @return the icon URI
      */
-    private static String getSmallTypeIconURI(String type) {
+    private static String getSmallTypeIconHTML(String type) {
 
         CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
         if ((typeSettings == null) && LOG.isWarnEnabled()) {
             LOG.warn("Could not read explorer type settings for " + type);
         }
-        return typeSettings != null
-        ? CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSettings.getIcon())
-        : null;
+        String result = null;
+        if (typeSettings != null) {
+            if (typeSettings.getSmallIconStyle() != null) {
+                result = "<span class=\"v-icon o-icon-overlay " + typeSettings.getSmallIconStyle() + "\">&nbsp;</span>";
+            } else {
+                result = "<img src=\""
+                    + CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSettings.getIcon())
+                    + "\" class=\"o-icon-overlay\" />";
+            }
+
+        }
+        return result;
     }
 
     /**
@@ -439,18 +462,18 @@ public class CmsResourceIcon extends Label {
      * Initializes the content.<p>
      *
      * @param resUtil the resource util
-     * @param iconPath the icon path
+     * @param iconResource the icon path
      * @param state the resource state
      * @param showLocks <code>true</code> to show the resource locks
      * @param showDetailIcon <code>true</code> to show the detail icon overlay
      */
     public void initContent(
         CmsResourceUtil resUtil,
-        String iconPath,
+        Resource iconResource,
         CmsResourceState state,
         boolean showLocks,
         boolean showDetailIcon) {
 
-        setValue(getIconInnerHTML(resUtil, iconPath, state, showLocks, showDetailIcon));
+        setValue(getIconInnerHTML(resUtil, iconResource, state, showLocks, showDetailIcon));
     }
 }

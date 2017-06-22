@@ -37,10 +37,7 @@ import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsToolTipHandler;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
-import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.user.client.ui.HTML;
 
@@ -97,11 +94,11 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     /** Tile view flag. */
     private boolean m_hasTileView;
 
-    /** The tool tip handler. */
-    private CmsToolTipHandler m_tooltipHandler;
-
     /** The image tile. */
     private ImageTile m_imageTile;
+
+    /** The tool tip handler. */
+    private CmsToolTipHandler m_tooltipHandler;
 
     /**
      * Constructor.<p>
@@ -118,18 +115,6 @@ public class CmsResultItemWidget extends CmsListItemWidget {
         } else {
             setSubtitleTitle(infoBean.getPath());
         }
-        String type = infoBean.getType();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getPseudoType())) {
-            type = infoBean.getPseudoType();
-        }
-        String detailIconClasses = null;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getDetailResourceType())) {
-            detailIconClasses = CmsIconUtil.getResourceIconClasses(infoBean.getDetailResourceType(), true);
-            if (CmsGwtConstants.TYPE_CONTAINERPAGE.equals(infoBean.getResourceType())) {
-                detailIconClasses += " " + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().pageDetailType();
-            }
-        }
-        setIcon(CmsIconUtil.getResourceIconClasses(type, infoBean.getPath(), false), detailIconClasses);
 
         // if resourceType=="image" prepare for tile view
         if (CmsResultsTab.isImagelikeType(infoBean.getType())) {

@@ -12,6 +12,8 @@
 @import "permissions";
 @import "additional-bundleeditor";
 @import "codemirror";
+@import "cssIcons24";
+@import "cssIcons16";
 
 @include opencmsfont;
 
@@ -43,6 +45,8 @@
    @include o-permissions;
    @include o-table-bundleeditor;
    @include o-codemirror;
+   @include o-css-icons-24;
+   @include o-css-icons-16;
    
    /* Embedded dialogs require the UI to have a transparent background. */
    &.cmsembeddeddialogsui.v-app, &.cmsembeddeddialogsui.v-app-loading {

@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
@@ -64,7 +65,6 @@ import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -91,7 +91,7 @@ public class CmsProjectsTable extends Table {
 
             List<CmsResourceInfo> projectInfos = new ArrayList<CmsResourceInfo>();
             String message;
-            String projectIcon = OpenCmsTheme.getImageLink(CmsProjectManager.ICON_PROJECT_SMALL);
+            CmsCssIcon projectIcon = new CmsCssIcon(CmsProjectManager.ICON_PROJECT_SMALL);
             if (data.size() == 1) {
                 Item item = m_container.getItem(data.iterator().next());
                 message = CmsVaadinUtils.getMessageText(
@@ -398,7 +398,7 @@ public class CmsProjectsTable extends Table {
         m_container.addContainerProperty(
             PROP_ICON,
             Resource.class,
-            new ExternalResource(OpenCmsTheme.getImageLink(CmsProjectManager.ICON_PROJECT_SMALL)));
+            new CmsCssIcon(CmsProjectManager.ICON_PROJECT_SMALL));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DESCRIPTION, String.class, "");
         m_container.addContainerProperty(PROP_ORG_UNIT, String.class, "");

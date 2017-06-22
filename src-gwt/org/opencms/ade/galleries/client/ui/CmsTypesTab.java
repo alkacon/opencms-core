@@ -39,8 +39,6 @@ import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsStyleVariable;
-import org.opencms.gwt.shared.CmsIconUtil;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -171,9 +169,7 @@ public class CmsTypesTab extends A_CmsListTab {
         for (CmsResourceTypeBean typeBean : typeInfos) {
             m_types.put(typeBean.getType(), typeBean);
             CmsListItemWidget listItemWidget;
-            CmsListInfoBean infoBean = new CmsListInfoBean(typeBean.getTitle(), typeBean.getDescription(), null);
-            listItemWidget = new CmsListItemWidget(infoBean);
-            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
+            listItemWidget = new CmsListItemWidget(typeBean);
             listItemWidget.setUnselectable();
             CmsCheckBox checkBox = new CmsCheckBox();
             CmsListItem listItem = new CmsListItem(checkBox, listItemWidget);

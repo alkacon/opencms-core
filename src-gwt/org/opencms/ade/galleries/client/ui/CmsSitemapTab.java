@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -201,7 +200,7 @@ public class CmsSitemapTab extends A_CmsListTab {
         CmsDataValue dataValue = new CmsDataValue(
             600,
             3,
-            CmsIconUtil.getResourceIconClasses(sitemapEntry.getImageType(), true),
+            sitemapEntry.getSmallIconClasses(),
             sitemapEntry.getDisplayName());
         dataValue.setUnselectable();
         if (sitemapEntry.isHiddenEntry()) {

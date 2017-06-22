@@ -576,6 +576,29 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
+     * Returns the resource name extension if present.<p>
+     * The extension will be always lower case.<p>
+     *
+     * @param resourceName the resource name or path
+     *
+     * @return the extension or <code>null</code> if not available
+     */
+    public static String getExtension(String resourceName) {
+
+        String result = null;
+        if (!resourceName.endsWith("/")) {
+            // folders don't have any extension
+            resourceName = CmsResource.getName(resourceName);
+            int index = resourceName.lastIndexOf(".") + 1;
+            if ((index > 0) && (index < resourceName.length())) {
+                result = resourceName.substring(index).toLowerCase();
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Returns the folder path of the resource with the given name.<p>
      *
      * If the resource name denotes a folder (that is ends with a "/"), the complete path of the folder

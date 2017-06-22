@@ -44,6 +44,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
@@ -122,6 +124,21 @@ public class CmsResourceInfo extends CustomLayout {
      *
      * @param top the title
      * @param bottom the sub title
+     * @param iconResource the icon resource path
+     */
+    public CmsResourceInfo(String top, String bottom, Resource iconResource) {
+
+        this();
+        m_topText.setValue(top);
+        m_bottomText.setValue(bottom);
+        m_icon.initContent(null, iconResource, null, false, true);
+    }
+
+    /**
+     * Constructor.<p>
+     *
+     * @param top the title
+     * @param bottom the sub title
      * @param iconPath the icon resource path
      */
     public CmsResourceInfo(String top, String bottom, String iconPath) {
@@ -129,8 +146,7 @@ public class CmsResourceInfo extends CustomLayout {
         this();
         m_topText.setValue(top);
         m_bottomText.setValue(bottom);
-        m_icon.initContent(null, iconPath, null, false, true);
-
+        m_icon.initContent(null, new ExternalResource(iconPath), null, false, true);
     }
 
     /**
@@ -172,7 +188,7 @@ public class CmsResourceInfo extends CustomLayout {
             }
         }
         info.getBottomLine().setValue(path);
-        String icon = CmsResourceIcon.getSitemapResourceIcon(
+        Resource icon = CmsResourceIcon.getSitemapResourceIcon(
             A_CmsUI.getCmsObject(),
             resUtil.getResource(),
             IconMode.localeCompare);

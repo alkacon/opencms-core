@@ -43,8 +43,7 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
@@ -62,7 +61,6 @@ import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
@@ -199,7 +197,12 @@ public class CmsImageCacheTable extends Table {
             }
         };
 
-        m_container.addContainerProperty(PROP_ICON, Resource.class, new ExternalResource(getImageFileTypeIcon()));
+        m_container.addContainerProperty(
+            PROP_ICON,
+            Resource.class,
+            CmsResourceUtil.getBigIconResource(
+                OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeImage.getStaticTypeName()),
+                null));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DIMENSIONS, String.class, "");
         m_container.addContainerProperty(PROP_SIZE, String.class, "");
@@ -328,24 +331,6 @@ public class CmsImageCacheTable extends Table {
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_VARIATIONS_1, resource));
         window.setContent(variationsDialog);
         UI.getCurrent().addWindow(window);
-    }
-
-    /**
-     * Returns the path of the icon of the resource type image.<p>
-     *
-     * @return path to icon
-     */
-    private String getImageFileTypeIcon() {
-
-        String result = "";
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-            CmsResourceTypeImage.getStaticTypeName());
-        if (settings != null) {
-            result = CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable();
-        }
-
-        return CmsWorkplace.getResourceUri(result);
-
     }
 
     /**

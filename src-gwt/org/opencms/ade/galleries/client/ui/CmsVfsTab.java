@@ -42,7 +42,6 @@ import org.opencms.gwt.client.ui.input.category.CmsDataValue;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -306,7 +305,7 @@ public class CmsVfsTab extends A_CmsListTab {
         CmsDataValue dataValue = new CmsDataValue(
             600,
             3,
-            CmsIconUtil.getResourceIconClasses(I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER, true),
+            vfsEntry.getSmallIconClasses(),
             name,
             vfsEntry.getDisplayName());
         if (vfsEntry.isSearchMatch()) {

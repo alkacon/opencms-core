@@ -27,22 +27,18 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
-
-import java.io.Serializable;
 
 /**
  * A bean representing a resource type for use in the detail page creation menu.<p>
  *
  * @since 8.0.0
  */
-public class CmsNewResourceInfo implements Serializable {
+public class CmsNewResourceInfo extends CmsListInfoBean {
 
     /** The navigation level create parameter. */
     public static final String NAVIGATION_LEVEL_PARAMETER = "new_navigation_level";
-
-    /** ID for serialization. */
-    private static final long serialVersionUID = -4731814848380350682L;
 
     /** The structure id of the copy resource. */
     private CmsUUID m_copyResourceId;
@@ -71,15 +67,6 @@ public class CmsNewResourceInfo implements Serializable {
     /** Navigation position, used for ordering. */
     private Float m_navPos;
 
-    /** Subtitle. */
-    private String m_subtitle;
-
-    /** The title. */
-    private String m_title;
-
-    /** The type name. */
-    private String m_typeName;
-
     /** VFS path. */
     private String m_vfsPath;
 
@@ -102,13 +89,11 @@ public class CmsNewResourceInfo implements Serializable {
         CmsUUID copyResourceId,
         boolean editable,
         String subTitle) {
-
+        super(title, subTitle, null);
+        setResourceType(typeName);
         m_id = id;
-        m_typeName = typeName;
-        m_title = title;
         m_copyResourceId = copyResourceId;
         m_description = description;
-        m_subtitle = subTitle;
         m_editable = editable;
     }
 
@@ -178,36 +163,6 @@ public class CmsNewResourceInfo implements Serializable {
     public Float getNavPos() {
 
         return m_navPos;
-    }
-
-    /**
-     * Gets the subtitle.<p>
-     *
-     * @return the subtitle
-     */
-    public String getSubTitle() {
-
-        return m_subtitle;
-    }
-
-    /**
-     * Gets the title.
-     *
-     * @return the title
-     */
-    public String getTitle() {
-
-        return m_title;
-    }
-
-    /**
-     * Gets the type name.
-     *
-     * @return the type name
-     */
-    public String getTypeName() {
-
-        return m_typeName;
     }
 
     /**
@@ -301,16 +256,6 @@ public class CmsNewResourceInfo implements Serializable {
     }
 
     /**
-     * Sets the subtitle.<p>
-     *
-     * @param subtitle the subtitle
-     */
-    public void setSubTitle(String subtitle) {
-
-        m_subtitle = subtitle;
-    }
-
-    /**
      * Sets the VFS path.<p>
      *
      * @param vfsPath the VFS path
@@ -319,5 +264,4 @@ public class CmsNewResourceInfo implements Serializable {
 
         m_vfsPath = vfsPath;
     }
-
 }

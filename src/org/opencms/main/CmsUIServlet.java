@@ -104,7 +104,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
             svc.setCms(cms);
 
             Document doc = response.getDocument();
-
+            doc.getElementsByTag("body").addClass("opencms");
             Elements appLoadingElements = doc.getElementsByClass("v-app-loading");
             if (appLoadingElements.size() > 0) {
                 for (Node node : appLoadingElements.get(0).childNodes()) {
@@ -127,7 +127,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
             Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             // Inject CmsCoreData etc. for GWT dialogs
             try {
-                doc.head().append(CmsGwtActionElement.exportCommon(cms, svc.prefetch(), ""));
+                doc.head().append(CmsGwtActionElement.exportCommon(cms, svc.prefetch()));
                 doc.head().append(org.opencms.ade.publish.ClientMessages.get().export(currentLocale, true));
                 doc.head().append(org.opencms.ade.upload.ClientMessages.get().export(currentLocale, true));
                 doc.head().append(org.opencms.ade.galleries.ClientMessages.get().export(currentLocale, true));

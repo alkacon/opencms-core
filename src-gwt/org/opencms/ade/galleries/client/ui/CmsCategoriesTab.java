@@ -40,7 +40,6 @@ import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -96,9 +95,6 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
         }
     }
-
-    /** The category icon CSS classes. */
-    private static final String CATEGORY_ICON_CLASSES = CmsIconUtil.getResourceIconClasses("category", true);
 
     /** Map of the categories by path. */
     private Map<String, CmsCategoryBean> m_categories;
@@ -225,7 +221,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 CmsDataValue dataValue = new CmsDataValue(
                     600,
                     3,
-                    CATEGORY_ICON_CLASSES,
+                    CmsCategoryBean.SMALL_ICON_CLASSES,
                     categoryBean.getTitle(),
                     CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryBean.getDescription())
                     ? categoryBean.getDescription()
@@ -366,7 +362,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         CmsDataValue dataValue = new CmsDataValue(
             600,
             3,
-            CATEGORY_ICON_CLASSES,
+            CmsCategoryBean.SMALL_ICON_CLASSES,
             category.getTitle(),
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()

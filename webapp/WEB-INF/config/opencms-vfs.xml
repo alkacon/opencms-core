@@ -40,6 +40,21 @@
 						<mapping suffix=".txt" />
 						<mapping suffix=".html" />
 						<mapping suffix=".htm" />
+						<mapping suffix=".java" />
+						<mapping suffix=".js" />
+						<mapping suffix=".xhtml" />
+						<mapping suffix=".txt" />
+						<mapping suffix=".xml" />
+						<mapping suffix=".xsd" />
+						<mapping suffix=".svg" />
+						<mapping suffix=".css" />
+						<mapping suffix=".map" />
+						<mapping suffix=".woff" />
+						<mapping suffix=".woff2" />
+						<mapping suffix=".eot" />
+						<mapping suffix=".otf" />
+						<mapping suffix=".ttc" />
+						<mapping suffix=".ttf" />
 					</mappings>
 					<param name="gallery.type.names">downloadgallery</param>
 				</type>
@@ -61,6 +76,21 @@
 						<mapping suffix=".mp4" />
 						<mapping suffix=".ogv" />
 						<mapping suffix=".webm" />
+						<mapping suffix=".rar" />
+						<mapping suffix=".odt" />
+						<mapping suffix=".odp" />
+						<mapping suffix=".mp3" />
+						<mapping suffix=".m4a" />
+						<mapping suffix=".aac" />
+						<mapping suffix=".oga" />
+						<mapping suffix=".ogg" />
+						<mapping suffix=".m4v" />
+						<mapping suffix=".wmv" />
+						<mapping suffix=".mpeg" />
+						<mapping suffix=".mpg" />
+						<mapping suffix=".mov" />
+						<mapping suffix=".qt" />
+						<mapping suffix=".avi" />
 					</mappings>
 					<param name="gallery.type.names">downloadgallery</param>
 				</type>

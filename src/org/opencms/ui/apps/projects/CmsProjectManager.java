@@ -74,7 +74,7 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsProjectManager extends A_CmsWorkplaceApp {
 
     /** The small project icon path. */
-    public static final String ICON_PROJECT_SMALL = "apps/projectmanager/project_fileicon.png";
+    public static final String ICON_PROJECT_SMALL = "oc-icon-24-project_app";
 
     /** The project files path name. */
     public static final String PATH_NAME_FILES = "files";

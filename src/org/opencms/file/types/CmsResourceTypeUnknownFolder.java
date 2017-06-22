@@ -46,7 +46,7 @@ public class CmsResourceTypeUnknownFolder extends A_CmsResourceTypeFolderBase {
     public static final int RESOURCE_TYPE_ID = -2;
 
     /** The name of this resource type. */
-    private static final String RESOURCE_TYPE_NAME = "unknown_folder";
+    public static final String RESOURCE_TYPE_NAME = "unknown_folder";
 
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;

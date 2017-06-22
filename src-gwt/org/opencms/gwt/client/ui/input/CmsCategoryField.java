@@ -36,8 +36,8 @@ import org.opencms.gwt.client.ui.input.category.CmsDataValue;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -478,7 +478,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         CmsDataValue categoryTreeItem = new CmsDataValue(
             500,
             4,
-            CmsIconUtil.getResourceIconClasses("category", true),
+            CmsCategoryBean.SMALL_ICON_CLASSES,
             categoryBean.getTitle(),
             categoryBean.getSubTitle());
         if (inactive) {

@@ -30,8 +30,8 @@ package org.opencms.ui.sitemap;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.main.CmsException;
@@ -68,14 +68,14 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocaleCompareContext {
 
+    /** Icon for the main locale option in select boxes. */
+    public static final Resource MAIN_LOCALE_ICON = FontOpenCms.CIRCLE_INFO;
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLocaleComparePanel.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
-
-    /** Icon for the main locale option in select boxes. */
-    public static final Resource MAIN_LOCALE_ICON = FontOpenCms.CIRCLE_INFO;
 
     /** The parent layout of the tree. */
     protected CssLayout m_treeContainer = new CssLayout();
@@ -455,8 +455,9 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
         path = OpenCms.getLinkManager().getServerLink(
             cms,
             cms.getRequestContext().removeSiteRoot(targetRes.getRootPath()));
-        String iconClasses = CmsIconUtil.getResourceIconClasses(
+        String iconClasses = CmsIconUtil.getIconClasses(
             OpenCms.getResourceManager().getResourceType(getRoot()).getTypeName(),
+            getRoot().getName(),
             false);
         ui.getSitemapExtension().showInfoHeader(title, description, path, locale, iconClasses);
     }

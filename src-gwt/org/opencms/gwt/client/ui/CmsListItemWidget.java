@@ -40,8 +40,6 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
-import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
@@ -751,7 +749,12 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         iconWidget.setStyleName(iconClasses + " " + m_fixedIconClasses);
         // render the detail icon as an overlay above the main icon, if required
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailIconClasses)) {
-            iconWidget.setHTML("<span class=\"" + detailIconClasses + "\"></span>");
+            iconWidget.setHTML(
+                "<span class=\""
+                    + detailIconClasses
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().pageDetailType()
+                    + "\"></span>");
         }
     }
 
@@ -1098,16 +1101,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         setSubtitleLabel(infoBean.getSubTitle());
 
         // set the resource type icon if present
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getResourceType())) {
-            String iconClasses = CmsIconUtil.getResourceIconClasses(infoBean.getResourceType(), false);
-            String detailIconClasses = null;
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getDetailResourceType())) {
-                detailIconClasses = CmsIconUtil.getResourceIconClasses(infoBean.getDetailResourceType(), true);
-                if (CmsGwtConstants.TYPE_CONTAINERPAGE.equals(infoBean.getResourceType())) {
-                    detailIconClasses += " " + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().pageDetailType();
-                }
-            }
-            setIcon(iconClasses, detailIconClasses);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getBigIconClasses())) {
+            setIcon(infoBean.getBigIconClasses(), infoBean.getSmallIconClasses());
         }
 
         if (infoBean.getStateIcon() != null) {

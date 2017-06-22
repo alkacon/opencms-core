@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.util.CmsStringUtil;
 
@@ -1032,7 +1033,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         CmsDataValue dataValue = new CmsDataValue(
             600,
             3,
-            null,
+            CmsCategoryBean.SMALL_ICON_CLASSES,
             category.getTitle(),
             category.getPath(),
             "hide:" + category.getSitePath());

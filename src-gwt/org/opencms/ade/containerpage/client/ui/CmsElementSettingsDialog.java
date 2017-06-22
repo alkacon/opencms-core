@@ -174,6 +174,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         infoBean.setTitle(elementBean.getTitle());
         infoBean.setSubTitle(elementBean.getSitePath());
         infoBean.setResourceType(elementBean.getResourceType());
+        infoBean.setBigIconClasses(elementBean.getBigIconClasses());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
 
@@ -395,7 +396,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
      * @param fieldValues the field values
      * @param editedFields the changed fields
      */
-    @SuppressWarnings("incomplete-switch")
     void submitForm(CmsForm formParam, final Map<String, String> fieldValues, Set<String> editedFields) {
 
         String modelGroupId = null;
@@ -438,6 +438,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 case reuse:
                     fieldValues.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.isModelGroup.name());
                     fieldValues.put(CmsContainerElement.USE_AS_COPY_MODEL, Boolean.toString(false));
+                    break;
+                default:
                     break;
             }
             if (group != GroupOption.disabled) {

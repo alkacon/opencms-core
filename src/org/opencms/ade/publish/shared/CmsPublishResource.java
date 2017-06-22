@@ -28,29 +28,26 @@
 package org.opencms.ade.publish.shared;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPermissionInfo;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A publish resource.<p>
  *
  * @since 7.6
  */
-public class CmsPublishResource implements IsSerializable {
+public class CmsPublishResource extends CmsListInfoBean {
 
     /** The last modification date. */
     private long m_dateLastModified;
 
     /** The last modification date as a formatted string. */
     private String m_dateLastModifiedStr;
-
-    /** The detail resource type. */
-    private String m_detailResourceType;
 
     /** The resource id.*/
     private CmsUUID m_id;
@@ -70,15 +67,6 @@ public class CmsPublishResource implements IsSerializable {
     /** Flag to indicate if the resource can be removed from the user's publish list.*/
     private boolean m_removable;
 
-    /** The resource type name.*/
-    private String m_resourceType;
-
-    /** The resource state.*/
-    private CmsResourceState m_state;
-
-    /** The resource title.*/
-    private String m_title;
-
     /** Name of the user who last modified the resource. */
     private String m_userLastModified;
 
@@ -89,7 +77,6 @@ public class CmsPublishResource implements IsSerializable {
      * @param name the resource name
      * @param title the resource title
      * @param resourceType the resource type name
-     * @param detailResourceType the detail resource type
      * @param state the resource state
      * @param permissionInfo the permission info
      * @param dateLastModified the last modification date
@@ -104,7 +91,6 @@ public class CmsPublishResource implements IsSerializable {
         String name,
         String title,
         String resourceType,
-        String detailResourceType,
         CmsResourceState state,
         CmsPermissionInfo permissionInfo,
         long dateLastModified,
@@ -113,15 +99,14 @@ public class CmsPublishResource implements IsSerializable {
         boolean removable,
         CmsPublishResourceInfo info,
         List<CmsPublishResource> related) {
-
-        m_resourceType = resourceType;
-        m_detailResourceType = detailResourceType;
+        super(CmsStringUtil.isEmptyOrWhitespaceOnly(title) ? name : title, name, null);
+        setResourceType(resourceType);
+        setResourceState(state);
+        setMarkChangedState(false);
         m_id = id;
         m_name = name;
         m_related = ((related == null) ? new ArrayList<CmsPublishResource>() : related);
-        m_state = state;
         m_permissionInfo = permissionInfo;
-        m_title = title;
         m_removable = removable;
         m_info = info;
         m_dateLastModified = dateLastModified;
@@ -155,16 +140,6 @@ public class CmsPublishResource implements IsSerializable {
     public String getDateLastModifiedString() {
 
         return m_dateLastModifiedStr;
-    }
-
-    /**
-     * Returns the detail resource type.<p>
-     *
-     * @return the detail resource type
-     */
-    public String getDetailResourceType() {
-
-        return m_detailResourceType;
     }
 
     /**
@@ -218,16 +193,6 @@ public class CmsPublishResource implements IsSerializable {
     }
 
     /**
-     * Returns the resource type name.<p>
-     *
-     * @return the resource type name
-     */
-    public String getResourceType() {
-
-        return m_resourceType;
-    }
-
-    /**
      * Gets the date to be used for sorting.<p>
      *
      * @return the date which should be used for sorting
@@ -241,26 +206,6 @@ public class CmsPublishResource implements IsSerializable {
             }
         }
         return result;
-    }
-
-    /**
-     * Returns the state.<p>
-     *
-     * @return the state
-     */
-    public CmsResourceState getState() {
-
-        return m_state;
-    }
-
-    /**
-     * Returns the title.<p>
-     *
-     * @return the title
-     */
-    public String getTitle() {
-
-        return m_title;
     }
 
     /**

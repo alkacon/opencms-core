@@ -83,6 +83,9 @@ import com.google.common.collect.Multimaps;
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
+    /** The name of the attribute addinfo-key for account infos. */
+    public static final String A_ADD_INFO_KEY = "addinfo-key";
+
     /** The "autosetnavigation" attribute. */
     public static final String A_AUTOSETNAVIGATION = "autosetnavigation";
 
@@ -92,8 +95,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the attribute containing the name of the big icon. */
     public static final String A_BIGICON = "bigicon";
 
+    /** The name of the attribute containing the name of the big icon style class. */
+    public static final String A_BIGICONSTYLE = "bigiconstyle";
+
     /** The 'description' attribute. */
     public static final String A_DESCRIPTION = "description";
+
+    /** The name of the attribute editable for account infos. */
+    public static final String A_EDITABLE = "editable";
 
     /** The 'error' attribute. */
     public static final String A_ERROR = "error";
@@ -104,20 +113,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the attribute field for account infos. */
     public static final String A_FIELD = "field";
 
-    /** The name of the attribute addinfo-key for account infos. */
-    public static final String A_ADD_INFO_KEY = "addinfo-key";
-
-    /** The name of the attribute editable for account infos. */
-    public static final String A_EDITABLE = "editable";
-
     /** The "info" attribute. */
     public static final String A_INFO = "info";
 
     /** The isview attribute. */
     public static final String A_ISVIEW = "isview";
-
-    /** The name of the mode attribute. */
-    public static final String A_MODE = "mode";
 
     /** The name pattern attrribute. */
     public static final String A_NAME_PATTERN = "name-pattern";
@@ -164,6 +164,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The "shownavigation" attribute. */
     public static final String A_SHOWNAVIGATION = "shownavigation";
 
+    /** The name of the attribute containing the name of the small icon style class. */
+    public static final String A_SMALLICONSTYLE = "smalliconstyle";
+
     /** The "tab" attribute. */
     public static final String A_TAB = "tab";
 
@@ -194,11 +197,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the access entry node. */
     public static final String N_ACCESSENTRY = "accessentry";
 
-    /** The name of the account infos node. */
-    public static final String N_ACCOUNTINFOS = "account-infos";
-
     /** The name of the account info node. */
     public static final String N_ACCOUNTINFO = "account-info";
+
+    /** The name of the account infos node. */
+    public static final String N_ACCOUNTINFOS = "account-infos";
 
     /** The name of the "allow broken relations" node. */
     public static final String N_ALLOWBROKENRELATIONS = "allowbrokenrelations";
@@ -293,9 +296,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the editor handler node. */
     public static final String N_EDITORHANDLER = "editorhandler";
 
-    /** The name of the editor handler node. */
-    public static final String N_POSTUPLOADHANDLER = "postuploadhandler";
-
     /** The name of the editorprecondition node. */
     public static final String N_EDITORPRECONDITION = "editorprecondition";
 
@@ -307,6 +307,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the editors preferred editors node. */
     public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
+
+    /** The element delete mode node name. */
+    public static final String N_ELEMENT_DELETE_MODE = "element-delete-mode";
 
     /** The name of the "enable advanced property tabs" node. */
     public static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
@@ -373,9 +376,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** Node name. */
     public static final String N_GALLERY_DEFAULT_SCOPE = "gallery-default-scope";
-
-    /** The element delete mode node name. */
-    public static final String N_ELEMENT_DELETE_MODE = "element-delete-mode";
 
     /** The node name of the group-translation node. */
     public static final String N_GROUP_TRANSLATION = "group-translation";
@@ -448,6 +448,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the inherit permissions on folder node. */
     public static final String N_PERMISSIONSINHERITONFOLDER = "permissions-inheritonfolder";
+
+    /** The name of the editor handler node. */
+    public static final String N_POSTUPLOADHANDLER = "postuploadhandler";
 
     /** The node name for a preference. */
     public static final String N_PREFERENCE = "preference";
@@ -609,21 +612,25 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 9);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 11);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_BIGICON);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 4, A_REFERENCE);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 5, A_ELEMENTVIEW);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 6, A_ISVIEW);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 7, A_NAME_PATTERN);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 8, A_VIEW_ORDER);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 4, A_SMALLICONSTYLE);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 5, A_BIGICONSTYLE);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 6, A_REFERENCE);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 7, A_ELEMENTVIEW);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 8, A_ISVIEW);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 9, A_NAME_PATTERN);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 10, A_VIEW_ORDER);
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, "addIconRule", 3);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, "addIconRule", 5);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 0, A_EXTENSION);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 1, A_ICON);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 2, A_BIGICON);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 3, A_SMALLICONSTYLE);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 4, A_BIGICONSTYLE);
 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceHandlerClassName", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_HANDLER);
@@ -724,6 +731,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 if (CmsStringUtil.isNotEmpty(settings.getBigIcon())) {
                     explorerTypeElement.addAttribute(A_BIGICON, settings.getBigIcon());
                 }
+                if (CmsStringUtil.isNotEmpty(settings.getSmallIconStyle())) {
+                    explorerTypeElement.addAttribute(A_SMALLICONSTYLE, settings.getSmallIconStyle());
+                }
+                if (CmsStringUtil.isNotEmpty(settings.getBigIconStyle())) {
+                    explorerTypeElement.addAttribute(A_BIGICONSTYLE, settings.getBigIconStyle());
+                }
+
                 if (settings.getReference() != null) {
                     explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
                 }
@@ -807,9 +821,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                         String bigIcon = rule.getBigIcon();
                         String extension = rule.getExtension();
                         ruleElem.addAttribute(A_EXTENSION, extension);
-                        ruleElem.addAttribute(A_ICON, icon);
+                        if (icon != null) {
+                            ruleElem.addAttribute(A_ICON, icon);
+                        }
                         if (bigIcon != null) {
                             ruleElem.addAttribute(A_BIGICON, bigIcon);
+                        }
+                        if (rule.getSmallIconStyle() != null) {
+                            ruleElem.addAttribute(A_SMALLICONSTYLE, rule.getSmallIconStyle());
+                        }
+                        if (rule.getBigIconStyle() != null) {
+                            ruleElem.addAttribute(A_BIGICONSTYLE, rule.getBigIconStyle());
                         }
                     }
                 }

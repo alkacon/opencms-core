@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.shared;
 
 import org.opencms.gwt.shared.CmsPermissionInfo;
+import org.opencms.gwt.shared.I_CmsHasIconClasses;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -37,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  * @since 8.0.0
  */
-public class CmsContainerElement implements IsSerializable {
+public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses {
 
     /** The model group states. */
     public static enum ModelGroupState {
@@ -131,11 +132,17 @@ public class CmsContainerElement implements IsSerializable {
     /** Flag to indicate that this element may have settings. */
     private boolean m_hasSettings;
 
+    /** The resource type icon CSS classes. */
+    private String m_iconClasses;
+
     /** The inheritance info for this element. */
     private CmsInheritanceInfo m_inheritanceInfo;
 
     /** The model group always replace flag. */
     private boolean m_isModelGroupAlwaysReplace;
+
+    /** The model group id or null. */
+    private CmsUUID m_modelGroupId;
 
     /** Flag indicating a new element. */
     private boolean m_new;
@@ -164,9 +171,6 @@ public class CmsContainerElement implements IsSerializable {
     /** The former copy model status. */
     private boolean m_wasModelGroup;
 
-    /** The model group id or null. */
-    private CmsUUID m_modelGroupId;
-
     /**
      * Default constructor.<p>
      */
@@ -194,6 +198,7 @@ public class CmsContainerElement implements IsSerializable {
             m_permissionInfo.getNoEditReason());
         result.m_releasedAndNotExpired = m_releasedAndNotExpired;
         result.m_resourceType = m_resourceType;
+        result.m_iconClasses = m_iconClasses;
         result.m_sitePath = m_sitePath;
         result.m_subTitle = m_subTitle;
         result.m_title = m_title;
@@ -203,6 +208,16 @@ public class CmsContainerElement implements IsSerializable {
         result.m_isModelGroupAlwaysReplace = m_isModelGroupAlwaysReplace;
         return result;
 
+    }
+
+    /**
+     * Returns the resource type icon CSS rules.<p>
+     *
+     * @return the resource type icon CSS rules
+     */
+    public String getBigIconClasses() {
+
+        return m_iconClasses;
     }
 
     /**
@@ -273,6 +288,15 @@ public class CmsContainerElement implements IsSerializable {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.I_CmsHasIconClasses#getSmallIconClasses()
+     */
+    public String getSmallIconClasses() {
+
+        // not needed
+        return null;
     }
 
     /**
@@ -481,6 +505,16 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Sets the resource type icon CSS rules.<p>
+     *
+     * @param iconRules resource type icon CSS rules to set
+     */
+    public void setIconClasses(String iconRules) {
+
+        m_iconClasses = iconRules;
+    }
+
+    /**
      * Sets the inheritance info for this element.<p>
      *
      * @param inheritanceInfo the inheritance info for this element to set
@@ -491,16 +525,6 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Sets the model group id.<p>
-     *
-     * @param modelGroupId <code>true</code> if the element is a model group
-     */
-    public void setModelGroupId(CmsUUID modelGroupId) {
-
-        m_modelGroupId = modelGroupId;
-    }
-
-    /**
      * Sets if all instances of this element should be replaced within a model group.<p>
      *
      * @param alwaysReplace if all instances of this element should be replaced within a model group
@@ -508,6 +532,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setModelGroupAlwaysReplace(boolean alwaysReplace) {
 
         m_isModelGroupAlwaysReplace = alwaysReplace;
+    }
+
+    /**
+     * Sets the model group id.<p>
+     *
+     * @param modelGroupId <code>true</code> if the element is a model group
+     */
+    public void setModelGroupId(CmsUUID modelGroupId) {
+
+        m_modelGroupId = modelGroupId;
     }
 
     /**

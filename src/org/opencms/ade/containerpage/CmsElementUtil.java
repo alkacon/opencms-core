@@ -48,6 +48,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
@@ -662,6 +663,7 @@ public class CmsElementUtil {
         result.setNewEditorDisabled(newEditorDisabled);
         String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         result.setResourceType(typeName);
+        result.setIconClasses(CmsIconUtil.getIconClasses(typeName, elementBean.getResource().getName(), false));
         CmsPermissionInfo permissionInfo;
         String title;
         String subTitle;

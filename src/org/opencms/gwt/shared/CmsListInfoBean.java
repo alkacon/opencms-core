@@ -28,11 +28,11 @@
 package org.opencms.gwt.shared;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.gwt.shared.sort.I_CmsHasTitle;
+import org.opencms.gwt.shared.sort.I_CmsHasType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean holding all info to be displayed in {@link org.opencms.gwt.client.ui.CmsListItemWidget}s.<p>
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  * @since 8.0.0
  */
-public class CmsListInfoBean implements IsSerializable {
+public class CmsListInfoBean extends CmsIconBean implements I_CmsHasTitle, I_CmsHasType {
 
     /** Lock icons. */
     public enum LockIcon {
@@ -76,9 +76,6 @@ public class CmsListInfoBean implements IsSerializable {
 
     /** The additional info. */
     private List<CmsAdditionalInfoBean> m_additionalInfo;
-
-    /** The detail resource type. */
-    private String m_detailResourceType;
 
     /** Flag which indicates whether this was generated for a folder. */
     private Boolean m_isFolder;
@@ -166,16 +163,6 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
-     * Returns the detail resource type.<p>
-     *
-     * @return the detail resource type
-     */
-    public String getDetailResourceType() {
-
-        return m_detailResourceType;
-    }
-
-    /**
      * Returns a flag which indicates whether this info bean was generated for a folder.<p>
      *
      * This may not be set (i.e. null).
@@ -260,6 +247,14 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
+     * @see org.opencms.gwt.shared.sort.I_CmsHasType#getType()
+     */
+    public String getType() {
+
+        return getResourceType();
+    }
+
+    /**
      * Returns if the bean has additional info elements.<p>
      *
      * @return <code>true</code> if the bean has additional info elements
@@ -287,16 +282,6 @@ public class CmsListInfoBean implements IsSerializable {
     public void setAdditionalInfo(List<CmsAdditionalInfoBean> additionalInfo) {
 
         m_additionalInfo = additionalInfo;
-    }
-
-    /**
-     * Sets the detail resource type.<p>
-     *
-     * @param detailResourceType the detail resource type to set
-     */
-    public void setDetailResourceType(String detailResourceType) {
-
-        m_detailResourceType = detailResourceType;
     }
 
     /**

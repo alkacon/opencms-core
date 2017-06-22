@@ -460,7 +460,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 CmsDetailPageInfo info = new CmsDetailPageInfo(
                     newEntry.getId(),
                     newEntry.getSitePath(),
-                    newEntry.getDetailpageTypeName());
+                    newEntry.getDetailpageTypeName(),
+                    newEntry.getVfsModeIcon());
                 table.add(info);
             }
             change.setDetailPageInfos(table.toList());
@@ -2064,7 +2065,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
                         info = new CmsDetailPageInfo(
                             newEntry.getId(),
                             newEntry.getSitePath(),
-                            newEntry.getDetailpageTypeName());
+                            newEntry.getDetailpageTypeName(),
+                            newEntry.getVfsModeIcon());
                     }
                     addDetailPageInfo(info);
                 }

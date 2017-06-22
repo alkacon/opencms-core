@@ -62,6 +62,7 @@ public class CmsCategoryTreeItem extends CmsTreeItem {
     public static CmsListInfoBean createCategoryListInfo(CmsCategoryTreeEntry entry) {
 
         CmsListInfoBean info = new CmsListInfoBean(entry.getTitle(), entry.getPath(), null);
+        info.setBigIconClasses(entry.getBigIconClasses());
         info.setResourceType("category");
         return info;
     }
