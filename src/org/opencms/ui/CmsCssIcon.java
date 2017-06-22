@@ -75,6 +75,13 @@ public class CmsCssIcon implements FontIcon {
         return "<span class=\"v-icon " + m_styleName + "\">&#x" + Integer.toHexString(getCodepoint()) + ";</span>";
     }
 
+    /**
+     * Returns the icon HTML with the title attribute set.<p>
+     *
+     * @param title the title to set
+     *
+     * @return the icon HTML
+     */
     public String getHtml(String title) {
 
         return "<span class=\"v-icon "

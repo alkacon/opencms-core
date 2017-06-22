@@ -115,20 +115,20 @@ public class CmsResourceIcon extends Label {
 
         String type = null;
 
-        if (resource.isFolder()) {
-            if (!(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeFolderExtended)) {
-                try {
-                    CmsResource defaultFile = cms.readDefaultFile(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                    if (defaultFile != null) {
-                        type = getDetailType(cms, defaultFile, resource);
-                        if (type == null) {
-                            type = OpenCms.getResourceManager().getResourceType(defaultFile).getTypeName();
-                        }
-
+        if (resource.isFolder()
+            && !(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeFolderExtended)
+            && !CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
+            try {
+                CmsResource defaultFile = cms.readDefaultFile(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                if (defaultFile != null) {
+                    type = getDetailType(cms, defaultFile, resource);
+                    if (type == null) {
+                        type = OpenCms.getResourceManager().getResourceType(defaultFile).getTypeName();
                     }
-                } catch (CmsSecurityException e) {
-                    // ignore
+
                 }
+            } catch (CmsSecurityException e) {
+                // ignore
             }
         } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             type = getDetailType(cms, resource, null);
@@ -431,7 +431,7 @@ public class CmsResourceIcon extends Label {
         if (typeSettings != null) {
             if (typeSettings.getSmallIconStyle() != null) {
                 result = "<span class=\"v-icon o-icon-overlay " + typeSettings.getSmallIconStyle() + "\">&nbsp;</span>";
-            } else if (typeSettings.getIcon() == null) {
+            } else if (typeSettings.getIcon() != null) {
                 result = "<img src=\""
                     + CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSettings.getIcon())
                     + "\" class=\"o-icon-overlay\" />";

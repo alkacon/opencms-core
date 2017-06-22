@@ -64,7 +64,9 @@ import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -327,7 +329,10 @@ public class CmsSitesTable extends Table {
         m_manager = manager;
 
         m_container = new IndexedContainer();
-        m_container.addContainerProperty(PROP_ICON, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_SITE));
+        m_container.addContainerProperty(
+            PROP_ICON,
+            Label.class,
+            new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML));
         m_container.addContainerProperty(PROP_FAVICON, Image.class, null);
         m_container.addContainerProperty(PROP_SERVER, String.class, "");
         m_container.addContainerProperty(PROP_TITLE, String.class, "");
@@ -337,6 +342,7 @@ public class CmsSitesTable extends Table {
         m_container.addContainerProperty(PROP_SECURESITES, String.class, "");
 
         setContainerDataSource(m_container);
+        setColumnHeader(PROP_ICON, "");
         setColumnHeader(PROP_FAVICON, "");
         setColumnHeader(PROP_SERVER, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_0));
         setColumnHeader(PROP_TITLE, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_TITLE_0));
@@ -391,13 +397,11 @@ public class CmsSitesTable extends Table {
         setColumnCollapsible(PROP_FAVICON, false);
         setColumnCollapsible(PROP_ICON, false);
 
-        setVisibleColumns(PROP_FAVICON, PROP_SERVER, PROP_TITLE, PROP_PATH, PROP_SECURESITES, PROP_ALIASES);
+        setVisibleColumns(PROP_ICON, PROP_FAVICON, PROP_SERVER, PROP_TITLE, PROP_PATH, PROP_SECURESITES, PROP_ALIASES);
 
         setColumnCollapsed(PROP_ALIASES, true);
         setColumnCollapsed(PROP_SECURESITES, true);
-        setItemIconPropertyId(PROP_ICON);
-        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
-        setColumnWidth(null, 40);
+        setColumnWidth(PROP_ICON, 40);
     }
 
     /**
@@ -506,7 +510,7 @@ public class CmsSitesTable extends Table {
             changeValueIfNotMultiSelect(itemId);
 
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == PROP_ICON)) {
 
                 m_menu.setEntries(getMenuEntries(), (Set<String>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
