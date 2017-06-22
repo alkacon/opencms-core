@@ -39,6 +39,8 @@ import java.util.List;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -85,6 +87,32 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
     }
 
     /**
+     * Creates a layout with info panel.<p>
+     *
+     * @param messageString Message to be displayed
+     * @return layout
+     */
+    private VerticalLayout getInfoLayout(String messageString) {
+
+        VerticalLayout ret = new VerticalLayout();
+        ret.setMargin(true);
+        ret.addStyleName("o-center");
+        ret.setWidth("100%");
+        VerticalLayout inner = new VerticalLayout();
+        inner.addStyleName("o-workplace-maxwidth");
+        Panel panel = new Panel();
+        panel.setWidth("100%");
+
+        Label label = new Label(CmsVaadinUtils.getMessageText(messageString));
+        label.addStyleName("o-report");
+        panel.setContent(label);
+
+        inner.addComponent(panel);
+        ret.addComponent(inner);
+        return ret;
+    }
+
+    /**
      * Returns the component for the internal link validation.<p>
      *
      * @return vaadin component
@@ -94,8 +122,21 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
         m_rootLayout.setMainHeightFull(true);
         HorizontalSplitPanel sp = new HorizontalSplitPanel();
         sp.setSizeFull();
-        CmsLinkValidationInternalTable table = new CmsLinkValidationInternalTable();
+        VerticalLayout result = new VerticalLayout();
+        result.setSizeFull();
+        VerticalLayout intro = getInfoLayout(Messages.GUI_LINKVALIDATION_INTRODUCTION_0);
+        VerticalLayout nullResult = getInfoLayout(Messages.GUI_LINKVALIDATION_NO_BROKEN_LINKS_0);
+
+        nullResult.setVisible(false);
+        CmsLinkValidationInternalTable table = new CmsLinkValidationInternalTable(intro, nullResult);
+        table.setVisible(false);
         table.setSizeFull();
+        table.setWidth("100%");
+
+        result.addComponent(table);
+        result.addComponent(intro);
+        result.addComponent(nullResult);
+
         VerticalLayout leftCol = new VerticalLayout();
         leftCol.setSizeFull();
         CmsInternalResources resources = new CmsInternalResources(table);
@@ -103,7 +144,7 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
 
         leftCol.setExpandRatio(resources, 1);
         sp.setFirstComponent(leftCol);
-        sp.setSecondComponent(table);
+        sp.setSecondComponent(result);
         sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
         return sp;
     }

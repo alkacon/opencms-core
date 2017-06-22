@@ -86,7 +86,7 @@ public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LINKVALIDATION_ADMIN_TOOL_NAME_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_LINKVALIDATION_CHECK_INTERNAL_LINK_HELP_0);
     }
 
     /**
@@ -111,7 +111,7 @@ public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LINKVALIDATION_ADMIN_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_LINKVALIDATION_CHECK_INTERNAL_LINK_NAME_0);
     }
 
     /**

@@ -63,6 +63,7 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
 /**
@@ -235,6 +236,10 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
     /**vaadin serial id.*/
     private static final long serialVersionUID = -5023815553518761192L;
 
+    private Component m_introComponent;
+
+    private Component m_nullComponent;
+
     /**Internal link validator instance. */
     CmsInternalLinksValidator m_validator;
 
@@ -250,12 +255,15 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
     /**
      * Constructor for table.<p>
      */
-    protected CmsLinkValidationInternalTable() {
+    protected CmsLinkValidationInternalTable(Component introComponent, Component nullComponent) {
 
         m_container = new IndexedContainer();
 
-        setContainerDataSource(m_container);
+        m_introComponent = introComponent;
+        m_nullComponent = nullComponent;
 
+        setContainerDataSource(m_container);
+        setHeight("0px");
         setColumnCollapsingAllowed(true);
 
         for (TableProperty prop : TableProperty.values()) {
@@ -318,6 +326,16 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
 
         getValidator(resourcePaths);
         List<CmsResource> broken = m_validator.getResourcesWithBrokenLinks();
+
+        if (broken.size() > 0) {
+            setVisible(true);
+            m_introComponent.setVisible(false);
+            m_nullComponent.setVisible(false);
+        } else {
+            setVisible(false);
+            m_introComponent.setVisible(false);
+            m_nullComponent.setVisible(true);
+        }
         for (CmsResource res : broken) {
             Item item = m_container.addItem(res);
 

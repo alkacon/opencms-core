@@ -51,12 +51,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PQUEUE_STATUS_RUNNING_0 = "GUI_PQUEUE_STATUS_RUNNING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PQUEUE_STATUS_ENQUEUE_0 = "GUI_PQUEUE_STATUS_ENQUEUE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -735,6 +729,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LINKVALIDATION_INTERNALLINK_EDITOR_LABEL_BLOCK_0 = "GUI_LINKVALIDATION_INTERNALLINK_EDITOR_LABEL_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_INTRODUCTION_0 = "GUI_LINKVALIDATION_INTRODUCTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINKVALIDATION_LASTMODIFIED_0 = "GUI_LINKVALIDATION_LASTMODIFIED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -751,6 +748,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINKVALIDATION_NEW_EXTERNAL_LINK_CHECK_NAME_HELP_0 = "GUI_LINKVALIDATION_NEW_EXTERNAL_LINK_CHECK_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKVALIDATION_NO_BROKEN_LINKS_0 = "GUI_LINKVALIDATION_NO_BROKEN_LINKS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINKVALIDATION_NO_VALIDATION_YET_0 = "GUI_LINKVALIDATION_NO_VALIDATION_YET_0";
@@ -1179,10 +1179,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PQUEUE_STARTDATE_0 = "GUI_PQUEUE_STARTDATE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PQUEUE_STATUS_ENQUEUE_0 = "GUI_PQUEUE_STATUS_ENQUEUE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PQUEUE_STATUS_ERROR_0 = "GUI_PQUEUE_STATUS_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PQUEUE_STATUS_OK_0 = "GUI_PQUEUE_STATUS_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PQUEUE_STATUS_RUNNING_0 = "GUI_PQUEUE_STATUS_RUNNING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PQUEUE_STATUS_WARNING_0 = "GUI_PQUEUE_STATUS_WARNING_0";
