@@ -770,8 +770,7 @@ public abstract class CmsWorkplace {
             targetVfsFolder = CmsStringUtil.joinPaths("/", targetVfsFolder);
         } else {
             targetVfsFolder = "/";
-            // Not sure this can ever happen
-            LOG.error("Inconsistent site for path: " + explorerRootPath);
+            // happens in case of the shared site
         }
 
         StringBuilder link2Source = new StringBuilder();
