@@ -223,7 +223,8 @@ public class CmsWorkplaceAppManager {
             "/publishqueue",
             "/database",
             "/linkvalidation",
-            "/searchindex"));
+            "/searchindex",
+            "/workplace"));
 
     /** The additional info key for the user quick launch apps. */
     private static final String QUICK_LAUCH_APPS_KEY = "quick_launch_apps";
