@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.dbmanager;
 
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
@@ -34,6 +35,7 @@ import org.opencms.ui.apps.search.CmsSearchReplaceSettings;
 import org.opencms.ui.apps.search.CmsSourceSearchApp;
 import org.opencms.ui.apps.search.CmsSourceSearchAppConfiguration;
 import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
+import org.opencms.util.CmsDateUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,11 +172,15 @@ public class CmsResourceTypeStatResultList {
         type.setValue(statResult.getTypeTitle());
 
         Label time = new Label();
-        time.setWidth("200px");
+        time.setWidth("180px");
         time.setContentMode(ContentMode.HTML);
         time.addStyleName("v-scrollable");
         time.addStyleName("o-report");
-        time.setValue(new Date(statResult.getTimestamp()).toString());
+        time.setValue(
+            CmsDateUtil.getDateTime(
+                new Date(statResult.getTimestamp()),
+                java.text.DateFormat.DATE_FIELD,
+                A_CmsUI.get().getLocale()));
 
         Button showList = new Button(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_STATS_LIST_0));
         showList.setWidth("100px");
