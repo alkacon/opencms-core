@@ -395,6 +395,32 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Creates a layout with info panel.<p>
+     *
+     * @param messageString Message to be displayed
+     * @return layout
+     */
+    public static VerticalLayout getInfoLayout(String messageString) {
+
+        VerticalLayout ret = new VerticalLayout();
+        ret.setMargin(true);
+        ret.addStyleName("o-center");
+        ret.setWidth("100%");
+        VerticalLayout inner = new VerticalLayout();
+        inner.addStyleName("o-workplace-maxwidth");
+        Panel panel = new Panel();
+        panel.setWidth("100%");
+
+        Label label = new Label(CmsVaadinUtils.getMessageText(messageString));
+        label.addStyleName("o-report");
+        panel.setContent(label);
+
+        inner.addComponent(panel);
+        ret.addComponent(inner);
+        return ret;
+    }
+
+    /**
      * Gets the workplace message for the current locale and the given key and arguments.<p>
      *
      * @param key the message key
@@ -756,7 +782,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
