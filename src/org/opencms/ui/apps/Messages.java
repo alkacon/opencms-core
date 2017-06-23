@@ -1047,6 +1047,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MESSAGES_BROADCAST_TO_ALL_0 = "GUI_MESSAGES_BROADCAST_TO_ALL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_CONFIRM_DESTROY_SESSION_0 = "GUI_MESSAGES_CONFIRM_DESTROY_SESSION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_DESTROY_SESSION_0 = "GUI_MESSAGES_DESTROY_SESSION_0";
 
     /** Message constant for key in the resource bundle. */
