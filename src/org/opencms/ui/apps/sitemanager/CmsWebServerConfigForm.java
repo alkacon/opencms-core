@@ -61,7 +61,7 @@ public class CmsWebServerConfigForm extends CmsBasicDialog {
     private Button m_cancel;
 
     /**Vaadin component. */
-    private Button m_exec;
+    private Button m_ok;
 
     /**Vaadin component. */
     private TextField m_fieldConfigTemplate;
@@ -112,7 +112,7 @@ public class CmsWebServerConfigForm extends CmsBasicDialog {
             }
         });
 
-        m_exec.addClickListener(new ClickListener() {
+        m_ok.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 7862341970072428829L;
 
@@ -147,7 +147,7 @@ public class CmsWebServerConfigForm extends CmsBasicDialog {
         //Show report field and hide form fields
         m_report.setVisible(true);
         m_form.setVisible(false);
-        m_exec.setEnabled(false);
+        m_ok.setEnabled(false);
 
         Map<String, String> webconfig = OpenCms.getSiteManager().getWebServerConfig();
         CmsSitesWebserverThread thread = new CmsSitesWebserverThread(
