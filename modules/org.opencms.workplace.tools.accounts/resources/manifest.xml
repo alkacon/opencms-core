@@ -20,6 +20,8 @@ writeProperty '/system/workplace/admin/accounts/' 'NavText' '${key.GUI_ACCOUNTS_
 writeProperty '/system/workplace/admin/accounts/' 'Title' 'Accounts Management'
 writeProperty '/system/workplace/admin/accounts/' 'admintoolhandler-class' 'org.opencms.workplace.tools.accounts.CmsAccountsToolHandler'
 writeProperty '/system/workplace/admin/accounts/' 'default-file' 'index.jsp'
+chacc '/system/workplace/admin/accounts/' 'ROLE' 'WORKPLACE_USER' '+I+O'
+chacc '/system/workplace/admin/accounts/' 'ROLE' 'ACCOUNT_MANAGER' '+I+O+R+V'
 writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'Description' '${key.GUI_IMEXPORT_ADMIN_TOOL_HELP_0}'
 writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'NavImage' 'tools/accounts/icons/big/imexport.png'
 writeProperty '/system/workplace/admin/accounts/imexport_user_data/' 'NavInfo' '${key.GUI_IMEXPORT_ADMIN_TOOL_GROUP_0}'
