@@ -327,7 +327,7 @@ public class CmsResourceIcon extends Label {
                 if (resUtil.getResource().isFolder()) {
                     String detailType = getDefaultFileOrDetailType(resUtil.getCms(), resUtil.getResource());
                     if (detailType != null) {
-                        String smallIconUri = getSmallTypeIconHTML(detailType);
+                        String smallIconUri = getSmallTypeIconHTML(detailType, false);
                         if (smallIconUri != null) {
                             content += smallIconUri;
                         }
@@ -335,7 +335,7 @@ public class CmsResourceIcon extends Label {
                 } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resUtil.getResource())) {
                     String detailType = getDefaultFileOrDetailType(resUtil.getCms(), resUtil.getResource());
                     if (detailType != null) {
-                        String smallIconUri = getSmallTypeIconHTML(detailType);
+                        String smallIconUri = getSmallTypeIconHTML(detailType, true);
                         if (smallIconUri != null) {
                             content += smallIconUri;
                         }
@@ -418,25 +418,35 @@ public class CmsResourceIcon extends Label {
      * Returns the URI of the small resource type icon for the given type.<p>
      *
      * @param type the resource type name
+     * @param isPageOverlay <code>true</code> in case this is a page overlay and not a folder overlay
      *
      * @return the icon URI
      */
-    private static String getSmallTypeIconHTML(String type) {
+    private static String getSmallTypeIconHTML(String type, boolean isPageOverlay) {
 
         CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
         if ((typeSettings == null) && LOG.isWarnEnabled()) {
             LOG.warn("Could not read explorer type settings for " + type);
         }
         String result = null;
+        String overlayClass = isPageOverlay ? "o-page-icon-overlay" : "o-icon-overlay";
         if (typeSettings != null) {
             if (typeSettings.getSmallIconStyle() != null) {
-                result = "<span class=\"v-icon o-icon-overlay " + typeSettings.getSmallIconStyle() + "\">&nbsp;</span>";
+                result = "<span class=\"v-icon "
+                    + overlayClass
+                    + " "
+                    + typeSettings.getSmallIconStyle()
+                    + "\">&nbsp;</span>";
             } else if (typeSettings.getIcon() != null) {
                 result = "<img src=\""
                     + CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + typeSettings.getIcon())
-                    + "\" class=\"o-icon-overlay\" />";
+                    + "\" class=\""
+                    + overlayClass
+                    + "\" />";
             } else {
-                result = "<span class=\"v-icon o-icon-overlay "
+                result = "<span class=\"v-icon "
+                    + overlayClass
+                    + " "
                     + CmsExplorerTypeSettings.ICON_STYLE_DEFAULT_SMALL
                     + "\">&nbsp;</span>";
             }
