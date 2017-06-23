@@ -785,7 +785,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        @ClassName("-opencms")
         String opencms();
 
         /**

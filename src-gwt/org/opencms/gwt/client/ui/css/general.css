@@ -1,4 +1,4 @@
-@external multiLineLabel, oc-spinner, oc-spinner-circle, oc-spinner-dots, oc-spinner-bg, oc-spin-center, -opencms; 
+@external multiLineLabel, oc-spinner, oc-spinner-circle, oc-spinner-dots, oc-spinner-bg, oc-spin-center, opencms; 
 
 .truncatingLabel{
 	overflow: hidden;

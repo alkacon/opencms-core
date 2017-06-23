@@ -105,7 +105,6 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
             svc.setCms(cms);
 
             Document doc = response.getDocument();
-            doc.getElementsByTag("body").addClass("opencms");
             Elements appLoadingElements = doc.getElementsByClass("v-app-loading");
             if (appLoadingElements.size() > 0) {
                 for (Node node : appLoadingElements.get(0).childNodes()) {
