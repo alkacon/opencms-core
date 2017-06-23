@@ -1596,6 +1596,8 @@ public final class OpenCmsCore {
             m_adeManager.initialize();
             m_workplaceAppManager = new CmsWorkplaceAppManager(initCmsObject(adminCms));
             m_workplaceAppManager.loadApps();
+            m_workplaceAppManager.initWorkplaceCssUris(m_moduleManager);
+
             m_templateContextManager = new CmsTemplateContextManager(initCmsObject(adminCms));
             m_workflowManager = systemConfiguration.getWorkflowManager();
             if (m_workflowManager == null) {

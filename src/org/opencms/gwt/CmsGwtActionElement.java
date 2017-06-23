@@ -69,9 +69,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     /** The resource icon CSS URI. */
     private static final String ICON_CSS_URI = "/system/modules/org.opencms.gwt/resourceIcon.css";
 
-    /** The toolbar.css resource name. */
-    private static final String TOOLBAR_CSS = "css/toolbar.css";
-
     /** The current core data. */
     private CmsCoreData m_coreData;
 
@@ -298,11 +295,16 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public String export(boolean includeFontCss) throws Exception {
 
         StringBuffer buffer = new StringBuffer(exportCommon(getCmsObject(), getCoreData()));
-        buffer.append("\n<style type=\"text/css\">\n @import url(\"");
-        if (includeFontCss) {
-            buffer.append(getFontIconCssLink()).append("\");\n @import url(\"");
+        if (includeFontCss || !OpenCms.getWorkplaceAppManager().getWorkplaceCssUris().isEmpty()) {
+            buffer.append("\n<style type=\"text/css\">\n");
+            if (includeFontCss) {
+                buffer.append("@import url(\"").append(getFontIconCssLink()).append("\");\n");
+            }
+            for (String cssURI : OpenCms.getWorkplaceAppManager().getWorkplaceCssUris()) {
+                buffer.append("@import url(\"").append(CmsWorkplace.getResourceUri(cssURI)).append("\");\n");
+            }
+            buffer.append("</style>\n");
         }
-        buffer.append(getToolbarCssLink()).append("\");\n </style>\n");
         return buffer.toString();
     }
 
@@ -358,15 +360,5 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             + CmsWorkplace.getStaticResourceUri("gwt/opencms/opencms.nocache.js");
         result += "\"></script>\n";
         return result;
-    }
-
-    /**
-     * Returns the toolbar CSS link.<p>
-     *
-     * @return the toolbar CSS link
-     */
-    private String getToolbarCssLink() {
-
-        return CmsWorkplace.getResourceUri(TOOLBAR_CSS);
     }
 }

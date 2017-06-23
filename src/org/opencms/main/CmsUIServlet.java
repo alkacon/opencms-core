@@ -36,6 +36,7 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
 
@@ -131,6 +132,9 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
                 doc.head().append(org.opencms.ade.publish.ClientMessages.get().export(currentLocale, true));
                 doc.head().append(org.opencms.ade.upload.ClientMessages.get().export(currentLocale, true));
                 doc.head().append(org.opencms.ade.galleries.ClientMessages.get().export(currentLocale, true));
+                for (String cssURI : OpenCms.getWorkplaceAppManager().getWorkplaceCssUris()) {
+                    doc.head().append("<link rel=\"stylesheet\" href=\"" + CmsWorkplace.getResourceUri(cssURI) + "\">");
+                }
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }

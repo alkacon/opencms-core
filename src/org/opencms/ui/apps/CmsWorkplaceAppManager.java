@@ -36,6 +36,8 @@ import org.opencms.json.JSONException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
@@ -85,12 +87,14 @@ import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolManager;
 import org.opencms.workplace.tools.I_CmsToolHandler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -192,8 +196,14 @@ public class CmsWorkplaceAppManager {
     /** The main category id. */
     public static final String MAIN_CATEGORY_ID = "Main";
 
+    /** The toolbar.css resource name. */
+    public static final String TOOLBAR_CSS = "css/toolbar.css";
+
     /** The workplace app settings additional info key. */
     public static String WORKPLACE_APP_SETTINGS_KEY = "WORKPLACE_APP_SETTINGS";
+
+    /** The workplace CSS module parameter name. */
+    public static String WORKPLACE_CSS_PARAM = "workplace-css";
 
     /** The logger for this class. */
     protected static Log LOG = CmsLog.getLog(CmsWorkplaceAppManager.class.getName());
@@ -250,6 +260,9 @@ public class CmsWorkplaceAppManager {
 
     /** The standard quick launch apps. */
     private List<I_CmsWorkplaceAppConfiguration> m_standardQuickLaunchApps;
+
+    /** The additional workplace CSS URIs. */
+    private Set<String> m_workplaceCssUris;
 
     /** Menu item manager. */
     private CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
@@ -462,6 +475,40 @@ public class CmsWorkplaceAppManager {
     public Collection<I_CmsWorkplaceAppConfiguration> getWorkplaceApps() {
 
         return m_appsById.values();
+    }
+
+    /**
+     * Returns the additional workplace CSS URIs.<p>
+     *
+     * @return the additional workplace CSS URIs
+     */
+    public Collection<String> getWorkplaceCssUris() {
+
+        return m_workplaceCssUris;
+    }
+
+    /**
+     * Initializes the additional workplace CSS URIs.<p>
+     * They will be taken from the module parameter 'workplace-css' if present in any module.<p>
+     *
+     * @param moduleManager the module manager instance
+     */
+    public void initWorkplaceCssUris(CmsModuleManager moduleManager) {
+
+        Set<String> cssUris = new HashSet<String>();
+        for (CmsModule module : moduleManager.getAllInstalledModules()) {
+            String param = module.getParameter(WORKPLACE_CSS_PARAM);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(param)) {
+                cssUris.add(param);
+            }
+        }
+        File cssFile = new File(
+            OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
+                CmsStringUtil.joinPaths("resources", TOOLBAR_CSS)));
+        if (cssFile.exists()) {
+            cssUris.add(TOOLBAR_CSS);
+        }
+        m_workplaceCssUris = Collections.unmodifiableSet(cssUris);
     }
 
     /**

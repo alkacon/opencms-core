@@ -266,11 +266,20 @@ public class CmsLoginUI extends A_CmsUI {
                 context,
                 "VAADIN/vaadinBootstrap.js?v=" + OpenCms.getSystemInfo().getVersionNumber());
             String autocomplete = params.isPrivatePc() ? "on" : "off";
-
+            StringBuffer workplaceCssBuffer = null;
+            if (!OpenCms.getWorkplaceAppManager().getWorkplaceCssUris().isEmpty()) {
+                workplaceCssBuffer = new StringBuffer();
+                workplaceCssBuffer.append("\n<style type=\"text/css\">\n");
+                for (String cssURI : OpenCms.getWorkplaceAppManager().getWorkplaceCssUris()) {
+                    workplaceCssBuffer.append("@import url(\"").append(CmsWorkplace.getResourceUri(cssURI)).append(
+                        "\");\n");
+                }
+                workplaceCssBuffer.append("</style>\n");
+            }
             String cmsLogo = OpenCms.getSystemInfo().getContextPath()
                 + CmsWorkplace.RFS_PATH_RESOURCES
                 + "commons/login_logo.png";
-
+            resolver.addMacro("workplaceCss", workplaceCssBuffer != null ? workplaceCssBuffer.toString() : "");
             resolver.addMacro("loadingHtml", CmsVaadinConstants.LOADING_INDICATOR_HTML);
             resolver.addMacro("vaadinDir", vaadinDir);
             resolver.addMacro("vaadinVersion", vaadinVersion);

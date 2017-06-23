@@ -211,7 +211,8 @@ public class CmsModuleManager {
     public static Map<String, List<String>> buildDepsForModulelist(
         List<String> moduleNames,
         String rfsAbsPath,
-        boolean mode) throws CmsConfigurationException {
+        boolean mode)
+    throws CmsConfigurationException {
 
         Map<String, List<String>> ret = buildDepsForAllModules(rfsAbsPath, mode);
         Iterator<CmsModule> itMods;
@@ -370,6 +371,11 @@ public class CmsModuleManager {
 
         // update the configuration
         updateModuleConfiguration();
+
+        // reinit the workplace CSS URIs
+        if (!module.getParameters().isEmpty()) {
+            OpenCms.getWorkplaceAppManager().initWorkplaceCssUris(this);
+        }
     }
 
     /**
@@ -467,6 +473,7 @@ public class CmsModuleManager {
      * @param cms must be initialized with "Admin" permissions
      * @param moduleName the name of the module to delete
      * @param replace indicates if the module is replaced (true) or finally deleted (false)
+     * @param preserveLibs <code>true</code> to keep any exported file exported into the WEB-INF lib folder
      * @param report the report to print progress messages to
      *
      * @throws CmsRoleViolationException if the required module manager role permissions are not available
@@ -478,7 +485,8 @@ public class CmsModuleManager {
         String moduleName,
         boolean replace,
         boolean preserveLibs,
-        I_CmsReport report) throws CmsRoleViolationException, CmsConfigurationException, CmsLockException {
+        I_CmsReport report)
+    throws CmsRoleViolationException, CmsConfigurationException, CmsLockException {
 
         // check for module manager role permissions
         OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
@@ -714,6 +722,11 @@ public class CmsModuleManager {
         // reinit the manager is necessary
         if (removeResourceTypes) {
             OpenCms.getResourceManager().initialize(cms);
+        }
+
+        // reinit the workplace CSS URIs
+        if (!module.getParameters().isEmpty()) {
+            OpenCms.getWorkplaceAppManager().initWorkplaceCssUris(this);
         }
     }
 
@@ -974,6 +987,11 @@ public class CmsModuleManager {
 
         // update the configuration
         updateModuleConfiguration();
+
+        // reinit the workplace CSS URIs
+        if (!module.getParameters().isEmpty()) {
+            OpenCms.getWorkplaceAppManager().initWorkplaceCssUris(this);
+        }
     }
 
     /**
