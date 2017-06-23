@@ -1758,10 +1758,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SOURCE_SEARCH_TITLE_0 = "GUI_SOURCE_SEARCH_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_EMPTY_0 = "GUI_SOURCESEARCH_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_INDEX_0 = "GUI_SOURCESEARCH_INDEX_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_INDEX_HELP_0 = "GUI_SOURCESEARCH_INDEX_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_INTRO_0 = "GUI_SOURCESEARCH_INTRO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_LOCALE_0 = "GUI_SOURCESEARCH_LOCALE_0";

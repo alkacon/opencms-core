@@ -64,6 +64,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -115,6 +116,12 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
 
     /** The current state string. */
     private String m_currentState;
+
+    /**Layout showing empty result message.*/
+    private VerticalLayout m_infoEmptyResult;
+
+    /**Layout showing introduction message.*/
+    private VerticalLayout m_infoIntroLayout;
 
     /** The current search report. */
     private CmsReportOverlay m_report;
@@ -237,6 +244,15 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
      */
     protected void displayResult() {
 
+        if (m_thread.getMatchedResources().isEmpty()) {
+            m_resultTable.setVisible(false);
+            m_infoIntroLayout.setVisible(false);
+            m_infoEmptyResult.setVisible(true);
+        } else {
+            m_resultTable.setVisible(true);
+            m_infoIntroLayout.setVisible(false);
+            m_infoEmptyResult.setVisible(false);
+        }
         m_resultTable.fillTable(A_CmsUI.getCmsObject(), m_thread.getMatchedResources());
         m_searchForm.removeComponent(m_report);
         m_report = null;
@@ -262,7 +278,20 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
         sp.setSizeFull();
         m_searchForm = new CmsSourceSearchForm(this);
         sp.setFirstComponent(m_searchForm);
+        VerticalLayout result = new VerticalLayout();
+        result.setSizeFull();
+        m_infoIntroLayout = CmsVaadinUtils.getInfoLayout(Messages.GUI_SOURCESEARCH_INTRO_0);
+        m_infoEmptyResult = CmsVaadinUtils.getInfoLayout(Messages.GUI_SOURCESEARCH_EMPTY_0);
         m_resultTable = new CmsFileTable(null);
+
+        result.addComponent(m_resultTable);
+        result.addComponent(m_infoEmptyResult);
+        result.addComponent(m_infoIntroLayout);
+
+        m_resultTable.setVisible(false);
+        m_infoEmptyResult.setVisible(false);
+        m_infoIntroLayout.setVisible(true);
+
         m_resultTable.applyWorkplaceAppSettings();
         m_resultTable.setContextProvider(new I_CmsContextProvider() {
 
@@ -300,7 +329,7 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
         });
         m_infoLayout.addComponent(m_resultTableFilter);
 
-        sp.setSecondComponent(m_resultTable);
+        sp.setSecondComponent(result);
         sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state)) {
