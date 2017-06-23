@@ -5,14 +5,13 @@
 %><!DOCTYPE html>
 <html>
   <head>
+  	<%= gallery.exportAll() %>
   	<title><%= gallery.getTitle() %></title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   	<c:if test="${!empty param.integrator}">
 	<c:set var="integrator"><%= CmsEncoder.escapeXml(request.getParameter("integrator")) %></c:set>
 	<script type="text/javascript" src="<cms:link>${integrator}</cms:link>?integratorArgs=${param.integratorArgs}"></script>
 	</c:if>
-    
-    <%= gallery.exportAll() %>
     <style type="text/css">
     	* { 
     		zoom: 1; 

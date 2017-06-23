@@ -75,14 +75,13 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
     public String exportAll() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-
+        sb.append(super.export());
         CmsPublishData initData = CmsPublishService.prefetch(getRequest());
         String prefetchedData = exportDictionary(
             CmsPublishData.DICT_NAME,
             I_CmsPublishService.class.getMethod("getInitData", java.util.HashMap.class),
             initData);
         sb.append(prefetchedData);
-        sb.append(super.export());
         sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
