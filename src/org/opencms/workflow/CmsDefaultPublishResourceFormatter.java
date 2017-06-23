@@ -448,7 +448,7 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
             false,
             null,
             new ArrayList<CmsPublishResource>());
-        pubResource.setBigIconClasses(CmsIconUtil.getIconClasses(typeName, null, false));
+        pubResource.setBigIconClasses(CmsIconUtil.getIconClasses(typeName, resource.getName(), false));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailTypeName)) {
             pubResource.setSmallIconClasses(CmsIconUtil.getIconClasses(detailTypeName, null, true));
         }

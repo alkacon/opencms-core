@@ -137,9 +137,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -151,6 +148,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -334,17 +334,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             listInfo.setTitle(resource.getName());
         }
         listInfo.setSubTitle(cms.getSitePath(resource));
-        String secure = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-        if (Boolean.parseBoolean(secure)) {
-            listInfo.setStateIcon(CmsListInfoBean.StateIcon.secure);
-        } else {
-            String export = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
-            if (Boolean.parseBoolean(export)) {
-                listInfo.setStateIcon(CmsListInfoBean.StateIcon.export);
-            } else {
-                listInfo.setStateIcon(CmsListInfoBean.StateIcon.standard);
-            }
-        }
         listInfo.setIsFolder(Boolean.valueOf(resource.isFolder()));
         String resTypeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
         String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
@@ -362,7 +351,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 resTypeName = CmsGwtConstants.TYPE_MODELGROUP_REUSE;
             }
             listInfo.setResourceType(resTypeName);
-            listInfo.setBigIconClasses(CmsIconUtil.getIconClasses(resTypeName, null, false));
+            listInfo.setBigIconClasses(CmsIconUtil.getIconClasses(resTypeName, resource.getName(), false));
             // set the default file and detail type info
             String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
             if (detailType != null) {
