@@ -73,7 +73,7 @@ public class CmsDbSynchronizationConfiguration extends A_CmsWorkplaceAppConfigur
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT
             + " "
             + FontOpenCms.FOLDER.getButtonOverlayStyle()
             + " "
@@ -94,7 +94,7 @@ public class CmsDbSynchronizationConfiguration extends A_CmsWorkplaceAppConfigur
      */
     public Resource getIcon() {
 
-        return FontOpenCms.DATABASE;
+        return CmsDbManagerFolder.ICON;
     }
 
     /**

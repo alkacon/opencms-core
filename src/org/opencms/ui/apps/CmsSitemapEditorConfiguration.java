@@ -36,8 +36,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
@@ -59,6 +59,9 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
 
     /** The app id. */
     public static final String APP_ID = "sitemapeditor";
+
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-sitemap");
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapEditorConfiguration.class);
@@ -101,7 +104,7 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_ORANGE_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -118,7 +121,7 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
      */
     public Resource getIcon() {
 
-        return FontOpenCms.SITEMAP;
+        return ICON;
     }
 
     /**

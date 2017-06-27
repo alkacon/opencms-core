@@ -27,7 +27,7 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.CmsCssIcon;
 
 import java.util.Locale;
 
@@ -40,6 +40,9 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
 
     /** The app id. */
     public static final String APP_ID = "explorer";
+
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-explorer");
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -64,7 +67,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_YELLOW_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -81,7 +84,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
      */
     public Resource getIcon() {
 
-        return FontOpenCms.GALLERY;
+        return ICON;
     }
 
     /**

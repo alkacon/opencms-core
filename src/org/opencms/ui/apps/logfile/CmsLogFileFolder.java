@@ -30,7 +30,7 @@ package org.opencms.ui.apps.logfile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
@@ -46,6 +46,9 @@ import com.vaadin.server.Resource;
  */
 public class CmsLogFileFolder implements I_CmsFolderAppCategory {
 
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-log");
+
     /**Folder id.*/
     public static final String ID = "logfile-folder";
 
@@ -54,7 +57,7 @@ public class CmsLogFileFolder implements I_CmsFolderAppCategory {
      */
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -70,7 +73,7 @@ public class CmsLogFileFolder implements I_CmsFolderAppCategory {
      */
     public Resource getIcon() {
 
-        return FontOpenCms.LOG;
+        return ICON;
     }
 
     /**
@@ -94,7 +97,7 @@ public class CmsLogFileFolder implements I_CmsFolderAppCategory {
      */
     public int getOrder() {
 
-        return 0;
+        return 60;
     }
 
     /**

@@ -30,7 +30,7 @@ package org.opencms.ui.apps.sessions;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
@@ -48,7 +48,10 @@ import com.vaadin.server.Resource;
 public class CmsBroadCastConfigurtion extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
-    public static final String APP_ID = "broadcast";
+    public static final String APP_ID = "sessions";
+
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-session");
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -73,7 +76,7 @@ public class CmsBroadCastConfigurtion extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -90,7 +93,7 @@ public class CmsBroadCastConfigurtion extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return FontOpenCms.BROADCAST;
+        return ICON;
     }
 
     /**
@@ -116,7 +119,7 @@ public class CmsBroadCastConfigurtion extends A_CmsWorkplaceAppConfiguration {
     @Override
     public int getOrder() {
 
-        return 8;
+        return 20;
     }
 
     /**

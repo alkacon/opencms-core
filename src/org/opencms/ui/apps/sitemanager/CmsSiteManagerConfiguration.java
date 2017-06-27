@@ -30,7 +30,7 @@ package org.opencms.ui.apps.sitemanager;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
@@ -50,6 +50,9 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
 
     /** The app id. */
     public static final String APP_ID = "site-management";
+
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-site");
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -74,7 +77,7 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -91,7 +94,7 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
      */
     public Resource getIcon() {
 
-        return FontOpenCms.SITE;
+        return ICON;
     }
 
     /**
@@ -117,7 +120,7 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public int getOrder() {
 
-        return 4;
+        return 30;
     }
 
     /**

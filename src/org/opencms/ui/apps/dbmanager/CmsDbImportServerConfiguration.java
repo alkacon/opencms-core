@@ -74,7 +74,7 @@ public class CmsDbImportServerConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT
             + " "
             + FontOpenCms.UPLOAD.getButtonOverlayStyle()
             + " "
@@ -95,7 +95,7 @@ public class CmsDbImportServerConfiguration extends A_CmsWorkplaceAppConfigurati
      */
     public Resource getIcon() {
 
-        return FontOpenCms.DATABASE;
+        return CmsDbManagerFolder.ICON;
     }
 
     /**

@@ -73,7 +73,7 @@ public class CmsLinkValidationExternalConfiguration extends A_CmsWorkplaceAppCon
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT
             + " "
             + FontOpenCms.SPHERE.getButtonOverlayStyle()
             + " "
@@ -94,7 +94,7 @@ public class CmsLinkValidationExternalConfiguration extends A_CmsWorkplaceAppCon
      */
     public Resource getIcon() {
 
-        return FontOpenCms.LINK;
+        return CmsLinkValidationFolder.ICON;
     }
 
     /**

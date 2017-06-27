@@ -12,6 +12,7 @@
 @import "permissions";
 @import "additional-bundleeditor";
 @import "codemirror";
+@import "cssIcons32";
 @import "cssIcons24";
 @import "cssIcons16";
 
@@ -45,6 +46,7 @@
    @include o-permissions;
    @include o-table-bundleeditor;
    @include o-codemirror;
+   @include o-css-icons-32;
    @include o-css-icons-24;
    @include o-css-icons-16;
    

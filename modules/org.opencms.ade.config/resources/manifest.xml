@@ -585,7 +585,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="listconfig" key="fileicon.listconfig"
-				smalliconstyle="oc-icon-16-list_app" bigiconstyle="oc-icon-24-list_app"
+				smalliconstyle="oc-icon-16-list" bigiconstyle="oc-icon-24-list"
 				reference="xmlcontent">
 				<newresource page="otheroptions"
 					uri="newresource_xmlcontent.jsp?newresourcetype=listconfig"

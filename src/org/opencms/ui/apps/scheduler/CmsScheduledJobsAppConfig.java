@@ -30,7 +30,7 @@ package org.opencms.ui.apps.scheduler;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
@@ -49,6 +49,9 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
     public static final String APP_ID = "scheduledjobs";
+
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-scheduler");
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -73,7 +76,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -91,7 +94,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return FontOpenCms.SCHEDULER;
+        return ICON;
     }
 
     /**
@@ -118,7 +121,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     @Override
     public int getOrder() {
 
-        return 8;
+        return 40;
     }
 
     /**

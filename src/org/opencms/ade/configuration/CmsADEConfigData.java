@@ -354,7 +354,8 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Returns the names of the bundles configured as workplace bundles in any module configuration.
+     * Returns the names of the bundles configured as workplace bundles in any module configuration.<p>
+     *
      * @return the names of the bundles configured as workplace bundles in any module configuration.
      */
     public Set<String> getConfiguredWorkplaceBundles() {

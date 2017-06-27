@@ -27,7 +27,7 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.CmsCssIcon;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,6 +43,9 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
 
     /** The app id. */
     public static String APP_ID = "quicklaunch_editor";
+
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-quicklaunch-editor");
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
@@ -79,7 +82,7 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -96,7 +99,7 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
      */
     public Resource getIcon() {
 
-        return FontOpenCms.QUICKLAUNCH_EDITOR;
+        return ICON;
     }
 
     /**

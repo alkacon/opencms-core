@@ -82,10 +82,7 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String BUTTON_OVERLAY_ORANGE = "o-button-overlay-orange";
-
-    /** CSS style name. */
-    public static final String BUTTON_OVERLAY_ORANGE_INVERSE = "o-button-overlay-orange-inv";
-
+    
     /** CSS style name. */
     public static final String BUTTON_OVERLAY_RED = "o-button-overlay-red";
 
@@ -105,37 +102,22 @@ public final class OpenCmsTheme {
     public static final String COLOR_BLUE = "o-color-blue";
 
     /** CSS style name. */
-    public static final String COLOR_BLUE_DARK_GRADIENT = "o-color-blue-dark-gradient";
-
-    /** CSS style name. */
-    public static final String COLOR_BLUE_GRADIENT = "o-color-blue-gradient";
-
-    /** CSS style name. */
-    public static final String COLOR_BLUE_GRADIENT_RED = "o-color-blue-gradient-red";
-
-    /** CSS style name. */
-    public static final String COLOR_CYAN = " o-color-cyan";
+    public static final String COLOR_GRAY_LIGHT = "o-color-gray-light";
 
     /** CSS style name. */
     public static final String COLOR_GRAY = "o-color-gray";
 
     /** CSS style name. */
-    public static final String COLOR_GREEN_GRADIENT = "o-color-green-gradient";
+    public static final String COLOR_CYAN = " o-color-cyan";
 
     /** CSS style name. */
     public static final String COLOR_ORANGE = "o-color-orange";
-
-    /** CSS style name. */
-    public static final String COLOR_ORANGE_GRADIENT = "o-color-orange-gradient";
 
     /** CSS style name. */
     public static final String COLOR_RED = "o-color-red";
 
     /** CSS style name. */
     public static final String COLOR_TRANSPARENT = "o-color-transparent";
-
-    /** CSS style name. */
-    public static final String COLOR_YELLOW_GRADIENT = "o-color-yellow-gradient";
 
     /** CSS style name. */
     public static final String CRUMB_WRAPPER = "o-crumb-wrapper";
@@ -194,11 +176,17 @@ public final class OpenCmsTheme {
     /** CSS style name. */
     public static final String HOVER_COLUMN = "o-hover-column";
 
-    /** The cache icon CSS class. */
-    public static final String ICON_SITE = "oc-icon-24-site_app";
+    /** The cache icon CSS class.*/
+    public static final String ICON_CACHE = "oc-icon-24-cache";
 
     /** The database icon CSS class. */
-    public static final String ICON_DATABASE = "oc-icon-24-database_app";
+    public static final String ICON_DATABASE = "oc-icon-24-database";
+
+    /** The job icon CSS class. */
+    public static final String ICON_JOB = "oc-icon-24-scheduler";
+
+    /** The project icon CSS class. */
+    public static final String ICON_PROJECT = "oc-icon-24-project";
 
     /** Path to the project current theme resource. */
     public static final String ICON_PROJECT_CURRENT = "oc-icon-24-project_yellow";
@@ -208,6 +196,12 @@ public final class OpenCmsTheme {
 
     /** Path to the project publish theme resource. */
     public static final String ICON_PUBLISH = "oc-icon-24-publish";
+
+    /**The session icon.*/
+    public static final String ICON_SESSION = "oc-icon-24-session";
+
+    /** The cache icon CSS class. */
+    public static final String ICON_SITE = "oc-icon-24-site";
 
     /** CSS style name. */
     public static final String IN_NAVIGATION = "o-in-navigation";
@@ -226,23 +220,23 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String LOCK_SHARED = "o-lock-shared";
-
     /** CSS style name. */
     public static final String LOCK_USER = "o-lock-user";
 
     /** CSS style name. */
     public static final String MAIN = "o-main";
-
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
 
     /** CSS style name. */
     public static final String NO_TRANSLATION_ICON = "o-notranslation";
+
     /** Path to the OpenCms logo theme resource. */
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
 
     /** CSS style name. */
     public static final String PADDING_HORIZONTAL = "o-padding-horizontal";
+
     /** CSS style name. */
     public static final String POINTER = "o-pointer";
 
@@ -383,15 +377,6 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     protected static final String QUICK_LAUNCH = "o-quicklaunch";
-
-    /** The cache icon CSS class.*/
-    public static final String ICON_CACHE = "oc-icon-24-cache_app";
-
-    /** The job icon CSS class. */
-    public static final String ICON_JOB = "oc-icon-24-scheduler_app";
-
-    /**The session icon.*/
-    public static final String ICON_SESSION = "oc-icon-24-session_app";
 
     /**
      * Hidden default constructor.

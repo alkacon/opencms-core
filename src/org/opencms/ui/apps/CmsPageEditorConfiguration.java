@@ -34,8 +34,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
@@ -46,7 +46,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -58,6 +57,9 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
 
     /** The app id. */
     public static final String APP_ID = "pageeditor";
+
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-edit-point");
 
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPageEditorConfiguration.class);
@@ -99,7 +101,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_DARK_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -116,7 +118,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/editor.svg"));
+        return ICON;
     }
 
     /**

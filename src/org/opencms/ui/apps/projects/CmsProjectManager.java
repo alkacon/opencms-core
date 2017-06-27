@@ -73,9 +73,6 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsProjectManager extends A_CmsWorkplaceApp {
 
-    /** The project icon CSS class. */
-    public static final String ICON_PROJECT = "oc-icon-24-project_app";
-
     /** The project files path name. */
     public static final String PATH_NAME_FILES = "files";
 

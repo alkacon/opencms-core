@@ -37,7 +37,7 @@
 	  	}
 	  	
 	  	.v-icon{
-	  		display: inline;
+	  		display: inline-block;
 	  		font-size: $app-icon-size;
 	  		line-height: 48px;
 	  		vertical-align: middle;
@@ -49,17 +49,11 @@
 	
 	  &:hover:not(.v-disabled), &:focus:not(.v-disabled) {
 	    > span.v-button-wrap:before {
-	    	background-image: unquote("radial-gradient( #fff 30%, #f6b9c4 65%, #f5aab7 100%)") !important;
+	    	box-shadow: 0 0 0 2px $o-button-blue inset;
 	    }
-	    > span.v-button-wrap > span.v-icon{
-	  		color: $red;
-	  	}
-	  	
-	  	&.o-color-green-gradient, &.o-color-yellow-gradient{
-	  	    > span.v-button-wrap > span.v-icon{
-	  		    color: $blue;
-	  		}
-	  	}
+	  }
+	  &:after{
+	    display: none;
 	  }
 	  
 	  &.o-color-cyan > span.v-button-wrap:before{
@@ -77,61 +71,21 @@
 	  &.o-color-gray  > span.v-button-wrap:before{
 	  	background: $gray-dark;
 	  }
+	  &.o-color-gray-light { 
+	  	> span.v-button-wrap:before{
+	  		background: $o-medium-background-color;
+	  	}
+	  	.v-icon{
+	  		color: $blue-dark;
+	  	}
+	  }
 	  &.v-disabled  > span.v-button-wrap{
 	  	&:before{
 	  		background-image: unquote("radial-gradient( #f3f4f5 40%, #e7e9eb 60%, #d0d3c7 100%)") !important;
 	  	}
 	  }
-	  &.o-color-blue-gradient  .v-button-wrap{
-	  	.v-icon{
-	  		color: $v-font-color;
-	  	}
-	  	&:before{
-	  		background-image: unquote("radial-gradient( #f2fafe 40%, #b3e2fd 70%, #99d8fd 100%)");
-	  	}
-	  }
-	  
-	  &.o-color-blue-gradient-red  .v-button-wrap{
-	  	.v-icon{
-	  		color: $red;
-	  	}
-	  	&:before{
-	  		background-image: unquote("radial-gradient( #f2fafe 40%, #b3e2fd 70%, #99d8fd 100%)");
-	  	}
-	  }
-	  
-	  &.o-color-green-gradient  .v-button-wrap{
-	  	.v-icon{
-	  		color: $red;
-	  	}
-	  	&:before{
-	  		background-image: unquote("radial-gradient( #ffffff 40%, #ace3da 60%, #82d5c7 100%)");
-	  	}
-	  }
-	  
-	  &.o-color-orange-gradient  .v-button-wrap{
-	  	.v-icon{
-	  		color: $blue-dark;
-	  	}
-	  	&:before{
-	  		background-image: unquote("linear-gradient(45deg, #fff 0%, #ffefd7 25%, #ffbf61 100%)");
-	  	}
-	  }
-	  
-	  &.o-color-yellow-gradient  .v-button-wrap{
-	  	.v-icon{
-	  		color: $red;
-	  	}
-	  	&:before{
-	  		background-image: unquote("linear-gradient(45deg, #fff 0%, #ffffca 25%, #ffdd63 100%)");
-	  	}
-	  }
-	  
-	  &.o-color-blue-dark-gradient  .v-button-wrap{
-	  	&:before{
-	  		background-image: unquote("linear-gradient(45deg,  #f9fdff 0%, #0856cd 100%)");
-	  	}
-	  }
+
+
 	  
 	  &.o-color-transparent > span.v-button-wrap{
 	  	.v-icon{
@@ -142,18 +96,18 @@
 	  	}
 	  }
 	  &.o-button-overlay-blue span.v-button-wrap > .v-icon:after{
-	  	color: $blue;
+	  	color: $blue-dark;
 	  }
 	  &.o-button-overlay-blue-inv span.v-button-wrap > .v-icon:after{
 	  	color: $white;
-	  	background: $blue;
-	  	border-color: $blue;
+	  	background: $blue-dark;
+	  	border-color: $blue-dark;
 	  	border-radius: $v-border-radius;
 	  	text-shadow: none;
 	  }
 	  
 	  &.o-button-overlay-blue-light span.v-button-wrap > .v-icon:after{
-	  	color: $blue-light;
+	  	color: $o-button-blue;
 	  }
 	  &.o-button-overlay-cyan span.v-button-wrap > .v-icon:after{
 	  	color: $cyan;
@@ -171,13 +125,7 @@
 	  &.o-button-overlay-orange span.v-button-wrap > .v-icon:after{
 	  	color: $orange;
 	  }
-	  &.o-button-overlay-orange-inv span.v-button-wrap > .v-icon:after{
-	  	color: $white;
-	  	background: $orange-darker;
-	  	border-color: $orange-darker;
-	  	border-radius: $v-border-radius;
-	  	text-shadow: none;
-	  }
+
 	  &.o-button-overlay-gray-light span.v-button-wrap > .v-icon:after{
 	  	color: #7f8691;
 	  }

@@ -67,7 +67,7 @@ import com.vaadin.server.Resource;
 public final class CmsQuickLaunchProvider {
 
     /** The font icon HTML format String. */
-    private static final String FONT_ICON_HTML = "fonticon:<span class=\"v-icon\" style=\"font-family: %1$s;\">&#x%2$x;</span>";
+    private static final String FONT_ICON_PREFIX = "fonticon:";
 
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsQuickLaunchProvider.class);
@@ -193,10 +193,7 @@ public final class CmsQuickLaunchProvider {
                 if (icon instanceof ExternalResource) {
                     imageLink = ((ExternalResource)icon).getURL();
                 } else if (icon instanceof FontIcon) {
-                    imageLink = String.format(
-                        FONT_ICON_HTML,
-                        ((FontIcon)icon).getFontFamily(),
-                        Integer.valueOf(((FontIcon)icon).getCodepoint()));
+                    imageLink = FONT_ICON_PREFIX + ((FontIcon)icon).getHtml();
                 }
 
                 String name = config.getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));

@@ -74,11 +74,11 @@ public class CmsCacheViewImageConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT
             + " "
             + FontOpenCms.IMAGE.getButtonOverlayStyle()
             + " "
-            + OpenCmsTheme.BUTTON_OVERLAY_GREEN;
+            + OpenCmsTheme.BUTTON_OVERLAY_BLUE;
     }
 
     /**
@@ -95,7 +95,7 @@ public class CmsCacheViewImageConfiguration extends A_CmsWorkplaceAppConfigurati
      */
     public Resource getIcon() {
 
-        return FontOpenCms.CACHE;
+        return CmsCacheFolder.ICON;
     }
 
     /**

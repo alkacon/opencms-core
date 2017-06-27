@@ -30,7 +30,7 @@ package org.opencms.ui.apps.cacheadmin;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
@@ -49,12 +49,15 @@ public class CmsCacheFolder implements I_CmsFolderAppCategory {
     /**Folder id.*/
     public static final String ID = "cache";
 
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-cache");
+
     /**
      * @see org.opencms.ui.apps.I_CmsFolderAppCategory#getButtonStyle()
      */
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -70,7 +73,7 @@ public class CmsCacheFolder implements I_CmsFolderAppCategory {
      */
     public Resource getIcon() {
 
-        return FontOpenCms.CACHE;
+        return ICON;
     }
 
     /**
@@ -94,7 +97,7 @@ public class CmsCacheFolder implements I_CmsFolderAppCategory {
      */
     public int getOrder() {
 
-        return 0;
+        return 90;
     }
 
     /**

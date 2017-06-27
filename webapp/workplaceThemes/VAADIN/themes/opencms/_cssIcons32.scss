@@ -1,0 +1,139 @@
+@mixin o-css-icons-32 {
+[class^="oc-icon-32-"], [class*=" oc-icon-32-"] {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-image: url(img/icon-sprite-32.svg);
+}
+.v-disabled {
+	[class^="oc-icon-32-"], [class*=" oc-icon-32-"] {
+	  background-image: url(img/icon-sprite-32-disabled.svg);
+	}
+}
+
+.oc-icon-32-edit-point {
+  width: 32px;
+  height: 32px;
+  background-position: 0 0;
+}
+.oc-icon-32-explorer {
+  width: 32px;
+  height: 32px;
+  background-position: -48px 0;
+}
+.oc-icon-32-sitemap {
+  width: 32px;
+  height: 32px;
+  background-position: -96px 0;
+}
+.oc-icon-32-list {
+  width: 32px;
+  height: 32px;
+  background-position: -144px 0;
+}
+.oc-icon-32-project {
+  width: 32px;
+  height: 32px;
+  background-position: -192px 0;
+}
+.oc-icon-32-link {
+  width: 32px;
+  height: 32px;
+  background-position: -240px 0;
+}
+.oc-icon-32-quicklaunch-editor {
+  width: 32px;
+  height: 32px;
+  background-position: -288px 0;
+}
+.oc-icon-32-log {
+  width: 32px;
+  height: 32px;
+  background-position: -336px 0;
+}
+.oc-icon-32-cache {
+  width: 32px;
+  height: 32px;
+  background-position: -384px 0;
+}
+.oc-icon-32-database {
+  width: 32px;
+  height: 32px;
+  background-position: -432px 0;
+}
+.oc-icon-32-history {
+  width: 32px;
+  height: 32px;
+  background-position: -480px 0;
+}
+.oc-icon-32-site {
+  width: 32px;
+  height: 32px;
+  background-position: -528px 0;
+}
+.oc-icon-32-search {
+  width: 32px;
+  height: 32px;
+  background-position: -576px 0;
+}
+.oc-icon-32-scheduler {
+  width: 32px;
+  height: 32px;
+  background-position: -624px 0;
+}
+.oc-icon-32-session {
+  width: 32px;
+  height: 32px;
+  background-position: -672px 0;
+}
+.oc-icon-32-git {
+  width: 32px;
+  height: 32px;
+  background-position: -720px 0;
+}
+.oc-icon-32-module {
+  width: 32px;
+  height: 32px;
+  background-position: 0 -48px;
+}
+.oc-icon-32-user {
+  width: 32px;
+  height: 32px;
+  background-position: -48px -48px;
+}
+.oc-icon-32-launchpad {
+  width: 32px;
+  height: 32px;
+  background-position: -96px -48px;
+}
+.oc-icon-32-overlay-changed {
+  width: 32px;
+  height: 32px;
+  background-position: -144px -48px;
+}
+.oc-icon-32-overlay-sibling {
+  width: 32px;
+  height: 32px;
+  background-position: -192px -48px;
+}
+.oc-icon-32-lock-publish {
+  width: 32px;
+  height: 32px;
+  background-position: -240px -48px;
+}
+.oc-icon-32-lock-other {
+  width: 32px;
+  height: 32px;
+  background-position: -288px -48px;
+}
+.oc-icon-32-lock-own {
+  width: 32px;
+  height: 32px;
+  background-position: -336px -48px;
+}
+.oc-icon-32-lock-shared {
+  width: 32px;
+  height: 32px;
+  background-position: -384px -48px;
+}
+
+}

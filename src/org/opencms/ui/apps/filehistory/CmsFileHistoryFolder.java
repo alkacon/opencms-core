@@ -30,7 +30,7 @@ package org.opencms.ui.apps.filehistory;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
@@ -49,15 +49,15 @@ public class CmsFileHistoryFolder implements I_CmsFolderAppCategory {
     /**Folder id.*/
     public static final String ID = "file-history";
 
-    /**App icon path.*/
-    public static final String ICON = "apps/filehistory/folder.png";
+    /** The app icon resource (size 32x32). */
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-history");
 
     /**
      * @see org.opencms.ui.apps.I_CmsFolderAppCategory#getButtonStyle()
      */
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**
@@ -73,7 +73,7 @@ public class CmsFileHistoryFolder implements I_CmsFolderAppCategory {
      */
     public Resource getIcon() {
 
-        return FontOpenCms.HISTORY;
+        return ICON;
     }
 
     /**
@@ -97,7 +97,7 @@ public class CmsFileHistoryFolder implements I_CmsFolderAppCategory {
      */
     public int getOrder() {
 
-        return 0;
+        return 100;
     }
 
     /**

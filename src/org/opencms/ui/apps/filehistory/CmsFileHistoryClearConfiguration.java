@@ -73,7 +73,7 @@ public class CmsFileHistoryClearConfiguration extends A_CmsWorkplaceAppConfigura
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT
             + " "
             + FontOpenCms.CIRCLE_INV_CANCEL.getButtonOverlayStyle()
             + " "
@@ -94,7 +94,7 @@ public class CmsFileHistoryClearConfiguration extends A_CmsWorkplaceAppConfigura
      */
     public Resource getIcon() {
 
-        return FontOpenCms.HISTORY;
+        return CmsFileHistoryFolder.ICON;
     }
 
     /**

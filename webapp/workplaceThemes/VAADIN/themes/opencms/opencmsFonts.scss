@@ -1,6 +1,7 @@
 @import "variables";
 @import "opencmsfont";
 @import "appButtons";
+@import "cssIcons32";
 @import "cssIcons24";
 @import "cssIcons16";
 
@@ -81,6 +82,7 @@ button#opencms-leave-preview:after {
 
 .opencms{
 	@include o-app-buttons;
+	@include o-css-icons-32;
 	@include o-css-icons-24;
     @include o-css-icons-16;
 }

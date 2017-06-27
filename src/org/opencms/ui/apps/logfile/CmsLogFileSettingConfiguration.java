@@ -73,7 +73,7 @@ public class CmsLogFileSettingConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE_GRADIENT
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT
             + " "
             + FontOpenCms.SETTINGS.getButtonOverlayStyle()
             + " "
@@ -94,7 +94,7 @@ public class CmsLogFileSettingConfiguration extends A_CmsWorkplaceAppConfigurati
      */
     public Resource getIcon() {
 
-        return FontOpenCms.LOG;
+        return CmsLogFileFolder.ICON;
     }
 
     /**
