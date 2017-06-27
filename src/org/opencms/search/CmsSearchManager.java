@@ -1742,8 +1742,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void registerSolrIndex(CmsSolrIndex index) throws CmsConfigurationException {
 
-        ensureIndexIsUnlocked(index.getPath());
-
         if ((m_solrConfig == null) || !m_solrConfig.isEnabled()) {
             // No solr server configured
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_SOLR_NOT_ENABLED_0));
@@ -1761,57 +1759,61 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             m_coreContainer = createCoreContainer();
         }
 
-        // create a new core if no core exists for the given index
-        if (!m_coreContainer.getCoreNames().contains(index.getCoreName())) {
-            // Being sure the core container is not 'null',
-            // we can create a core for this index if not already existent
-            File dataDir = new File(index.getPath());
-            if (!dataDir.exists()) {
-                dataDir.mkdirs();
-                if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(
-                        Messages.get().getBundle().key(
-                            Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
-                            index.getName(),
-                            index.getPath()));
-                }
-            }
-            File instanceDir = new File(
-                m_solrConfig.getHome() + FileSystems.getDefault().getSeparator() + index.getName());
-            if (!instanceDir.exists()) {
-                instanceDir.mkdirs();
-                if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(
-                        Messages.get().getBundle().key(
-                            Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
-                            index.getName(),
-                            index.getPath()));
-                }
-            }
+        // unload the existing core if it exists to avoid problems with forced unlock.
+        if (m_coreContainer.getCoreNames().contains(index.getCoreName())) {
+            m_coreContainer.unload(index.getCoreName(), false, false, true);
+        }
 
-            // create the core
-            // TODO: suboptimal - forces always the same schema
-            SolrCore core = null;
-            try {
-                // creation includes registration.
-                // TODO: this was the old code: core = m_coreContainer.create(descriptor, false);
-                Map<String, String> properties = new HashMap<String, String>(3);
-                properties.put(CoreDescriptor.CORE_DATADIR, dataDir.getAbsolutePath());
-                properties.put(CoreDescriptor.CORE_CONFIGSET, "default");
-                core = m_coreContainer.create(index.getCoreName(), instanceDir.toPath(), properties);
-            } catch (NullPointerException e) {
-                if (core != null) {
-                    core.close();
-                }
-                throw new CmsConfigurationException(
-                    Messages.get().container(
-                        Messages.ERR_SOLR_SERVER_NOT_CREATED_3,
-                        index.getName() + " (" + index.getCoreName() + ")",
-                        index.getPath(),
-                        m_solrConfig.getSolrConfigFile().getAbsolutePath()),
-                    e);
+        // ensure that all locks on the index are gone
+        ensureIndexIsUnlocked(index.getPath());
+
+        // load the core to the container
+        File dataDir = new File(index.getPath());
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
+                        index.getName(),
+                        index.getPath()));
             }
         }
+        File instanceDir = new File(m_solrConfig.getHome() + FileSystems.getDefault().getSeparator() + index.getName());
+        if (!instanceDir.exists()) {
+            instanceDir.mkdirs();
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
+                        index.getName(),
+                        index.getPath()));
+            }
+        }
+
+        // create the core
+        // TODO: suboptimal - forces always the same schema
+        SolrCore core = null;
+        try {
+            // creation includes registration.
+            // TODO: this was the old code: core = m_coreContainer.create(descriptor, false);
+            Map<String, String> properties = new HashMap<String, String>(3);
+            properties.put(CoreDescriptor.CORE_DATADIR, dataDir.getAbsolutePath());
+            properties.put(CoreDescriptor.CORE_CONFIGSET, "default");
+            core = m_coreContainer.create(index.getCoreName(), instanceDir.toPath(), properties);
+        } catch (NullPointerException e) {
+            if (core != null) {
+                core.close();
+            }
+            throw new CmsConfigurationException(
+                Messages.get().container(
+                    Messages.ERR_SOLR_SERVER_NOT_CREATED_3,
+                    index.getName() + " (" + index.getCoreName() + ")",
+                    index.getPath(),
+                    m_solrConfig.getSolrConfigFile().getAbsolutePath()),
+                e);
+        }
+
         if (index.isNoSolrServerSet()) {
             index.setSolrServer(new EmbeddedSolrServer(m_coreContainer, index.getCoreName()));
         }
