@@ -403,6 +403,9 @@ public final class OpenCmsCore {
      */
     protected CmsADEManager getADEManager() {
 
+        if (!m_adeManager.isInitialized()) {
+            m_adeManager.initialize();
+        }
         return m_adeManager;
     }
 
