@@ -102,13 +102,13 @@ public final class OpenCmsTheme {
     public static final String COLOR_BLUE = "o-color-blue";
 
     /** CSS style name. */
-    public static final String COLOR_GRAY_LIGHT = "o-color-gray-light";
+    public static final String COLOR_CYAN = " o-color-cyan";
 
     /** CSS style name. */
     public static final String COLOR_GRAY = "o-color-gray";
 
     /** CSS style name. */
-    public static final String COLOR_CYAN = " o-color-cyan";
+    public static final String COLOR_GRAY_LIGHT = "o-color-gray-light";
 
     /** CSS style name. */
     public static final String COLOR_ORANGE = "o-color-orange";

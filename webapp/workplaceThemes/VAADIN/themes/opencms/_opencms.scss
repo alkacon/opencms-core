@@ -453,9 +453,6 @@
 		 	
 		.o-lock-shared, .o-lock-user, .o-lock-other, .o-lock-publish, .o-state-changed, .o-state-new, .o-sibling{
 			position: absolute;
-			background-size: 16px 16px;
-			height:16px;
-			width: 16px;
 			color: transparent;
 			z-index:2;
 		}
@@ -463,25 +460,11 @@
 			bottom: 0;
 			right: 0;
 		}
-		.o-lock-shared{
-			background-image: url(img/lock-shared.svg);
-		}
-		.o-lock-user{
-			background-image: url(img/lock-own.svg);
-		}
-		.o-lock-other{
-			background-image: url(img/lock-other.svg)
-		}
-		.o-lock-publish{
-			background-image: url(img/lock-publish.svg);
-		}
 		.o-sibling{
 			bottom: 0;
 			left: 0;
-			background-image: url(img/overlay-sibling.svg);
 		}
 		.o-state-changed, .o-state-new {
-			background-image: url(img/overlay-changed.svg);
 			top: 0;
 			right: 0;
 		}

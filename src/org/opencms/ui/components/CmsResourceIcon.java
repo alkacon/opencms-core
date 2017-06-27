@@ -76,6 +76,24 @@ public class CmsResourceIcon extends Label {
         sitemapSelect;
     }
 
+    /** The changed icon class. */
+    public static final String ICON_CLASS_CHANGED = "oc-icon-16-overlay-changed";
+
+    /** The other user lock icon class. */
+    public static final String ICON_CLASS_LOCK_OTHER = "oc-icon-16-lock-other";
+
+    /** The own user lock icon class. */
+    public static final String ICON_CLASS_LOCK_OWN = "oc-icon-16-lock-own";
+
+    /** The publish lock icon class. */
+    public static final String ICON_CLASS_LOCK_PUBLISH = "oc-icon-16-lock-publish";
+
+    /** The shared lock icon class. */
+    public static final String ICON_CLASS_LOCK_SHARED = "oc-icon-16-lock-shared";
+
+    /** The sibling icon class. */
+    public static final String ICON_CLASS_SIBLING = "oc-icon-16-overlay-sibling";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceIcon.class);
 
@@ -347,20 +365,20 @@ public class CmsResourceIcon extends Label {
                 String lockIcon;
                 String message = null;
                 if (resUtil.getLock().getSystemLock().isPublish()) {
-                    lockIcon = OpenCmsTheme.LOCK_PUBLISH;
+                    lockIcon = OpenCmsTheme.LOCK_PUBLISH + " " + ICON_CLASS_LOCK_PUBLISH;
                     message = CmsVaadinUtils.getMessageText(
                         org.opencms.workplace.explorer.Messages.GUI_PUBLISH_TOOLTIP_0);
                 } else {
                     switch (resUtil.getLockState()) {
                         case 1:
-                            lockIcon = OpenCmsTheme.LOCK_OTHER;
+                            lockIcon = OpenCmsTheme.LOCK_OTHER + " " + ICON_CLASS_LOCK_OTHER;
                             break;
 
                         case 2:
-                            lockIcon = OpenCmsTheme.LOCK_SHARED;
+                            lockIcon = OpenCmsTheme.LOCK_SHARED + " " + ICON_CLASS_LOCK_SHARED;
                             break;
                         case 3:
-                            lockIcon = OpenCmsTheme.LOCK_USER;
+                            lockIcon = OpenCmsTheme.LOCK_USER + " " + ICON_CLASS_LOCK_OWN;
                             break;
                         default:
                             lockIcon = null;
@@ -384,13 +402,13 @@ public class CmsResourceIcon extends Label {
                 + resUtil.getUserLastModified()
             : null;
             if (state.isChanged() || state.isDeleted()) {
-                content += getOverlaySpan(OpenCmsTheme.STATE_CHANGED, title);
+                content += getOverlaySpan(OpenCmsTheme.STATE_CHANGED + " " + ICON_CLASS_CHANGED, title);
             } else if (state.isNew()) {
-                content += getOverlaySpan(OpenCmsTheme.STATE_NEW, title);
+                content += getOverlaySpan(OpenCmsTheme.STATE_NEW + " " + ICON_CLASS_CHANGED, title);
             }
         }
         if ((resUtil != null) && (resUtil.getLinkType() == 1)) {
-            content += getOverlaySpan(OpenCmsTheme.SIBLING, null);
+            content += getOverlaySpan(OpenCmsTheme.SIBLING + " " + ICON_CLASS_SIBLING, null);
         }
         return content;
     }
