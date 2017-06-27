@@ -63,6 +63,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_PROPERTY_SEARCH_0 = "GUI_SOURCESEARCH_PROPERTY_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_0 = "GUI_CACHE_CLEAN_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1780,6 +1783,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_PROJECT_HELP_0 = "GUI_SOURCESEARCH_PROJECT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_PROPERTIES_0 = "GUI_SOURCESEARCH_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_PROPERTIES_HELP_0 = "GUI_SOURCESEARCH_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_REPLACE_0 = "GUI_SOURCESEARCH_REPLACE_0";

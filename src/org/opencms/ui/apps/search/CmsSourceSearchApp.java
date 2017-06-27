@@ -84,6 +84,9 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
     /** The project ley. */
     public static final String PROJECT = "p";
 
+    /** The property key. */
+    public static final String PROPERTY = "pr";
+
     /** The query key. */
     public static final String QUERY = "q";
 
@@ -156,6 +159,7 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
         state = A_CmsWorkplaceApp.addParamToState(state, QUERY, settings.getQuery());
         state = A_CmsWorkplaceApp.addParamToState(state, INDEX, settings.getSource());
         state = A_CmsWorkplaceApp.addParamToState(state, XPATH, settings.getXpath());
+        state = A_CmsWorkplaceApp.addParamToState(state, PROPERTY, settings.getProperty().getName());
 
         return state;
     }
@@ -197,6 +201,15 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             if (type.isSolrSearch()) {
                 settings.setQuery(A_CmsWorkplaceApp.getParamFromState(state, QUERY));
                 settings.setSource(A_CmsWorkplaceApp.getParamFromState(state, INDEX));
+            }
+            if (type.isPropertySearch()) {
+                try {
+                    settings.setProperty(
+                        A_CmsUI.getCmsObject().readPropertyDefinition(
+                            A_CmsWorkplaceApp.getParamFromState(state, PROPERTY)));
+                } catch (CmsException e) {
+                    //
+                }
             }
         }
         return settings;

@@ -30,6 +30,7 @@ package org.opencms.ui.apps.search;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -53,6 +54,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -88,11 +90,11 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     /** The found resources. */
     private Set<CmsResource> m_matchedResources = new LinkedHashSet<CmsResource>();
 
-    /** Settings. */
-    private CmsSearchReplaceSettings m_settings;
-
     /** The replace flag. */
     private boolean m_replace;
+
+    /** Settings. */
+    private CmsSearchReplaceSettings m_settings;
 
     /**
      * Creates a replace html tag Thread.<p>
@@ -255,7 +257,11 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                         I_CmsReport.FORMAT_HEADLINE);
                 }
 
-                searchAndReplace(resources);
+                if (m_settings.getType().isPropertySearch()) {
+                    searchProperties(resources);
+                } else {
+                    searchAndReplace(resources);
+                }
             }
 
         } else {
@@ -410,8 +416,14 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         String encoding = CmsLocaleManager.getResourceEncoding(getCms(), file);
         String content = new String(contents, encoding);
 
-        Matcher matcher;
-        matcher = Pattern.compile(m_settings.getSearchpattern()).matcher(content);
+        if (CmsSourceSearchForm.REGEX_ALL.equals(m_settings.getSearchpattern()) & !m_replace) {
+            m_matchedResources.add(file);
+            getReport().println(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
+            return null;
+        }
+
+        Matcher matcher = Pattern.compile(m_settings.getSearchpattern()).matcher(content);
+
         if (matcher.find()) {
             // search pattern did match here, so take this file in the list with matches resources
             m_matchedResources.add(file);
@@ -621,6 +633,54 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
+     * Search and replace function for properties.<p>
+     *
+     * @param resources to be considered
+     */
+    private void searchProperties(List<CmsResource> resources) {
+
+        if (CmsSourceSearchForm.REGEX_ALL.equals(m_settings.getSearchpattern())) {
+            for (CmsResource resource : resources) {
+                m_matchedResources.add(resource);
+                getReport().println(
+                    Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0),
+                    I_CmsReport.FORMAT_OK);
+            }
+        } else {
+            for (CmsResource resource : resources) {
+                Matcher matcher;
+                try {
+                    CmsProperty prop = getCms().readPropertyObject(resource, m_settings.getProperty().getName(), false);
+                    matcher = Pattern.compile(m_settings.getSearchpattern()).matcher(prop.getValue());
+                    if (matcher.find()) {
+                        m_matchedResources.add(resource);
+                        getReport().println(
+                            Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0),
+                            I_CmsReport.FORMAT_OK);
+                        if (m_replace) {
+                            if (m_settings.getReplacepattern().isEmpty()) {
+                                prop.setValue(matcher.replaceAll(m_settings.getReplacepattern()), "");
+                            }
+                            getCms().lockResource(resource);
+                            getCms().writePropertyObjects(resource, Collections.singletonList(prop));
+                            getCms().unlockResource(resource);
+                        }
+                    } else {
+                        getReport().println(
+                            Messages.get().container(Messages.RPT_SOURCESEARCH_NOT_MATCHED_0),
+                            I_CmsReport.FORMAT_NOTE);
+                    }
+
+                } catch (CmsException e) {
+                    LOG.error("Ubable to read or change property", e);
+                }
+            }
+        }
+        // report results
+        reportResults(resources.size());
+    }
+
+    /**
      * Searches/reads all resources that are relevant.<p>
      *
      * @return the relevant resources
@@ -652,7 +712,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 }
             }
         } else {
-            CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireFile().addExcludeState(
+            CmsResourceFilter filter = CmsResourceFilter.ALL.addExcludeState(
                 CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
             if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                 for (String resTypeName : m_settings.getTypesArray()) {
@@ -669,14 +729,23 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
             // iterate over all selected paths
             Iterator<String> iterPaths = m_settings.getPaths().iterator();
+
+            if (!m_settings.getType().isPropertySearch()) {
+                filter = filter.addRequireFile();
+            }
             while (iterPaths.hasNext()) {
                 String path = iterPaths.next();
                 try {
-                    // only read resources which are files and not deleted, which are in the current time range window and where the current
-                    // user has the sufficient permissions to read them
-                    List<CmsResource> tmpResources = getCms().readResources(path, filter);
-                    if ((tmpResources != null) && !tmpResources.isEmpty()) {
-                        resources.addAll(tmpResources);
+                    if (m_settings.getType().isPropertySearch()) {
+                        resources.addAll(
+                            getCms().readResourcesWithProperty(path, m_settings.getProperty().getName(), null, filter));
+                    } else {
+                        // only read resources which are files and not deleted, which are in the current time range window and where the current
+                        // user has the sufficient permissions to read them
+                        List<CmsResource> tmpResources = getCms().readResources(path, filter);
+                        if ((tmpResources != null) && !tmpResources.isEmpty()) {
+                            resources.addAll(tmpResources);
+                        }
                     }
                 } catch (CmsException e) {
                     // an error occured

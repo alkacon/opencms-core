@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.search;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
 import org.opencms.util.CmsStringUtil;
 
@@ -88,6 +89,9 @@ public class CmsSearchReplaceSettings implements Serializable {
     /** The site root. */
     private String m_siteRoot;
 
+    /**Property definition for property search.*/
+    private CmsPropertyDefinition m_property = CmsPropertyDefinition.getNullPropertyDefinition();
+
     /**
      * Bean constructor with cms object for path validation.<p>
      */
@@ -129,6 +133,11 @@ public class CmsSearchReplaceSettings implements Serializable {
     public String getProject() {
 
         return m_project;
+    }
+
+    public CmsPropertyDefinition getProperty() {
+
+        return m_property;
     }
 
     /**
@@ -321,6 +330,12 @@ public class CmsSearchReplaceSettings implements Serializable {
     public void setProject(String project) {
 
         m_project = project;
+    }
+
+    public void setProperty(CmsPropertyDefinition value) {
+
+        m_property = value;
+
     }
 
     /**
