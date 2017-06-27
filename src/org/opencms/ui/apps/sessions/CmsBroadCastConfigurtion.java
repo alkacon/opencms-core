@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps.messages;
+package org.opencms.ui.apps.sessions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
@@ -64,7 +64,7 @@ public class CmsBroadCastConfigurtion extends A_CmsWorkplaceAppConfiguration {
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsBroadcastApp();
+        return new CmsSessionsApp();
     }
 
     /**

@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps.messages;
+package org.opencms.ui.apps.sessions;
 
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -67,7 +67,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Class for the broadcast app.<p>
  */
-public class CmsBroadcastApp extends A_CmsWorkplaceApp {
+public class CmsSessionsApp extends A_CmsWorkplaceApp {
 
     /**
      * Validator for Message.<p>
@@ -95,10 +95,10 @@ public class CmsBroadcastApp extends A_CmsWorkplaceApp {
     }
 
     /** The logger for this class. */
-    static Log LOG = CmsLog.getLog(CmsBroadcastApp.class.getName());
+    static Log LOG = CmsLog.getLog(CmsSessionsApp.class.getName());
 
     /**Table showing sessions.*/
-    CmsBroadcastTable m_table;
+    CmsSessionsTable m_table;
 
     /**
      * Get user names as String from set of sessions.<p>
@@ -151,7 +151,7 @@ public class CmsBroadcastApp extends A_CmsWorkplaceApp {
      * @param caption of window
      * @param table instance of table to be refreshed after sending broadcast
      */
-    protected static void showSendBroadcastDialog(Set<String> ids, String caption, final CmsBroadcastTable table) {
+    protected static void showSendBroadcastDialog(Set<String> ids, String caption, final CmsSessionsTable table) {
 
         final Window window = CmsBasicDialog.prepareWindow();
         window.setCaption(caption);
@@ -200,7 +200,7 @@ public class CmsBroadcastApp extends A_CmsWorkplaceApp {
         addInfoLayoutComponents();
         m_rootLayout.setMainHeightFull(true);
         if (state.isEmpty()) {
-            m_table = new CmsBroadcastTable();
+            m_table = new CmsSessionsTable();
             return m_table;
         }
 

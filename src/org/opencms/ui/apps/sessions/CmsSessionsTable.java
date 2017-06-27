@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps.messages;
+package org.opencms.ui.apps.sessions;
 
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -72,7 +72,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Class for the table to show all current sessions.<p>
  */
-public class CmsBroadcastTable extends Table {
+public class CmsSessionsTable extends Table {
 
     /**
      * The menu entry to switch to the explorer of concerning site.<p>
@@ -88,8 +88,8 @@ public class CmsBroadcastTable extends Table {
                 data,
                 CmsVaadinUtils.getMessageText(
                     Messages.GUI_MESSAGES_DESTROY_SESSIONS_1,
-                    CmsBroadcastApp.getUserNames(data, CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_AND_0))),
-                CmsBroadcastTable.this);
+                    CmsSessionsApp.getUserNames(data, CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_AND_0))),
+                CmsSessionsTable.this);
 
         }
 
@@ -122,12 +122,12 @@ public class CmsBroadcastTable extends Table {
          */
         public void executeAction(Set<String> data) {
 
-            CmsBroadcastApp.showSendBroadcastDialog(
+            CmsSessionsApp.showSendBroadcastDialog(
                 data,
                 CmsVaadinUtils.getMessageText(
                     Messages.GUI_MESSAGES_BROADCAST_SESSIONS_1,
-                    CmsBroadcastApp.getUserNames(data, CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_AND_0))),
-                CmsBroadcastTable.this);
+                    CmsSessionsApp.getUserNames(data, CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_AND_0))),
+                CmsSessionsTable.this);
 
         }
 
@@ -275,7 +275,7 @@ public class CmsBroadcastTable extends Table {
     }
 
     /** The logger for this class. */
-    static Log LOG = CmsLog.getLog(CmsBroadcastTable.class.getName());
+    static Log LOG = CmsLog.getLog(CmsSessionsTable.class.getName());
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4136423899776482696L;
@@ -292,7 +292,7 @@ public class CmsBroadcastTable extends Table {
     /**
      * public constructor.<p>
      */
-    public CmsBroadcastTable() {
+    public CmsSessionsTable() {
         try {
             ini();
             addGeneratedColumn(TableProperty.IS_WAITING, new ColumnGenerator() {
@@ -345,7 +345,7 @@ public class CmsBroadcastTable extends Table {
      * @param caption of the window
      * @param table to be updated
      */
-    protected static void showKillDialog(Set<String> ids, String caption, final CmsBroadcastTable table) {
+    protected static void showKillDialog(Set<String> ids, String caption, final CmsSessionsTable table) {
 
         final Window window = CmsBasicDialog.prepareWindow();
         window.setCaption(caption);
@@ -487,11 +487,11 @@ public class CmsBroadcastTable extends Table {
                 m_menu.setEntries(getMenuEntries(), (Set<String>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
             } else if (event.getButton().equals(MouseButton.LEFT) && TableProperty.UserName.equals(propertyId)) {
-                CmsBroadcastApp.showSendBroadcastDialog(
+                CmsSessionsApp.showSendBroadcastDialog(
                     Collections.singleton(((Set<String>)getValue()).iterator().next()),
                     CmsVaadinUtils.getMessageText(
                         Messages.GUI_MESSAGES_BROADCAST_SESSIONS_1,
-                        CmsBroadcastApp.getUserNames(
+                        CmsSessionsApp.getUserNames(
                             Collections.singleton(((Set<String>)getValue()).iterator().next()),
                             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_AND_0))),
                     this);
