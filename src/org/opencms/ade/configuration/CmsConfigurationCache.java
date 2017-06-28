@@ -85,6 +85,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** ID which is used to signal that the module configuration should be updated. */
     public static final CmsUUID ID_UPDATE_MODULES = CmsUUID.getNullUUID();
 
+    /** The master sitemap configuration resource type name. */
     public static final String SITEMAP_MASTER_CONFIG = "sitemap_master_config";
 
     /** The interval at which the tasks which checks for configuration updates runs, in milliseconds. */
@@ -294,6 +295,14 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 List<CmsResource> configFileCandidates = m_cms.readResources(
                     "/",
                     CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
+                CmsLog.INIT.info(
+                    "Read "
+                        + configFileCandidates.size()
+                        + " config resources of type: "
+                        + m_configType.getTypeName()
+                        + " from the "
+                        + (m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "online" : "offline")
+                        + " project.");
                 if (OpenCms.getResourceManager().hasResourceType(SITEMAP_MASTER_CONFIG)) {
                     List<CmsResource> masterCandidates = m_cms.readResources(
                         "/",
@@ -319,11 +328,20 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
                     }
                 }
+
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+        CmsLog.INIT.info(
+            "Reading "
+                + (m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "online" : "offline")
+                + " module configurations.");
         List<CmsADEConfigDataInternal> moduleConfigs = loadModuleConfiguration();
+        CmsLog.INIT.info(
+            "Reading "
+                + (m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "online" : "offline")
+                + " element views.");
         Map<CmsUUID, CmsElementView> elementViews = loadElementViews();
         CmsADEConfigCacheState result = new CmsADEConfigCacheState(
             m_cms,
@@ -388,6 +406,14 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     }
 
+    /**
+     * Checks whether the given type and path match a macro formatter.<p>
+     *
+     * @param type the type id
+     * @param rootPath the resource path
+     *
+     * @return <code>true</code> in case of a macro formatter
+     */
     protected boolean isMacroFormatter(int type, String rootPath) {
 
         boolean result = false;
