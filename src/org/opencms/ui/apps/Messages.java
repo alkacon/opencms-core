@@ -63,9 +63,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SOURCESEARCH_PROPERTY_SEARCH_0 = "GUI_SOURCESEARCH_PROPERTY_SEARCH_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_0 = "GUI_CACHE_CLEAN_0";
 
     /** Message constant for key in the resource bundle. */
@@ -936,6 +933,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGFILE_CHARSET_HELP_0 = "GUI_LOGFILE_CHARSET_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_CHOOSE_FILE_0 = "GUI_LOGFILE_CHOOSE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_DOWNLOAD_0 = "GUI_LOGFILE_DOWNLOAD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_DOWNLOAD_ALL_0 = "GUI_LOGFILE_DOWNLOAD_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_DOWNLOAD_ALL_HELP_0 = "GUI_LOGFILE_DOWNLOAD_ALL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_ENABLED_0 = "GUI_LOGFILE_ENABLED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1788,7 +1797,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SOURCESEARCH_PROPERTIES_0 = "GUI_SOURCESEARCH_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SOURCESEARCH_PROPERTIES_HELP_0 = "GUI_SOURCESEARCH_PROPERTIES_0";
+    public static final String GUI_SOURCESEARCH_PROPERTIES_HELP_0 = "GUI_SOURCESEARCH_PROPERTIES_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_PROPERTY_SEARCH_0 = "GUI_SOURCESEARCH_PROPERTY_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_REPLACE_0 = "GUI_SOURCESEARCH_REPLACE_0";

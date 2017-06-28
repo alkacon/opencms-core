@@ -29,16 +29,11 @@ package org.opencms.ui.apps.logfile;
 
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsRfsException;
 import org.opencms.util.CmsRfsFileViewer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -55,11 +50,8 @@ import org.apache.log4j.Logger;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.FileDownloader;
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Resource;
-import com.vaadin.server.StreamResource;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -139,9 +131,13 @@ public class CmsLogFileView extends VerticalLayout {
             }
         });
 
-        for (FileAppender appender : allAppender) {
-            m_logfile.addItem(appender.getFile());
+        for (File file : new File(CmsLogFileApp.LOG_FOLDER).listFiles()) {
+            if (!file.getAbsolutePath().endsWith(".zip")) {
+                m_logfile.addItem(file.getAbsolutePath());
+            }
         }
+
+        m_logfile.setFilteringMode(FilteringMode.CONTAINS);
 
         m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
 
@@ -158,7 +154,6 @@ public class CmsLogFileView extends VerticalLayout {
             public void valueChange(ValueChangeEvent event) {
 
                 updateView();
-                m_fileDownloader.setFileDownloadResource(getDownloadResource());
             }
         });
 
@@ -185,48 +180,6 @@ public class CmsLogFileView extends VerticalLayout {
         } catch (CmsRfsException e) {
             //
         }
-    }
-
-    /**
-     * Returns a button to download current log file.<p>
-     *
-     * @return download button
-     */
-    protected Button getDownloadButton() {
-
-        Button downloadButton = CmsToolBar.createButton(
-            FontAwesome.DOWNLOAD,
-            CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGVIEW_DOWNLOAD_0));
-
-        m_fileDownloader = new FileDownloader(getDownloadResource()); //resource can be changed..
-        m_fileDownloader.extend(downloadButton);
-        return downloadButton;
-    }
-
-    /**
-     * Creates log-file resource for download.<p>
-     *
-     * @return vaadin resource
-     */
-    protected Resource getDownloadResource() {
-
-        final File downloadFile = new File(m_logView.getFilePath());
-
-        return new StreamResource(new StreamResource.StreamSource() {
-
-            private static final long serialVersionUID = -8868657402793427460L;
-
-            public InputStream getStream() {
-
-                try {
-                    return new FileInputStream(downloadFile);
-                } catch (FileNotFoundException e) {
-                    return null;
-                }
-
-            }
-        }, "opencms.log");
-
     }
 
     /**

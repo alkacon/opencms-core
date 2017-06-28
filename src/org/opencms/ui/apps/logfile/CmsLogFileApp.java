@@ -27,9 +27,14 @@
 
 package org.opencms.ui.apps.logfile;
 
+import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -43,16 +48,21 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window;
 
 /**
  * Main class of Log managment app.<p>
  */
 public class CmsLogFileApp extends A_CmsWorkplaceApp {
 
-    /**Download button.*/
-    private Button m_downloadButton;
+    /**Log folder path.*/
+    protected static final String LOG_FOLDER = OpenCms.getSystemInfo().getLogFileRfsPath().substring(
+        0,
+        OpenCms.getSystemInfo().getLogFileRfsPath().lastIndexOf("/") + 1);
 
     /** The file table filter input. */
     private TextField m_tableFilter;
@@ -201,17 +211,13 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             m_infoLayout.removeComponent(m_tableFilter);
             m_tableFilter = null;
         }
-
+        addDownloadButton();
         if (state.isEmpty()) {
             m_rootLayout.setMainHeightFull(false);
-            CmsLogFileView view = new CmsLogFileView(this);
-            m_downloadButton = view.getDownloadButton();
-            m_uiContext.addToolbarButton(m_downloadButton);
-            return view;
+            return new CmsLogFileView(this);
+
         }
-        if (m_downloadButton != null) {
-            m_uiContext.removeToolbarButton(m_downloadButton);
-        }
+
         return null;
     }
 
@@ -222,5 +228,28 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     protected List<NavEntry> getSubNavEntries(String state) {
 
         return null;
+    }
+
+    /**
+     * Adds the download button.
+     */
+    private void addDownloadButton() {
+
+        Button button = CmsToolBar.createButton(
+            FontOpenCms.DOWNLOAD,
+            CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_TO_ALL_0));
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                Window window = CmsBasicDialog.prepareWindow(CmsBasicDialog.DialogWidth.wide);
+                window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_DOWNLOAD_0));
+                window.setContent(new CmsLogDownloadDialog(window));
+                A_CmsUI.get().addWindow(window);
+            }
+        });
+        m_uiContext.addToolbarButton(button);
     }
 }
