@@ -79,20 +79,15 @@
 	  		color: $blue-dark;
 	  	}
 	  }
-	  &.v-disabled  > span.v-button-wrap{
-	  	&:before{
-	  		background-image: unquote("radial-gradient( #f3f4f5 40%, #e7e9eb 60%, #d0d3c7 100%)") !important;
-	  	}
+	  &.v-disabled  > span.v-button-wrap:before{
+	  	background: $o-medium-background-color !important;
 	  }
-
-
-	  
 	  &.o-color-transparent > span.v-button-wrap{
 	  	.v-icon{
 	  		color: inherit;
 	  	}
 	  	&:before{
-	  		display: none;
+	  		background: transparent;
 	  	}
 	  }
 	  &.o-button-overlay-blue span.v-button-wrap > .v-icon:after{
@@ -106,6 +101,7 @@
 	  	text-shadow: none;
 	  }
 	  
+	  /* following style rules allow displaying a small overlay icon above the main icon. */
 	  &.o-button-overlay-blue-light span.v-button-wrap > .v-icon:after{
 	  	color: $o-button-blue;
 	  }
@@ -133,4 +129,4 @@
 	  	color: $green;
 	  }
   }
-  }
+}
