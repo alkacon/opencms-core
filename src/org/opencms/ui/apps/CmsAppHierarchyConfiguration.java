@@ -67,7 +67,7 @@ public class CmsAppHierarchyConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
+        return null;
     }
 
     /**

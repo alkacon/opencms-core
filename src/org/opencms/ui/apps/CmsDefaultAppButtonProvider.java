@@ -214,7 +214,9 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
         button.addStyleName(OpenCmsTheme.APP_BUTTON);
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         button.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
-        button.addStyleName(buttonStyle);
+        if (buttonStyle != null) {
+            button.addStyleName(buttonStyle);
+        }
         return button;
     }
 

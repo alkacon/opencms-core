@@ -33,7 +33,6 @@ import org.opencms.security.CmsRole;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
-import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -73,11 +72,7 @@ public class CmsDbExportConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT
-            + " "
-            + FontOpenCms.DOWNLOAD.getButtonOverlayStyle()
-            + " "
-            + OpenCmsTheme.BUTTON_OVERLAY_BLUE_LIGHT;
+        return FontOpenCms.DOWNLOAD.getButtonOverlayStyle() + " " + OpenCmsTheme.BUTTON_OVERLAY_BLUE_LIGHT;
     }
 
     /**

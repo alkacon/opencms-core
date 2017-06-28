@@ -10,6 +10,13 @@
 	}
 }
 
+.v-button{
+&:hover:not(.v-disabled), &:focus:not(.v-disabled) {
+	    [class^="oc-icon-32-"], [class*=" oc-icon-32-"] {
+	    	background-image: url(img/icon-sprite-32-hover.svg);
+	    }
+	  }
+}
 .oc-icon-32-edit-point {
   width: 32px;
   height: 32px;
@@ -104,36 +111,6 @@
   width: 32px;
   height: 32px;
   background-position: -96px -48px;
-}
-.oc-icon-32-overlay-changed {
-  width: 32px;
-  height: 32px;
-  background-position: -144px -48px;
-}
-.oc-icon-32-overlay-sibling {
-  width: 32px;
-  height: 32px;
-  background-position: -192px -48px;
-}
-.oc-icon-32-lock-publish {
-  width: 32px;
-  height: 32px;
-  background-position: -240px -48px;
-}
-.oc-icon-32-lock-other {
-  width: 32px;
-  height: 32px;
-  background-position: -288px -48px;
-}
-.oc-icon-32-lock-own {
-  width: 32px;
-  height: 32px;
-  background-position: -336px -48px;
-}
-.oc-icon-32-lock-shared {
-  width: 32px;
-  height: 32px;
-  background-position: -384px -48px;
 }
 
 }

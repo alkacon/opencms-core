@@ -33,7 +33,6 @@ import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
-import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsFolderAppCategory;
 import org.opencms.ui.apps.Messages;
 
@@ -57,7 +56,7 @@ public class CmsLinkValidationFolder implements I_CmsFolderAppCategory {
      */
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
+        return null;
     }
 
     /**

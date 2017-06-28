@@ -33,7 +33,6 @@ import org.opencms.security.CmsRole;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
-import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 
@@ -55,15 +54,6 @@ public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new CmsPublishQueue();
-    }
-
-    /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getButtonStyle()
-     */
-    @Override
-    public String getButtonStyle() {
-
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**

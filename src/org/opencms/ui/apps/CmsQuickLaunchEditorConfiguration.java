@@ -77,15 +77,6 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getButtonStyle()
-     */
-    @Override
-    public String getButtonStyle() {
-
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
-    }
-
-    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
      */
     @Override

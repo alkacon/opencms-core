@@ -82,7 +82,7 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String BUTTON_OVERLAY_ORANGE = "o-button-overlay-orange";
-    
+
     /** CSS style name. */
     public static final String BUTTON_OVERLAY_RED = "o-button-overlay-red";
 
@@ -108,16 +108,16 @@ public final class OpenCmsTheme {
     public static final String COLOR_GRAY = "o-color-gray";
 
     /** CSS style name. */
-    public static final String COLOR_GRAY_LIGHT = "o-color-gray-light";
-
-    /** CSS style name. */
     public static final String COLOR_ORANGE = "o-color-orange";
 
     /** CSS style name. */
     public static final String COLOR_RED = "o-color-red";
 
     /** CSS style name. */
-    public static final String COLOR_TRANSPARENT = "o-color-transparent";
+    public static final String IMAGE_TRANSPARENT = "o-image-transparent";
+
+    /** CSS style name. */
+    public static final String IMAGE_GRADIENT = "o-image-gradient";
 
     /** CSS style name. */
     public static final String CRUMB_WRAPPER = "o-crumb-wrapper";

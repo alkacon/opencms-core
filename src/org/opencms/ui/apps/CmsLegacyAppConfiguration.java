@@ -77,7 +77,7 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
      */
     public String getButtonStyle() {
 
-        return "";
+        return I_CmsAppButtonProvider.BUTTON_STYLE_CLASSIC;
     }
 
     /**

@@ -20,7 +20,7 @@
 	  		top: 1px;
 	  		position: absolute;
 	  		z-index: 0;
-	  		background-image: unquote("radial-gradient( #fff 30%, #bbb 100%)");
+	  		background: $o-medium-background-color;
   		}
   	
 	  	span.v-button-caption{
@@ -41,16 +41,20 @@
 	  		font-size: $app-icon-size;
 	  		line-height: 48px;
 	  		vertical-align: middle;
-	  		color: $white;
+	  		color: $blue-dark;
 	  		position: relative;
 	  		text-shadow: 1px -1px 2px #fff, -1px 1px 2px #fff, 1px 1px 2px #fff, -1px -1px 2px #fff;
 	  	}
 	}
-	
+	  &.v-disabled  > span.v-button-wrap:before{
+	  	background: $o-medium-background-color !important;
+	  }
 	  &:hover:not(.v-disabled), &:focus:not(.v-disabled) {
-	    > span.v-button-wrap:before {
-	    	box-shadow: 0 0 0 2px $o-button-blue inset;
-	    }
+	  	&.o-image-transparent, &.o-image-gradient{
+		    > span.v-button-wrap:before {
+		    	box-shadow: 0 0 0 2px $o-button-blue inset;
+		    }
+		}
 	  }
 	  &:after{
 	    display: none;
@@ -71,25 +75,22 @@
 	  &.o-color-gray  > span.v-button-wrap:before{
 	  	background: $gray-dark;
 	  }
-	  &.o-color-gray-light { 
-	  	> span.v-button-wrap:before{
-	  		background: $o-medium-background-color;
-	  	}
+	  &.o-color-cyan, &.o-color-red, &.o-color-blue, &.o-color-orange, &.o-color-gray{
 	  	.v-icon{
-	  		color: $blue-dark;
-	  	}
+	  		color: $white;
+	    }
 	  }
-	  &.v-disabled  > span.v-button-wrap:before{
-	  	background: $o-medium-background-color !important;
+	  
+	  
+	  &.o-image-gradient > span.v-button-wrap:before{
+	  	background-image: unquote("radial-gradient( #fff 30%, #bbb 100%)");
 	  }
-	  &.o-color-transparent > span.v-button-wrap{
-	  	.v-icon{
-	  		color: inherit;
-	  	}
-	  	&:before{
-	  		background: transparent;
-	  	}
+	  &.o-image-transparent > span.v-button-wrap:before{
+	  	background: transparent;
 	  }
+	  
+	  /* following style rules allow displaying a small overlay icon above the main icon. */
+	  
 	  &.o-button-overlay-blue span.v-button-wrap > .v-icon:after{
 	  	color: $blue-dark;
 	  }
@@ -100,8 +101,6 @@
 	  	border-radius: $v-border-radius;
 	  	text-shadow: none;
 	  }
-	  
-	  /* following style rules allow displaying a small overlay icon above the main icon. */
 	  &.o-button-overlay-blue-light span.v-button-wrap > .v-icon:after{
 	  	color: $o-button-blue;
 	  }

@@ -36,7 +36,6 @@ import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
-import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 
 import java.util.LinkedHashMap;
@@ -89,15 +88,6 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
                 return null;
             }
         };
-    }
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
-     */
-    @Override
-    public String getButtonStyle() {
-
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
     }
 
     /**

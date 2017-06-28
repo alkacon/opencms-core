@@ -62,15 +62,6 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
-     */
-    @Override
-    public String getButtonStyle() {
-
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY_LIGHT;
-    }
-
-    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
      */
     @Override

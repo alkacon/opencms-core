@@ -40,9 +40,6 @@ public interface I_CmsAppButtonProvider {
     String BUTTON_STYLE_BLUE = OpenCmsTheme.COLOR_BLUE;
 
     /** Button color style. */
-    String BUTTON_STYLE_GRAY_LIGHT = OpenCmsTheme.COLOR_GRAY_LIGHT;
-
-    /** Button color style. */
     String BUTTON_STYLE_CYAN = OpenCmsTheme.COLOR_CYAN;
 
     /** Button color style. */
@@ -55,7 +52,10 @@ public interface I_CmsAppButtonProvider {
     String BUTTON_STYLE_RED = OpenCmsTheme.COLOR_RED;
 
     /** Button color style. */
-    String BUTTON_STYLE_TRANSPARENT = OpenCmsTheme.COLOR_TRANSPARENT;
+    String BUTTON_STYLE_TRANSPARENT = OpenCmsTheme.IMAGE_TRANSPARENT;
+
+    /** Button color style. */
+    String BUTTON_STYLE_CLASSIC = OpenCmsTheme.IMAGE_GRADIENT;
 
     /**
      * Creates an app launcher button.<p>
