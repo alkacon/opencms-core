@@ -185,6 +185,9 @@ public final class OpenCmsTheme {
     /** The job icon CSS class. */
     public static final String ICON_JOB = "oc-icon-24-scheduler";
 
+    /**The Log icon. */
+    public static final String ICON_LOG = "oc-icon-24-log";
+
     /** The project icon CSS class. */
     public static final String ICON_PROJECT = "oc-icon-24-project";
 
@@ -307,13 +310,22 @@ public final class OpenCmsTheme {
     public static final String TABLE_CELL_PADDING = "o-table-cell-padding";
 
     /** CSS style name. */
-    public static final String TABLE_COLUMN_BOX_DARKGRAY = " o-box-darkgray";
+    public static final String TABLE_COLUMN_BOX_BLUE_LIGHT = " o-box-blue-light";
 
     /** CSS style name. */
-    public static final String TABLE_COLUMN_BOX_DARKRED = " o-box-darkred";
+    public static final String TABLE_COLUMN_BOX_CYAN = " o-box-cyan";
+
+    /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_DARKGRAY = " o-box-gray-darker";
+
+    /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_DARKRED = " o-box-red-dark";
 
     /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_GRAY = " o-box-gray";
+
+    /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_GRAY_DARKER = " o-box-gray-darker";
 
     /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_GREEN = " o-box-green";
@@ -322,10 +334,10 @@ public final class OpenCmsTheme {
     public static final String TABLE_COLUMN_BOX_ORANGE = " o-box-orange";
 
     /** CSS style name. */
-    public static final String TABLE_COLUMN_BOX_RED = " o-box-red";
+    public static final String TABLE_COLUMN_BOX_ORANGE_DARK = " o-box-orange-dark";
 
     /** CSS style name. */
-    public static final String TABLE_COLUMN_BOX_YELLOW = " o-box-yellow";
+    public static final String TABLE_COLUMN_BOX_RED = " o-box-red";
 
     /** CSS style name. */
     public static final String TOOLABER_APP_INDICATOR = "o-toolbar-app-indicator";

@@ -280,7 +280,7 @@
 			left:5px;
 			right:5px;
 			z-index: 1;
-			border-radius: 100px;
+			border-radius: 4px;
 		}
 	}
 
@@ -289,28 +289,36 @@
 		background-color: $green;
 	}
 	
-	.o-box-yellow::before{
-		background-color: $orange-light;
+	.o-box-orange::before{
+		background-color: $orange;
 	}
 	
-	.o-box-orange::before{
-		background-color: $orange-darker;	
+	.o-box-orange-dark::before{
+		background-color: $orange-dark;	
 	}
 	
 	.o-box-red::before{
-		background-color: $red-light;
+		background-color: $red;
 	}
 	
 	.o-box-gray::before{
 		background-color: $gray;
 	}
 	
-	.o-box-darkgray::before{
+	.o-box-gray-darker::before{
 		background-color: $gray-darker;
 	}
 	
-	.o-box-darkred::before{
+	.o-box-red-dark::before{
 		background-color: $red-dark;	
+	}
+	
+	.o-box-blue-light::before{
+		background-color: $blue-light;	
+	}
+	
+	.o-box-cyan::before{
+		background-color: $cyan;	
 	}
 		
 		

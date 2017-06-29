@@ -401,7 +401,7 @@ public class CmsQueuedTable extends Table {
                         return OpenCmsTheme.TABLE_COLUMN_BOX_GREEN;
                     }
                     if (STATE_WARNING.equals(source.getItem(itemId).getItemProperty(PROP_STATUS).getValue())) {
-                        return OpenCmsTheme.TABLE_COLUMN_BOX_YELLOW;
+                        return OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE;
                     }
                     if (STATE_ERROR.equals(source.getItem(itemId).getItemProperty(PROP_STATUS).getValue())) {
                         return OpenCmsTheme.TABLE_COLUMN_BOX_RED;

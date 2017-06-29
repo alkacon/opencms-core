@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.logfile;
 
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
@@ -58,6 +59,7 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
 
@@ -79,7 +81,7 @@ public class CmsLogChannelTable extends Table {
          */
         public Object generateCell(Table source, final Object itemId, Object columnId) {
 
-            return ((LoggerLevel)(source.getItem(itemId).getItemProperty(columnId).getValue())).getLevel().toString();
+            return ((LoggerLevel)(source.getItem(itemId).getItemProperty(columnId).getValue())).getLevelString();
         }
 
     }
@@ -88,6 +90,9 @@ public class CmsLogChannelTable extends Table {
      * Enumeration of Table Columns.<p>
      */
     enum TableColumn {
+
+        /**Icon column.*/
+        Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_LOG)),
 
         /**Level column.*/
         Level(Messages.GUI_LOGFILE_LOGSETTINGS_LEVEL_0, LoggerLevel.class, null),
@@ -181,22 +186,22 @@ public class CmsLogChannelTable extends Table {
     private enum LoggerLevel {
 
         /**Fatal level.*/
-        Fatal(Level.FATAL, OpenCmsTheme.TABLE_COLUMN_BOX_DARKRED),
+        Fatal(Level.FATAL, OpenCmsTheme.TABLE_COLUMN_BOX_BLUE_LIGHT, null),
 
         /**Error level. */
-        Error(Level.ERROR, OpenCmsTheme.TABLE_COLUMN_BOX_RED),
+        Error(Level.ERROR, OpenCmsTheme.TABLE_COLUMN_BOX_CYAN, "default"),
 
         /**Warning level. */
-        Warn(Level.WARN, OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE),
+        Warn(Level.WARN, OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE, null),
 
         /**Info level. */
-        Info(Level.INFO, OpenCmsTheme.TABLE_COLUMN_BOX_YELLOW),
+        Info(Level.INFO, OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE_DARK, null),
 
         /**Debug level.*/
-        Debug(Level.DEBUG, OpenCmsTheme.TABLE_COLUMN_BOX_GREEN),
+        Debug(Level.DEBUG, OpenCmsTheme.TABLE_COLUMN_BOX_RED, null),
 
         /**Off level. */
-        Off(Level.OFF, OpenCmsTheme.TABLE_COLUMN_BOX_GRAY);
+        Off(Level.OFF, OpenCmsTheme.TABLE_COLUMN_BOX_GRAY, null);
 
         /**CSS class.*/
         private String m_css;
@@ -204,15 +209,20 @@ public class CmsLogChannelTable extends Table {
         /**Corresponging log4j Level.*/
         private Level m_level;
 
+        /**Caption for logger level.*/
+        private String m_caption;
+
         /**
          * constructor.<p>
          *
          * @param level of logger
          * @param css class
+         * @param caption for the level
          */
-        private LoggerLevel(Level level, String css) {
+        private LoggerLevel(Level level, String css, String caption) {
             m_css = css;
             m_level = level;
+            m_caption = caption;
         }
 
         /**
@@ -249,6 +259,33 @@ public class CmsLogChannelTable extends Table {
 
             return m_level;
         }
+
+        /**
+         * Returns the string representation for level.<p>
+         *
+         * @return string
+         */
+        protected String getLevelString() {
+
+            if (m_caption == null) {
+                return m_level.toString();
+            }
+            return m_caption;
+        }
+
+        /**
+         * Returns an extenden string representation with log level name added in case of having caption set.<p>
+         *
+         * @return string
+         */
+        protected String getLevelStringComplet() {
+
+            if (m_caption == null) {
+                return m_level.toString();
+            }
+            return m_caption + " (" + m_level.toString() + ")";
+        }
+
     }
 
     /**vaadin serial id.*/
@@ -277,6 +314,10 @@ public class CmsLogChannelTable extends Table {
         }
 
         setVisibleColumns(TableColumn.Level, TableColumn.Channel, TableColumn.ParentChannel, TableColumn.File);
+
+        setItemIconPropertyId(TableColumn.Icon);
+        setColumnWidth(null, 40);
+        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
 
         setColumnWidth(TableColumn.Level, 80);
 
@@ -464,7 +505,7 @@ public class CmsLogChannelTable extends Table {
             }
             changeValueIfNotMultiSelect(itemId);
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == TableColumn.Level)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
                 m_menu.removeAllItems();
                 fillContextMenu((Set<Logger>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
@@ -501,7 +542,7 @@ public class CmsLogChannelTable extends Table {
 
         for (LoggerLevel level : LoggerLevel.values()) {
             final LoggerLevel currentLevel = level;
-            ContextMenuItem item = m_menu.addItem(level.name());
+            ContextMenuItem item = m_menu.addItem(level.getLevelStringComplet());
             item.setData(loggerSet);
             item.addItemClickListener(new ContextMenuItemClickListener() {
 
