@@ -67,12 +67,9 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
@@ -675,9 +672,6 @@ public class CmsQueuedTable extends Table {
             }
             item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
             item.getItemProperty(PROP_FILESCOUNT).setValue(Integer.valueOf(job.getSize()));
-            Label textfield = new Label(FontAwesome.SUITCASE.getHtml());
-            textfield.setContentMode(ContentMode.HTML);
-            item.getItemProperty(PROP_ICON).setValue(textfield);
         }
     }
 }
