@@ -447,6 +447,33 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_IMPORTSERVER_ADMIN_TOOL_NAME_SHORT_0 = "GUI_DATABASEAPP_IMPORTSERVER_ADMIN_TOOL_NAME_SHORT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_CONFIRM_0 = "GUI_DATABASEAPP_PROPERTY_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_CONFIRM_FORCE_0 = "GUI_DATABASEAPP_PROPERTY_CONFIRM_FORCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_DELETE_0 = "GUI_DATABASEAPP_PROPERTY_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_FORCE_0 = "GUI_DATABASEAPP_PROPERTY_FORCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_FORCE_HELP_0 = "GUI_DATABASEAPP_PROPERTY_FORCE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_PANEL_0 = "GUI_DATABASEAPP_PROPERTY_PANEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_TABLE_0 = "GUI_DATABASEAPP_PROPERTY_TABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_TOOL_NAME_0 = "GUI_DATABASEAPP_PROPERTY_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_TOOL_NAME_HELP_0 = "GUI_DATABASEAPP_PROPERTY_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_REPAIR_INTRO_0 = "GUI_DATABASEAPP_REPAIR_INTRO_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1900,6 +1927,27 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATING_CONFIG_FOR_SITE_2 = "RPT_CREATING_CONFIG_FOR_SITE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DATABASEAPP_DEL_PROPERTY_END_FAILED_0 = "RPT_DATABASEAPP_DEL_PROPERTY_END_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DATABASEAPP_DEL_PROPERTY_END_OK_0 = "RPT_DATABASEAPP_DEL_PROPERTY_END_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DATABASEAPP_DEL_PROPERTY_REMOVE_FROM_RESOURCE_1 = "RPT_DATABASEAPP_DEL_PROPERTY_REMOVE_FROM_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DATABASEAPP_DEL_PROPERTY_REMOVE_FROM_RESOURCE_START_0 = "RPT_DATABASEAPP_DEL_PROPERTY_REMOVE_FROM_RESOURCE_START_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DATABASEAPP_DEL_PROPERTY_START_0 = "RPT_DATABASEAPP_DEL_PROPERTY_START_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DATABASEAPP_FAILED_0 = "RPT_DATABASEAPP_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DATABASEAPP_OK_0 = "RPT_DATABASEAPP_OK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DB_PUBLOCKS_BEGIN_0 = "RPT_DB_PUBLOCKS_BEGIN_0";
