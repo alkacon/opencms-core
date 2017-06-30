@@ -757,7 +757,7 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
                             + "'.");
                 }
                 comp.setCaption(CmsVaadinUtils.getMessageText(field.m_captionKey));
-                comp.setWidth("330px");
+                comp.setWidth("100%");
                 if (comp instanceof AbstractComponent) {
                     ((AbstractComponent)comp).setDescription(CmsVaadinUtils.getMessageText(field.m_decriptionKey));
                 }

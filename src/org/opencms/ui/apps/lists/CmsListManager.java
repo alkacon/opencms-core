@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
@@ -369,8 +370,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
          * Constructor.<p>
          *
          * @param configBean the configuration data bean
+         * @param locale the search content locale
          */
-        public SearchConfigParser(ListConfigurationBean configBean) {
+        public SearchConfigParser(ListConfigurationBean configBean, Locale locale) {
             this(
                 configBean.getTypes(),
                 configBean.getFolders(),
@@ -378,7 +380,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 configBean.getParameterValue(CmsListConfigurationForm.N_FILTER_QUERY),
                 configBean.getParameterValue(CmsListConfigurationForm.N_SORT_ORDER),
                 Boolean.parseBoolean(configBean.getParameterValue(CmsListConfigurationForm.N_SHOW_EXPIRED)),
-                UI.getCurrent().getLocale());
+                locale);
         }
 
         /**
@@ -448,7 +450,10 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 @Override
                 public String getModifiedQuery(String queryString) {
 
-                    return "{!type=edismax qf=\"content_${cms.locale} Title_prop spell\"}" + queryString;
+                    return "{!type=edismax qf=\"content_"
+                        + getContentLocale().toString()
+                        + " Title_prop spell\"}"
+                        + queryString;
                 }
 
                 @Override
@@ -605,6 +610,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
 
         /**
+         * Sets the search content locale.<p>
+         *
+         * @param locale the locale
+         */
+        public void setContentLocale(Locale locale) {
+
+            m_contentLocale = locale;
+        }
+
+        /**
          * Sets the sort option.<p>
          *
          * @param sortOption the sort option
@@ -631,6 +646,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 result += ")";
             }
             return result;
+        }
+
+        /**
+         * Returns the content locale.<p>
+         *
+         * @return the content locale
+         */
+        Locale getContentLocale() {
+
+            return m_contentLocale;
         }
 
         /**
@@ -770,6 +795,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** The resetting flag. */
     private boolean m_resetting;
+
+    /** The locale select. */
+    private ComboBox m_localeSelect;
 
     /**
      * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
@@ -1031,12 +1059,10 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         });
         m_infoLayout.addComponent(m_tableFilter);
 
-        m_textSearch = new TextField();
-        m_textSearch.setIcon(FontOpenCms.SEARCH);
-        m_textSearch.setInputPrompt("Search");
-        m_textSearch.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-        m_textSearch.setWidth("200px");
-        m_textSearch.addValueChangeListener(new ValueChangeListener() {
+        m_localeSelect = new ComboBox();
+        m_localeSelect.setNullSelectionAllowed(false);
+        m_localeSelect.setWidth("100px");
+        m_localeSelect.addValueChangeListener(new ValueChangeListener() {
 
             /** Serial version id. */
             private static final long serialVersionUID = 1L;
@@ -1044,10 +1070,10 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             @Override
             public void valueChange(ValueChangeEvent event) {
 
-                search((String)event.getProperty().getValue());
+                changeContentLocale((Locale)event.getProperty().getValue());
             }
         });
-        m_infoLayout.addComponent(m_textSearch);
+        m_infoLayout.addComponent(m_localeSelect);
 
         m_resultSorter = new ComboBox();
         m_resultSorter.setNullSelectionAllowed(false);
@@ -1070,6 +1096,24 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             }
         });
         m_infoLayout.addComponent(m_resultSorter);
+
+        m_textSearch = new TextField();
+        m_textSearch.setIcon(FontOpenCms.SEARCH);
+        m_textSearch.setInputPrompt("Search");
+        m_textSearch.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        m_textSearch.setWidth("200px");
+        m_textSearch.addValueChangeListener(new ValueChangeListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+
+                search((String)event.getProperty().getValue());
+            }
+        });
+        m_infoLayout.addComponent(m_textSearch);
         m_resultLayout.setSecondComponent(m_resultTable);
         m_resultLayout.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
     }
@@ -1273,7 +1317,8 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             }
             m_currentConfig = configBean;
             if (updateResult) {
-                search(new SearchConfigParser(configBean), m_currentResource);
+                Locale contentLocale = getContentLocale(configBean);
+                search(new SearchConfigParser(configBean, contentLocale), m_currentResource);
             }
         }
 
@@ -1349,9 +1394,11 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
         m_currentResource = resource;
         m_currentConfigParser = configParser;
+        resetContentLocale(configParser.getContentLocale());
         m_resetting = true;
         m_resultSorter.setValue(m_currentConfig.getParameterValue(CmsListConfigurationForm.N_SORT_ORDER));
         m_resetting = false;
+
         search(null, null, null);
     }
 
@@ -1369,7 +1416,19 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             crumbs.put(
                 CmsListManagerConfiguration.APP_ID,
                 CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_TITLE_0));
-            crumbs.put("", "View list");
+            String title = "";
+            try {
+                title = A_CmsUI.getCmsObject().readPropertyObject(
+                    m_currentResource,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue();
+            } catch (Exception e) {
+                // ignore
+            }
+            if ((m_currentResource != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                title = m_currentResource.getName();
+            }
+            crumbs.put("", "View: " + title);
         }
         return crumbs;
     }
@@ -1388,7 +1447,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 CmsUUID id = new CmsUUID(A_CmsWorkplaceApp.getParamFromState(state, CmsEditor.RESOURCE_ID_PREFIX));
                 CmsResource res = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 m_currentConfig = parseListConfiguration(res);
-                search(new SearchConfigParser(m_currentConfig), res);
+                search(new SearchConfigParser(m_currentConfig, getContentLocale(m_currentConfig)), res);
                 showOverview = false;
 
             } catch (Exception e) {
@@ -1414,6 +1473,19 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     protected List<NavEntry> getSubNavEntries(String state) {
 
         return null;
+    }
+
+    /**
+     * Changes the search content locale, reissuing a search.<p>
+     *
+     * @param contentLocale the content locale to set
+     */
+    void changeContentLocale(Locale contentLocale) {
+
+        if (!m_resetting) {
+            m_currentConfigParser.setContentLocale(contentLocale);
+        }
+        search(null, null, null);
     }
 
     /**
@@ -1501,6 +1573,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         m_createNewButton.setVisible(enabled);
         m_createNewButton.setEnabled(isOffline);
         m_resultSorter.setVisible(!enabled);
+        m_localeSelect.setVisible(!enabled);
         m_isOverView = enabled;
         m_rootLayout.setMainContent(enabled ? m_overviewTable : m_resultLayout);
     }
@@ -1682,6 +1755,51 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
             LOG.error("Error executing search.", e);
         }
+    }
+
+    /**
+     * Returns the content locale configured for the first search root folder of the search configuration.<p>
+     *
+     * @param bean the search configuration data
+     *
+     * @return the locale
+     */
+    private Locale getContentLocale(ListConfigurationBean bean) {
+
+        if (bean.getFolders().isEmpty()) {
+            return CmsLocaleManager.getDefaultLocale();
+        } else {
+            return OpenCms.getLocaleManager().getDefaultLocale(
+                A_CmsUI.getCmsObject(),
+                m_currentConfig.getFolders().get(0));
+        }
+    }
+
+    /**
+     * Resets the locale select according to the current configuration data.<p>
+     *
+     * @param defaultLocale the default content locale
+     */
+    private void resetContentLocale(Locale defaultLocale) {
+
+        m_resetting = true;
+        m_localeSelect.removeAllItems();
+        if (m_currentConfig.getFolders().isEmpty()) {
+            m_localeSelect.addItem(defaultLocale);
+            m_localeSelect.setItemCaption(defaultLocale, defaultLocale.getDisplayLanguage(UI.getCurrent().getLocale()));
+        } else {
+            for (String folder : m_currentConfig.getFolders()) {
+                for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales(A_CmsUI.getCmsObject(), folder)) {
+                    if (!m_localeSelect.containsId(locale)) {
+                        m_localeSelect.addItem(locale);
+                        m_localeSelect.setItemCaption(locale, locale.getDisplayLanguage(UI.getCurrent().getLocale()));
+                    }
+                }
+            }
+        }
+        m_localeSelect.setValue(defaultLocale);
+        m_localeSelect.setEnabled(m_localeSelect.getItemIds().size() > 1);
+        m_resetting = false;
     }
 
     /**
