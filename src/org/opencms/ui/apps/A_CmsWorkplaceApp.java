@@ -262,7 +262,7 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
     protected abstract LinkedHashMap<String, String> getBreadCrumbForState(String state);
 
     /**
-     * Returns the app component for the given state
+     * Returns the app component for the given state.<p>
      *
      * @param state the state to render
      *

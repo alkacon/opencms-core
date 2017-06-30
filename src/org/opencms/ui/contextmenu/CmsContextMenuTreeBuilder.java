@@ -34,6 +34,7 @@ import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -102,7 +103,7 @@ public class CmsContextMenuTreeBuilder {
      */
     public CmsTreeNode<I_CmsContextMenuItem> buildTree(List<I_CmsContextMenuItem> items) {
 
-        items = Lists.newArrayList(items);
+        items = new ArrayList<I_CmsContextMenuItem>(items);
 
         // First sort by priority and then use a map with the id as the key to store the items,
         // eliminating items with the same id but a lower priority than another item

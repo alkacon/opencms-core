@@ -368,10 +368,25 @@ public class CmsWorkplaceAppManager {
      */
     public I_CmsDefaultAction getDefaultAction(I_CmsDialogContext context) {
 
+        return getDefaultAction(context, getMenuItemProvider());
+    }
+
+    /**
+     * Returns the default action for the given context if available.<p>
+     *
+     * @param context the dialog context
+     * @param menuItemProvider the menu item provider
+     *
+     * @return the default action
+     */
+    public I_CmsDefaultAction getDefaultAction(
+        I_CmsDialogContext context,
+        I_CmsContextMenuItemProvider menuItemProvider) {
+
         I_CmsDefaultAction result = null;
         int resultRank = -1;
         if (context.getResources().size() == 1) {
-            for (I_CmsContextMenuItem menuItem : getMenuItemProvider().getMenuItems()) {
+            for (I_CmsContextMenuItem menuItem : menuItemProvider.getMenuItems()) {
                 if ((menuItem instanceof CmsContextMenuActionItem)
                     && (((CmsContextMenuActionItem)menuItem).getWorkplaceAction() instanceof I_CmsDefaultAction)) {
                     I_CmsDefaultAction action = (I_CmsDefaultAction)((CmsContextMenuActionItem)menuItem).getWorkplaceAction();

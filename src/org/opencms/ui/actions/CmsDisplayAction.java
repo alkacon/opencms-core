@@ -35,6 +35,11 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.apps.lists.CmsListManager;
+import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -65,21 +70,35 @@ public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefau
 
         if (context.getResources().size() == 1) {
             CmsResource resource = context.getResources().get(0);
-            boolean isOnline = context.getCms().getRequestContext().getCurrentProject().isOnlineProject();
-            String link;
-            if (isOnline
-                && !(CmsStringUtil.isEmptyOrWhitespaceOnly(context.getCms().getRequestContext().getSiteRoot())
-                    || OpenCms.getSiteManager().isSharedFolder(context.getCms().getRequestContext().getSiteRoot()))) {
-                // use the online link only in case the current site is not the root site or the shared folder
-                link = OpenCms.getLinkManager().getOnlineLink(context.getCms(), context.getCms().getSitePath(resource));
+            if (OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals(
+                CmsListManager.RES_TYPE_LIST_CONFIG)) {
+                CmsAppWorkplaceUi.get().showApp(
+                    OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsListManagerConfiguration.APP_ID),
+                    A_CmsWorkplaceApp.addParamToState(
+                        "",
+                        CmsEditor.RESOURCE_ID_PREFIX,
+                        resource.getStructureId().toString()));
             } else {
-                link = OpenCms.getLinkManager().substituteLink(context.getCms(), resource);
-            }
-            if (isOnline
-                || !(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContent)) {
-                A_CmsUI.get().openPageOrWarn(link, ONLINE_WINDOW_NAME);
-            } else {
-                A_CmsUI.get().getPage().setLocation(link);
+
+                boolean isOnline = context.getCms().getRequestContext().getCurrentProject().isOnlineProject();
+                String link;
+                if (isOnline
+                    && !(CmsStringUtil.isEmptyOrWhitespaceOnly(context.getCms().getRequestContext().getSiteRoot())
+                        || OpenCms.getSiteManager().isSharedFolder(
+                            context.getCms().getRequestContext().getSiteRoot()))) {
+                    // use the online link only in case the current site is not the root site or the shared folder
+                    link = OpenCms.getLinkManager().getOnlineLink(
+                        context.getCms(),
+                        context.getCms().getSitePath(resource));
+                } else {
+                    link = OpenCms.getLinkManager().substituteLink(context.getCms(), resource);
+                }
+                if (isOnline
+                    || !(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContent)) {
+                    A_CmsUI.get().openPageOrWarn(link, ONLINE_WINDOW_NAME);
+                } else {
+                    A_CmsUI.get().getPage().setLocation(link);
+                }
             }
         }
     }

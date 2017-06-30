@@ -200,6 +200,22 @@ public final class CmsLockUtil {
     }
 
     /**
+     * Tries to unlock the given resource.<p>
+     * Will ignore any failure.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource to unlock
+     */
+    public static void tryUnlock(CmsObject cms, CmsResource resource) {
+
+        try {
+            cms.unlockResource(resource);
+        } catch (CmsException e) {
+            LOG.debug("Unable to unlock " + resource.getRootPath(), e);
+        }
+    }
+
+    /**
      * Utility method for locking and unlocking a set of resources conveniently with the try-with syntax
      * from Java 1.7.<p>
      *

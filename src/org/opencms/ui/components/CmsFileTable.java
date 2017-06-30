@@ -904,7 +904,9 @@ public class CmsFileTable extends CmsResourceTable {
                                 CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
                                 m_currentResources = Collections.singletonList(res);
                                 I_CmsDialogContext context = m_contextProvider.getDialogContext();
-                                I_CmsDefaultAction action = OpenCms.getWorkplaceAppManager().getDefaultAction(context);
+                                I_CmsDefaultAction action = OpenCms.getWorkplaceAppManager().getDefaultAction(
+                                    context,
+                                    m_menuBuilder);
                                 if (action != null) {
                                     action.executeAction(context);
                                     return;

@@ -32,7 +32,7 @@ import org.opencms.ui.I_CmsDialogContext;
 /**
  * Builds an explorer context menu based on the set of selected resources' IDs.<p>
  */
-public interface I_CmsContextMenuBuilder {
+public interface I_CmsContextMenuBuilder extends I_CmsContextMenuItemProvider {
 
     /**
      * Fills the given context menu with options appropriate for the selected resources.<p>

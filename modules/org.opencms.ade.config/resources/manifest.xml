@@ -290,7 +290,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/bundledescriptor.xsd
 				</param>
 			</type>			
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="listconfig" id="321">
 				<properties>
 					<property>

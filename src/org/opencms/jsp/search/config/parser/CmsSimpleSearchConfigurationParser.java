@@ -47,7 +47,6 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -90,9 +89,6 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         DEFAULT_FIELD_FACETS = Collections.unmodifiableMap(fieldFacets);
 
     }
-
-    /** The list configuration content locale. */
-    private static final Locale CONFIG_LOCALE = CmsLocaleManager.getLocale("en");
 
     /** The current cms context. */
     private CmsObject m_cms;
@@ -237,7 +233,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         boolean first = true;
         List<I_CmsXmlContentValue> balckListValues = m_content.getValues(
             CmsListConfigurationForm.N_BLACKLIST,
-            CONFIG_LOCALE);
+            CmsLocaleManager.MASTER_LOCALE);
         if (!balckListValues.isEmpty()) {
             for (I_CmsXmlContentValue value : balckListValues) {
                 if (!first) {
@@ -261,7 +257,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     String getCategoryFilter() {
 
         String categories = "";
-        I_CmsXmlContentValue categoriesVal = m_content.getValue(CmsListConfigurationForm.N_CATEGORY, CONFIG_LOCALE);
+        I_CmsXmlContentValue categoriesVal = m_content.getValue(
+            CmsListConfigurationForm.N_CATEGORY,
+            CmsLocaleManager.MASTER_LOCALE);
         if (categoriesVal != null) {
             categories = categoriesVal.getStringValue(m_cms);
         }
@@ -285,7 +283,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     String getFilterQuery() {
 
         String result = "";
-        I_CmsXmlContentValue filterVal = m_content.getValue(CmsListConfigurationForm.N_FILTER_QUERY, CONFIG_LOCALE);
+        I_CmsXmlContentValue filterVal = m_content.getValue(
+            CmsListConfigurationForm.N_FILTER_QUERY,
+            CmsLocaleManager.MASTER_LOCALE);
         if (filterVal != null) {
             result = filterVal.getStringValue(m_cms);
         }
@@ -306,7 +306,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         boolean first = true;
         List<I_CmsXmlContentValue> folderValues = m_content.getValues(
             CmsListConfigurationForm.N_SEARCH_FOLDER,
-            CONFIG_LOCALE);
+            CmsLocaleManager.MASTER_LOCALE);
         if (!folderValues.isEmpty()) {
             for (I_CmsXmlContentValue value : folderValues) {
                 if (!first) {
@@ -335,7 +335,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         boolean first = true;
         List<I_CmsXmlContentValue> typeValues = m_content.getValues(
             CmsListConfigurationForm.N_DISPLAY_TYPE,
-            CONFIG_LOCALE);
+            CmsLocaleManager.MASTER_LOCALE);
         if (!typeValues.isEmpty()) {
             for (I_CmsXmlContentValue value : typeValues) {
                 if (!first) {

@@ -42,7 +42,7 @@ import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.CmsEditorConfiguration;
-import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
+import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -82,15 +82,9 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
             false,
             UI.getCurrent().getPage().getLocation().toString());
 
-        if (OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals("listconfig")) {
-            CmsAppWorkplaceUi.get().showApp(
-                OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsListManagerConfiguration.APP_ID),
-                editState);
-        } else {
-            CmsAppWorkplaceUi.get().showApp(
-                OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsEditorConfiguration.APP_ID),
-                editState);
-        }
+        CmsAppWorkplaceUi.get().showApp(
+            OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsEditorConfiguration.APP_ID),
+            editState);
     }
 
     /**
@@ -103,6 +97,8 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction implements I_CmsDe
         boolean editAsDefault = (CmsResourceTypeXmlContent.isXmlContent(res)
             || (CmsResourceTypePlain.getStaticTypeId() == res.getTypeId())
             || CmsResourceTypeXmlPage.isXmlPage(res))
+            && !OpenCms.getResourceManager().getResourceType(res).getTypeName().equals(
+                CmsListManager.RES_TYPE_LIST_CONFIG)
             && (!(res.getName().endsWith(".html") || res.getName().endsWith(".htm"))
                 || CmsStringUtil.isEmptyOrWhitespaceOnly(context.getCms().getRequestContext().getSiteRoot()));
 

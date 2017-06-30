@@ -100,13 +100,13 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
      * @return The site-path of the newly created resource.
      */
     public static String createResource(
-        final CmsObject cmsObject,
-        final String newLink,
-        final Locale locale,
-        final String sitePath,
-        final String modelFileName,
-        final String mode,
-        final String postCreateHandler) {
+        CmsObject cmsObject,
+        String newLink,
+        Locale locale,
+        String sitePath,
+        String modelFileName,
+        String mode,
+        String postCreateHandler) {
 
         String[] newLinkParts = newLink.split("\\|");
         String rootPath = newLinkParts[1];
@@ -116,7 +116,6 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
             try {
                 modelFile = cmsObject.readFile(sitePath);
             } catch (CmsException e) {
-                // TODO: localize.
                 LOG.warn(
                     "The resource at path" + sitePath + "could not be read. Thus it can not be used as model file.",
                     e);
@@ -130,10 +129,32 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
             I_CmsCollectorPostCreateHandler handler = A_CmsResourceCollector.getPostCreateHandler(postCreateHandler);
             handler.onCreate(cmsObject, cmsObject.readFile(newElement), modelFile != null);
         } catch (CmsException e) {
-            // TODO: Localize and improve error message.
             LOG.error("Could not create resource.", e);
         }
         return newElement == null ? null : cmsObject.getSitePath(newElement);
+    }
+
+    /**
+     * Creates the String specifying where which type of resource has to be created.<p>
+     *
+     * @param cms the CMS context
+     * @param resType the resource type to create
+     * @param creationSitemap the creation sitemap parameter
+     *
+     * @return The String identifying which type of resource has to be created where.<p>
+     *
+     * @see #createResource(CmsObject, String, Locale, String, String, String, String)
+     */
+    public static String getNewLink(CmsObject cms, I_CmsResourceType resType, String creationSitemap) {
+
+        String contextPath = getContextRootPath(cms, creationSitemap);
+        StringBuffer newLink = new StringBuffer(NEW_LINK_IDENTIFIER);
+        newLink.append('|');
+        newLink.append(contextPath);
+        newLink.append('|');
+        newLink.append(resType.getTypeName());
+
+        return newLink.toString();
     }
 
     /**
@@ -248,29 +269,6 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
         }
 
         return path;
-    }
-
-    /**
-     * Creates the String specifying where which type of resource has to be created.<p>
-     *
-     * @param cms the CMS context
-     * @param resType the resource type to create
-     * @param creationSitemap the creation sitemap parameter
-     *
-     * @return The String identifying which type of resource has to be created where.<p>
-     *
-     * @see #createResource(CmsObject, String, Locale, String, String, String, String)
-     */
-    private static String getNewLink(CmsObject cms, I_CmsResourceType resType, String creationSitemap) {
-
-        String contextPath = getContextRootPath(cms, creationSitemap);
-        StringBuffer newLink = new StringBuffer(NEW_LINK_IDENTIFIER);
-        newLink.append('|');
-        newLink.append(contextPath);
-        newLink.append('|');
-        newLink.append(resType.getTypeName());
-
-        return newLink.toString();
     }
 
     /**

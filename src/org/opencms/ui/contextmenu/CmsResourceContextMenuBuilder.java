@@ -47,15 +47,24 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsResourceContextMenuBuilder implements I_CmsContextMenuBuilder {
 
+    /** The menu item providers. */
+    private List<I_CmsContextMenuItemProvider> m_itemProviders;
+
     /** Tree builder used to build the tree of menu items. */
     private CmsContextMenuTreeBuilder m_treeBuilder;
 
-    private List<I_CmsContextMenuItemProvider> m_itemProviders;
-
+    /**
+     * Constructor.<p>
+     */
     public CmsResourceContextMenuBuilder() {
         m_itemProviders = new ArrayList<I_CmsContextMenuItemProvider>();
     }
 
+    /**
+     * Adds a menu item provider.<p>
+     *
+     * @param provider the menu item provider to add
+     */
     public void addMenuItemProvider(I_CmsContextMenuItemProvider provider) {
 
         m_itemProviders.add(provider);
@@ -68,10 +77,26 @@ public class CmsResourceContextMenuBuilder implements I_CmsContextMenuBuilder {
 
         CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(context);
         m_treeBuilder = treeBuilder;
-        CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(getItems());
+        CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(getMenuItems());
         I_CmsContextMenuItem defaultActionItem = treeBuilder.getDefaultActionItem();
         for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
             createItem(menu, node, context, defaultActionItem);
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider#getMenuItems()
+     */
+    public List<I_CmsContextMenuItem> getMenuItems() {
+
+        if (m_itemProviders.isEmpty()) {
+            return OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems();
+        } else {
+            List<I_CmsContextMenuItem> items = new ArrayList<I_CmsContextMenuItem>();
+            for (I_CmsContextMenuItemProvider provider : m_itemProviders) {
+                items.addAll(provider.getMenuItems());
+            }
+            return items;
         }
     }
 
@@ -135,18 +160,5 @@ public class CmsResourceContextMenuBuilder implements I_CmsContextMenuBuilder {
             guiMenuItem.addStyleName(ValoTheme.LABEL_BOLD);
         }
         return guiMenuItem;
-    }
-
-    private List<I_CmsContextMenuItem> getItems() {
-
-        if (m_itemProviders.isEmpty()) {
-            return OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems();
-        } else {
-            List<I_CmsContextMenuItem> items = new ArrayList<I_CmsContextMenuItem>();
-            for (I_CmsContextMenuItemProvider provider : m_itemProviders) {
-                items.addAll(provider.getMenuItems());
-            }
-            return items;
-        }
     }
 }
