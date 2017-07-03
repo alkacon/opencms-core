@@ -99,6 +99,7 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
 
         /** The caption message key. */
         String m_captionKey;
+
         /** The description message key. */
         String m_decriptionKey;
 
@@ -108,6 +109,9 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
         /** The field key. */
         String m_key;
 
+        /** The advanced tab flag. */
+        boolean m_useAdvancedTab;
+
         /**
          * Constructor.<p>
          *
@@ -115,12 +119,19 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
          * @param captionKey the caption message key
          * @param descriptionKey the description message key
          * @param fieldType the field component class
+         * @param useAdvancedTab <code>true</code> to show on advanced fields tab
          */
-        public ParameterField(String key, String captionKey, String descriptionKey, Class<?> fieldType) {
+        public ParameterField(
+            String key,
+            String captionKey,
+            String descriptionKey,
+            Class<?> fieldType,
+            boolean useAdvancedTab) {
             m_key = key;
             m_captionKey = captionKey;
             m_decriptionKey = descriptionKey;
             m_fieldType = fieldType;
+            m_useAdvancedTab = useAdvancedTab;
         }
     }
 
@@ -211,57 +222,68 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
             N_CATEGORY,
             Messages.GUI_LISTMANAGER_PARAM_CATEGORY_0,
             Messages.GUI_LISTMANAGER_PARAM_CATEGORY_HELP_0,
-            CmsCategorySelectField.class),
+            CmsCategorySelectField.class,
+            false),
         new ParameterField(
             N_FILTER_QUERY,
             Messages.GUI_LISTMANAGER_PARAM_FILTER_QUERY_0,
             Messages.GUI_LISTMANAGER_PARAM_FILTER_QUERY_HELP_0,
-            TextField.class),
+            TextField.class,
+            true),
         new ParameterField(
             N_SORT_ORDER,
             Messages.GUI_LISTMANAGER_PARAM_SORT_ORDER_0,
             Messages.GUI_LISTMANAGER_PARAM_SORT_ORDER_HELP_0,
-            ComboBox.class),
+            ComboBox.class,
+            true),
         new ParameterField(
             N_SHOW_DATE,
             Messages.GUI_LISTMANAGER_PARAM_SHOW_DATE_0,
             Messages.GUI_LISTMANAGER_PARAM_SHOW_DATE_HELP_0,
-            CheckBox.class),
+            CheckBox.class,
+            true),
         new ParameterField(
             N_SHOW_EXPIRED,
             Messages.GUI_LISTMANAGER_PARAM_SHOW_EXPIRED_0,
             Messages.GUI_LISTMANAGER_PARAM_SHOW_EXPIRED_HELP_0,
-            CheckBox.class),
+            CheckBox.class,
+            true),
         new ParameterField(
             N_DISPLAY_OPTIONS,
             Messages.GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0,
             Messages.GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0,
-            TextField.class),
+            TextField.class,
+            true),
         new ParameterField(
             N_CATEGORY_FILTERS,
             Messages.GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_0,
             Messages.GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_HELP_0,
-            TextField.class),
+            TextField.class,
+            true),
         new ParameterField(
             N_CATEGORY_FULL_PATH,
             Messages.GUI_LISTMANAGER_PARAM_FULL_CATEGORY_PATHS_0,
             Messages.GUI_LISTMANAGER_PARAM_FULL_CATEGORY_PATHS_HELP_0,
-            CheckBox.class),
+            CheckBox.class,
+            true),
         new ParameterField(
             N_CATEGORY_ONLY_LEAFS,
             Messages.GUI_LISTMANAGER_PARAM_LEAFS_ONLY_0,
             Messages.GUI_LISTMANAGER_PARAM_LEAFS_ONLY_HELP_0,
-            CheckBox.class),
+            CheckBox.class,
+            true),
         new ParameterField(
             N_PREOPEN_CATEGORIES,
             Messages.GUI_LISTMANAGER_PARAM_PREOPEN_CATEGORIES_0,
             Messages.GUI_LISTMANAGER_PARAM_PREOPEN_CATEGORIES_HELP_0,
-            CheckBox.class),
+            CheckBox.class,
+            true),
         new ParameterField(
             N_PREOPEN_ARCHIVE,
             Messages.GUI_LISTMANAGER_PARAM_PREOPEN_ARCHIVE_0,
             Messages.GUI_LISTMANAGER_PARAM_PREOPEN_ARCHIVE_HELP_0,
-            CheckBox.class)};
+            CheckBox.class,
+            true)};
 
     /** Container item property key. */
     private static final String RANK_PROP = "rank";
@@ -279,12 +301,12 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
             "newsorder_%s_i asc",
             "newsorder_%s_i desc"},
         {
-            "Date ascending",
-            "Date descending",
-            "Title ascending",
-            "Title descending",
-            "Order ascending",
-            "Order descending"}};
+            Messages.GUI_LISTMANAGER_SORT_DATE_ASC_0,
+            Messages.GUI_LISTMANAGER_SORT_DATE_DESC_0,
+            Messages.GUI_LISTMANAGER_SORT_TITLE_ASC_0,
+            Messages.GUI_LISTMANAGER_SORT_TITLE_DESC_0,
+            Messages.GUI_LISTMANAGER_SORT_ORDER_ASC_0,
+            Messages.GUI_LISTMANAGER_SORT_ORDER_DESC_0}};
 
     /** Container item property key. */
     private static final String TITLE_PROP = "title";
@@ -307,7 +329,7 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
     /** The currently edited configuration resource. */
     private CmsResource m_currentResource;
 
-    /** The configuration form felds. */
+    /** The configuration form fields. */
     private Map<String, Field<?>> m_fields;
 
     /** The resources form layout. */
@@ -315,6 +337,9 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
 
     /** The form layout. */
     private FormLayout m_formLayout;
+
+    /** The form layout for the advanced tab. */
+    private FormLayout m_formLayoutAdvanced;
 
     /** The current lock action. */
     private CmsLockActionRecord m_lockAction;
@@ -343,6 +368,7 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
         m_blacklist = new ArrayList<CmsUUID>();
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
         m_fields = new HashMap<String, Field<?>>();
         m_fields.put(N_TITLE, m_title);
         initParamFields();
@@ -416,11 +442,12 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         m_currentResource = res;
+        this.displayResourceInfo(Collections.singletonList(m_currentResource));
         try {
             m_lockAction = CmsLockUtil.ensureLock(cms, m_currentResource);
             CmsFile configFile = cms.readFile(m_currentResource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-            Locale locale = CmsLocaleManager.getLocale("en");
+            Locale locale = CmsLocaleManager.MASTER_LOCALE;
 
             if (!content.hasLocale(locale)) {
                 locale = content.getLocales().get(0);
@@ -610,7 +637,7 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
         sortOrder.setNullSelectionAllowed(false);
         for (int i = 0; i < SORT_OPTIONS[0].length; i++) {
             sortOrder.addItem(SORT_OPTIONS[0][i]);
-            sortOrder.setItemCaption(SORT_OPTIONS[0][i], SORT_OPTIONS[1][i]);
+            sortOrder.setItemCaption(SORT_OPTIONS[0][i], CmsVaadinUtils.getMessageText(SORT_OPTIONS[1][i]));
         }
         sortOrder.setValue(SORT_OPTIONS[0][0]);
     }
@@ -757,11 +784,15 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
                             + "'.");
                 }
                 comp.setCaption(CmsVaadinUtils.getMessageText(field.m_captionKey));
-                comp.setWidth("100%");
+                comp.setWidth("715px");
                 if (comp instanceof AbstractComponent) {
                     ((AbstractComponent)comp).setDescription(CmsVaadinUtils.getMessageText(field.m_decriptionKey));
                 }
-                m_formLayout.addComponent(comp);
+                if (field.m_useAdvancedTab) {
+                    m_formLayoutAdvanced.addComponent(comp);
+                } else {
+                    m_formLayout.addComponent(comp);
+                }
                 m_fields.put(field.m_key, (Field<?>)comp);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);

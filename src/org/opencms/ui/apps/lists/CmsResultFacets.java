@@ -36,6 +36,8 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 
@@ -318,7 +320,7 @@ public class CmsResultFacets extends VerticalLayout {
                 });
                 catLayout.addComponent(cat);
             }
-            Panel catPanel = new Panel("Categories");
+            Panel catPanel = new Panel(CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_FACET_CATEGORIES_0));
             catPanel.setContent(catLayout);
             return catPanel;
         } else {
@@ -386,7 +388,7 @@ public class CmsResultFacets extends VerticalLayout {
                 }
                 dateLayout.addComponent(date, targetColumn, targetRow);
             }
-            Panel datePanel = new Panel("Date");
+            Panel datePanel = new Panel(CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_FACET_DATE_0));
             datePanel.setContent(dateLayout);
             return datePanel;
         } else {
@@ -428,7 +430,7 @@ public class CmsResultFacets extends VerticalLayout {
                 });
                 folderLayout.addComponent(folder);
             }
-            Panel folderPanel = new Panel("Folders");
+            Panel folderPanel = new Panel(CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_FACET_FOLDERS_0));
             folderPanel.setContent(folderLayout);
             return folderPanel;
         } else {

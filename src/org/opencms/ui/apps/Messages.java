@@ -819,7 +819,22 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_COLUMN_BLACKLISTED_0 = "GUI_LISTMANAGER_COLUMN_BLACKLISTED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_CREATE_NEW_0 = "GUI_LISTMANAGER_CREATE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_DESCRIPTION_0 = "GUI_LISTMANAGER_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_EDIT_CONFIG_0 = "GUI_LISTMANAGER_EDIT_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_FACET_CATEGORIES_0 = "GUI_LISTMANAGER_FACET_CATEGORIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_FACET_DATE_0 = "GUI_LISTMANAGER_FACET_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_FACET_FOLDERS_0 = "GUI_LISTMANAGER_FACET_FOLDERS_0";
 
     /** Name of the used resource bundle. */
     public static final String GUI_LISTMANAGER_FOLDER_0 = "GUI_LISTMANAGER_FOLDER_0";
@@ -924,16 +939,31 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_SAVE_0 = "GUI_LISTMANAGER_SAVE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LISTMANAGER_SAVE_AS_NEW_0 = "GUI_LISTMANAGER_SAVE_AS_NEW_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_SEARCH_0 = "GUI_LISTMANAGER_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LISTMANAGER_TAB_CONFIGURATION_0 = "GUI_LISTMANAGER_TAB_CONFIGURATION_0";
+    public static final String GUI_LISTMANAGER_SORT_DATE_ASC_0 = "GUI_LISTMANAGER_SORT_DATE_ASC_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LISTMANAGER_TAB_FACETS_0 = "GUI_LISTMANAGER_TAB_FACETS_0";
+    public static final String GUI_LISTMANAGER_SORT_DATE_DESC_0 = "GUI_LISTMANAGER_SORT_DATE_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SORT_ORDER_ASC_0 = "GUI_LISTMANAGER_SORT_ORDER_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SORT_ORDER_DESC_0 = "GUI_LISTMANAGER_SORT_ORDER_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SORT_TITLE_ASC_0 = "GUI_LISTMANAGER_SORT_TITLE_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SORT_TITLE_DESC_0 = "GUI_LISTMANAGER_SORT_TITLE_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_TAB_BASIC_0 = "GUI_LISTMANAGER_TAB_BASIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_TAB_ADVANCED_0 = "GUI_LISTMANAGER_TAB_ADVANCED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_TITLE_0 = "GUI_LISTMANAGER_TITLE_0";
@@ -943,6 +973,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
     public static final String GUI_LISTMANAGER_TYPE_HELP_0 = "GUI_LISTMANAGER_TYPE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_VIEW_1 = "GUI_LISTMANAGER_VIEW_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_ADMIN_TOOL_NAME_0 = "GUI_LOGFILE_ADMIN_TOOL_NAME_0";

@@ -102,6 +102,7 @@ import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -420,7 +421,11 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 @Override
                 public String getExtraSolrParams() {
 
-                    return getFolderFilter() + getResourceTypeFilter() + getCategoryFilter() + getFilterQuery();
+                    return getFolderFilter()
+                        + getResourceTypeFilter()
+                        + getCategoryFilter()
+                        + getFilterQuery()
+                        + getLocaleFilter();
                 }
 
                 @Override
@@ -700,6 +705,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
 
         /**
+         * Returns the locale filter.<p>
+         *
+         * @return the locale filter
+         */
+        String getLocaleFilter() {
+
+            return "&fq=con_locales:" + getContentLocale().toString();
+        }
+
+        /**
          * Returns the resource type filter query part.<p>
          *
          * @return the resource type filter query part
@@ -809,6 +824,14 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             resourceItem.getItemProperty(CmsListManager.BLACKLISTED_PROPERTY).setValue(
                 Boolean.valueOf(m_currentConfig.getBlacklist().contains(resource.getStructureId())));
         }
+        if ((m_currentConfig != null)
+            && (resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TITLE) != null)) {
+            CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+            String title = resUtil.getGalleryTitle((Locale)m_localeSelect.getValue());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TITLE).setValue(title);
+            }
+        }
     }
 
     /**
@@ -875,7 +898,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         });
         uiContext.addToolbarButton(m_publishButton);
 
-        m_createNewButton = CmsToolBar.createButton(FontOpenCms.WAND, "Create new");
+        m_createNewButton = CmsToolBar.createButton(
+            FontOpenCms.WAND,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_CREATE_NEW_0));
         m_createNewButton.addClickListener(new ClickListener() {
 
             /** Serial version id. */
@@ -889,7 +914,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         });
         uiContext.addToolbarButton(m_createNewButton);
 
-        m_editCurrentButton = CmsToolBar.createButton(FontOpenCms.SETTINGS, "EDit configuration");
+        m_editCurrentButton = CmsToolBar.createButton(
+            FontOpenCms.SETTINGS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_EDIT_CONFIG_0));
         m_editCurrentButton.addClickListener(new ClickListener() {
 
             /** Serial version id. */
@@ -1082,7 +1109,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             m_resultSorter.addItem(CmsListConfigurationForm.SORT_OPTIONS[0][i]);
             m_resultSorter.setItemCaption(
                 CmsListConfigurationForm.SORT_OPTIONS[0][i],
-                CmsListConfigurationForm.SORT_OPTIONS[1][i]);
+                CmsVaadinUtils.getMessageText(CmsListConfigurationForm.SORT_OPTIONS[1][i]));
         }
         m_resultSorter.addValueChangeListener(new ValueChangeListener() {
 
@@ -1099,7 +1126,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
         m_textSearch = new TextField();
         m_textSearch.setIcon(FontOpenCms.SEARCH);
-        m_textSearch.setInputPrompt("Search");
+        m_textSearch.setInputPrompt(CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_SEARCH_0));
         m_textSearch.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         m_textSearch.setWidth("200px");
         m_textSearch.addValueChangeListener(new ValueChangeListener() {
@@ -1141,7 +1168,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         try {
             CmsFile configFile = cms.readFile(res);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-            Locale locale = CmsLocaleManager.getLocale("en");
+            Locale locale = CmsLocaleManager.MASTER_LOCALE;
 
             if (!content.hasLocale(locale)) {
                 locale = content.getLocales().get(0);
@@ -1428,7 +1455,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             if ((m_currentResource != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = m_currentResource.getName();
             }
-            crumbs.put("", "View: " + title);
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_VIEW_1, title));
         }
         return crumbs;
     }
@@ -1551,7 +1578,10 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
         m_currentResource = resource;
         m_dialogWindow.setContent(formDialog);
-        m_dialogWindow.setCaption("Edit configuration");
+        m_dialogWindow.setCaption(
+            resource != null
+            ? CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_EDIT_CONFIG_0)
+            : CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_CREATE_NEW_0));
         CmsAppWorkplaceUi.get().addWindow(m_dialogWindow);
         m_dialogWindow.center();
     }
