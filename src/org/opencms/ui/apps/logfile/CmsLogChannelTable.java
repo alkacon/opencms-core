@@ -189,7 +189,7 @@ public class CmsLogChannelTable extends Table {
         Fatal(Level.FATAL, OpenCmsTheme.TABLE_COLUMN_BOX_BLUE_LIGHT, null),
 
         /**Error level. */
-        Error(Level.ERROR, OpenCmsTheme.TABLE_COLUMN_BOX_CYAN, "default"),
+        Error(Level.ERROR, OpenCmsTheme.TABLE_COLUMN_BOX_CYAN, "Default"),
 
         /**Warning level. */
         Warn(Level.WARN, OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE, null),
@@ -268,7 +268,8 @@ public class CmsLogChannelTable extends Table {
         protected String getLevelString() {
 
             if (m_caption == null) {
-                return m_level.toString();
+                String out = m_level.toString();
+                return out.substring(0, 1).toUpperCase() + out.substring(1).toLowerCase();
             }
             return m_caption;
         }
@@ -281,9 +282,11 @@ public class CmsLogChannelTable extends Table {
         protected String getLevelStringComplet() {
 
             if (m_caption == null) {
-                return m_level.toString();
+                return getLevelString();
             }
-            return m_caption + " (" + m_level.toString() + ")";
+            String level = m_level.toString();
+            level = level.substring(0, 1).toUpperCase() + level.substring(1).toLowerCase();
+            return m_caption + " (" + level + ")";
         }
 
     }
