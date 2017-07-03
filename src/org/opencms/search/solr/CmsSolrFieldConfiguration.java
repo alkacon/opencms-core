@@ -155,48 +155,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_VERSION), "" + resource.getVersion());
 
-        // Add title
-        //        System.out.println("-----------------------------------");
-        //        System.out.println(resource.getName() + ":   " + extractionResult.getContentItems().keySet());
-        //        System.out.println(resource.getName() + ":   " + extractionResult.getContentItems().get("title_en_s"));
-        //        System.out.println("-----------------------------------");
-        //        if (resource.isInternal()
-        //            || resource.isFolder()
-        //            || resource.isTemporaryFile()
-        //            || (resource.getDateExpired() <= System.currentTimeMillis())) {
-        //            // don't index internal resources, folders or temporary files or resources with expire date in the past
-        //            return true;
-        //        }
-        //
-        //        try {
-        //            // do property lookup with folder search
-        //            String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
-        //            excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
-        //            if (!excludeFromIndex && (propValue != null)) {
-        //                // property value was neither "true" nor null, must check for "all"
-        //                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim());
-        //            }
-        //        } catch (CmsException e) {
-        //            if (LOG.isDebugEnabled()) {
-        //                LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, resource.getRootPath()));
-        //            }
-        //        }
-        //        if (!excludeFromIndex && !USE_ALL_LOCALE.equalsIgnoreCase(getLocale().getLanguage())) {
-        //            // check if any resource default locale has a match with the index locale, if not skip resource
-        //            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
-        //            Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
-        //                Collections.singletonList(getLocale()),
-        //                locales);
-        //            excludeFromIndex = (match == null);
-        //        }
-
-        //        String propValue = CmsProperty.get(
-        //            CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
-        //            propertiesSearched).getValue();
-        //        if (propValue != null) {
-        //            propValue = propValue.trim().toLowerCase();
-        //            document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_EXCLUDE), propValue);
-        //        }
         try {
             if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
                 I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
@@ -226,6 +184,16 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_CHANNEL), "content");
         }
 
+        //        // add information about serial dates
+        //        String serialDateString = document.getFieldValueAsString(
+        //            CmsPropertyDefinition.PROPERTY_SERIAL_DATE + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT);
+        //        if (null != serialDateString) {
+        //            I_CmsSerialDateBean serialDateBean = CmsSerialDateBeanFactory.createSerialDateBean(serialDateString);
+        //            for (Long eventDate : serialDateBean.getDates()) {
+        //                document.addDateField(CmsSearchField.FIELD_SERIAL_DATE_DATES, eventDate.longValue(), false);
+        //            }
+        //
+        //        }
         return document;
     }
 

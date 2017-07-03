@@ -1,0 +1,20 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox"
+	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate">
+	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets" />
+	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
+	<g:HTMLPanel styleName="">
+		<g:HorizontalPanel>
+			<cmsd:CmsDateBox ui:field="m_newDate" styleName="{widgets.widgetCss.calendarStyle}" />
+				<cms:CmsPushButton ui:field="m_addButton" />
+				<cms:CmsPushButton ui:field="m_removeSelectedButton" />
+		</g:HorizontalPanel>
+		<cms:CmsScrollPanel height="6em">
+			<cmsw:CmsCheckableDatePanel ui:field="m_dateList"></cmsw:CmsCheckableDatePanel>
+		</cms:CmsScrollPanel>
+	</g:HTMLPanel>
+</ui:UiBinder>

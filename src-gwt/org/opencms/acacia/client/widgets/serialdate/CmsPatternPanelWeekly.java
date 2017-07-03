@@ -27,19 +27,19 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.TextBox;
 /**
  * The weekly pattern panel.<p>
  * */
-public class CmsPatternPanelWeekly extends Composite implements HasValueChangeHandlers<String> {
+public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView {
 
     /** The UI binder interface. */
     interface I_CmsPatternPanelWeekly extends UiBinder<HTMLPanel, CmsPatternPanelWeekly> {
@@ -70,7 +70,7 @@ public class CmsPatternPanelWeekly extends Composite implements HasValueChangeHa
 
     /** The text box for the date input. */
     @UiField
-    TextBox m_everyDay = new TextBox();
+    TextBox m_everyDay;
 
     /** The every label. */
     @UiField
@@ -80,76 +80,62 @@ public class CmsPatternPanelWeekly extends Composite implements HasValueChangeHa
     @UiField
     Element m_labelWeeks;
 
-    /** The handler. */
-    private ValueChangeHandler<String> m_handler;
+    /** The handler for check box value changes. */
+    private ValueChangeHandler<Boolean> m_checkBoxValueChangeHandler;
+
+    /** The model to read the data from. */
+    private final I_CmsObservableSerialDateValue m_model;
+
+    /** The controller to handle changes. */
+    final CmsPatternPanelWeeklyController m_controller;
 
     /**
      * Default constructor to create the panel.<p>
+     * @param model the model to read data from.
+     * @param controller the controller to communicate with.
      */
-    public CmsPatternPanelWeekly() {
+    public CmsPatternPanelWeekly(CmsPatternPanelWeeklyController controller, I_CmsObservableSerialDateValue model) {
+
+        m_controller = controller;
+        m_model = model;
+        m_model.registerValueChangeObserver(this);
+        m_checkBoxValueChangeHandler = new ValueChangeHandler<Boolean>() {
+
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+
+                m_controller.setWeekDays(getWeekDays());
+            }
+        };
 
         initWidget(uiBinder.createAndBindUi(this));
+
         m_labelEvery.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_WEEKLY_EVERY_0));
         m_labelWeeks.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_WEEKLY_WEEK_AT_0));
         createDayPanel();
     }
 
     /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDateValueChangeObserver#onValueChange()
      */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+    public void onValueChange() {
 
-        m_handler = handler;
-        m_everyDay.addValueChangeHandler(m_handler);
-        for (CmsCheckBox box : m_checkboxes) {
-            box.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        m_everyDay.setValue("" + m_model.getInterval());
+        setWeekDays(m_model.getWeekDays());
 
-                public void onValueChange(ValueChangeEvent<Boolean> event) {
-
-                    fireValueChange();
-
-                }
-
-            });
-        }
-        return addHandler(handler, ValueChangeEvent.getType());
-    }
-
-    /**
-     * Represents a value change event.<p>
-     */
-    public void fireValueChange() {
-
-        ValueChangeEvent.fire(this, getWeekDays());
-    }
-
-    /**
-     * Returns the interval.<p>
-     * @return the interval
-     * */
-    public String getInterval() {
-
-        return m_everyDay.getText();
     }
 
     /**
      * Returns all selected days.<p>
      * @return all selected days
      * */
-    public String getWeekDays() {
+    protected SortedSet<WeekDay> getWeekDays() {
 
-        String result = "";
-        int i = 0;
+        SortedSet<WeekDay> result = new TreeSet<>();
         for (CmsCheckBox box : m_checkboxes) {
             if (box.isChecked()) {
-                if (i > 0) {
-                    result += ",";
-                }
-                result += box.getInternalValue();
-                i++;
+                result.add(WeekDay.valueOf(box.getInternalValue()));
             }
         }
-
         return result;
     }
 
@@ -159,32 +145,65 @@ public class CmsPatternPanelWeekly extends Composite implements HasValueChangeHa
      * @param event the key press event
      */
     @UiHandler("m_everyDay")
-    public void onDaysKeyPress(KeyPressEvent event) {
+    void onDaysValueChange(ValueChangeEvent<String> event) {
 
-        fireValueChange();
+        m_controller.setInterval(m_everyDay.getText());
     }
 
     /**
-     * Sets the interval.<p>
-     * @param intervalStr the interval
+     * Creates the day selection view.<p>
      * */
-    public void setInterval(String intervalStr) {
+    private void createDayPanel() {
 
-        m_everyDay.setText(intervalStr);
-
+        CmsCheckBox box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_MONDAY_0));
+        box.setInternalValue(WeekDay.MONDAY.toString());
+        box.addValueChangeHandler(m_checkBoxValueChangeHandler);
+        m_checkboxes.add(box);
+        m_dayPanel.add(box);
+        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_TUESDAY_0));
+        box.setInternalValue(WeekDay.TUESDAY.toString());
+        box.addValueChangeHandler(m_checkBoxValueChangeHandler);
+        m_checkboxes.add(box);
+        m_dayPanel.add(box);
+        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_WEDNESDAY_0));
+        box.setInternalValue(WeekDay.WEDNESDAY.toString());
+        box.addValueChangeHandler(m_checkBoxValueChangeHandler);
+        m_checkboxes.add(box);
+        m_dayPanel.add(box);
+        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_THURSDAY_0));
+        box.setInternalValue(WeekDay.THURSDAY.toString());
+        box.addValueChangeHandler(m_checkBoxValueChangeHandler);
+        m_checkboxes.add(box);
+        m_dayPanel.add(box);
+        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_FRIDAY_0));
+        box.setInternalValue(WeekDay.FRIDAY.toString());
+        box.addValueChangeHandler(m_checkBoxValueChangeHandler);
+        m_checkboxes.add(box);
+        m_dayPanel.add(box);
+        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_SATURDAY_0));
+        box.setInternalValue(WeekDay.SATURDAY.toString());
+        box.addValueChangeHandler(m_checkBoxValueChangeHandler);
+        m_checkboxes.add(box);
+        m_dayPanel.add(box);
+        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_SUNDAY_0));
+        box.setInternalValue(WeekDay.SUNDAY.toString());
+        box.addValueChangeHandler(m_checkBoxValueChangeHandler);
+        box.addValueChangeHandler(m_checkBoxValueChangeHandler);
+        m_checkboxes.add(box);
+        m_dayPanel.add(box);
     }
 
     /**
      * Selects all days.<p>
-     * @param weekDaysStrList List of selected days
+     * @param weekDays List of selected days
      * */
-    public void setWeekDays(List<String> weekDaysStrList) {
+    private void setWeekDays(SortedSet<WeekDay> weekDays) {
 
         List<CmsCheckBox> checked = new ArrayList<CmsCheckBox>();
 
-        for (String day : weekDaysStrList) {
+        for (WeekDay day : weekDays) {
             for (CmsCheckBox box : m_checkboxes) {
-                if (box.getInternalValue().equals(day)) {
+                if (box.getInternalValue().equals(day.toString())) {
                     checked.add(box);
                 }
             }
@@ -197,40 +216,5 @@ public class CmsPatternPanelWeekly extends Composite implements HasValueChangeHa
             }
         }
 
-    }
-
-    /**
-     * Creates the day selection view.<p>
-     * */
-    private void createDayPanel() {
-
-        CmsCheckBox box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_MONDAY_0));
-        box.setInternalValue("2");
-        m_checkboxes.add(box);
-        m_dayPanel.add(box);
-        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_TUESDAY_0));
-        box.setInternalValue("3");
-        m_checkboxes.add(box);
-        m_dayPanel.add(box);
-        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_WEDNESDAY_0));
-        box.setInternalValue("4");
-        m_checkboxes.add(box);
-        m_dayPanel.add(box);
-        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_THURSDAY_0));
-        box.setInternalValue("5");
-        m_checkboxes.add(box);
-        m_dayPanel.add(box);
-        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_FRIDAY_0));
-        box.setInternalValue("6");
-        m_checkboxes.add(box);
-        m_dayPanel.add(box);
-        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_SATURDAY_0));
-        box.setInternalValue("7");
-        m_checkboxes.add(box);
-        m_dayPanel.add(box);
-        box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_SUNDAY_0));
-        box.setInternalValue("1");
-        m_checkboxes.add(box);
-        m_dayPanel.add(box);
     }
 }

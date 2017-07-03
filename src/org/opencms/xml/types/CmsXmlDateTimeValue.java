@@ -95,17 +95,6 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
-     */
-    @Override
-    public boolean isSearchable() {
-
-        // there is no point in searching date/time values
-        // they are stored as long int anyway
-        return false;
-    }
-
-    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
@@ -165,6 +154,17 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     public String getTypeName() {
 
         return TYPE_NAME;
+    }
+
+    /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
+     */
+    @Override
+    public boolean isSearchable() {
+
+        // there is no point in searching date/time values
+        // they are stored as long int anyway
+        return false;
     }
 
     /**

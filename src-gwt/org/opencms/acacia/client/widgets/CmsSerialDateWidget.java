@@ -96,7 +96,7 @@ public class CmsSerialDateWidget extends Composite implements I_CmsEditWidget {
      */
     public void fireChangeEvent() {
 
-        ValueChangeEvent.fire(this, m_serialDate.getFormValueAsString());
+        ValueChangeEvent.fire(this, getValue());
 
     }
 
@@ -105,7 +105,7 @@ public class CmsSerialDateWidget extends Composite implements I_CmsEditWidget {
      */
     public String getValue() {
 
-        return m_serialDate.getFormValueAsString();
+        return m_serialDate.getValue();
     }
 
     /**
@@ -159,7 +159,7 @@ public class CmsSerialDateWidget extends Composite implements I_CmsEditWidget {
      */
     public void setName(String name) {
 
-        //m_serialDate.setName(name);
+        //not necessary to implement
     }
 
     /**
@@ -176,7 +176,7 @@ public class CmsSerialDateWidget extends Composite implements I_CmsEditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_serialDate.setFormValueAsString(value);
+        m_serialDate.setValue(value);
         if (fireEvents) {
             fireChangeEvent();
         }

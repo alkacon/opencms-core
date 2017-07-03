@@ -204,6 +204,12 @@ public class CmsSearchField implements Serializable {
     public static final String FIELD_TEXT_IT = "text_it";
     public static final String FIELD_SEARCH_CHANNEL = "search_channel";
 
+    /** The field where the date for the single entry of a serial date entry set is stored. */
+    public static final String FIELD_SERIAL_DATE_DATE = "serial-date";
+
+    /** The field where the dates for a serial date are stored. */
+    public static final String FIELD_SERIAL_DATE_DATES = "serial-date-dates";
+
     /** Name of the field that contains the type of the document. */
     public static final String FIELD_TYPE = "type";
 
@@ -215,6 +221,9 @@ public class CmsSearchField implements Serializable {
 
     /** Name of the field that contains the latest version number of the resource. */
     public static final String FIELD_VERSION = "version";
+
+    /** Name of the field that contains the unique Solr id. */
+    public static final String FIELD_SOLR_ID = "solr_id";
 
     /** Serial version UID. */
     private static final long serialVersionUID = 3185631015824549119L;

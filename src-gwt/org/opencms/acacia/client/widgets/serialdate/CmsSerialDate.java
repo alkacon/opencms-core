@@ -27,467 +27,178 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import org.opencms.acacia.client.widgets.I_CmsEditWidget;
+import org.opencms.acacia.shared.CmsSerialDateUtil;
+import org.opencms.acacia.shared.I_CmsSerialDateValue;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
+import org.opencms.acacia.shared.rpc.I_CmsSerialDateService;
+import org.opencms.acacia.shared.rpc.I_CmsSerialDateServiceAsync;
 import org.opencms.ade.contenteditor.client.Messages;
-import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.input.CmsRadioButton;
-import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
-import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
-import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
-import org.opencms.gwt.client.util.CmsDebugLog;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsPair;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * Basic serial date widget.<p>
- *
- * @since 8.5.0
- *
- */
-public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
+/** Controller for the serial date widget, being the widget implementation itself. */
+public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_ChangeHandler, I_ValidationHandler {
 
-    /** The UI binder interface. */
-    interface I_CmsSerialDateUiBinder extends UiBinder<HTMLPanel, CmsSerialDate> {
-        // nothing to do
+    /**
+     * The validation timer.<p>
+     * Validation takes place at most every 500 milliseconds.
+     * Whenever re-validation is triggered during the time waiting, the timer is reset,
+     * i.e., it is waited for 500 milliseconds again.
+     */
+    protected static class ValidationTimer extends Timer {
+
+        /** The single validation timer that is allowed. */
+        private static ValidationTimer m_validationTimer;
+        /** The handler to call for the validation. */
+        private I_ValidationHandler m_handler;
+
+        /**
+         * Constructor.<p>
+         * @param handler the handler to call for the validation.
+         */
+        private ValidationTimer(I_ValidationHandler handler) {
+            m_handler = handler;
+        }
+
+        /**
+         * Trigger the validation after a certain time out.
+         * @param handler the validation handler, that actually performs the validation.
+         */
+        public static void validate(I_ValidationHandler handler) {
+
+            if (null != m_validationTimer) {
+                m_validationTimer.cancel();
+            }
+            m_validationTimer = new ValidationTimer(handler);
+            m_validationTimer.schedule(500);
+        }
+
+        /**
+         * @see com.google.gwt.user.client.Timer#run()
+         */
+        @Override
+        public void run() {
+
+            m_handler.validate();
+            m_validationTimer = null;
+        }
+
     }
 
-    /** Configuration key name for the serial date day of month. */
-    public static final String CONFIG_DAY_OF_MONTH = "dayofmonth";
+    /** Default date format. */
+    public static final String DEFAULT_DATE_FORMAT = "EEEE, MMMM dd, yyyy";
 
-    /** Configuration key name for the serial date end type. */
-    public static final String CONFIG_END_TYPE = "endtype";
+    /** The RPC service for the serial date widget. */
+    private static I_CmsSerialDateServiceAsync SERVICE;
 
-    /** Configuration key name for the serial date end date and time (sets duration together with start date). */
-    public static final String CONFIG_ENDDATE = "enddate";
-
-    /** Configuration key name for the serial date daily configuration: every working day flag. */
-    public static final String CONFIG_EVERY_WORKING_DAY = "everyworkingday";
-
-    /** Configuration key name for the serial date interval. */
-    public static final String CONFIG_INTERVAL = "interval";
-
-    /** Configuration key name for the serial date month. */
-    public static final String CONFIG_MONTH = "month";
-
-    /** Configuration key name for the serial date number of occurences. */
-    public static final String CONFIG_OCCURENCES = "occurences";
-
-    /** Configuration key name for the serial date: series end date. */
-    public static final String CONFIG_SERIAL_ENDDATE = "serialenddate";
-
-    /** Configuration key name for the serial date start date and time. */
-    public static final String CONFIG_STARTDATE = "startdate";
-
-    /** Configuration key name for the serial date type. */
-    public static final String CONFIG_TYPE = "type";
-
-    /** Configuration key name for the serial date week day(s). */
-    public static final String CONFIG_WEEKDAYS = "weekdays";
-
-    /** Series end type: ends at specific date. */
-    public static final int END_TYPE_DATE = 3;
-
-    /** Series end type: ends never. */
-    public static final int END_TYPE_NEVER = 1;
-
-    /** Series end type: ends after n times. */
-    public static final int END_TYPE_TIMES = 2;
-
-    /** The key for daily. */
-    public static final String KEY_DAILY = "1";
-
-    /** The key for monthly. */
-    public static final String KEY_MONTHLY = "3";
-
-    /** The key for weekly. */
-    public static final String KEY_WEEKLY = "2";
-
-    /** The key for yearly. */
-    public static final String KEY_YEARLY = "4";
-
-    /** Number of milliseconds per minute. */
-    public static final long MILLIS_00_PER_MINUTE = 1000 * 60;
-
-    /** Number of milliseconds per hour. */
-    public static final long MILLIS_01_PER_HOUR = MILLIS_00_PER_MINUTE * 60;
-
-    /** Number of milliseconds per day. */
-    public static final long MILLIS_02_PER_DAY = MILLIS_01_PER_HOUR * 24;
-
-    /** Number of milliseconds per week. */
-    public static final long MILLIS_03_PER_WEEK = MILLIS_02_PER_DAY * 7;
-
-    /** Separator for the week days String. */
-    public static final char SEPARATOR_WEEKDAYS = ',';
-
-    /** Serial type: daily series. */
-    public static final int TYPE_DAILY = 1;
-
-    /** Serial type: monthly series. */
-    public static final int TYPE_MONTHLY = 3;
-
-    /** Serial type: weekly series. */
-    public static final int TYPE_WEEKLY = 2;
-
-    /** Serial type: yearly series. */
-    public static final int TYPE_YEARLY = 4;
-
-    /** The UI binder instance. */
-    private static I_CmsSerialDateUiBinder uiBinder = GWT.create(I_CmsSerialDateUiBinder.class);
-
-    /** The widget type identifier for this widget. */
-    private static final String WIDGET_TYPE = "SerialDate";
-
-    /** The daily pattern. */
-    CmsPatternPanelDaily m_dailyPattern;
-
-    /** The daily pattern radio button. */
-    @UiField(provided = true)
-    CmsRadioButton m_dailyRadioButton;
-
-    /** The duration selection. */
-    @UiField
-    CmsSelectBox m_duration;
-
-    /** The duration label. */
-    @UiField
-    Element m_durationLabel;
-
-    /** The end datebox. */
-    @UiField
-    CmsDateBox m_endDate;
-
-    /** The end date. */
-    Date m_endDateValue = new Date();
-
-    /** The times text box. */
-    @UiField
-    TextBox m_endsAfter;
-
-    /** The ends after radio button. */
-    @UiField(provided = true)
-    CmsRadioButton m_endsAfterRadioButton;
-
-    /** The ends at radio button. */
-    @UiField(provided = true)
-    CmsRadioButton m_endsAtRadioButton;
-
-    /** The end date box. */
-    @UiField
-    TextBox m_endTime;
-
-    /** The end time label. */
-    @UiField
-    Element m_endTimeLabel;
-
-    /** The monthly pattern. */
-    CmsPatternPanelMonthly m_monthlyPattern;
-
-    /** The monthly pattern radio button. */
-    @UiField(provided = true)
-    CmsRadioButton m_monthlyRadioButton;
-
-    /** The no ending radio button. */
-    @UiField(provided = true)
-    CmsRadioButton m_noEndingRadioButton;
-
-    /** The pattern options panel. */
-    @UiField
-    SimplePanel m_patternOptions;
-
-    /** The begin datebox. */
-    @UiField
-    CmsDateBox m_startDate;
-
-    /** The start date label. */
-    @UiField
-    Element m_startDateLabel;
-
-    /** The start date. */
-    Date m_startDateValue = new Date();
-
-    /** The start date box. */
-    @UiField
-    TextBox m_startTime;
-
-    /** The start time label. */
-    @UiField
-    Element m_startTimeLabel;
-
-    /** The weekly pattern. */
-    CmsPatternPanelWeekly m_weeklyPattern;
-
-    /** The weekly pattern radio button. */
-    @UiField(provided = true)
-    CmsRadioButton m_weeklyRadioButton;
-
-    /** The yearly pattern. */
-    CmsPatternPanelYearly m_yearlyPattern;
-
-    /** The yearly pattern radio button. */
-    @UiField(provided = true)
-    CmsRadioButton m_yearlyRadioButton;
-
-    /** The active flag. */
+    /** Flag, indicating if the widget is currently active. */
     private boolean m_active;
 
-    /** Value of the radio group duration. */
-    private CmsRadioButtonGroup m_groupDuration;
+    /** Flag, indicating if the widget value is valid. */
+    private boolean m_valid;
 
-    /** Value of the radio group pattern. */
-    private CmsRadioButtonGroup m_groupPattern;
+    /** RPC call action to get dates. */
+    private final CmsRpcAction<Collection<CmsPair<Date, Boolean>>> m_getDatesAction;
 
-    /** The previous value. */
-    private String m_previousValue;
+    /** RPC call action to get dates. */
+    private final CmsRpcAction<CmsPair<Boolean, Date>> m_hasTooManyDatesAction;
 
-    /** The used time format. */
-    private DateTimeFormat m_timeFormat;
+    /** The pattern controllers. */
+    private final Map<PatternType, I_CmsSerialDatePatternController> m_patternControllers = new HashMap<>();
 
-    /** Flag indicating the widget value is currently being changed. */
-    private boolean m_changingValues;
+    /* Date and time formats */
+
+    /** Format with date only. */
+    DateTimeFormat m_dateFormat = DateTimeFormat.getFormat(
+        Messages.get().keyDefault(Messages.GUI_SERIALDATE_DATE_FORMAT_0, DEFAULT_DATE_FORMAT));
+
+    /** The view */
+    final CmsSerialDateView m_view;
+
+    /** The model */
+    final CmsSerialDateValueWrapper m_model;
 
     /**
      * Category field widgets for ADE forms.<p>
      */
     public CmsSerialDate() {
 
-        // create pattern panels
+        m_model = new CmsSerialDateValueWrapper();
+        m_view = new CmsSerialDateView(this, m_model);
+        initWidget(m_view);
+        initPatternControllers();
+        m_hasTooManyDatesAction = new CmsRpcAction<CmsPair<Boolean, Date>>() {
 
-        m_dailyPattern = new CmsPatternPanelDaily();
-        m_dailyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void execute() {
 
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                fireChangeIfChanged();
-
-            }
-        });
-        m_weeklyPattern = new CmsPatternPanelWeekly();
-        m_weeklyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                fireChangeIfChanged();
+                getService().hasTooManyDates(m_model.toString(), this);
 
             }
 
-        });
-        m_monthlyPattern = new CmsPatternPanelMonthly();
-        m_monthlyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            protected void onResponse(CmsPair<Boolean, Date> result) {
 
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                fireChangeIfChanged();
-
-            }
-
-        });
-        m_yearlyPattern = new CmsPatternPanelYearly();
-        m_yearlyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                fireChangeIfChanged();
-
-            }
-
-        });
-
-        // provide and initialize radio buttons
-        m_groupPattern = new CmsRadioButtonGroup();
-        m_dailyRadioButton = new CmsRadioButton(KEY_DAILY, Messages.get().key(Messages.GUI_SERIALDATE_TYPE_DAILY_0));
-        m_dailyRadioButton.setGroup(m_groupPattern);
-
-        m_weeklyRadioButton = new CmsRadioButton(KEY_WEEKLY, Messages.get().key(Messages.GUI_SERIALDATE_TYPE_WEEKLY_0));
-        m_weeklyRadioButton.setGroup(m_groupPattern);
-
-        m_monthlyRadioButton = new CmsRadioButton(
-            KEY_MONTHLY,
-            Messages.get().key(Messages.GUI_SERIALDATE_TYPE_MONTHLY_0));
-        m_monthlyRadioButton.setGroup(m_groupPattern);
-
-        m_yearlyRadioButton = new CmsRadioButton(KEY_YEARLY, Messages.get().key(Messages.GUI_SERIALDATE_TYPE_YEARLY_0));
-        m_yearlyRadioButton.setGroup(m_groupPattern);
-        m_groupPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                changePattern();
-            }
-        });
-
-        m_groupDuration = new CmsRadioButtonGroup();
-        m_noEndingRadioButton = new CmsRadioButton(
-            "1",
-            Messages.get().key(Messages.GUI_SERIALDATE_DURATION_ENDTYPE_NEVER_0));
-        m_noEndingRadioButton.setGroup(m_groupDuration);
-        m_noEndingRadioButton.setChecked(true);
-        m_noEndingRadioButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                fireChangeIfChanged();
-
-            }
-        });
-
-        m_endsAfterRadioButton = new CmsRadioButton(
-            "2",
-            Messages.get().key(Messages.GUI_SERIALDATE_DURATION_ENDTYPE_OCC_0));
-        m_endsAfterRadioButton.setGroup(m_groupDuration);
-        m_endsAfterRadioButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                if (m_endsAfter.getText().isEmpty()) {
-                    m_endsAfter.setValue("1");
+                if (result.getFirst().booleanValue()) {
+                    onValidated(
+                        Messages.get().key(
+                            Messages.GUI_SERIALDATE_ERROR_SERIESEND_TOO_FAR_AWAY_1,
+                            m_dateFormat.format(result.getSecond())));
+                } else {
+                    onValidated(null);
                 }
-                fireChangeIfChanged();
 
             }
-        });
 
-        m_endsAtRadioButton = new CmsRadioButton(
-            "3",
-            Messages.get().key(Messages.GUI_SERIALDATE_DURATION_ENDTYPE_DATE_0));
-        m_endsAtRadioButton.setGroup(m_groupDuration);
-        m_endsAtRadioButton.addClickHandler(new ClickHandler() {
+        };
+        m_getDatesAction = new CmsRpcAction<Collection<CmsPair<Date, Boolean>>>() {
 
-            public void onClick(ClickEvent event) {
+            @Override
+            public void execute() {
 
-                m_endDate.setValue(new Date());
-                fireChangeIfChanged();
+                getService().getDates(m_model.toString(), this);
 
             }
-        });
 
-        // bind the ui
-        initWidget(uiBinder.createAndBindUi(this));
-        // init labels
-        m_startTimeLabel.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_STARTTIME_0));
-        m_endTimeLabel.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_ENDTIME_0));
-        m_durationLabel.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_DURATION_0));
-        m_startDateLabel.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_STARTDATE_0));
+            @Override
+            protected void onResponse(Collection<CmsPair<Date, Boolean>> result) {
 
-        // init duration select
-        m_duration.getOpener().addStyleName(
-            org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_duration.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
-
-        m_duration.addOption("0", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_SAMEDAY_0));
-        m_duration.addOption("1", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_FIRST_0));
-        m_duration.addOption("2", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_SECOND_0));
-        m_duration.addOption("3", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_THIRD_0));
-        m_duration.addOption("4", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_FOURTH_0));
-        m_duration.addOption("5", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_FIFTH_0));
-        m_duration.addOption("6", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_SIXTH_0));
-        m_duration.addOption("7", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_ONEWEEK_0));
-        m_duration.addOption("8", Messages.get().key(Messages.GUI_SERIALDATE_DURATION_DURATION_TWOWEEK_0));
-
-        try {
-            m_timeFormat = DateTimeFormat.getFormat(
-                org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_DATEBOX_TIME_PATTERN_0));
-        } catch (@SuppressWarnings("unused") Exception e) {
-            // in case the pattern is not available, fall back to standard en pattern
-            m_timeFormat = DateTimeFormat.getFormat("hh:mm aa");
-        }
-        m_endTime.setValue(m_timeFormat.format(new Date()));
-        m_startTime.setValue(m_timeFormat.format(new Date()));
-        m_startDate.setValue(new Date());
-
-        m_startDate.getTextField().getTextBoxContainer().addStyleName(
-            org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().calendarStyle());
-        m_endDate.getTextField().getTextBoxContainer().addStyleName(
-            org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().calendarStyle());
-
-        m_groupPattern.selectButton(m_dailyRadioButton);
+                CmsSerialDate.this.m_view.showCurrentDates(result);
+            }
+        };
         m_active = true;
     }
 
     /**
-     * Initializes this class.<p>
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
      */
-    public static void initClass() {
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        // registers a factory for creating new instances of this widget
-        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
-             */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
-
-                return new CmsSerialDate();
-            }
-        });
-    }
-
-    /**
-     * Returns the int value of the given String or the default value if parsing the String fails.<p>
-     *
-     * @param strValue the String to parse
-     * @param defaultValue the default value to use if parsing fails
-     * @return the int value of the given String
-     */
-    protected static int getIntValue(String strValue, int defaultValue) {
-
-        int result = defaultValue;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(strValue)) {
-            try {
-                result = Integer.parseInt(strValue);
-            } catch (@SuppressWarnings("unused") NumberFormatException e) {
-                // no number, use default value
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns the long value of the given String or the default value if parsing the String fails.<p>
-     *
-     * @param strValue the String to parse
-     * @param defaultValue the default value to use if parsing fails
-     * @return the long value of the given String
-     */
-    protected static long getLongValue(String strValue, long defaultValue) {
-
-        long result = defaultValue;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(strValue)) {
-            try {
-                result = Long.parseLong(strValue);
-            } catch (@SuppressWarnings("unused") NumberFormatException e) {
-                // no number, use default value
-            }
-        }
-        return result;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -499,562 +210,388 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
     }
 
     /**
-     * Represents a value change event.<p>
+     * Show the dates for managing exceptions.
      */
-    public void fireValueChange() {
+    public void executeShowDatesAction() {
 
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            public void execute() {
-
-                fireChangeIfChanged();
-            }
-        });
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
-     */
-    public String getApparentValue() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
-     */
-    public FieldType getFieldType() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
-     */
-    public Object getFormValue() {
-
-        return getFormValueAsString();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
-     */
-    public String getFormValueAsString() {
-
-        return selectValues();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
-     */
-    public boolean isEnabled() {
-
-        return false;
-    }
-
-    /**
-     * Handles the duration change event.<p>
-     *
-     * @param event the change event
-     */
-    @UiHandler("m_duration")
-    public void onDurationChange(ValueChangeEvent<String> event) {
-
-        fireChangeIfChanged();
-    }
-
-    /**
-     * Handles the end date change event.<p>
-     *
-     * @param event the change event
-     */
-    @UiHandler("m_endDate")
-    public void onEndDateChange(ValueChangeEvent<Date> event) {
-
-        m_groupDuration.selectButton(m_endsAtRadioButton);
-        fireChangeIfChanged();
-    }
-
-    /**
-     * Handles the ends after change event.<p>
-     *
-     * @param event the change event
-     */
-    @UiHandler("m_endsAfter")
-    public void onEndsAfterChange(ValueChangeEvent<String> event) {
-
-        fireChangeIfChanged();
-    }
-
-    /**
-     * Handles the ends after focus event.<p>
-     *
-     * @param event the focus event
-     */
-    @UiHandler("m_endsAfter")
-    public void onEndsAfterFocus(FocusEvent event) {
-
-        m_groupDuration.selectButton(m_endsAfterRadioButton);
-    }
-
-    /**
-     * Handles the ends after key press event.<p>
-     *
-     * @param event the key press event
-     */
-    @UiHandler("m_endsAfter")
-    public void onEndsAfterKeyPress(KeyPressEvent event) {
-
-        fireChangeIfChanged();
-    }
-
-    /**
-     * Handles the end time change event.<p>
-     *
-     * @param event the change event
-     */
-    @UiHandler("m_endTime")
-    public void onEndTimeChange(ValueChangeEvent<String> event) {
-
-        fireChangeIfChanged();
-    }
-
-    /**
-     * Handles the start date change event.<p>
-     *
-     * @param event the change event
-     */
-    @UiHandler("m_startDate")
-    public void onStartDateChange(ValueChangeEvent<Date> event) {
-
-        fireChangeIfChanged();
-    }
-
-    /**
-     * Handles the start time change event.<p>
-     *
-     * @param event the change event
-     */
-    @UiHandler("m_startTime")
-    public void onStartTimeChange(ValueChangeEvent<String> event) {
-
-        fireChangeIfChanged();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
-     */
-    public void reset() {
-
-        //nothing to do
+        m_getDatesAction.execute();
 
     }
 
     /**
-     * Sets the radio buttons active or inactive.<p>
-     * @param active true or false to activate or deactivate
-     * */
+     * Returns the controller for the currently active pattern.
+     * @return the controller for the currently active pattern.
+     */
+    public I_CmsSerialDatePatternController getPattern() {
+
+        return m_patternControllers.get(m_model.getPatternType());
+    }
+
+    /**
+     * Returns the widget to place in the pattern panel.
+     * @return the widget to place in the pattern panel.
+     */
+    public I_CmsPatternView getPatternView() {
+
+        return getPattern().getView();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#getValue()
+     */
+    public String getValue() {
+
+        return m_model.toString();
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#isActive()
+     */
+    public boolean isActive() {
+
+        return m_active;
+    }
+
+    /**
+     * Returns a flag, indicating if the widget value is valid.
+     * @return a flag, indicating if the widget value is valid.
+     */
+    public boolean isValid() {
+
+        return m_valid;
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#onAttachWidget()
+     */
+    public void onAttachWidget() {
+
+        super.onAttach();
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        return getElement().isOrHasChild(element);
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#setActive(boolean)
+     */
     public void setActive(boolean active) {
 
         if (active != m_active) {
             m_active = active;
-            m_dailyRadioButton.setEnabled(active);
-            m_weeklyRadioButton.setEnabled(active);
-            m_monthlyRadioButton.setEnabled(active);
-            m_yearlyRadioButton.setEnabled(active);
+            m_view.setActive(active);
+        }
 
-            m_noEndingRadioButton.setEnabled(active);
-            m_endsAfterRadioButton.setEnabled(active);
-            m_endsAtRadioButton.setEnabled(active);
+    }
 
-            m_dailyPattern.setActive(active);
+    /**
+     * Set the end time.
+     * @param date the end time to set.
+     */
+    public void setEndTime(Date date) {
 
-            m_groupPattern.selectButton(m_dailyRadioButton);
-            m_groupDuration.selectButton(m_noEndingRadioButton);
+        if (!Objects.equals(m_model.getEnd(), date)) {
+            m_model.setEnd(date);
+            valueChanged();
+        }
 
-            if (!active) {
-                m_startDate.setFormValueAsString("");
-                m_endDate.setFormValueAsString("");
-                m_startTime.setValue("");
-                m_endTime.setValue("");
-                m_groupPattern.deselectButton();
-                m_groupDuration.deselectButton();
+    }
+
+    /**
+     * Set the duration option.
+     * @param value the duration option to set ({@link EndType} as string).
+     */
+    public void setEndType(String value) {
+
+        EndType endType = EndType.valueOf(value);
+        if (!endType.equals(m_model.getEndType())) {
+            m_model.setEndType(endType);
+            m_view.onEndTypeChange();
+            valueChanged();
+        }
+
+    }
+
+    /**
+     * Set the flag, indicating that the event takes place every working day.
+     * @param isEveryWorkingDay flag, indicating that the event takes place every working day.
+     */
+    public void setEveryWorkingDay(boolean isEveryWorkingDay) {
+
+        if (m_model.isEveryWorkingDay() != isEveryWorkingDay) {
+            m_model.setEveryWorkingDay(isEveryWorkingDay);
+            valueChanged();
+        }
+    }
+
+    /**
+     * Toggle between single events and series.
+     * @param isSeries flag, indicating if we want a series of events.
+     */
+    public void setIsSeries(Boolean isSeries) {
+
+        if (null != isSeries) {
+            boolean noSeries = !isSeries.booleanValue();
+            if (noSeries ^ m_model.getPatternType().equals(PatternType.NONE)) {
+                if (noSeries) {
+                    m_model.setPatternType(PatternType.NONE);
+                } else {
+                    m_model.setPatternType(PatternType.DAILY);
+                }
+                m_view.onPatternChange();
             }
         }
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#setName(java.lang.String)
      */
-    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
+    public void setName(String name) {
 
-        // nothing to do
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
-     */
-    public void setEnabled(boolean enabled) {
-
-        // nothing to do
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
-     */
-    public void setErrorMessage(String errorMessage) {
-
-        //m_error.setText(errorMessage);
+        // not necessary
 
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     * Set the occurrences. If the String is invalid, the occurrences will be set to "-1" to cause server-side validation to fail.
+     * @param occurrences the interval to set.
      */
-    public void setFormValueAsString(String value) {
+    public void setOccurrences(String occurrences) {
 
-        if (!value.isEmpty()) {
-            CmsDebugLog.getInstance().printLine("Setting value: " + value);
-            Map<String, String> values = new HashMap<String, String>();
-            String[] split = value.split("\\|");
-            for (int i = 0; i < split.length; i++) {
-                int pars = split[i].indexOf("=");
-                String key = split[i].substring(0, pars);
-                String val = split[i].substring(pars + 1);
-                values.put(key, val);
+        int o = CmsSerialDateUtil.toIntWithDefault(occurrences, -1);
+        if (m_model.getOccurrences() != o) {
+            m_model.setOccurrences(o);
+            valueChanged();
+        }
+    }
+
+    /**
+     * Set the serial pattern type.
+     * @param patternType the pattern type to set.
+     */
+    public void setPattern(String patternType) {
+
+        PatternType type = PatternType.valueOf(patternType);
+        if (type != m_model.getPatternType()) {
+            m_model.setPatternType(type);
+            m_view.onPatternChange();
+            valueChanged();
+        }
+
+    }
+
+    /**
+     * Set the serial end date.
+     * @param date the serial end date.
+     */
+    public void setSeriesEndDate(Date date) {
+
+        if (!Objects.equals(m_model.getSeriesEndDate(), date)) {
+            m_model.setSeriesEndDate(date);
+            valueChanged();
+        }
+
+    }
+
+    /**
+     * Set the start time.
+     * @param date the start time to set.
+     */
+    public void setStartTime(Date date) {
+
+        if (!Objects.equals(m_model.getStart(), date)) {
+            m_model.setStart(date);
+            valueChanged();
+        }
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     */
+    public void setValue(String value) {
+
+        setValue(value, false);
+
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#setValue(java.lang.String, boolean)
+     */
+    public void setValue(String value, boolean fireEvent) {
+
+        if (!m_model.toString().equals(value)) {
+            m_model.setValue(value);
+            if (fireEvent) {
+                valueChanged();
+            } else {
+                validate();
             }
-            setValues(values);
-            CmsDebugLog.getInstance().printLine("Value set");
         }
-        m_previousValue = value;
     }
 
     /**
-     * Selects the right view for the selected pattern.<p>
+     * Sets the whole day flag.
+     * @param isWholeDay flag, indicating if the event lasts whole days.
      */
-    protected void changePattern() {
+    public void setWholeDay(Boolean isWholeDay) {
 
-        if (m_groupPattern.getSelectedButton() != null) {
-            String buttonName = m_groupPattern.getSelectedButton().getName();
-            // m_patterPanel.removeFromParent();
-            if (buttonName.equals(KEY_DAILY)) {
-                m_patternOptions.setWidget(m_dailyPattern);
-            } else if (buttonName.equals(KEY_WEEKLY)) {
-                m_patternOptions.setWidget(m_weeklyPattern);
-            } else if (buttonName.equals(KEY_MONTHLY)) {
-                m_patternOptions.setWidget(m_monthlyPattern);
-            } else if (buttonName.equals(KEY_YEARLY)) {
-                m_patternOptions.setWidget(m_yearlyPattern);
+        if (m_model.isWholeDay() ^ ((null != isWholeDay) && isWholeDay.booleanValue())) {
+            m_model.setWholeDay(isWholeDay);
+            valueChanged();
+        }
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.serialdate.I_ChangeHandler#sizeChanged()
+     */
+    public void sizeChanged() {
+
+        CmsDomUtil.resizeAncestor(m_view.getParent());
+    }
+
+    /**
+     * Updates the exceptions.
+     * @param exceptions the exceptions to set
+     */
+    public void updateExceptions(SortedSet<Date> exceptions) {
+
+        SortedSet<Date> e = null == exceptions ? new TreeSet<Date>() : exceptions;
+        if (!m_model.getExceptions().equals(e)) {
+            m_model.setExceptions(e);
+            m_view.updateExceptions();
+            sizeChanged();
+        }
+
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.serialdate.I_ValidationHandler#validate()
+     */
+    @Override
+    public void validate() {
+
+        String errorMessage = checkIfTimesAreValid();
+        if (null == errorMessage) {
+            errorMessage = m_patternControllers.get(m_model.getPatternType()).validate();
+            if (null == errorMessage) {
+                errorMessage = m_model.getEndType().equals(EndType.DATE)
+                ? checkIfSeriesEndTimeIsValid()
+                : checkIfOccurrencesAreValid();
+                if ((null == errorMessage) && m_model.getEndType().equals(EndType.DATE)) {
+                    m_hasTooManyDatesAction.execute();
+                    return;
+                }
             }
-            fireChangeIfChanged();
-            CmsDebugLog.getInstance().printLine("Pattern changed");
         }
+        onValidated(errorMessage);
+
     }
 
     /**
-     * Checks if the current value has changed an fires the change event.<p>
+     * @see org.opencms.acacia.client.widgets.serialdate.I_ChangeHandler#valueChanged()
      */
-    protected void fireChangeIfChanged() {
+    @Override
+    public void valueChanged() {
 
-        if (!m_changingValues && m_active) {
-            String current = getFormValueAsString();
-            if (!current.equals(m_previousValue)) {
-                m_previousValue = current;
-                ValueChangeEvent.fire(this, current);
-            }
-        }
+        ValueChangeEvent.fire(this, m_model.toString());
+
+        ValidationTimer.validate(this);
     }
 
     /**
-     * Returns the duration button for type.<p>
-     *
-     * @param type the type
-     *
-     * @return the button
+     * Returns the RPC service for serial dates.
+     * @return the RPC service for serial dates.
      */
-    private CmsRadioButton getDurationButtonForType(int type) {
+    I_CmsSerialDateServiceAsync getService() {
 
-        CmsRadioButton duration = null;
-        switch (type) {
-            case END_TYPE_NEVER:
-                duration = m_noEndingRadioButton;
-                break;
-            case END_TYPE_TIMES:
-                duration = m_endsAfterRadioButton;
-                break;
-            case END_TYPE_DATE:
-                duration = m_endsAtRadioButton;
-                break;
-            default:
-                throw new IllegalArgumentException();
+        if (SERVICE == null) {
+            SERVICE = GWT.create(I_CmsSerialDateService.class);
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsSerialDateService.gwt");
+            ((ServiceDefTarget)SERVICE).setServiceEntryPoint(serviceUrl);
         }
-        return duration;
+        return SERVICE;
     }
 
     /**
-     * Returns the pattern button for type.<p>
-     *
-     * @param type the type
-     *
-     * @return the button
+     * Call-back function when validation finishes.
+     * @param errorMessage the validation error to display, <code>null</code> if validation succeeded.
      */
-    private CmsRadioButton getPatternButtonForType(int type) {
+    void onValidated(String errorMessage) {
 
-        CmsRadioButton pattern = null;
-        switch (type) {
-            case TYPE_DAILY:
-                pattern = m_dailyRadioButton;
-                break;
-            case TYPE_WEEKLY:
-                pattern = m_weeklyRadioButton;
-                break;
-            case TYPE_MONTHLY:
-                pattern = m_monthlyRadioButton;
-                break;
-            case TYPE_YEARLY:
-                pattern = m_yearlyRadioButton;
-                break;
-            default:
-                throw new IllegalArgumentException();
+        if (null == errorMessage) {
+            setValid(true);
+            m_view.removeError();
+        } else {
+            setValid(false);
+            m_view.setError(errorMessage);
         }
-        return pattern;
     }
 
     /**
-     * Selects all needed information an build the result string.<p>
-     *
-     * @return the result string
-     * */
-    @SuppressWarnings("deprecation")
-    private String selectValues() {
-
-        CmsDebugLog.getInstance().printLine("Selecting values");
-        String result = "";
-        String type = "1";
-        if (m_groupPattern.getSelectedButton() != null) {
-            type = m_groupPattern.getSelectedButton().getName();
-        }
-        result += CONFIG_TYPE + "=" + type + "|";
-        switch (Integer.parseInt(type)) {
-            case (TYPE_DAILY):
-                result += CONFIG_INTERVAL + "=" + m_dailyPattern.getInterval() + "|";
-                result += CONFIG_EVERY_WORKING_DAY + "=" + m_dailyPattern.getWorkingDay() + "|";
-                break;
-            case (TYPE_WEEKLY):
-                result += CONFIG_INTERVAL + "=" + m_weeklyPattern.getInterval() + "|";
-                result += CONFIG_WEEKDAYS + "=" + m_weeklyPattern.getWeekDays() + "|";
-
-                break;
-            case (TYPE_MONTHLY):
-                result += CONFIG_INTERVAL + "=" + m_monthlyPattern.getInterval() + "|";
-                result += CONFIG_DAY_OF_MONTH + "=" + m_monthlyPattern.getDayOfMonth() + "|";
-                if (!m_monthlyPattern.getWeekDays().equals("-1")) {
-                    result += CONFIG_WEEKDAYS + "=" + m_monthlyPattern.getWeekDays() + "|";
-                }
-                break;
-            case (TYPE_YEARLY):
-                result += CONFIG_DAY_OF_MONTH + "=" + m_yearlyPattern.getDayOfMonth() + "|";
-                result += CONFIG_MONTH + "=" + m_yearlyPattern.getMonth() + "|";
-                if (!m_yearlyPattern.getWeekDays().equals("-1")) {
-                    result += CONFIG_WEEKDAYS + "=" + m_yearlyPattern.getWeekDays() + "|";
-                }
-                break;
-            default:
-                break;
-
-        }
-        Date startDate = new Date();
-        Date endDate = new Date();
-        m_startDateValue = m_startDate.getValue();
-        if (m_startDateValue == null) {
-            m_startDateValue = new Date();
-        }
-
-        switch (Integer.parseInt(m_duration.getFormValueAsString())) {
-            case (0):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (0 * MILLIS_02_PER_DAY));
-                break;
-            case (1):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (1 * MILLIS_02_PER_DAY));
-                break;
-            case (2):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (2 * MILLIS_02_PER_DAY));
-                break;
-            case (3):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (3 * MILLIS_02_PER_DAY));
-                break;
-            case (4):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (4 * MILLIS_02_PER_DAY));
-                break;
-            case (5):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (5 * MILLIS_02_PER_DAY));
-                break;
-            case (6):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (6 * MILLIS_02_PER_DAY));
-                break;
-            case (7):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (7 * MILLIS_02_PER_DAY));
-                break;
-            case (8):
-                m_endDateValue.setTime(m_startDateValue.getTime() + (8 * MILLIS_02_PER_DAY));
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-
-        try {
-            startDate = m_timeFormat.parse(m_startTime.getText());
-            m_startDateValue.setHours(startDate.getHours());
-            m_startDateValue.setMinutes(startDate.getMinutes());
-        } catch (IllegalArgumentException e) {
-            // TODO: Add validation to omit that exception
-        }
-        try {
-            endDate = m_timeFormat.parse(m_endTime.getText());
-            m_endDateValue.setHours(endDate.getHours());
-            m_endDateValue.setMinutes(endDate.getMinutes());
-        } catch (IllegalArgumentException e) {
-            // TODO: Add validation to omit that exception
-        }
-
-        CmsDebugLog.getInstance().printLine("New Endtime: " + m_endDateValue.getTime());
-        result += CONFIG_STARTDATE + "=" + m_startDateValue.getTime() + "|";
-        result += CONFIG_ENDDATE + "=" + m_endDateValue.getTime() + "|";
-        String endtype = "1";
-        if (m_groupDuration.getSelectedButton() != null) {
-            endtype = m_groupDuration.getSelectedButton().getName();
-        }
-        switch (Integer.parseInt(endtype)) {
-            case (1):
-                break;
-            case (END_TYPE_TIMES):
-                if (!m_endsAfter.getText().isEmpty()) {
-                    result += CONFIG_OCCURENCES + "=" + m_endsAfter.getText() + "|";
-                }
-                break;
-            case (END_TYPE_DATE):
-                if (!m_endDate.getValueAsFormatedString().isEmpty()) {
-                    result += CONFIG_SERIAL_ENDDATE + "=" + m_endDate.getFormValueAsString() + "|";
-                }
-                break;
-            default:
-                break;
-
-        }
-
-        result += CONFIG_END_TYPE + "=" + endtype;
-        return result;
-    }
-
-    /**
-     * Creates a serial date entry from the given property value.<p>
-     *
-     * If no matching serial date could be created, <code>null</code> is returned.<p>
-     *
-     * @param values the Map containing the date configuration values
+     * Set a flag, indicating if the value in the widget is valid.
+     * @param isValid flag, indicating if the value in the widget is valid.
      */
-    private void setValues(Map<String, String> values) {
+    void setValid(boolean isValid) {
 
-        m_changingValues = true;
-        // first set serial date fields used by all serial types
-
-        // fetch the start date and time
-
-        String startLong = values.get(CONFIG_STARTDATE);
-        m_startDateValue = new Date(getLongValue(startLong, 0));
-        m_startTime.setValue(m_timeFormat.format(m_startDateValue));
-
-        m_startDate.setValue(m_startDateValue);
-        // the end date and time (this means the duration of a single entry)
-
-        String endLong = values.get(CONFIG_ENDDATE);
-        m_endDateValue = new Date(getLongValue(endLong, 0));
-        m_endTime.setValue(m_timeFormat.format(m_endDateValue));
-        CmsDebugLog.getInstance().printLine("Step 1");
-        if (getLongValue(endLong, 0) > getLongValue(startLong, 0)) {
-            // duration at least one day, calculate it
-            long delta = getLongValue(endLong, 0) - getLongValue(startLong, 0);
-            int test = (int)(delta / MILLIS_02_PER_DAY);
-            m_duration.selectValue((test) + "");
+        if (isValid != m_valid) {
+            m_valid = isValid;
+            m_view.enableManagementButton(m_valid);
         }
-        CmsDebugLog.getInstance().printLine("Step 1.5");
-        // determine the serial end type
-        String endTypeStr = values.get(CONFIG_END_TYPE);
-        int endType = getIntValue(endTypeStr, END_TYPE_NEVER);
-        CmsDebugLog.getInstance().printLine("Setting end type to: " + endType);
-        m_groupDuration.selectButton(getDurationButtonForType(endType));
-        if (endType == END_TYPE_TIMES) {
-            // end type: after a number of occurences
-            String occurStr = values.get(CONFIG_OCCURENCES);
-            CmsDebugLog.getInstance().printLine("Setting occurrences to: " + occurStr);
-            m_endsAfter.setText(occurStr);
-        } else if (endType == END_TYPE_DATE) {
-            // end type: ends at a specified date
-            String endDateStr = values.get(CONFIG_SERIAL_ENDDATE);
-            long endDate = getLongValue(endDateStr, 0);
-            m_endDate.setValue(new Date(endDate));
-
-        }
-        CmsDebugLog.getInstance().printLine("Step 2");
-        // now determine the serial date options depending on the serial date type
-
-        String type = values.get(CONFIG_TYPE);
-        int entryType = getIntValue(type, 1);
-        m_groupPattern.selectButton(getPatternButtonForType(entryType));
-        CmsDebugLog.getInstance().printLine("Step 3");
-        String intervalStr = values.get(CONFIG_INTERVAL);
-        CmsDebugLog.getInstance().printLine(CONFIG_INTERVAL + ": " + intervalStr);
-        switch (entryType) {
-            case TYPE_DAILY:
-                // daily series entry, get interval and working days flag
-                CmsDebugLog.getInstance().printLine("Setting daily");
-                String workingDaysStr = values.get(CONFIG_EVERY_WORKING_DAY);
-                CmsDebugLog.getInstance().printLine(CONFIG_EVERY_WORKING_DAY + ": " + workingDaysStr);
-                boolean workingDays = Boolean.valueOf(workingDaysStr).booleanValue();
-                m_dailyPattern.setInterval(intervalStr);
-                CmsDebugLog.getInstance().printLine("Interval has been set");
-                m_dailyPattern.setWorkingDaySelection(workingDays);
-                break;
-            case TYPE_WEEKLY:
-                // weekly series entry
-                CmsDebugLog.getInstance().printLine("Setting weekly");
-                String weekDaysStr = values.get(CONFIG_WEEKDAYS);
-                List<String> weekDaysStrList = CmsStringUtil.splitAsList(weekDaysStr, SEPARATOR_WEEKDAYS, true);
-                m_weeklyPattern.setInterval(intervalStr);
-                m_weeklyPattern.setWeekDays(weekDaysStrList);
-                break;
-            case TYPE_MONTHLY:
-                // monthly series entry
-                CmsDebugLog.getInstance().printLine("Setting monthly");
-                String dayOfMonthStrMonthly = values.get(CONFIG_DAY_OF_MONTH);
-                int dayOfMonthMonthly = getIntValue(dayOfMonthStrMonthly, 1);
-                String weekDayStrMonthly = values.get(CONFIG_WEEKDAYS);
-                int weekDayMonthly = getIntValue(weekDayStrMonthly, -1);
-                m_monthlyPattern.setWeekDay(weekDayMonthly);
-                m_monthlyPattern.setInterval(intervalStr);
-                m_monthlyPattern.setDayOfMonth(dayOfMonthMonthly);
-
-                break;
-            case TYPE_YEARLY:
-                // yearly series entry
-                CmsDebugLog.getInstance().printLine("Setting yearly");
-                String dayOfMonthStr = values.get(CONFIG_DAY_OF_MONTH);
-                int dayOfMonth = getIntValue(dayOfMonthStr, 1);
-                String weekDayStr = values.get(CONFIG_WEEKDAYS);
-                int weekDay = getIntValue(weekDayStr, -1);
-                String monthStr = values.get(CONFIG_MONTH);
-                int month = getIntValue(monthStr, 0);
-                m_yearlyPattern.setWeekDay(weekDay);
-                m_yearlyPattern.setDayOfMonth(dayOfMonth);
-                m_yearlyPattern.setMonth(month);
-
-                break;
-            default:
-
-        }
-        m_changingValues = false;
-
-        //      selectValues();
     }
 
+    /**
+     * Checks if the occurrences are valid.
+     * @return <code>null</code> if occurrences are valid, as suitable error message otherwise.
+     */
+    private String checkIfOccurrencesAreValid() {
+
+        return (!m_model.getEndType().equals(EndType.TIMES) || (m_model.getOccurrences() > 0))
+            && (m_model.getOccurrences() <= CmsSerialDateUtil.getMaxEvents())
+            ? null
+            : Messages.get().key(
+                Messages.GUI_SERIALDATE_ERROR_INVALID_OCCURRENCES_1,
+                Integer.valueOf(CmsSerialDateUtil.getMaxEvents()));
+    }
+
+    /**
+     * Returns <code>null</code> if the series end time is valid, a suitable error message otherwise.
+     * @return <code>null</code> if the series end time is valid, a suitable error message otherwise.
+     */
+    private String checkIfSeriesEndTimeIsValid() {
+
+        return m_model.getStart().getTime() < (m_model.getSeriesEndDate().getTime()
+            + I_CmsSerialDateValue.DAY_IN_MILLIS)
+            ? null
+            : Messages.get().key(Messages.GUI_SERIALDATE_ERROR_SERIAL_END_BEFORE_START_0);
+    }
+
+    /**
+     * Returns <code>null</code> if the start date is not after the end date, a suitable error message otherwise.
+     * @return <code>null</code> if the start date is not after the end date, a suitable error message otherwise.
+     */
+    private String checkIfTimesAreValid() {
+
+        return m_model.getStart().after(m_model.getEnd())
+        ? Messages.get().key(Messages.GUI_SERIALDATE_ERROR_END_BEFORE_START_0)
+        : null;
+    }
+
+    /**
+     * Initialize the pattern controllers.
+     */
+    private void initPatternControllers() {
+
+        m_patternControllers.put(PatternType.NONE, new CmsPatternPanelNoneController());
+        m_patternControllers.put(PatternType.DAILY, new CmsPatternPanelDailyController(m_model, this));
+        m_patternControllers.put(PatternType.WEEKLY, new CmsPatternPanelWeeklyController(m_model, this));
+        m_patternControllers.put(PatternType.MONTHLY, new CmsPatternPanelMonthlyController(m_model, this));
+        m_patternControllers.put(PatternType.YEARLY, new CmsPatternPanelYearlyController(m_model, this));
+        m_patternControllers.put(PatternType.INDIVIDUAL, new CmsPatternPanelIndividualController(m_model, this));
+    }
 }

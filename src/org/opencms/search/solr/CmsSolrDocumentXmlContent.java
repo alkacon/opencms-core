@@ -53,6 +53,9 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsSerialDateWidget;
+import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
+import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
@@ -355,6 +358,16 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                         } else if (mapping.equals(MAPPING_GALLERY_NAME)) {
                             galleryNameChooser.setMappedGalleryNameValue(value.getPlainText(cms));
                         }
+                    }
+                }
+                if (xmlContent.getHandler().getWidget(value) instanceof CmsSerialDateWidget) {
+                    if ((null != extracted) && !extracted.isEmpty()) {
+                        I_CmsSerialDateBean serialDateBean = CmsSerialDateBeanFactory.createSerialDateBean(extracted);
+                        StringBuffer values = new StringBuffer();
+                        for (Long eventDate : serialDateBean.getDatesAsLong()) {
+                            values.append("\n").append(eventDate.toString());
+                        }
+                        fieldMappings.put(CmsSearchField.FIELD_SERIAL_DATE_DATES, values.substring(1));
                     }
                 }
             }

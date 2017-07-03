@@ -7,10 +7,12 @@
 	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
 	<g:HTMLPanel styleName="">
 		<div class="{css.widgetCss.patternRow}">
-			<cms:CmsRadioButton ui:field="m_dayMonthRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelDays"></span><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_everyMonth" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelMonths"></span>
+			<cms:CmsRadioButton ui:field="m_dayMonthRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelDays"></span><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_everyMonth" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_everyLabelMonth"></span>
 		</div>
 		<div class="{css.widgetCss.patternRow}">
-			<cms:CmsRadioButton ui:field="m_weekDayMonthRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><cms:CmsSelectBox ui:field="m_atWeek" /><cms:CmsSelectBox ui:field="m_atDay" /><span ui:field="m_labelEvery"></span><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_atMonth" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelMonth"></span>
+			<cms:CmsRadioButton ui:field="m_weekDayMonthRadioButton" addStyleNames="{css.widgetCss.patternRadio}" />
+			<g:FlowPanel ui:field="m_weekPanel" styleName="{css.widgetCss.patternRow}" />
+			<cms:CmsSelectBox ui:field="m_atDay" /><span ui:field="m_labelEvery"></span><div class="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_atMonth" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_atLabelMonth"></span>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder>

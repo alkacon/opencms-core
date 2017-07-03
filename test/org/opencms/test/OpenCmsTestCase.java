@@ -346,7 +346,8 @@ public class OpenCmsTestCase extends TestCase {
         int maxProps,
         double propertyDistribution,
         int maxNumberOfFiles,
-        double fileTypeDistribution) throws Exception {
+        double fileTypeDistribution)
+    throws Exception {
 
         int fileNameLength = 10;
         int propValueLength = 10;
@@ -443,7 +444,8 @@ public class OpenCmsTestCase extends TestCase {
         CmsObject cms,
         int maxProps,
         int propValueLength,
-        double propertyDistribution) throws CmsException {
+        double propertyDistribution)
+    throws CmsException {
 
         List<CmsPropertyDefinition> propList = cms.readAllPropertyDefinitions();
 
@@ -491,7 +493,8 @@ public class OpenCmsTestCase extends TestCase {
         int n,
         int type,
         int maxProps,
-        double propertyDistribution) throws Exception {
+        double propertyDistribution)
+    throws Exception {
 
         int fileNameLength = 10;
         int propValueLength = 10;
@@ -789,6 +792,62 @@ public class OpenCmsTestCase extends TestCase {
         }
         // turn on exceptions after error logging
         OpenCmsTestLogAppender.setBreakOnError(true);
+    }
+
+    /** Helper for importing modules from the package path.
+     * The module .zip files must be named <code>modulename + ".zip"</code>.
+     * @param cms the {@link CmsObject} used for the import
+     * @param moduleName the name of the module to import
+     *
+     * @throws CmsException can be thrown for several reasons
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    public static void importModule(CmsObject cms, String moduleName)
+    throws CmsException, IOException, InterruptedException {
+
+        importModule(cms, moduleName, "", "");
+    }
+
+    /** Helper for importing modules.
+     * Modules are imported from the package path's subfolder specified by <code>subfolder</code>.
+     * The module's .zip file must be named <code>moduleName + suffix + ".zip"</code>
+     * @param cms the {@link CmsObject} used for the import
+     * @param moduleName the name of the module to import
+     * @param suffix a suffix on the module's .zip file, that has to be named <code>moduleName + suffix + ".zip"</code>
+     * @param subfolder a subfolder of the package path, where the module .zip is located (without leading and trailing "/")
+     *
+     * @throws CmsException can be thrown for several reasons
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void importModule(CmsObject cms, String moduleName, String suffix, String subfolder)
+    throws CmsException, IOException, InterruptedException {
+
+        String defaultModulesFolder = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
+        String path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages"
+                + File.separator
+                + ((null != subfolder) && !subfolder.isEmpty() ? (subfolder + File.separator) : ""))
+            + moduleName
+            + suffix
+            + ".zip";
+        try {
+            OpenCms.getSearchManager().pauseOfflineIndexing();
+            if (OpenCms.getModuleManager().hasModule(moduleName)) {
+                OpenCms.getModuleManager().deleteModule(
+                    cms,
+                    moduleName,
+                    true,
+                    new CmsShellReport(cms.getRequestContext().getLocale()));
+            }
+            OpenCms.getImportExportManager().importData(
+                cms,
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(path, "/", true));
+        } finally {
+            OpenCms.getSearchManager().resumeOfflineIndexing();
+        }
     }
 
     /**
@@ -1362,7 +1421,8 @@ public class OpenCmsTestCase extends TestCase {
         String rfsPath,
         String vfsPath,
         int type,
-        List<CmsProperty> properties) throws Exception {
+        List<CmsProperty> properties)
+    throws Exception {
 
         byte[] content = CmsFileUtil.readFile(rfsPath);
         CmsResource result = cms.createResource(vfsPath, type, content, properties);
@@ -1533,7 +1593,8 @@ public class OpenCmsTestCase extends TestCase {
         CmsObject cms,
         String resourceName,
         OpenCmsTestResourceStorageEntry storedResource,
-        List<CmsProperty> excludeList) throws CmsException {
+        List<CmsProperty> excludeList)
+    throws CmsException {
 
         String noMatches = "";
         List<CmsProperty> storedProperties = storedResource.getProperties();
@@ -2509,12 +2570,13 @@ public class OpenCmsTestCase extends TestCase {
 
             assertFilter(cms, dummy, res1, filter);
         } catch (CmsException e) {
-            fail("cannot read either resource "
-                + resourceName1
-                + " or resource "
-                + resourceName2
-                + " "
-                + CmsException.getStackTraceAsString(e));
+            fail(
+                "cannot read either resource "
+                    + resourceName1
+                    + " or resource "
+                    + resourceName2
+                    + " "
+                    + CmsException.getStackTraceAsString(e));
         }
     }
 
@@ -2816,7 +2878,8 @@ public class OpenCmsTestCase extends TestCase {
         CmsObject cms,
         String resourceName,
         I_CmsPrincipal principal,
-        String permissionString) throws CmsException {
+        String permissionString)
+    throws CmsException {
 
         Iterator<CmsAccessControlEntry> it = cms.getAccessControlEntries(resourceName).iterator();
         while (it.hasNext()) {
@@ -3760,7 +3823,8 @@ public class OpenCmsTestCase extends TestCase {
         CmsObject cms,
         String resourceName,
         OpenCmsTestResourceStorageEntry storedResource,
-        List<CmsAccessControlEntry> excludeList) throws CmsException {
+        List<CmsAccessControlEntry> excludeList)
+    throws CmsException {
 
         String noMatches = "";
         List<CmsAccessControlEntry> resAce = cms.getAccessControlEntries(resourceName);
@@ -3791,7 +3855,8 @@ public class OpenCmsTestCase extends TestCase {
         CmsObject cms,
         String resourceName,
         OpenCmsTestResourceStorageEntry storedResource,
-        List<CmsUUID> excludeList) throws CmsException {
+        List<CmsUUID> excludeList)
+    throws CmsException {
 
         String noMatches = "";
         CmsAccessControlList resList = cms.getAccessControlList(resourceName);

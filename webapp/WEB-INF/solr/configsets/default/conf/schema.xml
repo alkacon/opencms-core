@@ -234,7 +234,8 @@
  </types>
 
  <fields>
-   <field name="id"                  type="uuid"         indexed="true"  stored="true"  /><!-- Unique identifier. -->
+   <field name="solr_id"             type="string"     indexed="true" stored="true" /><!--unique identifier -->
+   <field name="id"                  type="uuid"         indexed="true"  stored="true"  />
    <field name="timestamp"           type="date"         indexed="true"  stored="true"  default="NOW"/>
    <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
    <field name="filename"            type="string"       indexed="true"  stored="true"  required="true" />
@@ -275,6 +276,8 @@
    <field name="text_fr"             type="text_fr"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for French text fields -->
    <field name="text_hu"             type="text_hu"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Hungarian text fields -->
    <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Italian text fields -->
+   <field name="serial-date"         type="date"         indexed="true"  stored="true" />
+   <field name="serial-date-dates"   type="date"         indexed="true"  stored="true"  multiValued="true"/>
 
    <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
@@ -333,6 +336,6 @@
  <copyField source="content_de" dest="spell"/>
  <copyField source="content_en" dest="spell"/>
 
- <uniqueKey>id</uniqueKey>
+ <uniqueKey>solr_id</uniqueKey>
 
 </schema>

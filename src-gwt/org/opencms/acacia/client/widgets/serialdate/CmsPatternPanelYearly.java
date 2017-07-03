@@ -27,19 +27,24 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -47,30 +52,24 @@ import com.google.gwt.user.client.ui.TextBox;
 /**
  * The yearly pattern panel.<p>
  * */
-public class CmsPatternPanelYearly extends Composite implements HasValueChangeHandlers<String> {
+public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView {
 
     /** The UI binder interface. */
     interface I_CmsPatternPanelYearlyUiBinder extends UiBinder<HTMLPanel, CmsPatternPanelYearly> {
         // nothing to do
     }
 
+    /** Name of the "every x. day in month" radio button. */
+    private static final String DAYS_RADIOBUTTON = "everyday";
+
+    /** Name of the "at weeks" radio button. */
+    private static final String WEEKS_RADIOBUTTON = "everyweek";
+
     /** The UI binder instance. */
     private static I_CmsPatternPanelYearlyUiBinder uiBinder = GWT.create(I_CmsPatternPanelYearlyUiBinder.class);
 
-    /** The select box for the day selection. */
-    @UiField
-    CmsSelectBox m_atDay;
+    /* UI elements for "every x. day of month in year" */
 
-    /** The select box for the month selection. */
-    @UiField
-    CmsSelectBox m_atMonth;
-    /** The select box for the nummeric selection. */
-    @UiField
-    CmsSelectBox m_atNumber;
-
-    /** The at radio button. */
-    @UiField(provided = true)
-    CmsRadioButton m_atRadioButton;
     /** The text box for the date input. */
     @UiField
     TextBox m_everyDay;
@@ -78,9 +77,25 @@ public class CmsPatternPanelYearly extends Composite implements HasValueChangeHa
     @UiField
     CmsSelectBox m_everyMonth;
 
-    /** The every radio butoon. */
+    /** The every radio button. */
     @UiField(provided = true)
     CmsRadioButton m_everyRadioButton;
+
+    /* UI elements for "every x. weekday in month in year" */
+    /** The select box for the day selection. */
+    @UiField
+    CmsSelectBox m_atDay;
+
+    /** The select box for the month selection. */
+    @UiField
+    CmsSelectBox m_atMonth;
+    /** The select box for the numeric selection. */
+    @UiField
+    CmsSelectBox m_atNumber;
+
+    /** The at radio button. */
+    @UiField(provided = true)
+    CmsRadioButton m_atRadioButton;
 
     /** The in label. */
     @UiField
@@ -89,25 +104,37 @@ public class CmsPatternPanelYearly extends Composite implements HasValueChangeHa
     /** Group off all radio buttons. */
     private CmsRadioButtonGroup m_group;
 
-    /** The value change handler. */
-    private ValueChangeHandler<String> m_handler;
+    /** The model to read the data from. */
+    private final I_CmsObservableSerialDateValue m_model;
+
+    /** The controller to handle changes. */
+    final CmsPatternPanelYearlyController m_controller;
 
     /**
      * Default constructor to create the panel.<p>
+     * @param controller the controller that handles value changes.
+     * @param model the model that provides the values.
      */
-    public CmsPatternPanelYearly() {
+    public CmsPatternPanelYearly(CmsPatternPanelYearlyController controller, I_CmsObservableSerialDateValue model) {
+        m_controller = controller;
+        m_model = model;
+        m_model.registerValueChangeObserver(this);
 
         m_group = new CmsRadioButtonGroup();
-        m_everyRadioButton = new CmsRadioButton("sel1", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_EVERY_0));
+        m_everyRadioButton = new CmsRadioButton(
+            DAYS_RADIOBUTTON,
+            Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_EVERY_0));
         m_everyRadioButton.setGroup(m_group);
         m_everyRadioButton.setChecked(true);
-        m_atRadioButton = new CmsRadioButton("sel2", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_AT_0));
+        m_atRadioButton = new CmsRadioButton(
+            WEEKS_RADIOBUTTON,
+            Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_AT_0));
         m_atRadioButton.setGroup(m_group);
         m_group.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                fireValueChange();
+                m_controller.setPatternScheme(event.getValue().equals(m_atRadioButton.getName()));
             }
         });
         initWidget(uiBinder.createAndBindUi(this));
@@ -117,111 +144,90 @@ public class CmsPatternPanelYearly extends Composite implements HasValueChangeHa
     }
 
     /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDateValueChangeObserver#onValueChange()
      */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+    public void onValueChange() {
 
-        m_handler = handler;
-        m_atNumber.addValueChangeHandler(m_handler);
-        m_atDay.addValueChangeHandler(m_handler);
-        m_atMonth.addValueChangeHandler(m_handler);
-        m_everyDay.addValueChangeHandler(m_handler);
-        m_everyMonth.addValueChangeHandler(m_handler);
-        return addHandler(handler, ValueChangeEvent.getType());
+        if (m_model.getPatternType().equals(PatternType.YEARLY)) {
+            if (null == m_model.getWeekDay()) {
+                m_group.selectButton(m_everyRadioButton);
+                m_everyDay.setValue("" + m_model.getDayOfMonth());
+                m_everyMonth.selectValue(m_model.getMonth().toString());
+                m_atDay.selectValue(WeekDay.SUNDAY.toString());
+                m_atMonth.selectValue(Month.JANUARY.toString());
+                m_atNumber.selectValue("1");
+            } else {
+                m_group.selectButton(m_atRadioButton);
+                m_atDay.selectValue(m_model.getWeekDay().toString());
+                m_atMonth.selectValue(m_model.getMonth().toString());
+                m_atNumber.selectValue("" + m_model.getWeekOfMonth());
+                m_everyDay.setValue("");
+                m_everyMonth.selectValue(Month.JANUARY.toString());
+            }
+        }
+
     }
 
     /**
-     * Represents a value change event.<p>
+     * Handler for focus event of an "at" input field.
+     * @param event the focus event.
      */
-    public void fireValueChange() {
+    @UiHandler({"m_atMonth", "m_atDay", "m_atNumber"})
+    void onAtFocus(FocusEvent event) {
 
-        ValueChangeEvent.fire(this, getWeekDays());
+        m_group.selectButton(m_atRadioButton);
     }
 
     /**
-     * Returns the day of month.<p>
-     * @return the day of month
-     * */
-    public String getDayOfMonth() {
+     * Handle day of month change.
+     * @param event the value change event.
+     */
+    @UiHandler("m_everyDay")
+    void onDayOfMonthChange(ValueChangeEvent<String> event) {
 
-        if (m_group.getSelectedButton().equals(m_everyRadioButton)) {
-            return m_everyDay.getText();
-        } else {
-            return m_atNumber.getFormValueAsString();
-        }
+        CmsDebugLog.consoleLog("Day of month change from: " + m_model.getDayOfMonth());
+        m_controller.setDayOfMonth(event.getValue());
+        CmsDebugLog.consoleLog("Day of month change to: " + m_model.getDayOfMonth());
     }
 
     /**
-     * Returns the month.<p>
-     * @return the month
-     * */
-    public String getMonth() {
+     * Handler for focus event of an "every" input field.
+     * @param event the focus event.
+     */
+    @UiHandler({"m_everyMonth", "m_everyDay"})
+    void onEveryFocus(FocusEvent event) {
 
-        if (m_group.getSelectedButton().equals(m_everyRadioButton)) {
-            return m_everyMonth.getFormValueAsString();
-        } else {
-            return m_atMonth.getFormValueAsString();
-        }
-
+        m_group.selectButton(m_everyRadioButton);
     }
 
     /**
-     * Returns the week day.<p>
-     * @return the week day
-     * */
-    public String getWeekDays() {
+     * Handler for month changes.
+     * @param event change event.
+     */
+    @UiHandler({"m_atMonth", "m_everyMonth"})
+    void onMonthChange(ValueChangeEvent<String> event) {
 
-        if (m_group.getSelectedButton().equals(m_everyRadioButton)) {
-            return "-1";
-        } else {
-            return m_atDay.getFormValueAsString();
-        }
-
+        m_controller.setMonth(event.getValue());
     }
 
     /**
-     * Sets the interval.<p>
-     *
-     * @param dayOfMonth the interval
-     * */
-    public void setDayOfMonth(int dayOfMonth) {
+     * Handler for week day changes.
+     * @param event the change event.
+     */
+    @UiHandler("m_atDay")
+    void onWeekDayChange(ValueChangeEvent<String> event) {
 
-        if (m_group.getSelectedButton().equals(m_everyRadioButton)) {
-            m_everyDay.setText(dayOfMonth + "");
-        } else {
-            m_atNumber.selectValue(dayOfMonth + "");
-        }
-
+        m_controller.setWeekDay(event.getValue());
     }
 
     /**
-     * Sets the month.<p>
-     * @param month the month
-     * */
-    public void setMonth(int month) {
+     * Handler for week of month changes.
+     * @param event the change event.
+     */
+    @UiHandler("m_atNumber")
+    void onWeekOfMonthChange(ValueChangeEvent<String> event) {
 
-        if (m_group.getSelectedButton().equals(m_everyRadioButton)) {
-            m_everyMonth.selectValue(month + "");
-        } else {
-            m_atMonth.selectValue(month + "");
-        }
-
-    }
-
-    /**
-     * Sets the week day.<p>
-     *
-     *  @param weekDay the week day
-     * */
-    public void setWeekDay(int weekDay) {
-
-        if (weekDay == -1) {
-            m_group.selectButton(m_everyRadioButton);
-        } else {
-            m_group.selectButton(m_atRadioButton);
-            m_atDay.selectValue(weekDay + "");
-        }
-
+        m_controller.setWeekOfMonth(event.getValue());
     }
 
     /**
@@ -233,56 +239,66 @@ public class CmsPatternPanelYearly extends Composite implements HasValueChangeHa
             org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
         m_atNumber.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atNumber.setWidth("80px");
-        m_atNumber.addOption("1", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_1_0));
-        m_atNumber.addOption("2", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_2_0));
-        m_atNumber.addOption("3", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_3_0));
-        m_atNumber.addOption("4", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_4_0));
-        m_atNumber.addOption("5", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_5_0));
+        m_atNumber.addOption(
+            WeekOfMonth.FIRST.toString(),
+            Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_1_0));
+        m_atNumber.addOption(
+            WeekOfMonth.SECOND.toString(),
+            Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_2_0));
+        m_atNumber.addOption(
+            WeekOfMonth.THIRD.toString(),
+            Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_3_0));
+        m_atNumber.addOption(
+            WeekOfMonth.FOURTH.toString(),
+            Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_4_0));
+        m_atNumber.addOption(
+            WeekOfMonth.LAST.toString(),
+            Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_5_0));
         m_atDay.getOpener().setStyleName(
             org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
         m_atDay.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atDay.setWidth("100px");
-        m_atDay.addOption("1", Messages.get().key(Messages.GUI_SERIALDATE_DAY_SUNDAY_0));
-        m_atDay.addOption("2", Messages.get().key(Messages.GUI_SERIALDATE_DAY_MONDAY_0));
-        m_atDay.addOption("3", Messages.get().key(Messages.GUI_SERIALDATE_DAY_TUESDAY_0));
-        m_atDay.addOption("4", Messages.get().key(Messages.GUI_SERIALDATE_DAY_WEDNESDAY_0));
-        m_atDay.addOption("5", Messages.get().key(Messages.GUI_SERIALDATE_DAY_THURSDAY_0));
-        m_atDay.addOption("6", Messages.get().key(Messages.GUI_SERIALDATE_DAY_FRIDAY_0));
-        m_atDay.addOption("7", Messages.get().key(Messages.GUI_SERIALDATE_DAY_SATURDAY_0));
+        m_atDay.addOption(WeekDay.SUNDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_SUNDAY_0));
+        m_atDay.addOption(WeekDay.MONDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_MONDAY_0));
+        m_atDay.addOption(WeekDay.TUESDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_TUESDAY_0));
+        m_atDay.addOption(WeekDay.WEDNESDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_WEDNESDAY_0));
+        m_atDay.addOption(WeekDay.THURSDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_THURSDAY_0));
+        m_atDay.addOption(WeekDay.FRIDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_FRIDAY_0));
+        m_atDay.addOption(WeekDay.SATURDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_SATURDAY_0));
 
         m_atMonth.getOpener().setStyleName(
             org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
         m_everyMonth.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atMonth.setWidth("100px");
-        m_atMonth.addOption("0", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JAN_0));
-        m_atMonth.addOption("1", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_FEB_0));
-        m_atMonth.addOption("2", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_MAR_0));
-        m_atMonth.addOption("3", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_APR_0));
-        m_atMonth.addOption("4", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_MAY_0));
-        m_atMonth.addOption("5", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JUN_0));
-        m_atMonth.addOption("6", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JUL_0));
-        m_atMonth.addOption("7", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_AUG_0));
-        m_atMonth.addOption("8", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_SEP_0));
-        m_atMonth.addOption("9", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_OCT_0));
-        m_atMonth.addOption("10", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_NOV_0));
-        m_atMonth.addOption("11", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_DEC_0));
+        m_atMonth.addOption(Month.JANUARY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JAN_0));
+        m_atMonth.addOption(Month.FEBRUARY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_FEB_0));
+        m_atMonth.addOption(Month.MARCH.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_MAR_0));
+        m_atMonth.addOption(Month.APRIL.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_APR_0));
+        m_atMonth.addOption(Month.MAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_MAY_0));
+        m_atMonth.addOption(Month.JUNE.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JUN_0));
+        m_atMonth.addOption(Month.JULY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JUL_0));
+        m_atMonth.addOption(Month.AUGUST.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_AUG_0));
+        m_atMonth.addOption(Month.SEPTEMBER.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_SEP_0));
+        m_atMonth.addOption(Month.OCTOBER.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_OCT_0));
+        m_atMonth.addOption(Month.NOVEMBER.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_NOV_0));
+        m_atMonth.addOption(Month.DECEMBER.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_DEC_0));
 
         m_everyMonth.getOpener().setStyleName(
             org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
         m_everyMonth.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_everyMonth.setWidth("100px");
-        m_everyMonth.addOption("0", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JAN_0));
-        m_everyMonth.addOption("1", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_FEB_0));
-        m_everyMonth.addOption("2", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_MAR_0));
-        m_everyMonth.addOption("3", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_APR_0));
-        m_everyMonth.addOption("4", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_MAY_0));
-        m_everyMonth.addOption("5", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JUN_0));
-        m_everyMonth.addOption("6", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JUL_0));
-        m_everyMonth.addOption("7", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_AUG_0));
-        m_everyMonth.addOption("8", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_SEP_0));
-        m_everyMonth.addOption("9", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_OCT_0));
-        m_everyMonth.addOption("10", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_NOV_0));
-        m_everyMonth.addOption("11", Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_DEC_0));
+        m_everyMonth.addOption(Month.JANUARY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JAN_0));
+        m_everyMonth.addOption(Month.FEBRUARY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_FEB_0));
+        m_everyMonth.addOption(Month.MARCH.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_MAR_0));
+        m_everyMonth.addOption(Month.APRIL.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_APR_0));
+        m_everyMonth.addOption(Month.MAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_MAY_0));
+        m_everyMonth.addOption(Month.JUNE.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JUN_0));
+        m_everyMonth.addOption(Month.JULY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_JUL_0));
+        m_everyMonth.addOption(Month.AUGUST.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_AUG_0));
+        m_everyMonth.addOption(Month.SEPTEMBER.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_SEP_0));
+        m_everyMonth.addOption(Month.OCTOBER.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_OCT_0));
+        m_everyMonth.addOption(Month.NOVEMBER.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_NOV_0));
+        m_everyMonth.addOption(Month.DECEMBER.toString(), Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_DEC_0));
 
     }
 

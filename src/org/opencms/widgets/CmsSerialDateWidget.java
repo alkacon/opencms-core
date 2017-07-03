@@ -100,7 +100,7 @@ public class CmsSerialDateWidget extends A_CmsWidget implements I_CmsADEWidget {
     }
 
     /**
-     * @see org.opencms.widgets.CmsCalendarWidget#getInitCall()
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
      */
     @Override
     public String getInitCall() {
@@ -109,7 +109,7 @@ public class CmsSerialDateWidget extends A_CmsWidget implements I_CmsADEWidget {
     }
 
     /**
-     * @see org.opencms.widgets.CmsCalendarWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
      */
     @Override
     public List<String> getJavaScriptResourceLinks(CmsObject cms) {

@@ -27,48 +27,57 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import org.opencms.acacia.shared.I_CmsSerialDateValue;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
 import org.opencms.ade.contenteditor.client.Messages;
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The monthly pattern panel.<p>
  * */
-public class CmsPatternPanelMonthly extends Composite implements HasValueChangeHandlers<String> {
+public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternView {
 
     /** The UI binder interface. */
     interface I_CmsPatternPanelMonthlyUiBinder extends UiBinder<HTMLPanel, CmsPatternPanelMonthly> {
         // nothing to do
     }
 
+    /** Name of the "every x. day in month" radio button. */
+    private static final String DAYS_RADIOBUTTON = "everyday";
+
+    /** Name of the "at weeks" radio button. */
+    private static final String WEEKS_RADIOBUTTON = "workingday";
+
     /** The UI binder instance. */
     private static I_CmsPatternPanelMonthlyUiBinder uiBinder = GWT.create(I_CmsPatternPanelMonthlyUiBinder.class);
 
-    /** The select box for the day selection. */
-    @UiField
-    CmsSelectBox m_atDay;
+    /** Checkboxes for the week days. */
+    List<CmsCheckBox> m_checkboxes = new ArrayList<CmsCheckBox>(I_CmsSerialDateValue.NUM_OF_WEEKDAYS);
 
-    /** The select box for the month selection. */
-    @UiField
-    TextBox m_atMonth;
-    /** The select box for the nummeric selection. */
-    @UiField
-    CmsSelectBox m_atWeek;
+    /* UI elements for "every day". */
 
     /** The day month radio button. */
     @UiField(provided = true)
@@ -88,199 +97,202 @@ public class CmsPatternPanelMonthly extends Composite implements HasValueChangeH
     @UiField
     Element m_labelEvery;
 
-    /** The month label. */
-    @UiField
-    Element m_labelMonth;
-
     /** The months label. */
     @UiField
-    Element m_labelMonths;
+    Element m_everyLabelMonth;
+
+    /* UI elements for "at week day". */
 
     /** The week day month radio button. */
     @UiField(provided = true)
     CmsRadioButton m_weekDayMonthRadioButton;
 
-    /** Group off all radio buttons. */
-    private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
+    /** The select box for the numeric selection. */
+    @UiField
+    FlowPanel m_weekPanel;
 
-    /** The value change handler. */
-    private ValueChangeHandler<String> m_handler;
+    /** The select box for the day selection. */
+    @UiField
+    CmsSelectBox m_atDay;
+
+    /** The select box for the month selection. */
+    @UiField
+    TextBox m_atMonth;
+
+    /** The month label. */
+    @UiField
+    Element m_atLabelMonth;
+
+    /** Group off all radio buttons. */
+    CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
+
+    /** The model to read the data from. */
+    private final I_CmsObservableSerialDateValue m_model;
+    /** The controller to handle changes. */
+    final CmsPatternPanelMonthlyController m_controller;
 
     /**
      * Default constructor to create the panel.<p>
-     * @param labels JSON of all needed labels
+     * @param controller the controller that handles value changes.
+     * @param model the model that provides the values.
      */
-    public CmsPatternPanelMonthly() {
+    public CmsPatternPanelMonthly(CmsPatternPanelMonthlyController controller, I_CmsObservableSerialDateValue model) {
+        m_controller = controller;
+        m_model = model;
+        m_model.registerValueChangeObserver(this);
 
         m_dayMonthRadioButton = new CmsRadioButton(
-            "sel1",
+            DAYS_RADIOBUTTON,
             Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTHDAY_AT_0));
         m_dayMonthRadioButton.setGroup(m_group);
         m_dayMonthRadioButton.setChecked(true);
         m_weekDayMonthRadioButton = new CmsRadioButton(
-            "sel2",
+            WEEKS_RADIOBUTTON,
             Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_WEEKDAY_AT_0));
         m_weekDayMonthRadioButton.setGroup(m_group);
         m_group.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                fireValueChange();
+                m_controller.setPatternScheme(event.getValue().equals(m_weekDayMonthRadioButton.getName()));
             }
         });
         initWidget(uiBinder.createAndBindUi(this));
 
+        fillWeekPanel();
         m_everyDay.setText("1");
         m_labelDays.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTHDAY_DAY_EVERY_0));
         m_everyMonth.setText("1");
-        m_labelMonths.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTH_0));
+        m_everyLabelMonth.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTH_0));
 
         m_labelEvery.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_WEEKDAY_EVERY_0));
-        m_labelMonth.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTH_0));
+        m_atLabelMonth.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTH_0));
         m_atMonth.setText("1");
         initSelectBoxes();
     }
 
     /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDateValueChangeObserver#onValueChange()
      */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+    public void onValueChange() {
 
-        m_handler = handler;
-        m_atWeek.addValueChangeHandler(m_handler);
-        m_atDay.addValueChangeHandler(m_handler);
-        m_atMonth.addValueChangeHandler(m_handler);
-        m_everyDay.addValueChangeHandler(m_handler);
-        m_everyMonth.addValueChangeHandler(m_handler);
-        return addHandler(handler, ValueChangeEvent.getType());
+        if (m_model.getPatternType().equals(PatternType.MONTHLY)) {
+            if (null == m_model.getWeekDay()) {
+                m_group.selectButton(m_dayMonthRadioButton);
+                m_everyDay.setValue("" + m_model.getDayOfMonth());
+                m_everyMonth.setValue("" + m_model.getInterval());
+                m_atMonth.setValue("");
+                m_atDay.selectValue(WeekDay.SUNDAY.toString());
+                checkExactlyTheWeeksCheckBoxes(Collections.EMPTY_LIST);
+            } else {
+                m_group.selectButton(m_weekDayMonthRadioButton);
+                m_atMonth.setValue("" + m_model.getInterval());
+                m_atDay.selectValue(m_model.getWeekDay().toString());
+                checkExactlyTheWeeksCheckBoxes(m_model.getWeeksOfMonth());
+                m_everyDay.setValue("");
+                m_everyMonth.setValue("");
+            }
+        }
+
     }
 
     /**
-     * Represents a value change event.<p>
+     * Handles "at" input field focus.
+     * @param event the focus event.
      */
-    public void fireValueChange() {
+    @UiHandler({"m_atDay", "m_atMonth"})
+    void onAtFocus(FocusEvent event) {
 
-        ValueChangeEvent.fire(this, getWeekDays());
+        m_group.selectButton(m_weekDayMonthRadioButton);
     }
 
     /**
-     * Returns the day of month.<p>
-     * @return the day of month
+     * Handles the every day change event.<p>
      *
-     * */
-    public String getDayOfMonth() {
-
-        if (m_group.getSelectedButton() == m_dayMonthRadioButton) {
-            return m_everyDay.getText();
-        } else {
-            return m_atWeek.getFormValueAsString();
-        }
-    }
-
-    /**
-     * Returns the interval.<p>
-     * @return the interval
-     * */
-    public String getInterval() {
-
-        if (m_group.getSelectedButton() == m_dayMonthRadioButton) {
-            return m_everyMonth.getText();
-        } else {
-            return m_atMonth.getText();
-        }
-    }
-
-    /**
-     * Returns the week day.<p>
-     * @return the week day
-     * */
-    public String getWeekDays() {
-
-        if (m_group.getSelectedButton() == m_dayMonthRadioButton) {
-            return "-1";
-        } else {
-            return m_atDay.getFormValueAsString();
-        }
-    }
-
-    /**
-     * Handles the at month key press event.<p>
-     *
-     * @param event the key press event
-     */
-    @UiHandler("m_atMonth")
-    public void onAtMonthKeyPress(KeyPressEvent event) {
-
-        fireValueChange();
-
-    }
-
-    /**
-     * Handles the every day key press event.<p>
-     *
-     * @param event the key press event
+     * @param event the change event
      */
     @UiHandler("m_everyDay")
-    public void onEveryDayKeyPress(KeyPressEvent event) {
+    void onEveryDayValueChange(ValueChangeEvent<String> event) {
 
-        fireValueChange();
+        m_controller.setDayOfMonth(event.getValue());
 
     }
 
     /**
-     * Handles the every month key press event.<p>
+     * Handles "every" input field focus.
+     * @param event the focus event.
+     */
+    @UiHandler({"m_everyDay", "m_everyMonth"})
+    void onEveryFocus(FocusEvent event) {
+
+        m_group.selectButton(m_dayMonthRadioButton);
+    }
+
+    /**
+     * Handles interval changes.<p>
      *
-     * @param event the key press event
+     * @param event the value change event
      */
-    @UiHandler("m_everyMonth")
-    public void onEveryMonthKeyPress(KeyPressEvent event) {
+    @UiHandler({"m_atMonth", "m_everyMonth"})
+    void onIntervalValueChange(ValueChangeEvent<String> event) {
 
-        fireValueChange();
+        m_controller.setInterval(event.getValue());
 
     }
 
     /**
-     * Sets the day of month.<p>
-     * @param dayOfMonthStr the day of month
+     * Handles week day changes.
+     * @param event the change event.
      */
-    public void setDayOfMonth(int dayOfMonthStr) {
+    @UiHandler("m_atDay")
+    void onWeekDayChange(ValueChangeEvent<String> event) {
 
-        if (m_group.getSelectedButton() == m_dayMonthRadioButton) {
-            m_everyDay.setText(dayOfMonthStr + "");
-        } else {
-            m_atWeek.selectValue(dayOfMonthStr + "");
-        }
+        m_controller.setWeekDay(event.getValue());
+    }
+
+    /**
+     * Creates a check box and adds it to the week panel and the checkboxes.
+     * @param internalValue the internal value of the checkbox
+     * @param labelMessageKey key for the label of the checkbox
+     */
+    private void addCheckBox(final String internalValue, String labelMessageKey) {
+
+        CmsCheckBox box = new CmsCheckBox(Messages.get().key(labelMessageKey));
+        box.setInternalValue(internalValue);
+        box.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+
+                m_controller.weeksChange(internalValue, event.getValue());
+                m_group.selectButton(m_weekDayMonthRadioButton);
+            }
+        });
+        m_weekPanel.add(box);
+        m_checkboxes.add(box);
 
     }
 
     /**
-     * Sets the interval.<p>
-     * @param intervalStr the interval
+     * Check exactly the week check-boxes representing the given weeks.
+     * @param weeksToCheck the weeks selected.
      */
-    public void setInterval(String intervalStr) {
+    private void checkExactlyTheWeeksCheckBoxes(Collection<WeekOfMonth> weeksToCheck) {
 
-        if (m_group.getSelectedButton() == m_dayMonthRadioButton) {
-            m_everyMonth.setText(intervalStr);
-        } else {
-            m_atMonth.setText(intervalStr);
+        for (CmsCheckBox cb : m_checkboxes) {
+            cb.setChecked(weeksToCheck.contains(WeekOfMonth.valueOf(cb.getInternalValue())));
         }
-
     }
 
     /**
-     * Sets the week day.<p>
-     *
-     * @param weekDayStr the week day
-     * */
-    public void setWeekDay(int weekDayStr) {
+     * Fills the week panel with checkboxes.
+     */
+    private void fillWeekPanel() {
 
-        if (weekDayStr == -1) {
-            m_group.selectButton(m_dayMonthRadioButton);
-        } else {
-            m_group.selectButton(m_weekDayMonthRadioButton);
-            m_atDay.selectValue(weekDayStr + "");
-        }
-
+        addCheckBox(WeekOfMonth.FIRST.toString(), Messages.GUI_SERIALDATE_WEEKDAYNUMBER_1_0);
+        addCheckBox(WeekOfMonth.SECOND.toString(), Messages.GUI_SERIALDATE_WEEKDAYNUMBER_2_0);
+        addCheckBox(WeekOfMonth.THIRD.toString(), Messages.GUI_SERIALDATE_WEEKDAYNUMBER_3_0);
+        addCheckBox(WeekOfMonth.FOURTH.toString(), Messages.GUI_SERIALDATE_WEEKDAYNUMBER_4_0);
+        addCheckBox(WeekOfMonth.LAST.toString(), Messages.GUI_SERIALDATE_WEEKDAYNUMBER_5_0);
     }
 
     /**
@@ -288,26 +300,16 @@ public class CmsPatternPanelMonthly extends Composite implements HasValueChangeH
      * */
     private void initSelectBoxes() {
 
-        m_atWeek.getOpener().setStyleName(
-            org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_atWeek.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
-        m_atWeek.addOption("1", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_1_0));
-        m_atWeek.addOption("2", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_2_0));
-        m_atWeek.addOption("3", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_3_0));
-        m_atWeek.addOption("4", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_4_0));
-        m_atWeek.addOption("5", Messages.get().key(Messages.GUI_SERIALDATE_WEEKDAYNUMBER_5_0));
-        m_atWeek.setWidth("80px");
-
         m_atDay.getOpener().setStyleName(
             org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
         m_atDay.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
-        m_atDay.addOption("1", Messages.get().key(Messages.GUI_SERIALDATE_DAY_SUNDAY_0));
-        m_atDay.addOption("2", Messages.get().key(Messages.GUI_SERIALDATE_DAY_MONDAY_0));
-        m_atDay.addOption("3", Messages.get().key(Messages.GUI_SERIALDATE_DAY_TUESDAY_0));
-        m_atDay.addOption("4", Messages.get().key(Messages.GUI_SERIALDATE_DAY_WEDNESDAY_0));
-        m_atDay.addOption("5", Messages.get().key(Messages.GUI_SERIALDATE_DAY_THURSDAY_0));
-        m_atDay.addOption("6", Messages.get().key(Messages.GUI_SERIALDATE_DAY_FRIDAY_0));
-        m_atDay.addOption("7", Messages.get().key(Messages.GUI_SERIALDATE_DAY_SATURDAY_0));
+        m_atDay.addOption(WeekDay.SUNDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_SUNDAY_0));
+        m_atDay.addOption(WeekDay.MONDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_MONDAY_0));
+        m_atDay.addOption(WeekDay.TUESDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_TUESDAY_0));
+        m_atDay.addOption(WeekDay.WEDNESDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_WEDNESDAY_0));
+        m_atDay.addOption(WeekDay.THURSDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_THURSDAY_0));
+        m_atDay.addOption(WeekDay.FRIDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_FRIDAY_0));
+        m_atDay.addOption(WeekDay.SATURDAY.toString(), Messages.get().key(Messages.GUI_SERIALDATE_DAY_SATURDAY_0));
         m_atDay.setWidth("100px");
     }
 

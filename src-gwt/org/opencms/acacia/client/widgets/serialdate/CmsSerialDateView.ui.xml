@@ -1,0 +1,72 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox"
+	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate">	
+	<ui:style>
+	</ui:style>
+	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
+	<g:VerticalPanel width="100%">
+		<g:FlowPanel ui:field="m_deactivationPanel"><g:Label ui:field="m_deactivationText"></g:Label></g:FlowPanel>
+		<cmsi:CmsErrorWidget ui:field="m_errorWidget" />
+		<cms:CmsFieldSet ui:field="m_datesPanel" width="100%">
+			<g:HorizontalPanel width="100%">
+				<g:cell>
+					<g:HorizontalPanel verticalAlignment="ALIGN_MIDDLE">
+						<g:Label ui:field="m_startLabel"></g:Label>
+						<cmsd:CmsDateBox ui:field="m_startTime" styleName="{widgets.widgetCss.calendarStyle}"/>
+					</g:HorizontalPanel>
+				</g:cell>
+				<g:cell>
+					<g:HorizontalPanel>
+						<g:Label ui:field="m_endLabel"></g:Label>
+						<cmsd:CmsDateBox ui:field="m_endTime" styleName="{widgets.widgetCss.calendarStyle}" />
+					</g:HorizontalPanel>
+				</g:cell>
+				<g:cell>
+					<cmsi:CmsCheckBox ui:field="m_wholeDayCheckBox" styleName="{widgets.widgetCss.checkBoxStyle}" />
+				</g:cell>
+				<g:cell>
+					<cmsi:CmsCheckBox ui:field="m_seriesCheckBox" styleName="{widgets.widgetCss.checkBoxStyle}" />
+				</g:cell>
+			</g:HorizontalPanel>
+		</cms:CmsFieldSet>
+		<cms:CmsFieldSet ui:field="m_serialOptionsPanel" width="100%">
+			<g:VerticalPanel width="100%">
+				<cms:CmsFieldSet ui:field="m_patternPanel" width="100%">
+					<g:HorizontalPanel width="100%">
+						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" styleName="{widgets.widgetCss.radioButtonPanel}" width="250px" />
+						<g:SimplePanel ui:field="m_patternOptions" width="100%"/>
+					</g:HorizontalPanel>
+				</cms:CmsFieldSet>
+				<cms:CmsFieldSet ui:field="m_durationPanel" width="100%">
+					<g:HorizontalPanel width="100%">
+						<g:cell width="50%">
+							<g:HorizontalPanel styleName="{widgets.widgetCss.radioButtonPanel}">
+								<cmsi:CmsRadioButton ui:field="m_endsAfterRadioButton" />
+								<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_occurrences" /></g:FlowPanel>
+							</g:HorizontalPanel>
+						</g:cell>
+						<g:cell width="50%">
+							<g:HorizontalPanel styleName="{widgets.widgetCss.radioButtonPanel}">
+								<cmsi:CmsRadioButton ui:field="m_endsAtRadioButton"/>
+								<cmsd:CmsDateBox ui:field="m_seriesEndDate" styleName="{widgets.widgetCss.calendarStyle}" />
+							</g:HorizontalPanel>
+						</g:cell>
+					</g:HorizontalPanel>
+				</cms:CmsFieldSet>
+				<cms:CmsFieldSet ui:field="m_exceptionsPanel">
+					<g:FlowPanel>
+						<cmsw:CmsCheckableDatePanel ui:field="m_exceptionsList"></cmsw:CmsCheckableDatePanel>
+						<cms:CmsPushButton ui:field="m_removeExceptionsButton" />
+					</g:FlowPanel>
+				</cms:CmsFieldSet>
+				<g:FlowPanel width="100%">
+					<cms:CmsPushButton ui:field="m_manageExceptionsButton"/>
+				</g:FlowPanel>
+			</g:VerticalPanel>
+		</cms:CmsFieldSet>
+	</g:VerticalPanel>
+</ui:UiBinder>

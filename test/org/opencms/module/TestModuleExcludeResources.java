@@ -28,8 +28,6 @@
 package org.opencms.module;
 
 import org.opencms.file.CmsObject;
-import org.opencms.importexport.CmsImportParameters;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -142,49 +140,6 @@ public class TestModuleExcludeResources extends OpenCmsTestCase {
     public void testModuleExcludeResourcesSitePath() {
 
         testModuleExcludeResources("/sites/default/");
-
-    }
-
-    /** Helper for importing modules from the package path.
-     * The module .zip files must be named <code>modulename + ".zip"</code>.
-     * @param cms the {@link CmsObject} used for the import
-     * @param moduleName the name of the module to import
-     * @return <code>true</code> if the import was successful, otherwise <code>false</code>.
-     * @throws CmsException can be thrown for several reasons
-     */
-    private boolean importModule(CmsObject cms, String moduleName) throws CmsException {
-
-        return importModule(cms, moduleName, "", "");
-    }
-
-    /** Helper for importing modules.
-     * Modules are imported from the package path's subfolder specified by <code>subfolder</code>.
-     * The module's .zip file must be named <code>moduleName + suffix + ".zip"</code>
-     * @param cms the {@link CmsObject} used for the import
-     * @param moduleName the name of the module to import
-     * @param suffix a suffix on the module's .zip file, that has to be named <code>moduleName + suffix + ".zip"</code>
-     * @param subfolder a subfolder of the package path, where the module .zip is located (without leading and trailing "/")
-     * @return <code>true</code> if the import was successful, otherwise <code>false</code>.
-     * @throws CmsException can be thrown for several reasons
-     */
-    private boolean importModule(CmsObject cms, String moduleName, String suffix, String subfolder)
-    throws CmsException {
-
-        echo("Importing module " + moduleName + "...");
-
-        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            "packages/" + subfolder + "/" + moduleName + suffix + ".zip");
-        OpenCms.getImportExportManager().importData(
-            cms,
-            new CmsShellReport(cms.getRequestContext().getLocale()),
-            new CmsImportParameters(moduleFile, "/", true));
-
-        // basic check if the module was imported correctly
-        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
-            fail("Module '" + moduleName + "' was not imported!");
-            return false;
-        }
-        return true;
 
     }
 

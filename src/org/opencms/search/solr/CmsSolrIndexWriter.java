@@ -36,8 +36,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.fields.CmsSearchField;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrClient;
@@ -159,7 +161,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                         resource.getRootPath(),
                         m_index.getName(),
                         m_index.getPath()));
-                m_server.deleteById(resource.getStructureId().toString(), m_commitMs);
+                m_server.deleteByQuery("id:" + resource.getStructureId().toString(), m_commitMs);
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             } catch (SolrException e) {
@@ -197,11 +199,38 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                             rootPath,
                             m_index.getName(),
                             m_index.getPath()));
-                    m_server.add((SolrInputDocument)document.getDocument(), m_commitMs);
+                    addDocumentInstances(document);
                 } catch (SolrServerException e) {
                     throw new IOException(e.getLocalizedMessage(), e);
                 }
             }
         }
+    }
+
+    /**
+     * Adds Solr documents to the index for the {@link I_CmsSearchDocument}.
+     * Documents for serial dates are added for each occurrence once with the date of the respective occurrence.
+     * @param document the document for the indexed resource
+     * @throws SolrServerException thrown if adding the document to the index fails
+     * @throws IOException thrown if adding the document to the index fails
+     */
+    private void addDocumentInstances(I_CmsSearchDocument document) throws SolrServerException, IOException {
+
+        List<String> serialDates = document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_SERIAL_DATE_DATES);
+        SolrInputDocument inputDoc = (SolrInputDocument)document.getDocument();
+        String id = inputDoc.getFieldValue(CmsSearchField.FIELD_ID).toString();
+        if ((null != serialDates) && (serialDates.size() > 0)) {
+            int i = 1;
+            for (String date : serialDates) {
+                inputDoc.setField(CmsSearchField.FIELD_SERIAL_DATE_DATE, date);
+                String newId = id + String.format("-%04d", Integer.valueOf(i++));
+                inputDoc.setField(CmsSearchField.FIELD_SOLR_ID, newId);
+                m_server.add(inputDoc, m_commitMs);
+            }
+        } else {
+            inputDoc.setField(CmsSearchField.FIELD_SOLR_ID, id);
+            m_server.add(inputDoc, m_commitMs);
+        }
+
     }
 }
