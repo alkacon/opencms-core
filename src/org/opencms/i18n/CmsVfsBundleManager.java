@@ -107,12 +107,6 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
     /** The logger instance for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsVfsBundleManager.class);
 
-    /** Thread generation counter. */
-    private int m_threadCount;
-
-    /** Indicated if a reload is already scheduled. */
-    private boolean m_reloadIsScheduled;
-
     /** The set of bundle base names. */
     private Set<String> m_bundleBaseNames;
 
