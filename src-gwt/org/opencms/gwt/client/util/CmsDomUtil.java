@@ -498,6 +498,9 @@ public final class CmsDomUtil {
     /** The dynamic style sheet object. */
     private static JavaScriptObject m_dynamicStyleSheet;
 
+    /** Stores the scroll bar width measurement. */
+    private static int m_scrollbarWidth = -1;
+
     /**
      * Hidden constructor.<p>
      */
@@ -1405,6 +1408,24 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Returns the content height of the given iFrame element.<p>
+     *
+     * @param iframe the iFrame element
+     *
+     * @return the content height
+     */
+    public static native int getIFrameContentHeight(Element iframe)/*-{
+        var doc = iframe.contentDocument ? iframe.contentDocument
+                : iframe.contentWindow.document;
+        var body = doc.body;
+        var html = doc.documentElement;
+        var height = Math.max(body.scrollHeight, body.offsetHeight,
+                              html.clientHeight, html.scrollHeight,
+                              html.offsetHeight);
+        return height;
+    }-*/;
+
+    /**
      * Returns the element position relative to its siblings.<p>
      *
      * @param e the element to get the position for
@@ -1472,6 +1493,23 @@ public final class CmsDomUtil {
     public static int getRelativeY(int y, Element target) {
 
         return (y - target.getAbsoluteTop()) + /* target.getScrollTop() +*/target.getOwnerDocument().getScrollTop();
+    }
+
+    /**
+     * Measures the scroll bar width.<p>
+     *
+     * @return the scroll bar width
+     */
+    public static int getScrollbarWidth() {
+
+        if (m_scrollbarWidth == -1) {
+            Element div = DOM.createDiv();
+            div.setAttribute("style", "width:100px; height:100px; overflow: scroll; position:absolute; top:-9999px;");
+            RootPanel.getBodyElement().appendChild(div);
+            m_scrollbarWidth = div.getOffsetWidth() - div.getClientWidth();
+            div.removeFromParent();
+        }
+        return m_scrollbarWidth;
     }
 
     /**

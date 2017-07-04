@@ -27,6 +27,8 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.gwt.client.util.CmsDomUtil;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
@@ -71,8 +73,8 @@ public class CmsClientVariantFrame extends Composite {
      */
     public CmsClientVariantFrame(
         String url,
-        int width,
-        int height,
+        final int width,
+        final int height,
         final CmsContainerpageHandler containerpageHandler) {
 
         initWidget(uiBinder.createAndBindUi(this));
@@ -90,7 +92,16 @@ public class CmsClientVariantFrame extends Composite {
                 m_iframePlaceholder.removeFromParent();
                 m_iframe.getElement().getStyle().setVisibility(com.google.gwt.dom.client.Style.Visibility.VISIBLE);
                 containerpageHandler.deactivateSelection();
-
+                // on mobile devices scroll bars are not shown,
+                // in case the content height is greater than the configured screen height
+                // increase the screen width by the measured scroll bar width to simulate the configured width
+                int contentHeight = CmsDomUtil.getIFrameContentHeight(m_iframe.getElement());
+                if (contentHeight > height) {
+                    int scrollBarWidth = CmsDomUtil.getScrollbarWidth();
+                    if (scrollBarWidth > 0) {
+                        m_iframeContainer.setWidth((width + scrollBarWidth) + "px");
+                    }
+                }
             }
         });
         m_iframeContainer.add(m_iframe);
