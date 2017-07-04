@@ -533,7 +533,7 @@ public final class CmsContainerpageController {
             }
             addElements(result);
             Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> it = getAllDragElements().iterator();
-            final boolean[] reloadMarkerFound = {false};
+            boolean reloadMarkerFound = false;
             while (it.hasNext()) {
                 org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement = it.next();
                 if (!m_clientIds.contains(containerElement.getId())) {
@@ -542,9 +542,9 @@ public final class CmsContainerpageController {
                 try {
                     CmsContainerPageElementPanel replacer = replaceContainerElement(
                         containerElement,
-                        m_elements.get(containerElement.getId()));
+                        result.get(containerElement.getId()));
                     if (replacer.getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER)) {
-                        reloadMarkerFound[0] = true;
+                        reloadMarkerFound = true;
                     }
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine("trying to replace");
@@ -556,7 +556,7 @@ public final class CmsContainerpageController {
                 getGroupEditor().updateBackupElements(result);
                 getGroupcontainer().refreshHighlighting();
             } else {
-                if (reloadMarkerFound[0]) {
+                if (reloadMarkerFound) {
                     CmsContainerpageController.get().reloadPage();
                 }
             }
