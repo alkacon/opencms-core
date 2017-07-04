@@ -15,6 +15,24 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 10.5.2 - July 11, 2017
+! Updated TinyMCE to version 4.6.2 to fix issue #508. 
+- Improved copy move dialog to allow renaming of files and improve handling of deleted and unreleased resources.
+- Reduced synchronization to improve performance.
+- Switched LRUMap implementation to improve performance.
+- Improved role inheritance to avoid unnecessary UUID generation to improve performance.
+- Improved workplace bundle access to avoid performance issues.
+- Added option to use multiple workplace server URL.
+- Improved unique file name generator to check for existing online resources too.
+- Changed ADE configuration initialization to be done during context initialization to avoid long response times on first page view.
+* Fixing cross site resource access issues in various workplace dialogs.
+* Fixed permission issue on account manager dialogs, where non account manager users where able to view users list.
+* Fixed issue where closing the HTML source view would introduce additional tags.
+* Fixed issue #478 where validation state was not cleared on editor close.
+* Fixed issue #490 where exceptions where written to the web server log and not to the opencms.log file.
+* Fixed issue #495 where a missing explorer type declaration would cause null pointers in the explorer view.
+* Fixed issue #500 where parsing of the CmsShell command line would fail on special characters by gallardo.
+
 OpenCms 10.5.1 - February 15, 2017
 ! Rewritten and improved source search app.
 ! Rewritten and improved integrated source code editor.
