@@ -148,14 +148,7 @@ public class CmsClientVariantDisplay {
         if (currentUrl.indexOf('?') >= 0) {
             connector = "&";
         }
-        String targetUrl = currentUrl
-            + connector
-            + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-            + "=true"
-            + "&"
-            + CmsGwtConstants.PARAM_TEMPLATE_CONTEXT
-            + "="
-            + context;
+        String targetUrl = currentUrl + connector + CmsGwtConstants.PARAM_TEMPLATE_CONTEXT + "=" + context;
         return targetUrl;
     }
 }
