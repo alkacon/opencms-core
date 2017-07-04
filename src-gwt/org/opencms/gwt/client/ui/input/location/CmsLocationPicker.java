@@ -185,6 +185,16 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
     }
 
     /**
+     * Returns whether the map preview is visible.<p>
+     *
+     * @return <code>true</code> in case the map preview is visible
+     */
+    protected boolean isPreviewVisible() {
+
+        return getElement().hasClassName(I_CmsLayoutBundle.INSTANCE.locationPickerCss().hasPreview());
+    }
+
+    /**
      * Sets the location info to the info panel.<p>
      *
      * @param infos the location info items
