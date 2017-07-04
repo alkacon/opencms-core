@@ -124,13 +124,9 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
             if (isRootPath) {
                 path = path.substring(site.getSiteRoot().length());
             }
-            if (path.indexOf("/") == 0) {
-                path = path.substring(1);
-            }
-
             Locale locale = CmsSingleTreeLocaleHandler.getLocaleFromPath(path);
             if (locale != null) {
-                path = path.substring(locale.toString().length());
+                path = path.substring(locale.toString().length() + 1);
             }
             return cms.getRequestContext().addSiteRoot(site.getSiteRoot(), path);
         } else {

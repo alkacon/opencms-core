@@ -65,13 +65,14 @@ public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsTestCase 
 
         TestSuite suite = new TestSuite();
         suite.addTest(new TestCmsLocalePrefixLinkSubstitutionHandler("testAddVfsPrefix"));
+        suite.addTest(new TestCmsLocalePrefixLinkSubstitutionHandler("testGetRootPath"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/");
+                setupOpenCms("multisite", "/");
                 TreeMap<String, String> parameters = new TreeMap<String, String>();
                 parameters.put("localizationMode", "singleTree");
                 OpenCms.getSiteManager().getSite("/sites/default/", null).setParameters(parameters);
@@ -122,5 +123,54 @@ public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsTestCase 
         assertEquals(defaultPrefix + "/en" + vfsName, result.getFirst());
         assertEquals("?some=value&other=test", result.getSecond());
 
+    }
+
+    /**
+     * Tests root path evaluation.<p
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testGetRootPath() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        //   echo("Testing symmetric link / root path substitution with a custom link handler");
+
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        I_CmsLinkSubstitutionHandler lh = new CmsLocalePrefixLinkSubstitutionHandler();
+        lm.setLinkSubstitutionHandler(cms, lh);
+        testGetRootPath(cms, "/sites/default/index.html");
+        testGetRootPath(cms, "/shared/sharedFile.txt");
+    }
+
+    /**
+     * Tests root path evaluation.<p>
+     *
+     * @param cms the current OpenCms context
+     * @param path the resource path in the VFS to check the links for
+     *
+     * @throws Exception in case the test fails
+     */
+    private void testGetRootPath(CmsObject cms, String path) throws Exception {
+
+        CmsLinkManager lm = OpenCms.getLinkManager();
+
+        // first try: no server info
+        String link = lm.substituteLinkForRootPath(cms, path);
+        String rootPath = lm.getRootPath(cms, link);
+        assertEquals(path, rootPath);
+
+        // second try: with server and protocol
+        link = lm.getServerLink(cms, path);
+        rootPath = lm.getRootPath(cms, link);
+        assertEquals(path, rootPath);
+
+        // test also server links that don't have the locale prefix
+        link = cms.getRequestContext().removeSiteRoot(path);
+        link = OpenCms.getStaticExportManager().getVfsPrefix().concat(link);
+        link = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot()).getServerPrefix(
+            cms,
+            link).concat(link);
+        rootPath = lm.getRootPath(cms, link);
+        assertEquals(path, rootPath);
     }
 }
