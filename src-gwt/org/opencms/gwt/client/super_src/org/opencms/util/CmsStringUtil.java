@@ -31,6 +31,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,6 +55,47 @@ public final class CmsStringUtil {
 
     }
 
+    /**
+     * Returns a string representation for the given array using the given separator.<p>
+     *
+     * @param arg the array to transform to a String
+     * @param separator the item separator
+     *
+     * @return the String of the given array
+     */
+    public static String arrayAsString(final String[] arg, String separator) {
+
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < arg.length; i++) {
+            result.append(arg[i]);
+            if ((i + 1) < arg.length) {
+                result.append(separator);
+            }
+        }
+        return result.toString();
+    }
+    
+    /**
+     * Returns a string representation for the given collection using the given separator.<p>
+     *
+     * @param collection the collection to print
+     * @param separator the item separator
+     *
+     * @return the string representation for the given collection
+     */
+    public static String collectionAsString(Collection<?> collection, String separator) {
+
+        StringBuffer string = new StringBuffer(128);
+        Iterator<?> it = collection.iterator();
+        while (it.hasNext()) {
+            string.append(it.next());
+            if (it.hasNext()) {
+                string.append(separator);
+            }
+        }
+        return string.toString();
+    }
+    
     /**
      * Replaces occurrences of special control characters in the given input with 
      * a HTML representation.<p>
