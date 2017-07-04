@@ -172,6 +172,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
      */
     public static boolean isDirectEditDisabled(ServletRequest request) {
 
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getParameter(CmsGwtConstants.PARAM_TEMPLATE_CONTEXT))) {
+            return true;
+        }
         String disabledParam = request.getParameter(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(disabledParam)) {
             return Boolean.parseBoolean(disabledParam);
