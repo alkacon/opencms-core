@@ -97,6 +97,8 @@ div.locationInfo{
 	left: 0px;
 	right: 0px;
 	bottom: 0px;
+	max-height: 80px;
+	overflow: auto;
 }
 
 div.hasPreview .displayBox {
@@ -107,10 +109,14 @@ div.hasPreview .locationInfo{
 }
 div.locationInfo p{
 	padding: 1px;
+	line-height: 12px;
+	font-size: 10px;
 }
 div.locationInfo span{
 	width: 20%;
 	display: inline-block;
+	line-height: 12px;
+	font-size: 10px;
 }
 
 div.mapPreview {
