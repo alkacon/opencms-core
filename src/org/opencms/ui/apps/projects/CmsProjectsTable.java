@@ -210,6 +210,9 @@ public class CmsProjectsTable extends Table {
         public CmsMenuItemVisibilityMode getVisibility(Set<CmsUUID> data) {
 
             if ((data != null) && (data.size() == 1)) {
+                if (A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                }
                 CmsUUID projectId = data.iterator().next();
                 try {
                     return A_CmsUI.getCmsObject().countLockedResources(projectId) == 0
@@ -261,9 +264,13 @@ public class CmsProjectsTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<CmsUUID> data) {
 
-            return (data != null) && (data.size() == 1)
-            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
-            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            if ((data == null) || (data.size() != 1)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+            if (A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
     }
 
@@ -300,6 +307,9 @@ public class CmsProjectsTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<CmsUUID> data) {
 
+            if (A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             if (data.size() == 1) {
                 CmsUUID projectId = data.iterator().next();
                 try {
