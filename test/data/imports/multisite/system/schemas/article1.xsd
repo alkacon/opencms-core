@@ -1,0 +1,28 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="Articles1" type="OpenCmsArticles1"/>
+	
+	<xsd:complexType name="OpenCmsArticles1">
+		<xsd:sequence>
+			<xsd:element name="Article1" type="OpenCmsArticle1" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsArticle1">
+		<xsd:sequence>
+			<xsd:element name="Text" type="OpenCmsString" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<formatters>
+				<formatter minwidth="1" maxwidth="2" uri="/system/formatters/article1_f1.jsp" searchcontent="false" />
+				<formatter minwidth="3" maxwidth="4" uri="/system/formatters/article1_f2.jsp" searchcontent="true" />
+			</formatters>									
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

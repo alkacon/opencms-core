@@ -1,0 +1,2642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.0.3</opencms_version>
+		<createdate>Thu, 31 Jan 2008 18:05:13 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<accounts>
+		<orgunits>
+			<orgunit>
+				<name/>
+				<description><![CDATA[%(key.GUI_ORGUNIT_ROOT_DESCRIPTION_0)]]></description>
+				<flags>0</flags>
+				<resources>
+					<resource>/</resource>
+				</resources>
+				<groups>
+					<group>
+						<name>Administrators</name>
+						<description><![CDATA[%(key.GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0)]]></description>
+						<flags>1026</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>Guests</name>
+						<description><![CDATA[%(key.GUI_DEFAULTGROUP_ROOT_GUESTS_DESCRIPTION_0)]]></description>
+						<flags>0</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>Projectmanagers</name>
+						<description><![CDATA[%(key.GUI_DEFAULTGROUP_ROOT_PROJMANS_DESCRIPTION_0)]]></description>
+						<flags>9222</flags>
+						<parentgroup>Users</parentgroup>
+					</group>
+					<group>
+						<name>Users</name>
+						<description><![CDATA[%(key.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0)]]></description>
+						<flags>17412</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>group1</name>
+						<description><![CDATA[group1]]></description>
+						<flags>4</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>group2</name>
+						<description><![CDATA[group2]]></description>
+						<flags>6</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>group3</name>
+						<description><![CDATA[group3]]></description>
+						<flags>6</flags>
+						<parentgroup/>
+					</group>
+				</groups>
+				<users>
+					<user>
+						<name>Admin</name>
+						<password><![CDATA[SVNNdktYcFhwYWREaVVvT1NvQWZ3dz09]]></password>
+						<firstname/>
+						<lastname/>
+						<email/>
+						<flags>0</flags>
+						<datecreated>1201796213690</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"/>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0)]]></entry>
+						</userinfo>
+						<userroles>
+							<userrole>ROOT_ADMIN</userrole>
+						</userroles>
+						<usergroups>
+							<usergroup>Administrators</usergroup>
+						</usergroups>
+					</user>
+					<user>
+						<name>Export</name>
+						<password><![CDATA[d24yOTRPSFgvQUZuQ0RLanJSeWZMQT09]]></password>
+						<firstname/>
+						<lastname/>
+						<email/>
+						<flags>0</flags>
+						<datecreated>1201796213721</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"/>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0)]]></entry>
+						</userinfo>
+						<userroles/>
+						<usergroups>
+							<usergroup>Guests</usergroup>
+						</usergroups>
+					</user>
+					<user>
+						<name>Guest</name>
+						<password><![CDATA[MUIyTTJZOEFzZ1RwZ0FtWTdQaENmZz09]]></password>
+						<firstname/>
+						<lastname/>
+						<email/>
+						<flags>0</flags>
+						<datecreated>1201796213674</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"/>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0)]]></entry>
+						</userinfo>
+						<userroles/>
+						<usergroups>
+							<usergroup>Guests</usergroup>
+						</usergroups>
+					</user>
+					<user>
+						<name>test1</name>
+						<password><![CDATA[V2hCZWk1MUE0VEtYZ05ZdW9pWmRpZz09]]></password>
+						<firstname>test1</firstname>
+						<lastname>test1</lastname>
+						<email>test1</email>
+						<flags>0</flags>
+						<datecreated>1201802655761</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"><![CDATA[test1]]></entry>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[test1]]></entry>
+							<entry name="USER_TOWN" type="java.lang.String"><![CDATA[test1]]></entry>
+							<entry name="USER_ZIPCODE" type="java.lang.String"><![CDATA[test1]]></entry>
+						</userinfo>
+						<userroles>
+							<userrole>WORKPLACE_USER</userrole>
+						</userroles>
+						<usergroups>
+							<usergroup>group1</usergroup>
+							<usergroup>Users</usergroup>
+						</usergroups>
+					</user>
+					<user>
+						<name>test2</name>
+						<password><![CDATA[clFJMGdwSUZ1UU14bHJxQmozcUhLdz09]]></password>
+						<firstname>test2</firstname>
+						<lastname>test2</lastname>
+						<email>test2</email>
+						<flags>0</flags>
+						<datecreated>1201802655949</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"><![CDATA[test2]]></entry>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[test2]]></entry>
+							<entry name="USER_TOWN" type="java.lang.String"><![CDATA[test2]]></entry>
+							<entry name="USER_ZIPCODE" type="java.lang.String"><![CDATA[test2]]></entry>
+						</userinfo>
+						<userroles>
+							<userrole>WORKPLACE_USER</userrole>
+						</userroles>
+						<usergroups>
+							<usergroup>group2</usergroup>
+							<usergroup>Users</usergroup>
+						</usergroups>
+					</user>
+				</users>
+			</orgunit>
+		</orgunits>
+	</accounts>
+	<files>
+		<file>
+			<destination>shared</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 14 Oct 2010 08:36:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 09:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties></properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>7</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>shared/sharedFile.txt</source>
+			<destination>shared/sharedFile.txt</destination>
+			<type>plain</type>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:11:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties></properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites</destination>
+			<type>folder</type>
+			<uuidstructure>2864da32-d5e1-11df-bae7-edac56888092</uuidstructure>
+			<datelastmodified>Tue, 12 Oct 2010 09:14:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 09:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default</destination>
+			<type>folder</type>
+			<uuidstructure>28699524-d5e1-11df-bae7-edac56888092</uuidstructure>
+			<datelastmodified>Thu, 14 Oct 2010 08:36:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 09:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/_config/template.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>7</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>sites/default/index.html</source>
+			<destination>sites/default/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7d6c22cd-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>a7b5d298-b3ab-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:11:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Description of the index page]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Index page]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder1</destination>
+			<type>folder</type>
+			<uuidstructure>7dc454f4-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:06:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Folder1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Folder1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/image1.gif</source>
+			<destination>sites/default/folder1/image1.gif</destination>
+			<type>image</type>
+			<uuidstructure>7dd2acd8-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>98a47bf8-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:25:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:116,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/image2.gif</source>
+			<destination>sites/default/folder1/image2.gif</destination>
+			<type>image</type>
+			<uuidstructure>7df1a68c-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>a8c8425b-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:25:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:109,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/index.html</source>
+			<destination>sites/default/folder1/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7e04b960-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>f6b52b85-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:06:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Description of the index page]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Index page]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/page1.html</source>
+			<destination>sites/default/folder1/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7e23b318-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>0f8618fe-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:21:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in folder1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page1]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/page2.html</source>
+			<destination>sites/default/folder1/page2.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7e451dd0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>6726f581-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:23:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in folder1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page2]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/page3.html</source>
+			<destination>sites/default/folder1/page3.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7e5ceb98-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>7c169bd5-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:24:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page3 in folder1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page3]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page3]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/page4.html</source>
+			<destination>sites/default/folder1/page4.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7e726f70-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>7c169bd5-b3ad-11d8-9c65-514d35723fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:24:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page4 in folder1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page4]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page4]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page4]]></value>
+				</property>
+				<property>
+					<name>secure</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder1/subfolder11</destination>
+			<type>folder</type>
+			<uuidstructure>7e8a3d3d-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:35:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:28:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sub11]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subfolder11]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/index.html</source>
+			<destination>sites/default/folder1/subfolder11/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7e8cae41-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>21b6f816-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:29:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the index page of subfolder11]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[The index page in subfolder 11]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/page1.html</source>
+			<destination>sites/default/folder1/subfolder11/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7e9adf19-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:30:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subfolder11]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1 in A]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/page2.html</source>
+			<destination>sites/default/folder1/subfolder11/page2.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>7eb2d3f1-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>8379ac0f-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:31:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in subfolder11]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page2 in A]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder1/subfolder11/subsubfolder111</destination>
+			<type>folder</type>
+			<uuidstructure>7ec104ca-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:32:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:32:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[SubSub111]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[SubSubFolder111]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/subsubfolder111/image.gif</source>
+			<destination>sites/default/folder1/subfolder11/subsubfolder111/image.gif</destination>
+			<type>image</type>
+			<uuidstructure>7ec830be-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>3e0337c4-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:01:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:01:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is an image]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:49]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/subsubfolder111/jsp.jsp</source>
+			<destination>sites/default/folder1/subfolder11/subsubfolder111/jsp.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>7edb4392-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>10d3126e-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:00:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:00:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a JSP]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/subsubfolder111/link</source>
+			<destination>sites/default/folder1/subfolder11/subsubfolder111/link</destination>
+			<type>pointer</type>
+			<uuidstructure>7ee4e087-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>27ca96b1-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:00:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:00:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link to OpenCms.org]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/subsubfolder111/testdata.zip</source>
+			<destination>sites/default/folder1/subfolder11/subsubfolder111/testdata.zip</destination>
+			<type>binary</type>
+			<uuidstructure>7ee99b7a-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>030c0a6c-b3b6-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 10:26:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 10:25:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a binary file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/subsubfolder111/text.txt</source>
+			<destination>sites/default/folder1/subfolder11/subsubfolder111/text.txt</destination>
+			<type>plain</type>
+			<uuidstructure>8297613d-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>015d3f4b-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 08:59:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 08:59:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a Textfile]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder11/subsubfolder111/xml.xml</source>
+			<destination>sites/default/folder1/subfolder11/subsubfolder111/xml.xml</destination>
+			<type>plain</type>
+			<uuidstructure>82bb15e0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>c589e3bf-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:05:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:05:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a XML file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder1/subfolder12</destination>
+			<type>folder</type>
+			<uuidstructure>82d554a4-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:34:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:34:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sub12]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subfolder12]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder12/index.html</source>
+			<destination>sites/default/folder1/subfolder12/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>82da0f98-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>f6cab2ee-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:35:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the index in subfolder12]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3, Key4]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage E]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder1/subfolder12/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>82e86780-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:30:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subfolder12]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder12/page2.html</source>
+			<destination>sites/default/folder1/subfolder12/page2.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>82ef9377-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>3340c0c2-b3af-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:36:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in subfolder12]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder1/subfolder12/subsubfolder121</destination>
+			<type>folder</type>
+			<uuidstructure>83051750-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:44:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:44:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[SubSub121]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subsubfolder121]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder12/subsubfolder121/image1.gif</source>
+			<destination>sites/default/folder1/subfolder12/subsubfolder121/image1.gif</destination>
+			<type>image</type>
+			<uuidstructure>830c4344-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>7a234f2d-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:45:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Not a picture of Cologne]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:116,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder12/subsubfolder121/index.html</source>
+			<destination>sites/default/folder1/subfolder12/subsubfolder121/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>831f5618-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>49c653e7-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:44:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the indext page in folder subsub121]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3, Key4, Key5]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder1/subfolder12/subsubfolder121/page1.html</source>
+			<destination>sites/default/folder1/subfolder12/subsubfolder121/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>832d86f0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>6546bbaa-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:45:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subsubfolder121]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder2</destination>
+			<type>folder</type>
+			<uuidstructure>8347c4b9-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:47:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:47:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.75]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Folder2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Folder2]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/image1.gif</source>
+			<destination>sites/default/folder2/image1.gif</destination>
+			<type>image</type>
+			<uuidstructure>835161ad-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>e913bb0e-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:49:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:116,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/image2.gif</source>
+			<destination>sites/default/folder2/image2.gif</destination>
+			<type>image</type>
+			<uuidstructure>83620381-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>efcac931-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:49:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:109,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/index.html</source>
+			<destination>sites/default/folder2/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>836ba075-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>b3e624e5-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:47:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the index page in folder2]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage D]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>sites/default/folder2/page1.html</source>
+			<destination>sites/default/folder2/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>8388292f-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>161b49c6-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:50:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in folder2]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page1]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>29</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>sites/default/folder2/page2.html</source>
+			<destination>sites/default/folder2/page2.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>8398cb0a-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>193c5fe9-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:50:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in folder2]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page2]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder21</destination>
+			<type>folder</type>
+			<uuidstructure>83a993f3-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:51:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:51:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sub21]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subfolder21]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/subfolder21/image1.gif</source>
+			<destination>sites/default/folder2/subfolder21/image1.gif</destination>
+			<type>image</type>
+			<uuidstructure>83b309d7-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>65e24310-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:52:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:116,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder21/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>83ba35cb-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>b3e624e5-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:47:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the index page in subfolder21]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage A]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder21/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>83c3d2c4-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>161b49c6-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:50:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subfolder21]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page1]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>29</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder21/subsubfolder211</destination>
+			<type>folder</type>
+			<uuidstructure>83dba08f-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:53:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:53:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[SubSub211]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subsubfolder211]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/subfolder21/subsubfolder211/jsp1.jsp</source>
+			<destination>sites/default/folder2/subfolder21/subsubfolder211/jsp1.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>83eeb363-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>9fb0d898-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 10:09:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:54:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jsp1]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/subfolder21/subsubfolder211/jsp2.jsp</source>
+			<destination>sites/default/folder2/subfolder21/subsubfolder211/jsp2.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>8408f228-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>ad2d25ab-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:54:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:54:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jsp2]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[timeout=5]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder22</destination>
+			<type>folder</type>
+			<uuidstructure>84174a0f-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 10:01:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 10:01:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sub22]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subfolder22]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/subfolder22/index.html</source>
+			<destination>sites/default/folder2/subfolder22/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>841e4ef3-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>b82172e0-b3b2-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 10:01:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the index page in subfolder22]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage C]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder22/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>842a5ceb-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:30:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subfolder22]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder22/page2.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>842ca6e2-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>8379ac0f-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:31:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in subfolder22]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/subfolder22/page3.html</source>
+			<destination>sites/default/folder2/subfolder22/page3.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>842f17e9-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>441ba595-b3b3-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 10:05:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page3 in subfolder22]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page3]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page3]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder22/subsubfolder221</destination>
+			<type>folder</type>
+			<uuidstructure>843d6fd2-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 10:06:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 10:06:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[SubSub121]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subsubfolder121]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test1</uuidprincipal>
+					<flags>22</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>sites/default/folder2/subfolder22/subsubfolder221/index.html</source>
+			<destination>sites/default/folder2/subfolder22/subsubfolder221/index.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>843fb9c8-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>6b4cc22d-b3b3-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 10:06:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the indext page in folder subsub221]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3, Key4, Key5]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/folder2/subfolder22/subsubfolder221/jsp1.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>8446e5c0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>9fb0d898-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 10:09:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:54:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Jsp1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jsp1]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/folder2/subfolder22/subsubfolder221/page1.html</source>
+			<destination>sites/default/folder2/subfolder22/subsubfolder221/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>844ba0b6-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>6b610d80-b3b3-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 10:06:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subsubfolder221]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/types</destination>
+			<type>folder</type>
+			<uuidstructure>845082bf-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 08:53:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 08:53:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[A folder with different resource types]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/types/image.gif</destination>
+			<type>image</type>
+			<uuidstructure>84639591-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>3e0337c4-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:01:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:01:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is an image]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:49]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/types/jsp.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>84685083-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>10d3126e-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:00:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:00:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a JSP]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/types/link</destination>
+			<type>pointer</type>
+			<uuidstructure>846a9a77-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>27ca96b1-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:00:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:00:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link to OpenCms.org]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/types/testdata.zip</destination>
+			<type>binary</type>
+			<uuidstructure>846f7c79-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>030c0a6c-b3b6-11d8-9c65-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 10:26:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 10:25:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a binary file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/types/text.txt</destination>
+			<type>plain</type>
+			<uuidstructure>8471c66b-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>015d3f4b-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 08:59:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 08:59:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Alkacon OpenCms in the Title]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/types/xml.xml</destination>
+			<type>plain</type>
+			<uuidstructure>8474376d-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>c589e3bf-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 09:05:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:05:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a XML file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/xmlcontent</destination>
+			<type>folder</type>
+			<uuidstructure>8476a870-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:06:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the Description]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Xmlcontent]]></value>
+				</property>
+				<property>
+					<name>search.special</name>
+					<value><![CDATA[Cologne is a nice city]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/xmlcontent/article.xsd</source>
+			<destination>sites/default/xmlcontent/article.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>84801e52-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>3416bed7-1128-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 15:28:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for articles]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/xmlcontent/article_0001.html</source>
+			<destination>sites/default/xmlcontent/article_0001.html</destination>
+			<type>article</type>
+			<uuidstructure>84d12484-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 16:59:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample article 1  (>>SearchEgg1<<)]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/xmlcontent/article_0002.html</source>
+			<destination>sites/default/xmlcontent/article_0002.html</destination>
+			<type>article</type>
+			<uuidstructure>84eb6346-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>00b9d277-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 19 Oct 2004 16:59:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is the article 2 sample]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/xmlcontent/article_0003.html</source>
+			<destination>sites/default/xmlcontent/article_0003.html</destination>
+			<type>article</type>
+			<uuidstructure>84f01e38-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>beeee83b-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Wed, 20 Oct 2004 17:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nice sample article 3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/xmlcontent/article_0004.html</source>
+			<destination>sites/default/xmlcontent/article_0004.html</destination>
+			<type>article</type>
+			<uuidstructure>8500e71a-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<uuidresource>f7c19c2b-1140-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Thu, 21 Oct 2004 17:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is article number 4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/testsite</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 14 Oct 2010 08:36:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 09:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties></properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>7</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>sites/testsite/testsiteFile.txt</source>
+			<destination>sites/testsite/testsiteFile.txt</destination>
+			<type>plain</type>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:11:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties></properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>6a6cbc40-8db6-11e0-972f-8f51174189b7</uuidstructure>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2011 07:52:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>6b2b789c-8db6-11e0-972f-8f51174189b7</uuidstructure>
+			<datelastmodified>Fri, 03 Jun 2011 07:52:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2011 07:52:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.config</destination>
+			<type>folder</type>
+			<uuidstructure>599661f3-70d4-11e0-9709-91706a02fba1</uuidstructure>
+			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.config/classes</destination>
+			<type>folder</type>
+			<uuidstructure>59a974c5-70d4-11e0-9709-91706a02fba1</uuidstructure>
+			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.config/classes/org</destination>
+			<type>folder</type>
+			<uuidstructure>59abbeb7-70d4-11e0-9709-91706a02fba1</uuidstructure>
+			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms</destination>
+			<type>folder</type>
+			<uuidstructure>59ae2fb9-70d4-11e0-9709-91706a02fba1</uuidstructure>
+			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade</destination>
+			<type>folder</type>
+			<uuidstructure>59b0a0bb-70d4-11e0-9709-91706a02fba1</uuidstructure>
+			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config</destination>
+			<type>folder</type>
+			<uuidstructure>59b2eaad-70d4-11e0-9709-91706a02fba1</uuidstructure>
+			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties</source>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties</destination>
+			<type>plain</type>
+			<uuidstructure>d789bd73-70d8-11e0-8f1f-91706a02fba1</uuidstructure>
+			<uuidresource>d789bd74-70d8-11e0-8f1f-91706a02fba1</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 07:46:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 14:15:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace_de.properties</source>
+			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6ed3603d-70db-11e0-8f1f-91706a02fba1</uuidstructure>
+			<uuidresource>6ed3603e-70db-11e0-8f1f-91706a02fba1</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2011 14:35:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 14:34:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	<!-- 	<file>
+			<destination>system/modules/org.opencms.ade.config/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>11e58fdd-70df-11e0-b650-91706a02fba1</uuidstructure>
+			<datelastmodified>Wed, 27 Apr 2011 15:00:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2011 15:00:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/detailpage.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/detailpage.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>2f1fb5a7-7239-43c5-b032-e6fb5d220ce3</uuidstructure>
+			<uuidresource>2f1fb5a8-7239-43c5-b032-e6fb5d220ce3</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 12:07:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Mar 2010 10:07:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/field.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/field.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>ada1a813-b5cd-11df-ba36-33b5cd6a7f43</uuidstructure>
+			<uuidresource>ada1a814-b5cd-11df-ba36-33b5cd6a7f43</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 10:41:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 01 Sep 2010 13:34:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/folder_choice.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/folder_choice.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>361a016e-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
+			<uuidresource>361a016f-92b3-11e0-8f0f-8f51174189b7</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 11:01:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2011 16:12:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/model_page.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/model_page.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>361ee370-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
+			<uuidresource>361ee371-92b3-11e0-8f0f-8f51174189b7</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 11:58:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2011 16:12:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/module_config.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/module_config.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>21fd29aa-92b5-11e0-90b9-8f51174189b7</uuidstructure>
+			<uuidresource>21fd29ab-92b5-11e0-90b9-8f51174189b7</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 12:00:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2011 16:25:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/module_field.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/module_field.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>e3348aad-9346-11e0-8f2a-8f51174189b7</uuidstructure>
+			<uuidresource>e3348aae-9346-11e0-8f2a-8f51174189b7</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 12:19:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2011 09:49:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/module_type.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/module_type.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>1b085d0c-92ba-11e0-90b9-8f51174189b7</uuidstructure>
+			<uuidresource>1b085d0d-92ba-11e0-90b9-8f51174189b7</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 12:19:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2011 17:01:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>b4d6aa2d-83df-45e6-a1a9-455033293638</uuidstructure>
+			<uuidresource>b4d6aa2e-83df-45e6-a1a9-455033293638</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 10:41:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Mar 2010 10:07:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>36239e62-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
+			<uuidresource>36239e63-92b3-11e0-8f0f-8f51174189b7</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 12:04:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2011 16:12:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/type.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/type.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f629b113b</uuidstructure>
+			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 09:41:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/schemas/type_formatter.xsd</source>
+			<destination>system/modules/org.opencms.ade.config/schemas/type_formatter.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f999b113b</uuidstructure>
+			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f999b113b</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2011 12:16:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file> -->
+		<file>
+			<destination>system/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>877e1158-4e57-4ebe-a10b-94f0907f0b1e</uuidstructure>
+			<datelastmodified>Tue, 12 Oct 2010 09:14:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 09:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<source>system/schemas/article1.xsd</source>
+			<destination>system/schemas/article1.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>a4b4d22e-566c-4dc7-bd60-4effa18ea287</uuidstructure>
+			<uuidresource>a4b4d22e-566c-4dc7-bd60-4effa18ea288</uuidresource>
+			<datelastmodified>Tue, 12 Oct 2010 09:14:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 09:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
