@@ -15,7 +15,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 10.5.2 - July 11, 2017
+OpenCms 10.5.2 - ...
 ! Updated TinyMCE to version 4.6.2 to fix issue #508. 
 - Improved copy move dialog to allow renaming of files and improve handling of deleted and unreleased resources.
 - Reduced synchronization to improve performance.
@@ -29,7 +29,12 @@ OpenCms 10.5.2 - July 11, 2017
 * Fixed permission issue on account manager dialogs, where non account manager users where able to view users list.
 * Fixed issue where closing the HTML source view would introduce additional tags.
 * Fixed issue #478 where validation state was not cleared on editor close.
+* Fixed issue #484 where dynamic function content HTML was sometimes not replaced after edit.
+* Fixed issue #485 where drop down menus in TinyMCE where shown at the wrong position in case of a body position 'relative'.
+* Fixed issue #487 where 'Show in device' preview would show edit tool bar.
+* Fixed issue #488 where an optional scroll bar would reduce the screen size of the 'Show in device' preview.
 * Fixed issue #490 where exceptions where written to the web server log and not to the opencms.log file.
+* Fixed issue #491 where misleading API error message was shown in location picker widget, in no default value was set.
 * Fixed issue #495 where a missing explorer type declaration would cause null pointers in the explorer view.
 * Fixed issue #500 where parsing of the CmsShell command line would fail on special characters by gallardo.
 
