@@ -8,7 +8,7 @@
     boolean isFormSubmitted = (request.getParameter("submit") != null);
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Update Wizard
+OpenCms Update-Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -46,7 +46,7 @@ OpenCms Update Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 
 <% if (Bean.isInitialized()) { %>
-OpenCms Update Wizard - Settings
+OpenCms Update-Wizard - Settings
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <form method="post" onSubmit="return checkSubmit()" class="nomargin" autocomplete="off">
 

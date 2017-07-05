@@ -4,7 +4,7 @@
 // next page 
 if (!Bean.checkOceeVersion(org.opencms.main.OpenCms.getSystemInfo().getVersionNumber())){ %>
 <html>    
-	<head><title>OpenCms Upgrade Wizard</title></head>
+	<head><title>OpenCms Update-Wizard</title></head>
 	<body><h1>Incompatible version of Alkacon OCEE detected!</h1><p><dl><dt><b>Warning:</b></dt><dd><em>You have installed a version of Alkacon OCEE that is not compatible with OpenCms <%=org.opencms.main.OpenCms.getSystemInfo().getVersionNumber()%>.<br />Please upgrade Alkacon OCEE to a compatible version before upgrading OpenCms or remove the OCEE modules completely.</em></dd></dl></p><p>The upgrade wizard cannot continue before these problems are solved.</p></body>
 </html>
 <% }else{
@@ -38,7 +38,7 @@ try {
 
 
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Update Wizard
+OpenCms Update-Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -48,7 +48,7 @@ OpenCms Update Wizard
 	}	
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Update Wizard - License Agreement
+OpenCms Update-Wizard - License Agreement
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
 
