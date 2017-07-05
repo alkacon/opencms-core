@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.sessions;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -36,6 +37,8 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsUUID;
 
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -50,6 +53,9 @@ public class CmsKillSessionDialog extends CmsBasicDialog {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -7281930091176835024L;
+
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsKillSessionDialog.class.getName());
 
     /**cancel button.*/
     private Button m_cancelButton;
@@ -68,6 +74,9 @@ public class CmsKillSessionDialog extends CmsBasicDialog {
      */
     public CmsKillSessionDialog(final Set<String> sessionIds, final Runnable canelRunnable) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        displayResourceInfoDirectly(CmsSessionsApp.getUserInfos(sessionIds));
+
         m_icon.setContentMode(ContentMode.HTML);
         m_icon.setValue(FontOpenCms.WARNING.getHtml());
 
@@ -80,6 +89,7 @@ public class CmsKillSessionDialog extends CmsBasicDialog {
                 for (String sessionId : sessionIds) {
                     try {
                         OpenCms.getSessionManager().killSession(A_CmsUI.getCmsObject(), new CmsUUID(sessionId));
+                        LOG.info("Kill session of user with id '" + sessionId + "'");
                     } catch (NumberFormatException | CmsException e) {
                         //current session cannot be killed
                     }

@@ -65,6 +65,10 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     public CmsSendBroadcastDialog(final Set<String> sessionIds, final Runnable closeRunnable) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
+        if (sessionIds != null) {
+            displayResourceInfoDirectly(CmsSessionsApp.getUserInfos(sessionIds));
+        }
+
         m_cancel.addClickListener(new Button.ClickListener() {
 
             private static final long serialVersionUID = 3105449865170606831L;

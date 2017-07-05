@@ -27,16 +27,19 @@
 
 package org.opencms.ui.apps.sessions;
 
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -52,7 +55,7 @@ import org.apache.commons.logging.Log;
 import com.vaadin.data.Validator;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -99,6 +102,33 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
 
     /**Table showing sessions.*/
     CmsSessionsTable m_table;
+
+    /**
+     * Get resource info boxes for given users.<p>
+     *
+     * @param ids of user to be shown in boxed
+     * @return list of resource infos
+     */
+    protected static List<CmsResourceInfo> getUserInfos(Set<String> ids) {
+
+        CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
+
+        List<CmsResourceInfo> ret = new ArrayList<CmsResourceInfo>();
+        try {
+            for (String id : ids) {
+                CmsUser user = A_CmsUI.getCmsObject().readUser(
+                    OpenCms.getSessionManager().getSessionInfo(new CmsUUID(id)).getUserId());
+                ret.add(
+                    new CmsResourceInfo(
+                        user.getName(),
+                        user.getEmail(),
+                        new ExternalResource(helper.getTinyIconPath(A_CmsUI.getCmsObject(), user))));
+            }
+        } catch (CmsException e) {
+            LOG.error("Unable to read user", e);
+        }
+        return ret;
+    }
 
     /**
      * Get user names as String from set of sessions.<p>
@@ -258,7 +288,7 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
     private void addToolbarButtons() {
 
         Button add = CmsToolBar.createButton(
-            FontAwesome.SIGN_IN,
+            FontOpenCms.SETTINGS,
             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LOGINMESSAGE_TOOL_NAME_0));
         add.addClickListener(new ClickListener() {
 
@@ -299,6 +329,8 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
         Label ret = new Label();
         ret.setContentMode(ContentMode.HTML);
 
+        ret.addStyleName("o-label-with-padding");
+
         List<CmsSessionInfo> sessions = OpenCms.getSessionManager().getSessionInfos();
         List<CmsUUID> user = new ArrayList<CmsUUID>();
         for (CmsSessionInfo info : sessions) {
@@ -313,7 +345,7 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
             + " / "
             + CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_USER_COUNT_1, String.valueOf(user.size()));
         ret.setValue(mes);
-        ret.setWidth("250px");
+        ret.setWidth("220px");
         return ret;
     }
 }

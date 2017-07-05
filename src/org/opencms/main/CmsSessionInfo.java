@@ -132,6 +132,21 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
     }
 
     /**
+     * Gets the age of the session formattet as HOURS:MINUTES.<p>
+     *
+     * @return string representation of session age
+     */
+    public String getAgeOfSession() {
+
+        long dif = System.currentTimeMillis() - m_timeCreated;
+
+        int hours = (int)dif / (1000 * 60 * 60);
+        int min = (int)(dif - (hours * 1000 * 60 * 60)) / (1000 * 60);
+
+        return getTwoDigitsString(hours) + ":" + getTwoDigitsString(min);
+    }
+
+    /**
      * Returns the broadcast queue of the user to which this session info belongs.<p>
      *
      * @return the broadcast queue of the user to which this session info belongs
@@ -305,5 +320,16 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
         m_siteRoot = context.getSiteRoot();
         setProject(context.getCurrentProject().getUuid());
         m_ouFqn = context.getOuFqn();
+    }
+
+    /**
+     * Formats an integer to a two chars string.<p>
+     *
+     * @param number to be formatted
+     * @return the string representation
+     */
+    private String getTwoDigitsString(int number) {
+
+        return number < 10 ? "0" + number : String.valueOf(number);
     }
 }

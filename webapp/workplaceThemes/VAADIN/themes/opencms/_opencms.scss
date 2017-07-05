@@ -76,6 +76,72 @@
 		
 	}
 	
+	div.v-Notification.warning {
+		@include valo-notification-closable-style(v-Notification);
+		&:after{
+			top: 10px;
+			border: 0px;
+			margin-top:0px;
+			font-size: 30px;
+		}
+		
+		max-width: 600px;
+		width:600px;
+		text-align:left;
+		padding: 0px 0px;
+		border-color: #ac7c00;
+		border-width: 2px;
+		border-style: solid;
+		
+		.popupContent{
+
+		}
+		
+		.v-Notification-caption{
+			visibility:hidden;
+			position: absolute;
+		}
+		
+		.v-Notification-description{
+			visibility: hidden;
+			position: absolute;
+		}
+				
+		& p{
+		border-top: 1px solid #c9c9c9;
+		 background: #FFFFFF;
+		 padding: 5px;
+		 margin:0px;
+		 
+		 	& img{
+			float:left;
+			margin-top: 3px;
+    		margin-right: 10px;
+    		background-color: white;
+    		border: 2px solid;
+    		border-radius: 3px;
+    		padding: 1px;
+			}
+		
+			& em{
+			padding-top:20px;
+			color: #999;
+			}
+		
+			&:nth-child(even){
+			border-top: 0px solid #c9c9c9;
+		 	position: relative;
+		 	background: inherit;
+		 	padding:10px;
+			}
+		
+			&:last-child{
+		 	visibility:hidden;
+		 	position:absolute;
+			}
+		}
+	}
+	
 	div.v-Notification {
 		@include valo-notification-closable-style(v-Notification);
 		&:after{
@@ -1080,4 +1146,9 @@
 	.o-center {
 		text-align: center !important;
 	}
+	
+	.o-label-with-padding{
+		padding:4px;
+	}
+
 }

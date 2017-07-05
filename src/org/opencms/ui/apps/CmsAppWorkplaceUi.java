@@ -34,6 +34,7 @@ import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinErrorHandler;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsAppView;
@@ -45,6 +46,7 @@ import org.opencms.ui.components.extensions.CmsPollServerExtension;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
 import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsExpiringValue;
+import org.opencms.util.CmsHtmlStripper;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -53,6 +55,8 @@ import java.util.Map;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
+
+import org.htmlparser.util.ParserException;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
@@ -217,35 +221,45 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     public void checkBroadcasts() {
 
         CmsSessionInfo info = OpenCms.getSessionManager().getSessionInfo(getHttpSession());
+        CmsHtmlStripper stripper = new CmsHtmlStripper();
+        stripper.addPreserveTags("b,span,i,strong", ',');
         if (info == null) {
             return; //Session was killed..
         }
         Buffer queue = info.getBroadcastQueue();
-        if (!queue.isEmpty()) {
-            StringBuffer broadcasts = new StringBuffer();
-            while (!queue.isEmpty()) {
-                CmsBroadcast broadcastMessage = (CmsBroadcast)queue.remove();
-                String from = broadcastMessage.getUser() != null
-                ? broadcastMessage.getUser().getName()
-                : CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
-                String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
-                    broadcastMessage.getSendTime());
-                String content = broadcastMessage.getMessage();
-                content = content.replaceAll("\\n", "<br />");
-                broadcasts.append("<p><em>").append(date).append("</em><br />");
-                broadcasts.append(
-                    CmsVaadinUtils.getMessageText(
-                        org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(" <b>").append(
-                            from).append("</b>:</p><p>");
-                broadcasts.append(content).append("<br /></p>");
+        try {
+            if (!queue.isEmpty()) {
+                StringBuffer broadcasts = new StringBuffer();
+                String picPath = "";
+                while (!queue.isEmpty()) {
+                    CmsBroadcast broadcastMessage = (CmsBroadcast)queue.remove();
+                    CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
+
+                    String from = broadcastMessage.getUser() != null
+                    ? broadcastMessage.getUser().getName()
+                    : CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
+                    picPath = helper.getSmallIconPath(A_CmsUI.getCmsObject(), broadcastMessage.getUser());
+                    String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
+                        broadcastMessage.getSendTime());
+                    String content = broadcastMessage.getMessage();
+                    content = content.replaceAll("\\n", "<br />");
+                    broadcasts.append("<p>" + getImgHTML(picPath) + "<em>").append(date).append("</em><br />");
+                    broadcasts.append(
+                        CmsVaadinUtils.getMessageText(
+                            org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(" <b>").append(
+                                from).append("</b>:</p><p>");
+                    broadcasts.append(stripper.stripHtml(content)).append("<br /></p>");
+                }
+                Notification notification = new Notification(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_BROADCAST_TITLE_0),
+                    broadcasts.toString(),
+                    Type.WARNING_MESSAGE,
+                    true);
+                notification.setDelayMsec(-1);
+                notification.show(getPage());
             }
-            Notification notification = new Notification(
-                CmsVaadinUtils.getMessageText(Messages.GUI_BROADCAST_TITLE_0),
-                broadcasts.toString(),
-                Type.WARNING_MESSAGE,
-                true);
-            notification.setDelayMsec(-1);
-            notification.show(getPage());
+        } catch (ParserException e) {
+            //
         }
     }
 
@@ -530,6 +544,18 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     private void clearCachedViews() {
 
         m_cachedViews.clear();
+    }
+
+    /**
+     * Generates html for image from given path.<p>
+     *
+     * @param pic path to image
+     * @return html
+     */
+    private String getImgHTML(String pic) {
+
+        return "<img class=\"v-icon\" src=\"" + pic + "\">";
+
     }
 
     /**

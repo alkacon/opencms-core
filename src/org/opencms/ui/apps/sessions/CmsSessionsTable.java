@@ -33,16 +33,16 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
-import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -61,7 +61,6 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
@@ -165,10 +164,10 @@ public class CmsSessionsTable extends Table {
         /**Date of release column.*/
         DateCreated(Messages.GUI_MESSAGES_BROADCAST_COLS_CREATION_0, String.class, "", false),
         /**Icon.*/
-        Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_SESSION), false),
+        Icon(null, Label.class, null, false),
 
         /**Icon column.*/
-        InactiveTime(Messages.GUI_MESSAGES_BROADCAST_COLS_INACTIVE_0, String.class, "", false),
+        IS_ACTIVE(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_0, Boolean.class, new Boolean(true), false),
 
         /**Is Broadcast send but not displayed.*/
         IS_WAITING(null, Boolean.class, new Boolean(false), false),
@@ -280,6 +279,9 @@ public class CmsSessionsTable extends Table {
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4136423899776482696L;
 
+    /**Time limit (in milliseconds) since when a user is inactive.*/
+    private static final long INACTIVE_LIMIT = 1 * 60 * 1000; //1 minute
+
     /**Container holding table data.*/
     private IndexedContainer m_container;
 
@@ -295,21 +297,25 @@ public class CmsSessionsTable extends Table {
     public CmsSessionsTable() {
         try {
             ini();
-            addGeneratedColumn(TableProperty.IS_WAITING, new ColumnGenerator() {
 
-                private static final long serialVersionUID = 7293882771960600520L;
+            setColumnWidth(TableProperty.IS_ACTIVE, 80);
+
+            addGeneratedColumn(TableProperty.Icon, new ColumnGenerator() {
+
+                private static final long serialVersionUID = 1431421875590401227L;
 
                 public Object generateCell(Table source, Object itemId, Object columnId) {
 
-                    if (((Boolean)(source.getItem(itemId).getItemProperty(columnId).getValue())).booleanValue()) {
-                        Label textfield = new Label(FontOpenCms.BROADCAST.getHtml());
-                        textfield.setContentMode(ContentMode.HTML);
-                        return textfield;
+                    CmsCssIcon icon = new CmsCssIcon(OpenCmsTheme.ICON_SESSION);
+                    if (((Boolean)source.getItem(itemId).getItemProperty(
+                        TableProperty.IS_WAITING).getValue()).booleanValue()) {
+                        icon.setOverlay(OpenCmsTheme.STATE_CHANGED + " " + CmsResourceIcon.ICON_CLASS_CHANGED);
                     }
-                    return null;
+                    return new Label(icon.getHtmlWithOverlay(), ContentMode.HTML);
                 }
+
             });
-            setColumnWidth(TableProperty.IS_WAITING, 30);
+
             setCellStyleGenerator(new CellStyleGenerator() {
 
                 private static final long serialVersionUID = 1L;
@@ -319,6 +325,20 @@ public class CmsSessionsTable extends Table {
                     if (TableProperty.UserName.equals(propertyId)) {
                         return " " + OpenCmsTheme.HOVER_COLUMN;
                     }
+
+                    if (((Boolean)source.getItem(itemId).getItemProperty(
+                        TableProperty.IS_WAITING).getValue()).booleanValue() & (propertyId == null)) {
+                        return " " + OpenCmsTheme.STATE_CHANGED;
+                    }
+
+                    if (TableProperty.IS_ACTIVE.equals(propertyId)) {
+                        if (((Boolean)source.getItem(itemId).getItemProperty(
+                            TableProperty.IS_ACTIVE).getValue()).booleanValue()) {
+                            return OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
+                        }
+                        return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
+                    }
+
                     return null;
                 }
             });
@@ -329,6 +349,21 @@ public class CmsSessionsTable extends Table {
                 public void itemClick(ItemClickEvent event) {
 
                     onItemClick(event, event.getItemId(), event.getPropertyId());
+                }
+
+            });
+
+            addGeneratedColumn(TableProperty.IS_ACTIVE, new ColumnGenerator() {
+
+                private static final long serialVersionUID = -6781906011584975559L;
+
+                public Object generateCell(Table source, Object itemId, Object columnId) {
+
+                    if (((Boolean)source.getItem(itemId).getItemProperty(
+                        TableProperty.IS_ACTIVE).getValue()).booleanValue()) {
+                        return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_ACTIVE_0);
+                    }
+                    return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_INACTIVE_0);
                 }
 
             });
@@ -400,10 +435,8 @@ public class CmsSessionsTable extends Table {
             m_container.addContainerProperty(prop, prop.getType(), prop.getDefaultValue());
             setColumnHeader(prop, prop.getLocalizedMessage());
         }
-        setItemIconPropertyId(TableProperty.Icon);
-        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
 
-        setColumnWidth(null, 40);
+        setColumnWidth(TableProperty.Icon, 40);
         setSelectable(true);
         setMultiSelect(true);
 
@@ -427,16 +460,18 @@ public class CmsSessionsTable extends Table {
             //            CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
             Item item = m_container.addItem(session.getSessionId().getStringValue());
             item.getItemProperty(TableProperty.UserName).setValue(user.getName());
-            item.getItemProperty(TableProperty.DateCreated).setValue(
-                CmsDateUtil.getDateTimeShort(session.getTimeCreated()));
-            item.getItemProperty(TableProperty.InactiveTime).setValue(
-                String.valueOf(
-                    CmsStringUtil.formatRuntime(
-                        (new Long(System.currentTimeMillis() - session.getTimeUpdated())).longValue())));
+            item.getItemProperty(TableProperty.DateCreated).setValue(session.getAgeOfSession());
+            item.getItemProperty(TableProperty.IS_ACTIVE).setValue(
+                new Boolean(
+                    new Long(System.currentTimeMillis() - session.getTimeUpdated()).longValue() < INACTIVE_LIMIT));
             item.getItemProperty(TableProperty.OrgUnit).setValue(userOu.getName());
             item.getItemProperty(TableProperty.Project).setValue(
                 A_CmsUI.getCmsObject().readProject(session.getProject()).getName());
-            item.getItemProperty(TableProperty.Site).setValue(session.getSiteRoot());
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(session.getSiteRoot());
+            String siteTitle = site == null
+            ? CmsVaadinUtils.getMessageText(org.opencms.ade.galleries.Messages.GUI_ROOT_SITE_0)
+            : site.getTitle();
+            item.getItemProperty(TableProperty.Site).setValue(siteTitle);
 
             item.getItemProperty(TableProperty.IS_WAITING).setValue(
                 new Boolean(!session.getBroadcastQueue().isEmpty()));
@@ -444,12 +479,12 @@ public class CmsSessionsTable extends Table {
         }
 
         setVisibleColumns(
-            TableProperty.IS_WAITING,
+            TableProperty.Icon,
+            TableProperty.IS_ACTIVE,
             TableProperty.UserName,
             TableProperty.DateCreated,
-            TableProperty.InactiveTime,
-            TableProperty.Project,
-            TableProperty.Site);
+            TableProperty.Site,
+            TableProperty.Project);
 
     }
 
@@ -482,7 +517,7 @@ public class CmsSessionsTable extends Table {
             changeValueIfNotMultiSelect(itemId);
 
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (TableProperty.Icon.equals(propertyId))) {
 
                 m_menu.setEntries(getMenuEntries(), (Set<String>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
@@ -496,7 +531,6 @@ public class CmsSessionsTable extends Table {
                             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_AND_0))),
                     this);
             }
-
         }
     }
 
