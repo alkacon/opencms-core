@@ -27,6 +27,8 @@
 
 package org.opencms.ui;
 
+import org.opencms.ui.components.OpenCmsTheme;
+
 import com.vaadin.server.FontIcon;
 
 /**
@@ -39,6 +41,9 @@ public class CmsCssIcon implements FontIcon {
 
     /** The icon css class. */
     private String m_styleName;
+
+    /**The icon overlay css class.*/
+    private String m_styleNameOverlay;
 
     /**
      * Constructor.<p>
@@ -94,11 +99,42 @@ public class CmsCssIcon implements FontIcon {
     }
 
     /**
+     * Gets the html for the icon.<p>
+     * If overlay is set, it will be shown.<p>
+     *
+     * @return html
+     */
+    public String getHtmlWithOverlay() {
+
+        if (m_styleNameOverlay == null) {
+            return getHtml();
+        }
+        return "<div class=\""
+            + OpenCmsTheme.RESOURCE_ICON
+            + " v-widget v-has-width\" style=\"width: 100%; padding-left: 0px !important;\">"
+            + getHtml()
+            + "<span class=\""
+            + m_styleNameOverlay
+            + "\" title=\"\"></span>"
+            + "</div>";
+    }
+
+    /**
      * @see com.vaadin.server.Resource#getMIMEType()
      */
     public String getMIMEType() {
 
         throw new UnsupportedOperationException(
             FontIcon.class.getSimpleName() + " should not be used where a MIME type is needed.");
+    }
+
+    /**
+     * Adds an overlay to icon. Overlay is only returned by getHtmlWithOverlay().<p>
+     *
+     * @param overlayStyle style to be added
+     */
+    public void setOverlay(String overlayStyle) {
+
+        m_styleNameOverlay = overlayStyle;
     }
 }
