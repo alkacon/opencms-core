@@ -183,6 +183,16 @@ public class CmsLogFileView extends VerticalLayout {
     }
 
     /**
+     * Gets currently shown file.<p>
+     *
+     * @return path of shown file
+     */
+    protected String getCurrentFile() {
+
+        return (String)m_logfile.getValue();
+    }
+
+    /**
      * Updates the log file view after changes.<p>
      */
     protected void updateView() {

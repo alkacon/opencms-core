@@ -67,6 +67,9 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     /** The file table filter input. */
     private TextField m_tableFilter;
 
+    /**The log file view layout.*/
+    protected CmsLogFileView m_fileView;
+
     /**
      * Simple function to get the prefix of an logchannel name.<p>
      *
@@ -211,11 +214,12 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             m_infoLayout.removeComponent(m_tableFilter);
             m_tableFilter = null;
         }
-        addDownloadButton();
+
         if (state.isEmpty()) {
             m_rootLayout.setMainHeightFull(false);
-            return new CmsLogFileView(this);
-
+            m_fileView = new CmsLogFileView(this);
+            addDownloadButton(m_fileView);
+            return m_fileView;
         }
 
         return null;
@@ -232,8 +236,10 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
 
     /**
      * Adds the download button.
+     *
+     * @param view layout which displays the log file
      */
-    private void addDownloadButton() {
+    private void addDownloadButton(final CmsLogFileView view) {
 
         Button button = CmsToolBar.createButton(
             FontOpenCms.DOWNLOAD,
@@ -246,7 +252,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
 
                 Window window = CmsBasicDialog.prepareWindow(CmsBasicDialog.DialogWidth.wide);
                 window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_DOWNLOAD_0));
-                window.setContent(new CmsLogDownloadDialog(window));
+                window.setContent(new CmsLogDownloadDialog(window, view.getCurrentFile()));
                 A_CmsUI.get().addWindow(window);
             }
         });

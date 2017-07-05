@@ -91,8 +91,9 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
      * public constructor.<p>
      *
      * @param window to hold the dialog
+     * @param filePath path of currently shown file
      */
-    public CmsLogDownloadDialog(final Window window) {
+    public CmsLogDownloadDialog(final Window window, String filePath) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_totalSize = 0;
@@ -109,8 +110,7 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
         m_file.setNullSelectionAllowed(false);
         m_file.setNewItemsAllowed(false);
 
-        String itemid = (String)m_file.getItemIds().iterator().next();
-        m_file.select(itemid);
+        m_file.select(filePath);
 
         m_cancel.addClickListener(new ClickListener() {
 
