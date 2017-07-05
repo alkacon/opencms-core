@@ -61,6 +61,56 @@ import org.apache.commons.logging.Log;
  */
 public class CmsUserIconHelper {
 
+    /**
+     * Available icon sizes.<p>
+     */
+    private enum IconSize {
+        /**The big icon size. */
+        Big(96, BIG_ICON_SUFFIX),
+        /**The small icon size.*/
+        Small(32, SMALL_ICON_SUFFIX),
+        /**The tiny icon size. */
+        Tiny(23, TINY_ICON_SUFFIX);
+
+        /**Size in pixel.*/
+        private int m_size;
+
+        /**Suffix to append to filename.*/
+        private String m_suffix;
+
+        /**
+         * constructor.<p>
+         *
+         * @param size in pixel
+         * @param suffix for filename
+         */
+        private IconSize(int size, String suffix) {
+            m_size = size;
+            m_suffix = suffix;
+        }
+
+        /**
+         * Gets size in pixel.<p>
+         *
+         * @return icon size in pixel
+         */
+        public int getSize() {
+
+            return m_size;
+        }
+
+        /**
+         * Gets the suffix.<p>
+         *
+         * @return string
+         */
+        public String getSuffix() {
+
+            return m_suffix;
+        }
+
+    }
+
     /** The color reserved for admin users. */
     public static final Color ADMIN_COLOR = new Color(0x00, 0x30, 0x82);
 
@@ -72,6 +122,9 @@ public class CmsUserIconHelper {
 
     /** The small icon suffix. */
     public static final String SMALL_ICON_SUFFIX = "_small_icon.png";
+
+    /** The tiny icon suffix. */
+    public static final String TINY_ICON_SUFFIX = "_tiny_icon.png";
 
     /** The temp folder name. */
     public static final String TEMP_FOLDER = "temp/";
@@ -164,7 +217,7 @@ public class CmsUserIconHelper {
      */
     public String getBigIconPath(CmsObject cms, CmsUser user) {
 
-        return getIconPath(cms, user, true);
+        return getIconPath(cms, user, IconSize.Big);
     }
 
     /**
@@ -177,7 +230,20 @@ public class CmsUserIconHelper {
      */
     public String getSmallIconPath(CmsObject cms, CmsUser user) {
 
-        return getIconPath(cms, user, false);
+        return getIconPath(cms, user, IconSize.Small);
+    }
+
+    /**
+     * Returns the tiny ident-icon path for the given user.<p>
+     *
+     * @param cms the cms context
+     * @param user the user
+     *
+     * @return the icon path
+     */
+    public String getTinyIconPath(CmsObject cms, CmsUser user) {
+
+        return getIconPath(cms, user, IconSize.Tiny);
     }
 
     /**
@@ -307,25 +373,27 @@ public class CmsUserIconHelper {
      *
      * @param cms the cms context
      * @param user the user
-     * @param big <code>true</code> to retrieve the big icon
+     * @param size IconSize to get icon for
      *
      * @return the icon path
      */
-    private String getIconPath(CmsObject cms, CmsUser user, boolean big) {
+    private String getIconPath(CmsObject cms, CmsUser user, IconSize size) {
 
         String userIconPath = (String)user.getAdditionalInfo(USER_IMAGE_INFO);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userIconPath)) {
-            userIconPath += big ? "" : "?__scale=h:32,w:32,t:2";
+            userIconPath += size.equals(IconSize.Big)
+            ? ""
+            : "?__scale=h:" + size.getSize() + ",w:" + size.getSize() + ",t:2";
             return OpenCms.getLinkManager().substituteLinkForRootPath(cms, userIconPath);
         }
 
         boolean isAdmin = OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ADMINISTRATOR);
         String name = user.getName() + Boolean.toString(isAdmin);
-        String rfsName = toRfsName(name, big);
-        String path = toPath(name, big);
+        String rfsName = toRfsName(name, size);
+        String path = toPath(name, size);
         if (!m_cache.hasCacheContent(rfsName)) {
 
-            BufferedImage icon = m_renderer.render(name, isAdmin, big ? 96 : 32);
+            BufferedImage icon = m_renderer.render(name, isAdmin, size.getSize());
             try {
                 m_cache.saveCacheFile(rfsName, getImageBytes(icon));
             } catch (Exception e) {
@@ -336,7 +404,7 @@ public class CmsUserIconHelper {
     }
 
     /**
-     * Returns the image data
+     * Returns the image data.
      * @param image the image
      *
      * @return the data
@@ -369,37 +437,25 @@ public class CmsUserIconHelper {
      * Transforms user name and icon size into the image path.
      *
      * @param name the user name
-     * @param big <code>true</code> in case of big icons
+     * @param size IconSize to get icon for
      *
      * @return the path
      */
-    private String toPath(String name, boolean big) {
+    private String toPath(String name, IconSize size) {
 
-        String result = CmsStringUtil.joinPaths(CmsWorkplace.getSkinUri(), ICON_FOLDER, "" + name.hashCode());
-        if (big) {
-            result += BIG_ICON_SUFFIX;
-        } else {
-            result += SMALL_ICON_SUFFIX;
-        }
-        return result;
+        return CmsStringUtil.joinPaths(CmsWorkplace.getSkinUri(), ICON_FOLDER, "" + name.hashCode()) + size.getSuffix();
     }
 
     /**
      * Transforms user name and icon size into the rfs image path.
      *
      * @param name the user name
-     * @param big <code>true</code> in case of big icons
+     * @param size IconSize to get icon for
      *
      * @return the path
      */
-    private String toRfsName(String name, boolean big) {
+    private String toRfsName(String name, IconSize size) {
 
-        String result = CmsStringUtil.joinPaths(m_cache.getRepositoryPath(), "" + name.hashCode());
-        if (big) {
-            result += BIG_ICON_SUFFIX;
-        } else {
-            result += SMALL_ICON_SUFFIX;
-        }
-        return result;
+        return CmsStringUtil.joinPaths(m_cache.getRepositoryPath(), "" + name.hashCode()) + size.getSuffix();
     }
 }
