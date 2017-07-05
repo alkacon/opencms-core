@@ -224,7 +224,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
      */
     public void disableSearchTab() {
 
-        m_tabbedPanel.disableTab(m_resultsTab, Messages.get().key(Messages.GUI_GALLERY_NO_PARAMS_0));
+        if (m_resultsTab != null) {
+            m_tabbedPanel.disableTab(m_resultsTab, Messages.get().key(Messages.GUI_GALLERY_NO_PARAMS_0));
+        }
     }
 
     /**
@@ -232,7 +234,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
      */
     public void enableSearchTab() {
 
-        m_tabbedPanel.enableTab(m_resultsTab);
+        if (m_resultsTab != null) {
+            m_tabbedPanel.enableTab(m_resultsTab);
+        }
     }
 
     /**

@@ -35,6 +35,7 @@ OpenCms 10.5.2 - ...
 * Fixed issue #488 where an optional scroll bar would reduce the screen size of the 'Show in device' preview.
 * Fixed issue #490 where exceptions where written to the web server log and not to the opencms.log file.
 * Fixed issue #491 where misleading API error message was shown in location picker widget, in no default value was set.
+* Fixed issue #493 where gallery dialog would fail in case of folders only configurations.
 * Fixed issue #495 where a missing explorer type declaration would cause null pointers in the explorer view.
 * Fixed issue #500 where parsing of the CmsShell command line would fail on special characters by gallardo.
 

@@ -181,7 +181,7 @@ public class CmsVfsTab extends A_CmsListTab {
         if (folders != null) {
             for (String folder : folders) {
                 CmsLazyTreeItem item = m_itemsByPath.get(folder);
-                if (item != null) {
+                if ((item != null) && (item.getCheckBox() != null)) {
                     item.getCheckBox().setChecked(true);
                 }
             }
@@ -267,7 +267,7 @@ public class CmsVfsTab extends A_CmsListTab {
 
         for (String folder : folders) {
             CmsLazyTreeItem item = m_itemsByPath.get(folder);
-            if (item != null) {
+            if ((item != null) && (item.getCheckBox() != null)) {
                 item.getCheckBox().setChecked(false);
             }
         }

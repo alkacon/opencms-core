@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -611,6 +612,9 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
                 config.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, m_selectableTypes.trim());
             }
             String tabConfig = null;
+            m_includeFiles = m_includeFiles
+                && (CmsStringUtil.isEmptyOrWhitespaceOnly(m_selectableTypes)
+                    || !isOnlyFolders(m_selectableTypes.trim()));
             if (m_includeFiles) {
                 tabConfig = CmsGalleryTabConfiguration.TC_SELECT_ALL;
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_selectableTypes)
@@ -666,5 +670,28 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         Locale contentLocale) {
 
         return cms.getRequestContext().getSiteRoot();
+    }
+
+    /**
+     * Checks whether the given type list contains only folder types.<p>
+     *
+     * @param types the type list
+     *
+     * @return <code>true</code> if the given type list contains only folder types
+     */
+    private boolean isOnlyFolders(String types) {
+
+        boolean result = true;
+        for (String type : types.split("[, ]+")) {
+            try {
+                if (!OpenCms.getResourceManager().getResourceType(type).isFolder()) {
+                    result = false;
+                    break;
+                }
+            } catch (CmsLoaderException e) {
+                // ignore
+            }
+        }
+        return result;
     }
 }
