@@ -20,6 +20,9 @@ writeProperty '/system/workplace/admin/workplace/' 'NavText' '${key.GUI_WORKPLAC
 writeProperty '/system/workplace/admin/workplace/' 'Title' 'Workplace management tools'
 writeProperty '/system/workplace/admin/workplace/' 'admintoolhandler-class' 'org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler'
 
+chacc '/system/workplace/admin/workplace/logfileview/' 'ROLE' 'WORKPLACE_USER' '+I+O'
+chacc '/system/workplace/admin/workplace/logfileview/' 'ROLE' 'ADMINISTRATOR' '+I+O+R+V'
+
 writeProperty '/system/workplace/admin/workplace/logfileview/' 'Description' '${key.GUI_WORKPLACE_LOGVIEW_HELP_0}'
 writeProperty '/system/workplace/admin/workplace/logfileview/' 'NavImage' 'tools/workplace/icons/big/fileview_view.png'
 writeProperty '/system/workplace/admin/workplace/logfileview/' 'NavInfo' '${key.GUI_WORKPLACE_BASIC_GROUP_0}'
@@ -28,6 +31,9 @@ writeProperty '/system/workplace/admin/workplace/logfileview/' 'NavText' '${key.
 writeProperty '/system/workplace/admin/workplace/logfileview/' 'Title' 'View log file'
 writeProperty '/system/workplace/admin/workplace/logfileview/' 'admintoolhandler-class' 'org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler'
 writeProperty '/system/workplace/admin/workplace/logfileview/' 'default-file' 'index.jsp'
+
+chacc '/system/workplace/admin/workplace/logging/' 'ROLE' 'WORKPLACE_USER' '+I+O'
+chacc '/system/workplace/admin/workplace/logging/' 'ROLE' 'ADMINISTRATOR' '+I+O+R+V'
 
 writeProperty '/system/workplace/admin/workplace/logging/' 'Description' '${key.GUI_WORKPLACE_LOGGING_HELP_0}'
 writeProperty '/system/workplace/admin/workplace/logging/' 'NavImage' 'tools/workplace/icons/big/log_preferences.png'
