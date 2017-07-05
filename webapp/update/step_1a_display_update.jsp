@@ -8,7 +8,7 @@
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Update Wizard - Update Database
+OpenCms Update-Wizard - Update Database
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 	<script type="text/javascript">
 
@@ -74,7 +74,7 @@ OpenCms Update Wizard - Update Database
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Update Wizard - Update database
+OpenCms Update-Wizard - Update database
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% if (Bean.isInitialized()) { %>

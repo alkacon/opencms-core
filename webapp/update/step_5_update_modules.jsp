@@ -7,7 +7,7 @@
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Update Wizard - Update modules
+OpenCms Update-Wizard - Update modules
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 
 </head>

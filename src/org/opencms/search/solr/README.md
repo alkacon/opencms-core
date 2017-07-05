@@ -191,7 +191,7 @@ The class org.opencms.search.solr.CmsSolrResultList encapsulates a list of 'Open
 <pre>
 http://localhost:8080/opencms/opencms/handleSolrSelect?   
                               // The URI of the OpenCms Solr Select Handler configured in 'opencms-system.xml'
-    &core=My Solr Index Name  // Searches on the core with the name 'My Solr Index Name'
+    &core=My Solr-Index Name  // Searches on the core with the name 'My Solr-Index Name'
     &q=content_en:Flower      // for the text 'Flower'
 </pre>
 
