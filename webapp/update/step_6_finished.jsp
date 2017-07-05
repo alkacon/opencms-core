@@ -8,12 +8,12 @@
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Update Wizard
+OpenCms Update-Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Update Wizard - Finished
+OpenCms Update-Wizard - Finished
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized() && Bean.getErrors().size() == 0) { %>
 

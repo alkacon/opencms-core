@@ -12,7 +12,7 @@
 
 	<xsd:complexType name="OpenCmsAlkaconVfsFileList">
 		<xsd:sequence>
-			<xsd:element name="Uri" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element name="URI" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>

@@ -200,7 +200,7 @@
             <DT><b>opencms.url</b></DT>
             <DD>Complete Url of the requested page, including the host name, e.g., "http://localhost:8080/opencms/opencms/mypage/index.html".</DD>
             <DT><b>opencms.uri</b></DT>
-            <DD>Uri of the requested page without host name, e.g., "/opencms/opencms/mypage/index.html".</DD>
+            <DD>URI of the requested page without host name, e.g., "/opencms/opencms/mypage/index.html".</DD>
             <DT><b>opencms.webapp</b></DT>
             <DD>Name of the OpenCms webapplication, e.g., "opencms".</DD>
             <DT><b>opencms.webbasepath</b></DT>
@@ -255,7 +255,7 @@
         <body-content>JSP</body-content>
         <attribute>
              <description><![CDATA[
-                Change the Uri of the current request context to the provided value.</P>
+                Change the URI of the current request context to the provided value.</P>
                 This is useful if links to detail pages (e.g., <code>... href="&lt;cms:link baseUri="..."&gt;${elem.filename}&lt;/cms:link&gt;" ...</code>) have to be set in content that is loaded on demand via AJAX.
                 Otherwise, in this use case the wrong or even no detail page may be found.
             ]]></description>
@@ -411,7 +411,7 @@
         <body-content>JSP</body-content>
         <attribute>
             <description><![CDATA[
-              Uri of the configuration file for the decoration.
+              URI of the configuration file for the decoration.
             ]]></description>
             <name>file</name>
             <required>true</required>
@@ -1186,14 +1186,14 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-              Uri of the file that should be included.
+              URI of the file that should be included.
             ]]></description>
             <name>file</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <description><![CDATA[
-              Specify a property of the current JSP that provides the Uri of the file that should be included.
+              Specify a property of the current JSP that provides the URI of the file that should be included.
             ]]></description>
             <name>property</name>
             <rtexprvalue>true</rtexprvalue>
@@ -1442,7 +1442,7 @@
         <!-- These attributes are used to control the image scaling process: -->
         <attribute>
             <description><![CDATA[
-              Uri of the image's source file.</P>
+              URI of the image's source file.</P>
               <em>Note: The uri will be adjusted by OpenCms automatically, so do not use <code>&lt;cms:link&gt;</code>.</em>
             ]]></description>
             <name>src</name>
@@ -1772,7 +1772,7 @@
         <!-- These attributes are used to control the image scaling process: -->
         <attribute>
             <description><![CDATA[
-              Uri of the image's source file.</P>
+              URI of the image's source file.</P>
               <em>Note: The uri will be adjusted by OpenCms automatically, so do not use <code>&lt;cms:link&gt;</code>.</em>
             ]]></description>
             <name>src</name>
@@ -2751,7 +2751,7 @@
         </attribute>
         <attribute>
         <description><![CDATA[
-            Uri of the AntiSamy policy file.
+            URI of the AntiSamy policy file.
         ]]></description>
             <name>policy</name>
             <required>false</required>
