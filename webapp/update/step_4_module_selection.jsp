@@ -23,7 +23,7 @@
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Update Wizard
+OpenCms Update-Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -158,7 +158,7 @@ function getAvailableModules() {
 //-->
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Update Wizard - Module selection
+OpenCms Update-Wizard - Module selection
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% if (Bean.isInitialized()) { %>
