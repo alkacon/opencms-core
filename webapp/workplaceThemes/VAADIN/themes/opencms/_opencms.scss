@@ -216,13 +216,15 @@
 		margin-top: 55px !important;
 		margin-left: -10px !important;
 		border: 4px solid $v-window-background-color;
+		
+		.popupContent{
+			max-width: 352px;
+			
+			.v-button{
+				margin-bottom: 3px;
+			}
+		}
 	}
-	
-	.v-popupview-popup-o-navigator-dropdown .popupContent{
-		max-width: 352px;
-	}
-	
-	
 	
 	.v-window.o-dropdown{
 		overflow: visible !important;

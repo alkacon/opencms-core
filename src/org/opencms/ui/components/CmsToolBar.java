@@ -511,7 +511,7 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
     }
 
     /**
-     * Recalculates the space required by the toolbar buttons
+     * Recalculates the space required by the toolbar buttons.<p>
      */
     protected void updateFoldingThreshhold() {
 
@@ -683,7 +683,7 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
     }
 
     /**
-     * Calculates the width required by the layout components
+     * Calculates the width required by the layout components.<p>
      *
      * @param items the layout
      *
