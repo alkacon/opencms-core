@@ -32,7 +32,6 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -89,9 +88,7 @@ public class CmsDbPropertiesApp extends A_CmsWorkplaceApp {
             m_infoLayout.addComponent(filter);
 
             m_rootLayout.setMainHeightFull(true);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-                return new CmsPropertyView(table);
-            }
+
             return new CmsPropertyTable();
         } catch (CmsException e) {
             //
