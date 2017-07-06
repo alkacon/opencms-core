@@ -65,6 +65,7 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for
@@ -105,32 +106,6 @@ public class CmsImportVersion4 extends A_CmsImport {
     public int getVersion() {
 
         return CmsImportVersion4.IMPORT_VERSION;
-    }
-
-    /**
-     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
-     *
-     * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
-     */
-    @Deprecated
-    public void importResources(
-        CmsObject cms,
-        String importPath,
-        I_CmsReport report,
-        File importResource,
-        ZipFile importZip,
-        Document docXml) throws CmsImportExportException {
-
-        CmsImportParameters params = new CmsImportParameters(
-            importResource != null ? importResource.getAbsolutePath() : importZip.getName(),
-            importPath,
-            true);
-
-        try {
-            importData(cms, report, params);
-        } catch (CmsXmlException e) {
-            throw new CmsImportExportException(e.getMessageContainer(), e);
-        }
     }
 
     /**
@@ -179,6 +154,33 @@ public class CmsImportVersion4 extends A_CmsImport {
     }
 
     /**
+     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
+     *
+     * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
+     */
+    @Deprecated
+    public void importResources(
+        CmsObject cms,
+        String importPath,
+        I_CmsReport report,
+        File importResource,
+        ZipFile importZip,
+        Document docXml)
+    throws CmsImportExportException {
+
+        CmsImportParameters params = new CmsImportParameters(
+            importResource != null ? importResource.getAbsolutePath() : importZip.getName(),
+            importPath,
+            true);
+
+        try {
+            importData(cms, report, params);
+        } catch (CmsXmlException e) {
+            throw new CmsImportExportException(e.getMessageContainer(), e);
+        }
+    }
+
+    /**
      * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
      */
     @Override
@@ -191,7 +193,8 @@ public class CmsImportVersion4 extends A_CmsImport {
         String email,
         long dateCreated,
         Map<String, Object> userInfo,
-        List<String> userGroups) throws CmsImportExportException {
+        List<String> userGroups)
+    throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -413,14 +416,14 @@ public class CmsImportVersion4 extends A_CmsImport {
      *
      * @throws CmsImportExportException if something goes wrong
      */
-    @SuppressWarnings("unchecked")
     private void readResourcesFromManifest() throws CmsImportExportException {
 
         String source = null, destination = null, uuidresource = null, userlastmodified = null, usercreated = null,
         flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
 
-        List<Element> fileNodes = null, acentryNodes = null;
+        List<Node> fileNodes = null;
+        List<Node> acentryNodes = null;
         Element currentElement = null, currentEntry = null;
         List<CmsProperty> properties = null;
 
@@ -457,7 +460,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         String.valueOf(i + 1),
                         String.valueOf(importSize)),
                     I_CmsReport.FORMAT_NOTE);
-                currentElement = fileNodes.get(i);
+                currentElement = (Element)fileNodes.get(i);
 
                 // <source>
                 source = getChildElementTextValue(currentElement, A_CmsImport.N_SOURCE);
@@ -574,7 +577,7 @@ public class CmsImportVersion4 extends A_CmsImport {
 
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
-                            currentEntry = acentryNodes.get(j);
+                            currentEntry = (Element)acentryNodes.get(j);
 
                             // get the data of the access control entry
                             String id = getChildElementTextValue(currentEntry, A_CmsImport.N_ACCESSCONTROL_PRINCIPAL);
@@ -592,17 +595,15 @@ public class CmsImportVersion4 extends A_CmsImport {
 
                                 String acflags = getChildElementTextValue(currentEntry, A_CmsImport.N_FLAGS);
 
-                                String allowed = ((Element)currentEntry.selectNodes(
-                                    "./"
-                                        + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
-                                        + "/"
-                                        + A_CmsImport.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
+                                String allowed = ((Element)currentEntry.selectNodes("./"
+                                    + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
+                                    + "/"
+                                    + A_CmsImport.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
 
-                                String denied = ((Element)currentEntry.selectNodes(
-                                    "./"
-                                        + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
-                                        + "/"
-                                        + A_CmsImport.N_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
+                                String denied = ((Element)currentEntry.selectNodes("./"
+                                    + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
+                                    + "/"
+                                    + A_CmsImport.N_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
 
                                 // add the entry to the list
                                 aceList.add(getImportAccessControlEntry(res, principalId, allowed, denied, acflags));

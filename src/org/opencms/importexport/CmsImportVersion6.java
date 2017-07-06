@@ -42,6 +42,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for
@@ -91,11 +92,10 @@ public class CmsImportVersion6 extends CmsImportVersion5 {
 
         try {
             // getAll user nodes
-            @SuppressWarnings("unchecked")
-            List<Element> userNodes = m_docXml.selectNodes("//" + A_CmsImport.N_USERDATA);
+            List<Node> userNodes = m_docXml.selectNodes("//" + A_CmsImport.N_USERDATA);
             // walk threw all groups in manifest
             for (int i = 0; i < userNodes.size(); i++) {
-                Element currentElement = userNodes.get(i);
+                Element currentElement = (Element)userNodes.get(i);
 
                 String name = getChildElementTextValue(currentElement, A_CmsImport.N_NAME);
                 name = OpenCms.getImportExportManager().translateUser(name);
@@ -112,11 +112,10 @@ public class CmsImportVersion6 extends CmsImportVersion5 {
 
                 // get the userinfo and put it into the additional info map
                 Map<String, Object> userInfo = new HashMap<String, Object>();
-                @SuppressWarnings("unchecked")
-                Iterator<Element> itInfoNodes = currentElement.selectNodes(
+                Iterator<Node> itInfoNodes = currentElement.selectNodes(
                     "./" + A_CmsImport.N_USERINFO + "/" + A_CmsImport.N_USERINFO_ENTRY).iterator();
                 while (itInfoNodes.hasNext()) {
-                    Element infoEntryNode = itInfoNodes.next();
+                    Element infoEntryNode = (Element)itInfoNodes.next();
                     String key = infoEntryNode.attributeValue(A_CmsImport.A_NAME);
                     String type = infoEntryNode.attributeValue(A_CmsImport.A_TYPE);
                     String value = infoEntryNode.getTextTrim();
@@ -124,11 +123,10 @@ public class CmsImportVersion6 extends CmsImportVersion5 {
                 }
 
                 // get the groups of the user and put them into the list
-                @SuppressWarnings("unchecked")
-                List<Element> groupNodes = currentElement.selectNodes("*/" + A_CmsImport.N_GROUPNAME);
+                List<Node> groupNodes = currentElement.selectNodes("*/" + A_CmsImport.N_GROUPNAME);
                 List<String> userGroups = new ArrayList<String>();
                 for (int j = 0; j < groupNodes.size(); j++) {
-                    Element currentGroup = groupNodes.get(j);
+                    Element currentGroup = (Element)groupNodes.get(j);
                     String userInGroup = getChildElementTextValue(currentGroup, A_CmsImport.N_NAME);
                     userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);
                     userGroups.add(userInGroup);
