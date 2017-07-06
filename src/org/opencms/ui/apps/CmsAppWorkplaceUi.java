@@ -238,7 +238,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
                     String from = broadcastMessage.getUser() != null
                     ? broadcastMessage.getUser().getName()
                     : CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
-                    picPath = helper.getSmallIconPath(A_CmsUI.getCmsObject(), broadcastMessage.getUser());
+                    if (broadcastMessage.getUser() != null) {
+                        picPath = helper.getSmallIconPath(A_CmsUI.getCmsObject(), broadcastMessage.getUser());
+                    }
                     String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
                         broadcastMessage.getSendTime());
                     String content = broadcastMessage.getMessage();
@@ -554,6 +556,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     private String getImgHTML(String pic) {
 
+        if (pic.isEmpty()) {
+            return "";
+        }
         return "<img class=\"v-icon\" src=\"" + pic + "\">";
 
     }
