@@ -21,6 +21,7 @@
 	loginmanager?,
 	loginmessage?,
 	sites,
+	sax-impl-system-properties?,
 	runtimeproperties?,
 	runtimeclasses,
 	defaultusers,
@@ -314,6 +315,14 @@ Each job can have an optional list of parameters.
 <!ELEMENT publish-list-remove-mode EMPTY>
 <!ATTLIST publish-list-remove-mode
 	mode (allUsers|currentUser) #REQUIRED>
+	
+<!--
+# Sets if the SAX parser implementation classes should be stored in the system properties.
+# This removes an XML parsing bottle neck in high load scenarios, but prevents other web applications from
+# running in the same servlet-container.
+# Default value is 'false'. Set to 'true' to use the feature.
+-->
+<!ELEMENT sax-impl-system-properties (#PCDATA)>
 
 <!--
 # Optional configuration that controls some additional information as key/value param pairs
