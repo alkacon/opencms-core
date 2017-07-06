@@ -51,6 +51,7 @@
 			<shared-folder>/shared/</shared-folder>
 			<site server="http://localhost:8080" uri="/sites/default/" />
 		</sites>
+		<sax-impl-system-properties>false</sax-impl-system-properties>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
 			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>

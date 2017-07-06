@@ -95,6 +95,7 @@
               <alias server="http://www.yetanotheraliasserver.com"/>			
 			</site>
 		</sites>
+		<sax-impl-system-properties>true</sax-impl-system-properties>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
 			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>

@@ -93,7 +93,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Enum for the user session mode. */
     public enum UserSessionMode {
         /** Only a single session per user is allowed. */
-        single, /** Any number of sessions for a user are allowed. */
+        single,
+        /** Any number of sessions for a user are allowed. */
         standard
     }
 
@@ -412,6 +413,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the runtime properties node. */
     public static final String N_RUNTIMEPROPERTIES = "runtimeproperties";
 
+    /** The node name for the sax-impl-system-properties node. */
+    public static final String N_SAX_IMPL_SYSTEM_PROPERTIES = "sax-impl-system-properties";
+
     /** The node name for the scheduler. */
     public static final String N_SCHEDULER = "scheduler";
 
@@ -634,6 +638,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The runtime properties. */
     private Map<String, String> m_runtimeProperties;
+
+    /** Flag indicating if the SAX parser implementation classes should be stored in system properties
+     *  to improve the unmarshalling performance. */
+    private boolean m_saxImplProperties;
 
     /** The configured schedule manager. */
     private CmsScheduleManager m_scheduleManager;
@@ -956,6 +964,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 1, A_OFFSET);
 
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SHARED_FOLDER, "setSharedFolder", 0);
+
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_SAX_IMPL_SYSTEM_PROPERTIES,
+            "setUseSaxImplSystemProperties",
+            1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SAX_IMPL_SYSTEM_PROPERTIES, 0);
 
         // add compatibility parameter rules
         digester.addCallMethod(
@@ -1393,6 +1407,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 }
             }
         }
+
+        Element saxImpl = systemElement.addElement(N_SAX_IMPL_SYSTEM_PROPERTIES);
+        saxImpl.setText(String.valueOf(m_saxImplProperties));
 
         // create <runtimeproperties> node
         Element runtimepropertiesElement = systemElement.addElement(N_RUNTIMEPROPERTIES);
@@ -2661,6 +2678,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Sets if the SAX parser implementation classes should be stored in system properties
+     * to improve the unmarshalling performance.<p>
+     *
+     * @param enabled <code>true</code> to store SAX parser implementation classes in system properties
+     */
+    public void setUseSaxImplSystemProperties(String enabled) {
+
+        m_saxImplProperties = Boolean.parseBoolean(enabled);
+    }
+
+    /**
      * Sets the validation handler.<p>
      *
      * @param validationHandlerClass the validation handler class to set.
@@ -2678,6 +2706,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setWorkflowManager(I_CmsWorkflowManager workflowManager) {
 
         m_workflowManager = workflowManager;
+    }
+
+    /**
+     * Returns whether the SAX parser implementation classes should be stored in system properties
+     * to improve the unmarshalling performance.<p>
+     *
+     * @return <code>true</code> if the SAX parser implementation classes should be stored in system properties
+     */
+    public boolean useSaxImplSystemProperties() {
+
+        return m_saxImplProperties;
     }
 
     /**
