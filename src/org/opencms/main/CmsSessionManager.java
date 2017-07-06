@@ -418,6 +418,24 @@ public class CmsSessionManager {
      */
     public String switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
 
+        return switchUserFromSession(cms, req, user, null);
+    }
+
+    /**
+     * Switches the current user to the given user. The session info is rebuild as if the given user
+     * performs a login at the workplace.
+     *
+     * @param cms the current CmsObject
+     * @param req the current request
+     * @param user the user to switch to
+     *
+     * @return the direct edit target if available
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public String switchUserFromSession(CmsObject cms, HttpServletRequest req, CmsUser user, CmsSessionInfo sessionInfo)
+    throws CmsException {
+
         // only user with root administrator role are allowed to switch the user
         OpenCms.getRoleManager().checkRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn()));
         CmsSessionInfo info = getSessionInfo(req);
@@ -433,14 +451,24 @@ public class CmsSessionManager {
         // get the user settings for the given user and set the start project and the site root
         CmsUserSettings settings = new CmsUserSettings(user);
         String ouFqn = user.getOuFqn();
-        CmsProject userProject = cms.readProject(
-            ouFqn + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject());
-        try {
-            userProject = cms.readProject(settings.getStartProject());
-        } catch (Exception e) {
-            // ignore, use default
+
+        CmsProject userProject;
+        String userSiteRoot;
+
+        if (sessionInfo == null) {
+            userProject = cms.readProject(
+                ouFqn + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject());
+            try {
+                userProject = cms.readProject(settings.getStartProject());
+            } catch (Exception e) {
+                // ignore, use default
+            }
+            userSiteRoot = settings.getStartSite();
+        } else {
+            userProject = cms.readProject(sessionInfo.getProject());
+            userSiteRoot = sessionInfo.getSiteRoot();
         }
-        String userSiteRoot = settings.getStartSite();
+
         CmsRequestContext context = new CmsRequestContext(
             user,
             userProject,

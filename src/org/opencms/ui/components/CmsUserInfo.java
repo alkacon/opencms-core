@@ -29,6 +29,8 @@ package org.opencms.ui.components;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
@@ -44,12 +46,15 @@ import org.opencms.ui.login.CmsChangePasswordDialog;
 import org.opencms.ui.login.CmsLoginController;
 import org.opencms.ui.shared.components.CmsUploadState.UploadType;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsAccountInfo;
 import org.opencms.workplace.CmsAccountInfo.Field;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
@@ -76,6 +81,9 @@ public class CmsUserInfo extends VerticalLayout {
     /** The serial version id. */
     private static final long serialVersionUID = 7215454442218119869L;
 
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsUserInfo.class.getName());
+
     /** The dialog context. */
     I_CmsDialogContext m_context;
 
@@ -96,6 +104,30 @@ public class CmsUserInfo extends VerticalLayout {
 
     /** The upload listener. */
     private I_UploadListener m_uploadListener;
+
+    /**
+     * Constructor.<p>
+     *
+     * @param cmsUUID uuid of user to show info for
+     */
+    public CmsUserInfo(CmsUUID cmsUUID) {
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        try {
+            CmsObject cms = A_CmsUI.getCmsObject();
+            m_user = cms.readUser(cmsUUID);
+
+            m_info.setContentMode(ContentMode.HTML);
+            m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
+            m_details.setContentMode(ContentMode.HTML);
+            m_details.setValue(generateInfoDetails(cms, UI.getCurrent().getLocale()));
+            m_infoPanel.addComponent(createImageButton(), 0);
+            m_menu.setVisible(false);
+        } catch (CmsException e) {
+            LOG.error("Unable to read user", e);
+        }
+
+    }
 
     /**
      * Constructor.<p>
@@ -156,7 +188,7 @@ public class CmsUserInfo extends VerticalLayout {
 
         layout.addComponent(userImage);
 
-        if (!CmsAppWorkplaceUi.isOnlineProject()) {
+        if (!CmsAppWorkplaceUi.isOnlineProject() & (m_uploadListener != null)) {
             CmsUploadButton uploadButton = createImageUploadButton(
                 null,
                 FontOpenCms.UPLOAD_SMALL,
@@ -226,14 +258,13 @@ public class CmsUserInfo extends VerticalLayout {
      */
     private String generateInfo(CmsObject cms, Locale locale) {
 
-        CmsUser user = cms.getRequestContext().getCurrentUser();
         StringBuffer infoHtml = new StringBuffer(128);
-        infoHtml.append("<p>").append(CmsStringUtil.escapeHtml(user.getSimpleName())).append("</p>");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getFirstname())) {
-            infoHtml.append(CmsStringUtil.escapeHtml(user.getFirstname())).append("&nbsp;");
+        infoHtml.append("<p>").append(CmsStringUtil.escapeHtml(m_user.getSimpleName())).append("</p>");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getFirstname())) {
+            infoHtml.append(CmsStringUtil.escapeHtml(m_user.getFirstname())).append("&nbsp;");
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getLastname())) {
-            infoHtml.append(CmsStringUtil.escapeHtml(user.getLastname()));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getLastname())) {
+            infoHtml.append(CmsStringUtil.escapeHtml(m_user.getLastname()));
         }
         infoHtml.append(LINE_BREAK);
         return infoHtml.toString();
@@ -249,19 +280,18 @@ public class CmsUserInfo extends VerticalLayout {
      */
     private String generateInfoDetails(CmsObject cms, Locale locale) {
 
-        CmsUser user = cms.getRequestContext().getCurrentUser();
         StringBuffer infoHtml = new StringBuffer(128);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getEmail())) {
-            infoHtml.append(CmsStringUtil.escapeHtml(user.getEmail())).append(LINE_BREAK);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getEmail())) {
+            infoHtml.append(CmsStringUtil.escapeHtml(m_user.getEmail())).append(LINE_BREAK);
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getOuFqn())) {
-            infoHtml.append(CmsStringUtil.escapeHtml(user.getOuFqn())).append(LINE_BREAK);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getOuFqn())) {
+            infoHtml.append(CmsStringUtil.escapeHtml(m_user.getOuFqn())).append(LINE_BREAK);
         }
         for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
             if (!info.getField().equals(Field.firstname)
                 && !info.getField().equals(Field.lastname)
                 && !Field.email.equals(info.getField())) {
-                String value = info.getValue(user);
+                String value = info.getValue(m_user);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
                     infoHtml.append(CmsStringUtil.escapeHtml(value)).append(LINE_BREAK);
                 }
@@ -270,7 +300,7 @@ public class CmsUserInfo extends VerticalLayout {
         infoHtml.append(
             Messages.get().getBundle(locale).key(
                 Messages.GUI_USER_INFO_ONLINE_SINCE_1,
-                DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(user.getLastlogin())))).append(
+                DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(m_user.getLastlogin())))).append(
                     LINE_BREAK);
 
         return infoHtml.toString();

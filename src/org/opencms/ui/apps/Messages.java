@@ -1092,12 +1092,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MESSAGES_BROADCAST_ADMIN_TOOL_NAME_0 = "GUI_MESSAGES_BROADCAST_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MESSAGES_BROADCAST_COLS_STATUS_ACTIVE_0 = "GUI_MESSAGES_BROADCAST_COLS_STATUS_ACTIVE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MESSAGES_BROADCAST_COLS_STATUS_INACTIVE_0 = "GUI_MESSAGES_BROADCAST_COLS_STATUS_INACTIVE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_BROADCAST_COLS_CREATION_0 = "GUI_MESSAGES_BROADCAST_COLS_CREATION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1111,6 +1105,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_BROADCAST_COLS_STATUS_0 = "GUI_MESSAGES_BROADCAST_COLS_STATUS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_COLS_STATUS_ACTIVE_0 = "GUI_MESSAGES_BROADCAST_COLS_STATUS_ACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_COLS_STATUS_INACTIVE_0 = "GUI_MESSAGES_BROADCAST_COLS_STATUS_INACTIVE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_BROADCAST_COLS_USER_0 = "GUI_MESSAGES_BROADCAST_COLS_USER_0";
@@ -1183,6 +1183,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_SESSION_COUNT_1 = "GUI_MESSAGES_SESSION_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_SHOW_USER_0 = "GUI_MESSAGES_SHOW_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_SWITCH_USER_0 = "GUI_MESSAGES_SWITCH_USER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_USER_COUNT_1 = "GUI_MESSAGES_USER_COUNT_1";

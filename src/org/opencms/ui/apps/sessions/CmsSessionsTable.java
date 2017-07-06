@@ -273,6 +273,43 @@ public class CmsSessionsTable extends Table {
 
     }
 
+    /**
+     * User entry.<p>
+     */
+    class UserEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> context) {
+
+            Window window = CmsBasicDialog.prepareWindow();
+            window.setCaption("User info");
+            window.setContent(new CmsUserInfoDialog(context.iterator().next(), window));
+            A_CmsUI.get().addWindow(window);
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SHOW_USER_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            return (data != null) && (data.size() == 1)
+            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
+            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
+    }
+
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsSessionsTable.class.getName());
 
@@ -499,6 +536,7 @@ public class CmsSessionsTable extends Table {
             m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
             m_menuEntries.add(new SendBroadcastEntry());
             m_menuEntries.add(new KillEntry());
+            m_menuEntries.add(new UserEntry());
         }
         return m_menuEntries;
     }
