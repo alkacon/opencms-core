@@ -620,11 +620,6 @@ public class CmsLocationController {
                                          && (status == $wnd.google.maps.GeocoderStatus.OK)
                                          && results[0].formatted_address) {
                                      self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = results[0].formatted_address;
-                                     var lat = results[0].geometry.location
-                                             .lat();
-                                     var lng = results[0].geometry.location
-                                             .lng();
-                                     self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZZ)(lat,lng,true,false);
                                  }
                                  self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::fireChangeAndClose()();
                              });
