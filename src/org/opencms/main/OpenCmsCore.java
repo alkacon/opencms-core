@@ -110,6 +110,7 @@ import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.IOException;
@@ -1330,6 +1331,10 @@ public final class OpenCmsCore {
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(
             CmsSystemConfiguration.class);
+
+        if (systemConfiguration.useSaxImplSystemProperties()) {
+            CmsXmlUtils.initSystemProperties();
+        }
 
         // initialize the memory monitor
         CmsMemoryMonitorConfiguration memoryMonitorConfiguration = systemConfiguration.getCmsMemoryMonitorConfiguration();
