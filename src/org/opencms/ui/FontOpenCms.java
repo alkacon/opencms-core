@@ -105,7 +105,7 @@ public enum FontOpenCms implements FontIcon {
     CONTEXT_MENU(0xe616),
 
     /** The context menu dots icon. */
-    CONTEXT_MENU_DOTS(0xe664a),
+    CONTEXT_MENU_DOTS(0xe64a),
 
     /** The context menu icon. */
     CONTEXT_MENU_SMALL(0xe90a),
