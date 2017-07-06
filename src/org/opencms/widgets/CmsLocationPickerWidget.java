@@ -102,35 +102,36 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
             if (!config.startsWith("{")) {
                 config = "{" + config + "}";
             }
-            try {
-                // make sure the configuration is a parsable JSON string
-                JSONObject conf = new JSONObject(config);
-                if (!conf.has(CONFIG_API_KEY)) {
-                    String sitePath;
-                    if (resource.getStructureId().isNullUUID()) {
-                        sitePath = "/";
-                    } else {
-                        sitePath = cms.getSitePath(resource);
-                    }
-                    try {
-                        String apiKey = cms.readPropertyObject(
-                            sitePath,
-                            CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY,
-                            true).getValue();
-
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(apiKey)) {
-                            conf.put(CONFIG_API_KEY, apiKey);
-                        }
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-                config = conf.toString();
-            } catch (JSONException e) {
-                config = DEFAULT_CONFIG;
-                LOG.error(e.getLocalizedMessage(), e);
-            }
         }
+        try {
+            // make sure the configuration is a parsable JSON string
+            JSONObject conf = new JSONObject(config);
+            if (!conf.has(CONFIG_API_KEY)) {
+                String sitePath;
+                if (resource.getStructureId().isNullUUID()) {
+                    sitePath = "/";
+                } else {
+                    sitePath = cms.getSitePath(resource);
+                }
+                try {
+                    String apiKey = cms.readPropertyObject(
+                        sitePath,
+                        CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY,
+                        true).getValue();
+
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(apiKey)) {
+                        conf.put(CONFIG_API_KEY, apiKey);
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            config = conf.toString();
+        } catch (JSONException e) {
+            config = DEFAULT_CONFIG;
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
         return config;
     }
 
