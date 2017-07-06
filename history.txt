@@ -25,6 +25,7 @@ OpenCms 10.5.2 - ...
 - Added option to use multiple workplace server URL.
 - Improved unique file name generator to check for existing online resources too.
 - Changed ADE configuration initialization to be done during context initialization to avoid long response times on first page view.
+- Added option to improve XML unmarshalling performance by writing SAX parser implementation classes to system properties.
 * Fixing cross site resource access issues in various workplace dialogs.
 * Fixed permission issue on account manager dialogs, where non account manager users where able to view users list.
 * Fixed issue where closing the HTML source view would introduce additional tags.
