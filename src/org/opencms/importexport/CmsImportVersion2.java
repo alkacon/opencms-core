@@ -223,7 +223,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         I_CmsReport report,
         File importResource,
         ZipFile importZip,
-        Document docXml) throws CmsImportExportException {
+        Document docXml)
+    throws CmsImportExportException {
 
         CmsImportParameters params = new CmsImportParameters(
             importResource != null ? importResource.getAbsolutePath() : importZip.getName(),
@@ -320,7 +321,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         String email,
         long dateCreated,
         Map<String, Object> userInfo,
-        List<String> userGroups) throws CmsImportExportException {
+        List<String> userGroups)
+    throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -427,10 +429,10 @@ public class CmsImportVersion2 extends A_CmsImport {
      *
      * @throws CmsImportExportException if something goes wrong
      */
-    @SuppressWarnings("unchecked")
     private void importAllResources() throws CmsImportExportException {
 
-        List<Element> fileNodes = null, acentryNodes = null;
+        List<Node> fileNodes = null;
+        List<Node> acentryNodes = null;
         Element currentElement = null, currentEntry = null;
         String source = null, destination = null, resourceTypeName = null, timestamp = null, uuid = null,
         uuidresource = null;
@@ -500,7 +502,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         String.valueOf(i + 1),
                         String.valueOf(importSize)),
                     I_CmsReport.FORMAT_NOTE);
-                currentElement = fileNodes.get(i);
+                currentElement = (Element)fileNodes.get(i);
 
                 // get all information for a file-import
                 source = getChildElementTextValue(currentElement, A_CmsImport.N_SOURCE);
@@ -591,7 +593,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         acentryNodes = currentElement.selectNodes("*/" + A_CmsImport.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
-                            currentEntry = acentryNodes.get(j);
+                            currentEntry = (Element)acentryNodes.get(j);
                             // get the data of the access control entry
                             String id = getChildElementTextValue(currentEntry, A_CmsImport.N_ID);
                             String acflags = getChildElementTextValue(currentEntry, A_CmsImport.N_FLAGS);
@@ -862,8 +864,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 String bodyname = null;
                 Map<String, String> bodyparams = null;
 
-                @SuppressWarnings("unchecked")
-                List<Node> nodes = ((Element)bodyNode).elements();
+                List<Element> nodes = ((Element)bodyNode).elements();
                 for (int i = 0, n = nodes.size(); i < n; i++) {
 
                     Node node = nodes.get(i);

@@ -65,6 +65,7 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for
@@ -102,32 +103,6 @@ public class CmsImportVersion3 extends A_CmsImport {
     public int getVersion() {
 
         return CmsImportVersion3.IMPORT_VERSION;
-    }
-
-    /**
-     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
-     *
-     * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
-     */
-    @Deprecated
-    public void importResources(
-        CmsObject cms,
-        String importPath,
-        I_CmsReport report,
-        File importResource,
-        ZipFile importZip,
-        Document docXml) throws CmsImportExportException {
-
-        CmsImportParameters params = new CmsImportParameters(
-            importResource != null ? importResource.getAbsolutePath() : importZip.getName(),
-            importPath,
-            true);
-
-        try {
-            importData(cms, report, params);
-        } catch (CmsXmlException e) {
-            throw new CmsImportExportException(e.getMessageContainer(), e);
-        }
     }
 
     /**
@@ -173,6 +148,33 @@ public class CmsImportVersion3 extends A_CmsImport {
     }
 
     /**
+     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
+     *
+     * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
+     */
+    @Deprecated
+    public void importResources(
+        CmsObject cms,
+        String importPath,
+        I_CmsReport report,
+        File importResource,
+        ZipFile importZip,
+        Document docXml)
+    throws CmsImportExportException {
+
+        CmsImportParameters params = new CmsImportParameters(
+            importResource != null ? importResource.getAbsolutePath() : importZip.getName(),
+            importPath,
+            true);
+
+        try {
+            importData(cms, report, params);
+        } catch (CmsXmlException e) {
+            throw new CmsImportExportException(e.getMessageContainer(), e);
+        }
+    }
+
+    /**
      * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
      */
     @Override
@@ -185,7 +187,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         String email,
         long dateCreated,
         Map<String, Object> userInfo,
-        List<String> userGroups) throws CmsImportExportException {
+        List<String> userGroups)
+    throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -206,13 +209,13 @@ public class CmsImportVersion3 extends A_CmsImport {
      *
      * @throws CmsImportExportException if something goes wrong
      */
-    @SuppressWarnings("unchecked")
     private void importAllResources() throws CmsImportExportException {
 
         String source, destination, type, uuidresource, userlastmodified, usercreated, flags, timestamp;
         long datelastmodified, datecreated;
 
-        List<Element> fileNodes, acentryNodes;
+        List<Node> fileNodes;
+        List<Node> acentryNodes;
         Element currentElement, currentEntry;
         List<CmsProperty> properties = null;
 
@@ -247,7 +250,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                         org.opencms.report.Messages.RPT_SUCCESSION_2,
                         String.valueOf(i + 1),
                         String.valueOf(importSize)));
-                currentElement = fileNodes.get(i);
+                currentElement = (Element)fileNodes.get(i);
                 // get all information for a file-import
                 // <source>
                 source = getChildElementTextValue(currentElement, A_CmsImport.N_SOURCE);
@@ -322,7 +325,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                         acentryNodes = currentElement.selectNodes("*/" + A_CmsImport.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
-                            currentEntry = acentryNodes.get(j);
+                            currentEntry = (Element)acentryNodes.get(j);
                             // get the data of the access control entry
                             String id = getChildElementTextValue(currentEntry, A_CmsImport.N_ACCESSCONTROL_PRINCIPAL);
                             String acflags = getChildElementTextValue(currentEntry, A_CmsImport.N_FLAGS);

@@ -71,6 +71,7 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * Collection of common used methods for implementing OpenCms Import classes.<p>
@@ -728,10 +729,9 @@ public abstract class A_CmsImport implements I_CmsImport {
      *
      * @throws CmsImportExportException if something goes wrong
      */
-    @SuppressWarnings("unchecked")
     protected void importGroups() throws CmsImportExportException {
 
-        List<Element> groupNodes;
+        List<Node> groupNodes;
         Element currentElement;
         String name, description, flags, parentgroup;
         try {
@@ -739,7 +739,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             groupNodes = m_docXml.selectNodes("//" + A_CmsImport.N_GROUPDATA);
             // walk through all groups in manifest
             for (int i = 0; i < groupNodes.size(); i++) {
-                currentElement = groupNodes.get(i);
+                currentElement = (Element)groupNodes.get(i);
                 name = getChildElementTextValue(currentElement, A_CmsImport.N_NAME);
                 name = OpenCms.getImportExportManager().translateGroup(name);
                 description = getChildElementTextValue(currentElement, A_CmsImport.N_DESCRIPTION);
@@ -807,7 +807,8 @@ public abstract class A_CmsImport implements I_CmsImport {
         String email,
         long dateCreated,
         Map<String, Object> userInfo,
-        List<String> userGroups) throws CmsImportExportException {
+        List<String> userGroups)
+    throws CmsImportExportException {
 
         // create a new user id
         String id = new CmsUUID().toString();
@@ -875,8 +876,8 @@ public abstract class A_CmsImport implements I_CmsImport {
     @SuppressWarnings("unchecked")
     protected void importUsers() throws CmsImportExportException {
 
-        List<Element> userNodes;
-        List<Element> groupNodes;
+        List<Node> userNodes;
+        List<Node> groupNodes;
         List<String> userGroups;
         Element currentElement, currentGroup;
         Map<String, Object> userInfo = null;
@@ -888,7 +889,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             userNodes = m_docXml.selectNodes("//" + A_CmsImport.N_USERDATA);
             // walk threw all groups in manifest
             for (int i = 0; i < userNodes.size(); i++) {
-                currentElement = userNodes.get(i);
+                currentElement = (Element)userNodes.get(i);
                 name = getChildElementTextValue(currentElement, A_CmsImport.N_NAME);
                 name = OpenCms.getImportExportManager().translateUser(name);
                 // decode passwords using base 64 decoder
@@ -925,7 +926,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 groupNodes = currentElement.selectNodes("*/" + A_CmsImport.N_GROUPNAME);
                 userGroups = new ArrayList<String>();
                 for (int j = 0; j < groupNodes.size(); j++) {
-                    currentGroup = groupNodes.get(j);
+                    currentGroup = (Element)groupNodes.get(j);
                     String userInGroup = getChildElementTextValue(currentGroup, A_CmsImport.N_NAME);
                     userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);
                     userGroups.add(userInGroup);
@@ -980,8 +981,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         // all imported Cms property objects are collected in map first forfaster access
         Map<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
         CmsProperty property = null;
-        @SuppressWarnings("unchecked")
-        List<Element> propertyElements = parentElement.selectNodes(
+        List<Node> propertyElements = parentElement.selectNodes(
             "./" + A_CmsImport.N_PROPERTIES + "/" + A_CmsImport.N_PROPERTY);
         Element propertyElement = null;
         String key = null, value = null;
@@ -989,7 +989,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         // iterate over all property elements
         for (int i = 0, n = propertyElements.size(); i < n; i++) {
-            propertyElement = propertyElements.get(i);
+            propertyElement = (Element)propertyElements.get(i);
             key = getChildElementTextValue(propertyElement, A_CmsImport.N_NAME);
 
             if ((key == null) || ignoredPropertyKeys.contains(key)) {
