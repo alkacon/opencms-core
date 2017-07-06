@@ -44,6 +44,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -295,6 +296,40 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     }
 
     /**
+     * Copies the key set of a map while synchronizing on the map.<p>
+     *
+     * @param map the map whose key set should be copied
+     * @return the copied key set
+     */
+    private static <K, V> Set<K> synchronizedCopyKeys(Map<K, V> map) {
+
+        if (map == null) {
+            return new HashSet<K>();
+        }
+        synchronized (map) {
+            return new HashSet<K>(map.keySet());
+        }
+    }
+
+    /**
+     * Copies a map while synchronizing on it.<p>
+     *
+     * @param map the map to copy
+     * @return the copied map
+     */
+    private static <K, V> Map<K, V> synchronizedCopyMap(Map<K, V> map) {
+
+        if (map == null) {
+            return new HashMap<K, V>();
+        }
+
+        synchronized (map) {
+
+            return new HashMap<K, V>(map);
+        }
+    }
+
+    /**
      * Indicates if offline project resources are cached.<p>
      *
      * @return true if offline projects are cached, false if not
@@ -432,13 +467,21 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     public void dumpKeys(StringBuffer buffer) {
 
         synchronized (this) {
-            for (Map.Entry<String, CmsFlexCacheVariation> entry : m_keyCache.entrySet()) {
+            for (Map.Entry<String, CmsFlexCacheVariation> entry : synchronizedCopyMap(m_keyCache).entrySet()) {
                 String key = entry.getKey();
                 CmsFlexCacheVariation variations = entry.getValue();
                 Map<String, I_CmsLruCacheObject> variationMap = variations.m_map;
                 for (Map.Entry<String, I_CmsLruCacheObject> varEntry : variationMap.entrySet()) {
                     String varKey = varEntry.getKey();
+                    I_CmsLruCacheObject value = varEntry.getValue();
                     buffer.append(key + " VAR " + varKey + "\n");
+                    if (value instanceof CmsFlexCacheEntry) {
+                        CmsFlexCacheEntry singleCacheEntry = (CmsFlexCacheEntry)value;
+                        BucketSet buckets = singleCacheEntry.getBucketSet();
+                        if (buckets != null) {
+                            buffer.append("buckets = " + buckets.toString() + "\n");
+                        }
+                    }
                 }
             }
         }
@@ -487,7 +530,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (!isEnabled() || !OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
-        return m_keyCache.keySet();
+        return synchronizedCopyKeys(m_keyCache);
     }
 
     /**
@@ -511,7 +554,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         Object o = m_keyCache.get(key);
         if (o != null) {
-            return ((CmsFlexCacheVariation)o).m_map.keySet();
+            return synchronizedCopyKeys(((CmsFlexCacheVariation)o).m_map);
         }
         return null;
     }
@@ -796,7 +839,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     private synchronized void clearAccordingToSuffix(String suffix, boolean entriesOnly) {
 
-        Set<String> keys = new HashSet<String>(m_keyCache.keySet());
+        Set<String> keys = synchronizedCopyKeys(m_keyCache);
         Iterator<String> i = keys.iterator();
         while (i.hasNext()) {
             String s = i.next();
@@ -865,7 +908,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 List<String> paths = Lists.newArrayList();
                 for (CmsPublishedResource pubRes : publishedResources) {
                     paths.add(pubRes.getRootPath());
-                    LOG.debug(p + "Published resource: " + pubRes.getRootPath());
+                    LOG.info(p + "Published resource: " + pubRes.getRootPath());
                 }
                 BucketSet publishListBucketSet = bucketConfig.getBucketSet(paths);
                 if (LOG.isInfoEnabled()) {
@@ -873,23 +916,22 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 }
                 synchronized (this) {
                     List<CmsFlexCacheEntry> entriesToDelete = Lists.newArrayList();
-                    for (Map.Entry<String, CmsFlexCacheVariation> entry : m_keyCache.entrySet()) {
+                    for (Map.Entry<String, CmsFlexCacheVariation> entry : synchronizedCopyMap(m_keyCache).entrySet()) {
                         CmsFlexCacheVariation variation = entry.getValue();
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(p + "Processing entries for " + entry.getKey());
                         }
                         entriesToDelete.clear();
 
-                        for (Map.Entry<String, I_CmsLruCacheObject> variationEntry : variation.m_map.entrySet()) {
+                        for (Map.Entry<String, I_CmsLruCacheObject> variationEntry : synchronizedCopyMap(
+                            variation.m_map).entrySet()) {
                             CmsFlexCacheEntry flexEntry = (CmsFlexCacheEntry)(variationEntry.getValue());
                             totalEntries += 1;
                             BucketSet entryBucketSet = flexEntry.getBucketSet();
                             if (publishListBucketSet.matchForDeletion(entryBucketSet)) {
                                 entriesToDelete.add(flexEntry);
-                                // removing them here wouldn't work since we are currently iterating over the variation map
-                                // so we delay removal until after the loop
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug(p + "Match: " + variationEntry.getKey());
+                                if (LOG.isInfoEnabled()) {
+                                    LOG.info(p + "Match: " + variationEntry.getKey());
                                 }
                             } else {
                                 if (LOG.isDebugEnabled()) {
@@ -937,7 +979,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_CLEAR_ALL_0));
         }
         // create new set to avoid ConcurrentModificationExceptions
-        Set<String> cacheKeys = new HashSet<String>(m_keyCache.keySet());
+        Set<String> cacheKeys = synchronizedCopyKeys(m_keyCache);
         Iterator<String> i = cacheKeys.iterator();
         while (i.hasNext()) {
             CmsFlexCacheVariation v = m_keyCache.get(i.next());
