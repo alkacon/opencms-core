@@ -185,22 +185,7 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
 
         final Window window = CmsBasicDialog.prepareWindow();
         window.setCaption(caption);
-        window.setContent(new CmsSendBroadcastDialog(ids, new Runnable() {
-
-            public void run() {
-
-                window.close();
-                if (table != null) {
-                    try {
-                        table.ini();
-                    } catch (CmsException e) {
-                        LOG.error("Unable to read sessions", e);
-                    }
-
-                }
-            }
-
-        }));
+        window.setContent(new CmsSendBroadcastDialog(ids, CmsSessionsTable.getCloseRunnable(window, table)));
         A_CmsUI.get().addWindow(window);
     }
 

@@ -37,11 +37,12 @@ import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsUserInfo;
 
+import java.util.List;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * Dialog to show user information and to switch to user session.<p>
@@ -67,11 +68,16 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
      * public constructor.<p>
      *
      * @param id id to session
-     * @param window to be closed
+     * @param furtherInfo lines to be shown
+     * @param closeRunnable runnable called by closing window
      */
-    public CmsUserInfoDialog(final String id, final Window window) {
+    public CmsUserInfoDialog(final String id, List<String> furtherInfo, final Runnable closeRunnable) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        m_layout.addComponent(new CmsUserInfo(OpenCms.getSessionManager().getSessionInfo(id).getUserId()));
+        CmsUserInfo info = new CmsUserInfo(OpenCms.getSessionManager().getSessionInfo(id).getUserId());
+        for (String infoLine : furtherInfo) {
+            info.addDetailLine(infoLine);
+        }
+        m_layout.addComponent(info);
 
         m_cms = A_CmsUI.getCmsObject();
 
@@ -108,7 +114,7 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
                 } catch (CmsException e) {
                     //
                 }
-
+                closeRunnable.run();
             }
 
         });
@@ -119,9 +125,20 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                window.close();
+                closeRunnable.run();
 
             }
         });
+    }
+
+    /**
+     * Hides the switch user button.<p>
+     *
+     * @param hide true-> button not displayed
+     */
+    public void setHideSwitchButton(boolean hide) {
+
+        m_okButton.setVisible(!hide);
+
     }
 }

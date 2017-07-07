@@ -272,6 +272,8 @@
 		color: $white;
 		text-align: center !important;			
 		}
+		
+	
 		&::before{
 			content:"";
 			position:absolute;
@@ -282,7 +284,20 @@
 			z-index: 1;
 			border-radius: 4px;
 		}
+	
 	}
+	
+	span[class^="o-box-"], span[class*="o-box"]{
+		padding: 5px 20px;
+		color: $white;
+		z-index:1;
+		text-align: center !important;	
+		
+		&::before{
+			z-index:-1;
+		}
+	}
+
 
 	.o-box-green::before{
 	

@@ -104,6 +104,32 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
     }
 
     /**
+     * Returns a string for given time.<p>
+     *
+     * @param time as timestamp
+     * @return string array containing string for hours, minutes, seconds
+     */
+    public static String[] getHourMinuteSecondTimeString(long time) {
+
+        int hours = (int)time / (1000 * 60 * 60);
+        int min = (int)(time - (hours * 1000 * 60 * 60)) / (1000 * 60);
+        int sec = (int)(time - (hours * 1000 * 60 * 60) - (min * 1000 * 60)) / 1000;
+
+        return new String[] {getTwoDigitsString(hours), getTwoDigitsString(min), getTwoDigitsString(sec)};
+    }
+
+    /**
+     * Formats an integer to a two chars string.<p>
+     *
+     * @param number to be formatted
+     * @return the string representation
+     */
+    private static String getTwoDigitsString(int number) {
+
+        return number < 10 ? "0" + number : String.valueOf(number);
+    }
+
+    /**
      * Allows sorting session info according to the user names.<p>
      *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -138,12 +164,9 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
      */
     public String getAgeOfSession() {
 
-        long dif = System.currentTimeMillis() - m_timeCreated;
+        String[] ret = getHourMinuteSecondTimeString(System.currentTimeMillis() - m_timeCreated);
+        return ret[0] + ":" + ret[1];
 
-        int hours = (int)dif / (1000 * 60 * 60);
-        int min = (int)(dif - (hours * 1000 * 60 * 60)) / (1000 * 60);
-
-        return getTwoDigitsString(hours) + ":" + getTwoDigitsString(min);
     }
 
     /**
@@ -320,16 +343,5 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
         m_siteRoot = context.getSiteRoot();
         setProject(context.getCurrentProject().getUuid());
         m_ouFqn = context.getOuFqn();
-    }
-
-    /**
-     * Formats an integer to a two chars string.<p>
-     *
-     * @param number to be formatted
-     * @return the string representation
-     */
-    private String getTwoDigitsString(int number) {
-
-        return number < 10 ? "0" + number : String.valueOf(number);
     }
 }

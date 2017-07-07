@@ -80,9 +80,14 @@ public class CmsUserInfo extends VerticalLayout {
 
     /** The serial version id. */
     private static final long serialVersionUID = 7215454442218119869L;
-
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsUserInfo.class.getName());
+
+    /**HTML open div tag.*/
+    static final String DIV_HTML = "<div style=\"vertical-align:middle;\">";
+
+    /**Html close div tag.*/
+    static final String DIV_END = "</div>";
 
     /** The dialog context. */
     I_CmsDialogContext m_context;
@@ -148,6 +153,16 @@ public class CmsUserInfo extends VerticalLayout {
         m_infoPanel.addComponent(createImageButton(), 0);
         initUserMenu();
 
+    }
+
+    /**
+     * Adds a line to the details label.<p>
+     *
+     * @param lineHtml the line to be added
+     */
+    public void addDetailLine(String lineHtml) {
+
+        m_details.setValue(m_details.getValue() + DIV_HTML + lineHtml + DIV_END);
     }
 
     /**

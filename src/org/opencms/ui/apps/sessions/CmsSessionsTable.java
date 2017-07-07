@@ -47,7 +47,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -63,6 +62,7 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -105,6 +105,10 @@ public class CmsSessionsTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
+            if ((data.size() == 1) & data.iterator().next().equals(m_mySessionId)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -113,8 +117,7 @@ public class CmsSessionsTable extends Table {
     /**
      * The menu entry to switch to the explorer of concerning site.<p>
      */
-    class SendBroadcastEntry
-    implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
+    class SendBroadcastEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
@@ -131,14 +134,6 @@ public class CmsSessionsTable extends Table {
         }
 
         /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles#getStyles()
-         */
-        public String getStyles() {
-
-            return ValoTheme.LABEL_BOLD;
-        }
-
-        /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
          */
         public String getTitle(Locale locale) {
@@ -151,6 +146,9 @@ public class CmsSessionsTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
+            if ((data.size() == 1) & data.iterator().next().equals(m_mySessionId)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -167,7 +165,7 @@ public class CmsSessionsTable extends Table {
         Icon(null, Label.class, null, false),
 
         /**Icon column.*/
-        IS_ACTIVE(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_0, Boolean.class, new Boolean(true), false),
+        IS_ACTIVE(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_0, Long.class, new Long(0L), false),
 
         /**Is Broadcast send but not displayed.*/
         IS_WAITING(null, Boolean.class, new Boolean(false), false),
@@ -276,18 +274,23 @@ public class CmsSessionsTable extends Table {
     /**
      * User entry.<p>
      */
-    class UserEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+    class UserEntry implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(Set<String> context) {
 
-            Window window = CmsBasicDialog.prepareWindow();
-            window.setCaption("User info");
-            window.setContent(new CmsUserInfoDialog(context.iterator().next(), window));
-            A_CmsUI.get().addWindow(window);
+            showUserInfoWindow(context.iterator().next());
 
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles#getStyles()
+         */
+        public String getStyles() {
+
+            return ValoTheme.LABEL_BOLD;
         }
 
         /**
@@ -313,11 +316,14 @@ public class CmsSessionsTable extends Table {
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsSessionsTable.class.getName());
 
+    /**Time limit (in milliseconds) since when a user is inactive.*/
+    private static final long INACTIVE_LIMIT = 3 * 60 * 1000; //3 minute
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4136423899776482696L;
 
-    /**Time limit (in milliseconds) since when a user is inactive.*/
-    private static final long INACTIVE_LIMIT = 1 * 60 * 1000; //1 minute
+    /**Session id of user who uses the tool.*/
+    protected String m_mySessionId;
 
     /**Container holding table data.*/
     private IndexedContainer m_container;
@@ -333,6 +339,10 @@ public class CmsSessionsTable extends Table {
      */
     public CmsSessionsTable() {
         try {
+
+            m_mySessionId = OpenCms.getSessionManager().getSessionInfo(
+                CmsVaadinUtils.getRequest()).getSessionId().getStringValue();
+
             ini();
 
             setColumnWidth(TableProperty.IS_ACTIVE, 80);
@@ -369,11 +379,8 @@ public class CmsSessionsTable extends Table {
                     }
 
                     if (TableProperty.IS_ACTIVE.equals(propertyId)) {
-                        if (((Boolean)source.getItem(itemId).getItemProperty(
-                            TableProperty.IS_ACTIVE).getValue()).booleanValue()) {
-                            return OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
-                        }
-                        return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
+                        return getStatusStyleForItem((String)itemId);
+
                     }
 
                     return null;
@@ -396,18 +403,64 @@ public class CmsSessionsTable extends Table {
 
                 public Object generateCell(Table source, Object itemId, Object columnId) {
 
-                    if (((Boolean)source.getItem(itemId).getItemProperty(
-                        TableProperty.IS_ACTIVE).getValue()).booleanValue()) {
-                        return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_ACTIVE_0);
-                    }
-                    return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_INACTIVE_0);
+                    return getStatusForItem((String)itemId);
+
                 }
 
             });
+
+            setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+
+                private static final long serialVersionUID = 7367011213487089661L;
+
+                public String generateDescription(Component source, Object itemId, Object propertyId) {
+
+                    if (TableProperty.IS_ACTIVE.equals(propertyId)) {
+
+                        String[] ret = CmsSessionInfo.getHourMinuteSecondTimeString(
+                            ((Long)((Table)source).getItem(itemId).getItemProperty(propertyId).getValue()).longValue());
+
+                        return ret[1]
+                            + ":"
+                            + ret[2]
+                            + " "
+                            + CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_MINUTES_0);
+
+                    }
+                    return null;
+                }
+            });
+
         } catch (CmsException e) {
             LOG.error("Unable to read sessions", e);
         }
 
+    }
+
+    /**
+     * Runnable called when a window shoule be closed.<p>
+     * Reinitializes the table.<p>
+     *
+     * @param window to be closed
+     * @param table to be updated
+     * @return a runnable
+     */
+    protected static Runnable getCloseRunnable(final Window window, final CmsSessionsTable table) {
+
+        return new Runnable() {
+
+            public void run() {
+
+                window.close();
+                try {
+                    table.ini();
+                } catch (CmsException e) {
+                    LOG.error("Error on reading session information", e);
+                }
+
+            }
+
+        };
     }
 
     /**
@@ -421,20 +474,7 @@ public class CmsSessionsTable extends Table {
 
         final Window window = CmsBasicDialog.prepareWindow();
         window.setCaption(caption);
-        window.setContent(new CmsKillSessionDialog(ids, new Runnable() {
-
-            public void run() {
-
-                window.close();
-                try {
-                    table.ini();
-                } catch (CmsException e) {
-                    LOG.error("Error on reading session information", e);
-                }
-
-            }
-
-        }));
+        window.setContent(new CmsKillSessionDialog(ids, getCloseRunnable(window, table)));
         A_CmsUI.get().addWindow(window);
     }
 
@@ -453,6 +493,34 @@ public class CmsSessionsTable extends Table {
                     new SimpleStringFilter(TableProperty.Site, search, true, false),
                     new SimpleStringFilter(TableProperty.Project, search, true, false)));
         }
+    }
+
+    /**
+     * Gets the status text from given session.
+     *
+     * @param item session id
+     * @return status string
+     */
+    protected String getStatusForItem(String item) {
+
+        if (((Long)getItem(item).getItemProperty(TableProperty.IS_ACTIVE).getValue()).longValue() < INACTIVE_LIMIT) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_ACTIVE_0);
+        }
+        return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_INACTIVE_0);
+    }
+
+    /**
+     * Gets the status style for given session.<p>
+     *
+     * @param itemId sessionid
+     * @return style
+     */
+    protected String getStatusStyleForItem(String itemId) {
+
+        if (((Long)getItem(itemId).getItemProperty(TableProperty.IS_ACTIVE).getValue()).longValue() < INACTIVE_LIMIT) {
+            return OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
+        }
+        return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
     }
 
     /**
@@ -497,10 +565,10 @@ public class CmsSessionsTable extends Table {
             //            CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
             Item item = m_container.addItem(session.getSessionId().getStringValue());
             item.getItemProperty(TableProperty.UserName).setValue(user.getName());
-            item.getItemProperty(TableProperty.DateCreated).setValue(session.getAgeOfSession());
+            item.getItemProperty(TableProperty.DateCreated).setValue(
+                session.getAgeOfSession() + " " + CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_HOUR_0));
             item.getItemProperty(TableProperty.IS_ACTIVE).setValue(
-                new Boolean(
-                    new Long(System.currentTimeMillis() - session.getTimeUpdated()).longValue() < INACTIVE_LIMIT));
+                new Long(System.currentTimeMillis() - session.getTimeUpdated()));
             item.getItemProperty(TableProperty.OrgUnit).setValue(userOu.getName());
             item.getItemProperty(TableProperty.Project).setValue(
                 A_CmsUI.getCmsObject().readProject(session.getProject()).getName());
@@ -526,6 +594,24 @@ public class CmsSessionsTable extends Table {
     }
 
     /**
+     * Shows window with user information.<p>
+     *
+     * @param data sessionid to be shown user off
+     */
+    protected void showUserInfoWindow(String data) {
+
+        Window window = CmsBasicDialog.prepareWindow();
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SHOW_USER_0));
+        CmsUserInfoDialog dialog = new CmsUserInfoDialog(
+            data,
+            getFurtherInfoLines(data),
+            getCloseRunnable(window, this));
+        dialog.setHideSwitchButton(m_mySessionId.equals(data));
+        window.setContent(dialog);
+        A_CmsUI.get().addWindow(window);
+    }
+
+    /**
      * Returns the available menu entries.<p>
      *
      * @return the menu entries
@@ -534,9 +620,9 @@ public class CmsSessionsTable extends Table {
 
         if (m_menuEntries == null) {
             m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
+            m_menuEntries.add(new UserEntry());
             m_menuEntries.add(new SendBroadcastEntry());
             m_menuEntries.add(new KillEntry());
-            m_menuEntries.add(new UserEntry());
         }
         return m_menuEntries;
     }
@@ -560,14 +646,7 @@ public class CmsSessionsTable extends Table {
                 m_menu.setEntries(getMenuEntries(), (Set<String>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
             } else if (event.getButton().equals(MouseButton.LEFT) && TableProperty.UserName.equals(propertyId)) {
-                CmsSessionsApp.showSendBroadcastDialog(
-                    Collections.singleton(((Set<String>)getValue()).iterator().next()),
-                    CmsVaadinUtils.getMessageText(
-                        Messages.GUI_MESSAGES_BROADCAST_SESSIONS_1,
-                        CmsSessionsApp.getUserNames(
-                            Collections.singleton(((Set<String>)getValue()).iterator().next()),
-                            CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_AND_0))),
-                    this);
+                showUserInfoWindow(((Set<String>)getValue()).iterator().next());
             }
         }
     }
@@ -589,6 +668,41 @@ public class CmsSessionsTable extends Table {
             setValue(null);
             select(itemId);
         }
+    }
+
+    /**
+     * Adds information lines to the user dialog.<p>
+     *
+     * @param sessionId to be shown
+     * @return list of lines
+     */
+    private List<String> getFurtherInfoLines(String sessionId) {
+
+        List<String> res = new ArrayList<String>();
+        String[] inactiveTime = CmsSessionInfo.getHourMinuteSecondTimeString(
+            (Long)getItem(sessionId).getItemProperty(TableProperty.IS_ACTIVE).getValue());
+        String is_activ = CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_USER_IS_0)
+            + "<span class=\""
+            + getStatusStyleForItem(sessionId)
+            + "\">"
+            + getStatusForItem(sessionId)
+            + "</span>. "
+            + CmsVaadinUtils.getMessageText(
+                Messages.GUI_MESSAGES_LAST_ACTIVITY_2,
+                inactiveTime[1] + ":" + inactiveTime[2],
+                CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_MINUTES_0));
+        res.add(is_activ);
+
+        res.add(
+            TableProperty.Site.getLocalizedMessage()
+                + ": "
+                + getItem(sessionId).getItemProperty(TableProperty.Site).getValue());
+        res.add(
+            TableProperty.Project.getLocalizedMessage()
+                + ": "
+                + getItem(sessionId).getItemProperty(TableProperty.Project).getValue());
+
+        return res;
     }
 
 }

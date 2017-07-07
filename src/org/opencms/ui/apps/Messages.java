@@ -1140,6 +1140,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MESSAGES_FOLDER_NAME_HELP_0 = "GUI_MESSAGES_FOLDER_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_HOUR_0 = "GUI_MESSAGES_HOUR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LAST_ACTIVITY_2 = "GUI_MESSAGES_LAST_ACTIVITY_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_LOGINMESSAGE_ENABLED_0 = "GUI_MESSAGES_LOGINMESSAGE_ENABLED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1182,6 +1188,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MESSAGES_LOGINMESSAGE_VAL_EMPTY_MESSAGE_0 = "GUI_MESSAGES_LOGINMESSAGE_VAL_EMPTY_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_MINUTES_0 = "GUI_MESSAGES_MINUTES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_SESSION_COUNT_1 = "GUI_MESSAGES_SESSION_COUNT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -1192,6 +1201,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_USER_COUNT_1 = "GUI_MESSAGES_USER_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_USER_IS_0 = "GUI_MESSAGES_USER_IS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_RESOURCE_TITLE_0 = "GUI_NEW_RESOURCE_TITLE_0";
