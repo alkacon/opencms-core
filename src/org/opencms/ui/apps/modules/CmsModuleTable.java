@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.modules;
 
 import org.opencms.file.CmsObject;
+import org.opencms.gwt.CmsCoreService;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -48,6 +49,7 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.ui.util.table.CmsBeanTableBuilder;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
@@ -222,6 +224,68 @@ public class CmsModuleTable extends Table {
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
+    }
+
+    /**
+     * Context menu entry for editng a module.
+     */
+    class ExplorerEntry implements I_CmsSimpleContextMenuEntry<String> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @Override
+        public void executeAction(String context) {
+
+            String path = getModuleFolder(context);
+            if (path != null) {
+                String link = CmsCoreService.getVaadinWorkplaceLink(A_CmsUI.getCmsObject(), path);
+                A_CmsUI.get().getPage().setLocation(link);
+                A_CmsUI.get().getPage().reload();
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        @Override
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_EXPLORER_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @Override
+        public CmsMenuItemVisibilityMode getVisibility(String context) {
+
+            if (getModuleFolder(context) != null) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            } else {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+        }
+
+        /**
+         * Tries to find the module folder under /system/modules for a given module.<p>
+         *
+         * @param moduleName the name of the module
+         *
+         * @return the module folder, or null if this module doesn't have one
+         */
+        private String getModuleFolder(String moduleName) {
+
+            CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+            if (module != null) {
+                for (String resource : module.getResources()) {
+                    if (CmsStringUtil.comparePaths("/system/modules/" + moduleName, resource)) {
+                        return resource;
+                    }
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -528,6 +592,7 @@ public class CmsModuleTable extends Table {
         result.add(new DeleteModuleEntry());
         result.add(new ExportModuleEntry());
         result.add(new ListTypesEntry());
+        result.add(new ExplorerEntry());
 
         return result;
     }

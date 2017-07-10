@@ -1163,12 +1163,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_BUTTON_IMPORT_0 = "GUI_MODULES_BUTTON_IMPORT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_TAB_IMPORT_HTTP_0 = "GUI_MODULES_TAB_IMPORT_HTTP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_TAB_IMPORT_SERVER_0 = "GUI_MODULES_TAB_IMPORT_SERVER_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_BUTTON_NEW_MODULE_0 = "GUI_MODULES_BUTTON_NEW_MODULE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1179,6 +1173,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_CONTEXTMENU_EDIT_0 = "GUI_MODULES_CONTEXTMENU_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_CONTEXTMENU_EXPLORER_0 = "GUI_MODULES_CONTEXTMENU_EXPLORER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_CONTEXTMENU_EXPORT_0 = "GUI_MODULES_CONTEXTMENU_EXPORT_0";
@@ -1428,6 +1425,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_TAB_EXPORT_POINTS_0 = "GUI_MODULES_TAB_EXPORT_POINTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TAB_IMPORT_HTTP_0 = "GUI_MODULES_TAB_IMPORT_HTTP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_TAB_IMPORT_SERVER_0 = "GUI_MODULES_TAB_IMPORT_SERVER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_TAB_PARAMETERS_0 = "GUI_MODULES_TAB_PARAMETERS_0";
