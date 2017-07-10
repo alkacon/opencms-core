@@ -462,6 +462,7 @@
 				<translation>s#[^0-9a-zA-Z_$~\.\-\/]#!#g</translation>
 				<translation>s#!+##g</translation>
 				<translation>s#-+#-#g</translation>
+				<translation>s#^(.{250}).*$#$1#</translation>
 			</filetranslations>
 			<foldertranslations enabled="false" />
 		</translations>
