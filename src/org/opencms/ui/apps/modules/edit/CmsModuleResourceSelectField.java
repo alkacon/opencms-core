@@ -102,6 +102,9 @@ public class CmsModuleResourceSelectField extends CmsPathSelectField {
 
         try {
             CmsObject cloneCms = OpenCms.initCmsObject(m_cms);
+            if (siteRoot == null) {
+                siteRoot = "/system";
+            }
             cloneCms.getRequestContext().setSiteRoot(siteRoot);
             m_cms = cloneCms;
         } catch (CmsException e1) {

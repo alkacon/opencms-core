@@ -61,10 +61,10 @@ public class CmsImportTabForm extends VerticalLayout {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_tabs.addTab(
             new CmsModuleImportForm(app),
-            CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_MODULES_BUTTON_IMPORT_HTTP_0));
+            CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_MODULES_TAB_IMPORT_HTTP_0));
         m_tabs.addTab(
             new CmsServerModuleImportForm(app),
-            CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_MODULES_BUTTON_IMPORT_FROM_SERVER_0));
+            CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_MODULES_TAB_IMPORT_SERVER_0));
         updateButtons();
         m_tabs.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 

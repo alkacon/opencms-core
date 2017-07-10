@@ -243,6 +243,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** The tab layout. */
     private TabSheet m_tabs;
 
+    /** The callback to call after editing the module. */
     private Runnable m_updateCallback;
 
     /** Text box for the version. */
@@ -447,7 +448,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
 
             }
         });
-        m_info.set(new CmsResourceInfo("", "", CmsWorkplace.getResourceUri("filetypes/folder_big.png")));
+
+        m_info.set(new CmsResourceInfo("", "", ""));
+        m_info.get().getResourceIcon().initContent(null, CmsModuleApp.Icons.RESINFO_ICON, null, false, false);
         updateSiteInfo(module.getSite());
         displayResourceInfoDirectly(Arrays.asList(m_info.get()));
     }
@@ -649,21 +652,21 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         CmsObject moduleCms = null;
         try {
             moduleCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            if (getSelectedSite() != null) {
+                moduleCms.getRequestContext().setSiteRoot(getSelectedSite());
+            }
+            resField.setCmsObject(moduleCms);
+            if (moduleResource != null) {
+                resField.setValue(moduleResource);
+            }
+            CmsRemovableFormRow<CmsModuleResourceSelectField> row = new CmsRemovableFormRow<CmsModuleResourceSelectField>(
+                resField,
+                "");
+            row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_LABEL_EXCLUDED_RESOURCE_0));
+            m_excludedResources.addComponent(row);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        if (getSelectedSite() != null) {
-            moduleCms.getRequestContext().setSiteRoot(getSelectedSite());
-        }
-        resField.setCmsObject(moduleCms);
-        if (moduleResource != null) {
-            resField.setValue(moduleResource);
-        }
-        CmsRemovableFormRow<CmsModuleResourceSelectField> row = new CmsRemovableFormRow<CmsModuleResourceSelectField>(
-            resField,
-            "");
-        row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_LABEL_EXCLUDED_RESOURCE_0));
-        m_excludedResources.addComponent(row);
     }
 
     /**
@@ -677,19 +680,20 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         CmsObject moduleCms = null;
         try {
             moduleCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            if (getSelectedSite() != null) {
+                moduleCms.getRequestContext().setSiteRoot(getSelectedSite());
+            }
+            resField.setCmsObject(moduleCms);
+            if (moduleResource != null) {
+                resField.setValue(moduleResource);
+            }
+            CmsRemovableFormRow<Field<String>> row = new CmsRemovableFormRow<Field<String>>(resField, "");
+            row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_LABEL_MODULE_RESOURCE_0));
+            m_moduleResources.addComponent(row);
+
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        if (getSelectedSite() != null) {
-            moduleCms.getRequestContext().setSiteRoot(getSelectedSite());
-        }
-        resField.setCmsObject(moduleCms);
-        if (moduleResource != null) {
-            resField.setValue(moduleResource);
-        }
-        CmsRemovableFormRow<Field<String>> row = new CmsRemovableFormRow<Field<String>>(resField, "");
-        row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_LABEL_MODULE_RESOURCE_0));
-        m_moduleResources.addComponent(row);
     }
 
     /**

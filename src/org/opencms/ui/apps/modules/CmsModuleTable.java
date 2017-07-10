@@ -44,6 +44,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.ui.util.table.CmsBeanTableBuilder;
@@ -445,7 +446,8 @@ public class CmsModuleTable extends Table {
 
         Button importButton = CmsToolBar.createButton(
             CmsModuleApp.Icons.IMPORT,
-            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_BUTTON_IMPORT_HTTP_0));
+            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_BUTTON_IMPORT_0));
+        importButton.addStyleName(FontOpenCms.UPLOAD.getButtonOverlayStyle() + " " + OpenCmsTheme.BUTTON_OVERLAY_CYAN);
         importButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;

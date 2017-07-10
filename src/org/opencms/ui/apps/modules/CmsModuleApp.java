@@ -27,11 +27,10 @@
 
 package org.opencms.ui.apps.modules;
 
-import static org.opencms.ui.components.OpenCmsTheme.getImageLink;
-
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsAttributeAwareApp;
 import org.opencms.ui.apps.CmsAppView;
@@ -50,7 +49,6 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vaadin.navigator.View;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
@@ -74,18 +72,16 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     public static class Icons {
 
         /** Icon for the module manager app. */
-        public static Resource APP = new ExternalResource(getImageLink("apps/modules/icons/big/modules.png"));
+        public static Resource APP = new CmsCssIcon("oc-icon-32-module");
+
+        /** Icon for resource info boxes. */
+        public static Resource RESINFO_ICON = new CmsCssIcon("oc-icon-24-module");
 
         /** Icon for the 'import via http' button. */
-        public static Resource IMPORT = new ExternalResource(
-            getImageLink("apps/modules/icons/big/module_import_http.png"));
-
-        /** Icon for the 'import from server' button. */
-        public static final Resource IMPORT_SERVER = new ExternalResource(
-            getImageLink("apps/modules/icons/big/module_import_server.png"));
+        public static Resource IMPORT = new CmsCssIcon("oc-icon-32-module");
 
         /** Icon for the module list. */
-        public static final Resource LIST_ICON = new ExternalResource(getImageLink("apps/modules/buttons/modules.png"));
+        public static final Resource LIST_ICON = new CmsCssIcon("oc-icon-24-module");
 
     }
 
