@@ -36,25 +36,45 @@ import com.vaadin.ui.ComboBox;
  * in the data source.
  *
  * This class only supports IndexedContainer as a data source.
+ *
+ * TODO: Fix this so it works for the value automatically set by setPropertyDataSource()
  */
 public class CmsAutoItemCreatingComboBox extends ComboBox {
 
     /**
-     * Handles automatic
+     * Handles automatic creation of new values.<p>
      */
     public interface I_NewValueHandler {
 
+        /**
+         * Ensure that an item with the given id or a suitable replacement id exists.<p>
+         *
+         * @param cnt the container
+         * @param id the id
+         * @return the id actually used for the item
+         */
         Object ensureItem(Container cnt, Object id);
     }
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** The caption id. */
     public static final String CAPTION_ID = "name";
 
+    /** The handler for new values. */
     private I_NewValueHandler m_newValueHandler;
 
+    /**
+     * Creates a new instance.<p>
+     */
     public CmsAutoItemCreatingComboBox() {
         super();
     }
 
+    /**
+     * @see com.vaadin.ui.AbstractSelect#setContainerDataSource(com.vaadin.data.Container)
+     */
     @Override
     public void setContainerDataSource(Container newDataSource) {
 
@@ -65,11 +85,19 @@ public class CmsAutoItemCreatingComboBox extends ComboBox {
         }
     }
 
+    /**
+     * Sets the new value handler.<p>
+     *
+     * @param handler the handler instance
+     */
     public void setNewValueHandler(I_NewValueHandler handler) {
 
         m_newValueHandler = handler;
     }
 
+    /**
+     * @see com.vaadin.ui.AbstractSelect#setValue(java.lang.Object)
+     */
     @Override
     public void setValue(Object newValue) throws com.vaadin.data.Property.ReadOnlyException {
 
@@ -78,6 +106,5 @@ public class CmsAutoItemCreatingComboBox extends ComboBox {
             newValue = m_newValueHandler.ensureItem(container, newValue);
         }
         super.setValue(newValue);
-
     }
 }
