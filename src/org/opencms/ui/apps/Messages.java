@@ -37,8 +37,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
     public static final String ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2 = "ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPLORER_CAN_NOT_OPEN_PATH_1 = "ERR_EXPLORER_CAN_NOT_OPEN_PATH_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1 = "ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1";
     /** Message constant for key in the resource bundle. */
@@ -159,10 +161,8 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_JAVA_HEAP_MAX_0 = "GUI_CACHE_JAVA_HEAP_MAX_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_MAX_HELP_0 = "GUI_CACHE_JAVA_HEAP_MAX_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_TOTAL_0 = "GUI_CACHE_JAVA_HEAP_TOTAL_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_TOTAL_HELP_0 = "GUI_CACHE_JAVA_HEAP_TOTAL_HELP_0";
 
@@ -1401,6 +1401,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_ONLINE_DISABLED_0 = "GUI_MODULES_ONLINE_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_PANEL_EXPLORERTYPES_0 = "GUI_MODULES_PANEL_EXPLORERTYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_PANEL_RESOURCETYPES_0 = "GUI_MODULES_PANEL_RESOURCETYPES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_PARAMETER_DESC_0 = "GUI_MODULES_PARAMETER_DESC_0";

@@ -33,8 +33,14 @@ import org.opencms.module.CmsModule;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.util.Arrays;
+
+import com.vaadin.server.Resource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -44,7 +50,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Widget to display the list of resource / explorer types defined in a module.<p>
  */
-public class CmsModuleTypeList extends CmsBasicDialog {
+public class CmsModuleInfoDialog extends CmsBasicDialog {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -55,6 +61,9 @@ public class CmsModuleTypeList extends CmsBasicDialog {
     /** The OK button. */
     private Button m_ok;
 
+    /** The label displaying the module description. */
+    private Label m_description;
+
     /** The list for the resource types. */
     private VerticalLayout m_resourceTypes;
 
@@ -63,17 +72,23 @@ public class CmsModuleTypeList extends CmsBasicDialog {
      *
      * @param moduleName the module name
      */
-    public CmsModuleTypeList(String moduleName) {
+    public CmsModuleInfoDialog(String moduleName) {
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
+        CmsResourceInfo resInfo = new CmsResourceInfo(
+            module.getName(),
+            module.getNiceName(),
+            CmsModuleApp.Icons.RESINFO_ICON);
+        displayResourceInfoDirectly(Arrays.asList(resInfo));
+        m_description.setContentMode(ContentMode.HTML);
+        m_description.setValue(module.getDescription());
         m_ok.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
             public void buttonClick(ClickEvent event) {
 
-                CmsVaadinUtils.getWindow(CmsModuleTypeList.this).close();
+                CmsVaadinUtils.getWindow(CmsModuleInfoDialog.this).close();
             }
         });
         initialize(module);
@@ -88,9 +103,7 @@ public class CmsModuleTypeList extends CmsBasicDialog {
 
         boolean empty = true;
         for (I_CmsResourceType type : module.getResourceTypes()) {
-            @SuppressWarnings("deprecation")
-            String text = type.getTypeName() + " (ID: " + type.getTypeId() + ")";
-            m_resourceTypes.addComponent(new Label(text));
+            m_resourceTypes.addComponent(formatResourceType(type));
             empty = false;
         }
         if (empty) {
@@ -99,11 +112,7 @@ public class CmsModuleTypeList extends CmsBasicDialog {
         }
         empty = true;
         for (CmsExplorerTypeSettings expType : module.getExplorerTypes()) {
-            String text = expType.getName();
-            if (expType.getReference() != null) {
-                text += " (" + expType.getReference() + ")";
-            }
-            m_explorerTypes.addComponent(new Label(text));
+            m_explorerTypes.addComponent(formatExplorerType(expType));
             empty = false;
         }
         if (empty) {
@@ -112,4 +121,55 @@ public class CmsModuleTypeList extends CmsBasicDialog {
         }
     }
 
+    /**
+     * Creates the resource info box for an explorer type.<p>
+     *
+     * @param explorerType the explorer type
+     * @return the resource info box
+     */
+    CmsResourceInfo formatExplorerType(CmsExplorerTypeSettings explorerType) {
+
+        Resource icon = CmsResourceUtil.getBigIconResource(explorerType, null);
+        String title = CmsVaadinUtils.getMessageText(explorerType.getKey());
+        if (title.startsWith("???")) {
+            title = explorerType.getName();
+        }
+        String subtitle = explorerType.getName();
+        if (explorerType.getReference() != null) {
+            subtitle += " (" + explorerType.getReference() + ")";
+        }
+        CmsResourceInfo info = new CmsResourceInfo(title, subtitle, icon);
+        return info;
+    }
+
+    /**
+     * Creates the resource info box for a resource type.<p>
+     *
+     * @param type the resource type
+     * @return the resource info box
+     */
+    @SuppressWarnings("deprecation")
+    CmsResourceInfo formatResourceType(I_CmsResourceType type) {
+
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        Resource icon;
+        String title;
+        String subtitle;
+        if (settings != null) {
+            icon = CmsResourceUtil.getBigIconResource(settings, null);
+            title = CmsVaadinUtils.getMessageText(settings.getKey());
+            if (title.startsWith("???")) {
+                title = type.getTypeName();
+            }
+            subtitle = type.getTypeName() + " (ID: " + type.getTypeId() + ")";
+        } else {
+            icon = CmsResourceUtil.getBigIconResource(
+                OpenCms.getWorkplaceManager().getExplorerTypeSetting("unknown"),
+                null);
+            title = type.getTypeName();
+            subtitle = type.getTypeName() + " (" + type.getTypeId() + ")";
+        }
+        CmsResourceInfo info = new CmsResourceInfo(title, subtitle, icon);
+        return info;
+    }
 }

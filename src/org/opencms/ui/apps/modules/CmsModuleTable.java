@@ -61,6 +61,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vaadin.data.Container;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
@@ -383,7 +384,9 @@ public class CmsModuleTable extends Table {
     /**
      * Context menu entry for displaying the type list.<p>
      */
-    class ListTypesEntry implements I_CmsSimpleContextMenuEntry<String> {
+    class ModuleInfoEntry
+    implements I_CmsSimpleContextMenuEntry<String>,
+    org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
@@ -392,12 +395,20 @@ public class CmsModuleTable extends Table {
         public void executeAction(String module) {
 
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-            CmsModuleTypeList typeList = new CmsModuleTypeList(module);
+            CmsModuleInfoDialog typeList = new CmsModuleInfoDialog(module);
             window.setContent(typeList);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TYPES_FOR_MODULE_1, module));
             A_CmsUI.get().addWindow(window);
             window.center();
 
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles#getStyles()
+         */
+        public String getStyles() {
+
+            return ValoTheme.LABEL_BOLD;
         }
 
         /**
@@ -588,12 +599,11 @@ public class CmsModuleTable extends Table {
 
         List<I_CmsSimpleContextMenuEntry<String>> result = Lists.newArrayList();
 
+        result.add(new ModuleInfoEntry());
         result.add(new EditModuleEntry());
         result.add(new DeleteModuleEntry());
         result.add(new ExportModuleEntry());
-        result.add(new ListTypesEntry());
         result.add(new ExplorerEntry());
-
         return result;
     }
 
@@ -610,6 +620,10 @@ public class CmsModuleTable extends Table {
                 select(moduleRow);
                 m_menu.setEntries(getMenuEntries(), moduleRow.getModule().getName());
                 m_menu.openForTable(event, this);
+            } else if (event.getButton().equals(MouseButton.LEFT) && "name".equals(event.getPropertyId())) {
+                BeanItem<?> item = (BeanItem<?>)event.getItem();
+                CmsModuleRow row = (CmsModuleRow)(item.getBean());
+                (new ModuleInfoEntry()).executeAction(row.getModule().getName());
             }
         }
     }
