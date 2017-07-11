@@ -53,6 +53,7 @@ import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.util.CmsComponentField;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -259,13 +260,21 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     @SuppressWarnings("unchecked")
     public CmsEditModuleForm(CmsModule module, boolean newModule, Runnable updateCallback) {
         m_module = (CmsModule)(module.clone());
+        String site = m_module.getSite();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
+            site = site.trim();
+            if (!site.equals("/")) {
+                site = CmsFileUtil.removeTrailingSeparator(site);
+                m_module.setSite(site);
+            }
+        }
         m_new = newModule;
         m_updateCallback = updateCallback;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         IndexedContainer importSitesModel = getModuleSiteContainer(
             A_CmsUI.getCmsObject(),
             PROPERTY_SITE_NAME,
-            module.getSite());
+            m_module.getSite());
         m_importSite.setContainerDataSource(importSitesModel);
         m_importSite.setNullSelectionItemId(ID_EMPTY_SITE);
         m_importSite.setItemCaptionPropertyId(PROPERTY_SITE_NAME);
