@@ -881,21 +881,25 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         String top = "";
         String bottom = "";
 
+        if (m_new) {
+            top = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_RESINFO_NEW_MODULE_0);
+        } else {
+            top = m_module.getName();
+        }
+
         if (siteRoot == null) {
-            top = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_MODULE_SITE_NOT_SET_0);
-            bottom = "";
+            bottom = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_MODULE_SITE_NOT_SET_0);
         } else {
             CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
             CmsSite site = siteManager.getSiteForSiteRoot(siteRoot);
             if (site != null) {
-                top = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_MODULE_SITE_1, site.getTitle());
-                bottom = site.getSiteRoot();
+                bottom = CmsVaadinUtils.getMessageText(
+                    Messages.GUI_MODULES_MODULE_SITE_1,
+                    site.getTitle() + " (" + siteRoot + ")");
             } else if (siteRoot.equals("") || siteRoot.equals("/")) {
-                top = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_MODULE_SITE_ROOT_FOLDER_0);
-                bottom = "/";
+                bottom = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_MODULE_SITE_ROOT_FOLDER_0);
             } else {
-                top = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_MODULE_SITE_1) + siteRoot;
-                bottom = siteRoot;
+                bottom = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_MODULE_SITE_1, siteRoot);
             }
         }
         m_info.get().getTopLine().setValue(top);

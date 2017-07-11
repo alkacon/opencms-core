@@ -1421,6 +1421,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_REPORT_EXPORT_1 = "GUI_MODULES_REPORT_EXPORT_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_RESINFO_NEW_MODULE_0 = "GUI_MODULES_RESINFO_NEW_MODULE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_ROW_COUNT_1 = "GUI_MODULES_ROW_COUNT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -1454,7 +1457,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_TITLE_SITE_SELECT_0 = "GUI_MODULES_TITLE_SITE_SELECT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_TYPES_FOR_MODULE_1 = "GUI_MODULES_TYPES_FOR_MODULE_1";
+    public static final String GUI_MODULES_TYPES_FOR_MODULE_0 = "GUI_MODULES_TYPES_FOR_MODULE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_UPLOAD_IMPORT_MODULE_0 = "GUI_MODULES_UPLOAD_IMPORT_MODULE_0";

@@ -397,7 +397,7 @@ public class CmsModuleTable extends Table {
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
             CmsModuleInfoDialog typeList = new CmsModuleInfoDialog(module);
             window.setContent(typeList);
-            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TYPES_FOR_MODULE_1, module));
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TYPES_FOR_MODULE_0));
             A_CmsUI.get().addWindow(window);
             window.center();
 
