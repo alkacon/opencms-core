@@ -105,14 +105,13 @@ public class CmsBroadcastTimer {
     protected String createMessageHtml(CmsBroadcastMessage message) {
 
         StringBuffer result = new StringBuffer();
-        result.append("<p class=\"").append(I_CmsLayoutBundle.INSTANCE.notificationCss().messageTime()).append("\">");
-        result.append(message.getTime());
-        result.append("</p><p>");
+        result.append("<p class=\"").append(I_CmsLayoutBundle.INSTANCE.notificationCss().messageHead()).append("\">");
+        result.append("<img src=\"").append(message.getIcon()).append("\">");
+        result.append("<em>" + message.getTime() + "</em><br/>");
         result.append(Messages.get().key(Messages.GUI_BROADCAST_SEND_BY_1, message.getUser()));
-        result.append("</p><div class=\"").append(I_CmsLayoutBundle.INSTANCE.notificationCss().messageWrap()).append(
-            "\"><p>\n");
-        result.append(message.getMessage().replaceAll("\\n", "&nbsp;</p><p>"));
-        result.append("\n</p></div>");
+        result.append("</p>").append("<p>\n");
+        result.append(message.getMessage().replaceAll("\\n", "<br/>"));
+        result.append("\n</p>");
         return result.toString();
     }
 

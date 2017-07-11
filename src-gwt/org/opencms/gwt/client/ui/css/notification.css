@@ -68,6 +68,13 @@ p.messageTime{
 	color: value("constants.css.textColorDisabled");
 }
 
+p.messageHead{
+	border-top:0px solid #c9c9c9;
+	position:relative;
+	background:inherit !important;
+	padding: 10px !important;
+}
+
 div.messageWrap{
 	background-color: value("constants.css.backgroundColorDialog");
 	border-top: 1px solid value("constants.css.borderColor");
@@ -78,8 +85,10 @@ div.messageWrap{
 
 .notificationContainer div.closeButton{
 	position: absolute;
-	top:4px;
-	right:4px;
+	top:10px;
+	right:10px;
+	z-index:100;
+	font-size:30px !important;
 	pointer-events: auto;
 }
 
@@ -98,7 +107,10 @@ div.notificationContainer, .notificationContainer div.messagesPanel > div{
 }
 
 .notificationMessage div.messageContent p{
-	margin: 4px 0px;
+	line-height: 21.7px !important;
+	padding:5px;
+	background: white;
+	border-top: 1px solid #c9c9c9;
 	text-align: left;
 }
 
@@ -148,7 +160,38 @@ div.notificationMessage b, span.notificationMessage b{
 	border-color: value("constants.css.notificationNormalBorder");
 }
 .notificationWarning .notificationMessage { 
-	background-color: value("constants.css.notificationWarningBg"); 
-	color: value("constants.css.notificationWarningColor"); 
-	border-color: value("constants.css.notificationWarningBorder"); 
+			max-width: 600px;
+		width:600px;
+		text-align:left;
+		padding: 0px 0px;
+		border-color: #ac7c00;
+		border-width: 2px;
+		border-style: solid;
+background-color: value("constants.css.notificationWarningBg");  */
+/* 	color: value("constants.css.notificationWarningColor");  */
+/* 	border-color: value("constants.css.notificationWarningBorder");  */
+}
+
+.notificationWarning .notificationMessage img{
+    float: left;
+    margin-top: 3px;
+    margin-right: 10px;
+    background-color: white;
+    border: 2px solid;
+    border-radius: 3px;
+    padding: 1px;
+}
+
+.notificationWarning .notificationMessage span{
+    line-height: inherit !important;
+}
+
+.notificationWarning .messageTime{
+	
+	padding:10px;
+}
+
+.notificationWarning .messageWrap{
+	padding:5px;
+	margin:0px;
 }

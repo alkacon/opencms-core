@@ -45,18 +45,23 @@ public class CmsBroadcastMessage implements IsSerializable {
     /** The message. */
     private String m_message;
 
+    /**The user icon path.*/
+    private String m_iconPath;
+
     /**
      * Constructor.<p>
      *
      * @param user the user
      * @param time the time
      * @param message the message
+     * @param iconPath the path of the user icon
      */
-    public CmsBroadcastMessage(String user, String time, String message) {
+    public CmsBroadcastMessage(String user, String iconPath, String time, String message) {
 
         m_user = user;
         m_time = time;
         m_message = message;
+        m_iconPath = iconPath;
     }
 
     /**
@@ -65,6 +70,11 @@ public class CmsBroadcastMessage implements IsSerializable {
     protected CmsBroadcastMessage() {
 
         // for serialization only
+    }
+
+    public String getIcon() {
+
+        return m_iconPath;
     }
 
     /**

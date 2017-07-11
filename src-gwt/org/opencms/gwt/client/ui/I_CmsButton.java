@@ -475,6 +475,9 @@ public interface I_CmsButton {
     public static final String DELETE_SMALL = "opencms-icon-delete-20";
 
     /** Small font icon using a 20x20 grid. */
+    public static final String CLOSE = "opencms-icon-close-20";
+
+    /** Small font icon using a 20x20 grid. */
     public static final String LOCK_SMALL = "opencms-icon-lock-20";
 
     /** Small font icon using a 20x20 grid. */

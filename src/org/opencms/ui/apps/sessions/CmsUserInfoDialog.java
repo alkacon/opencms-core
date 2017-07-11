@@ -37,6 +37,7 @@ import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsUserInfo;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.vaadin.ui.Button;
@@ -74,8 +75,12 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
     public CmsUserInfoDialog(final String id, List<String> furtherInfo, final Runnable closeRunnable) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsUserInfo info = new CmsUserInfo(OpenCms.getSessionManager().getSessionInfo(id).getUserId());
-        for (String infoLine : furtherInfo) {
-            info.addDetailLine(infoLine);
+        Iterator<String> iterator = furtherInfo.iterator();
+
+        info.addUserStatus(iterator.next());
+
+        while (iterator.hasNext()) {
+            info.addDetailLine(iterator.next());
         }
         m_layout.addComponent(info);
 

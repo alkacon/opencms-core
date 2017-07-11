@@ -222,7 +222,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
         CmsSessionInfo info = OpenCms.getSessionManager().getSessionInfo(getHttpSession());
         CmsHtmlStripper stripper = new CmsHtmlStripper();
-        stripper.addPreserveTags("b,span,i,strong", ',');
+        stripper.addPreserveTags("b,span,i,strong,br,n", ',');
         if (info == null) {
             return; //Session was killed..
         }

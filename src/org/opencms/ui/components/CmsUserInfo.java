@@ -166,6 +166,18 @@ public class CmsUserInfo extends VerticalLayout {
     }
 
     /**
+     * Adds an element behind user name (used in session management app to attach status box).<p>
+     *
+     * @param statusHTML html to be added
+     */
+    public void addUserStatus(String statusHTML) {
+
+        int pos = m_info.getValue().indexOf("</p>");
+
+        m_info.setValue(m_info.getValue().substring(0, pos) + statusHTML + "</p>");
+    }
+
+    /**
      * Shows the user preferences dialog.<p>
      */
     void editUserData() {

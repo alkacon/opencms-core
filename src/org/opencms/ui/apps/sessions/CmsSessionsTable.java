@@ -106,7 +106,7 @@ public class CmsSessionsTable extends Table {
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
             if ((data.size() == 1) & data.iterator().next().equals(m_mySessionId)) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
 
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -146,9 +146,6 @@ public class CmsSessionsTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            if ((data.size() == 1) & data.iterator().next().equals(m_mySessionId)) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -369,8 +366,13 @@ public class CmsSessionsTable extends Table {
 
                 public String getStyle(Table source, Object itemId, Object propertyId) {
 
+                    String furtherClass = "";
+                    if (m_mySessionId.equals(itemId)) {
+                        furtherClass = " " + OpenCmsTheme.IN_NAVIGATION;
+                    }
+
                     if (TableProperty.UserName.equals(propertyId)) {
-                        return " " + OpenCmsTheme.HOVER_COLUMN;
+                        return " " + OpenCmsTheme.HOVER_COLUMN + furtherClass;
                     }
 
                     if (((Boolean)source.getItem(itemId).getItemProperty(
@@ -681,17 +683,18 @@ public class CmsSessionsTable extends Table {
         List<String> res = new ArrayList<String>();
         String[] inactiveTime = CmsSessionInfo.getHourMinuteSecondTimeString(
             (Long)getItem(sessionId).getItemProperty(TableProperty.IS_ACTIVE).getValue());
-        String is_activ = CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_USER_IS_0)
-            + "<span class=\""
+        String is_activ = "<span class=\""
             + getStatusStyleForItem(sessionId)
             + "\">"
             + getStatusForItem(sessionId)
-            + "</span>. "
-            + CmsVaadinUtils.getMessageText(
+            + "</span> ";
+        res.add(is_activ);
+
+        res.add(
+            CmsVaadinUtils.getMessageText(
                 Messages.GUI_MESSAGES_LAST_ACTIVITY_2,
                 inactiveTime[1] + ":" + inactiveTime[2],
-                CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_MINUTES_0));
-        res.add(is_activ);
+                CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_MINUTES_0)));
 
         res.add(
             TableProperty.Site.getLocalizedMessage()

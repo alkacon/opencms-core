@@ -69,6 +69,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
+import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
@@ -795,11 +796,18 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             List<CmsBroadcastMessage> result = new ArrayList<CmsBroadcastMessage>();
             // the user has pending messages, display them all
             while (!messageQueue.isEmpty()) {
+
                 CmsBroadcast broadcastMessage = (CmsBroadcast)messageQueue.remove();
+                CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
+                String picPath = "";
+                if (broadcastMessage.getUser() != null) {
+                    picPath = helper.getSmallIconPath(getCmsObject(), broadcastMessage.getUser());
+                }
                 CmsBroadcastMessage message = new CmsBroadcastMessage(
                     broadcastMessage.getUser() != null
                     ? broadcastMessage.getUser().getName()
                     : messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0),
+                    picPath,
                     messages.getDateTime(broadcastMessage.getSendTime()),
                     broadcastMessage.getMessage());
                 result.add(message);

@@ -75,7 +75,7 @@ public class CmsNotificationMessage extends Composite {
      */
     public CmsNotificationMessage(CmsNotification.Mode mode, CmsNotification.Type type, String message) {
         m_mode = mode;
-        m_closeButton = new CmsPushButton(I_CmsButton.DELETE_SMALL);
+        m_closeButton = new CmsPushButton(I_CmsButton.CLOSE);
         m_closeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
         m_closeButton.setSize(Size.small);
         initWidget(uiBinder.createAndBindUi(this));
