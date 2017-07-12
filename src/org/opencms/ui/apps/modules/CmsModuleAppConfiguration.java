@@ -46,6 +46,9 @@ import com.vaadin.server.Resource;
  */
 public class CmsModuleAppConfiguration extends A_CmsWorkplaceAppConfiguration {
 
+    /** The app id. */
+    public static final String APP_ID = "modules";
+
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getAppCategory()
      */
@@ -85,7 +88,7 @@ public class CmsModuleAppConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public String getId() {
 
-        return "modules";
+        return APP_ID;
     }
 
     /**

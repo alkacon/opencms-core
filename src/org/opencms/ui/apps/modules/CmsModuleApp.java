@@ -98,6 +98,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
 
         /** State for 'import via http' form. */
         public static final String IMPORT = "import";
+
         /** State for 'iomport via http' report. */
         public static final String IMPORT_REPORT = "import/report";
 
@@ -212,12 +213,13 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
 
         String noParamState = state.replaceFirst("!!.*$", "");
         List<String> tokens = Lists.newArrayList();
-        tokens.add("modules");
+        String appId = CmsModuleAppConfiguration.APP_ID;
+        tokens.add(appId);
         tokens.addAll(Arrays.asList(noParamState.split("/")));
         LinkedHashMap<String, String> breadcrumbs = new LinkedHashMap<String, String>();
         List<String> currentPath = Lists.newArrayList();
-        breadcrumbs.put("modules", "modules");
-        String lastKey = "modules";
+        breadcrumbs.put(appId, appId);
+        String lastKey = appId;
 
         for (int i = 0; i < tokens.size(); i++) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(tokens.get(i))) {
@@ -226,7 +228,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
             currentPath.add(tokens.get(i));
             String key = CmsStringUtil.listAsString(currentPath, "/");
             String text = null;
-            if (tokens.get(i).equals("modules")) {
+            if (tokens.get(i).equals(appId)) {
                 text = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_NAV_MAIN_0);
             } else if (tokens.get(i).equals("delete")) {
                 text = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_NAV_DELETE_MODULE_0);
@@ -310,7 +312,6 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     @Override
     protected void updateAppAttributes(Map<String, Object> attributes) {
 
-        // TODO Auto-generated method stub
         super.updateAppAttributes(attributes);
         m_uiContext.clearToolbarButtons();
         @SuppressWarnings("unchecked")
