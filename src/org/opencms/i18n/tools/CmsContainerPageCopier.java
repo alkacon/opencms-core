@@ -319,7 +319,6 @@ public class CmsContainerPageCopier {
             } else {
                 LOG.info("Reusing container element: " + originalResource.getRootPath());
                 return originalElement;
-
             }
         }
     }
@@ -498,7 +497,11 @@ public class CmsContainerPageCopier {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(targetName)) {
                 copyPath = CmsStringUtil.joinPaths(target.getRootPath(), targetName);
                 if (rootCms.existsResource(copyPath)) {
-                    copyPath = nameGen.getNewFileName(rootCms, copyPath + "%(number)", 4, true);
+                    CmsResource existingResource = rootCms.readResource(copyPath);
+                    // only overwrite the existing resource if it's a folder, otherwise find the next non-existing 'numbered' target path 
+                    if (!existingResource.isFolder()) {
+                        copyPath = nameGen.getNewFileName(rootCms, copyPath + "%(number)", 4, true);
+                    }
                 }
             } else {
                 copyPath = CmsFileUtil.removeTrailingSeparator(
@@ -508,11 +511,19 @@ public class CmsContainerPageCopier {
             Double maxNavPosObj = readMaxNavPos(target);
             double maxNavpos = maxNavPosObj == null ? 0 : maxNavPosObj.doubleValue();
             boolean hasNavpos = maxNavPosObj != null;
-            CmsResource copiedFolder = rootCms.createResource(
-                copyPath,
-                OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME),
-                null,
-                properties);
+            CmsResource copiedFolder = null;
+            CmsLockActionRecord lockRecord = null;
+            if (rootCms.existsResource(copyPath)) {
+                copiedFolder = rootCms.readResource(copyPath);
+                lockRecord = CmsLockUtil.ensureLock(rootCms, copiedFolder);
+                rootCms.writePropertyObjects(copyPath, properties);
+            } else {
+                copiedFolder = rootCms.createResource(
+                    copyPath,
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME),
+                    null,
+                    properties);
+            }
             m_createdResources.add(copiedFolder);
             if (hasNavpos) {
                 String newNavPosStr = "" + (maxNavpos + 10);
@@ -524,6 +535,9 @@ public class CmsContainerPageCopier {
             m_originalPage = page;
             m_targetFolder = target;
             m_copiedFolderOrPage = copiedFolder;
+            if (rootCms.existsResource(pageCopyPath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                rootCms.deleteResource(pageCopyPath, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            }
             rootCms.copyResource(page.getRootPath(), pageCopyPath);
 
             CmsResource copiedPage = rootCms.readResource(pageCopyPath, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -538,7 +552,9 @@ public class CmsContainerPageCopier {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
-            tryUnlock(copiedFolder);
+            if ((lockRecord == null) || (lockRecord.getChange() == LockChange.locked)) {
+                tryUnlock(copiedFolder);
+            }
         } else {
             CmsResource page = source;
             if (!CmsResourceTypeXmlContainerPage.isContainerPage(page)) {

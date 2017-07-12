@@ -904,13 +904,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
             for (String dbKey : databases) {
                 boolean isJpaSupported = isJpaSupported(dbKey);
                 boolean isSqlSupported = isSqlSupported(dbKey);
-                if (isJpaSupported && isSqlSupported) {
+                if (isSqlSupported) {
                     sqlDbs.add(dbKey);
+                } else if (isJpaSupported) {
                     jpaDbs.add(dbKey);
-                } else if (isJpaSupported && !isSqlSupported) {
-                    jpaDbs.add(dbKey);
-                } else if (!isJpaSupported && isSqlSupported) {
-                    sqlDbs.add(dbKey);
                 }
             }
 

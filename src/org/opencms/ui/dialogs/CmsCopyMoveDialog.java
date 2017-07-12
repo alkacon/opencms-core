@@ -332,7 +332,12 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 getRootCms(),
                 getRootCms().readResource(finalTarget, CmsResourceFilter.ONLY_VISIBLE));
             if (getRootCms().existsResource(finalTarget, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
-                getRootCms().deleteResource(finalTarget, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                if ((action != Action.container_page_automatic)
+                    && (action != Action.container_page_copy)
+                    && (action != Action.container_page_reuse)) {
+                    // container page copy modes don't just call copyResource(), they need special handling for the overwrite case
+                    getRootCms().deleteResource(finalTarget, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                }
             }
         }
         // copy the resource

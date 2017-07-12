@@ -94,6 +94,26 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
     }
 
     /**
+     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#generateCacheKey(org.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    protected String generateCacheKey(
+        CmsObject cms,
+        String targetSiteRoot,
+        String detailPagePart,
+        String absoluteLink) {
+
+        return cms.getRequestContext().getSiteRoot()
+            + ":"
+            + targetSiteRoot
+            + ":"
+            + detailPagePart
+            + absoluteLink
+            + ":"
+            + cms.getRequestContext().getLocale().toString();
+    }
+
+    /**
      * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#getRootPathForSite(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
     @Override

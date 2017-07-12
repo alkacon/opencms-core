@@ -263,12 +263,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // (We really need the target site root in the cache key, because different resources with the same site paths
             // but in different sites may have different export settings. It seems we don't really need the site root
             // from the request context as part of the key, but we'll leave it in to make sure we don't break anything.)
-            String cacheKey = cms.getRequestContext().getSiteRoot()
-                + ":"
-                + targetSiteRoot
-                + ":"
-                + detailPagePart
-                + absoluteLink;
+            String cacheKey = generateCacheKey(cms, targetSiteRoot, detailPagePart, absoluteLink);
             resultLink = exportManager.getCachedOnlineLink(cacheKey);
             if (resultLink == null) {
                 String storedSiteRoot = cms.getRequestContext().getSiteRoot();
@@ -433,6 +428,23 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         String parameters) {
 
         return new CmsPair<String, String>(OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName), parameters);
+    }
+
+    /**
+     * Generates the cache key for Online links.
+     * @param cms the current CmsObject
+     * @param targetSiteRoot the target site root
+     * @param detailPagePart the detail page part
+     * @param absoluteLink the absolute (site-relative) link to the resource
+     * @return the cache key
+     */
+    protected String generateCacheKey(
+        CmsObject cms,
+        String targetSiteRoot,
+        String detailPagePart,
+        String absoluteLink) {
+
+        return cms.getRequestContext().getSiteRoot() + ":" + targetSiteRoot + ":" + detailPagePart + absoluteLink;
     }
 
     /**

@@ -221,14 +221,14 @@ public class CmsBreadCrumbConnector extends AbstractComponentConnector implement
                 style = $wnd.document.createElement("style");
                 style
                         .setAttribute("id",
-                                      @org.opencms.ui.client.CmsBreadCrumbConnector::DYNAMIC_STYLE_ID)
+                                @org.opencms.ui.client.CmsBreadCrumbConnector::DYNAMIC_STYLE_ID)
                 style.appendChild(window.document.createTextNode(""));
                 $wnd.document.head.appendChild(style);
             }
             style.sheet
                     .insertRule(
-                                ".opencms .o-tools-breadcrumb  > div > a span, .opencms .o-tools-breadcrumb  > div > span span {}",
-                                0);
+                            ".opencms .o-tools-breadcrumb  > div > a span, .opencms .o-tools-breadcrumb  > div > span span {}",
+                            0);
             var rules = style.sheet.cssRules ? style.sheet.cssRules
                     : style.sheet.rules;
             @org.opencms.ui.client.CmsBreadCrumbConnector::m_maxWidthRule = rules[0];

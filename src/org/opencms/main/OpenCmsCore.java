@@ -1759,24 +1759,6 @@ public final class OpenCmsCore {
             tmpException = e;
             resource = null;
         }
-        if (resource == null) {
-            // in case the current site is configured for single tree localization, remove the locale prefix and try again
-            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
-            if ((site != null) && CmsSite.LocalizationMode.singleTree.equals(site.getLocalizationMode())) {
-                Locale locale = CmsSingleTreeLocaleHandler.getLocaleFromPath(resourceName);
-                if (locale != null) {
-                    resourceName = resourceName.substring(
-                        resourceName.indexOf(locale.toString()) + locale.toString().length());
-                    try {
-                        resource = cms.readDefaultFile(resourceName);
-                        tmpException = null;
-                    } catch (CmsException e) {
-                        // nothing to do
-                    }
-                }
-
-            }
-        }
 
         if (resource != null) {
             // set the request uri to the right file
@@ -1954,12 +1936,7 @@ public final class OpenCmsCore {
                 if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
                     // if we used the request's query string for getRfsName, clients could cause an unlimited number
                     // of files to be exported just by varying the request parameters!
-                    String url = OpenCms.getStaticExportManager().getRfsName(cms, uri);
-                    String siteRoot = cms.getRequestContext().getSiteRoot();
-                    CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
-                    if (site != null) {
-                        url = site.getServerPrefix(cms, uri) + url;
-                    }
+                    String url = m_linkManager.getOnlineLink(cms, uri);
                     res.sendRedirect(url);
                     return;
                 }
@@ -2806,6 +2783,16 @@ public final class OpenCmsCore {
 
         // decode the requested resource, always using UTF-8
         requestedResource = CmsEncoder.decode(requestedResource);
+
+        // in case the current site could be configured for single tree localization, if so, remove the locale prefix if present
+        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+        if ((site != null) && CmsSite.LocalizationMode.singleTree.equals(site.getLocalizationMode())) {
+            Locale locale = CmsSingleTreeLocaleHandler.getLocaleFromPath(requestedResource);
+            if (locale != null) {
+                requestedResource = requestedResource.substring(
+                    requestedResource.indexOf(locale.toString()) + locale.toString().length());
+            }
+        }
 
         // initialize the context info
         CmsContextInfo contextInfo = new CmsContextInfo(

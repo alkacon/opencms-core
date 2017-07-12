@@ -230,6 +230,12 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
      */
     public void setHandler(int index, String attributeName, CmsAttributeHandler handler) {
 
+        CmsDebugLog.consoleLog(
+            "Name: "
+                + attributeName
+                + "   Index: "
+                + index
+                + ((this instanceof CmsAttributeHandler) ? "   Parent: " + getAttributeName() : ""));
         m_handlers.get(index).put(attributeName, handler);
         handler.setParentHandler(this);
         setHandlerById(attributeName, handler);
