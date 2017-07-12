@@ -94,10 +94,6 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
     /** The project table filter input. */
     private TextField m_projectTableFilter;
 
-    public CmsProjectManager() {
-        System.out.println("NEW PROJECT MANAGER");
-    }
-
     /**
      * Returns the projects table component.<p>
      *

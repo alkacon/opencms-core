@@ -350,9 +350,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     public View getView(String viewName) {
 
-        System.out.println("getView " + viewName);
-        System.out.println(m_cachedViews);
-
         if (m_cachedViews.containsKey(viewName)) {
             View view = m_cachedViews.get(viewName);
             if (view instanceof CmsAppView) {
@@ -540,16 +537,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     private void cacheView(View view) {
 
-        System.out.println("cacheView called for non-app-view " + view);
-
         if (!m_refreshing && (view instanceof I_CmsAppView) && ((I_CmsAppView)view).isCachable()) {
             m_cachedViews.put(((I_CmsAppView)view).getName(), (I_CmsAppView)view);
-            System.out.println("cacheView ok");
-        } else {
-            System.out.println("cacheView xx");
         }
-        System.out.println(m_cachedViews);
-
     }
 
     /**

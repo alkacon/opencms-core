@@ -84,24 +84,6 @@ import org.xml.sax.XMLReader;
  */
 public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
-    class MyStream extends OutputStream {
-
-        private ByteArrayOutputStream m_baos = new ByteArrayOutputStream();
-
-        /**
-         * @see java.io.OutputStream#write(int)
-         */
-        @Override
-        public void write(int b) throws IOException {
-
-            m_baos.write(b);
-            if ((b == 10) || (b == 13)) {
-                System.out.println("*");
-            }
-
-        }
-    }
-
     /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
     public static final String DEFAULT_DTD_LOCATION = "org/opencms/configuration/";
 
