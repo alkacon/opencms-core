@@ -30,7 +30,6 @@ package org.opencms.ui.apps.modules;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
@@ -97,7 +96,7 @@ public class CmsModuleAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_APP_NAME_0);
+        return org.opencms.ui.apps.Messages.get().getBundle(locale).key(Messages.GUI_MODULES_APP_NAME_0);
     }
 
     /**
@@ -114,9 +113,9 @@ public class CmsModuleAppConfiguration extends A_CmsWorkplaceAppConfiguration {
             return new CmsAppVisibilityStatus(
                 true,
                 false,
-                CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_ONLINE_DISABLED_0));
+                org.opencms.ui.apps.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                    Messages.GUI_MODULES_ONLINE_DISABLED_0));
         }
-
         return CmsAppVisibilityStatus.ACTIVE;
     }
 
