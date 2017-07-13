@@ -31,6 +31,7 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsAttributeAwareApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicReportPage;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.IdentityHashMap;
