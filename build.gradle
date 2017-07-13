@@ -921,6 +921,16 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     baseName 'opencms-upgrade-to'
     ext.preserveLibModules = preserveLibModules
     
+    // adds empty JAR files for all deprecated or updated libs
+    Properties buildProps = new Properties()
+    buildProps.load(new FileInputStream("${projectDir}/build-default.properties"))
+    buildProps['updater.jars.remove'].split(',').each{ jar ->
+        from("${projectDir}/webapp/update/empty.jar"){
+            into '/WEB-INF/lib'
+            rename('empty\\.jar', jar)
+        }
+    }
+    
     // only process the text files with the ReplaceTokens filter, copy everything else in a second from clause 
     from ("${projectDir}/webapp"){
         include 'update/**/*.ori'
@@ -1003,14 +1013,7 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         // copy the database drivers into the lib folder
         from (driverJar.path) { into '/WEB-INF/lib' }
     }
-    Properties buildProps = new Properties()
-    buildProps.load(new FileInputStream("${projectDir}/build-default.properties"))
-    buildProps['updater.jars.remove'].split(',').each{ jar ->
-        from("${projectDir}/webapp/update/empty.jar"){
-            into '/WEB-INF/lib'
-            rename('empty\\.jar', jar)
-        }
-    }
+    
 }
 
 updater.dependsOn(tasks.matching{dist_task -> dist_task.name.startsWith('dist_') && !(updater_excluded_modules.split(',').contains(dist_task.moduleName))})
@@ -1566,4 +1569,8 @@ tasks.withType(Javadoc) {
     	options.addStringOption("Xdoclint:none", "-quiet")
     	options.addBooleanOption("-allow-script-in-comments",true);
     }
+}
+// all tasks implementing the CopySpec (Copy,Jar,Zip,...) should fail, in case they generate duplicate files 
+tasks.withType(CopySpec){
+	duplicatesStrategy 'fail'
 }
