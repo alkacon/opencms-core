@@ -154,16 +154,16 @@ sourceSets{
 }
 
 // adding generated dependencies during configuration phase to avoid build path problems in IDE
-sourceSets.modules.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
-sourceSets.setup.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
-sourceSets.gwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
-sourceSets.gwt.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+sourceSets.modules.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
+sourceSets.setup.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
+sourceSets.gwt.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
+sourceSets.gwt.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
 sourceSets.test.compileClasspath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-sourceSets.test.compileClasspath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
-sourceSets.test.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
-sourceSets.test.compileClasspath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
-sourceSets.testGwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
-sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+sourceSets.test.compileClasspath += files(sourceSets.setup.output.classesDir) { builtBy 'setupClasses' }
+sourceSets.test.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
+sourceSets.test.compileClasspath += files(sourceSets.gwt.output.classesDir) { builtBy 'gwtClasses' }
+sourceSets.testGwt.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
+sourceSets.testGwt.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
 
 task copyDeps(type: Copy) {
     from configurations.distribution
@@ -175,16 +175,18 @@ task copyCompileDeps(type: Copy) {
 	into "${buildDir}/deps"
 }
 
-task enhance << {
-    ant.taskdef(
-    name      : 'openjpaenhancer',
-    classpath : sourceSets.modules.compileClasspath.asPath,
-    classname : 'org.apache.openjpa.ant.PCEnhancerTask'
-    )
-
-    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
-        fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
-        config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
+task enhance {
+	doLast {
+	    ant.taskdef(
+	    name      : 'openjpaenhancer',
+	    classpath : sourceSets.modules.compileClasspath.asPath,
+	    classname : 'org.apache.openjpa.ant.PCEnhancerTask'
+	    )
+	
+	    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
+	        fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
+	        config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
+	    }
     }
 }
 
@@ -262,15 +264,15 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
+    from sourceSets.main.java.srcDirs
     classifier = 'sources'
     baseName 'opencms-core'
 }
 
 task gwtJar(dependsOn: jar, type: Jar) {
     from sourceSets.gwt.output
-    from (sourceSets.gwt.allSource){ include '**/*.java' }
-    from (sourceSets.main.allSource){
+    from (sourceSets.gwt.java.srcDirs){ include '**/*.java' }
+    from (sourceSets.main.java.srcDirs){
         include '**/shared/**'
         include '**/gwt/CmsRpcException.java'
         include '**/ade/detailpage/CmsDetailPageInfo.java'
@@ -319,7 +321,7 @@ task javadocJarModules(type: Jar, dependsOn: javadocModules) {
 }
 
 task sourcesJarModules(type: Jar) {
-    from sourceSets.modules.allSource
+    from sourceSets.modules.java.srcDirs
     classifier = 'sources'
     baseName 'opencms-modules'
 }
@@ -356,8 +358,8 @@ task javadocJarGwt(type: Jar, dependsOn: javadocGwt) {
 }
 
 task sourcesJarGwt(type: Jar) {
-    from sourceSets.gwt.allSource
-    from (sourceSets.main.allSource){
+    from sourceSets.gwt.java.srcDirs
+    from (sourceSets.main.java.srcDirs){
         include '**/shared/**'
         include '**/gwt/CmsRpcException.java'
         include '**/ade/detailpage/CmsDetailPageInfo.java'
@@ -438,7 +440,7 @@ task opencmsFonts (type: JavaExec) {
 task "gwt_widgetSet" (dependsOn: gwtClasses, type: JavaExec) {
     ext.buildDir =  project.buildDir.toString()  +"/gwt/widgetSet"
     ext.extraDir =  project.buildDir.toString() + "/extra/widgetSet"
-    inputs.source sourceSets.gwt.java.srcDirs
+    inputs.files sourceSets.gwt.java.srcDirs
     inputs.dir sourceSets.gwt.output.resourcesDir
     outputs.dir buildDir
 
@@ -574,7 +576,7 @@ task javadocJarSetup(type: Jar, dependsOn: javadocSetup) {
 }
 
 task sourcesJarSetup(type: Jar) {
-    from sourceSets.setup.allSource
+    from sourceSets.setup.java.srcDirs
     classifier = 'sources'
     baseName 'opencms-setup'
 }
@@ -780,7 +782,7 @@ allModuleNames.split(',').each{ moduleName ->
         }
 
         task "sourcesJar_$moduleName"(type: Jar) {
-            from sourceSets[moduleName].allSource
+            from sourceSets[moduleName].java.srcDirs
             classifier = 'sources'
             baseName moduleName
         }
@@ -797,7 +799,7 @@ allModuleNames.split(',').each{ moduleName ->
         task "gwt_$moduleName" (dependsOn: gwtClasses, type: JavaExec) {
             ext.buildDir =  project.buildDir.toString()  +"/gwt/$moduleName"
             ext.extraDir =  project.buildDir.toString() + "/extra/$moduleName"
-            inputs.source sourceSets.gwt.java.srcDirs
+            inputs.files sourceSets.gwt.java.srcDirs
             inputs.dir sourceSets.gwt.output.resourcesDir
             outputs.dir buildDir
 
@@ -873,9 +875,9 @@ tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
         dist_task.dependencies.each{ dep ->
             def depCompileName = 'compile'+dep.replaceAll('\\.','')+'java'
             tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals(depCompileName)}.each {comp_task ->
-                sourceSets[dist_task.moduleName].compileClasspath += files("${project.buildDir}/classes/$dep") { builtBy comp_task.name }
+                sourceSets[dist_task.moduleName].compileClasspath += files(sourceSets[dep].output.classesDir) { builtBy comp_task.name }
                 // we need to manipulate the classpath of the java doc task specifically
-                tasks['javadoc_'+dist_task.moduleName].classpath += files("${project.buildDir}/classes/$dep") { builtBy comp_task.name }
+                tasks['javadoc_'+dist_task.moduleName].classpath += files(sourceSets[dep].output.classesDir) { builtBy comp_task.name }
             }
         }
         tasks['jar_'+dist_task.moduleName].dependsOn{
@@ -887,10 +889,12 @@ tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
     }
 }
 
-task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')||task.name.startsWith('jar_')}) << {
-    println '======================================================'
-    println 'Done building modules'
-    println '======================================================'
+task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')||task.name.startsWith('jar_')}) {
+	doLast {
+	    println '======================================================'
+	    println 'Done building modules'
+	    println '======================================================'
+    }
 }
 
 task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
@@ -1167,7 +1171,7 @@ task javadocJarTest(type: Jar, dependsOn: javadocTest) {
 }
 
 task sourcesJarTest(type: Jar) {
-    from sourceSets.test.allSource
+    from sourceSets.test.java.srcDirs
     classifier = 'sources'
     baseName 'opencms-test'
 }
