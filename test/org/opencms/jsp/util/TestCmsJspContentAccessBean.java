@@ -31,11 +31,15 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsFileUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -53,6 +57,12 @@ import junit.framework.TestSuite;
  * @since 7.0.2
  */
 public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
+
+    /** Schema id 3. */
+    private static final String SCHEMA_SYSTEM_ID_3 = "http://www.opencms.org/test3.xsd";
+
+    /** Schema id 4. */
+    private static final String SCHEMA_SYSTEM_ID_4 = "http://www.opencms.org/test4.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -77,6 +87,7 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         suite.setName(TestCmsJspContentAccessBean.class.getName());
 
         suite.addTest(new TestCmsJspContentAccessBean("testContentAccess"));
+        suite.addTest(new TestCmsJspContentAccessBean("testContentAccessNestedSchema"));
         suite.addTest(new TestCmsJspContentAccessBean("testIsEditable"));
 
         TestSetup wrapper = new TestSetup(suite) {
@@ -179,6 +190,64 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         frValues = bean.getValueList();
         assertEquals(2, frValues.get("Teaser").size());
         assertEquals("This is teaser 2 in sample article 2.", String.valueOf(enValues.get("Teaser").get(1)));
+    }
+
+    /**
+     * Test using a nested XML content schema.<p>
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testContentAccessNestedSchema() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing for nested XML content schemas");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-3.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_3, resolver);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_3, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-4.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_4, resolver);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        // now create the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-4.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+        System.out.println(xmlcontent.toString());
+
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        // new create the content access bean
+        CmsJspContentAccessBean bean = new CmsJspContentAccessBean(cms, Locale.ENGLISH, xmlcontent);
+
+        // some simple has / has not checks
+        Map<String, Boolean> hasValue = bean.getHasValue();
+        assertSame(Boolean.TRUE, hasValue.get("Title"));
+        assertSame(Boolean.FALSE, hasValue.get("IdontExistHere"));
+        assertSame(Boolean.TRUE, hasValue.get("Cascade/VfsLink"));
+
+        // positive tests
+        Map<String, CmsJspContentAccessValueWrapper> value = bean.getValue();
+        assertEquals("/index.html", value.get("Cascade/VfsLink").getStringValue());
+        assertEquals("/test.html", value.get("Cascade[1]/VfsLink[2]").getStringValue());
+        assertEquals("/index.jsp", value.get("Cascade[2]/VfsLink").getStringValue());
+
+        // negative tests
+        assertEquals("", value.get("Cascade[3]/VfsLink").getStringValue());
+        assertEquals("", value.get("Cascade[2]/VfsLink[2]").getStringValue());
+        assertEquals("", value.get("Cascade/VfsLink[3]").getStringValue());
     }
 
     /**
