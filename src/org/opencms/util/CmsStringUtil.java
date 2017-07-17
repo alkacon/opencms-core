@@ -204,7 +204,7 @@ public final class CmsStringUtil {
             buffer1.append("/");
         }
         buffer1.append(path);
-        if (!path.endsWith("/")) {
+        if (!path.endsWith("/") && !path.isEmpty()) {
             buffer1.append("/");
         }
         return buffer1.toString();

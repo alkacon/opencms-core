@@ -79,6 +79,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -827,6 +828,14 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 }
             }
             openPath(path, true);
+            Container container = m_siteSelector.getContainerDataSource();
+            for (Object id : container.getItemIds()) {
+                String key = (String)id;
+                if (CmsStringUtil.comparePaths(key, siteRoot)) {
+                    siteRoot = key;
+                    break;
+                }
+            }
             m_siteSelector.select(siteRoot);
         }
     }
@@ -1007,7 +1016,8 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                     LOG.warn("Error reading project from history state", e);
                 }
                 changeSite(siteRoot, path, true);
-            } else if ((siteRoot != null) && !siteRoot.equals(cms.getRequestContext().getSiteRoot())) {
+            } else if ((siteRoot != null)
+                && !CmsStringUtil.comparePaths(siteRoot, cms.getRequestContext().getSiteRoot())) {
                 String saveState = m_currentState;
                 changeSite(siteRoot, path);
                 if (!getSelectionFromState(saveState).isEmpty()) {
@@ -1251,8 +1261,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             cms.getRequestContext().getSiteRoot(),
             sitePath,
             cms.getRequestContext().getCurrentProject().getUuid().toString()).asString();
-
-        if (!(state).equals(m_currentState)) {
+        if ((m_currentState == null) || !(state).equals(StateBean.parse(m_currentState).asString())) {
             m_currentState = state;
             CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
         }
