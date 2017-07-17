@@ -38,13 +38,16 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Arrays;
+import java.util.Set;
 
+import com.google.common.collect.Sets;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -57,6 +60,9 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
 
     /** The list for the explorer types. */
     private VerticalLayout m_explorerTypes;
+
+    /** The panel containing the explorer types. */
+    private Panel m_explorerTypesPanel;
 
     /** The OK button. */
     private Button m_ok;
@@ -102,8 +108,10 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
     public void initialize(CmsModule module) {
 
         boolean empty = true;
+        Set<String> resTypeNames = Sets.newHashSet();
         for (I_CmsResourceType type : module.getResourceTypes()) {
             m_resourceTypes.addComponent(formatResourceType(type));
+            resTypeNames.add(type.getTypeName());
             empty = false;
         }
         if (empty) {
@@ -112,12 +120,15 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
         }
         empty = true;
         for (CmsExplorerTypeSettings expType : module.getExplorerTypes()) {
+            if (resTypeNames.contains(expType.getName())) {
+                continue;
+            }
             m_explorerTypes.addComponent(formatExplorerType(expType));
             empty = false;
         }
+
         if (empty) {
-            m_explorerTypes.addComponent(
-                new Label(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_NO_EXPLORER_TYPES_0)));
+            m_explorerTypesPanel.setVisible(false);
         }
     }
 
@@ -161,13 +172,17 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
             if (title.startsWith("???")) {
                 title = type.getTypeName();
             }
-            subtitle = type.getTypeName() + " (ID: " + type.getTypeId() + ")";
+            subtitle = type.getTypeName()
+                + " (ID: "
+                + type.getTypeId()
+                + (settings.getReference() != null ? (", " + settings.getReference()) : "")
+                + ")";
         } else {
             icon = CmsResourceUtil.getBigIconResource(
                 OpenCms.getWorkplaceManager().getExplorerTypeSetting("unknown"),
                 null);
             title = type.getTypeName();
-            subtitle = type.getTypeName() + " (" + type.getTypeId() + ")";
+            subtitle = type.getTypeName() + " (ID: " + type.getTypeId() + ")";
         }
         CmsResourceInfo info = new CmsResourceInfo(title, subtitle, icon);
         return info;
