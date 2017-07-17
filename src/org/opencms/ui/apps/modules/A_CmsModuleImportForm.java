@@ -47,12 +47,12 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.CssLayout;
 
 /**
  * Abstract superclass for the module import forms.<p>
  */
-public abstract class A_CmsModuleImportForm extends FormLayout {
+public abstract class A_CmsModuleImportForm extends CssLayout {
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsModuleImportForm.class);

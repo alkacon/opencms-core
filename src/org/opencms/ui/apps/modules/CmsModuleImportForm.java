@@ -27,10 +27,8 @@
 
 package org.opencms.ui.apps.modules;
 
-import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsAutoItemCreatingComboBox;
 import org.opencms.util.CmsStringUtil;
 
@@ -40,7 +38,15 @@ import java.io.OutputStream;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptAll;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.server.StreamVariable;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.DragAndDropWrapper;
+import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
+import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.ChangeEvent;
@@ -60,6 +66,9 @@ public class CmsModuleImportForm extends A_CmsModuleImportForm {
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** Drag and drop wrapper. */
+    private DragAndDropWrapper m_dnd;
 
     /** The cancel button. */
     protected Button m_cancel;
@@ -83,8 +92,76 @@ public class CmsModuleImportForm extends A_CmsModuleImportForm {
      */
     public CmsModuleImportForm(CmsModuleApp app) {
         super(app);
-        CmsObject cms = A_CmsUI.getCmsObject();
         m_upload.setImmediate(true);
+        m_dnd.setImmediate(true);
+        m_dnd.setDropHandler(new DropHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void drop(DragAndDropEvent event) {
+
+                WrapperTransferable transfer = (WrapperTransferable)event.getTransferable();
+                Html5File[] files = transfer.getFiles();
+                if (files.length == 1) {
+                    final Html5File file = files[0];
+                    m_uploadLabel.setValue(file.getFileName());
+                    file.setStreamVariable(new StreamVariable() {
+
+                        private static final long serialVersionUID = 1L;
+
+                        public OutputStream getOutputStream() {
+
+                            String path = CmsStringUtil.joinPaths(
+                                OpenCms.getSystemInfo().getWebInfRfsPath(),
+                                "packages/modules",
+                                processFileName(file.getFileName()));
+                            m_importFile = new CmsModuleImportFile(path);
+                            try {
+                                return new FileOutputStream(m_importFile.getPath());
+                            } catch (FileNotFoundException e) {
+                                throw new RuntimeException(e); // shouldn't happen, but if it does, there is no point in continuing
+                            }
+                        }
+
+                        public boolean isInterrupted() {
+
+                            return false;
+                        }
+
+                        public boolean listenProgress() {
+
+                            return false;
+                        }
+
+                        public void onProgress(StreamingProgressEvent evt) {
+                            // do nothing
+                        }
+
+                        @SuppressWarnings("synthetic-access")
+                        public void streamingFailed(StreamingErrorEvent evt) {
+
+                            LOG.info("Upload streaming failed: " + evt.getFileName(), evt.getException());
+                        }
+
+                        public void streamingFinished(StreamingEndEvent evt) {
+
+                            validateModuleFile();
+                        }
+
+                        public void streamingStarted(StreamingStartEvent evt) {
+
+                            m_ok.setEnabled(false);
+                            m_siteSelect.setEnabled(true);
+                        }
+                    });
+                }
+            }
+
+            public AcceptCriterion getAcceptCriterion() {
+
+                return AcceptAll.get();
+            }
+        });
         m_upload.addStartedListener(new StartedListener() {
 
             private static final long serialVersionUID = 1L;

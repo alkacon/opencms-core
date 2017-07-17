@@ -28,6 +28,10 @@
     	<when-type-is class="com.vaadin.client.ui.VPopupView" />
     </replace-with>
     
+    <replace-with class="org.opencms.ui.client.CmsVDragAndDropWrapper">
+    	<when-type-is class="com.vaadin.client.ui.VDragAndDropWrapper" />
+    </replace-with>
+    
     <replace-with class="org.opencms.ui.client.CmsVUI">
     	<when-type-is class="com.vaadin.client.ui.VUI" />
     </replace-with>
