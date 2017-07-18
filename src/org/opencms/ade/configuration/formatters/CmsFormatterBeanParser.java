@@ -43,6 +43,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsMacroFormatterBean;
 import org.opencms.xml.containerpage.CmsMetaMapping;
+import org.opencms.xml.containerpage.CmsFlexFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -158,6 +159,12 @@ public class CmsFormatterBeanParser {
 
     /** Node name. */
     public static final String N_MACRO = "Macro";
+
+    /** Node name. */
+    public static final String N_STRING_TEMPLATE = "StringTemplate";
+
+    /** Node name. */
+    public static final String N_PLACEHOLDER_STRING_TEMPLATE = "PlaceholderStringTemplate";
 
     /** Node name. */
     public static final String N_MACRO_NAME = "MacroName";
@@ -293,6 +300,7 @@ public class CmsFormatterBeanParser {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(content.getFile());
         boolean isMacroFromatter = CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(type.getTypeName());
+        boolean isFlexFormatter = CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(type.getTypeName());
 
         Locale en = Locale.ENGLISH;
         I_CmsXmlContentValue niceName = content.getValue(N_NICE_NAME, en);
@@ -333,7 +341,7 @@ public class CmsFormatterBeanParser {
 
         boolean hasNestedContainers;
         CmsFormatterBean formatterBean;
-        if (isMacroFromatter) {
+        if (isMacroFromatter || isFlexFormatter) {
             // setting macro formatter defaults
             m_formatterResource = content.getFile();
             m_preview = false;
@@ -349,32 +357,58 @@ public class CmsFormatterBeanParser {
                     defContentRes = m_cms.readResource(defContentID);
                 }
             }
-            String macroInput = getString(root, N_MACRO, "");
-            String placeholderMacroInput = getString(root, N_PLACEHOLDER_MACRO, "");
-            Map<String, CmsUUID> referencedFormatters = readReferencedFormatters(content);
-            formatterBean = new CmsMacroFormatterBean(
-                m_containerTypes,
-                m_formatterResource.getRootPath(),
-                m_formatterResource.getStructureId(),
-                m_width,
-                m_maxWidth,
-                m_extractContent,
-                location,
-                m_niceName,
-                m_resourceType,
-                rank,
-                id,
-                defContentRes != null ? defContentRes.getRootPath() : null,
-                defContentRes != null ? defContentRes.getStructureId() : null,
-                m_settings,
-                m_autoEnabled,
-                isDetail,
-                isDisplay,
-                macroInput,
-                placeholderMacroInput,
-                referencedFormatters,
-                m_cms.getRequestContext().getCurrentProject().isOnlineProject(),
-                mappings);
+            if (isMacroFromatter) {
+                String macroInput = getString(root, N_MACRO, "");
+                String placeholderMacroInput = getString(root, N_PLACEHOLDER_MACRO, "");
+                Map<String, CmsUUID> referencedFormatters = readReferencedFormatters(content);
+                formatterBean = new CmsMacroFormatterBean(
+                    m_containerTypes,
+                    m_formatterResource.getRootPath(),
+                    m_formatterResource.getStructureId(),
+                    m_width,
+                    m_maxWidth,
+                    m_extractContent,
+                    location,
+                    m_niceName,
+                    m_resourceType,
+                    rank,
+                    id,
+                    defContentRes != null ? defContentRes.getRootPath() : null,
+                    defContentRes != null ? defContentRes.getStructureId() : null,
+                    m_settings,
+                    m_autoEnabled,
+                    isDetail,
+                    isDisplay,
+                    macroInput,
+                    placeholderMacroInput,
+                    referencedFormatters,
+                    m_cms.getRequestContext().getCurrentProject().isOnlineProject(),
+                    mappings);
+            } else {
+                String stringTemplate = getString(root, N_STRING_TEMPLATE, "");
+                String placeholder = getString(root, N_PLACEHOLDER_STRING_TEMPLATE, "");
+                formatterBean = new CmsFlexFormatterBean(
+                    m_containerTypes,
+                    m_formatterResource.getRootPath(),
+                    m_formatterResource.getStructureId(),
+                    m_width,
+                    m_maxWidth,
+                    m_extractContent,
+                    location,
+                    m_niceName,
+                    m_resourceType,
+                    rank,
+                    id,
+                    defContentRes != null ? defContentRes.getRootPath() : null,
+                    defContentRes != null ? defContentRes.getStructureId() : null,
+                    m_settings,
+                    m_autoEnabled,
+                    isDetail,
+                    isDisplay,
+                    stringTemplate,
+                    placeholder,
+                    mappings);
+            }
         } else {
             I_CmsXmlContentValueLocation jspLoc = root.getSubValue(N_JSP);
             CmsXmlVfsFileValue jspValue = (CmsXmlVfsFileValue)(jspLoc.getValue());

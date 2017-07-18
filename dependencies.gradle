@@ -99,6 +99,7 @@ dependencies {
     distribution group: 'net.sourceforge.serp', name: 'serp', version: '1.13.1'
     distribution group: 'org.antlr', name: 'antlr-runtime', version: '3.5.2'
     distribution group: 'org.antlr', name: 'stringtemplate', version: '3.2'
+    distribution group: 'org.antlr', name: 'ST4', version: '4.0.8'
     distribution group: 'org.apache.bval', name: 'org.apache.bval.bundle', version: '0.4'
     distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-api', version: '1.0.0'
     distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-impl', version: '1.0.0'

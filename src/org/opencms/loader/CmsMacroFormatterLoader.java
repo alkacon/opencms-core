@@ -27,6 +27,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -51,7 +52,10 @@ import javax.servlet.http.HttpServletResponse;
 public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
 
     /** The JSP rendering the macro. */
-    private static final String RENDER_JSP = "/system/modules/org.opencms.ade.config/pages/render-macro.jsp";
+    private static final String RENDER_MACRO_JSP = "/system/modules/org.opencms.ade.config/pages/render-macro.jsp";
+
+    /** The JSP rendering the macro. */
+    private static final String RENDER_STRING_TEMPLATE_JSP = "/system/modules/org.opencms.ade.config/pages/render-string-template.jsp";
 
     /** The loader id. */
     public static final int LOADER_ID = 15;
@@ -81,12 +85,24 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
         String element,
         Locale selectedLocale,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsException, IOException, ServletException {
+        HttpServletResponse res)
+    throws CmsException, IOException, ServletException {
 
-        CmsResource renderer = cms.readResource(RENDER_JSP);
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
-        ensureElementFormatter(resource, req);
-        return loader.dump(cms, renderer, element, selectedLocale, req, res);
+        CmsResource renderer = null;
+        if (CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName())) {
+            renderer = cms.readResource(RENDER_MACRO_JSP);
+        } else if (CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName())) {
+            renderer = cms.readResource(RENDER_STRING_TEMPLATE_JSP);
+        }
+        if (renderer != null) {
+            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
+            ensureElementFormatter(resource, req);
+            return loader.dump(cms, renderer, element, selectedLocale, req, res);
+        } else {
+            return new byte[] {};
+        }
     }
 
     /**
@@ -95,10 +111,21 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException {
 
-        CmsResource renderer = cms.readResource(RENDER_JSP);
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
-        ensureElementFormatter(resource, req);
-        return loader.export(cms, renderer, req, res);
+        CmsResource renderer = null;
+        if (CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName())) {
+            renderer = cms.readResource(RENDER_MACRO_JSP);
+        } else if (CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName())) {
+            renderer = cms.readResource(RENDER_STRING_TEMPLATE_JSP);
+        }
+        if (renderer != null) {
+            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
+            ensureElementFormatter(resource, req);
+            return loader.export(cms, renderer, req, res);
+        } else {
+            return new byte[] {};
+        }
     }
 
     /**
@@ -176,10 +203,19 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException {
 
-        CmsResource renderer = cms.readResource(RENDER_JSP);
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
-        ensureElementFormatter(resource, req);
-        loader.load(cms, renderer, req, res);
+        CmsResource renderer = null;
+        if (CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName())) {
+            renderer = cms.readResource(RENDER_MACRO_JSP);
+        } else if (CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName())) {
+            renderer = cms.readResource(RENDER_STRING_TEMPLATE_JSP);
+        }
+        if (renderer != null) {
+            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
+            ensureElementFormatter(resource, req);
+            loader.load(cms, renderer, req, res);
+        }
     }
 
     /**
@@ -188,9 +224,18 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
     throws IOException, CmsException, ServletException {
 
-        CmsResource renderer = cms.readResource(RENDER_JSP);
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
-        loader.service(cms, renderer, req, res);
+        CmsResource renderer = null;
+        if (CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName())) {
+            renderer = cms.readResource(RENDER_MACRO_JSP);
+        } else if (CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName())) {
+            renderer = cms.readResource(RENDER_STRING_TEMPLATE_JSP);
+        }
+        if (renderer != null) {
+            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
+            loader.service(cms, renderer, req, res);
+        }
     }
 
     /**

@@ -75,6 +75,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     /** The resource type for macro formatters. */
     public static final String TYPE_MACRO_FORMATTER = "macro_formatter";
 
+    /** The resource type for macro formatters. */
+    public static final String TYPE_FLEX_FORMATTER = "flex_formatter";
+
     /** The delay to use for updating the formatter cache, in seconds. */
     protected static int UPDATE_DELAY_SECONDS = 7;
 
@@ -183,6 +186,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_MACRO_FORMATTER);
             CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
             formatterResources.addAll(m_cms.readResources("/", filter));
+            I_CmsResourceType typeFlex = OpenCms.getResourceManager().getResourceType(TYPE_FLEX_FORMATTER);
+            CmsResourceFilter filterFlex = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(typeFlex);
+            formatterResources.addAll(m_cms.readResources("/", filterFlex));
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
@@ -293,7 +299,8 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             return;
         }
         if (OpenCms.getResourceManager().matchResourceType(TYPE_FORMATTER_CONFIG, resourceType)
-            || OpenCms.getResourceManager().matchResourceType(TYPE_MACRO_FORMATTER, resourceType)) {
+            || OpenCms.getResourceManager().matchResourceType(TYPE_MACRO_FORMATTER, resourceType)
+            || OpenCms.getResourceManager().matchResourceType(TYPE_FLEX_FORMATTER, resourceType)) {
             markForUpdate(structureId);
         }
     }

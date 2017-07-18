@@ -805,7 +805,7 @@ public class CmsConfigurationReader {
         boolean removeAllFormatters) {
 
         Set<String> addFormatters = parseAddFormatters(node);
-        addFormatters.addAll(readLocalMacroFormatters(node));
+        addFormatters.addAll(readLocalFormatters(node));
         Set<String> removeFormatters = removeAllFormatters ? new HashSet<String>() : parseRemoveFormatters(node);
         String siteRoot = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)) {
@@ -854,13 +854,13 @@ public class CmsConfigurationReader {
     }
 
     /**
-     * Reads the local macro formatters from the .formatters folder if present.<p>
+     * Reads the local macro or flex formatters from the .formatters folder if present.<p>
      *
      * @param node the xml content node
      *
      * @return the local formatters
      */
-    private Set<String> readLocalMacroFormatters(I_CmsXmlContentLocation node) {
+    private Set<String> readLocalFormatters(I_CmsXmlContentLocation node) {
 
         Set<String> addFormatters = new HashSet<String>();
         String path = m_cms.getSitePath(node.getDocument().getFile());
@@ -872,6 +872,13 @@ public class CmsConfigurationReader {
                 CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(macroType);
                 List<CmsResource> macroFormatters = m_cms.readResources(path, filter);
                 for (CmsResource formatter : macroFormatters) {
+                    addFormatters.add(formatter.getStructureId().toString());
+                }
+                I_CmsResourceType flexType = OpenCms.getResourceManager().getResourceType(
+                    CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER);
+                CmsResourceFilter filterFlex = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(flexType);
+                List<CmsResource> flexFormatters = m_cms.readResources(path, filterFlex);
+                for (CmsResource formatter : flexFormatters) {
                     addFormatters.add(formatter.getStructureId().toString());
                 }
             }

@@ -85,8 +85,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** ID which is used to signal that the module configuration should be updated. */
     public static final CmsUUID ID_UPDATE_MODULES = CmsUUID.getNullUUID();
 
-    /** The master sitemap configuration resource type name. */
-    public static final String SITEMAP_MASTER_CONFIG = "sitemap_master_config";
+    /** The sitemap master config resource type name. */
+    public static final String TYPE_SITEMAP_MASTER_CONFIG = "sitemap_master_config";
 
     /** The interval at which the tasks which checks for configuration updates runs, in milliseconds. */
     public static final int TASK_DELAY_MILLIS = 3 * 1000;
@@ -292,6 +292,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations = Maps.newHashMap();
         if (m_cms.existsResource("/")) {
             try {
+                @SuppressWarnings("deprecation")
                 List<CmsResource> configFileCandidates = m_cms.readResources(
                     "/",
                     CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
@@ -303,11 +304,11 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                         + " from the "
                         + (m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "online" : "offline")
                         + " project.");
-                if (OpenCms.getResourceManager().hasResourceType(SITEMAP_MASTER_CONFIG)) {
+                if (OpenCms.getResourceManager().hasResourceType(TYPE_SITEMAP_MASTER_CONFIG)) {
                     List<CmsResource> masterCandidates = m_cms.readResources(
                         "/",
                         CmsResourceFilter.DEFAULT.addRequireType(
-                            OpenCms.getResourceManager().getResourceType(SITEMAP_MASTER_CONFIG)));
+                            OpenCms.getResourceManager().getResourceType(TYPE_SITEMAP_MASTER_CONFIG)));
                     configFileCandidates.addAll(masterCandidates);
                 }
                 for (CmsResource candidate : configFileCandidates) {
@@ -407,19 +408,21 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     }
 
     /**
-     * Checks whether the given type and path match a macro formatter.<p>
+     * Checks whether the given type id matches the id of the macro formatter or flex formatter resource type.<p>
+     * Also checks if the file is located in a '/.content/.formatters' folder.<p>
      *
      * @param type the type id
-     * @param rootPath the resource path
+     * @param rootPath the root path
      *
-     * @return <code>true</code> in case of a macro formatter
+     * @return <code>true</code> in case of a macro or flex formatter
      */
-    protected boolean isMacroFormatter(int type, String rootPath) {
+    protected boolean isMacroOrFlexFormatter(int type, String rootPath) {
 
         boolean result = false;
         try {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(type);
-            result = CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(resType.getTypeName())
+            result = (CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(resType.getTypeName())
+                || CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(resType.getTypeName()))
                 && CmsResource.getParentFolder(rootPath).endsWith("/.content/.formatters");
         } catch (Exception e) {
             LOG.debug(e.getMessage(), e);
@@ -435,6 +438,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      *
      * @return true if the path/type combination belongs to a module configuration
      */
+    @SuppressWarnings("deprecation")
     protected boolean isModuleConfiguration(String rootPath, int type) {
 
         return type == m_moduleConfigType.getTypeId();
@@ -458,12 +462,13 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      *
      * @return true if the path/type belong to an active sitemap configuration
      */
+    @SuppressWarnings("deprecation")
     protected boolean isSitemapConfiguration(String rootPath, int type) {
 
         if (type == m_configType.getTypeId()) {
             return rootPath.endsWith(CmsADEManager.CONFIG_SUFFIX);
         } else {
-            return OpenCms.getResourceManager().matchResourceType(SITEMAP_MASTER_CONFIG, type);
+            return OpenCms.getResourceManager().matchResourceType(TYPE_SITEMAP_MASTER_CONFIG, type);
         }
     }
 
@@ -477,6 +482,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         List<CmsElementView> views = new ArrayList<CmsElementView>();
         views.add(CmsElementView.DEFAULT_ELEMENT_VIEW);
         try {
+            @SuppressWarnings("deprecation")
             CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
                 m_elementViewType.getTypeId());
             List<CmsResource> groups = m_cms.readResources("/", filter);
@@ -611,7 +617,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             m_updateSet.add(ID_UPDATE_ELEMENT_VIEWS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_updateSet.add(ID_UPDATE_FOLDERTYPES);
-        } else if (isMacroFormatter(type, rootPath)) {
+        } else if (isMacroOrFlexFormatter(type, rootPath)) {
             try {
                 String path = CmsResource.getParentFolder(CmsResource.getParentFolder(rootPath));
                 path = CmsStringUtil.joinPaths(path, ".config");
@@ -667,6 +673,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      *
      * @return <code>true</code> if the given type id is of the element view type
      */
+    @SuppressWarnings("deprecation")
     private boolean isElementView(int type) {
 
         return type == m_elementViewType.getTypeId();

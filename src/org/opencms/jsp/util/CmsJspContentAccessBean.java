@@ -50,6 +50,8 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -415,6 +417,9 @@ public class CmsJspContentAccessBean {
     protected static final Map<String, CmsJspContentAccessValueWrapper> CONSTANT_NULL_VALUE_WRAPPER_MAP = new CmsConstantMap<String, CmsJspContentAccessValueWrapper>(
         CmsJspContentAccessValueWrapper.NULL_VALUE_WRAPPER);
 
+    /** The categories assigned to the resource. */
+    private CmsJspCategoryAccessBean m_categories;
+
     /** The OpenCms context of the current user. */
     private CmsObject m_cms;
 
@@ -453,9 +458,6 @@ public class CmsJspContentAccessBean {
 
     /** Resource the XML content is created from. */
     private CmsResource m_resource;
-
-    /** The categories assigned to the resource. */
-    private CmsJspCategoryAccessBean m_categories;
 
     /**
      * No argument constructor, required for a JavaBean.<p>
@@ -547,6 +549,21 @@ public class CmsJspContentAccessBean {
     public CmsFile getFile() {
 
         return getRawContent().getFile();
+    }
+
+    /**
+     * Returns the substituted link to the content file.<p>
+     * Use for detail page links.<p>
+     *
+     * @return the substituted link
+     */
+    public String getFileLink() {
+
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            m_cms,
+            m_cms.getSitePath(getRawContent().getFile()),
+            null,
+            false);
     }
 
     /**
@@ -900,6 +917,35 @@ public class CmsJspContentAccessBean {
     public List<String> getNames() {
 
         return getLocaleNames().get(getLocale());
+    }
+
+    /**
+     * Prints the XPaths of the available content values into an HTML ul list.<p>
+     *
+     * @return the HTML list of XPaths
+     */
+    public String getPrintStructure() {
+
+        if (getRawContent().hasLocale(m_requestedLocale)) {
+            List<I_CmsXmlContentValue> values = new ArrayList<I_CmsXmlContentValue>(
+                getRawContent().getValues(m_requestedLocale));
+            Collections.sort(values, new Comparator<I_CmsXmlContentValue>() {
+
+                public int compare(I_CmsXmlContentValue arg0, I_CmsXmlContentValue arg1) {
+
+                    return arg0.getPath().compareTo(arg1.getPath());
+                }
+            });
+
+            StringBuffer buffer = new StringBuffer("<ul>\n");
+            for (I_CmsXmlContentValue value : values) {
+                buffer.append("<li>").append(value.getPath()).append("</li>\n");
+            }
+            buffer.append("</ul>");
+            return buffer.toString();
+        } else {
+            return "";
+        }
     }
 
     /**

@@ -31,6 +31,8 @@ import org.opencms.ade.contenteditor.CmsContentService;
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsMacroResolver;
@@ -876,6 +878,23 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             m_subValueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsSubValueListTransformer());
         }
         return m_subValueList;
+    }
+
+    /**
+     * Returns the substituted link to the current string value.<p>
+     *
+     * @return the substituted link
+     */
+    public String getToLink() {
+
+        if (m_contentValue != null) {
+            String uri = CmsLinkManager.getAbsoluteUri(
+                getStringValue(),
+                m_cms.getRequestContext().removeSiteRoot(m_contentValue.getDocument().getFile().getRootPath()));
+            return OpenCms.getLinkManager().substituteLinkForUnknownTarget(m_cms, uri, null, false);
+        } else {
+            return "";
+        }
     }
 
     /**
