@@ -18,6 +18,7 @@
 			<xsd:element name="uselocale" type="OpenCmsBoolean" minOccurs="1" />	
 			<xsd:element name="decoration" type="OpenCmsDecoration" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="exclude" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="excludeattr" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />			
 			<xsd:element name="class" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>

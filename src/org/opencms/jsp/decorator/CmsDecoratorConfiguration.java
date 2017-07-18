@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.htmlparser.Tag;
+
 /**
  * The CmsDecoratorConfiguration initalizes and stores the text decorations.<p>
  *
@@ -55,6 +57,9 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
 
     /** The xpath for the exclude configuration. */
     public static final String XPATH_EXCLUDE = "exclude";
+
+    /** The xpath for the exclude configuration. */
+    public static final String XPATH_EXCLUDEATTR = "excludeattr";
 
     /** The xpath for the uselocale configuration. */
     public static final String XPATH_USELOCALE = "uselocale";
@@ -95,6 +100,9 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     /** The list of excluded tags. */
     private List<String> m_excludes;
 
+    /** The list of excluded attributes. */
+    private List<String> m_excludeattr;
+
     /** The locale for to build the configuration for. */
     private Locale m_locale;
 
@@ -116,6 +124,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
         m_locale = null;
         m_usedDecorations = new ArrayList<String>();
         m_excludes = new ArrayList<String>();
+        m_excludeattr = new ArrayList<String>();
         m_decorationDefinitions = new ArrayList<CmsDecorationDefintion>();
     }
 
@@ -135,6 +144,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
         m_locale = m_cms.getRequestContext().getLocale();
         m_usedDecorations = new ArrayList<String>();
         m_excludes = new ArrayList<String>();
+        m_excludeattr = new ArrayList<String>();
         m_decorationDefinitions = new ArrayList<CmsDecorationDefintion>();
         init(cms, null, null);
     }
@@ -155,6 +165,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
         m_locale = m_cms.getRequestContext().getLocale();
         m_usedDecorations = new ArrayList<String>();
         m_excludes = new ArrayList<String>();
+        m_excludeattr = new ArrayList<String>();
         m_decorationDefinitions = new ArrayList<CmsDecorationDefintion>();
         init(cms, configFile, null);
     }
@@ -176,6 +187,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
         m_locale = m_cms.getRequestContext().getLocale();
         m_usedDecorations = new ArrayList<String>();
         m_excludes = new ArrayList<String>();
+        m_excludeattr = new ArrayList<String>();
         m_decorationDefinitions = new ArrayList<CmsDecorationDefintion>();
         init(cms, configFile, locale);
     }
@@ -230,9 +242,8 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     public CmsDecorationDefintion getDecorationDefinition(CmsXmlContent configuration, int i) {
 
         CmsDecorationDefintion decDef = new CmsDecorationDefintion();
-        String name = configuration.getValue(
-            XPATH_DECORATION + "[" + i + "]/" + XPATH_NAME,
-            m_configurationLocale).getStringValue(m_cms);
+        String name = configuration.getValue(XPATH_DECORATION + "[" + i + "]/" + XPATH_NAME, m_configurationLocale).getStringValue(
+            m_cms);
         String markfirst = configuration.getValue(
             XPATH_DECORATION + "[" + i + "]/" + XPATH_MARKFIRST,
             m_configurationLocale).getStringValue(m_cms);
@@ -282,6 +293,16 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     public CmsDecorationBundle getDecorations() {
 
         return m_decorations;
+    }
+
+    /**
+     * Returns the excludeattr.<p>
+     *
+     * @return the excludeattr
+     */
+    public List<String> getExcludeattr() {
+
+        return m_excludeattr;
     }
 
     /**
@@ -373,6 +394,18 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
                     m_configurationLocale);
                 m_excludes.add(excludeValue.toLowerCase());
             }
+
+            // now read the exclude attributes
+            int excludeAttrValuesCount = configuration.getIndexCount(XPATH_EXCLUDEATTR, m_configurationLocale);
+            // get all the exclude attribute definitions
+            for (int i = 1; i <= excludeAttrValuesCount; i++) {
+                String excludeAttrValue = configuration.getStringValue(
+                    m_cms,
+                    XPATH_EXCLUDEATTR + "[" + i + "]",
+                    m_configurationLocale);
+                m_excludeattr.add(excludeAttrValue.toLowerCase());
+            }
+
         }
     }
 
@@ -385,6 +418,22 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     public boolean isExcluded(String tag) {
 
         return m_excludes.contains(tag.toLowerCase());
+    }
+
+    /**
+     * 
+     * @see org.opencms.jsp.decorator.I_CmsDecoratorConfiguration#isExcludedAttr(org.htmlparser.Tag)
+     */
+    public boolean isExcludedAttr(Tag tag) {
+
+        boolean isExcluded = false;
+        for (String attr : m_excludeattr) {
+            if (tag.getAttribute(attr.toLowerCase()) != null) {
+                isExcluded = true;
+                break;
+            }
+        }
+        return isExcluded;
     }
 
     /**
@@ -452,6 +501,16 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     public void setDecorations(CmsDecorationBundle decorations) {
 
         m_decorations = decorations;
+    }
+
+    /**
+     * Sets the excludeattr.<p>
+     *
+     * @param excludeattr the excludeattr to set
+     */
+    public void setExcludeattr(List<String> excludeattr) {
+
+        m_excludeattr = excludeattr;
     }
 
     /**

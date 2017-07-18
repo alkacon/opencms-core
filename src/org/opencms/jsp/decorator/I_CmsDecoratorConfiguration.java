@@ -33,6 +33,8 @@ import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.Locale;
 
+import org.htmlparser.Tag;
+
 /**
  * Interface for a CmsDecoratorConfiguration.<p>
  *
@@ -79,9 +81,17 @@ public interface I_CmsDecoratorConfiguration {
      * Tests if a tag is contained in the exclude list of the decorator.<p>
      *
      * @param tag the tag to test
-     * @return true if the tag is in the exclode list, false othwerwise.
+     * @return true if the tag is in the exclude list, false otherwise.
      */
     boolean isExcluded(String tag);
+
+    /**
+     * Tests if a tag has an attribute thatis contained in the exclude list of the decorator.<p>
+     *
+     * @param tag the tag to test
+     * @return true if the tag is in the exclude list, false otherwise.
+     */
+    boolean isExcludedAttr(Tag tag);
 
     /**
      * Mark a decoration key as already used.<p>
