@@ -1034,6 +1034,20 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Returns the resource type name.<p>
+     *
+     * @return the resource type name
+     */
+    public String getTypeName() {
+
+        if (m_resource != null) {
+            return OpenCms.getResourceManager().getResourceType(m_resource).getTypeName();
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Returns a lazy initialized Map that provides values from the XML content in the current locale.<p>
      *
      * The provided Map key is assumed to be a String that represents the xpath to the value.<p>
