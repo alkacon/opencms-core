@@ -38,7 +38,10 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 
 import junit.extensions.TestSetup;
@@ -329,7 +332,32 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
             "EQUAL",
             CmsStringTemplateRenderer.renderTemplate(
                 cms,
-                "%if (content.fn.(content.value.Title.stringValue).isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
+                "%if (content.fn.(content.value.Title.toString).isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
+                article,
+                null));
+        assertEquals(
+            "EQUAL",
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%if (content.fn.(content.value.Title).isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
+                article,
+                null));
+        long rt = cms.getRequestContext().getRequestTime();
+        assertEquals(
+            String.valueOf(rt),
+            CmsStringTemplateRenderer.renderTemplate(cms, "%content.vfs.context.requestTime%", article, null));
+        assertEquals(
+            DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date(rt)),
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%content.fn.(content.vfs.context.requestTime).toDate; format=\"long\"%",
+                article,
+                null));
+        assertEquals(
+            (new SimpleDateFormat("dd.MM.yyyy")).format(new Date(rt)),
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%content.fn.(content.vfs.context.requestTime).toDate; format=\"dd.MM.yyyy\"%",
                 article,
                 null));
     }

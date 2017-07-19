@@ -64,13 +64,17 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
         @Override
         public Object transform(Object input) {
 
-            if ((getObjectValue() == null) && (input == null)) {
-                return Boolean.TRUE;
+            Object o = getObjectValue();
+            if ((o instanceof CmsJspContentAccessValueWrapper) && (input instanceof String)) {
+                CmsJspContentAccessValueWrapper v = (CmsJspContentAccessValueWrapper)o;
+                if (v.getContentValue().isSimpleType()) {
+                    return Boolean.valueOf(v.getToString().equals(input));
+                }
             }
-            if (((getObjectValue() == null) && (input != null)) || ((getObjectValue() != null) && (input == null))) {
-                return Boolean.FALSE;
+            if (o == null) {
+                return Boolean.valueOf(input == null);
             }
-            return Boolean.valueOf(getObjectValue().equals(input));
+            return Boolean.valueOf(o.equals(input));
         }
     }
 
@@ -261,20 +265,6 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
     }
 
     /**
-     * Returns the String value of the wrapped object value.<p>
-     *
-     * Note that this will return the empty String <code>""</code> when {@link #getExists()} returns <code>false</code><p>.
-     *
-     * @return the String value of the wrapped object value
-     *
-     * @see #toString()
-     */
-    public String getStringValue() {
-
-        return toString();
-    }
-
-    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -303,7 +293,6 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
 
     /**
      * @see java.lang.Object#toString()
-     * @see #getStringValue()
      */
     @Override
     public String toString() {
