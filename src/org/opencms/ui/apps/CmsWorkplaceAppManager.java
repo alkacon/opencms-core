@@ -64,8 +64,6 @@ import org.opencms.ui.apps.linkvalidation.CmsLinkValidationExternalConfiguration
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationFolder;
 import org.opencms.ui.apps.lists.CmsListManagerConfiguration;
 import org.opencms.ui.apps.logfile.CmsLogFileConfiguration;
-import org.opencms.ui.apps.logfile.CmsLogFileFolder;
-import org.opencms.ui.apps.logfile.CmsLogFileSettingConfiguration;
 import org.opencms.ui.apps.modules.CmsModuleAppConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectOverviewConfiguration;
@@ -651,7 +649,6 @@ public class CmsWorkplaceAppManager {
             Arrays.<I_CmsFolderAppCategory> asList(
                 new CmsLinkValidationFolder(),
                 new CmsFileHistoryFolder(),
-                new CmsLogFileFolder(),
                 new CmsDbManagerFolder(),
                 new CmsCacheFolder()));
         return result;
@@ -748,7 +745,6 @@ public class CmsWorkplaceAppManager {
                 new CmsDbPropertiesAppConfiguration(),
                 new CmsSearchindexAppConfiguration(),
                 new CmsLogFileConfiguration(),
-                new CmsLogFileSettingConfiguration(),
                 new CmsSourceSearchAppConfiguration(),
                 new CmsListManagerConfiguration(),
                 new CmsSiteManagerConfiguration(),

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+		<o-cms-basic-dialog>
+			<content>
+				<v-vertical-layout :center margin spacing>
+					<v-panel>	
+						<v-form-layout _id="m_layout" margin spacing style-name="o-formlayout-workplace-main">
+							<v-text-field _id="m_size" caption="%(key.GUI_LOGFILE_WINDOWSIZE_0)" width="100%" description="%(key.GUI_LOGFILE_WINDOWSIZE_HELP_0)" />
+							<v-combo-box _id="m_charset" immediate="true"  width="100%" caption="%(key.GUI_LOGFILE_CHARSET_0)" description="%(key.GUI_LOGFILE_CHARSET_HELP_0)"/>		
+					</v-panel>	
+				</v-vertical-layout>
+			</content>
+			<buttons>	
+				<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+</body>
+</html>

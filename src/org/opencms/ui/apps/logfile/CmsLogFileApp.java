@@ -47,12 +47,18 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Main class of Log managment app.<p>
@@ -64,11 +70,14 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
         0,
         OpenCms.getSystemInfo().getLogFileRfsPath().lastIndexOf("/") + 1);
 
-    /** The file table filter input. */
-    private TextField m_tableFilter;
+    /**Path to channel settings view.*/
+    static String PATH_LOGCHANNEL = "log-channel";
 
     /**The log file view layout.*/
     protected CmsLogFileView m_fileView;
+
+    /** The file table filter input. */
+    private TextField m_tableFilter;
 
     /**
      * Simple function to get the prefix of an logchannel name.<p>
@@ -201,6 +210,14 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0));
             return crumbs;
         }
+        if (state.equals(PATH_LOGCHANNEL)) {
+            crumbs.put(
+                CmsLogFileConfiguration.APP_ID,
+                CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_0));
+            return crumbs;
+        }
+
         return new LinkedHashMap<String, String>();
     }
 
@@ -219,7 +236,33 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             m_rootLayout.setMainHeightFull(false);
             m_fileView = new CmsLogFileView(this);
             addDownloadButton(m_fileView);
+            addSettingsButton();
+            addChannelButton();
             return m_fileView;
+        }
+
+        m_uiContext.clearToolbarButtons();
+
+        if (state.equals(PATH_LOGCHANNEL)) {
+            m_rootLayout.setMainHeightFull(true);
+            final CmsLogChannelTable channelTable = new CmsLogChannelTable();
+            m_tableFilter = new TextField();
+            m_tableFilter.setIcon(FontOpenCms.FILTER);
+            m_tableFilter.setInputPrompt(
+                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+            m_tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+            m_tableFilter.setWidth("200px");
+            m_tableFilter.addTextChangeListener(new TextChangeListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void textChange(TextChangeEvent event) {
+
+                    channelTable.filterTable(event.getText());
+                }
+            });
+            m_infoLayout.addComponent(m_tableFilter);
+            return channelTable;
         }
 
         return null;
@@ -235,6 +278,27 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     }
 
     /**
+     * Button to open channel settings path.<p>
+     */
+    private void addChannelButton() {
+
+        Button button = CmsToolBar.createButton(
+            FontOpenCms.LOG,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_0));
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                openSubView(PATH_LOGCHANNEL, true);
+            }
+        });
+        m_uiContext.addToolbarButton(button);
+
+    }
+
+    /**
      * Adds the download button.
      *
      * @param view layout which displays the log file
@@ -243,7 +307,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
 
         Button button = CmsToolBar.createButton(
             FontOpenCms.DOWNLOAD,
-            CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_TO_ALL_0));
+            CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_DOWNLOAD_0));
         button.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -253,6 +317,38 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
                 Window window = CmsBasicDialog.prepareWindow(CmsBasicDialog.DialogWidth.wide);
                 window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_DOWNLOAD_0));
                 window.setContent(new CmsLogDownloadDialog(window, view.getCurrentFile()));
+                A_CmsUI.get().addWindow(window);
+            }
+        });
+        m_uiContext.addToolbarButton(button);
+    }
+
+    /**
+     * Button to open log file view settings dialog.<p>
+     */
+    private void addSettingsButton() {
+
+        Button button = CmsToolBar.createButton(
+            FontOpenCms.SETTINGS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_SHORT_0));
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                Window window = CmsBasicDialog.prepareWindow(CmsBasicDialog.DialogWidth.wide);
+                window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGVIEW_SETTINGS_SHORT_0));
+                window.setContent(new CmsLogFileViewSettings(window));
+                window.addCloseListener(new CloseListener() {
+
+                    private static final long serialVersionUID = -7058276628732771106L;
+
+                    public void windowClose(CloseEvent e) {
+
+                        m_fileView.updateView();
+                    }
+                });
                 A_CmsUI.get().addWindow(window);
             }
         });

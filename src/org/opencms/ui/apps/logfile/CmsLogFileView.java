@@ -38,9 +38,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.SortedMap;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
@@ -51,10 +49,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.shared.ui.combobox.FilteringMode;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -62,11 +58,17 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsLogFileView extends VerticalLayout {
 
+    /**Session attribute to store charset setting.*/
+    protected static String ATTR_FILE_VIEW_CHARSET = "log-file-char";
+
+    /**Session attribute to store currently viewed log file.*/
+    protected static String ATTR_FILE_VIEW_PATH = "log-file";
+
+    /**Session attribute to store line number to display. */
+    protected static String ATTR_FILE_VIEW_SIZE = "log-file-size";
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = -6323034856756469160L;
-
-    /**Vaadin component. */
-    private ComboBox m_charset;
 
     /**Vaadin component. */
     protected FileDownloader m_fileDownloader;
@@ -79,9 +81,6 @@ public class CmsLogFileView extends VerticalLayout {
 
     /**RfsFileView holding data for log to show. */
     private CmsRfsFileViewer m_logView;
-
-    /**Vaadin component. */
-    private TextField m_size;
 
     /**
      * constructor.<p>
@@ -109,28 +108,6 @@ public class CmsLogFileView extends VerticalLayout {
             }
         }
 
-        SortedMap<String, Charset> csMap = Charset.availableCharsets();
-        // default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
-        // before java 1.5 there is no other way (System property "file.encoding" is implementation detail not in vmspec.
-        Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
-        Charset cs;
-        Iterator<Charset> it = csMap.values().iterator();
-        while (it.hasNext()) {
-            cs = it.next();
-            m_charset.addItem(cs);
-        }
-
-        m_charset.select(defaultCs);
-        m_charset.addValueChangeListener(new ValueChangeListener() {
-
-            private static final long serialVersionUID = 1899253995224124911L;
-
-            public void valueChange(ValueChangeEvent event) {
-
-                updateView();
-            }
-        });
-
         for (File file : new File(CmsLogFileApp.LOG_FOLDER).listFiles()) {
             if (!file.getAbsolutePath().endsWith(".zip")) {
                 m_logfile.addItem(file.getAbsolutePath());
@@ -141,8 +118,22 @@ public class CmsLogFileView extends VerticalLayout {
 
         m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
 
-        selectLogFile(allAppender, m_logView.getFilePath());
-        m_size.setValue(String.valueOf(m_logView.getWindowSize()));
+        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_SIZE) == null) {
+            CmsVaadinUtils.getRequest().getSession().setAttribute(
+                ATTR_FILE_VIEW_SIZE,
+                String.valueOf(m_logView.getWindowSize()));
+        }
+
+        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_CHARSET) == null) {
+            Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
+            CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_CHARSET, defaultCs);
+        }
+
+        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH) != null) {
+            m_logfile.select(CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH));
+        } else {
+            selectLogFile(allAppender, m_logView.getFilePath());
+        }
 
         m_logfile.setNullSelectionAllowed(false);
         m_logfile.setNewItemsAllowed(false);
@@ -153,33 +144,16 @@ public class CmsLogFileView extends VerticalLayout {
 
             public void valueChange(ValueChangeEvent event) {
 
+                CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_PATH, getCurrentFile());
                 updateView();
             }
         });
 
-        m_size.addValueChangeListener(new ValueChangeListener() {
+        updateView();
+        m_fileContent.setHeight("700px");
+        m_fileContent.addStyleName("v-scrollable");
+        m_fileContent.addStyleName("o-report");
 
-            private static final long serialVersionUID = 3396575545135969283L;
-
-            public void valueChange(ValueChangeEvent event) {
-
-                updateView();
-            }
-        });
-
-        try {
-            m_fileContent.setContentMode(ContentMode.HTML);
-            String content = "<pre>";
-            content += m_logView.readFilePortion();
-            content += "</pre>";
-            m_fileContent.setValue(content);
-            m_fileContent.setHeight("700px");
-            m_fileContent.addStyleName("v-scrollable");
-            m_fileContent.addStyleName("o-report");
-
-        } catch (CmsRfsException e) {
-            //
-        }
     }
 
     /**
@@ -199,8 +173,8 @@ public class CmsLogFileView extends VerticalLayout {
 
         try {
             m_logView.setFilePath((String)m_logfile.getValue());
-            m_logView.setWindowSize(Integer.valueOf(m_size.getValue()).intValue());
-            m_logView.setFileEncoding(((Charset)m_charset.getValue()).name());
+            m_logView.setWindowSize(getSize());
+            m_logView.setFileEncoding(getChar());
             String content = "<pre>";
             content += m_logView.readFilePortion();
             content += "</pre>";
@@ -209,6 +183,27 @@ public class CmsLogFileView extends VerticalLayout {
             //
         }
 
+    }
+
+    /**
+     * Gets  the char set.<p>
+     *
+     * @return the name of the charset
+     */
+    private String getChar() {
+
+        return ((Charset)CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_CHARSET)).name();
+    }
+
+    /**
+     * Gets the size to be displayed.<p>
+     *
+     * @return line number
+     */
+    private int getSize() {
+
+        return Integer.valueOf(
+            (String)CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_SIZE)).intValue();
     }
 
     /**
