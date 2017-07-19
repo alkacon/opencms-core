@@ -329,7 +329,7 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
             "EQUAL",
             CmsStringTemplateRenderer.renderTemplate(
                 cms,
-                "%if (content.fn.Title.isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
+                "%if (content.fn.(content.value.Title.stringValue).isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
                 article,
                 null));
     }
