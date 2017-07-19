@@ -233,7 +233,7 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
             renderer = cms.readResource(RENDER_STRING_TEMPLATE_JSP);
         }
         if (renderer != null) {
-            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
+            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
             loader.service(cms, renderer, req, res);
         }
     }
