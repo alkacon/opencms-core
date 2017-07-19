@@ -62,6 +62,15 @@ import org.stringtemplate.v4.compiler.FormalArgument;
  */
 public class CmsStringTemplateRenderer {
 
+    /** The error display HTML. */
+    public static final String ERROR_DISPLAY = "<div class='oc-fomatter-error'>\n"
+        + "<div class='oc-formatter-error-head'>%1$s</div>\n"
+        + "<div class='oc-formatter-error-body'>\n"
+        + "<div class='oc-formatter-error-source'>%2$s</div>\n"
+        + "<div class='oc-formatter-error-message'>%3$s</div>\n"
+        + "<div class='oc-formatter-error-details'><pre>%4$s</pre></div>\n"
+        + "</div>\n</div>";
+
     /** The current cms context. */
     private CmsObject m_cms;
 
@@ -185,16 +194,25 @@ public class CmsStringTemplateRenderer {
                 }
             }
             try {
-                m_context.getOut().print(
-                    renderTemplate(
-                        m_cms,
-                        template,
-                        m_element.getResource(),
-                        Collections.<String, Object> singletonMap("settings", m_element.getSettings())));
+                String output = renderTemplate(
+                    m_cms,
+                    template,
+                    m_element.getResource(),
+                    Collections.<String, Object> singletonMap("settings", m_element.getSettings()));
+                m_context.getOut().print(output);
             } catch (Throwable t) {
                 if (CmsJspTagEditable.isEditableRequest(m_request)) {
-
-                    m_context.getOut().println("<h2 style=\"color:red\">ERROR: " + t.getLocalizedMessage() + "</h2>");
+                    String stackTrace = "";
+                    for (StackTraceElement element : t.getStackTrace()) {
+                        stackTrace += element.toString() + "\n";
+                    }
+                    m_context.getOut().println(
+                        String.format(
+                            ERROR_DISPLAY,
+                            "Error",
+                            formatterConfig.getJspRootPath(),
+                            t.getMessage(),
+                            stackTrace));
                 }
             }
         }
