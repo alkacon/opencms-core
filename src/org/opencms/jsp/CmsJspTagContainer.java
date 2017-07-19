@@ -833,9 +833,15 @@ public class CmsJspTagContainer extends BodyTagSupport {
     public String getName() {
 
         if (isNested()) {
-            return (CmsStringUtil.isEmptyOrWhitespaceOnly(m_namePrefix)
-            ? m_parentElement.getInstanceId()
-            : m_namePrefix) + "-" + m_name;
+            String prefix;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_namePrefix)) {
+                prefix = m_parentElement.getInstanceId() + "-";
+            } else if ("none".equals(m_namePrefix)) {
+                prefix = "";
+            } else {
+                prefix = m_namePrefix + "-";
+            }
+            return prefix + m_name;
         }
         return m_name;
     }
