@@ -276,6 +276,20 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Provides a Map which provides access to function wrapped objects.<p>
+     */
+    public class CmsObjectFunctionTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            return CmsJspObjectAccessWrapper.createWrapper(getCmsObject(), input);
+        }
+    }
+
+    /**
      * Provides a Map which lets the user access the RDFA tag for a value in an XML content,
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
@@ -459,6 +473,9 @@ public class CmsJspContentAccessBean {
     /** Resource the XML content is created from. */
     private CmsResource m_resource;
 
+    /** Lazy initialized object function wrapper map. */
+    private Map<Object, CmsJspObjectAccessWrapper> m_fn;
+
     /**
      * No argument constructor, required for a JavaBean.<p>
      *
@@ -584,6 +601,19 @@ public class CmsJspContentAccessBean {
     public String getFilename() {
 
         return m_cms.getSitePath(getRawContent().getFile());
+    }
+
+    /**
+     * Returns a lazy initialized Map that provides object function wrappers.<p>
+     *
+     * @return a lazy initialized Map that provides object function wrappers
+     */
+    public Map<Object, CmsJspObjectAccessWrapper> getFn() {
+
+        if (m_fn == null) {
+            m_fn = CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer());
+        }
+        return m_fn;
     }
 
     /**

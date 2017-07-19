@@ -79,6 +79,7 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsStringTemplateResolver("testRenderContentValue"));
         suite.addTest(new TestCmsStringTemplateResolver("testContentAccessNestedSchema"));
+        suite.addTest(new TestCmsStringTemplateResolver("testRenderObjectFuntions"));
         suite.addTest(new TestCmsStringTemplateResolver("testRenderDate"));
         suite.addTest(new TestCmsStringTemplateResolver("testRenderLink"));
         suite.addTest(new TestCmsStringTemplateResolver("testRenderSettings"));
@@ -309,6 +310,28 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
         assertEquals(
             "/data/opencms/xmlcontent/article_0004.html",
             CmsStringTemplateRenderer.renderTemplate(cms, "%content.fileLink%", article, null));
+    }
+
+    /**
+     * Tests the object function wrapper.<p>
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testRenderObjectFuntions() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsResource article = cms.readResource("/xmlcontent/article_0004.html");
+        assertEquals(
+            "This is article number 4",
+            CmsStringTemplateRenderer.renderTemplate(cms, "%content.value.Title%", article, null));
+
+        assertEquals(
+            "EQUAL",
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%if (content.fn.Title.isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
+                article,
+                null));
     }
 
     /**
