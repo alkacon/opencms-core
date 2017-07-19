@@ -61,6 +61,7 @@ public final class AllTests {
         suite.addTest(TestCmsJspVfsAccessBean.suite());
         suite.addTest(TestCmsJspNavigationBean.suite());
         suite.addTest(TestCmsJspResourceAccessBean.suite());
+        suite.addTest(TestCmsStringTemplateResolver.suite());
         //$JUnit-END$
         return suite;
     }

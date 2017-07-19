@@ -46,6 +46,9 @@
         	<layout element="Macro" widget="TextareaWidgetPlaintext" configuration="20" />
         	<layout element="PlaceholderMacro" widget="TextareaWidgetPlaintext" configuration="20" />
         </layouts>
+        <validationrules>
+				<rule element="Type" regex=".+" type="error" message="%(key.err.resourcetype.notempty)" />
+		</validationrules>
         <tabs>
 			<tab element="NiceName" name="TabBasic" collapse="false" />
 			<tab element="Macro" name="TabMacro" collapse="false" />

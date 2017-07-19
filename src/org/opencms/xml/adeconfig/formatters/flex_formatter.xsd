@@ -44,6 +44,9 @@
         	<layout element="StringTemplate" widget="TextareaWidgetPlaintext" configuration="20" />
         	<layout element="PlaceholderStringTemplate" widget="TextareaWidgetPlaintext" configuration="20" />
         </layouts>
+        <validationrules>
+				<rule element="Type" regex=".+" type="error" message="%(key.err.resourcetype.notempty)" />
+		</validationrules>
         <tabs>
 			<tab element="NiceName" name="TabBasic" collapse="false" />
 			<tab element="StringTemplate" name="TabTemplate" collapse="false" />
