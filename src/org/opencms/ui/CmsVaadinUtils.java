@@ -437,6 +437,13 @@ public final class CmsVaadinUtils {
         return getWpMessagesForCurrentLocale().key(key, args);
     }
 
+    /**
+     * Gives item id from path.<p>
+     *
+     * @param cnt to be used
+     * @param path to obtain item id from
+     * @return item id
+     */
     public static String getPathItemId(Container cnt, String path) {
 
         for (String id : Arrays.asList(path, CmsFileUtil.toggleTrailingSeparator(path))) {
@@ -573,6 +580,13 @@ public final class CmsVaadinUtils {
         return OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
     }
 
+    /**
+     * Checks if path is itemid in container.<p>
+     *
+     * @param cnt to be checked
+     * @param path as itemid
+     * @return true id path is itemid in container
+     */
     public static boolean hasPathAsItemId(Container cnt, String path) {
 
         return cnt.containsId(path) || cnt.containsId(CmsFileUtil.toggleTrailingSeparator(path));
@@ -605,6 +619,16 @@ public final class CmsVaadinUtils {
     public static String messageCancel() {
 
         return getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0);
+    }
+
+    /**
+     * Message accessior function.<p>
+     *
+     * @return the message for Cancel buttons
+     */
+    public static String messageClose() {
+
+        return getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0);
     }
 
     /**
@@ -697,6 +721,12 @@ public final class CmsVaadinUtils {
         return layoutStream;
     }
 
+    /**
+     * Replaces component with new component.<p>
+     *
+     * @param component to be replaced
+     * @param replacement new component
+     */
     public static void replaceComponent(Component component, Component replacement) {
 
         if (!component.isAttached()) {
