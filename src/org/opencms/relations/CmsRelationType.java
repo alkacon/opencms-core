@@ -110,6 +110,9 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the type of relations between resources which are locale variants. */
     public static final CmsRelationType LOCALE_VARIANT = new CmsRelationType(11, "LOCALE_VARIANT", true, false);
 
+    /** Constant for the type of relations between a detail content and its detail-only container pages. */
+    public static final CmsRelationType DETAIL_ONLY = new CmsRelationType(12, "DETAIL_ONLY", true, false);
+
     /** Constant for the weak links from xmlcontent to the used xsd. */
     public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", true, true);
 
@@ -131,7 +134,8 @@ public final class CmsRelationType implements Serializable {
         OU_RESOURCE,
         CATEGORY,
         XSD,
-        LOCALE_VARIANT};
+        LOCALE_VARIANT,
+        DETAIL_ONLY};
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;
@@ -416,10 +420,11 @@ public final class CmsRelationType implements Serializable {
         CmsRelationType result = valueOfInternal(name);
         if (result == null) {
             // no type found
-            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
-                name,
-                CmsRelationType.class.getName()));
+            throw new CmsIllegalArgumentException(
+                org.opencms.db.Messages.get().container(
+                    org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
+                    name,
+                    CmsRelationType.class.getName()));
         }
         return result;
     }

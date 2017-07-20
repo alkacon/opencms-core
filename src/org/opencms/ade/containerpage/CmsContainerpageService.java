@@ -89,7 +89,10 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockActionRecord;
+import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockType;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -1362,9 +1365,31 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
                     cms.writePropertyObjects(containerpage, Arrays.asList(titleProp));
                 }
+
+                List<CmsRelation> relations = cms.readRelations(
+                    CmsRelationFilter.relationsFromStructureId(detailId).filterType(CmsRelationType.DETAIL_ONLY));
+                boolean hasRelation = false;
+                for (CmsRelation relation : relations) {
+                    if (relation.getTargetId().equals(containerpage.getStructureId())) {
+                        hasRelation = true;
+                        break;
+                    }
+                }
+                if (!hasRelation) {
+                    CmsLockActionRecord lockRecord = null;
+                    try {
+                        lockRecord = CmsLockUtil.ensureLock(cms, detailResource);
+                        cms.addRelationToResource(detailResource, containerpage, CmsRelationType.DETAIL_ONLY.getName());
+                    } finally {
+                        if ((lockRecord != null) && (lockRecord.getChange() == LockChange.locked)) {
+                            cms.unlockResource(detailResource);
+                        }
+                    }
+                }
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+
             saveContainers(rootCms, containerpage, detailContainerResource, containers);
         } catch (Throwable e) {
             error(e);
