@@ -45,6 +45,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -160,6 +161,26 @@ public class CmsStringTemplateRenderer {
     }
 
     /**
+     * Wraps the element settings with access wrappers.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param settings the settings to wrap
+     *
+     * @return the element settings wrapped in access wrappers
+     */
+    public static Map<String, CmsJspObjectAccessWrapper> wrapSettings(CmsObject cms, Map<String, String> settings) {
+
+        Map<String, CmsJspObjectAccessWrapper> wrappedSettings = null;
+        if (settings != null) {
+            wrappedSettings = new HashMap<String, CmsJspObjectAccessWrapper>(settings.size());
+            for (Entry<String, String> setting : settings.entrySet()) {
+                wrappedSettings.put(setting.getKey(), CmsJspObjectAccessWrapper.createWrapper(cms, setting.getValue()));
+            }
+        }
+        return wrappedSettings;
+    }
+
+    /**
      * Renders the requested element content with the flex formatter string template.<p>
      *
      * @throws IOException in case writing to to page context out fails
@@ -198,7 +219,9 @@ public class CmsStringTemplateRenderer {
                     m_cms,
                     template,
                     m_element.getResource(),
-                    Collections.<String, Object> singletonMap("settings", m_element.getSettings()));
+                    Collections.<String, Object> singletonMap(
+                        "settings",
+                        wrapSettings(m_cms, m_element.getSettings())));
                 m_context.getOut().print(output);
             } catch (Throwable t) {
                 if (CmsJspTagEditable.isEditableRequest(m_request)) {

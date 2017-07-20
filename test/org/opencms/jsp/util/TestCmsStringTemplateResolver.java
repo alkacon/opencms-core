@@ -42,7 +42,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -371,15 +373,42 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         CmsResource article = cms.readResource("/xmlcontent/article_0004.html");
+
+        Map<String, String> settings = new HashMap<String, String>(4);
+        Date settingDate = new Date();
+        settings.put("settingKey", "settingValue");
+        settings.put("dateKey", DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(settingDate));
+        Map<String, CmsJspObjectAccessWrapper> wrappedSettings = CmsStringTemplateRenderer.wrapSettings(cms, settings);
+        Map<String, Object> objects = Collections.<String, Object> singletonMap("settings", wrappedSettings);
+
         assertEquals(
             "settingValue",
+            CmsStringTemplateRenderer.renderTemplate(cms, "%settings.settingKey%", article, objects));
+
+        assertEquals(
+            "TRUE",
             CmsStringTemplateRenderer.renderTemplate(
                 cms,
-                "%settings.settingKey%",
+                "%if (settings.settingKey.isSet)%TRUE%else%FALSE%endif%",
                 article,
-                Collections.<String, Object> singletonMap(
-                    "settings",
-                    Collections.singletonMap("settingKey", "settingValue"))));
+                objects));
+
+        assertEquals(
+            "FALSE",
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%if (settings.settingKey.isEmpty)%TRUE%else%FALSE%endif%",
+                article,
+                objects));
+
+        assertEquals(
+            (new SimpleDateFormat("dd.MM.yyyy")).format(settingDate),
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%settings.dateKey.toDate; format=\"dd.MM.yyyy\"%",
+                article,
+                objects));
+
     }
 
     /**
