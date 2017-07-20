@@ -36,6 +36,7 @@ import org.opencms.jsp.Messages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsFlexFormatterBean;
@@ -43,7 +44,6 @@ import org.opencms.xml.containerpage.CmsMacroFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +71,12 @@ public class CmsStringTemplateRenderer {
         + "<div class='oc-formatter-error-message'>%3$s</div>\n"
         + "<div class='oc-formatter-error-details'><pre>%4$s</pre></div>\n"
         + "</div>\n</div>";
+
+    /** Key to access object function wrapper. */
+    public static final String KEY_FUNCTIONS = "fn";
+
+    /** Key to access element settings. */
+    public static final String KEY_SETTINGS = "settings";
 
     /** The current cms context. */
     private CmsObject m_cms;
@@ -215,13 +221,12 @@ public class CmsStringTemplateRenderer {
                 }
             }
             try {
-                String output = renderTemplate(
-                    m_cms,
-                    template,
-                    m_element.getResource(),
-                    Collections.<String, Object> singletonMap(
-                        "settings",
-                        wrapSettings(m_cms, m_element.getSettings())));
+                Map<String, Object> context = new HashMap<String, Object>();
+                context.put(KEY_SETTINGS, wrapSettings(m_cms, m_element.getSettings()));
+                context.put(
+                    KEY_FUNCTIONS,
+                    CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(m_cms)));
+                String output = renderTemplate(m_cms, template, m_element.getResource(), context);
                 m_context.getOut().print(output);
             } catch (Throwable t) {
                 if (CmsJspTagEditable.isEditableRequest(m_request)) {

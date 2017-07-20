@@ -27,12 +27,46 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.file.CmsObject;
+import org.opencms.jsp.CmsJspTagScaleImage;
+import org.opencms.loader.CmsImageScaler;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
+
 import java.util.Date;
 
 /**
  * Common value wrapper class for XML content values and element setting values.<p>
  */
 abstract class A_CmsJspValueWrapper {
+
+    /**
+     * Returns the substituted link to the given target.<p>
+     *
+     * @param cms the cms context
+     * @param target the link target
+     *
+     * @return the substituted link
+     */
+    protected static String substituteLink(CmsObject cms, String target) {
+
+        if (cms != null) {
+            return OpenCms.getLinkManager().substituteLink(
+                cms,
+                CmsLinkManager.getAbsoluteUri(String.valueOf(target), cms.getRequestContext().getUri()));
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Returns the current cms context.<p>
+     *
+     * @return the cms context
+     */
+    public abstract CmsObject getCmsObject();
 
     /**
      * Returns if the value has been configured.<p>
@@ -62,6 +96,16 @@ abstract class A_CmsJspValueWrapper {
      * @return <code>true</code> in case the value exists and is not empty
      */
     public abstract boolean getIsSet();
+
+    /**
+     * Strips all HTML markup from the current string value.<p>
+     *
+     * @return the given input with all HTML stripped.
+     */
+    public String getStripHtml() {
+
+        return CmsJspElFunctions.stripHtml(this);
+    }
 
     /**
      * Parses the value to boolean.<p>
@@ -94,6 +138,21 @@ abstract class A_CmsJspValueWrapper {
     }
 
     /**
+     * Returns the scaled image bean to the current string value.<p>
+     *
+     * @return the scaled image bean
+     */
+    public CmsJspScaledImageBean getToImage() {
+
+        try {
+            return CmsJspTagScaleImage.imageTagAction(getCmsObject(), getToLink(), new CmsImageScaler(), null);
+        } catch (CmsException e) {
+            // TODO: logging
+            return null;
+        }
+    }
+
+    /**
      * Parses the value to a Long.<p>
      *
      * @return the Long value
@@ -101,6 +160,20 @@ abstract class A_CmsJspValueWrapper {
     public Long getToInteger() {
 
         return new Long(Long.parseLong(getToString()));
+    }
+
+    /**
+     * Returns the substituted link to the current string value.<p>
+     *
+     * @return the substituted link
+     */
+    public String getToLink() {
+
+        String target = toString();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(target)) {
+            return substituteLink(getCmsObject(), getToString());
+        }
+        return "";
     }
 
     /**

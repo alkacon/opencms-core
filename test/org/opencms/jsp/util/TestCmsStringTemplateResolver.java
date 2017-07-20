@@ -32,6 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -334,34 +335,83 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
             "EQUAL",
             CmsStringTemplateRenderer.renderTemplate(
                 cms,
-                "%if (content.fn.(content.value.Title.toString).isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
+                "%if (fn.(content.value.Title.toString).isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
                 article,
-                null));
+                Collections.<String, Object> singletonMap(
+                    CmsStringTemplateRenderer.KEY_FUNCTIONS,
+                    CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(cms)))));
         assertEquals(
             "EQUAL",
             CmsStringTemplateRenderer.renderTemplate(
                 cms,
-                "%if (content.fn.(content.value.Title).isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
+                "%if (fn.(content.value.Title).isEqual.(\"This is article number 4\"))%EQUAL%else%NOT equal%endif%",
                 article,
-                null));
+                Collections.<String, Object> singletonMap(
+                    CmsStringTemplateRenderer.KEY_FUNCTIONS,
+                    CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(cms)))));
         long rt = cms.getRequestContext().getRequestTime();
         assertEquals(
             String.valueOf(rt),
-            CmsStringTemplateRenderer.renderTemplate(cms, "%content.vfs.context.requestTime%", article, null));
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%content.vfs.context.requestTime%",
+                article,
+                Collections.<String, Object> singletonMap(
+                    CmsStringTemplateRenderer.KEY_FUNCTIONS,
+                    CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(cms)))));
         assertEquals(
             DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date(rt)),
             CmsStringTemplateRenderer.renderTemplate(
                 cms,
-                "%content.fn.(content.vfs.context.requestTime).toDate; format=\"long\"%",
+                "%fn.(content.vfs.context.requestTime).toDate; format=\"long\"%",
                 article,
-                null));
+                Collections.<String, Object> singletonMap(
+                    CmsStringTemplateRenderer.KEY_FUNCTIONS,
+                    CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(cms)))));
         assertEquals(
             (new SimpleDateFormat("dd.MM.yyyy")).format(new Date(rt)),
             CmsStringTemplateRenderer.renderTemplate(
                 cms,
-                "%content.fn.(content.vfs.context.requestTime).toDate; format=\"dd.MM.yyyy\"%",
+                "%fn.(content.vfs.context.requestTime).toDate; format=\"dd.MM.yyyy\"%",
                 article,
-                null));
+                Collections.<String, Object> singletonMap(
+                    CmsStringTemplateRenderer.KEY_FUNCTIONS,
+                    CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(cms)))));
+
+        assertEquals(
+            "This is the article 4 text\n"
+                + "\n"
+                + "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum\n"
+                + "dolore eu feugiat nulla facilisis at vero et accumsan et iusto odio dignissim qui blandit praesent\n"
+                + "luptatum zzril delenit augue duis dolore te feugait nulla facilisi .\n"
+                + "\n"
+                + "   * Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod\n"
+                + "     tincidunt ut laoreet dolore magna aliquam erat volutpat.\n"
+                + "   * Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod\n"
+                + "     tincidunt ut laoreet dolore magna aliquam erat volutpat.\n"
+                + "   * Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod\n"
+                + "     tincidunt ut laoreet dolore magna aliquam erat volutpat.\n"
+                + "\n"
+                + "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat , vel illum\n"
+                + "dolore eu feugiat nulla facilisis at vero et accumsan et iusto odio dignissim qui blandit praesent\n"
+                + "luptatum zzril delenit augue duis dolore te feugait nulla facilisi.",
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%trim(fn.(content.value.Text).stripHtml)%",
+                article,
+                Collections.<String, Object> singletonMap(
+                    CmsStringTemplateRenderer.KEY_FUNCTIONS,
+                    CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(cms)))));
+
+        String trimmed = CmsStringTemplateRenderer.renderTemplate(
+            cms,
+            "%fn.(content.value.Teaser).trimToSize.(\"30\")%",
+            article,
+            Collections.<String, Object> singletonMap(
+                CmsStringTemplateRenderer.KEY_FUNCTIONS,
+                CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(cms))));
+
+        assertTrue(trimmed.length() < 30);
     }
 
     /**

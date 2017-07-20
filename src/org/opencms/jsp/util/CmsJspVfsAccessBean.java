@@ -42,7 +42,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.Collections;
@@ -291,9 +290,7 @@ public final class CmsJspVfsAccessBean {
          */
         public Object transform(Object input) {
 
-            return OpenCms.getLinkManager().substituteLink(
-                getCmsObject(),
-                CmsLinkManager.getAbsoluteUri(String.valueOf(input), getCmsObject().getRequestContext().getUri()));
+            return A_CmsJspValueWrapper.substituteLink(getCmsObject(), String.valueOf(input));
         }
     }
 

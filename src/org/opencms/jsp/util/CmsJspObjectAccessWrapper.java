@@ -78,20 +78,44 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
         }
     }
 
+    /**
+     * Provides trimmed to size string values.<p>
+     */
+    public class CmsTrimToSizeTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        @Override
+        public Object transform(Object input) {
+
+            try {
+                int lenght = Integer.parseInt(String.valueOf(input));
+                return CmsJspElFunctions.trimToSize(getToString(), lenght);
+
+            } catch (Exception e) {
+                return getToString();
+            }
+        }
+    }
+
     /** Constant for the null (non existing) value. */
     protected static final CmsJspObjectAccessWrapper NULL_VALUE_WRAPPER = new CmsJspObjectAccessWrapper();
 
     /** The wrapped OpenCms user context. */
     private CmsObject m_cms;
 
-    /** The wrapped XML content value. */
-    private Object m_object;
-
     /** Calculated hash code. */
     private int m_hashCode;
 
     /** The lazy initialized Map that checks if a Object is equal. */
     private Map<Object, Boolean> m_isEqual;
+
+    /** The wrapped XML content value. */
+    private Object m_object;
+
+    /** The lazy initialized trim to size map. */
+    private Map<Object, String> m_trimToSize;
 
     /**
      * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
@@ -163,6 +187,15 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
             return hashCode() == ((CmsJspObjectAccessWrapper)obj).hashCode();
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getCmsObject()
+     */
+    @Override
+    public CmsObject getCmsObject() {
+
+        return m_cms;
     }
 
     /**
@@ -262,6 +295,20 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
     public Object getObjectValue() {
 
         return m_object;
+    }
+
+    /**
+     * Returns a lazy initialized map that provides trimmed to size strings of the wrapped object string value.
+     * The size being the integer value of the key object.<p>
+     *
+     * @return a map that provides trimmed to size strings of the wrapped object string value
+     */
+    public Map<Object, String> getTrimToSize() {
+
+        if (m_trimToSize == null) {
+            m_trimToSize = CmsCollectionsGenericWrapper.createLazyMap(new CmsTrimToSizeTransformer());
+        }
+        return m_trimToSize;
     }
 
     /**

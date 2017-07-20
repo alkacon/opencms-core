@@ -468,6 +468,15 @@ public final class CmsJspStandardContextBean {
         }
 
         /**
+         * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getCmsObject()
+         */
+        @Override
+        public CmsObject getCmsObject() {
+
+            return m_cms;
+        }
+
+        /**
          * Returns if the setting has been configured.<p>
          *
          * @return <code>true</code> if the setting has been configured
@@ -1452,7 +1461,7 @@ public final class CmsJspStandardContextBean {
      * Transforms root paths to site paths.
      *
      * @return lazy map from root paths to site paths.
-     * 
+     *
      * @see CmsRequestContext#removeSiteRoot(String)
      */
     public Map<String, String> getSitePath() {
