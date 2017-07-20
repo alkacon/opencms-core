@@ -319,6 +319,9 @@ public class CmsSitesTable extends Table {
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
+    /**Counter for valid sites.*/
+    private int m_siteCounter = 0;
+
     /**
      * Constructor.<p>
      *
@@ -419,15 +422,26 @@ public class CmsSitesTable extends Table {
     }
 
     /**
+     * Returns number of correctly configured sites.<p>
+     *
+     * @return number of sites
+     */
+    public int getSitesCount() {
+
+        return m_siteCounter;
+    }
+
+    /**
      *  Reads sites from Site Manager and adds them to tabel.<p>
      */
     public void loadSites() {
 
         m_container.removeAllItems();
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(m_manager.getRootCmsObject(), true);
-
+        m_siteCounter = 0;
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
+                m_siteCounter++;
                 Item item = m_container.addItem(site.getSiteRoot());
                 item.getItemProperty(PROP_ICON).setValue(
                     new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML));

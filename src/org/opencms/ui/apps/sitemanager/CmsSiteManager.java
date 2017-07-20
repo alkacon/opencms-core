@@ -40,11 +40,13 @@ import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -279,7 +281,6 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
-        addToolbarButtons();
         m_sitesTable = createSitesTable();
 
         m_rootLayout.setMainHeightFull(true);
@@ -299,7 +300,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             }
         });
         m_infoLayout.addComponent(m_siteTableFilter);
-
+        addToolbarButtons();
         return m_sitesTable;
     }
 
@@ -375,5 +376,23 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             });
             m_uiContext.addToolbarButton(webServer);
         }
+
+        Map<String, String> infos = new LinkedHashMap<String, String>();
+        infos.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_NUM_WEBSITES_0),
+            String.valueOf(OpenCms.getSiteManager().getSites().size()));
+        int corruptedSites = OpenCms.getSiteManager().getSites().size() - m_sitesTable.getSitesCount();
+        if (corruptedSites > 0) {
+            infos.put(
+                CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_NUM_CORRUPTED_WEBSITES_0),
+                String.valueOf(corruptedSites));
+        }
+        infos.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_NUM_WORKPLACESERVER_0),
+            String.valueOf(OpenCms.getSiteManager().getWorkplaceServers().size()));
+        CmsInfoButton infoButton = new CmsInfoButton(infos);
+        infoButton.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_CAPTION_0));
+        infoButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_CAPTION_0));
+        m_uiContext.addToolbarButton(infoButton);
     }
 }

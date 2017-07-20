@@ -2018,6 +2018,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_SITETEMPLATE_READ_0 = "GUI_SITE_SITETEMPLATE_READ_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_STATISTICS_CAPTION_0 = "GUI_SITE_STATISTICS_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_STATISTICS_NUM_CORRUPTED_WEBSITES_0 = "GUI_SITE_STATISTICS_NUM_CORRUPTED_WEBSITES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_STATISTICS_NUM_WEBSITES_0 = "GUI_SITE_STATISTICS_NUM_WEBSITES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_STATISTICS_NUM_WORKPLACESERVER_0 = "GUI_SITE_STATISTICS_NUM_WORKPLACESERVER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_TAB_ADVANCED_0 = "GUI_SITE_TAB_ADVANCED_0";
 
     /** Message constant for key in the resource bundle. */
