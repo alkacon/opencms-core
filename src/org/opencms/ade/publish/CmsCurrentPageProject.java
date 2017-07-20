@@ -27,6 +27,7 @@
 
 package org.opencms.ade.publish;
 
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.file.CmsObject;
@@ -37,7 +38,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
-import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -130,7 +130,7 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 Set<CmsResource> result = Sets.newHashSet();
 
                 if (res.getStructureId().toString().equals(detailId)) {
-                    result.addAll(CmsJspTagContainer.getDetailOnlyResources(cms, res));
+                    result.addAll(CmsDetailOnlyContainerUtil.getDetailOnlyResources(cms, res));
                 }
                 if (res.getStructureId().toString().equals(pageId)) {
 

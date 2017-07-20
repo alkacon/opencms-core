@@ -27,6 +27,7 @@
 
 package org.opencms.search;
 
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
@@ -38,7 +39,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -2396,7 +2396,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
                             if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
                                 containerPages.add(res);
-                                if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
+                                if (CmsDetailOnlyContainerUtil.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
                                     addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
                                 }
                             } else if (OpenCms.getResourceManager().getResourceType(
@@ -2425,7 +2425,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
                         if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
                             containerPages.add(res);
-                            if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
+                            if (CmsDetailOnlyContainerUtil.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
                                 addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
                             }
                         }
@@ -3054,11 +3054,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     private void addDetailContent(CmsObject adminCms, Set<CmsResource> containerPages, String containerPage) {
 
-        if (CmsJspTagContainer.isDetailContainersPage(adminCms, containerPage)) {
+        if (CmsDetailOnlyContainerUtil.isDetailContainersPage(adminCms, containerPage)) {
 
             try {
                 CmsResource detailRes = adminCms.readResource(
-                    CmsJspTagContainer.getDetailContentPath(containerPage),
+                    CmsDetailOnlyContainerUtil.getDetailContentPath(containerPage),
                     CmsResourceFilter.IGNORE_EXPIRATION);
                 containerPages.add(detailRes);
             } catch (Throwable e) {

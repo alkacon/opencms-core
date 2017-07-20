@@ -27,6 +27,7 @@
 
 package org.opencms.gwt;
 
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.containerpage.CmsRelationTargetListBean;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -47,7 +48,6 @@ import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
 import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -338,10 +338,12 @@ public class CmsDefaultResourceStatusProvider {
             if ((detailContentId != null) && (realLocale != null)) {
                 // try to add detail only contents
                 try {
-                    Optional<CmsResource> detailOnlyPage = CmsJspTagContainer.getDetailOnlyPage(
+                    CmsResource detailContent = cms.readResource(detailContentId, CmsResourceFilter.ALL);
+                    Optional<CmsResource> detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyResource(
                         cms,
-                        cms.readResource(detailContentId, CmsResourceFilter.ALL),
-                        CmsJspTagContainer.getDetailContainerLocale(cms, realLocale.toString(), resource));
+                        realLocale.toString(),
+                        detailContent,
+                        resource);
                     if (detailOnlyPage.isPresent()) {
                         result.getRelationTargets().addAll(
                             getTargets(

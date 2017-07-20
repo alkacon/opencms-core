@@ -28,6 +28,7 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -565,7 +566,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>(containerPage.getContainers().values());
             // add detail only containers if available
             if (standardContext.isDetailRequest()) {
-                CmsContainerPageBean detailOnly = CmsJspTagContainer.getDetailOnlyPage(cms, req);
+                CmsContainerPageBean detailOnly = CmsDetailOnlyContainerUtil.getDetailOnlyPage(cms, req);
                 if (detailOnly != null) {
                     containers.addAll(detailOnly.getContainers().values());
                 }

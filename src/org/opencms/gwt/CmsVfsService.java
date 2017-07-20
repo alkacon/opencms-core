@@ -27,6 +27,7 @@
 
 package org.opencms.gwt;
 
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.galleries.CmsPreviewService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -77,7 +78,6 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspNavBuilder;
-import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -1365,7 +1365,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             cms.lockResource(path);
             cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
             // check if any detail container page resources exist to this resource
-            List<CmsResource> detailContainers = CmsJspTagContainer.getDetailOnlyResources(cms, resource);
+            List<CmsResource> detailContainers = CmsDetailOnlyContainerUtil.getDetailOnlyResources(cms, resource);
             for (CmsResource detailContainer : detailContainers) {
                 deleteResource(detailContainer);
             }

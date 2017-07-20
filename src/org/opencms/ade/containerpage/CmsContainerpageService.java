@@ -86,7 +86,6 @@ import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.lock.CmsLock;
@@ -500,10 +499,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsObject cms = getCmsObject();
                     CmsResource detailContentRes = cms.readResource(detailContentId, CmsResourceFilter.ALL);
                     OpenCms.getLocaleManager();
-                    Optional<CmsResource> detailOnlyRes = CmsJspTagContainer.getDetailOnlyPage(
+                    CmsResource page = cms.readResource(structureId);
+                    Optional<CmsResource> detailOnlyRes = CmsDetailOnlyContainerUtil.getDetailOnlyResource(
                         cms,
+                        contentLocale,
                         detailContentRes,
-                        CmsJspTagContainer.getDetailContainerLocale(cms, contentLocale, cms.readResource(structureId)));
+                        page);
                     if (detailOnlyRes.isPresent()) {
                         detailOnlyChanged = CmsDefaultResourceStatusProvider.getContainerpageRelationTargets(
                             getCmsObject(),
@@ -1145,12 +1146,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     cms.getSitePath(detailResource));
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
-                detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(
-                    detailResource.getRootPath(),
-                    CmsJspTagContainer.getDetailContainerLocale(
-                        cms,
-                        cms.getRequestContext().getLocale().toString(),
-                        containerPage));
+                String detailResourcePath = detailResource.getRootPath();
+                String locale = cms.getRequestContext().getLocale().toString();
+                detailContainerPage = CmsDetailOnlyContainerUtil.getDetailOnlyPageName(
+                    cms,
+                    containerPage,
+                    detailResourcePath,
+                    locale);
                 if (rootCms.existsResource(detailContainerPage, CmsResourceFilter.IGNORE_EXPIRATION)) {
                     noEditReason = getNoEditReason(
                         rootCms,
@@ -1443,10 +1445,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
                 CmsResource detailResource = rootCms.readResource(detailContentId, CmsResourceFilter.IGNORE_EXPIRATION);
+                String detailRootPath = detailResource.getRootPath();
                 CmsResource detailContainerPage = rootCms.readResource(
-                    CmsJspTagContainer.getDetailOnlyPageName(
-                        detailResource.getRootPath(),
-                        CmsJspTagContainer.getDetailContainerLocale(cms, locale, pageResource)));
+                    CmsDetailOnlyContainerUtil.getDetailOnlyPageName(cms, pageResource, detailRootPath, locale));
 
                 ensureLock(detailContainerPage);
                 saveContainers(rootCms, detailContainerPage, detailContainerPage.getRootPath(), detailContainers);

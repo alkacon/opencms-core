@@ -31,6 +31,7 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -38,7 +39,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -443,14 +443,14 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         try {
             I_CmsExtractionResult result = null;
             List<I_CmsExtractionResult> ex = new ArrayList<I_CmsExtractionResult>();
-            for (CmsResource detailContainers : CmsJspTagContainer.getDetailOnlyResources(cms, resource)) {
+            for (CmsResource detailContainers : CmsDetailOnlyContainerUtil.getDetailOnlyResources(cms, resource)) {
                 CmsSolrDocumentContainerPage containerpageExtractor = new CmsSolrDocumentContainerPage("");
                 String localeTemp = detailContainers.getRootPath();
                 localeTemp = CmsResource.getParentFolder(localeTemp);
                 localeTemp = CmsResource.getName(localeTemp);
                 localeTemp = localeTemp.substring(0, localeTemp.length() - 1);
                 Locale locale = CmsLocaleManager.getLocale(localeTemp);
-                if (CmsJspTagContainer.useSingleLocaleDetailContainers(
+                if (CmsDetailOnlyContainerUtil.useSingleLocaleDetailContainers(
                     OpenCms.getSiteManager().getSiteRoot(resource.getRootPath()))
                     && locale.equals(CmsLocaleManager.getDefaultLocale())) {
                     // in case of single locale detail containers do not force the locale
