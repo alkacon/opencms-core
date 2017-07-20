@@ -39,6 +39,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -56,12 +58,10 @@ import com.vaadin.data.Validator;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -262,7 +262,6 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
                 m_table.filterTable(event.getText());
             }
         });
-        m_infoLayout.addComponent(getStatisticLabel());
         m_infoLayout.addComponent(siteTableFilter);
 
     }
@@ -302,6 +301,7 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
             }
         });
         m_uiContext.addToolbarButton(broadcastToAll);
+        m_uiContext.addToolbarButton(getStatisticButton());
     }
 
     /**
@@ -309,12 +309,9 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
      *
      * @return vaadin component
      */
-    private Label getStatisticLabel() {
+    private CmsInfoButton getStatisticButton() {
 
-        Label ret = new Label();
-        ret.setContentMode(ContentMode.HTML);
-
-        ret.addStyleName("o-label-with-padding");
+        Map<String, String> infos = new LinkedHashMap<String, String>();
 
         List<CmsSessionInfo> sessions = OpenCms.getSessionManager().getSessionInfos();
         List<CmsUUID> user = new ArrayList<CmsUUID>();
@@ -324,13 +321,13 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
                 user.add(id);
             }
         }
-        String mes = CmsVaadinUtils.getMessageText(
-            Messages.GUI_MESSAGES_SESSION_COUNT_1,
-            String.valueOf(sessions.size()))
-            + " / "
-            + CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_USER_COUNT_1, String.valueOf(user.size()));
-        ret.setValue(mes);
-        ret.setWidth("220px");
+        infos.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SESSION_COUNT_0),
+            String.valueOf(sessions.size()));
+        infos.put(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_USER_COUNT_0), String.valueOf(user.size()));
+        CmsInfoButton ret = new CmsInfoButton(infos);
+        ret.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_STATISTICS_CAPTION_0));
+        ret.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_STATISTICS_CAPTION_0));
         return ret;
     }
 }

@@ -1133,16 +1133,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MESSAGES_MINUTES_0 = "GUI_MESSAGES_MINUTES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MESSAGES_SESSION_COUNT_1 = "GUI_MESSAGES_SESSION_COUNT_1";
+    public static final String GUI_MESSAGES_SESSION_COUNT_0 = "GUI_MESSAGES_SESSION_COUNT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_SHOW_USER_0 = "GUI_MESSAGES_SHOW_USER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_STATISTICS_CAPTION_0 = "GUI_MESSAGES_STATISTICS_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_SWITCH_USER_0 = "GUI_MESSAGES_SWITCH_USER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MESSAGES_USER_COUNT_1 = "GUI_MESSAGES_USER_COUNT_1";
+    public static final String GUI_MESSAGES_USER_COUNT_0 = "GUI_MESSAGES_USER_COUNT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_USER_IS_0 = "GUI_MESSAGES_USER_IS_0";
