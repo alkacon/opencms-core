@@ -1685,6 +1685,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROJECTS_SHOW_FILES_0 = "GUI_PROJECTS_SHOW_FILES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_STATISTICS_0 = "GUI_PROJECTS_STATISTICS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_STATISTICS_COUNT_0 = "GUI_PROJECTS_STATISTICS_COUNT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_UNLOCK_FILES_0 = "GUI_PROJECTS_UNLOCK_FILES_0";
 
     /** Message constant for key in the resource bundle. */

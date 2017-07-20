@@ -47,6 +47,7 @@ import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
+import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -54,6 +55,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -369,6 +371,19 @@ public class CmsProjectManager extends A_CmsWorkplaceApp {
             });
             m_uiContext.addToolbarButton(history);
             m_navButtons.add(history);
+            try {
+                Map<String, String> infos = new LinkedHashMap<String, String>();
+                infos.put(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_STATISTICS_COUNT_0),
+                    String.valueOf(
+                        OpenCms.getOrgUnitManager().getAllManageableProjects(A_CmsUI.getCmsObject(), "", true).size()));
+                CmsInfoButton infoButton = new CmsInfoButton(infos);
+                infoButton.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_STATISTICS_0));
+                infoButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_STATISTICS_0));
+                m_uiContext.addToolbarButton(infoButton);
+            } catch (CmsException e) {
+                LOG.error("unable to get orgunit manager", e);
+            }
         } else {
             for (Component button : m_navButtons) {
                 button.setVisible(true);
