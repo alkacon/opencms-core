@@ -459,6 +459,14 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
                 article,
                 objects));
 
+        assertEquals(
+            "FALSE",
+            CmsStringTemplateRenderer.renderTemplate(
+                cms,
+                "%if (settings.noneExistingKey.isSet)%TRUE%else%FALSE%endif%",
+                article,
+                objects));
+
     }
 
     /**

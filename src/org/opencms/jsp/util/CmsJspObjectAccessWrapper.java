@@ -65,11 +65,8 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
         public Object transform(Object input) {
 
             Object o = getObjectValue();
-            if ((o instanceof CmsJspContentAccessValueWrapper) && (input instanceof String)) {
-                CmsJspContentAccessValueWrapper v = (CmsJspContentAccessValueWrapper)o;
-                if (v.getContentValue().isSimpleType()) {
-                    return Boolean.valueOf(v.getToString().equals(input));
-                }
+            if ((o instanceof A_CmsJspValueWrapper) && (input instanceof String)) {
+                return Boolean.valueOf(((A_CmsJspValueWrapper)o).getToString().equals(input));
             }
             if (o == null) {
                 return Boolean.valueOf(input == null);

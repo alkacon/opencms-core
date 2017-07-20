@@ -34,6 +34,32 @@ public class CmsJspImageBean {
     }
 
     /**
+     * Returns the basic source parameters for this image.<p>
+     *
+     * The form is "src='(srcUrl)' height='(h)' width='(w)'".<p>
+     *
+     * @return the basic source parameters for this image
+     */
+    public String getImgSrc() {
+
+        StringBuffer result = new StringBuffer(128);
+
+        // append the image source
+        result.append("src=\"");
+        result.append(getSrcUrl());
+        result.append("\"");
+        // append image width and height
+        result.append(" width=\"");
+        result.append(getWidth());
+        result.append("\"");
+        result.append(" height=\"");
+        result.append(getHeight());
+        result.append("\"");
+
+        return result.toString();
+    }
+
+    /**
      * Returns the image scaler that was used to create this image.<p>
      *
      * May be used to access image scaler properties in JSP.
