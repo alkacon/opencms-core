@@ -145,7 +145,7 @@ abstract class A_CmsJspValueWrapper {
     public CmsJspScaledImageBean getToImage() {
 
         try {
-            return CmsJspTagScaleImage.imageTagAction(getCmsObject(), getToLink(), new CmsImageScaler(), null);
+            return CmsJspTagScaleImage.imageTagAction(getCmsObject(), getToString(), new CmsImageScaler(), null);
         } catch (CmsException e) {
             // TODO: logging
             return null;
