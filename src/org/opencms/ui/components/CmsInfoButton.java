@@ -1,0 +1,159 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ui.components;
+
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
+
+/**
+ * Class for the info button used in toolbar.<p>
+ */
+public class CmsInfoButton extends Button {
+
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 5718515094289838271L;
+
+    /**Icon of button.*/
+    private static final FontOpenCms ICON = FontOpenCms.INFO;
+
+    /**Caption for information window.*/
+    protected String m_windowCaption;
+
+    /**
+     * public constructor.<p>
+     *
+     * @param htmlLines lines to show
+     */
+    public CmsInfoButton(final List<String> htmlLines) {
+        super(ICON);
+        ini(htmlLines);
+    }
+
+    /**
+     * public constructor.<p>
+     *
+     * @param infos map with information to display
+     */
+    public CmsInfoButton(Map<String, String> infos) {
+        super(ICON);
+        List<String> htmlLines = new ArrayList<String>();
+
+        for (String key : infos.keySet()) {
+            htmlLines.add(
+                "<div style=\"display:flex;align-items:flex-end;\"><div class=\""
+                    + OpenCmsTheme.INFO_ELEMENT_NAME
+                    + "\">"
+                    + key
+                    + " :</div><div class=\""
+                    + OpenCmsTheme.INFO_ELEMENT_VALUE
+                    + "\">"
+                    + infos.get(key)
+                    + "</div></div>");
+        }
+        ini(htmlLines);
+    }
+
+    /**
+     * Sets the caption of the information window.<p>
+     *
+     * @param caption to be set
+     */
+    public void setWindowCaption(String caption) {
+
+        m_windowCaption = caption;
+    }
+
+    /**
+     * initializes the button.<p>
+     *
+     * @param htmlLines to show
+     */
+    private void ini(final List<String> htmlLines) {
+
+        addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
+
+        addClickListener(new Button.ClickListener() {
+
+            private static final long serialVersionUID = -553128629431329217L;
+
+            public void buttonClick(ClickEvent event) {
+
+                final Window window = CmsBasicDialog.prepareWindow(CmsBasicDialog.DialogWidth.content);
+                window.setCaption(
+                    m_windowCaption == null
+                    ? CmsVaadinUtils.getMessageText(Messages.GUI_INFO_BUTTON_CAPTION_0)
+                    : m_windowCaption);
+                window.setResizable(false);
+                CmsBasicDialog dialog = new CmsBasicDialog();
+                VerticalLayout layout = new VerticalLayout();
+                Label label = new Label();
+                label.setWidthUndefined();
+                label.setContentMode(ContentMode.HTML);
+                label.addStyleName(OpenCmsTheme.INFO);
+                String htmlContent = "";
+                for (String line : htmlLines) {
+                    htmlContent += line;
+                }
+                label.setValue(htmlContent);
+
+                layout.addComponent(label);
+                dialog.setContent(layout);
+
+                Button button = new Button(CmsVaadinUtils.messageClose());
+                button.addClickListener(new Button.ClickListener() {
+
+                    private static final long serialVersionUID = 5789436407764072884L;
+
+                    public void buttonClick(ClickEvent event1) {
+
+                        window.close();
+
+                    }
+                });
+                dialog.addButton(button);
+
+                window.setContent(dialog);
+
+                UI.getCurrent().addWindow(window);
+            }
+        });
+    }
+}

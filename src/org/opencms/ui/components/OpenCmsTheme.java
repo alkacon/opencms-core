@@ -114,12 +114,6 @@ public final class OpenCmsTheme {
     public static final String COLOR_RED = "o-color-red";
 
     /** CSS style name. */
-    public static final String IMAGE_TRANSPARENT = "o-image-transparent";
-
-    /** CSS style name. */
-    public static final String IMAGE_GRADIENT = "o-image-gradient";
-
-    /** CSS style name. */
     public static final String CRUMB_WRAPPER = "o-crumb-wrapper";
 
     /** CSS style name. */
@@ -207,7 +201,22 @@ public final class OpenCmsTheme {
     public static final String ICON_SITE = "oc-icon-24-site";
 
     /** CSS style name. */
+    public static final String IMAGE_GRADIENT = "o-image-gradient";
+
+    /** CSS style name. */
+    public static final String IMAGE_TRANSPARENT = "o-image-transparent";
+
+    /** CSS style name. */
     public static final String IN_NAVIGATION = "o-in-navigation";
+
+    /** CSS style name. */
+    public static final String INFO = "o-info-dialog";
+
+    /** CSS style name. */
+    public static final String INFO_ELEMENT_NAME = "o-info-dialog-name";
+
+    /** CSS style name. */
+    public static final String INFO_ELEMENT_VALUE = "o-info-dialog-value";
 
     /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
