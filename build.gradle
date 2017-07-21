@@ -28,7 +28,6 @@ version = vprops['version.number']
 ext.ocmsVersion = version
 
 repositories {
-    mavenLocal()
     if (project.hasProperty('additional_repositories')) {
         additional_repositories.split(';').each { repo ->
             maven { url repo }
@@ -185,6 +184,8 @@ task copyCompileDeps(type: Copy) {
 task enhance {
     group = 'openjpa'
     description = 'Enhance JPA entity classes using OpenJPA Enhancer'
+
+    inputs.files compileJava.outputs.files // target classes for the enhancer
 
     doLast {
         ant.taskdef(
@@ -391,6 +392,7 @@ task sourcesJarGwt(type: Jar) {
 task workplaceTheme(type: JavaExec) {
     group 'theming'
 
+    outputs.dir "$project.buildDir/workplaceThemes/opencms"
     doFirst {
         println '======================================================'
         println "Building workplace theme"
@@ -1590,10 +1592,28 @@ tasks.withType(JavaCompile) {
 }
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
+    // timestamp prevents repeatable builds
+    options.addBooleanOption('notimestamp', true)
     if (JavaVersion.current().isJava8Compatible()) {
         options.addStringOption("Xdoclint:none", "-quiet")
         options.addBooleanOption("-allow-script-in-comments", true)
     }
+}
+
+// Enable reproducible archives
+tasks.withType(AbstractArchiveTask) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+/**
+ * Generates the gradle wrapper. For repeatable builds, this should be used
+ * instead of invoking the gradle binary directly.
+ *
+ * See e.g.: https://docs.gradle.org/3.5/userguide/gradle_wrapper.html
+ */
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.0.1'
 }
 
 // all tasks implementing the CopySpec (Copy,Jar,Zip,...) should fail, in case they generate duplicate files
