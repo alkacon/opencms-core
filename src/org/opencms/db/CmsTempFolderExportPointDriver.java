@@ -137,6 +137,10 @@ public class CmsTempFolderExportPointDriver extends CmsExportPointDriver {
 
         File file = getExportPointFile(resourceName, exportpoint);
         if (m_urisWithTempFolderDestinations.contains(exportpoint)) {
+            if (resourceName.endsWith("/")) {
+                // leave folders in the temp exportpoint dir alone
+                return;
+            }
             writeFile(resourceName, exportpoint, DELETE_MARKER_BYTES);
         } else {
             if (file.exists() && file.canWrite()) {
