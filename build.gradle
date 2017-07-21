@@ -125,6 +125,8 @@ configurations.all {
 // import dependencies
 apply from: 'dependencies.gradle'
 
+/** Output dir of the OpenJPA enhancer: @value */
+String openjpaOutputBaseDir = "$buildDir/classes/javaopenjpa"
 sourceSets {
     main {
         java.srcDirs = ['src']
@@ -187,24 +189,70 @@ task enhance {
 
     inputs.files compileJava.outputs.files // target classes for the enhancer
 
+    String openjpaOutputDir = "$openjpaOutputBaseDir/main"
+    FileTree entityFiles = fileTree("${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence") {
+        exclude '**/*$*.class'
+    }
+
+    inputs.file("${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml").skipWhenEmpty()
+    inputs.files entityFiles
+
+    outputs.dir openjpaOutputDir
     doLast {
+        println '======================================================'
+        println "Enhancing classes with OpenJPA"
+        println "Output in: $openjpaOutputDir"
+        println '======================================================'
+
+        // Create dummy log4j properties file to suppress logging noise
+        // " OpenJPA will delegate to Log4J for logging. [...] Log4J logging levels are controlled
+        // by a resource named log4j.properties, which should be available as a top-level resource."
+        // [Apache OpenJPA 2.4 User's Guide, Ch. 3.4]
+        File log4jConfigDir = java.nio.file.Files.createTempDirectory(temporaryDir.toPath(), "log4jconf-").toFile()
+        File log4jProperties = file("$log4jConfigDir/log4j.properties")
+        log4jProperties.write '''# Disable log4j log for openjpa
+log4j.rootLogger=OFF, NONE
+log4j.appender.NONE=org.apache.log4j.ConsoleAppender
+log4j.appender.NONE.layout=org.apache.log4j.PatternLayout
+'''
+
+        logger.debug "log4jConfigDir: $log4jConfigDir; log4jProperties: $log4jProperties"
+
+        // Must include the classpath to log4j.properties!
+        FileCollection jpaEnhanceAntTaskCP = sourceSets.main.compileClasspath
+        jpaEnhanceAntTaskCP += files(log4jConfigDir) // log4j.properties for jpa
+
+        // "If the target path for compiled classes is not included in the project's classpath,
+        // then a classpath element that includes the target class directory needs to be included
+        // so the enhancer and mapping tool can locate the relevant classes.
+        // [...]
+        // This classpath must include, at minimun, the openjpa jar(s), persistence.xml and the
+        // target classes." [Apache OpenJPA 2.4 User's Guide, Ch. 14.1.1]
+        FileCollection jpaEnhancementCP = sourceSets.main.compileClasspath
+        jpaEnhancementCP += compileJava.outputs.files      // target classes
+        logger.debug "Classpath of Ant Task 'PCEnhancerTask': ${jpaEnhanceAntTaskCP.asPath}"
+        logger.debug "Classpath of the classes to enhance: ${jpaEnhancementCP.asPath}"
+        logger.debug "Entity files to enhance: " + entityFiles.files
         ant.taskdef(
                 name: 'openjpaenhancer',
-                classpath: sourceSets.modules.compileClasspath.asPath,
+                classpath: jpaEnhanceAntTaskCP.asPath,
                 classname: 'org.apache.openjpa.ant.PCEnhancerTask'
         )
 
-        ant.openjpaenhancer(classpath: sourceSets.modules.compileClasspath.asPath) {
-            fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence") {
-                exclude(name: '*$*.class')
+        ant.openjpaenhancer(
+                classpath: jpaEnhancementCP.asPath,
+                directory: openjpaOutputDir) {
+            config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml",
+                    log: 'openjpa')
+            entityFiles.addToAntBuilder(ant, 'fileset', FileCollection.AntType.FileSet)
             }
-            config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
-        }
+        println '======================================================'
+        println "Done enhancing classes with OpenJPA"
+        println '======================================================'
     }
 }
 
 jar {
-    it.dependsOn enhance
     manifest {
         attributes 'Implementation-Title': 'Alkacon OpenCms',
                 'Implementation-Version': version,
@@ -221,6 +269,25 @@ jar {
     exclude '**/package.html'
     exclude '**/overview.html'
     exclude '**/.gitignore'
+    from enhance
+
+    doFirst {
+        // Exclude the classes for which there exist jpa-enhanced versions
+        FileTree entityFiles = fileTree("$openjpaOutputBaseDir/main")
+        logger.debug "Enhanced entity classes: ${entityFiles.asList()}"
+        List<File> notEnhanced = []
+        entityFiles.visit { FileVisitDetails enhancedEntity ->
+            if (!enhancedEntity.isDirectory()) {
+                File plainEntity = new File(sourceSets.main.output.classesDir, "$enhancedEntity.relativePath")
+                logger.debug "Registering plain entity class for exclusion: $plainEntity"
+                notEnhanced << plainEntity
+            }
+        }
+        logger.debug "Not enhanced (won't be included in jar): $notEnhanced"
+        exclude {
+            it.file in notEnhanced
+        }
+    }
 
     if (externalVersionProps.exists()) {
         exclude 'org/opencms/main/version.properties'
