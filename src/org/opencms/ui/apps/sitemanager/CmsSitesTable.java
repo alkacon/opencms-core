@@ -419,6 +419,9 @@ public class CmsSitesTable extends Table {
                     new SimpleStringFilter(PROP_PATH, search, true, false),
                     new SimpleStringFilter(PROP_SERVER, search, true, false)));
         }
+        if ((getValue() != null) & !((Set<String>)getValue()).isEmpty()) {
+            setCurrentPageFirstItemId(((Set<String>)getValue()).iterator().next());
+        }
     }
 
     /**

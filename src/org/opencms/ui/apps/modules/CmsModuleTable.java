@@ -44,6 +44,7 @@ import org.opencms.ui.apps.modules.edit.CmsEditModuleForm;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsConfirmationDialog;
+import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
@@ -52,6 +53,7 @@ import org.opencms.ui.util.table.CmsBeanTableBuilder;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -68,13 +70,11 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -444,7 +444,7 @@ public class CmsModuleTable extends Table {
     protected CmsBeanTableBuilder<CmsModuleRow> m_tableBuilder;
 
     /** The row counter label. */
-    private Label m_counter = new Label();
+    private CmsInfoButton m_counter;
 
     /** The context menu. */
     private CmsContextMenu m_menu = new CmsContextMenu();
@@ -484,6 +484,9 @@ public class CmsModuleTable extends Table {
                 Container.Filterable container = (Container.Filterable)getContainerDataSource();
                 container.removeAllContainerFilters();
                 container.addContainerFilter(m_tableBuilder.getDefaultFilter(filterString));
+                if ((getValue() != null)) {
+                    setCurrentPageFirstItemId(getValue());
+                }
             }
         });
         m_searchBox.setIcon(FontOpenCms.FILTER);
@@ -496,9 +499,9 @@ public class CmsModuleTable extends Table {
 
         HorizontalLayout hl = new HorizontalLayout();
         hl.setSpacing(true);
-        hl.addComponent(m_counter);
+
         hl.addComponent(m_searchBox);
-        hl.setComponentAlignment(m_counter, Alignment.MIDDLE_LEFT);
+        // hl.setComponentAlignment(m_counter, Alignment.MIDDLE_LEFT);
         attributes.put(A_CmsAttributeAwareApp.ATTR_INFO_COMPONENT, hl);
         attributes.put(A_CmsAttributeAwareApp.ATTR_MAIN_HEIGHT_FULL, Boolean.TRUE);
         List<Component> buttons = Lists.newArrayList();
@@ -534,6 +537,10 @@ public class CmsModuleTable extends Table {
             }
         });
         buttons.add(importButton);
+        m_counter = new CmsInfoButton(Collections.singletonMap("Test", "Test"));
+        m_counter.setWindowCaption("Module statistics");
+        m_counter.setDescription("Module statistics");
+        buttons.add(m_counter);
         attributes.put(CmsModuleApp.Attributes.BUTTONS, buttons);
         setData(attributes);
         CmsBeanTableBuilder<CmsModuleRow> builder = CmsBeanTableBuilder.newInstance(CmsModuleRow.class);
@@ -633,8 +640,10 @@ public class CmsModuleTable extends Table {
      */
     private void updateCounter() {
 
-        m_counter.setValue(
-            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_ROW_COUNT_1, "" + getContainerDataSource().size()));
+        m_counter.replaceData(
+            Collections.singletonMap(
+                CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_STATISTICS_ROW_COUNT_0),
+                String.valueOf(getContainerDataSource().size())));
     }
 
 }

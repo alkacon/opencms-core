@@ -495,6 +495,9 @@ public class CmsSessionsTable extends Table {
                     new SimpleStringFilter(TableProperty.Site, search, true, false),
                     new SimpleStringFilter(TableProperty.Project, search, true, false)));
         }
+        if ((getValue() != null) & !((Set<String>)getValue()).isEmpty()) {
+            setCurrentPageFirstItemId(((Set<String>)getValue()).iterator().next());
+        }
     }
 
     /**

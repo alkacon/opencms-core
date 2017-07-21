@@ -269,6 +269,9 @@ public class CmsImageCacheTable extends Table {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search)) {
             m_container.addContainerFilter(new Or(new SimpleStringFilter(PROP_NAME, search, true, false)));
         }
+        if ((getValue() != null)) {
+            setCurrentPageFirstItemId(getValue());
+        }
     }
 
     /**

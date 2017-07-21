@@ -235,6 +235,9 @@ public class CmsFlexCacheTable extends Table {
                     new SimpleStringFilter(PROP_RESOURCENAME, search, true, false),
                     new SimpleStringFilter(PROP_KEY, search, true, false)));
         }
+        if ((getValue() != null)) {
+            setCurrentPageFirstItemId(getValue());
+        }
     }
 
     /**

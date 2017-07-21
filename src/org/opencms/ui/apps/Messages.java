@@ -1427,7 +1427,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_RESINFO_NEW_MODULE_0 = "GUI_MODULES_RESINFO_NEW_MODULE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_ROW_COUNT_1 = "GUI_MODULES_ROW_COUNT_1";
+    public static final String GUI_MODULES_STATISTICS_ROW_COUNT_0 = "GUI_MODULES_STATISTICS_ROW_COUNT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_STATISTICS_0 = "GUI_MODULES_STATISTICS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_TAB_BASIC_0 = "GUI_MODULES_TAB_BASIC_0";

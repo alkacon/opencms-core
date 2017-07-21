@@ -375,6 +375,9 @@ public class CmsLogChannelTable extends Table {
                     new SimpleStringFilter(TableColumn.ParentChannel, search, true, false),
                     new SimpleStringFilter(TableColumn.File, search, true, false)));
         }
+        if ((getValue() != null) & !((Set<Logger>)getValue()).isEmpty()) {
+            setCurrentPageFirstItemId(((Set<Logger>)getValue()).iterator().next());
+        }
     }
 
     /**

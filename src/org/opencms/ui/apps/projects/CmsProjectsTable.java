@@ -405,10 +405,7 @@ public class CmsProjectsTable extends Table {
 
         m_container = new IndexedContainer();
         m_container.addContainerProperty(PROP_ID, CmsUUID.class, null);
-        m_container.addContainerProperty(
-            PROP_ICON,
-            Resource.class,
-            new CmsCssIcon(OpenCmsTheme.ICON_PROJECT));
+        m_container.addContainerProperty(PROP_ICON, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_PROJECT));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DESCRIPTION, String.class, "");
         m_container.addContainerProperty(PROP_ORG_UNIT, String.class, "");
@@ -473,6 +470,9 @@ public class CmsProjectsTable extends Table {
                 new Or(
                     new SimpleStringFilter(PROP_NAME, filter, true, false),
                     new SimpleStringFilter(PROP_DESCRIPTION, filter, true, false)));
+        }
+        if ((getValue() != null) & !((Set<CmsUUID>)getValue()).isEmpty()) {
+            setCurrentPageFirstItemId(((Set<CmsUUID>)getValue()).iterator().next());
         }
     }
 
