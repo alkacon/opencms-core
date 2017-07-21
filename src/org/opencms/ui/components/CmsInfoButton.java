@@ -36,6 +36,7 @@ import java.util.Map;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -47,6 +48,50 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsInfoButton extends Button {
 
+    /**
+     * Bean holding further Vaadin elements and theire position.<p>
+     */
+    class InfoElementBean {
+
+        /**Position in layout. */
+        private int m_pos;
+
+        /**Component to add.*/
+        private Component m_component;
+
+        /**
+         * public constructor.<p>
+         *
+         * @param pos position of element
+         * @param comp vaadin component
+         */
+        InfoElementBean(int pos, Component comp) {
+            m_pos = pos;
+            m_component = comp;
+        }
+
+        /**
+         * Gets component.
+         *
+         * @return Vaadin component
+         */
+        protected Component getComponent() {
+
+            return m_component;
+        }
+
+        /**
+         * Gets position of component.
+         *
+         * @return int position
+         */
+        protected int getPos() {
+
+            return m_pos;
+        }
+
+    }
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = 5718515094289838271L;
 
@@ -56,6 +101,23 @@ public class CmsInfoButton extends Button {
     /**Caption for information window.*/
     protected String m_windowCaption;
 
+    /**Html lines to be shown in label.*/
+    private List<String> m_htmlLines;
+
+    /**List with additional vaadin elements to display and their position in VerticalLayout.*/
+    private List<InfoElementBean> m_additionalElements = new ArrayList<InfoElementBean>();
+
+    /**Clicklistener for the button. */
+    private ClickListener m_clickListener;
+
+    /**
+     * public constructor.<p>
+     */
+    public CmsInfoButton() {
+        super(ICON);
+        ini(new ArrayList<String>());
+    }
+
     /**
      * public constructor.<p>
      *
@@ -63,6 +125,7 @@ public class CmsInfoButton extends Button {
      */
     public CmsInfoButton(final List<String> htmlLines) {
         super(ICON);
+        m_htmlLines = htmlLines;
         ini(htmlLines);
     }
 
@@ -73,21 +136,48 @@ public class CmsInfoButton extends Button {
      */
     public CmsInfoButton(Map<String, String> infos) {
         super(ICON);
-        List<String> htmlLines = new ArrayList<String>();
 
-        for (String key : infos.keySet()) {
-            htmlLines.add(
-                "<div style=\"display:flex;align-items:flex-end;\"><div class=\""
-                    + OpenCmsTheme.INFO_ELEMENT_NAME
-                    + "\">"
-                    + key
-                    + " :</div><div class=\""
-                    + OpenCmsTheme.INFO_ELEMENT_VALUE
-                    + "\">"
-                    + infos.get(key)
-                    + "</div></div>");
-        }
-        ini(htmlLines);
+        ini(getHtmlLines(infos));
+    }
+
+    /**
+     * Adds a vaadin element to window at last position.<p>
+     *
+     * @param component to be added
+     */
+    public void addAdditionalElement(Component component) {
+
+        m_additionalElements.add(new InfoElementBean(m_additionalElements.size() + 1, component));
+        removeClickListener(m_clickListener);
+        m_clickListener = getClickListener(m_htmlLines, m_additionalElements);
+        addClickListener(m_clickListener);
+    }
+
+    /**
+     * Adds a vaadin element to window.<p>
+     *
+     * @param component to be added
+     * @param pos position in vertical layout
+     */
+    public void addAdditionalElement(Component component, int pos) {
+
+        m_additionalElements.add(new InfoElementBean(pos, component));
+        removeClickListener(m_clickListener);
+        m_clickListener = getClickListener(m_htmlLines, m_additionalElements);
+        addClickListener(m_clickListener);
+    }
+
+    /**
+     * Replaces current Map with new map.<p>
+     *
+     * @param data to replace the old map
+     */
+    public void replaceData(Map<String, String> data) {
+
+        removeClickListener(m_clickListener);
+        m_clickListener = getClickListener(getHtmlLines(data), m_additionalElements);
+        addClickListener(m_clickListener);
+
     }
 
     /**
@@ -101,16 +191,17 @@ public class CmsInfoButton extends Button {
     }
 
     /**
-     * initializes the button.<p>
+     * Clicklistener for the button.<p>
      *
-     * @param htmlLines to show
+     * @param htmlLines to be shown in Label
+     * @param additionalElements to be placed in the verticalllayout which holds the label
+     * @return ClickListener
      */
-    private void ini(final List<String> htmlLines) {
+    private ClickListener getClickListener(
+        final List<String> htmlLines,
+        final List<InfoElementBean> additionalElements) {
 
-        addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
-
-        addClickListener(new Button.ClickListener() {
+        return new Button.ClickListener() {
 
             private static final long serialVersionUID = -553128629431329217L;
 
@@ -135,6 +226,9 @@ public class CmsInfoButton extends Button {
                 label.setValue(htmlContent);
 
                 layout.addComponent(label);
+                for (InfoElementBean infoElement : additionalElements) {
+                    layout.addComponent(infoElement.getComponent(), infoElement.getPos());
+                }
                 dialog.setContent(layout);
 
                 Button button = new Button(CmsVaadinUtils.messageClose());
@@ -154,6 +248,47 @@ public class CmsInfoButton extends Button {
 
                 UI.getCurrent().addWindow(window);
             }
-        });
+        };
+
+    }
+
+    /**
+     * Creates html code from given map.<p>
+     *
+     * @param infos to be displayed
+     * @return List of html lines
+     */
+    private List<String> getHtmlLines(Map<String, String> infos) {
+
+        List<String> htmlLines = new ArrayList<String>();
+
+        for (String key : infos.keySet()) {
+            htmlLines.add(
+                "<div style=\"display:flex;align-items:flex-end;\"><div class=\""
+                    + OpenCmsTheme.INFO_ELEMENT_NAME
+                    + "\">"
+                    + key
+                    + " :</div><div class=\""
+                    + OpenCmsTheme.INFO_ELEMENT_VALUE
+                    + "\">"
+                    + infos.get(key)
+                    + "</div></div>");
+        }
+        m_htmlLines = htmlLines;
+        return htmlLines;
+    }
+
+    /**
+     * initializes the button.<p>
+     *
+     * @param htmlLines to show
+     */
+    private void ini(final List<String> htmlLines) {
+
+        addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
+
+        m_clickListener = getClickListener(htmlLines, m_additionalElements);
+        addClickListener(m_clickListener);
     }
 }
