@@ -36,7 +36,10 @@ public class CmsJspImageBean {
     /**
      * Returns the basic source parameters for this image.<p>
      *
-     * The form is "src='(srcUrl)' height='(h)' width='(w)'".<p>
+     * In case the image was cropped or otherwise manipulated,
+     * the values are created for the manipulated version.<p>
+     *
+     * The return form is "src='(srcUrl)' height='(h)' width='(w)'".<p>
      *
      * @return the basic source parameters for this image
      */
@@ -50,10 +53,10 @@ public class CmsJspImageBean {
         result.append("\"");
         // append image width and height
         result.append(" width=\"");
-        result.append(getWidth());
+        result.append(m_scaler.getHeight());
         result.append("\"");
         result.append(" height=\"");
-        result.append(getHeight());
+        result.append(m_scaler.getWidth());
         result.append("\"");
 
         return result.toString();
@@ -92,7 +95,10 @@ public class CmsJspImageBean {
     }
 
     /**
-     * Returns the image's width.<p>
+     * Returns the image's original width.<p>
+     *
+     * To get the scaled height of the image,
+     * use {@link #getScaler()}.getHeight().<p>
      *
      * @return width in pixels
      */
@@ -112,7 +118,7 @@ public class CmsJspImageBean {
     }
 
     /**
-     * Sets the image's height.<p>
+     * Sets the image's original height.<p>
      *
      * @param height  the image's width in pixels
      */
@@ -158,7 +164,10 @@ public class CmsJspImageBean {
     }
 
     /**
-     * Sets the image's width.<p>
+     * Sets the image's original width.<p>
+     *
+     * To get the scaled width of the image,
+     * use {@link #getScaler()}.getWidth().<p>
      *
      * @param width  the image's width in pixels
      */

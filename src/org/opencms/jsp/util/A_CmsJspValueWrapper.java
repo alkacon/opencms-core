@@ -42,6 +42,9 @@ import java.util.Date;
  */
 abstract class A_CmsJspValueWrapper {
 
+    /** Image bean instance created from the wrapped data. */
+    private CmsJspScaledImageBean m_imageBean;
+
     /**
      * Returns the substituted link to the given target.<p>
      *
@@ -142,14 +145,20 @@ abstract class A_CmsJspValueWrapper {
      *
      * @return the scaled image bean
      */
-    public CmsJspScaledImageBean getToImage() {
+    public CmsJspImageBean getToImage() {
 
-        try {
-            return CmsJspTagScaleImage.imageTagAction(getCmsObject(), getToString(), new CmsImageScaler(), null);
-        } catch (CmsException e) {
-            // TODO: logging
-            return null;
+        if (m_imageBean == null) {
+            try {
+                m_imageBean = CmsJspTagScaleImage.imageTagAction(
+                    getCmsObject(),
+                    getToString(),
+                    new CmsImageScaler(),
+                    null);
+            } catch (CmsException e) {
+                // TODO: logging
+            }
         }
+        return m_imageBean;
     }
 
     /**

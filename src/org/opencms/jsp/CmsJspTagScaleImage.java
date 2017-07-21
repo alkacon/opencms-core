@@ -111,8 +111,6 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
         List<String> hiDpiVariantList)
     throws CmsException {
 
-        // resolve possible relative URI
-        //      String src = CmsLinkManager.getAbsoluteUri(src, controller.getCurrentRequest().getElementUri());
         CmsUriSplitter splitSrc = new CmsUriSplitter(imageUri);
 
         String scaleParam = null;
