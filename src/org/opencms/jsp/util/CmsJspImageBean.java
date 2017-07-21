@@ -24,7 +24,10 @@ public class CmsJspImageBean {
     private CmsImageScaler m_scaler;
 
     /**
-     * Returns the image's height.<p>
+     * Returns the image's original height.<p>
+     *
+     * To get the scaled height of the image,
+     * use {@link #getScaler()}.getHeight().<p>
      *
      * @return height in pixels
      */
@@ -98,7 +101,7 @@ public class CmsJspImageBean {
      * Returns the image's original width.<p>
      *
      * To get the scaled height of the image,
-     * use {@link #getScaler()}.getHeight().<p>
+     * use {@link #getScaler()}.getWidth().<p>
      *
      * @return width in pixels
      */
@@ -118,9 +121,9 @@ public class CmsJspImageBean {
     }
 
     /**
-     * Sets the image's original height.<p>
+     * Sets the image's height.<p>
      *
-     * @param height  the image's width in pixels
+     * @param height the image's height in pixels
      */
     public void setHeight(int height) {
 
@@ -164,12 +167,9 @@ public class CmsJspImageBean {
     }
 
     /**
-     * Sets the image's original width.<p>
+     * Sets the image's width.<p>
      *
-     * To get the scaled width of the image,
-     * use {@link #getScaler()}.getWidth().<p>
-     *
-     * @param width  the image's width in pixels
+     * @param width the image's width in pixels
      */
     public void setWidth(int width) {
 
