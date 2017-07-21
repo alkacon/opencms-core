@@ -968,7 +968,7 @@ document.write ('<textarea id="tinymce_content" name="tinymce_content" style="he
 
 </form>
 
-<form style="display: none;" name="ELEMENTS" action="dialogs/elements.jsp" target="DIALOGELEMENT" method="post">
+<form style="display: none;" name="ELEMENTS" action="<%= cms.link("/system/workplace/editors/dialogs/elements.jsp") %>" target="DIALOGELEMENT" method="post">
 <input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
 <input type="hidden" name="<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
