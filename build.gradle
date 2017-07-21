@@ -160,16 +160,16 @@ sourceSets {
 }
 
 // adding generated dependencies during configuration phase to avoid build path problems in IDE
-sourceSets.modules.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.setup.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.gwt.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.gwt.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
+sourceSets.modules.compileClasspath += compileJava.outputs.files
+sourceSets.setup.compileClasspath += compileJava.outputs.files
+sourceSets.gwt.compileClasspath += compileJava.outputs.files
+sourceSets.gwt.compileClasspath += compileModulesJava.outputs.files
 sourceSets.test.compileClasspath += fileTree('webapp/setup/database') { include '**/*.jar' }
-sourceSets.test.compileClasspath += files(sourceSets.setup.output.classesDir) { builtBy 'setupClasses' }
-sourceSets.test.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-sourceSets.test.compileClasspath += files(sourceSets.gwt.output.classesDir) { builtBy 'gwtClasses' }
-sourceSets.testGwt.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.testGwt.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
+sourceSets.test.compileClasspath += compileSetupJava.outputs.files
+sourceSets.test.compileClasspath += compileModulesJava.outputs.files
+sourceSets.test.compileClasspath += compileGwtJava.outputs.files
+sourceSets.testGwt.compileClasspath += compileJava.outputs.files
+sourceSets.testGwt.compileClasspath += compileModulesJava.outputs.files
 
 task copyDeps(type: Copy) {
     from configurations.distribution
@@ -840,13 +840,9 @@ tasks.findAll { task -> task.name.startsWith('dist_') }.each { dist_task ->
         dist_task.dependencies.each { dep ->
             def depCompileName = 'compile' + dep.replaceAll('\\.', '') + 'java'
             tasks.findAll { comp_task -> comp_task.name.toLowerCase().equals(depCompileName) }.each { comp_task ->
-                sourceSets[dist_task.moduleName].compileClasspath += files(sourceSets[dep].output.classesDir) {
-                    builtBy comp_task.name
-                }
+                sourceSets[dist_task.moduleName].compileClasspath += comp_task.outputs.files
                 // we need to manipulate the classpath of the java doc task specifically
-                tasks['javadoc_' + dist_task.moduleName].classpath += files(sourceSets[dep].output.classesDir) {
-                    builtBy comp_task.name
-                }
+                tasks['javadoc_' + dist_task.moduleName].classpath += comp_task.outputs.files
             }
         }
         tasks['javadoc_' + dist_task.moduleName].dependsOn {
@@ -1058,9 +1054,9 @@ task bindist(dependsOn: war, type: Zip) {
 
 test {
     classpath += fileTree('webapp/setup/database') { include '**/*.jar' }
-    classpath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
-    classpath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
-    classpath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
+    classpath += compileSetupJava.outputs.files
+    classpath += compileModulesJava.outputs.files
+    classpath += compileGwtJava.outputs.files
     useJUnit()
     include 'org/opencms/test/AllTests*'
     // important: exclude all anonymous classes
@@ -1081,9 +1077,9 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     group 'verification'
 
     classpath += fileTree('webapp/setup/database') { include '**/*.jar' }
-    classpath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
-    classpath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
-    classpath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
+    classpath += compileSetupJava.outputs.files
+    classpath += compileModulesJava.outputs.files
+    classpath += compileGwtJava.outputs.files
     useJUnit()
     if (!project.hasProperty('testCaseToRun')) {
         ext {
