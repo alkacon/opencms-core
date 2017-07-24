@@ -168,6 +168,16 @@ public class CmsInfoButton extends Button {
     }
 
     /**
+     * Get the info layout.<p>
+     *
+     * @return VerticalLayout
+     */
+    public VerticalLayout getInfoLayout() {
+
+        return getLayout(m_htmlLines, m_additionalElements);
+    }
+
+    /**
      * Replaces current Map with new map.<p>
      *
      * @param data to replace the old map
@@ -188,6 +198,34 @@ public class CmsInfoButton extends Button {
     public void setWindowCaption(String caption) {
 
         m_windowCaption = caption;
+    }
+
+    /**
+     * The layout which is shown in window by triggering onclick event of button.<p>
+     *
+     * @param htmlLines to be shown
+     * @param additionalElements further vaadin elements
+     * @return vertical layout
+     */
+    protected VerticalLayout getLayout(final List<String> htmlLines, final List<InfoElementBean> additionalElements) {
+
+        VerticalLayout layout = new VerticalLayout();
+        Label label = new Label();
+        label.setWidthUndefined();
+        layout.setMargin(true);
+        label.setContentMode(ContentMode.HTML);
+        layout.addStyleName(OpenCmsTheme.INFO);
+        String htmlContent = "";
+        for (String line : htmlLines) {
+            htmlContent += line;
+        }
+        label.setValue(htmlContent);
+
+        layout.addComponent(label);
+        for (InfoElementBean infoElement : additionalElements) {
+            layout.addComponent(infoElement.getComponent(), infoElement.getPos());
+        }
+        return layout;
     }
 
     /**
@@ -214,21 +252,8 @@ public class CmsInfoButton extends Button {
                     : m_windowCaption);
                 window.setResizable(false);
                 CmsBasicDialog dialog = new CmsBasicDialog();
-                VerticalLayout layout = new VerticalLayout();
-                Label label = new Label();
-                label.setWidthUndefined();
-                label.setContentMode(ContentMode.HTML);
-                label.addStyleName(OpenCmsTheme.INFO);
-                String htmlContent = "";
-                for (String line : htmlLines) {
-                    htmlContent += line;
-                }
-                label.setValue(htmlContent);
+                VerticalLayout layout = getLayout(htmlLines, additionalElements);
 
-                layout.addComponent(label);
-                for (InfoElementBean infoElement : additionalElements) {
-                    layout.addComponent(infoElement.getComponent(), infoElement.getPos());
-                }
                 dialog.setContent(layout);
 
                 Button button = new Button(CmsVaadinUtils.messageClose());

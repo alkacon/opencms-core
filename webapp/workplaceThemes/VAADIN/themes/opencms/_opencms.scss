@@ -72,23 +72,24 @@
 	@include valo;
   
   
-  	div.o-info-dialog-name {
-  		float:left;
-  		width: 400px;
-  	}
-  	
-  	div.o-info-dialog-value {
-  		text-align:right;
-  	}
   	
   	.o-info-dialog {
-  		padding:15px 40px;
-  		width:500px;
+  		width:400px !important;
   		
   		& div{
   			overflow: hidden;
   			margin-bottom: 5px;
+  			width:100%;
   		}
+  		
+  		& div.o-info-dialog-name {
+  			float:left;
+  		}
+  		
+  		& div.o-info-dialog-value {
+  			text-align:right;
+  		}
+  		
   	}
   
 	.v-Notification.error {

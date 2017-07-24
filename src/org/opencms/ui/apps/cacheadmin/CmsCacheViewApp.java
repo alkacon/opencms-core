@@ -27,18 +27,29 @@
 
 package org.opencms.ui.apps.cacheadmin;
 
+import org.opencms.cache.CmsLruCache;
+import org.opencms.flex.CmsFlexCache;
+import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryStatus;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsInfoButton;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -72,6 +83,129 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
      */
     public CmsCacheViewApp(Mode mode) {
         m_mode = mode;
+    }
+
+    /**
+     * Creates in info button for flex cache statistics.<p>
+     *
+     * @return CmsInfoButton
+     */
+    protected static CmsInfoButton getFlexStatisticButton() {
+
+        Map<String, String> infoMap = new LinkedHashMap<String, String>();
+
+        CmsFlexCache cache = OpenCms.getFlexCache();
+        CmsLruCache entryLruCache = cache.getEntryLruCache();
+
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_0),
+            String.valueOf(cache.keySize()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0),
+            String.valueOf(cache.size()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_MAXSIZE_0),
+            CmsFileUtil.formatFilesize(
+                entryLruCache.getMaxCacheCosts(),
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0),
+            CmsFileUtil.formatFilesize(
+                entryLruCache.getAvgCacheCosts(),
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_CURSIZE_0),
+            CmsFileUtil.formatFilesize(
+                entryLruCache.getObjectCosts(),
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        CmsInfoButton info = new CmsInfoButton(infoMap);
+        VerticalLayout prog = new VerticalLayout();
+        Label label = new Label();
+        label.setContentMode(ContentMode.HTML);
+        label.setValue(
+            "<h2>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</h2>");
+        prog.addComponent(label);
+        prog.addComponent(new ProgressBar(entryLruCache.getObjectCosts() / entryLruCache.getMaxCacheCosts()));
+        info.addAdditionalElement(prog, 0);
+        info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
+        info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
+        return info;
+    }
+
+    /**
+     * Creates in info button for image cache statistics.<p>
+     *
+     * @return CmsInfoButton
+     */
+    protected static CmsInfoButton getImageStatisticButton() {
+
+        CmsImageCacheHelper imageCache = new CmsImageCacheHelper(A_CmsUI.getCmsObject(), false, false, true);
+
+        Map<String, String> infoMap = new LinkedHashMap<String, String>();
+
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_0),
+            String.valueOf(imageCache.getFilesCount()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0),
+            String.valueOf(imageCache.getVariationsCount()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0),
+            CmsFileUtil.formatFilesize(
+                imageCache.getVariationsSize(),
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+
+        CmsInfoButton info = new CmsInfoButton(infoMap);
+
+        info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
+        info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
+        return info;
+    }
+
+    /**
+     * Creates in info button for java cache statistics.<p>
+     *
+     * @return CmsInfoButton
+     */
+    protected static CmsInfoButton getJavaStatisticButton() {
+
+        CmsMemoryStatus memory = OpenCms.getMemoryMonitor().getMemoryStatus();
+
+        Map<String, String> infoMap = new LinkedHashMap<String, String>();
+
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_MAX_0),
+            CmsFileUtil.formatFilesize(
+                memory.getMaxMemory() * 1048576,
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_TOTAL_0),
+            CmsFileUtil.formatFilesize(
+                memory.getTotalMemory() * 1048576,
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_USED_0),
+            CmsFileUtil.formatFilesize(
+                memory.getUsedMemory() * 1048576,
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_FREE_0),
+            CmsFileUtil.formatFilesize(
+                memory.getFreeMemory() * 1048576,
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+
+        CmsInfoButton info = new CmsInfoButton(infoMap);
+        VerticalLayout prog = new VerticalLayout();
+        Label label = new Label();
+        label.setContentMode(ContentMode.HTML);
+        label.setValue(
+            "<h2>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</h2>");
+        prog.addComponent(label);
+        prog.addComponent(new ProgressBar((memory.getUsage() / 100)));
+        info.addAdditionalElement(prog, 0);
+        info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
+        info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
+        return info;
     }
 
     /**
@@ -134,7 +268,6 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
      */
     private Component getFlexViewComponent() {
 
-        VerticalLayout layout = new VerticalLayout();
         final CmsFlexCacheTable table = new CmsFlexCacheTable();
         m_siteTableFilter = new TextField();
         m_siteTableFilter.setIcon(FontOpenCms.FILTER);
@@ -153,14 +286,10 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         });
         m_infoLayout.addComponent(m_siteTableFilter);
 
-        layout.setSizeFull();
-        Component flexCacheStatistics = new CmsFlexCacheInfoLayout();
+        m_uiContext.addToolbarButton(getFlexStatisticButton());
 
         table.setSizeFull();
-        layout.addComponent(flexCacheStatistics);
-        layout.addComponent(table);
-        layout.setExpandRatio(table, 1);
-        return layout;
+        return table;
     }
 
     /**
@@ -170,7 +299,6 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
      */
     private Component getImageViewComponent() {
 
-        VerticalLayout layout = new VerticalLayout();
         final CmsImageCacheTable table = new CmsImageCacheTable();
         m_siteTableFilter = new TextField();
         m_siteTableFilter.setIcon(FontOpenCms.FILTER);
@@ -189,12 +317,9 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         });
         m_infoLayout.addComponent(m_siteTableFilter);
 
-        layout.setSizeFull();
-        Component imageCacheStatistics = new CmsImageCacheInfoLayout();
+        m_uiContext.addToolbarButton(getImageStatisticButton());
         table.setSizeFull();
-        layout.addComponent(imageCacheStatistics);
-        layout.addComponent(table);
-        layout.setExpandRatio(table, 1);
-        return layout;
+
+        return table;
     }
 }

@@ -112,13 +112,14 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
         Panel java = new Panel();
         //        java.setWidth("400px");
         java.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_0));
-        java.setContent(new CmsJavaHeapInfoLayout());
+        java.setContent(CmsCacheViewApp.getJavaStatisticButton().getInfoLayout());
 
         layout.addComponent(java);
 
         Panel flex = new Panel();
         //        flex.setWidth("400px");
-        flex.setContent(new CmsFlexCacheInfoLayout());
+        flex.setContent(CmsCacheViewApp.getFlexStatisticButton().getInfoLayout());
+
         flex.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
 
         layout.addComponent(flex);
