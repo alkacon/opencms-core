@@ -3074,10 +3074,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsMemoryMonitor.CacheType.PROPERTY_LIST,
             CmsMemoryMonitor.CacheType.PROJECT_RESOURCES);
 
-        OpenCms.fireCmsEvent(
-            new CmsEvent(
-                I_CmsEventListener.EVENT_RESOURCE_DELETED,
-                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, resources)));
+        Map<String, Object> eventData = new HashMap<String, Object>();
+        eventData.put(I_CmsEventListener.KEY_RESOURCES, resources);
+        eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, eventData));
     }
 
     /**
@@ -5794,11 +5794,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resources.add(destRes);
         resources.add(destinationFolder);
 
+        Map<String, Object> eventData = new HashMap<String, Object>();
+        eventData.put(I_CmsEventListener.KEY_RESOURCES, resources);
+        eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+
         // fire the events
-        OpenCms.fireCmsEvent(
-            new CmsEvent(
-                I_CmsEventListener.EVENT_RESOURCE_MOVED,
-                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, resources)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, eventData));
     }
 
     /**
