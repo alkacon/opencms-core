@@ -93,6 +93,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationSystemValidator;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.relations.CmsRelationType.CopyBehavior;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
@@ -10864,16 +10865,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsRelationFilter.TARGETS.filterNotDefinedInContent()).iterator();
         while (itRelations.hasNext()) {
             CmsRelation relation = itRelations.next();
-            if (relation.getType() == CmsRelationType.LOCALE_VARIANT) {
-                continue;
-            }
-            try {
-                CmsResource relTarget = relation.getTarget(cms, CmsResourceFilter.ALL);
-                addRelationToResource(dbc, target, relTarget, relation.getType(), true);
-            } catch (CmsVfsResourceNotFoundException e) {
-                // ignore this broken relation
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(e.getLocalizedMessage(), e);
+            if (relation.getType().getCopyBehavior() == CopyBehavior.copy) {
+                try {
+                    CmsResource relTarget = relation.getTarget(cms, CmsResourceFilter.ALL);
+                    addRelationToResource(dbc, target, relTarget, relation.getType(), true);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // ignore this broken relation
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 }
             }
         }

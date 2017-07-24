@@ -66,6 +66,17 @@ import java.util.Locale;
  */
 public final class CmsRelationType implements Serializable {
 
+    /**
+     * Enum representing how relations should be handled while copying resources.<p>
+     */
+    public enum CopyBehavior {
+        /** Copy the relation when copying a resource. */
+        copy,
+
+        /** Ignore the relation when copying a resource. */
+        ignore;
+    }
+
     // the following strings must not be public because they confuse the interface
     // this means we can't sort this class members according to standard
     /** String prefix for 'JSP relations. */
@@ -81,40 +92,75 @@ public final class CmsRelationType implements Serializable {
     private static final String VALUE_WEAK = "WEAK";
 
     /** Constant for the category of an <code>OpenCmsVfsFile</code>. */
-    public static final CmsRelationType CATEGORY = new CmsRelationType(9, "CATEGORY", false, false);
+    public static final CmsRelationType CATEGORY = new CmsRelationType(9, "CATEGORY", false, false, CopyBehavior.copy);
 
     /** Constant for the <code>&lt;img src=''&gt;</code> tag in a html page/element. */
-    public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType(2, "IMG", true, true);
+    public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType(2, "IMG", true, true, CopyBehavior.copy);
 
     /** Constant for the <code>&lt;embed src=''&gt;</code> tag in a html page/element. */
-    public static final CmsRelationType EMBEDDED_OBJECT = new CmsRelationType(7, "OBJECT", true, true);
+    public static final CmsRelationType EMBEDDED_OBJECT = new CmsRelationType(
+        7,
+        "OBJECT",
+        true,
+        true,
+        CopyBehavior.copy);
 
     /** Constant for the <code>&lt;a href=''&gt;</code> tag in a html page/element. */
-    public static final CmsRelationType HYPERLINK = new CmsRelationType(1, "A", false, true);
+    public static final CmsRelationType HYPERLINK = new CmsRelationType(1, "A", false, true, CopyBehavior.copy);
 
     /** Constant for the all types of links in a jsp file using the <code>link.strong</code> macro. */
-    public static final CmsRelationType JSP_STRONG = new CmsRelationType(5, PREFIX_JSP + VALUE_STRONG, true, true);
+    public static final CmsRelationType JSP_STRONG = new CmsRelationType(
+        5,
+        PREFIX_JSP + VALUE_STRONG,
+        true,
+        true,
+        CopyBehavior.copy);
 
     /** Constant for the all types of links in a jsp file using the <code>link.weak</code> macro. */
-    public static final CmsRelationType JSP_WEAK = new CmsRelationType(6, PREFIX_JSP + VALUE_WEAK, false, true);
+    public static final CmsRelationType JSP_WEAK = new CmsRelationType(
+        6,
+        PREFIX_JSP + VALUE_WEAK,
+        false,
+        true,
+        CopyBehavior.copy);
 
     /** Constant for the organizational units resource associations. */
-    public static final CmsRelationType OU_RESOURCE = new CmsRelationType(8, "OU", false, false);
+    public static final CmsRelationType OU_RESOURCE = new CmsRelationType(8, "OU", false, false, CopyBehavior.copy);
 
     /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'strong' links. */
-    public static final CmsRelationType XML_STRONG = new CmsRelationType(3, PREFIX_XML + VALUE_STRONG, true, true);
+    public static final CmsRelationType XML_STRONG = new CmsRelationType(
+        3,
+        PREFIX_XML + VALUE_STRONG,
+        true,
+        true,
+        CopyBehavior.copy);
 
     /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'weak' links. */
-    public static final CmsRelationType XML_WEAK = new CmsRelationType(4, PREFIX_XML + VALUE_WEAK, false, true);
+    public static final CmsRelationType XML_WEAK = new CmsRelationType(
+        4,
+        PREFIX_XML + VALUE_WEAK,
+        false,
+        true,
+        CopyBehavior.copy);
 
     /** Constant for the type of relations between resources which are locale variants. */
-    public static final CmsRelationType LOCALE_VARIANT = new CmsRelationType(11, "LOCALE_VARIANT", true, false);
+    public static final CmsRelationType LOCALE_VARIANT = new CmsRelationType(
+        11,
+        "LOCALE_VARIANT",
+        true,
+        false,
+        CopyBehavior.ignore);
 
     /** Constant for the type of relations between a detail content and its detail-only container pages. */
-    public static final CmsRelationType DETAIL_ONLY = new CmsRelationType(12, "DETAIL_ONLY", true, false);
+    public static final CmsRelationType DETAIL_ONLY = new CmsRelationType(
+        12,
+        "DETAIL_ONLY",
+        true,
+        false,
+        CopyBehavior.ignore);
 
     /** Constant for the weak links from xmlcontent to the used xsd. */
-    public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", true, true);
+    public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", true, true, CopyBehavior.copy);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
@@ -136,6 +182,9 @@ public final class CmsRelationType implements Serializable {
         XSD,
         LOCALE_VARIANT,
         DETAIL_ONLY};
+
+    /** The copy behavior. */
+    private CopyBehavior m_copyBehavior;
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;
@@ -175,13 +224,15 @@ public final class CmsRelationType implements Serializable {
      * @param name the name of the relation
      * @param strong if the relation is strong or weak
      * @param defInContent <code>true</code> if the link is defined in the content
+     * @param copyBehavior the copy behavior of the content
      */
-    private CmsRelationType(int id, String name, boolean strong, boolean defInContent) {
+    private CmsRelationType(int id, String name, boolean strong, boolean defInContent, CopyBehavior copyBehavior) {
 
         m_id = id;
         m_name = name;
         m_strong = strong;
         m_defInContent = defInContent;
+        m_copyBehavior = copyBehavior;
     }
 
     /**
@@ -517,6 +568,16 @@ public final class CmsRelationType implements Serializable {
             return (m_id == ((CmsRelationType)obj).m_id);
         }
         return false;
+    }
+
+    /**
+     * Gets the 'copy behavior' of the relation type, which is how relations of a resource should be handled when copying that resource.<p>
+     *
+     * @return the copy behavior of the relation type
+     */
+    public CopyBehavior getCopyBehavior() {
+
+        return m_copyBehavior;
     }
 
     /**
