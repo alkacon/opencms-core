@@ -34,12 +34,19 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlContentLoader;
+import org.opencms.lock.CmsLockActionRecord;
+import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
@@ -67,6 +74,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * Resource type descriptor for the type "xmlcontent".<p>
@@ -233,6 +242,34 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
+     * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
+     */
+    @Override
+    public void deleteResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResourceDeleteMode siblingMode)
+    throws CmsException {
+
+        super.deleteResource(cms, securityManager, resource, siblingMode);
+        if (isPossiblyDetailContent(resource)) {
+            List<CmsResource> detailOnlyPages = getDetailContainerResources(cms, resource);
+            for (CmsResource page : detailOnlyPages) {
+                if (page.getState().isDeleted()) {
+                    continue;
+                }
+                try {
+                    CmsLockUtil.ensureLock(cms, page);
+                    cms.deleteResource(page, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
     @Override
@@ -337,6 +374,55 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             } catch (Throwable e) {
                 // unable to unmarshal the XML schema configured
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_BAD_XML_SCHEMA_2, m_schema, getTypeName()), e);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
+     */
+    @Override
+    public void moveResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        String destination)
+    throws CmsException, CmsIllegalArgumentException {
+
+        super.moveResource(cms, securityManager, resource, destination);
+        if (isPossiblyDetailContent(resource)) {
+            String rootDest = cms.getRequestContext().addSiteRoot(destination);
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            String srcParent = CmsResource.getParentFolder(resource.getRootPath());
+            String srcName = CmsResource.getName(resource.getRootPath());
+            String destParent = CmsResource.getParentFolder(rootDest);
+            String destName = CmsResource.getName(rootDest);
+            if (srcParent.equals(destParent) && !srcName.equals(destName)) {
+                List<CmsResource> detailOnlyPages = getDetailContainerResources(cms, resource);
+                for (CmsResource page : detailOnlyPages) {
+                    if (page.getState().isDeleted()) {
+                        continue;
+                    }
+                    String newPath = CmsStringUtil.joinPaths(CmsResource.getParentFolder(page.getRootPath()), destName);
+                    CmsLockActionRecord lockRecord = null;
+                    try {
+                        lockRecord = CmsLockUtil.ensureLock(cms, page);
+                        rootCms.moveResource(page.getRootPath(), newPath);
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    } finally {
+                        if ((lockRecord != null) && (lockRecord.getChange() == LockChange.locked)) {
+                            try {
+                                CmsLockUtil.tryUnlock(
+                                    rootCms,
+                                    rootCms.readResource(page.getStructureId(), CmsResourceFilter.ALL));
+                            } catch (Exception e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -502,5 +588,49 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             LOG.error(e.getLocalizedMessage(), e);
         }
         return null;
+    }
+
+    /**
+     * Checks if the resource is possibly a detail content.<p>
+     *
+     * @param resource the resource to check
+     * @return true if the resource is possibly a detail content
+     */
+    boolean isPossiblyDetailContent(CmsResource resource) {
+
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+            return false;
+        }
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        if (type instanceof CmsResourceTypeXmlAdeConfiguration) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Reads the detail container resources which are connected by relations to the given resource.
+     *
+     * @param cms the current CMS context
+     * @param res the detail content
+     *
+     * @return the list of detail only container resources
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private List<CmsResource> getDetailContainerResources(CmsObject cms, CmsResource res) throws CmsException {
+
+        CmsRelationFilter filter = CmsRelationFilter.relationsFromStructureId(res.getStructureId()).filterType(
+            CmsRelationType.DETAIL_ONLY);
+        List<CmsResource> result = Lists.newArrayList();
+        List<CmsRelation> relations = cms.readRelations(filter);
+        for (CmsRelation relation : relations) {
+            try {
+                result.add(relation.getTarget(cms, CmsResourceFilter.ALL));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
     }
 }
