@@ -170,7 +170,7 @@ public abstract class A_CmsSerialDateBean implements I_CmsSerialDateBean {
      */
     public int getOccurrences() {
 
-        return Integer.min(m_occurrences, CmsSerialDateUtil.getMaxEvents());
+        return Math.min(m_occurrences, CmsSerialDateUtil.getMaxEvents());
     }
 
     /**
