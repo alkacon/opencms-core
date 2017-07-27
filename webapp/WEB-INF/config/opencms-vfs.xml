@@ -568,6 +568,8 @@
 					defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlDynamicCategoryValue"
 					defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlSerialDateValue"
+					defaultwidget="org.opencms.widgets.CmsSerialDateWidget" />
 			</schematypes>
 		</xmlcontent>
 	</vfs>
