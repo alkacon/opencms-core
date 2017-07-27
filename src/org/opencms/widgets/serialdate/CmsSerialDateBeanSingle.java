@@ -27,65 +27,53 @@
 
 package org.opencms.widgets.serialdate;
 
+import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
+
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Implementation of @{link org.opencms.widgets.serialdate.I_CmsSerialDateBean}
  * that handles single events.
  */
-public class CmsSerialDateBeanSingle implements I_CmsSerialDateBean {
-
-    /** Singleton list with the start date of the event. */
-    SortedSet<Date> m_dates;
-    /** Singleton list with the start date of the event in milliseconds. */
-    SortedSet<Long> m_datesAsLong;
+public class CmsSerialDateBeanSingle extends A_CmsSerialDateBean {
 
     /**
      * Constructor for the serial date bean for single events.
      * @param startDate the start date of the single event.
+     * @param endDate the end date of the single event.
+     * @param isWholeDay flag, indicating if the event lasts the whole day.
      */
-    public CmsSerialDateBeanSingle(Date startDate) {
-        Objects.requireNonNull(startDate, "The start date should not be null.");
-        m_dates = new TreeSet<>();
-        m_dates.add(startDate);
-        m_datesAsLong = new TreeSet<>();
-        m_datesAsLong.add(Long.valueOf(startDate.getTime()));
+    public CmsSerialDateBeanSingle(Date startDate, Date endDate, boolean isWholeDay) {
+        super(startDate, endDate, isWholeDay, EndType.SINGLE, null, 1, null);
 
     }
 
     /**
-     * @see org.opencms.widgets.serialdate.I_CmsSerialDateBean#getDates()
+     * @see org.opencms.widgets.serialdate.A_CmsSerialDateBean#getFirstDate()
      */
-    public SortedSet<Date> getDates() {
+    @Override
+    protected Calendar getFirstDate() {
 
-        return m_dates;
+        return m_startDate;
     }
 
     /**
-     * @see org.opencms.widgets.serialdate.I_CmsSerialDateBean#getDatesAsLong()
+     * @see org.opencms.widgets.serialdate.A_CmsSerialDateBean#isAnyDatePossible()
      */
-    public SortedSet<Long> getDatesAsLong() {
+    @Override
+    protected boolean isAnyDatePossible() {
 
-        return m_datesAsLong;
+        return true;
     }
 
     /**
-     * @see org.opencms.widgets.serialdate.I_CmsSerialDateBean#getExceptions()
+     * @see org.opencms.widgets.serialdate.A_CmsSerialDateBean#toNextDate(java.util.Calendar)
      */
-    public SortedSet<Date> getExceptions() {
+    @Override
+    protected void toNextDate(Calendar date) {
 
-        return new TreeSet<>();
+        // noop, there will never be a second date.
+
     }
-
-    /**
-     * @see org.opencms.widgets.serialdate.I_CmsSerialDateBean#hasTooManyDates()
-     */
-    public boolean hasTooManyDates() {
-
-        return false;
-    }
-
 }

@@ -513,7 +513,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         JSONObject pattern = patternToJson();
         result.put(JsonKey.PATTERN, pattern);
         SortedSet<Date> exceptions = getExceptions();
-        if ((null != exceptions) && (exceptions.size() > 0)) {
+        if (exceptions.size() > 0) {
             result.put(JsonKey.EXCEPTIONS, datesToJsonArray(exceptions));
         }
         int occurrences = getOccurrences();
@@ -630,13 +630,14 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
 
         JSONArray array = null == json ? null : json.isArray();
         if (null != array) {
+            SortedSet<Date> result = new TreeSet<>();
             for (int i = 0; i < array.size(); i++) {
-                SortedSet<Date> result = new TreeSet<>();
                 Long l = readOptionalLong(array.get(i), null);
                 if (null != l) {
                     result.add(new Date(l.longValue()));
                 }
             }
+            return result;
         }
         return new TreeSet<>();
     }
@@ -794,6 +795,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
                     // Just skip
                 }
             }
+            return result;
         }
         return new TreeSet<>();
     }
@@ -874,6 +876,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         JSONObject json = JSONParser.parseStrict(value).isObject();
         JSONValue val = json.get(JsonKey.START);
         m_start = new Date(readOptionalLong(val, Long.valueOf(0)).longValue());
+        val = json.get(JsonKey.END);
         m_end = new Date(readOptionalLong(val, Long.valueOf(0)).longValue());
         m_isWholeDay = readOptionalBoolean(json.get(JsonKey.WHOLE_DAY), false);
         JSONObject patternJson = json.get(JsonKey.PATTERN).isObject();

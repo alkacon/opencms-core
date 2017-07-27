@@ -63,7 +63,7 @@ public abstract class A_CmsSerialDateBean implements I_CmsSerialDateBean {
     /** Variable for caching the dates as long. */
     protected SortedSet<Long> m_datesInMillis;
     /** The list of exceptions. */
-    protected SortedSet<Date> m_exceptions;
+    protected final SortedSet<Date> m_exceptions = new TreeSet<>();
     /** A flag, indicating if the configuration specifies too many occurrences. */
     private Boolean m_hasTooManyOccurrences;
 
@@ -123,7 +123,9 @@ public abstract class A_CmsSerialDateBean implements I_CmsSerialDateBean {
             default:
                 break;
         }
-        m_exceptions = exceptions;
+        if (null != exceptions) {
+            m_exceptions.addAll(exceptions);
+        }
     }
 
     /**
@@ -152,6 +154,15 @@ public abstract class A_CmsSerialDateBean implements I_CmsSerialDateBean {
             }
         }
         return m_datesInMillis;
+    }
+
+    /**
+     * @see org.opencms.widgets.serialdate.I_CmsSerialDateBean#getEventDuration()
+     */
+    @Override
+    public long getEventDuration() {
+
+        return m_endDate.getTimeInMillis() - m_startDate.getTimeInMillis();
     }
 
     /**

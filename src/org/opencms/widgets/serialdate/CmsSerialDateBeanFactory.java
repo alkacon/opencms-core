@@ -143,7 +143,7 @@ public class CmsSerialDateBeanFactory {
                     value.getExceptions(),
                     value.getIndividualDates());
             case NONE:
-                return new CmsSerialDateBeanSingle(value.getStart());
+                return new CmsSerialDateBeanSingle(value.getStart(), value.getEnd(), value.isWholeDay());
             default:
                 throw new IllegalArgumentException();
         }

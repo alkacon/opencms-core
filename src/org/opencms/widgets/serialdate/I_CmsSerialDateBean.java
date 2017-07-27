@@ -50,6 +50,12 @@ public interface I_CmsSerialDateBean {
     public SortedSet<Long> getDatesAsLong();
 
     /**
+     * Returns the duration of a single event in milliseconds.
+     * @return the duration of a single event in milliseconds.
+     */
+    public long getEventDuration();
+
+    /**
      * Returns all exceptions from the series, sorted ascendingly.
      * @return all exceptions from the series, sorted ascendingly.
      */

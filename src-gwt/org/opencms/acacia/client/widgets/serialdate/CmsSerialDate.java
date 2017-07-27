@@ -465,6 +465,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
         if (!m_model.getExceptions().equals(e)) {
             m_model.setExceptions(e);
             m_view.updateExceptions();
+            valueChanged();
             sizeChanged();
         }
 
