@@ -85,16 +85,10 @@ public final class Messages {
     public static final String GUI_MULTISELECT_ACTIVATE_0 = "GUI_MULTISELECT_ACTIVATE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_TIME_STARTTIME_0 = "GUI_SERIALDATE_TIME_STARTTIME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_TIME_ENDTIME_0 = "GUI_SERIALDATE_TIME_ENDTIME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_TIME_STARTDATE_0 = "GUI_SERIALDATE_TIME_STARTDATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_TIME_DURATION_0 = "GUI_SERIALDATE_TIME_DURATION_0";
+    public static final String GUI_SERIALDATE_TIME_STARTTIME_0 = "GUI_SERIALDATE_TIME_STARTTIME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_TYPE_DAILY_0 = "GUI_SERIALDATE_TYPE_DAILY_0";
@@ -220,40 +214,73 @@ public final class Messages {
     public static final String GUI_SERIALDATE_WEEKDAYNUMBER_5_0 = "GUI_SERIALDATE_WEEKDAYNUMBER_5_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_ENDTYPE_NEVER_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_NEVER_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_DURATION_ENDTYPE_OCC_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_OCC_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_DURATION_ENDTYPE_DATE_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_DATE_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_SAMEDAY_0 = "GUI_SERIALDATE_DURATION_DURATION_SAMEDAY_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_PANEL_EXCEPTIONS_0 = "GUI_SERIALDATE_PANEL_EXCEPTIONS_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_FIRST_0 = "GUI_SERIALDATE_DURATION_DURATION_FIRST_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_PANEL_SERIAL_OPTIONS_0 = "GUI_SERIALDATE_PANEL_SERIAL_OPTIONS_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_SECOND_0 = "GUI_SERIALDATE_DURATION_DURATION_SECOND_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_PANEL_PATTERN_0 = "GUI_SERIALDATE_PANEL_PATTERN_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_THIRD_0 = "GUI_SERIALDATE_DURATION_DURATION_THIRD_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_PANEL_DURATION_0 = "GUI_SERIALDATE_PANEL_DURATION_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_FOURTH_0 = "GUI_SERIALDATE_DURATION_DURATION_FOURTH_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_PANEL_DATES_0 = "GUI_SERIALDATE_PANEL_DATES_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_FIFTH_0 = "GUI_SERIALDATE_DURATION_DURATION_FIFTH_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_SERIES_CHECKBOX_0 = "GUI_SERIALDATE_SERIES_CHECKBOX_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_SIXTH_0 = "GUI_SERIALDATE_DURATION_DURATION_SIXTH_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_WHOLE_DAY_CHECKBOX_0 = "GUI_SERIALDATE_WHOLE_DAY_CHECKBOX_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_ONEWEEK_0 = "GUI_SERIALDATE_DURATION_DURATION_ONEWEEK_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_BUTTON_MANAGE_EXCEPTIONS_0 = "GUI_SERIALDATE_BUTTON_MANAGE_EXCEPTIONS_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_DURATION_DURATION_TWOWEEK_0 = "GUI_SERIALDATE_DURATION_DURATION_TWOWEEK_0";
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_BUTTON_REMOVE_EXCEPTIONS_0 = "GUI_SERIALDATE_BUTTON_REMOVE_EXCEPTIONS_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_DEACTIVE_TEXT_0 = "GUI_SERIALDATE_DEACTIVE_TEXT_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_DATE_FORMAT_0 = "GUI_SERIALDATE_DATE_FORMAT_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_ERROR_INVALID_INTERVAL_0 = "GUI_SERIALDATE_ERROR_INVALID_INTERVAL_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_ERROR_INVALID_OCCURRENCES_1 = "GUI_SERIALDATE_ERROR_INVALID_OCCURRENCES_1";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_ERROR_SERIAL_END_BEFORE_START_0 = "GUI_SERIALDATE_ERROR_SERIAL_END_BEFORE_START_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_ERROR_SERIESEND_TOO_FAR_AWAY_1 = "GUI_SERIALDATE_ERROR_SERIESEND_TOO_FAR_AWAY_1";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_ERROR_END_BEFORE_START_0 = "GUI_SERIALDATE_ERROR_END_BEFORE_START_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_ERROR_INVALID_DAYOFMONTH_0 = "GUI_SERIALDATE_ERROR_INVALID_DAYOFMONTH_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_ERROR_NO_WEEKOFMONTH_SPECIFIED_0 = "GUI_SERIALDATE_ERROR_NO_WEEKOFMONTH_SPECIFIED_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_ERROR_NO_WEEKDAY_SPECIFIED_0 = "GUI_SERIALDATE_ERROR_NO_WEEKDAY_SPECIFIED_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_BUTTON_ADD_INDIVIDUAL_0 = "GUI_SERIALDATE_BUTTON_ADD_INDIVIDUAL_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_BUTTON_REMOVE_INDIVIDUAL_0 = "GUI_SERIALDATE_BUTTON_REMOVE_INDIVIDUAL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0 = "GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0";
@@ -338,72 +365,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_PANEL_EXCEPTIONS_0 = "GUI_SERIALDATE_PANEL_EXCEPTIONS_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_PANEL_SERIAL_OPTIONS_0 = "GUI_SERIALDATE_PANEL_SERIAL_OPTIONS_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_PANEL_PATTERN_0 = "GUI_SERIALDATE_PANEL_PATTERN_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_PANEL_DURATION_0 = "GUI_SERIALDATE_PANEL_DURATION_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_PANEL_DATES_0 = "GUI_SERIALDATE_PANEL_DATES_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_SERIES_CHECKBOX_0 = "GUI_SERIALDATE_SERIES_CHECKBOX_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_WHOLE_DAY_CHECKBOX_0 = "GUI_SERIALDATE_WHOLE_DAY_CHECKBOX_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_BUTTON_MANAGE_EXCEPTIONS_0 = "GUI_SERIALDATE_BUTTON_MANAGE_EXCEPTIONS_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_BUTTON_REMOVE_EXCEPTIONS_0 = "GUI_SERIALDATE_BUTTON_REMOVE_EXCEPTIONS_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_DEACTIVE_TEXT_0 = "GUI_SERIALDATE_DEACTIVE_TEXT_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_DATE_TIME_FORMAT_0 = "GUI_SERIALDATE_DATE_TIME_FORMAT_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_DATE_FORMAT_0 = "GUI_SERIALDATE_DATE_FORMAT_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_ERROR_INVALID_INTERVAL_0 = "GUI_SERIALDATE_ERROR_INVALID_INTERVAL_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_ERROR_INVALID_OCCURRENCES_1 = "GUI_SERIALDATE_ERROR_INVALID_OCCURRENCES_1";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_ERROR_SERIAL_END_BEFORE_START_0 = "GUI_SERIALDATE_ERROR_SERIAL_END_BEFORE_START_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_ERROR_SERIESEND_TOO_FAR_AWAY_1 = "GUI_SERIALDATE_ERROR_SERIESEND_TOO_FAR_AWAY_1";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_ERROR_END_BEFORE_START_0 = "GUI_SERIALDATE_ERROR_END_BEFORE_START_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_ERROR_INVALID_DAYOFMONTH_0 = "GUI_SERIALDATE_ERROR_INVALID_DAYOFMONTH_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_ERROR_NO_WEEKOFMONTH_SPECIFIED_0 = "GUI_SERIALDATE_ERROR_NO_WEEKOFMONTH_SPECIFIED_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_ERROR_NO_WEEKDAY_SPECIFIED_0 = "GUI_SERIALDATE_ERROR_NO_WEEKDAY_SPECIFIED_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_BUTTON_ADD_INDIVIDUAL_0 = "GUI_SERIALDATE_BUTTON_ADD_INDIVIDUAL_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_BUTTON_REMOVE_INDIVIDUAL_0 = "GUI_SERIALDATE_BUTTON_REMOVE_INDIVIDUAL_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;
