@@ -524,6 +524,45 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Gets the list of locales for which there are attachments.<p>
+     *
+     * @return the list of locales for which there are attachments
+     */
+    public List<String> getAttachmentLocales() {
+
+        return CmsJspContentAttachmentsBean.getAttachmentLocales(m_cms, m_resource);
+    }
+
+    /**
+     * Gets an attachment bean, trying to automatically find the right locale for the current page.<p>
+     *
+     * @return the attachments bean for the current page's locale
+     * @throws CmsException if something goes wrong
+     */
+    public CmsJspContentAttachmentsBean getAttachments() throws CmsException {
+
+        return CmsJspContentAttachmentsBean.getAttachmentsForCurrentPage(m_cms, m_resource);
+    }
+
+    /**
+     * Gets a lazy map which maps locales to attachment beans for that locale.<p>
+     *
+     * @return the lazy map
+     */
+    public Map<?, ?> getAttachmentsForLocale() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+            @SuppressWarnings("synthetic-access")
+            public Object transform(Object arg0) {
+
+                String localeStr = (String)arg0;
+                return CmsJspContentAttachmentsBean.getAttachmentsForLocale(m_cms, m_resource, localeStr);
+            }
+        });
+    }
+
+    /**
      * Returns the OpenCms user context this bean was initialized with.<p>
      *
      * @return the OpenCms user context this bean was initialized with
