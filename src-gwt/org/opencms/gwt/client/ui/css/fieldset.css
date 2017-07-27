@@ -31,13 +31,13 @@ div.cmsState.image > div.html-face{
 	vertical-align: top;
 }
 .legend {
-	left: 20px;
-	background: value("constants.css.backgroundColorDialog");
-	position: absolute;
-	font-weight: bold;
-	padding: 0 3px 0 3px;
-	margin: -11px 0px 0px 5px;
-	color: value("constants.css.textColor");
+	left: 20px !important;
+	background: value("constants.css.backgroundColorDialog") !important;
+	position: absolute !important;
+	font-weight: bold !important;
+	padding: 0 3px 0 3px !important;
+	margin: -11px 0px 0px 5px !important;
+	color: value("constants.css.textColor") !important;
 }
 div.fieldsetVisible .content {
 	/* margin: 12px 6px 4px 6px; */
