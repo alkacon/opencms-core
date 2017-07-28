@@ -311,6 +311,9 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 }
                 try {
                     CmsResource parentFolder = cms.readParentFolder(resource.getStructureId());
+                    if (parentFolder == null) {
+                        return VISIBILITY_INVISIBLE;
+                    }
                     CmsResource defaultFile = cms.readDefaultFile(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                     if ((defaultFile == null) || !(defaultFile.getStructureId().equals(resource.getStructureId()))) {
                         return VISIBILITY_INVISIBLE;
