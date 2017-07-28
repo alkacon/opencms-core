@@ -32,18 +32,29 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.lock.CmsLockActionRecord;
+import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -304,6 +315,113 @@ public final class CmsDetailOnlyContainerUtil {
             LOG.debug(t.getLocalizedMessage(), t);
         }
         return result;
+    }
+
+    /**
+     * Creates an empty detail-only page for a content, or just reads the resource if the detail-only page already exists.<p>
+     *
+     * @param cms the current CMS context
+     * @param detailId the structure id of the detail content
+     * @param detailOnlyRootPath the path of the detail only page
+     *
+     * @return the detail-only page
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsResource readOrCreateDetailOnlyPage(CmsObject cms, CmsUUID detailId, String detailOnlyRootPath)
+    throws CmsException {
+
+        CmsObject rootCms = OpenCms.initCmsObject(cms);
+        rootCms.getRequestContext().setSiteRoot("");
+        CmsResource containerpage;
+        if (rootCms.existsResource(detailOnlyRootPath)) {
+            containerpage = rootCms.readResource(detailOnlyRootPath);
+        } else {
+            String parentFolder = CmsResource.getFolderPath(detailOnlyRootPath);
+            List<String> foldersToCreate = new ArrayList<String>();
+            // ensure the parent folder exists
+            while (!rootCms.existsResource(parentFolder)) {
+                foldersToCreate.add(0, parentFolder);
+                parentFolder = CmsResource.getParentFolder(parentFolder);
+            }
+            for (String folderName : foldersToCreate) {
+                CmsResource parentRes = rootCms.createResource(
+                    folderName,
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
+                // set the search exclude property on parent folder
+                rootCms.writePropertyObject(
+                    folderName,
+                    new CmsProperty(
+                        CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
+                        CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
+                        null));
+                CmsLockUtil.tryUnlock(rootCms, parentRes);
+            }
+            containerpage = rootCms.createResource(
+                detailOnlyRootPath,
+                OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
+        }
+        CmsLockUtil.ensureLock(rootCms, containerpage);
+        try {
+            CmsResource detailResource = cms.readResource(detailId, CmsResourceFilter.IGNORE_EXPIRATION);
+            String title = cms.readPropertyObject(
+                detailResource,
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                true).getValue();
+            if (title != null) {
+                title = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                    Messages.GUI_DETAIL_CONTENT_PAGE_TITLE_1,
+                    title);
+                CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
+                cms.writePropertyObjects(containerpage, Arrays.asList(titleProp));
+            }
+
+            List<CmsRelation> relations = cms.readRelations(
+                CmsRelationFilter.relationsFromStructureId(detailId).filterType(CmsRelationType.DETAIL_ONLY));
+            boolean hasRelation = false;
+            for (CmsRelation relation : relations) {
+                if (relation.getTargetId().equals(containerpage.getStructureId())) {
+                    hasRelation = true;
+                    break;
+                }
+            }
+            if (!hasRelation) {
+                CmsLockActionRecord lockRecord = null;
+                try {
+                    lockRecord = CmsLockUtil.ensureLock(cms, detailResource);
+                    cms.addRelationToResource(detailResource, containerpage, CmsRelationType.DETAIL_ONLY.getName());
+                } finally {
+                    if ((lockRecord != null) && (lockRecord.getChange() == LockChange.locked)) {
+                        cms.unlockResource(detailResource);
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            CmsContainerpageService.LOG.error(e.getLocalizedMessage(), e);
+        }
+        return containerpage;
+    }
+
+    /**
+     * Saves a detail-only page for a content.<p>
+     *
+     * If the detail-only page already exists, it is overwritten.
+     *
+     * @param cms the current CMS context
+     * @param content the content for which to save the detail-only page
+     * @param locale the locale
+     * @param page the container page data to save in the detail-only page
+    
+     * @throws CmsException if something goes wrong
+     */
+    public static void saveDetailOnlyPage(CmsObject cms, CmsResource content, String locale, CmsContainerPageBean page)
+
+    throws CmsException {
+
+        String detailOnlyPath = getDetailOnlyPageNameWithoutLocaleCheck(content.getRootPath(), locale);
+        CmsResource resource = readOrCreateDetailOnlyPage(cms, content.getStructureId(), detailOnlyPath);
+        CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(resource));
+        xmlCntPage.save(cms, page);
     }
 
     /**

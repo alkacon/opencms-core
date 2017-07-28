@@ -70,7 +70,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -89,10 +88,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.lock.CmsLock;
-import org.opencms.lock.CmsLockActionRecord;
-import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockType;
-import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -100,7 +96,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
@@ -291,7 +286,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public static final String SOURCE_CONTAINERPAGE_ID_SETTING = "source_containerpage_id";
 
     /** Static reference to the log. */
-    private static final Log LOG = CmsLog.getLog(CmsContainerpageService.class);
+    static final Log LOG = CmsLog.getLog(CmsContainerpageService.class);
 
     /** Serial version UID. */
     private static final long serialVersionUID = -6188370638303594280L;
@@ -1320,76 +1315,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsObject cms = getCmsObject();
         try {
+            ensureSession();
             CmsObject rootCms = OpenCms.initCmsObject(cms);
             rootCms.getRequestContext().setSiteRoot("");
             CmsResource containerpage;
-            ensureSession();
-            if (rootCms.existsResource(detailContainerResource)) {
-                containerpage = rootCms.readResource(detailContainerResource);
-            } else {
-                String parentFolder = CmsResource.getFolderPath(detailContainerResource);
-                List<String> foldersToCreate = new ArrayList<String>();
-                // ensure the parent folder exists
-                while (!rootCms.existsResource(parentFolder)) {
-                    foldersToCreate.add(0, parentFolder);
-                    parentFolder = CmsResource.getParentFolder(parentFolder);
-                }
-                for (String folderName : foldersToCreate) {
-                    CmsResource parentRes = rootCms.createResource(
-                        folderName,
-                        OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
-                    // set the search exclude property on parent folder
-                    rootCms.writePropertyObject(
-                        folderName,
-                        new CmsProperty(
-                            CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
-                            CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
-                            null));
-                    tryUnlock(parentRes);
-                }
-                containerpage = rootCms.createResource(
-                    detailContainerResource,
-                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
-            }
-            ensureLock(containerpage);
-            try {
-                CmsResource detailResource = cms.readResource(detailId, CmsResourceFilter.IGNORE_EXPIRATION);
-                String title = cms.readPropertyObject(
-                    detailResource,
-                    CmsPropertyDefinition.PROPERTY_TITLE,
-                    true).getValue();
-                if (title != null) {
-                    title = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-                        Messages.GUI_DETAIL_CONTENT_PAGE_TITLE_1,
-                        title);
-                    CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
-                    cms.writePropertyObjects(containerpage, Arrays.asList(titleProp));
-                }
-
-                List<CmsRelation> relations = cms.readRelations(
-                    CmsRelationFilter.relationsFromStructureId(detailId).filterType(CmsRelationType.DETAIL_ONLY));
-                boolean hasRelation = false;
-                for (CmsRelation relation : relations) {
-                    if (relation.getTargetId().equals(containerpage.getStructureId())) {
-                        hasRelation = true;
-                        break;
-                    }
-                }
-                if (!hasRelation) {
-                    CmsLockActionRecord lockRecord = null;
-                    try {
-                        lockRecord = CmsLockUtil.ensureLock(cms, detailResource);
-                        cms.addRelationToResource(detailResource, containerpage, CmsRelationType.DETAIL_ONLY.getName());
-                    } finally {
-                        if ((lockRecord != null) && (lockRecord.getChange() == LockChange.locked)) {
-                            cms.unlockResource(detailResource);
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-
+            containerpage = CmsDetailOnlyContainerUtil.readOrCreateDetailOnlyPage(
+                rootCms,
+                detailId,
+                detailContainerResource);
             saveContainers(rootCms, containerpage, detailContainerResource, containers);
         } catch (Throwable e) {
             error(e);
