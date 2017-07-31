@@ -29,9 +29,11 @@ package org.opencms.ui.apps.modules.edit;
 
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.util.CmsStringUtil;
 
+import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.TextField;
 
 /**
  * Widget used to edit a module export point.<p>
@@ -45,14 +47,7 @@ public class CmsExportPointWidget extends FormLayout {
     private CmsPathSelectField m_source;
 
     /** The target. */
-    private TextField m_target;
-
-    /**
-     * Creates a new instance.
-     */
-    public CmsExportPointWidget() {
-        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-    }
+    private ComboBox m_target;
 
     /**
      * Creates a new instance.<p>
@@ -61,9 +56,17 @@ public class CmsExportPointWidget extends FormLayout {
      * @param target the export point target
      */
     public CmsExportPointWidget(String source, String target) {
-        this();
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_source.setUseRootPaths(true);
         m_source.setValue(source);
+        m_target.setFilteringMode(FilteringMode.OFF);
+        m_target.setNewItemsAllowed(true);
+        m_target.addItem("WEB-INF/lib/");
+        m_target.addItem("WEB-INF/classes/");
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(target)) {
+            m_target.addItem(target);
+        }
+
         m_target.setValue(target);
     }
 
@@ -74,7 +77,7 @@ public class CmsExportPointWidget extends FormLayout {
      */
     public String getDestination() {
 
-        return m_target.getValue();
+        return (String)(m_target.getValue());
     }
 
     /**
