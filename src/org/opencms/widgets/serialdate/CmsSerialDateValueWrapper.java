@@ -342,13 +342,16 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
             if (!exceptions.isEmpty()) {
                 result.put(JsonKey.EXCEPTIONS, datesToJson(exceptions));
             }
-            int occurrences = getOccurrences();
-            if (occurrences > 0) {
-                result.put(JsonKey.SERIES_OCCURRENCES, "" + occurrences);
-            }
-            Date seriesEndDate = getSeriesEndDate();
-            if (null != seriesEndDate) {
-                result.put(JsonKey.SERIES_ENDDATE, dateToJson(seriesEndDate));
+            switch (getEndType()) {
+                case DATE:
+                    result.put(JsonKey.SERIES_ENDDATE, dateToJson(getSeriesEndDate()));
+                    break;
+                case TIMES:
+                    result.put(JsonKey.SERIES_OCCURRENCES, String.valueOf(getOccurrences()));
+                    break;
+                case SINGLE:
+                default:
+                    break;
             }
             return result;
         } catch (JSONException e) {
@@ -491,31 +494,42 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
 
         JSONObject pattern = new JSONObject();
         pattern.putOpt(JsonKey.PATTERN_TYPE, getPatternType().toString());
-        SortedSet<Date> dates = getIndividualDates();
-        if (!dates.isEmpty()) {
-            pattern.putOpt(JsonKey.PATTERN_DATES, datesToJson(dates));
-        }
-        int interval = getInterval();
-        if (interval > 0) {
-            pattern.putOpt(JsonKey.PATTERN_INTERVAL, "" + interval);
-        }
-        SortedSet<WeekDay> weekdays = getWeekDays();
-        if (!weekdays.isEmpty()) {
-            pattern.putOpt(JsonKey.PATTERN_WEEKDAYS, toJsonStringArray(weekdays));
-        }
-        int day = getDayOfMonth();
-        if (day > 0) {
-            pattern.putOpt(JsonKey.PATTERN_DAY_OF_MONTH, "" + day);
-        }
-        SortedSet<WeekOfMonth> weeks = getWeeksOfMonth();
-        if (!weeks.isEmpty()) {
-            pattern.putOpt(JsonKey.PATTERN_WEEKS_OF_MONTH, toJsonStringArray(weeks));
-        }
-        if (getPatternType().equals(PatternType.YEARLY)) {
-            pattern.put(JsonKey.PATTERN_MONTH, getMonth().toString());
-        }
-        if (isEveryWorkingDay()) {
-            pattern.put(JsonKey.PATTERN_EVERYWORKINGDAY, true);
+        switch (getPatternType()) {
+            case DAILY:
+                if (isEveryWorkingDay()) {
+                    pattern.put(JsonKey.PATTERN_EVERYWORKINGDAY, true);
+                } else {
+                    pattern.putOpt(JsonKey.PATTERN_INTERVAL, String.valueOf(getInterval()));
+                }
+                break;
+            case WEEKLY:
+                pattern.putOpt(JsonKey.PATTERN_INTERVAL, String.valueOf(getInterval()));
+                pattern.putOpt(JsonKey.PATTERN_WEEKDAYS, toJsonStringArray(getWeekDays()));
+                break;
+            case MONTHLY:
+                pattern.putOpt(JsonKey.PATTERN_INTERVAL, String.valueOf(getInterval()));
+                if (null != getWeekDay()) {
+                    pattern.putOpt(JsonKey.PATTERN_WEEKS_OF_MONTH, toJsonStringArray(getWeeksOfMonth()));
+                    pattern.putOpt(JsonKey.PATTERN_WEEKDAYS, toJsonStringArray(getWeekDays()));
+                } else {
+                    pattern.putOpt(JsonKey.PATTERN_DAY_OF_MONTH, "" + getDayOfMonth());
+                }
+                break;
+            case YEARLY:
+                pattern.put(JsonKey.PATTERN_MONTH, getMonth().toString());
+                if (null != getWeekDay()) {
+                    pattern.putOpt(JsonKey.PATTERN_WEEKS_OF_MONTH, toJsonStringArray(getWeeksOfMonth()));
+                    pattern.putOpt(JsonKey.PATTERN_WEEKDAYS, toJsonStringArray(getWeekDays()));
+                } else {
+                    pattern.putOpt(JsonKey.PATTERN_DAY_OF_MONTH, "" + getDayOfMonth());
+                }
+                break;
+            case INDIVIDUAL:
+                pattern.putOpt(JsonKey.PATTERN_DATES, datesToJson(getIndividualDates()));
+                break;
+            case NONE:
+            default:
+                break;
         }
         return pattern;
     }

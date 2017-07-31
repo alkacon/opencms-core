@@ -57,7 +57,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
      */
     public void testDailyEndTimesWithExceptions() throws Exception {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"wholeday\":true, \"pattern\":{\"type\":\"DAILY\", \"interval\":\"5\", \"day\":\"1\"}, \"exceptions\":[\"1491289200000\",\"1491462000000\"], \"occurrences\":\"3\"}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"wholeday\":true, \"pattern\":{\"type\":\"DAILY\", \"interval\":\"5\"}, \"exceptions\":[\"1491289200000\",\"1491462000000\"], \"occurrences\":\"3\"}";
         CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
         wrapper.setValue(patternDefinition);
         // general
@@ -71,7 +71,6 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         assertEquals(PatternType.DAILY, wrapper.getPatternType());
         assertEquals(false, wrapper.isEveryWorkingDay());
         assertEquals(5, wrapper.getInterval());
-        assertEquals(1, wrapper.getDayOfMonth());
         // exceptions
         SortedSet<Date> exceptions = new TreeSet<>();
         exceptions.add(new Date(1491289200000L));
@@ -89,7 +88,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
      */
     public void testDailyWorkingDayEndDate() throws Exception {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"DAILY\", \"everyworkingday\":true, \"interval\":\"1\", \"day\":\"1\"}, \"enddate\":\"1492207200000\"}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"DAILY\", \"everyworkingday\":true}, \"enddate\":\"1492207200000\"}";
         CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
         wrapper.setValue(patternDefinition);
         // general
@@ -114,7 +113,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
      */
     public void testIndividual() throws Exception {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"INDIVIDUAL\", \"dates\":[\"1501489020000\",\"1501748220000\"], \"interval\":\"1\", \"day\":\"1\"}}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"INDIVIDUAL\", \"dates\":[\"1501489020000\",\"1501748220000\"]}}";
         CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
         wrapper.setValue(patternDefinition);
         // general
@@ -166,7 +165,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
      */
     public void testMonthlyWeeks() throws Exception {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"MONTHLY\", \"interval\":\"5\", \"weekdays\":[\"WEDNESDAY\"], \"day\":\"15\", \"weeks\":[\"SECOND\",\"LAST\"]}, \"occurrences\":\"3\"}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"MONTHLY\", \"interval\":\"5\", \"weekdays\":[\"WEDNESDAY\"], \"weeks\":[\"SECOND\",\"LAST\"]}, \"occurrences\":\"3\"}";
         CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
         wrapper.setValue(patternDefinition);
         // general
@@ -196,7 +195,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
      */
     public void testNone() throws Exception {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\", \"interval\":\"1\", \"day\":\"1\"}}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}}";
         CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
         wrapper.setValue(patternDefinition);
         // general
@@ -217,7 +216,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
      */
     public void testWeekly() throws Exception {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"WEEKLY\", \"interval\":\"5\", \"weekdays\":[\"TUESDAY\",\"THURSDAY\"], \"day\":\"1\"}, \"occurrences\":\"3\"}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"WEEKLY\", \"interval\":\"5\", \"weekdays\":[\"TUESDAY\",\"THURSDAY\"]}, \"occurrences\":\"3\"}";
         CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
         wrapper.setValue(patternDefinition);
         // general
@@ -246,7 +245,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
      */
     public void testYearlyDay() throws Exception {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"interval\":\"1\", \"day\":\"31\", \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"day\":\"31\", \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
         CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
         wrapper.setValue(patternDefinition);
         // general
@@ -274,7 +273,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
      */
     public void testYearlyWeeks() throws Exception {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"interval\":\"1\", \"weekdays\":[\"WEDNESDAY\"], \"day\":\"1\", \"weeks\":[\"SECOND\"], \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"weekdays\":[\"WEDNESDAY\"], \"weeks\":[\"SECOND\"], \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
         CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
         wrapper.setValue(patternDefinition);
         // general

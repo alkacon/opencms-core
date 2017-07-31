@@ -344,6 +344,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
                     m_model.setPatternType(PatternType.DAILY);
                 }
                 m_view.onPatternChange();
+                valueChanged();
             }
         }
     }
