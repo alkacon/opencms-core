@@ -27,7 +27,6 @@
 
 package org.opencms.ui.client;
 
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 import org.opencms.ui.shared.components.CmsMaxHeightState;
 import org.opencms.ui.shared.rpc.I_CmsMaxHeightServerRpc;
@@ -111,6 +110,9 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
         addMutationObserver(m_widget.getElement());
         addStateChangeHandler(new StateChangeHandler() {
 
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
             @SuppressWarnings("synthetic-access")
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
 
@@ -129,9 +131,11 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
             removeObserver();
             return;
         }
+
         int maxHeight = getState().getMaxHeight();
         if (m_currentHeight > 0) {
             removeObserver();
+            JavaScriptObject scrollPositionData = saveScrollPositions(m_widget.getElement());
             // clear height
             m_widget.getElement().getStyle().clearHeight();
             if ((m_widget.getOffsetHeight() + 10) < m_currentHeight) {
@@ -140,7 +144,7 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
             } else {
                 m_widget.getElement().getStyle().setHeight(m_currentHeight, Unit.PX);
             }
-
+            restoreScrollPositions(scrollPositionData);
             addMutationObserver(m_widget.getElement());
         } else if ((maxHeight > 0) && (m_widget.getOffsetHeight() > maxHeight)) {
             m_currentHeight = maxHeight;
@@ -154,33 +158,73 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
      * @param element the element
      */
     private native void addMutationObserver(Element element)/*-{
-                                                            var self = this;
-                                                            var observer = new MutationObserver(
-                                                            function(mutations) {
-                                                            self.@org.opencms.ui.client.CmsMaxHeightConnector::handleMutation()();
-                                                            });
-                                                            this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = observer;
-                                                            
-                                                            // configuration of the observer:
-                                                            var config = {
-                                                            attributes : true,
-                                                            childList : true,
-                                                            characterData : true,
-                                                            subtree : true
-                                                            };
-                                                            
-                                                            // pass in the target node, as well as the observer options
-                                                            observer.observe(element, config);
-                                                            }-*/;
+        var self = this;
+        var observer = new MutationObserver(
+                function(mutations) {
+                    self.@org.opencms.ui.client.CmsMaxHeightConnector::handleMutation()();
+                });
+        this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = observer;
+
+        // configuration of the observer:
+        var config = {
+            attributes : true,
+            childList : true,
+            characterData : true,
+            subtree : true
+        };
+
+        // pass in the target node, as well as the observer options
+        observer.observe(element, config);
+    }-*/;
 
     /**
      * Removes the mutation observer.<p>
      */
     private native void removeObserver()/*-{
-                                        if (this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver != null) {
-                                        this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver
-                                        .disconnect();
-                                        this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = null;
-                                        }
-                                        }-*/;
+        if (this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver != null) {
+            this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver
+                    .disconnect();
+            this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = null;
+        }
+    }-*/;
+
+    /**
+     * Restores saved scroll positions of scrollable containers.<p>
+     *
+     * @param capturedScrollPositions the saved scroll positions
+     */
+    private native void restoreScrollPositions(JavaScriptObject capturedScrollPositions) /*-{
+        for (var i = 0; i < capturedScrollPositions.length; i++) {
+            var entry = capturedScrollPositions[i];
+            try {
+                var element = entry[0];
+                var st = entry[1];
+                element.scrollTop = st;
+            } catch (e) {
+                // ignore
+            }
+        }
+    }-*/;
+
+    /**
+     * Creates a list of pairs of v-scrollable elements and their respective scrollTop attribute beneath the given DOM element.<p>
+     *
+     * @param element the root element
+     * @return a list of pairs [[element1, scrolltop1], [element2, scrolltop2], ...]
+     */
+    private native JavaScriptObject saveScrollPositions(Element element) /*-{
+        var result = [];
+        try {
+            var elems = element.querySelectorAll(".v-scrollable");
+            for (var i = 0; i < elems.length; i++) {
+                var elem = elems[i];
+                if (elem.scrollHeight > elem.clientHeight) {
+                    result.push([ elem, elem.scrollTop ]);
+                }
+            }
+        } catch (e) {
+        }
+        return result;
+    }-*/;
+
 }
