@@ -184,7 +184,7 @@ public final class CmsRelationType implements Serializable {
         DETAIL_ONLY};
 
     /** The copy behavior. */
-    private CopyBehavior m_copyBehavior;
+    private CopyBehavior m_copyBehavior = CopyBehavior.copy;
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;
