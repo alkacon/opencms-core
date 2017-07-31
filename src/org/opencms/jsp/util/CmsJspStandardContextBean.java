@@ -814,6 +814,9 @@ public final class CmsJspStandardContextBean {
     /** Map from root paths to site relative paths. */
     private Map<String, String> m_sitePaths;
 
+    /** Lazily initialized map from the String representation of serial dates to series information beans. */
+    private Map<String, CmsJspSeriesInformationBean> m_parsedSeriesInformation;
+
     /**
      * Creates an empty instance.<p>
      */
@@ -1236,6 +1239,24 @@ public final class CmsJspStandardContextBean {
     public CmsContainerElementBean getParentElement() {
 
         return getParentElement(getElement());
+    }
+
+    /**
+     * Returns a lazy map from series information as string to series information beans.
+     * @return a lazy map from series information as string to series information beans.
+     */
+    public Map<String, CmsJspSeriesInformationBean> getParseSeriesInfo() {
+
+        if (null == m_parsedSeriesInformation) {
+            m_parsedSeriesInformation = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                public Object transform(Object seriesDefinition) {
+
+                    return new CmsJspSeriesInformationBean(String.valueOf(seriesDefinition));
+                }
+            });
+        }
+        return m_parsedSeriesInformation;
     }
 
     /**
