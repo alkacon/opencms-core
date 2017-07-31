@@ -89,6 +89,9 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
     /** The controller to handle changes. */
     final CmsPatternPanelWeeklyController m_controller;
 
+    /** Flag, indicating if change actions should not be triggered. */
+    private boolean m_triggerChangeActions = true;
+
     /**
      * Default constructor to create the panel.<p>
      * @param model the model to read data from.
@@ -103,7 +106,9 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
 
             public void onValueChange(ValueChangeEvent<Boolean> event) {
 
-                m_controller.setWeekDays(getWeekDays());
+                if (handleChange()) {
+                    m_controller.setWeekDays(getWeekDays());
+                }
             }
         };
 
@@ -119,8 +124,10 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
      */
     public void onValueChange() {
 
+        m_triggerChangeActions = false;
         m_everyDay.setValue("" + m_model.getInterval());
         setWeekDays(m_model.getWeekDays());
+        m_triggerChangeActions = true;
 
     }
 
@@ -140,6 +147,15 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
     }
 
     /**
+     * Returns a flag, indicating if change actions should be triggered.
+     * @return a flag, indicating if change actions should be triggered.
+     */
+    boolean handleChange() {
+
+        return m_triggerChangeActions;
+    }
+
+    /**
      * Handles the days key press event.<p>
      *
      * @param event the key press event
@@ -147,7 +163,9 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
     @UiHandler("m_everyDay")
     void onDaysValueChange(ValueChangeEvent<String> event) {
 
-        m_controller.setInterval(m_everyDay.getText());
+        if (handleChange()) {
+            m_controller.setInterval(m_everyDay.getText());
+        }
     }
 
     /**

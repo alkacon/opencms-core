@@ -33,6 +33,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -92,6 +93,35 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     public void addWeekOfMonth(WeekOfMonth week) {
 
         m_weeksOfMonth.add(week);
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        if (o instanceof I_CmsSerialDateValue) {
+            I_CmsSerialDateValue val = (I_CmsSerialDateValue)o;
+            return (val.getDayOfMonth() == this.getDayOfMonth())
+                && (val.isEveryWorkingDay() == this.isEveryWorkingDay())
+                && (val.isWholeDay() == this.isWholeDay())
+                && Objects.equals(val.getEnd(), this.getEnd())
+                && Objects.equals(val.getEndType(), this.getEndType())
+                && Objects.equals(val.getExceptions(), this.getExceptions())
+                && Objects.equals(val.getIndividualDates(), this.getIndividualDates())
+                && (val.getInterval() == this.getInterval())
+                && Objects.equals(val.getMonth(), this.getMonth())
+                && (val.getOccurrences() == this.getOccurrences())
+                && Objects.equals(val.getPatternType(), this.getPatternType())
+                && Objects.equals(val.getSeriesEndDate(), this.getSeriesEndDate())
+                && Objects.equals(val.getStart(), this.getStart())
+                && Objects.equals(val.getWeekDay(), this.getWeekDay())
+                && Objects.equals(val.getWeekDays(), this.getWeekDays())
+                && Objects.equals(val.getWeekOfMonth(), this.getWeekOfMonth())
+                && Objects.equals(val.getWeeksOfMonth(), this.getWeeksOfMonth());
+        }
+        return false;
     }
 
     /**
@@ -226,6 +256,33 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     public SortedSet<WeekOfMonth> getWeeksOfMonth() {
 
         return new TreeSet<>(m_weeksOfMonth);
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(
+            Boolean.valueOf(this.isEveryWorkingDay()),
+            Boolean.valueOf(this.isWholeDay()),
+            Integer.valueOf(this.getDayOfMonth()),
+            this.getEnd(),
+            this.getEndType(),
+            this.getExceptions(),
+            this.getIndividualDates(),
+            Integer.valueOf(this.getInterval()),
+            this.getMonth(),
+            Integer.valueOf(this.getOccurrences()),
+            this.getPatternType(),
+            this.getSeriesEndDate(),
+            this.getStart(),
+            this.getWeekDay(),
+            this.getWeekDays(),
+            this.getWeekOfMonth(),
+            this.getWeeksOfMonth());
+
     }
 
     /**
@@ -427,7 +484,9 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
             setDefaultValue();
         } else {
             try {
+                CmsDebugLog.consoleLog("Set value with value: " + value);
                 tryToSetParsedValue(value);
+                CmsDebugLog.consoleLog("Weeks " + getWeeksOfMonth());
             } catch (@SuppressWarnings("unused") Exception e) {
                 CmsDebugLog.consoleLog("Could not parse widget value\"" + value + "\". Using default value.");
                 setDefaultValue();

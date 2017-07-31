@@ -36,13 +36,11 @@ import org.opencms.main.CmsLog;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
-
-import com.google.gwt.json.client.JSONBoolean;
-import com.google.gwt.json.client.JSONString;
 
 /** Server-side implementation of {@link org.opencms.acacia.shared.I_CmsSerialDateValue}. */
 public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
@@ -109,6 +107,35 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
             }
             m_seriesOccurrences = readOptionalInt(json, JsonKey.SERIES_OCCURRENCES, 0);
         }
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        if (o instanceof I_CmsSerialDateValue) {
+            I_CmsSerialDateValue val = (I_CmsSerialDateValue)o;
+            return (val.getDayOfMonth() == this.getDayOfMonth())
+                && (val.isEveryWorkingDay() == this.isEveryWorkingDay())
+                && (val.isWholeDay() == this.isWholeDay())
+                && Objects.equals(val.getEnd(), this.getEnd())
+                && Objects.equals(val.getEndType(), this.getEndType())
+                && Objects.equals(val.getExceptions(), this.getExceptions())
+                && Objects.equals(val.getIndividualDates(), this.getIndividualDates())
+                && (val.getInterval() == this.getInterval())
+                && Objects.equals(val.getMonth(), this.getMonth())
+                && (val.getOccurrences() == this.getOccurrences())
+                && Objects.equals(val.getPatternType(), this.getPatternType())
+                && Objects.equals(val.getSeriesEndDate(), this.getSeriesEndDate())
+                && Objects.equals(val.getStart(), this.getStart())
+                && Objects.equals(val.getWeekDay(), this.getWeekDay())
+                && Objects.equals(val.getWeekDays(), this.getWeekDays())
+                && Objects.equals(val.getWeekOfMonth(), this.getWeekOfMonth())
+                && Objects.equals(val.getWeeksOfMonth(), this.getWeeksOfMonth());
+        }
+        return false;
     }
 
     /**
@@ -245,6 +272,33 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
     }
 
     /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(
+            Boolean.valueOf(this.isEveryWorkingDay()),
+            Boolean.valueOf(this.isWholeDay()),
+            Integer.valueOf(this.getDayOfMonth()),
+            this.getEnd(),
+            this.getEndType(),
+            this.getExceptions(),
+            this.getIndividualDates(),
+            Integer.valueOf(this.getInterval()),
+            this.getMonth(),
+            Integer.valueOf(this.getOccurrences()),
+            this.getPatternType(),
+            this.getSeriesEndDate(),
+            this.getStart(),
+            this.getWeekDay(),
+            this.getWeekDays(),
+            this.getWeekOfMonth(),
+            this.getWeeksOfMonth());
+
+    }
+
+    /**
      * @see org.opencms.acacia.shared.I_CmsSerialDateValue#isEveryWorkingDay()
      */
     public boolean isEveryWorkingDay() {
@@ -280,7 +334,7 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
             result.put(JsonKey.START, dateToJson(getStart()));
             result.put(JsonKey.END, dateToJson(getEnd()));
             if (m_isWholeDay) {
-                result.put(JsonKey.WHOLE_DAY, JSONBoolean.getInstance(true));
+                result.put(JsonKey.WHOLE_DAY, true);
             }
             JSONObject pattern = patternToJson();
             result.put(JsonKey.PATTERN, pattern);
@@ -290,7 +344,7 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
             }
             int occurrences = getOccurrences();
             if (occurrences > 0) {
-                result.put(JsonKey.SERIES_OCCURRENCES, new JSONString("" + occurrences));
+                result.put(JsonKey.SERIES_OCCURRENCES, "" + occurrences);
             }
             Date seriesEndDate = getSeriesEndDate();
             if (null != seriesEndDate) {
@@ -421,7 +475,7 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
             case YEARLY:
                 return isMonthSet() && (isWeekDaySet() ? isWeekOfMonthSet() : isDayOfMonthValid());
             case INDIVIDUAL:
-                return getIndividualDates().size() > CmsSerialDateUtil.getMaxEvents();
+                return getIndividualDates().size() <= CmsSerialDateUtil.getMaxEvents();
             case NONE:
             default:
                 return true;
@@ -436,14 +490,14 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
     private JSONObject patternToJson() throws JSONException {
 
         JSONObject pattern = new JSONObject();
-        pattern.putOpt(JsonKey.PATTERN_TYPE, new JSONString(getPatternType().toString()));
+        pattern.putOpt(JsonKey.PATTERN_TYPE, getPatternType().toString());
         SortedSet<Date> dates = getIndividualDates();
         if (!dates.isEmpty()) {
             pattern.putOpt(JsonKey.PATTERN_DATES, datesToJson(dates));
         }
         int interval = getInterval();
         if (interval > 0) {
-            pattern.putOpt(JsonKey.PATTERN_INTERVAL, new JSONString("" + interval));
+            pattern.putOpt(JsonKey.PATTERN_INTERVAL, "" + interval);
         }
         SortedSet<WeekDay> weekdays = getWeekDays();
         if (!weekdays.isEmpty()) {
@@ -451,17 +505,17 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
         }
         int day = getDayOfMonth();
         if (day > 0) {
-            pattern.putOpt(JsonKey.PATTERN_DAY_OF_MONTH, new JSONString("" + day));
+            pattern.putOpt(JsonKey.PATTERN_DAY_OF_MONTH, "" + day);
         }
         SortedSet<WeekOfMonth> weeks = getWeeksOfMonth();
         if (!weeks.isEmpty()) {
             pattern.putOpt(JsonKey.PATTERN_WEEKS_OF_MONTH, toJsonStringArray(weeks));
         }
         if (getPatternType().equals(PatternType.YEARLY)) {
-            pattern.put(JsonKey.PATTERN_MONTH, new JSONString(getMonth().toString()));
+            pattern.put(JsonKey.PATTERN_MONTH, getMonth().toString());
         }
         if (isEveryWorkingDay()) {
-            pattern.put(JsonKey.PATTERN_EVERYWORKINGDAY, JSONBoolean.getInstance(true));
+            pattern.put(JsonKey.PATTERN_EVERYWORKINGDAY, true);
         }
         return pattern;
     }

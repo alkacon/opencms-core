@@ -92,6 +92,9 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
     /** The controller to handle changes. */
     final CmsPatternPanelDailyController m_controller;
 
+    /** Flag, indicating if change actions should not be triggered. */
+    private boolean m_triggerChangeActions = true;
+
     /**
      * Constructor to create the daily pattern panel.
      * @param controller the controller that handles value changes.
@@ -118,7 +121,9 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                m_controller.setEveryWorkingDay(m_workingRadioButton.isChecked());
+                if (handleChange()) {
+                    m_controller.setEveryWorkingDay(m_workingRadioButton.isChecked());
+                }
             }
         });
         initWidget(uiBinder.createAndBindUi(this));
@@ -132,6 +137,7 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
     public void onValueChange() {
 
         if (m_model.getPatternType().equals(PatternType.DAILY)) {
+            m_triggerChangeActions = false;
             if (m_model.isEveryWorkingDay()) {
                 m_group.selectButton(m_workingRadioButton);
                 m_everyDay.setValue("");
@@ -139,8 +145,18 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
                 m_group.selectButton(m_everyRadioButton);
                 m_everyDay.setValue("" + m_model.getInterval());
             }
+            m_triggerChangeActions = true;
         }
 
+    }
+
+    /**
+     * Returns a flag, indicating if change actions should be triggered.
+     * @return a flag, indicating if change actions should be triggered.
+     */
+    boolean handleChange() {
+
+        return m_triggerChangeActions;
     }
 
     /**
@@ -150,7 +166,9 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
     @UiHandler("m_everyDay")
     void onEveryDayChange(ValueChangeEvent<String> event) {
 
-        m_controller.setInterval(m_everyDay.getValue());
+        if (handleChange()) {
+            m_controller.setInterval(m_everyDay.getValue());
+        }
 
     }
 
@@ -161,7 +179,9 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
     @UiHandler("m_everyDay")
     void onEveryDayFocus(FocusEvent event) {
 
-        m_group.selectButton(m_everyRadioButton);
+        if (handleChange()) {
+            m_group.selectButton(m_everyRadioButton);
+        }
 
     }
 }

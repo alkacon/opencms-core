@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.client.test;
+package org.opencms.acacia.client.widgets.serialdate;
 
 import com.google.gwt.junit.tools.GWTTestSuite;
 
@@ -33,7 +33,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Test suite to run all GWT based tests.<p>
+ * Test suite to run all acacia data back-end tests.<p>
  */
 public class AllTests extends GWTTestSuite {
 
@@ -44,9 +44,8 @@ public class AllTests extends GWTTestSuite {
      */
     public static Test suite() {
 
-        TestSuite suite = new TestSuite("Runs all GWT based tests");
-        suite.addTest(org.opencms.acacia.client.entity.AllTests.suite());
-        suite.addTest(org.opencms.acacia.client.widgets.serialdate.AllTests.suite());
+        TestSuite suite = new TestSuite("Test the serial date value wrapper");
+        suite.addTestSuite(TestSerialDateValueWrapper.class);
         return suite;
     }
 }

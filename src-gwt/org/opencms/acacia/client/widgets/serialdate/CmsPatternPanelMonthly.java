@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,6 +132,9 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     /** The controller to handle changes. */
     final CmsPatternPanelMonthlyController m_controller;
 
+    /** Flag, indicating if change actions should not be triggered. */
+    private boolean m_triggerChangeActions = true;
+
     /**
      * Default constructor to create the panel.<p>
      * @param controller the controller that handles value changes.
@@ -154,7 +158,9 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                m_controller.setPatternScheme(event.getValue().equals(m_weekDayMonthRadioButton.getName()));
+                if (handleChange()) {
+                    m_controller.setPatternScheme(event.getValue().equals(m_weekDayMonthRadioButton.getName()));
+                }
             }
         });
         initWidget(uiBinder.createAndBindUi(this));
@@ -177,6 +183,7 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     public void onValueChange() {
 
         if (m_model.getPatternType().equals(PatternType.MONTHLY)) {
+            m_triggerChangeActions = false;
             if (null == m_model.getWeekDay()) {
                 m_group.selectButton(m_dayMonthRadioButton);
                 m_everyDay.setValue("" + m_model.getDayOfMonth());
@@ -188,12 +195,24 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
                 m_group.selectButton(m_weekDayMonthRadioButton);
                 m_atMonth.setValue("" + m_model.getInterval());
                 m_atDay.selectValue(m_model.getWeekDay().toString());
+                CmsDebugLog.consoleLog(
+                    "Calling checkExcactlyTheWeeksCheckBoxes with weeks: " + m_model.getWeeksOfMonth());
                 checkExactlyTheWeeksCheckBoxes(m_model.getWeeksOfMonth());
                 m_everyDay.setValue("");
                 m_everyMonth.setValue("");
             }
+            m_triggerChangeActions = true;
         }
 
+    }
+
+    /**
+     * Returns a flag, indicating if change actions should be triggered.
+     * @return a flag, indicating if change actions should be triggered.
+     */
+    boolean handleChange() {
+
+        return m_triggerChangeActions;
     }
 
     /**
@@ -203,7 +222,9 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     @UiHandler({"m_atDay", "m_atMonth"})
     void onAtFocus(FocusEvent event) {
 
-        m_group.selectButton(m_weekDayMonthRadioButton);
+        if (handleChange()) {
+            m_group.selectButton(m_weekDayMonthRadioButton);
+        }
     }
 
     /**
@@ -214,7 +235,9 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     @UiHandler("m_everyDay")
     void onEveryDayValueChange(ValueChangeEvent<String> event) {
 
-        m_controller.setDayOfMonth(event.getValue());
+        if (handleChange()) {
+            m_controller.setDayOfMonth(event.getValue());
+        }
 
     }
 
@@ -225,7 +248,9 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     @UiHandler({"m_everyDay", "m_everyMonth"})
     void onEveryFocus(FocusEvent event) {
 
-        m_group.selectButton(m_dayMonthRadioButton);
+        if (handleChange()) {
+            m_group.selectButton(m_dayMonthRadioButton);
+        }
     }
 
     /**
@@ -236,7 +261,9 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     @UiHandler({"m_atMonth", "m_everyMonth"})
     void onIntervalValueChange(ValueChangeEvent<String> event) {
 
-        m_controller.setInterval(event.getValue());
+        if (handleChange()) {
+            m_controller.setInterval(event.getValue());
+        }
 
     }
 
@@ -247,7 +274,9 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     @UiHandler("m_atDay")
     void onWeekDayChange(ValueChangeEvent<String> event) {
 
-        m_controller.setWeekDay(event.getValue());
+        if (handleChange()) {
+            m_controller.setWeekDay(event.getValue());
+        }
     }
 
     /**
@@ -263,8 +292,10 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
 
             public void onValueChange(ValueChangeEvent<Boolean> event) {
 
-                m_controller.weeksChange(internalValue, event.getValue());
-                m_group.selectButton(m_weekDayMonthRadioButton);
+                if (handleChange()) {
+                    m_controller.weeksChange(internalValue, event.getValue());
+                    m_group.selectButton(m_weekDayMonthRadioButton);
+                }
             }
         });
         m_weekPanel.add(box);
@@ -278,7 +309,13 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
      */
     private void checkExactlyTheWeeksCheckBoxes(Collection<WeekOfMonth> weeksToCheck) {
 
+        CmsDebugLog.consoleLog("Checking exactly the checkboxes in " + weeksToCheck);
         for (CmsCheckBox cb : m_checkboxes) {
+            CmsDebugLog.consoleLog(
+                "Checkbox \""
+                    + cb.getInternalValue()
+                    + "\" should be checked: "
+                    + weeksToCheck.contains(WeekOfMonth.valueOf(cb.getInternalValue())));
             cb.setChecked(weeksToCheck.contains(WeekOfMonth.valueOf(cb.getInternalValue())));
         }
     }

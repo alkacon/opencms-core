@@ -81,6 +81,9 @@ public class CmsPatternPanelIndividual extends Composite implements I_CmsPattern
     /** The controller to handle changes. */
     final CmsPatternPanelIndividualController m_controller;
 
+    /** Flag, indicating if change actions should not be triggered. */
+    private boolean m_triggerChangeActions = true;
+
     /**
      * Default constructor to create the panel.<p>
      * @param controller the controller that handles value changes.
@@ -120,7 +123,9 @@ public class CmsPatternPanelIndividual extends Composite implements I_CmsPattern
         if (null != m_newDate.getValue()) {
             m_dateList.addDate(m_newDate.getValue());
             m_newDate.setValue(null);
-            m_controller.setDates(m_dateList.getDates());
+            if (handleChange()) {
+                m_controller.setDates(m_dateList.getDates());
+            }
         }
     }
 
@@ -131,7 +136,18 @@ public class CmsPatternPanelIndividual extends Composite implements I_CmsPattern
     @UiHandler("m_dateList")
     void dateListValueChange(ValueChangeEvent<SortedSet<Date>> event) {
 
-        m_controller.setDates(event.getValue());
+        if (handleChange()) {
+            m_controller.setDates(event.getValue());
+        }
+    }
+
+    /**
+     * Returns a flag, indicating if change actions should be triggered.
+     * @return a flag, indicating if change actions should be triggered.
+     */
+    boolean handleChange() {
+
+        return m_triggerChangeActions;
     }
 
     /**

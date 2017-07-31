@@ -239,6 +239,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     /** Map from the various patterns to the radio buttons for chosing the patterns. */
     private Map<PatternType, CmsRadioButton> m_patternButtons;
 
+    /** Flag, indicating if change actions should not be triggered. */
+    private boolean m_triggerChangeActions = true;
+
     /**
      * Category field widgets for ADE forms.<p>
      * @param controller the controller to communicate with
@@ -286,10 +289,13 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @Override
     public void onValueChange() {
 
+        m_triggerChangeActions = false;
         m_startTime.setValue(m_model.getStart());
         m_endTime.setValue(m_model.getEnd());
+        m_wholeDayCheckBox.setChecked(m_model.isWholeDay());
 
         onPatternChange();
+        m_triggerChangeActions = true;
     }
 
     /**
@@ -317,13 +323,24 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     }
 
     /**
+     * Returns a flag, indicating if change actions should be triggered.
+     * @return a flag, indicating if change actions should be triggered.
+     */
+    boolean handleChange() {
+
+        return m_triggerChangeActions;
+    }
+
+    /**
      * Handle an end time change.
      * @param event the change event.
      */
     @UiHandler("m_endTime")
     void onEndTimeChange(ValueChangeEvent<Date> event) {
 
-        m_controller.setEndTime(event.getValue());
+        if (handleChange()) {
+            m_controller.setEndTime(event.getValue());
+        }
     }
 
     /**
@@ -346,7 +363,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
                 break;
         }
         updateExceptions();
-
     }
 
     /**
@@ -356,7 +372,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @UiHandler("m_manageExceptionsButton")
     void onManageExceptionClicked(ClickEvent e) {
 
-        m_controller.executeShowDatesAction();
+        if (handleChange()) {
+            m_controller.executeShowDatesAction();
+        }
     }
 
     /**
@@ -367,7 +385,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @UiHandler("m_occurrences")
     void onOccurrencesChange(ValueChangeEvent<String> event) {
 
-        m_controller.setOccurrences(m_occurrences.getValue());
+        if (handleChange()) {
+            m_controller.setOccurrences(m_occurrences.getValue());
+        }
     }
 
     /**
@@ -378,7 +398,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @UiHandler("m_occurrences")
     void onOccurrencesFocus(FocusEvent event) {
 
-        m_groupDuration.selectButton(m_endsAfterRadioButton);
+        if (handleChange()) {
+            m_groupDuration.selectButton(m_endsAfterRadioButton);
+        }
     }
 
     /**
@@ -406,7 +428,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @UiHandler("m_seriesCheckBox")
     void onSeriesChange(ValueChangeEvent<Boolean> event) {
 
-        m_controller.setIsSeries(event.getValue());
+        if (handleChange()) {
+            m_controller.setIsSeries(event.getValue());
+        }
     }
 
     /**
@@ -417,7 +441,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @UiHandler("m_seriesEndDate")
     void onSeriesEndDateChange(ValueChangeEvent<Date> event) {
 
-        m_controller.setSeriesEndDate(m_seriesEndDate.getValue());
+        if (handleChange()) {
+            m_controller.setSeriesEndDate(m_seriesEndDate.getValue());
+        }
     }
 
     /**
@@ -437,7 +463,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @UiHandler("m_startTime")
     void onStartTimeChange(ValueChangeEvent<Date> event) {
 
-        m_controller.setStartTime(event.getValue());
+        if (handleChange()) {
+            m_controller.setStartTime(event.getValue());
+        }
     }
 
     /**
@@ -448,7 +476,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     void onWholeDayChange(ValueChangeEvent<Boolean> event) {
 
         //TODO: Improve - adjust time selections?
-        m_controller.setWholeDay(event.getValue());
+        if (handleChange()) {
+            m_controller.setWholeDay(event.getValue());
+        }
     }
 
     /**
@@ -564,11 +594,12 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                String value = event.getValue();
-                if (null != value) {
-                    m_controller.setEndType(value);
+                if (handleChange()) {
+                    String value = event.getValue();
+                    if (null != value) {
+                        m_controller.setEndType(value);
+                    }
                 }
-
             }
         });
 
@@ -584,7 +615,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
             public void onFocus(FocusEvent event) {
 
-                onSeriesEndDateFocus(event);
+                if (handleChange()) {
+                    onSeriesEndDateFocus(event);
+                }
 
             }
         });
@@ -605,7 +638,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
             public void onClick(ClickEvent event) {
 
-                m_controller.updateExceptions(m_exceptionsList.getUncheckedDates());
+                if (handleChange()) {
+                    m_controller.updateExceptions(m_exceptionsList.getUncheckedDates());
+                }
             }
         });
 
@@ -637,8 +672,10 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
             public void onClick(ClickEvent event) {
 
-                m_controller.updateExceptions(m_overviewList.getUncheckedDates());
-                m_overviewPopup.hide();
+                if (handleChange()) {
+                    m_controller.updateExceptions(m_overviewList.getUncheckedDates());
+                    m_overviewPopup.hide();
+                }
 
             }
         });
@@ -684,9 +721,11 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                String value = event.getValue();
-                if (value != null) {
-                    m_controller.setPattern(value);
+                if (handleChange()) {
+                    String value = event.getValue();
+                    if (value != null) {
+                        m_controller.setPattern(value);
+                    }
                 }
             }
         });

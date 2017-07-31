@@ -35,7 +35,6 @@ import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
@@ -110,6 +109,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
     /** The controller to handle changes. */
     final CmsPatternPanelYearlyController m_controller;
 
+    /** Flag, indicating if change actions should not be triggered. */
+    private boolean m_triggerChangeActions = true;
+
     /**
      * Default constructor to create the panel.<p>
      * @param controller the controller that handles value changes.
@@ -134,7 +136,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                m_controller.setPatternScheme(event.getValue().equals(m_atRadioButton.getName()));
+                if (handleChange()) {
+                    m_controller.setPatternScheme(event.getValue().equals(m_atRadioButton.getName()));
+                }
             }
         });
         initWidget(uiBinder.createAndBindUi(this));
@@ -149,6 +153,7 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
     public void onValueChange() {
 
         if (m_model.getPatternType().equals(PatternType.YEARLY)) {
+            m_triggerChangeActions = false;
             if (null == m_model.getWeekDay()) {
                 m_group.selectButton(m_everyRadioButton);
                 m_everyDay.setValue("" + m_model.getDayOfMonth());
@@ -164,8 +169,18 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
                 m_everyDay.setValue("");
                 m_everyMonth.selectValue(Month.JANUARY.toString());
             }
+            m_triggerChangeActions = true;
         }
 
+    }
+
+    /**
+     * Returns a flag, indicating if change actions should be triggered.
+     * @return a flag, indicating if change actions should be triggered.
+     */
+    boolean handleChange() {
+
+        return m_triggerChangeActions;
     }
 
     /**
@@ -175,7 +190,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
     @UiHandler({"m_atMonth", "m_atDay", "m_atNumber"})
     void onAtFocus(FocusEvent event) {
 
-        m_group.selectButton(m_atRadioButton);
+        if (handleChange()) {
+            m_group.selectButton(m_atRadioButton);
+        }
     }
 
     /**
@@ -185,9 +202,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
     @UiHandler("m_everyDay")
     void onDayOfMonthChange(ValueChangeEvent<String> event) {
 
-        CmsDebugLog.consoleLog("Day of month change from: " + m_model.getDayOfMonth());
-        m_controller.setDayOfMonth(event.getValue());
-        CmsDebugLog.consoleLog("Day of month change to: " + m_model.getDayOfMonth());
+        if (handleChange()) {
+            m_controller.setDayOfMonth(event.getValue());
+        }
     }
 
     /**
@@ -197,7 +214,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
     @UiHandler({"m_everyMonth", "m_everyDay"})
     void onEveryFocus(FocusEvent event) {
 
-        m_group.selectButton(m_everyRadioButton);
+        if (handleChange()) {
+            m_group.selectButton(m_everyRadioButton);
+        }
     }
 
     /**
@@ -207,7 +226,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
     @UiHandler({"m_atMonth", "m_everyMonth"})
     void onMonthChange(ValueChangeEvent<String> event) {
 
-        m_controller.setMonth(event.getValue());
+        if (handleChange()) {
+            m_controller.setMonth(event.getValue());
+        }
     }
 
     /**
@@ -217,7 +238,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
     @UiHandler("m_atDay")
     void onWeekDayChange(ValueChangeEvent<String> event) {
 
-        m_controller.setWeekDay(event.getValue());
+        if (handleChange()) {
+            m_controller.setWeekDay(event.getValue());
+        }
     }
 
     /**
@@ -227,7 +250,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
     @UiHandler("m_atNumber")
     void onWeekOfMonthChange(ValueChangeEvent<String> event) {
 
-        m_controller.setWeekOfMonth(event.getValue());
+        if (handleChange()) {
+            m_controller.setWeekOfMonth(event.getValue());
+        }
     }
 
     /**
