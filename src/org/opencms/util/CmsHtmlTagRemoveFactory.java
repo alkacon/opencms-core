@@ -190,7 +190,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Tag#getAttributesEx()
          */
-        @SuppressWarnings("unchecked")
         public Vector<Attribute> getAttributesEx() {
 
             return m_decorated.getAttributesEx();
@@ -399,7 +398,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Tag#setAttributesEx(java.util.Vector)
          */
-        @SuppressWarnings("rawtypes")
         public void setAttributesEx(Vector arg0) {
 
             m_decorated.setAttributesEx(arg0);
@@ -517,6 +515,14 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
 
             return m_decorated.toString();
         }
+
+        /**
+         * @see org.htmlparser.Tag#toTagHtml()
+         */
+        public String toTagHtml() {
+
+            return m_decorated.toTagHtml();
+        }
     }
 
     /** The log object for this class. */
@@ -609,7 +615,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * @see org.htmlparser.PrototypicalNodeFactory#createTagNode(org.htmlparser.lexer.Page, int,
      *      int, java.util.Vector)
      */
-    @SuppressWarnings("rawtypes")
     @Override
     public Tag createTagNode(Page arg0, int arg1, int arg2, Vector arg3) {
 
