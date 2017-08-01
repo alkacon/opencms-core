@@ -35,7 +35,6 @@ import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
@@ -71,7 +70,7 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
 
     /** The text box for the date input. */
     @UiField
-    CmsTextBox m_everyDay;
+    CmsFocusAwareTextBox m_everyDay;
     /** The select box for the month selection. */
     @UiField
     CmsSelectBox m_everyMonth;
@@ -156,7 +155,9 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
             m_triggerChangeActions = false;
             if (null == m_model.getWeekDay()) {
                 m_group.selectButton(m_everyRadioButton);
-                m_everyDay.setFormValueAsString("" + m_model.getDayOfMonth());
+                if (!m_everyDay.isFocused()) {
+                    m_everyDay.setFormValueAsString(String.valueOf(m_model.getDayOfMonth()));
+                }
                 m_everyMonth.selectValue(m_model.getMonth().toString());
                 m_atDay.selectValue(WeekDay.SUNDAY.toString());
                 m_atMonth.selectValue(Month.JANUARY.toString());
@@ -165,7 +166,7 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
                 m_group.selectButton(m_atRadioButton);
                 m_atDay.selectValue(m_model.getWeekDay().toString());
                 m_atMonth.selectValue(m_model.getMonth().toString());
-                m_atNumber.selectValue("" + m_model.getWeekOfMonth());
+                m_atNumber.selectValue(String.valueOf(m_model.getWeekOfMonth()));
                 m_everyDay.setFormValueAsString("");
                 m_everyMonth.selectValue(Month.JANUARY.toString());
             }

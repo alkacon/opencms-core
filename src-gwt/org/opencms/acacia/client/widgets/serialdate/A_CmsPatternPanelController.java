@@ -30,6 +30,8 @@ package org.opencms.acacia.client.widgets.serialdate;
 import org.opencms.acacia.shared.CmsSerialDateUtil;
 import org.opencms.ade.contenteditor.client.Messages;
 
+import com.google.gwt.user.client.Command;
+
 /** Abstract base class for pattern panel controllers. */
 public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatternController {
 
@@ -55,11 +57,30 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
     abstract public I_CmsPatternView getView();
 
     /**
+     * @param cmd see change handler
+     * @param showDialog see change handler
+     * @see I_ChangeHandler#conditionallyRemoveExceptionsOnChange(Command, boolean)
+     */
+    protected void conditionallyRemoveExceptionsOnChange(Command cmd, boolean showDialog) {
+
+        m_changeHandler.conditionallyRemoveExceptionsOnChange(cmd, showDialog);
+    }
+
+    /**
      * Call when the value has changed.
      */
     protected void onValueChange() {
 
         m_changeHandler.valueChanged();
+    }
+
+    /**
+     * @param cmd see change handler
+     * @see I_ChangeHandler#removeExceptionsOnChange(Command)
+     */
+    protected void removeExceptionsOnChange(Command cmd) {
+
+        m_changeHandler.removeExceptionsOnChange(cmd);
     }
 
     /**
@@ -88,12 +109,17 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
      */
     void setDayOfMonth(String day) {
 
-        int i = CmsSerialDateUtil.toIntWithDefault(day, -1);
+        final int i = CmsSerialDateUtil.toIntWithDefault(day, -1);
         if (m_model.getDayOfMonth() != i) {
-            m_model.setDayOfMonth(i);
-            onValueChange();
-        }
+            removeExceptionsOnChange(new Command() {
 
+                public void execute() {
+
+                    m_model.setDayOfMonth(i);
+                    onValueChange();
+                }
+            });
+        }
     }
 
     /**
@@ -102,10 +128,16 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
      */
     void setInterval(String interval) {
 
-        int i = CmsSerialDateUtil.toIntWithDefault(interval, -1);
+        final int i = CmsSerialDateUtil.toIntWithDefault(interval, -1);
         if (m_model.getInterval() != i) {
-            m_model.setInterval(i);
-            onValueChange();
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    m_model.setInterval(i);
+                    onValueChange();
+                }
+            });
         }
 
     }

@@ -27,6 +27,8 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import com.google.gwt.user.client.Command;
+
 /**
  * Interface for a change handler that reacts on changes triggered by the serial date widget.
  *
@@ -35,6 +37,23 @@ package org.opencms.acacia.client.widgets.serialdate;
  */
 
 interface I_ChangeHandler {
+
+    /**
+     * Call this method in case of potential exception changes. This will show a confirmation dialog before a value change takes place
+     * if there are exceptions defined currently and the condition <code>showDialog</code> holds.
+     *
+     * @param cmd command to execute the change, if it really should be executed.
+     * @param showDialog flag, indicating if the dialog should really be shown.
+     */
+    void conditionallyRemoveExceptionsOnChange(Command cmd, boolean showDialog);
+
+    /**
+     * Call this method in case of potential exception changes. This will show a confirmation dialog before a value change takes place
+     * if there are exceptions defined currently.
+     *
+     * @param cmd command to execute the change, if it really should be executed.
+     */
+    void removeExceptionsOnChange(Command cmd);
 
     /**
      * Call this method, if the size of the widget changes.

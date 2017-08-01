@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsErrorWidget;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 import org.opencms.util.CmsPair;
 
@@ -162,7 +161,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The times text box. */
     @UiField
-    CmsTextBox m_occurrences;
+    CmsFocusAwareTextBox m_occurrences;
 
     /** The panel with the serial date exceptions. */
     @UiField
@@ -356,7 +355,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
                 m_durationPanel.setVisible(true);
                 m_seriesEndDate.setValue(m_model.getSeriesEndDate());
                 int occurrences = m_model.getOccurrences();
-                m_occurrences.setFormValueAsString(occurrences > 0 ? "" + occurrences : "");
+                if (!m_occurrences.isFocused()) {
+                    m_occurrences.setFormValueAsString(occurrences > 0 ? "" + occurrences : "");
+                }
                 break;
             default:
                 m_durationPanel.setVisible(false);
@@ -695,6 +696,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_overviewList = new CmsCheckableDatePanel(m_dateFormat);
         m_overviewList.addDate(new Date());
         panel.add(m_overviewList);
+        panel.setDefaultHeight(m_overviewPopup.getAvailableHeight(0));
         m_overviewPopup.add(panel);
         m_overviewPopup.hide();
 

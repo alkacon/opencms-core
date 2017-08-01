@@ -4,7 +4,8 @@
 	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
 	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox"
-	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate">	
+	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate"
+	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">	
 	<ui:style>
 	</ui:style>
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
@@ -46,7 +47,7 @@
 						<g:cell width="50%">
 							<g:HorizontalPanel styleName="{widgets.widgetCss.radioButtonPanel}">
 								<cmsi:CmsRadioButton ui:field="m_endsAfterRadioButton" />
-								<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmsi:CmsTextBox ui:field="m_occurrences" /></g:FlowPanel>
+								<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_occurrences" /></g:FlowPanel>
 							</g:HorizontalPanel>
 						</g:cell>
 						<g:cell width="50%">

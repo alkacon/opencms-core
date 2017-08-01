@@ -159,14 +159,13 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
      */
     public EndType getEndType() {
 
+        if (getPatternType().equals(PatternType.NONE) || getPatternType().equals(PatternType.INDIVIDUAL)) {
+            return EndType.SINGLE;
+        }
         if (getSeriesEndDate() != null) {
             return EndType.DATE;
         }
-        if (getOccurrences() > 0) {
-            return EndType.TIMES;
-        }
-
-        return EndType.SINGLE;
+        return EndType.TIMES;
     }
 
     /**

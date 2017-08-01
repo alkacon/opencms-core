@@ -31,6 +31,8 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
 
+import com.google.gwt.user.client.Command;
+
 /** Controller for the yearly pattern panel. */
 public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController {
 
@@ -62,36 +64,47 @@ public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController
      */
     public void setMonth(String monthStr) {
 
-        Month month = Month.valueOf(monthStr);
+        final Month month = Month.valueOf(monthStr);
         if ((m_model.getMonth() == null) || !m_model.getMonth().equals(monthStr)) {
-            m_model.setMonth(month);
-            onValueChange();
-        }
+            removeExceptionsOnChange(new Command() {
 
+                public void execute() {
+
+                    m_model.setMonth(month);
+                    onValueChange();
+
+                }
+            });
+        }
     }
 
     /**
      * Set the pattern scheme.
      * @param isWeekDayBased flag, indicating if the week day based scheme should be set.
      */
-    public void setPatternScheme(boolean isWeekDayBased) {
+    public void setPatternScheme(final boolean isWeekDayBased) {
 
-        if (isWeekDayBased && (null == m_model.getWeekDay())) {
-            m_model.setInterval(1);
-            m_model.setWeekDay(WeekDay.SUNDAY);
-            m_model.setMonth(Month.JANUARY);
-            m_model.setWeekOfMonth(WeekOfMonth.FIRST);
-            m_model.setDayOfMonth(1);
-            m_view.onValueChange();
-            onValueChange();
-        }
-        if (!isWeekDayBased && (null != m_model.getWeekDay())) {
-            m_model.setWeekDay(null);
-            m_model.setWeekOfMonth(null);
-            m_model.setDayOfMonth(1);
-            m_model.setInterval(1);
-            m_view.onValueChange();
-            onValueChange();
+        if (isWeekDayBased ^ (null != m_model.getWeekDay())) {
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    if (isWeekDayBased) {
+                        m_model.setInterval(1);
+                        m_model.setWeekDay(WeekDay.SUNDAY);
+                        m_model.setMonth(Month.JANUARY);
+                        m_model.setWeekOfMonth(WeekOfMonth.FIRST);
+                        m_model.setDayOfMonth(1);
+                        onValueChange();
+                    } else {
+                        m_model.setWeekDay(null);
+                        m_model.setWeekOfMonth(null);
+                        m_model.setDayOfMonth(1);
+                        m_model.setInterval(1);
+                        onValueChange();
+                    }
+                }
+            });
         }
     }
 
@@ -101,10 +114,17 @@ public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController
      */
     public void setWeekDay(String weekDayStr) {
 
-        WeekDay weekDay = WeekDay.valueOf(weekDayStr);
+        final WeekDay weekDay = WeekDay.valueOf(weekDayStr);
         if ((m_model.getWeekDay() != null) || !m_model.getWeekDay().equals(weekDay)) {
-            m_model.setWeekDay(weekDay);
-            onValueChange();
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    m_model.setWeekDay(weekDay);
+                    onValueChange();
+                }
+            });
+
         }
 
     }
@@ -115,10 +135,16 @@ public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController
      */
     public void setWeekOfMonth(String weekOfMonthStr) {
 
-        WeekOfMonth weekOfMonth = WeekOfMonth.valueOf(weekOfMonthStr);
+        final WeekOfMonth weekOfMonth = WeekOfMonth.valueOf(weekOfMonthStr);
         if ((null == m_model.getWeekOfMonth()) || !m_model.getWeekOfMonth().equals(weekOfMonth)) {
-            m_model.setWeekOfMonth(weekOfMonth);
-            onValueChange();
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    m_model.setWeekOfMonth(weekOfMonth);
+                    onValueChange();
+                }
+            });
         }
 
     }

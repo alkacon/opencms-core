@@ -31,6 +31,9 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.ade.contenteditor.client.Messages;
 
 import java.util.SortedSet;
+import java.util.TreeSet;
+
+import com.google.gwt.user.client.Command;
 
 /** Controller for the weekly pattern panel. */
 public class CmsPatternPanelWeeklyController extends A_CmsPatternPanelController {
@@ -63,9 +66,18 @@ public class CmsPatternPanelWeeklyController extends A_CmsPatternPanelController
      */
     public void setWeekDays(SortedSet<WeekDay> weekDays) {
 
-        m_model.setWeekDays(weekDays);
-        onValueChange();
+        final SortedSet<WeekDay> newWeekDays = null == weekDays ? new TreeSet<WeekDay>() : weekDays;
+        SortedSet<WeekDay> currentWeekDays = m_model.getWeekDays();
+        if (!currentWeekDays.equals(newWeekDays)) {
+            conditionallyRemoveExceptionsOnChange(new Command() {
 
+                public void execute() {
+
+                    m_model.setWeekDays(newWeekDays);
+                    onValueChange();
+                }
+            }, !newWeekDays.containsAll(m_model.getWeekDays()));
+        }
     }
 
     /**

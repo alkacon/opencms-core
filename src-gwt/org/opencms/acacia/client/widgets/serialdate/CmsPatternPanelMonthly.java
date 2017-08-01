@@ -36,7 +36,6 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,10 +83,10 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     CmsRadioButton m_dayMonthRadioButton;
     /** The text box for the date input. */
     @UiField
-    CmsTextBox m_everyDay;
+    CmsFocusAwareTextBox m_everyDay;
     /** The select box for the month selection. */
     @UiField
-    CmsTextBox m_everyMonth;
+    CmsFocusAwareTextBox m_everyMonth;
 
     /** The days label. */
     @UiField
@@ -117,7 +116,7 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
 
     /** The select box for the month selection. */
     @UiField
-    CmsTextBox m_atMonth;
+    CmsFocusAwareTextBox m_atMonth;
 
     /** The month label. */
     @UiField
@@ -158,7 +157,7 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
             public void onValueChange(ValueChangeEvent<String> event) {
 
                 if (handleChange()) {
-                    m_controller.setPatternScheme(event.getValue().equals(m_weekDayMonthRadioButton.getName()));
+                    m_controller.setPatternScheme(event.getValue().equals(m_weekDayMonthRadioButton.getName()), true);
                 }
             }
         });
@@ -188,14 +187,20 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
             m_triggerChangeActions = false;
             if (null == m_model.getWeekDay()) {
                 m_group.selectButton(m_dayMonthRadioButton);
-                m_everyDay.setFormValueAsString("" + m_model.getDayOfMonth());
-                m_everyMonth.setFormValueAsString("" + m_model.getInterval());
+                if (!m_everyDay.isFocused()) {
+                    m_everyDay.setFormValueAsString(String.valueOf(m_model.getDayOfMonth()));
+                }
+                if (!m_everyMonth.isFocused()) {
+                    m_everyMonth.setFormValueAsString(String.valueOf(m_model.getInterval()));
+                }
                 m_atMonth.setFormValueAsString("");
                 m_atDay.selectValue(WeekDay.SUNDAY.toString());
                 checkExactlyTheWeeksCheckBoxes(Collections.EMPTY_LIST);
             } else {
                 m_group.selectButton(m_weekDayMonthRadioButton);
-                m_atMonth.setFormValueAsString("" + m_model.getInterval());
+                if (!m_atMonth.isFocused()) {
+                    m_atMonth.setFormValueAsString(String.valueOf(m_model.getInterval()));
+                }
                 m_atDay.selectValue(m_model.getWeekDay().toString());
                 checkExactlyTheWeeksCheckBoxes(m_model.getWeeksOfMonth());
                 m_everyDay.setFormValueAsString("");
@@ -294,7 +299,6 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
 
                 if (handleChange()) {
                     m_controller.weeksChange(internalValue, event.getValue());
-                    m_group.selectButton(m_weekDayMonthRadioButton);
                 }
             }
         });

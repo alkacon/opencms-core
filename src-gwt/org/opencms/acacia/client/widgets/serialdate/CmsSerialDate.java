@@ -31,12 +31,15 @@ import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.shared.CmsSerialDateUtil;
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
 import org.opencms.acacia.shared.rpc.I_CmsSerialDateService;
 import org.opencms.acacia.shared.rpc.I_CmsSerialDateServiceAsync;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsPair;
 
@@ -56,6 +59,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
@@ -109,6 +113,74 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
 
     }
 
+    /** Confirmation dialog that should be shown when exceptions are removed when the value changes. */
+    private class CmsExceptionsDeleteConfirmDialog {
+
+        /** The confirmation dialog that is shown. */
+        CmsConfirmDialog m_dialog;
+        /** The command to execute on confirmation. */
+        Command m_cmd;
+
+        /** The value to reset the exceptions */
+        final CmsSerialDateValueWrapper m_value;
+
+        /**
+         * Default constructor.
+         * @param value the value where the exceptions should be reset.
+         */
+        CmsExceptionsDeleteConfirmDialog(final CmsSerialDateValueWrapper value) {
+            m_value = value;
+            m_dialog = new CmsConfirmDialog(
+                Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_CAPTION_0),
+                Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_MESSAGE_0));
+            m_dialog.setOkText(Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_YES_BUTTON_0));
+            m_dialog.setCloseText(Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_NO_BUTTON_0));
+            m_dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                public void onClose() {
+
+                    handleClose();
+
+                }
+
+                public void onOk() {
+
+                    handleOk();
+
+                }
+            });
+        }
+
+        /**
+         * Show the dialog.
+         * @param okCmd the command to execute when "ok" is clicked.
+         */
+        public void show(final Command okCmd) {
+
+            m_cmd = okCmd;
+            m_dialog.center();
+        }
+
+        /**
+         * Method called when the dialog is closed not performing the action.
+         */
+        void handleClose() {
+
+            m_view.onValueChange();
+            m_dialog.hide();
+        }
+
+        /**
+         * Method called when the dialog is closed performing the action.
+         */
+        void handleOk() {
+
+            m_value.clearExceptions();
+            m_cmd.execute();
+            m_dialog.hide();
+        }
+    }
+
     /** Default date format. */
     public static final String DEFAULT_DATE_FORMAT = "EEEE, MMMM dd, yyyy";
 
@@ -141,6 +213,9 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
 
     /** The model */
     final CmsSerialDateValueWrapper m_model;
+
+    /** The confirmation dialog for deletion of exceptions. */
+    private CmsExceptionsDeleteConfirmDialog m_exceptionConfirmDialog;
 
     /**
      * Category field widgets for ADE forms.<p>
@@ -191,6 +266,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
             }
         };
         m_active = true;
+        m_exceptionConfirmDialog = new CmsExceptionsDeleteConfirmDialog(m_model);
     }
 
     /**
@@ -207,6 +283,19 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
         return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.serialdate.I_ChangeHandler#conditionallyRemoveExceptionsOnChange(com.google.gwt.user.client.Command, boolean)
+     */
+    @Override
+    public void conditionallyRemoveExceptionsOnChange(Command action, boolean showDialog) {
+
+        if (m_model.hasExceptions() && showDialog) {
+            m_exceptionConfirmDialog.show(action);
+        } else {
+            action.execute();
+        }
     }
 
     /**
@@ -278,6 +367,16 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.serialdate.I_ChangeHandler#removeExceptionsOnChange(com.google.gwt.user.client.Command)
+     */
+    @Override
+    public void removeExceptionsOnChange(Command cmd) {
+
+        conditionallyRemoveExceptionsOnChange(cmd, true);
+
+    }
+
+    /**
      * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
@@ -293,7 +392,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
      * Set the end time.
      * @param date the end time to set.
      */
-    public void setEndTime(Date date) {
+    public void setEndTime(final Date date) {
 
         if (!Objects.equals(m_model.getEnd(), date)) {
             m_model.setEnd(date);
@@ -306,27 +405,36 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
      * Set the duration option.
      * @param value the duration option to set ({@link EndType} as string).
      */
-    public void setEndType(String value) {
+    public void setEndType(final String value) {
 
-        EndType endType = EndType.valueOf(value);
+        final EndType endType = EndType.valueOf(value);
         if (!endType.equals(m_model.getEndType())) {
-            m_model.setEndType(endType);
-            m_view.onEndTypeChange();
-            valueChanged();
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    switch (endType) {
+                        case SINGLE:
+                            m_model.setOccurrences(0);
+                            m_model.setSeriesEndDate(null);
+                            break;
+                        case TIMES:
+                            m_model.setOccurrences(1);
+                            m_model.setSeriesEndDate(null);
+                            break;
+                        case DATE:
+                            m_model.setOccurrences(0);
+                            m_model.setSeriesEndDate(new Date());
+                            break;
+                        default:
+                            break;
+                    }
+                    m_model.setEndType(endType);
+                    valueChanged();
+                }
+            });
         }
 
-    }
-
-    /**
-     * Set the flag, indicating that the event takes place every working day.
-     * @param isEveryWorkingDay flag, indicating that the event takes place every working day.
-     */
-    public void setEveryWorkingDay(boolean isEveryWorkingDay) {
-
-        if (m_model.isEveryWorkingDay() != isEveryWorkingDay) {
-            m_model.setEveryWorkingDay(isEveryWorkingDay);
-            valueChanged();
-        }
     }
 
     /**
@@ -336,16 +444,8 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     public void setIsSeries(Boolean isSeries) {
 
         if (null != isSeries) {
-            boolean noSeries = !isSeries.booleanValue();
-            if (noSeries ^ m_model.getPatternType().equals(PatternType.NONE)) {
-                if (noSeries) {
-                    m_model.setPatternType(PatternType.NONE);
-                } else {
-                    m_model.setPatternType(PatternType.DAILY);
-                }
-                m_view.onPatternChange();
-                valueChanged();
-            }
+            final boolean series = isSeries.booleanValue();
+            setPattern(series ? PatternType.DAILY.toString() : PatternType.NONE.toString());
         }
     }
 
@@ -377,11 +477,33 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
      */
     public void setPattern(String patternType) {
 
-        PatternType type = PatternType.valueOf(patternType);
+        final PatternType type = PatternType.valueOf(patternType);
         if (type != m_model.getPatternType()) {
-            m_model.setPatternType(type);
-            m_view.onPatternChange();
-            valueChanged();
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    EndType oldEndType = m_model.getEndType();
+                    m_model.setPatternType(type);
+                    m_model.setIndividualDates(null);
+                    m_model.setInterval(1);
+                    m_model.setEveryWorkingDay(false);
+                    m_model.clearWeekDays();
+                    m_model.clearIndividualDates();
+                    m_model.clearWeeksOfMonth();
+                    m_model.clearExceptions();
+                    if (type.equals(PatternType.NONE) || type.equals(PatternType.INDIVIDUAL)) {
+                        m_model.setEndType(EndType.SINGLE);
+                    } else if (oldEndType.equals(EndType.SINGLE)) {
+                        m_model.setEndType(EndType.TIMES);
+                        m_model.setOccurrences(1);
+                        m_model.setSeriesEndDate(null);
+                    }
+                    m_model.setDayOfMonth(1);
+                    m_model.setMonth(Month.JANUARY);
+                    valueChanged();
+                }
+            });
         }
 
     }
@@ -403,11 +525,17 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
      * Set the start time.
      * @param date the start time to set.
      */
-    public void setStartTime(Date date) {
+    public void setStartTime(final Date date) {
 
         if (!Objects.equals(m_model.getStart(), date)) {
-            m_model.setStart(date);
-            valueChanged();
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    m_model.setStart(date);
+                    valueChanged();
+                }
+            });
         }
 
     }
@@ -501,6 +629,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     @Override
     public void valueChanged() {
 
+        m_view.onValueChange();
         ValueChangeEvent.fire(this, m_model.toString());
 
         ValidationTimer.validate(this);
@@ -598,4 +727,5 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
         m_patternControllers.put(PatternType.YEARLY, new CmsPatternPanelYearlyController(m_model, this));
         m_patternControllers.put(PatternType.INDIVIDUAL, new CmsPatternPanelIndividualController(m_model, this));
     }
+
 }

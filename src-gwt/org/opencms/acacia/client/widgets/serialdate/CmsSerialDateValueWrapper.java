@@ -79,6 +79,8 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     private Month m_month = Month.JANUARY;
     /** The list of value change observers. */
     Collection<I_CmsSerialDateValueChangeObserver> m_valueChangeObservers = new HashSet<>();
+    /** The end type of the series. */
+    private EndType m_endType;
 
     /** Default constructor, setting the default state of the the serial date widget. */
     public CmsSerialDateValueWrapper() {
@@ -92,6 +94,41 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     public void addWeekOfMonth(WeekOfMonth week) {
 
         m_weeksOfMonth.add(week);
+    }
+
+    /**
+     * Clear the exceptions.
+     */
+    public void clearExceptions() {
+
+        m_exceptions.clear();
+    }
+
+    /**
+     * Clear the individual dates.
+     */
+    public void clearIndividualDates() {
+
+        m_individualDates.clear();
+
+    }
+
+    /**
+     * Clear the week days.
+     */
+    public void clearWeekDays() {
+
+        m_weekDays.clear();
+
+    }
+
+    /**
+     * Clear the weeks of month.
+     */
+    public void clearWeeksOfMonth() {
+
+        m_weeksOfMonth.clear();
+
     }
 
     /**
@@ -144,14 +181,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
      */
     public EndType getEndType() {
 
-        if (getSeriesEndDate() != null) {
-            return EndType.DATE;
-        }
-        if (getOccurrences() > 0) {
-            return EndType.TIMES;
-        }
-
-        return EndType.SINGLE;
+        return m_endType;
     }
 
     /**
@@ -258,6 +288,15 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     }
 
     /**
+     * Returns a flag, indicating if exceptions are present.
+     * @return a flag, indicating if exceptions are present.
+     */
+    public boolean hasExceptions() {
+
+        return !getExceptions().isEmpty();
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -342,24 +381,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
      */
     public void setEndType(EndType endType) {
 
-        switch (endType) {
-            case SINGLE:
-                m_seriesOccurrences = 0;
-                m_seriesEndDate = null;
-                break;
-            case TIMES:
-                m_seriesEndDate = null;
-                m_seriesOccurrences = 1;
-                break;
-            case DATE:
-                m_seriesEndDate = new Date();
-                m_seriesOccurrences = 0;
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-        m_exceptions.clear();
-
+        m_endType = endType;
     }
 
     /**
@@ -394,6 +416,11 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         m_individualDates.clear();
         if (null != dates) {
             m_individualDates.addAll(dates);
+        }
+        for (Date d : getExceptions()) {
+            if (!m_individualDates.contains(d)) {
+                m_exceptions.remove(d);
+            }
         }
 
     }
@@ -437,21 +464,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
      */
     public void setPatternType(PatternType type) {
 
-        if (!m_patterntype.equals(type)) {
-            m_patterntype = type;
-            m_interval = 1;
-            m_isEveryWorkingDay = false;
-            m_weekDays.clear();
-            m_exceptions.clear();
-            m_individualDates.clear();
-            m_weeksOfMonth.clear();
-            m_seriesEndDate = null;
-            m_seriesOccurrences = m_patterntype.equals(PatternType.NONE) || m_patterntype.equals(PatternType.INDIVIDUAL)
-            ? 0
-            : 1;
-            m_dayOfMonth = 1;
-            m_month = Month.JANUARY;
-        }
+        m_patterntype = type;
     }
 
     /**
@@ -497,10 +510,11 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
      */
     public void setWeekDay(WeekDay weekDay) {
 
-        m_weekDays.clear();
+        SortedSet<WeekDay> wds = new TreeSet<>();
         if (null != weekDay) {
-            m_weekDays.add(weekDay);
+            wds.add(weekDay);
         }
+        setWeekDays(wds);
 
     }
 
@@ -514,7 +528,6 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         if (null != weekDays) {
             m_weekDays.addAll(weekDays);
         }
-
     }
 
     /**
@@ -523,11 +536,11 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
      */
     public void setWeekOfMonth(WeekOfMonth weekOfMonth) {
 
-        m_weeksOfMonth.clear();
+        SortedSet<WeekOfMonth> woms = new TreeSet<>();
         if (null != weekOfMonth) {
-            m_weeksOfMonth.add(weekOfMonth);
+            woms.add(weekOfMonth);
         }
-
+        setWeeksOfMonth(woms);
     }
 
     /**
@@ -812,6 +825,9 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         setWeeksOfMonth(readWeeksOfMonth(patternJson.get(JsonKey.PATTERN_WEEKS_OF_MONTH)));
         setIndividualDates(readDates(patternJson.get(JsonKey.PATTERN_DATES)));
         setMonth(readOptionalMonth(patternJson.get(JsonKey.PATTERN_MONTH), null));
+        m_endType = (getPatternType().equals(PatternType.NONE) || getPatternType().equals(PatternType.INDIVIDUAL))
+        ? EndType.SINGLE
+        : getSeriesEndDate() != null ? EndType.DATE : EndType.TIMES;
 
     }
 
@@ -914,6 +930,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         m_weekDays.clear();
         m_weeksOfMonth.clear();
         m_valueChangeObservers.clear();
+        m_endType = EndType.SINGLE;
 
     }
 
@@ -957,7 +974,9 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
             m_seriesEndDate = new Date(seriesEnd.longValue());
         }
         m_seriesOccurrences = readOptionalInt(json.get(JsonKey.SERIES_OCCURRENCES), 0);
+        m_endType = getPatternType().equals(PatternType.NONE) || getPatternType().equals(PatternType.INDIVIDUAL)
+        ? EndType.SINGLE
+        : null != getSeriesEndDate() ? EndType.DATE : EndType.TIMES;
 
     }
-
 }

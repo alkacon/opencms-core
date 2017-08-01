@@ -27,6 +27,8 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import com.google.gwt.user.client.Command;
+
 /** Controller for the daily pattern. */
 public class CmsPatternPanelDailyController extends A_CmsPatternPanelController {
 
@@ -56,13 +58,18 @@ public class CmsPatternPanelDailyController extends A_CmsPatternPanelController 
      * Set the "everyWorkingDay" flag.
      * @param isEveryWorkingDay flag, indicating if the event should take place every working day.
      */
-    public void setEveryWorkingDay(boolean isEveryWorkingDay) {
+    public void setEveryWorkingDay(final boolean isEveryWorkingDay) {
 
         if (m_model.isEveryWorkingDay() != isEveryWorkingDay) {
-            m_model.setEveryWorkingDay(isEveryWorkingDay);
-            m_model.setInterval(1);
-            m_view.onValueChange();
-            onValueChange();
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    m_model.setEveryWorkingDay(isEveryWorkingDay);
+                    m_model.setInterval(1);
+                    onValueChange();
+                }
+            });
         }
     }
 

@@ -70,7 +70,7 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
 
     /** The text box for the date input. */
     @UiField
-    CmsTextBox m_everyDay;
+    CmsFocusAwareTextBox m_everyDay;
 
     /** The every label. */
     @UiField
@@ -126,7 +126,9 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
     public void onValueChange() {
 
         m_triggerChangeActions = false;
-        m_everyDay.setFormValueAsString("" + m_model.getInterval());
+        if (!m_everyDay.isFocused()) {
+            m_everyDay.setFormValueAsString("" + m_model.getInterval());
+        }
         setWeekDays(m_model.getWeekDays());
         m_triggerChangeActions = true;
 

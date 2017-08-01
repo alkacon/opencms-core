@@ -366,6 +366,18 @@ public final class Messages {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
 
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_CAPTION_0 = "GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_CAPTION_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_YES_BUTTON_0 = "GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_YES_BUTTON_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_NO_BUTTON_0 = "GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_NO_BUTTON_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_MESSAGE_0 = "GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_MESSAGE_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

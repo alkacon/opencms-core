@@ -31,7 +31,6 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
@@ -71,7 +70,7 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
 
     /** The text box for the date input. */
     @UiField
-    CmsTextBox m_everyDay;
+    CmsFocusAwareTextBox m_everyDay;
 
     /** The days label. */
     @UiField
@@ -144,7 +143,9 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
                 m_everyDay.setFormValueAsString("");
             } else {
                 m_group.selectButton(m_everyRadioButton);
-                m_everyDay.setFormValueAsString("" + m_model.getInterval());
+                if (!m_everyDay.isFocused()) {
+                    m_everyDay.setFormValueAsString(String.valueOf(m_model.getInterval()));
+                }
             }
             m_triggerChangeActions = true;
         }

@@ -31,7 +31,7 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
 import org.opencms.ade.contenteditor.client.Messages;
 
-import java.util.TreeSet;
+import com.google.gwt.user.client.Command;
 
 /** Controller for the monthly pattern panel. */
 public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelController {
@@ -62,27 +62,27 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
      * Set the pattern scheme to either "by weekday" or "by day of month".
      * @param isByWeekDay flag, indicating if the pattern "by weekday" should be set.
      */
-    public void setPatternScheme(boolean isByWeekDay) {
+    public void setPatternScheme(final boolean isByWeekDay, final boolean fireChange) {
 
-        if (isByWeekDay) {
-            if (null == m_model.getWeekDay()) {
-                m_model.setWeekDay(WeekDay.SUNDAY);
-                m_model.setInterval(1);
-                if (m_model.getWeekOfMonth() == null) {
-                    m_model.setWeeksOfMonth(new TreeSet<WeekOfMonth>());
+        if (isByWeekDay ^ (null != m_model.getWeekDay())) {
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    if (isByWeekDay) {
+                        m_model.setWeekDay(WeekDay.SUNDAY);
+                        m_model.setInterval(1);
+                    } else {
+                        m_model.setWeekDay(null);
+                        m_model.setWeeksOfMonth(null);
+                        m_model.setInterval(1);
+                        m_model.setDayOfMonth(1);
+                    }
+                    if (fireChange) {
+                        onValueChange();
+                    }
                 }
-                m_view.onValueChange();
-                onValueChange();
-            }
-        } else {
-            if (m_model.getWeekDay() != null) {
-                m_model.setWeekDay(null);
-                m_model.setWeeksOfMonth(null);
-                m_model.setInterval(1);
-                m_model.setDayOfMonth(1);
-                m_view.onValueChange();
-                onValueChange();
-            }
+            });
         }
 
     }
@@ -93,10 +93,16 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
      */
     public void setWeekDay(String dayString) {
 
-        WeekDay day = WeekDay.valueOf(dayString);
+        final WeekDay day = WeekDay.valueOf(dayString);
         if (m_model.getWeekDay() != day) {
-            m_model.setWeekDay(day);
-            onValueChange();
+            removeExceptionsOnChange(new Command() {
+
+                public void execute() {
+
+                    m_model.setWeekDay(day);
+                    onValueChange();
+                }
+            });
         }
 
     }
@@ -126,17 +132,25 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
      */
     public void weeksChange(String week, Boolean value) {
 
-        WeekOfMonth changedWeek = WeekOfMonth.valueOf(week);
+        final WeekOfMonth changedWeek = WeekOfMonth.valueOf(week);
         boolean newValue = (null != value) && value.booleanValue();
         boolean currentValue = m_model.getWeeksOfMonth().contains(changedWeek);
         if (newValue != currentValue) {
             if (newValue) {
+                setPatternScheme(true, false);
                 m_model.addWeekOfMonth(changedWeek);
+                onValueChange();
             } else {
-                m_model.removeWeekOfMonth(changedWeek);
-            }
-            onValueChange();
-        }
+                removeExceptionsOnChange(new Command() {
 
+                    public void execute() {
+
+                        m_model.removeWeekOfMonth(changedWeek);
+                        onValueChange();
+                    }
+                });
+            }
+        }
     }
+
 }

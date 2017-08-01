@@ -2,11 +2,12 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui.input"
-	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox">
+	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox"
+	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets" />
 	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
 	<g:HTMLPanel styleName="">
-		<div class="{css.widgetCss.patternRow}"><cms:CmsRadioButton ui:field="m_everyRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><div class="{widgets.widgetCss.textBox}"><cms:CmsTextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelDays"></span></div>
+		<div class="{css.widgetCss.patternRow}"><cms:CmsRadioButton ui:field="m_everyRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelDays"></span></div>
 		<div class="{css.widgetCss.patternRow}"><cms:CmsRadioButton ui:field="m_workingRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /></div>
 	</g:HTMLPanel>
 </ui:UiBinder>
