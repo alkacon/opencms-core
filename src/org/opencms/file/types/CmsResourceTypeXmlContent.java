@@ -252,9 +252,12 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
-        super.deleteResource(cms, securityManager, resource, siblingMode);
+        List<CmsResource> detailOnlyPages = null;
         if (isPossiblyDetailContent(resource)) {
-            List<CmsResource> detailOnlyPages = getDetailContainerResources(cms, resource);
+            detailOnlyPages = getDetailContainerResources(cms, resource);
+        }
+        super.deleteResource(cms, securityManager, resource, siblingMode);
+        if (detailOnlyPages != null) {
             for (CmsResource page : detailOnlyPages) {
                 if (page.getState().isDeleted()) {
                     continue;
