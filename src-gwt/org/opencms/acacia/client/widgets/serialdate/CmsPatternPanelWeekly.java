@@ -30,6 +30,7 @@ package org.opencms.acacia.client.widgets.serialdate;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The weekly pattern panel.<p>
@@ -70,7 +70,7 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
 
     /** The text box for the date input. */
     @UiField
-    TextBox m_everyDay;
+    CmsTextBox m_everyDay;
 
     /** The every label. */
     @UiField
@@ -115,6 +115,7 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
         initWidget(uiBinder.createAndBindUi(this));
 
         m_labelEvery.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_WEEKLY_EVERY_0));
+        m_everyDay.setTriggerChangeOnKeyPress(true);
         m_labelWeeks.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_WEEKLY_WEEK_AT_0));
         createDayPanel();
     }
@@ -125,7 +126,7 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
     public void onValueChange() {
 
         m_triggerChangeActions = false;
-        m_everyDay.setValue("" + m_model.getInterval());
+        m_everyDay.setFormValueAsString("" + m_model.getInterval());
         setWeekDays(m_model.getWeekDays());
         m_triggerChangeActions = true;
 

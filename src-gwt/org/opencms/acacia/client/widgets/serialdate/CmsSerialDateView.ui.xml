@@ -46,7 +46,7 @@
 						<g:cell width="50%">
 							<g:HorizontalPanel styleName="{widgets.widgetCss.radioButtonPanel}">
 								<cmsi:CmsRadioButton ui:field="m_endsAfterRadioButton" />
-								<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><g:TextBox ui:field="m_occurrences" /></g:FlowPanel>
+								<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmsi:CmsTextBox ui:field="m_occurrences" /></g:FlowPanel>
 							</g:HorizontalPanel>
 						</g:cell>
 						<g:cell width="50%">

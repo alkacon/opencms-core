@@ -567,10 +567,12 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
      */
     private String checkIfSeriesEndTimeIsValid() {
 
-        return m_model.getStart().getTime() < (m_model.getSeriesEndDate().getTime()
-            + I_CmsSerialDateValue.DAY_IN_MILLIS)
-            ? null
-            : Messages.get().key(Messages.GUI_SERIALDATE_ERROR_SERIAL_END_BEFORE_START_0);
+        return (null != m_model.getStart())
+            && (null != m_model.getSeriesEndDate())
+            && (m_model.getStart().getTime() < (m_model.getSeriesEndDate().getTime()
+                + I_CmsSerialDateValue.DAY_IN_MILLIS))
+                ? null
+                : Messages.get().key(Messages.GUI_SERIALDATE_ERROR_SERIAL_END_BEFORE_START_0);
     }
 
     /**
@@ -579,7 +581,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
      */
     private String checkIfTimesAreValid() {
 
-        return m_model.getStart().after(m_model.getEnd())
+        return (null == m_model.getStart()) || (null == m_model.getEnd()) || m_model.getStart().after(m_model.getEnd())
         ? Messages.get().key(Messages.GUI_SERIALDATE_ERROR_END_BEFORE_START_0)
         : null;
     }

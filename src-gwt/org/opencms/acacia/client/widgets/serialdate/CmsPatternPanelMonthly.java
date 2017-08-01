@@ -36,7 +36,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +54,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The monthly pattern panel.<p>
@@ -85,10 +84,10 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
     CmsRadioButton m_dayMonthRadioButton;
     /** The text box for the date input. */
     @UiField
-    TextBox m_everyDay;
+    CmsTextBox m_everyDay;
     /** The select box for the month selection. */
     @UiField
-    TextBox m_everyMonth;
+    CmsTextBox m_everyMonth;
 
     /** The days label. */
     @UiField
@@ -118,7 +117,7 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
 
     /** The select box for the month selection. */
     @UiField
-    TextBox m_atMonth;
+    CmsTextBox m_atMonth;
 
     /** The month label. */
     @UiField
@@ -166,14 +165,17 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
         initWidget(uiBinder.createAndBindUi(this));
 
         fillWeekPanel();
-        m_everyDay.setText("1");
+        m_everyDay.setFormValueAsString("1");
+        m_everyDay.setTriggerChangeOnKeyPress(true);
         m_labelDays.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTHDAY_DAY_EVERY_0));
-        m_everyMonth.setText("1");
+        m_everyMonth.setFormValueAsString("1");
+        m_everyMonth.setTriggerChangeOnKeyPress(true);
         m_everyLabelMonth.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTH_0));
 
         m_labelEvery.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_WEEKDAY_EVERY_0));
         m_atLabelMonth.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_MONTHLY_MONTH_0));
-        m_atMonth.setText("1");
+        m_atMonth.setFormValueAsString("1");
+        m_atMonth.setTriggerChangeOnKeyPress(true);
         initSelectBoxes();
     }
 
@@ -186,20 +188,18 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
             m_triggerChangeActions = false;
             if (null == m_model.getWeekDay()) {
                 m_group.selectButton(m_dayMonthRadioButton);
-                m_everyDay.setValue("" + m_model.getDayOfMonth());
-                m_everyMonth.setValue("" + m_model.getInterval());
-                m_atMonth.setValue("");
+                m_everyDay.setFormValueAsString("" + m_model.getDayOfMonth());
+                m_everyMonth.setFormValueAsString("" + m_model.getInterval());
+                m_atMonth.setFormValueAsString("");
                 m_atDay.selectValue(WeekDay.SUNDAY.toString());
                 checkExactlyTheWeeksCheckBoxes(Collections.EMPTY_LIST);
             } else {
                 m_group.selectButton(m_weekDayMonthRadioButton);
-                m_atMonth.setValue("" + m_model.getInterval());
+                m_atMonth.setFormValueAsString("" + m_model.getInterval());
                 m_atDay.selectValue(m_model.getWeekDay().toString());
-                CmsDebugLog.consoleLog(
-                    "Calling checkExcactlyTheWeeksCheckBoxes with weeks: " + m_model.getWeeksOfMonth());
                 checkExactlyTheWeeksCheckBoxes(m_model.getWeeksOfMonth());
-                m_everyDay.setValue("");
-                m_everyMonth.setValue("");
+                m_everyDay.setFormValueAsString("");
+                m_everyMonth.setFormValueAsString("");
             }
             m_triggerChangeActions = true;
         }
@@ -309,13 +309,7 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
      */
     private void checkExactlyTheWeeksCheckBoxes(Collection<WeekOfMonth> weeksToCheck) {
 
-        CmsDebugLog.consoleLog("Checking exactly the checkboxes in " + weeksToCheck);
         for (CmsCheckBox cb : m_checkboxes) {
-            CmsDebugLog.consoleLog(
-                "Checkbox \""
-                    + cb.getInternalValue()
-                    + "\" should be checked: "
-                    + weeksToCheck.contains(WeekOfMonth.valueOf(cb.getInternalValue())));
             cb.setChecked(weeksToCheck.contains(WeekOfMonth.valueOf(cb.getInternalValue())));
         }
     }

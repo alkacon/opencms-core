@@ -31,6 +31,7 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
@@ -42,7 +43,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The daily pattern panel.<p>
@@ -71,7 +71,7 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
 
     /** The text box for the date input. */
     @UiField
-    TextBox m_everyDay;
+    CmsTextBox m_everyDay;
 
     /** The days label. */
     @UiField
@@ -128,7 +128,8 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
         });
         initWidget(uiBinder.createAndBindUi(this));
         m_labelDays.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_DAILY_DAYS_0));
-        m_everyDay.setValue(m_model.getInterval() < 1 ? "" : "" + m_model.getInterval());
+        m_everyDay.setFormValueAsString(m_model.getInterval() < 1 ? "" : "" + m_model.getInterval());
+        m_everyDay.setTriggerChangeOnKeyPress(true);
     }
 
     /**
@@ -140,10 +141,10 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
             m_triggerChangeActions = false;
             if (m_model.isEveryWorkingDay()) {
                 m_group.selectButton(m_workingRadioButton);
-                m_everyDay.setValue("");
+                m_everyDay.setFormValueAsString("");
             } else {
                 m_group.selectButton(m_everyRadioButton);
-                m_everyDay.setValue("" + m_model.getInterval());
+                m_everyDay.setFormValueAsString("" + m_model.getInterval());
             }
             m_triggerChangeActions = true;
         }
@@ -167,7 +168,7 @@ public class CmsPatternPanelDaily extends Composite implements I_CmsPatternView 
     void onEveryDayChange(ValueChangeEvent<String> event) {
 
         if (handleChange()) {
-            m_controller.setInterval(m_everyDay.getValue());
+            m_controller.setInterval(m_everyDay.getFormValueAsString());
         }
 
     }

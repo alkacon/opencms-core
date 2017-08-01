@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsErrorWidget;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 import org.opencms.util.CmsPair;
 
@@ -64,7 +65,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /** The serial date widgets UI. */
@@ -162,7 +162,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The times text box. */
     @UiField
-    TextBox m_occurrences;
+    CmsTextBox m_occurrences;
 
     /** The panel with the serial date exceptions. */
     @UiField
@@ -356,7 +356,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
                 m_durationPanel.setVisible(true);
                 m_seriesEndDate.setValue(m_model.getSeriesEndDate());
                 int occurrences = m_model.getOccurrences();
-                m_occurrences.setValue(occurrences > 0 ? "" + occurrences : "");
+                m_occurrences.setFormValueAsString(occurrences > 0 ? "" + occurrences : "");
                 break;
             default:
                 m_durationPanel.setVisible(false);
@@ -386,7 +386,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     void onOccurrencesChange(ValueChangeEvent<String> event) {
 
         if (handleChange()) {
-            m_controller.setOccurrences(m_occurrences.getValue());
+            m_controller.setOccurrences(m_occurrences.getFormValueAsString());
         }
     }
 
@@ -557,10 +557,8 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
         m_startLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_STARTTIME_0));
         m_startTime.setValue(now);
-
         m_endLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_ENDTIME_0));
         m_endTime.setValue(now);
-
         m_seriesCheckBox.setText(Messages.get().key(Messages.GUI_SERIALDATE_SERIES_CHECKBOX_0));
         m_wholeDayCheckBox.setText(Messages.get().key(Messages.GUI_SERIALDATE_WHOLE_DAY_CHECKBOX_0));
     }

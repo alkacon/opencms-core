@@ -35,6 +35,7 @@ import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
@@ -46,7 +47,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The yearly pattern panel.<p>
@@ -71,7 +71,7 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
 
     /** The text box for the date input. */
     @UiField
-    TextBox m_everyDay;
+    CmsTextBox m_everyDay;
     /** The select box for the month selection. */
     @UiField
     CmsSelectBox m_everyMonth;
@@ -142,7 +142,7 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
             }
         });
         initWidget(uiBinder.createAndBindUi(this));
-        m_everyDay.setText("1");
+        m_everyDay.setFormValueAsString("1");
         m_labelIn.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_IN_0));
         initSelectBoxes();
     }
@@ -156,7 +156,7 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
             m_triggerChangeActions = false;
             if (null == m_model.getWeekDay()) {
                 m_group.selectButton(m_everyRadioButton);
-                m_everyDay.setValue("" + m_model.getDayOfMonth());
+                m_everyDay.setFormValueAsString("" + m_model.getDayOfMonth());
                 m_everyMonth.selectValue(m_model.getMonth().toString());
                 m_atDay.selectValue(WeekDay.SUNDAY.toString());
                 m_atMonth.selectValue(Month.JANUARY.toString());
@@ -166,7 +166,7 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
                 m_atDay.selectValue(m_model.getWeekDay().toString());
                 m_atMonth.selectValue(m_model.getMonth().toString());
                 m_atNumber.selectValue("" + m_model.getWeekOfMonth());
-                m_everyDay.setValue("");
+                m_everyDay.setFormValueAsString("");
                 m_everyMonth.selectValue(Month.JANUARY.toString());
             }
             m_triggerChangeActions = true;

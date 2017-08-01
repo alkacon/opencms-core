@@ -28,7 +28,6 @@
 package org.opencms.acacia.client.widgets.serialdate;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
-import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.Collection;
 import java.util.Date;
@@ -484,11 +483,8 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
             setDefaultValue();
         } else {
             try {
-                CmsDebugLog.consoleLog("Set value with value: " + value);
                 tryToSetParsedValue(value);
-                CmsDebugLog.consoleLog("Weeks " + getWeeksOfMonth());
             } catch (@SuppressWarnings("unused") Exception e) {
-                CmsDebugLog.consoleLog("Could not parse widget value\"" + value + "\". Using default value.");
                 setDefaultValue();
             }
         }
@@ -632,7 +628,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
      */
     private JSONValue dateToJson(Date d) {
 
-        return new JSONString(Long.toString(d.getTime()));
+        return null != d ? new JSONString(Long.toString(d.getTime())) : null;
     }
 
     /**
