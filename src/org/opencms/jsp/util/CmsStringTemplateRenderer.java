@@ -31,12 +31,13 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspTagEditable;
-import org.opencms.jsp.Messages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsHtmlValidator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsFlexFormatterBean;
@@ -46,6 +47,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -65,6 +67,14 @@ public class CmsStringTemplateRenderer {
 
     /** The error display HTML. */
     public static final String ERROR_DISPLAY = "<div class='oc-fomatter-error'>\n"
+        + "<div class='oc-formatter-error-head'>%1$s</div>\n"
+        + "<div class='oc-formatter-error-body'>\n"
+        + "<div class='oc-formatter-error-source'>%2$s</div>\n"
+        + "<div class='oc-formatter-error-message'>%3$s</div>\n"
+        + "</div>\n</div>";
+
+    /** The error display HTML, including error details. */
+    public static final String ERROR_DISPLAY_WITH_DETAILS = "<div class='oc-fomatter-error'>\n"
         + "<div class='oc-formatter-error-head'>%1$s</div>\n"
         + "<div class='oc-formatter-error-body'>\n"
         + "<div class='oc-formatter-error-source'>%2$s</div>\n"
@@ -227,6 +237,32 @@ public class CmsStringTemplateRenderer {
                     KEY_FUNCTIONS,
                     CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(m_cms)));
                 String output = renderTemplate(m_cms, template, m_element.getResource(), context);
+                if (CmsJspTagEditable.isEditableRequest(m_request)) {
+                    CmsHtmlValidator validator = new CmsHtmlValidator();
+                    validator.validate(output);
+                    if (!validator.isBalanced()) {
+                        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+                        String messages = "";
+                        for (CmsMessageContainer message : validator.getMessages()) {
+                            messages += message.key(locale) + "\n";
+                        }
+                        output = String.format(
+                            ERROR_DISPLAY_WITH_DETAILS,
+                            Messages.get().getBundle(locale).key(Messages.GUI_FORMATTER_RENDERING_ERROR_0),
+                            formatterConfig.getJspRootPath(),
+                            Messages.get().getBundle(locale).key(Messages.GUI_FORMATTER_RENDERING_NOT_WELL_FORMED_0),
+                            messages);
+                    } else if (validator.getRootElementCount() > 1) {
+                        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+                        output = String.format(
+                            ERROR_DISPLAY,
+                            Messages.get().getBundle(locale).key(Messages.GUI_FORMATTER_RENDERING_ERROR_0),
+                            formatterConfig.getJspRootPath(),
+                            Messages.get().getBundle(locale).key(
+                                Messages.GUI_FORMATTER_RENDERING_MULTIPLE_ROOT_ELEMENTS_0));
+                    }
+
+                }
                 m_context.getOut().print(output);
             } catch (Throwable t) {
                 if (CmsJspTagEditable.isEditableRequest(m_request)) {
@@ -234,10 +270,11 @@ public class CmsStringTemplateRenderer {
                     for (StackTraceElement element : t.getStackTrace()) {
                         stackTrace += element.toString() + "\n";
                     }
+                    Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
                     m_context.getOut().println(
                         String.format(
-                            ERROR_DISPLAY,
-                            "Error",
+                            ERROR_DISPLAY_WITH_DETAILS,
+                            Messages.get().getBundle(locale).key(Messages.GUI_FORMATTER_RENDERING_ERROR_0),
                             formatterConfig.getJspRootPath(),
                             t.getMessage(),
                             stackTrace));
@@ -255,7 +292,9 @@ public class CmsStringTemplateRenderer {
 
         // controller not found - this request was not initialized properly
         throw new CmsRuntimeException(
-            Messages.get().container(Messages.ERR_MISSING_CMS_CONTROLLER_1, CmsMacroFormatterResolver.class.getName()));
+            org.opencms.jsp.Messages.get().container(
+                org.opencms.jsp.Messages.ERR_MISSING_CMS_CONTROLLER_1,
+                CmsMacroFormatterResolver.class.getName()));
     }
 
 }

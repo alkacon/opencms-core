@@ -56,6 +56,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ERROR_UNKNOWN_0 = "GUI_ERROR_UNKNOWN_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FORMATTER_RENDERING_ERROR_0 = "GUI_FORMATTER_RENDERING_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FORMATTER_RENDERING_MULTIPLE_ROOT_ELEMENTS_0 = "GUI_FORMATTER_RENDERING_MULTIPLE_ROOT_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FORMATTER_RENDERING_NOT_WELL_FORMED_0 = "GUI_FORMATTER_RENDERING_NOT_WELL_FORMED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_REASON_0 = "GUI_REASON_0";
 
     /** Name of the used resource bundle. */

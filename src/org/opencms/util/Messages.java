@@ -37,9 +37,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.util.messages";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHARSET_ILLEGAL_NAME_1 = "ERR_CHARSET_ILLEGAL_NAME_1";
 
@@ -101,6 +98,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNABLE_TO_PARSE_INT_2 = "ERR_UNABLE_TO_PARSE_INT_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNBALANCED_CLOSING_TAG_1 = "ERR_UNBALANCED_CLOSING_TAG_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNBALANCED_OPENING_TAG_1 = "ERR_UNBALANCED_OPENING_TAG_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FILE_VIEW_NO_PREVIEW_0 = "GUI_FILE_VIEW_NO_PREVIEW_0";
 
     /** Message constant for key in the resource bundle. */
@@ -114,9 +117,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEUTIL_FILESIZE_MBYTES_1 = "GUI_FILEUTIL_FILESIZE_MBYTES_1";
-
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CONVERSION_BYTE_FAILED_0 = "LOG_CONVERSION_BYTE_FAILED_0";
@@ -162,6 +162,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_UUID_1 = "LOG_WRITE_UUID_1";
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.util.messages";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>
