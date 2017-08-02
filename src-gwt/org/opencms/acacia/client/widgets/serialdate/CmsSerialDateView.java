@@ -304,7 +304,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     public void showCurrentDates(Collection<CmsPair<Date, Boolean>> dates) {
 
         m_overviewList.setDatesWithCheckState(dates);
-        m_overviewPopup.show();
+        m_overviewPopup.center();
 
     }
 
@@ -664,9 +664,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     private void initOverviewPopup() {
 
         m_closeOverviewPopupButton = new CmsPushButton();
-        m_closeOverviewPopupButton.setText("Close");
+        m_closeOverviewPopupButton.setText(Messages.get().key(Messages.GUI_VIEW_CLOSE_0));
         m_updateExceptionsButton = new CmsPushButton();
-        m_updateExceptionsButton.setText("Update Exceptions");
+        m_updateExceptionsButton.setText(Messages.get().key(Messages.GUI_SERIALDATE_BUTTON_UPDATE_EXCEPTIONS_0));
         m_updateExceptionsButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -678,7 +678,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
             }
         });
-        m_overviewPopup = new CmsPopup("Dates", 800);
+        m_overviewPopup = new CmsPopup(Messages.get().key(Messages.GUI_SERIALDATE_OVERVIEW_POPUP_TITLE_0), 800);
         m_overviewPopup.center();
         m_overviewPopup.setAutoHideEnabled(true);
         m_overviewPopup.addDialogClose(null);
@@ -695,8 +695,8 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         CmsScrollPanel panel = new CmsScrollPanel();
         m_overviewList = new CmsCheckableDatePanel(m_dateFormat);
         m_overviewList.addDate(new Date());
+        panel.getElement().getStyle().setProperty("maxHeight", m_overviewPopup.getAvailableHeight(0), Unit.PX);
         panel.add(m_overviewList);
-        panel.setDefaultHeight(m_overviewPopup.getAvailableHeight(0));
         m_overviewPopup.add(panel);
         m_overviewPopup.hide();
 

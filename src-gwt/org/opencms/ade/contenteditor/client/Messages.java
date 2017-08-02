@@ -378,6 +378,10 @@ public final class Messages {
     /** Name of the used resource bundle. */
     public static final String GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_MESSAGE_0 = "GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_MESSAGE_0";
 
+    public static final String GUI_SERIALDATE_BUTTON_UPDATE_EXCEPTIONS_0 = "GUI_SERIALDATE_BUTTON_UPDATE_EXCEPTIONS_0";
+
+    public static final String GUI_SERIALDATE_OVERVIEW_POPUP_TITLE_0 = "GUI_SERIALDATE_OVERVIEW_POPUP_TITLE_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 
