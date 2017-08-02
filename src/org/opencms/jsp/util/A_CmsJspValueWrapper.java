@@ -44,6 +44,20 @@ abstract class A_CmsJspValueWrapper {
 
     /** Image bean instance created from the wrapped data. */
     private CmsJspScaledImageBean m_imageBean;
+    /** String representation of the wrapped data with HTML stripped off. */
+    private String m_stripHtml;
+    /** Boolean representation of the wrapped data. */
+    private Boolean m_boolean;
+    /** Date created from the wrapped data. */
+    private Date m_date;
+    /** Double created from the wrapped data. */
+    private Double m_double;
+    /** Long created from the wrapped data. */
+    private Long m_integer;
+    /** Link created from the wrapped data. */
+    private String m_link;
+    /** String representation of the wrapped data. */
+    private String m_string;
 
     /**
      * Returns the substituted link to the given target.<p>
@@ -107,7 +121,10 @@ abstract class A_CmsJspValueWrapper {
      */
     public String getStripHtml() {
 
-        return CmsJspElFunctions.stripHtml(this);
+        if (null == m_stripHtml) {
+            m_stripHtml = CmsJspElFunctions.stripHtml(this);
+        }
+        return m_stripHtml;
     }
 
     /**
@@ -117,7 +134,10 @@ abstract class A_CmsJspValueWrapper {
      */
     public boolean getToBoolean() {
 
-        return Boolean.parseBoolean(getToString());
+        if (m_boolean == null) {
+            m_boolean = Boolean.valueOf(Boolean.parseBoolean(getToString()));
+        }
+        return m_boolean.booleanValue();
     }
 
     /**
@@ -127,7 +147,10 @@ abstract class A_CmsJspValueWrapper {
      */
     public Date getToDate() {
 
-        return CmsJspElFunctions.convertDate(getToString());
+        if (m_date == null) {
+            m_date = CmsJspElFunctions.convertDate(getToString());
+        }
+        return m_date;
     }
 
     /**
@@ -137,7 +160,10 @@ abstract class A_CmsJspValueWrapper {
      */
     public Double getToFloat() {
 
-        return new Double(Double.parseDouble(getToString()));
+        if (m_double == null) {
+            m_double = new Double(Double.parseDouble(getToString()));
+        }
+        return m_double;
     }
 
     /**
@@ -168,7 +194,10 @@ abstract class A_CmsJspValueWrapper {
      */
     public Long getToInteger() {
 
-        return new Long(Long.parseLong(getToString()));
+        if (m_integer == null) {
+            m_integer = new Long(Long.parseLong(getToString()));
+        }
+        return m_integer;
     }
 
     /**
@@ -178,11 +207,15 @@ abstract class A_CmsJspValueWrapper {
      */
     public String getToLink() {
 
-        String target = toString();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(target)) {
-            return substituteLink(getCmsObject(), getToString());
+        if (null == m_link) {
+            String target = toString();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(target)) {
+                m_link = substituteLink(getCmsObject(), getToString());
+            } else {
+                m_link = "";
+            }
         }
-        return "";
+        return m_link;
     }
 
     /**
@@ -192,6 +225,9 @@ abstract class A_CmsJspValueWrapper {
      */
     public String getToString() {
 
-        return toString();
+        if (null == m_string) {
+            m_string = toString();
+        }
+        return m_string;
     }
 }
