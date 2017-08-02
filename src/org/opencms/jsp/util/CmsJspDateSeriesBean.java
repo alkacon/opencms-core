@@ -35,9 +35,11 @@ import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
 import org.opencms.widgets.serialdate.CmsSerialDateValueWrapper;
 import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -46,29 +48,36 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 
 /** Bean for easy access to information of an event series. */
-public class CmsJspSeriesInformationBean {
+public class CmsJspDateSeriesBean {
 
     /** Bean for easy access to information for single events. */
-    public static class CmsJspSingleEventInformationBean {
+    public static class CmsJspSeriesEventBean {
+
+        /** The separator between start and end date to use when formatting dates. */
+        private static final String DATE_SEPARATOR = " - ";
 
         /** Beginning of the event. */
         private Date m_start;
+
         /** End of the event. */
         private Date m_end;
-        /** Duration of the event. */
-        private long m_duration;
-        /** Flag, indicating if the event lasts whole days. */
-        private boolean m_isWholeDay;
+
+        /** The series the event is part of. */
+        private CmsJspDateSeriesBean m_series;
+
+        /** The dates of the event formatted locale specific in long style. */
+        private String m_formatLong;
+
+        /** The dates of the event formatted locale specific in short style. */
+        private String m_formatShort;
 
         /** Constructor taking start and end time for the single event.
          * @param start the start time of the event.
-         * @param duration the duration of the event.
-         * @param isWholeDay a flag, indicating if the event lasts whole days.
+         * @param series the series, the event is part of.
          */
-        public CmsJspSingleEventInformationBean(Date start, long duration, boolean isWholeDay) {
+        public CmsJspSeriesEventBean(Date start, CmsJspDateSeriesBean series) {
             m_start = start;
-            m_duration = duration;
-            m_isWholeDay = isWholeDay;
+            m_series = series;
         }
 
         /**
@@ -78,9 +87,33 @@ public class CmsJspSeriesInformationBean {
         public Date getEnd() {
 
             if (null == m_end) {
-                m_end = new Date(m_start.getTime() + m_duration);
+                m_end = new Date(m_start.getTime() + m_series.getEventDuration());
             }
             return m_end;
+        }
+
+        /**
+         * Returns the start and end dates/times as "start - end" in long date format and short time format specific for the request locale.
+         * @return the formatted date/time string.
+         */
+        public String getFormatLong() {
+
+            if (m_formatLong == null) {
+                m_formatLong = getFormattedDate(DateFormat.LONG);
+            }
+            return m_formatLong;
+        }
+
+        /**
+         * Returns the start and end dates/times as "start - end" in short date/time format specific for the request locale.
+         * @return the formatted date/time string.
+         */
+        public String getFormatShort() {
+
+            if (m_formatShort == null) {
+                m_formatShort = getFormattedDate(DateFormat.SHORT);
+            }
+            return m_formatShort;
         }
 
         /**
@@ -111,7 +144,33 @@ public class CmsJspSeriesInformationBean {
          */
         public boolean isWholeDay() {
 
-            return m_isWholeDay;
+            return m_series.isWholeDay();
+        }
+
+        /**
+         * Returns the start and end dates/times as "start - end" in the provided date/time format specific for the request locale.
+         * @param dateTimeFormat the format to use for date (time is always short).
+         * @return the formatted date/time string.
+         */
+        private String getFormattedDate(int dateTimeFormat) {
+
+            DateFormat df;
+            String result;
+            if (isWholeDay()) {
+                df = DateFormat.getDateInstance(dateTimeFormat, m_series.getLocale());
+                result = df.format(getStart());
+                if (getLastDay().after(getStart())) {
+                    result += DATE_SEPARATOR + df.format(getLastDay());
+                }
+            } else {
+                df = DateFormat.getDateTimeInstance(dateTimeFormat, DateFormat.SHORT, m_series.getLocale());
+                result = df.format(getStart());
+                if (getEnd().after(getStart())) {
+                    result += DATE_SEPARATOR + df.format(getEnd());
+                }
+            }
+
+            return result;
         }
     }
 
@@ -141,17 +200,17 @@ public class CmsJspSeriesInformationBean {
                 }
             }
             if ((d != null) && m_dates.contains(d)) {
-                return new CmsJspSingleEventInformationBean((Date)d.clone(), m_duration, m_isWholeDay);
+                return new CmsJspSeriesEventBean((Date)d.clone(), CmsJspDateSeriesBean.this);
             }
             return null;
         }
     }
 
     /** Logger for the class. */
-    private static final Log LOG = CmsLog.getLog(CmsJspSeriesInformationBean.class);
+    private static final Log LOG = CmsLog.getLog(CmsJspDateSeriesBean.class);
 
     /** Lazy map from start dates (provided as Long, long value as string or date) to informations on the single event. */
-    private Map<Object, CmsJspSingleEventInformationBean> m_singleEvents;
+    private Map<Object, CmsJspSeriesEventBean> m_singleEvents;
 
     /** The dates of the series. */
     SortedSet<Date> m_dates;
@@ -162,17 +221,22 @@ public class CmsJspSeriesInformationBean {
     /** Flag, indicating if the event lasts whole days. */
     boolean m_isWholeDay;
 
+    /** The locale to use for rendering dates. */
+    private Locale m_locale;
+
     /**
      * Constructor for the series information bean.
      * @param seriesDefinition string with the series definition.
+     * @param locale the locale to use for rendering dates.
      */
-    public CmsJspSeriesInformationBean(String seriesDefinition) {
+    public CmsJspDateSeriesBean(String seriesDefinition, Locale locale) {
         try {
             CmsSerialDateValueWrapper serialDateValue = new CmsSerialDateValueWrapper(seriesDefinition);
             I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(serialDateValue);
             m_dates = bean.getDates();
             m_duration = bean.getEventDuration();
             m_isWholeDay = serialDateValue.isWholeDay();
+            m_locale = locale;
         } catch (JSONException e) {
             LOG.error("Could not read series definition: " + seriesDefinition, e);
             m_dates = new TreeSet<>();
@@ -189,17 +253,44 @@ public class CmsJspSeriesInformationBean {
     }
 
     /**
+     * Returns the duration of the event.
+     * @return the duration of the event.
+     */
+    public long getEventDuration() {
+
+        return m_duration;
+    }
+
+    /**
      * Returns a lazy map from the start time of a single event of the series to the date information on the single event.<p>
      *
      * Start time can be provided as Long, as a String representation of the long value or as Date.<p>
      *
      * @return a lazy map from the start time of a single event of the series to the date information on the single event.
      */
-    public Map<Object, CmsJspSingleEventInformationBean> getEventInfo() {
+    public Map<Object, CmsJspSeriesEventBean> getEventInfo() {
 
         if (m_singleEvents == null) {
             m_singleEvents = CmsCollectionsGenericWrapper.createLazyMap(new CmsSeriesSingleEventTransformer());
         }
         return m_singleEvents;
+    }
+
+    /**
+     * Returns the locale to use for rendering dates.
+     * @return the locale to use for rendering dates.
+     */
+    public Locale getLocale() {
+
+        return m_locale;
+    }
+
+    /**
+     * Returns a flag, indicating if the events in the series last whole days.
+     * @return a flag, indicating if the events in the series last whole days.
+     */
+    public boolean isWholeDay() {
+
+        return m_isWholeDay;
     }
 }
