@@ -78,6 +78,9 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     /**CmsObject instance, doesn't have to be set. In normal case this is null.*/
     protected CmsObject m_cms;
 
+    /**Indicates if changing the website should be possible. */
+    protected boolean m_diableSiteSwitch;
+
     /**
      * Creates a new instance.<p>
      */
@@ -85,6 +88,14 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
         m_textField = new TextField();
         m_textField.setWidth("100%");
         m_filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED;
+    }
+
+    /**
+     * Disables the site switch function.<p>
+     */
+    public void disableSiteSwitch() {
+
+        m_diableSiteSwitch = true;
     }
 
     /**
@@ -128,6 +139,11 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
         m_startWithSitemapView = startWithSitemapView;
     }
 
+    /**
+     * Gets the options object.<p>
+     *
+     * @return Options
+     */
     protected Options getOptions() {
 
         Options options = new Options();
@@ -184,6 +200,9 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
                 fileSelect = new CmsResourceSelectDialog(m_filter, A_CmsUI.getCmsObject(), getOptions());
             } else {
                 fileSelect = new CmsResourceSelectDialog(m_filter, m_cms, getOptions());
+                if (m_diableSiteSwitch) {
+                    fileSelect.disableSiteSwitch();
+                }
             }
             fileSelect.showSitemapView(m_startWithSitemapView);
 

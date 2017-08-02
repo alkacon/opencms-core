@@ -61,8 +61,12 @@ import com.vaadin.ui.CustomComponent;
  */
 public class CmsResourceSelectDialog extends CustomComponent {
 
+    /**
+     * Class for site select options.<p>
+     */
     public static class Options {
 
+        /**Indexed container.*/
         private IndexedContainer m_siteSelectionContainer;
 
         /**
@@ -184,6 +188,14 @@ public class CmsResourceSelectDialog extends CustomComponent {
         this(filter, cms, new Options());
     }
 
+    /**
+     * public constructor.<p>
+     *
+     * @param filter resource filter
+     * @param cms CmsObject
+     * @param options options
+     * @throws CmsException exception
+     */
     public CmsResourceSelectDialog(CmsResourceFilter filter, CmsObject cms, Options options)
     throws CmsException {
         m_filter = filter;
@@ -237,6 +249,14 @@ public class CmsResourceSelectDialog extends CustomComponent {
     }
 
     /**
+     * Disables the option to select resources from other sites.<p>
+     */
+    public void disableSiteSwitch() {
+
+        getSiteSelector().setEnabled(false);
+    }
+
+    /**
      * Opens the given path.<p>
      *
      * @param path the path to open
@@ -282,7 +302,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
                             parentFolder = m_currentCms.readParentFolder(currentFolder.getStructureId());
                             idsToOpen.add(parentFolder.getStructureId());
                             currentFolder = parentFolder;
-                        } catch (CmsException e) {
+                        } catch (CmsException | NullPointerException e) {
                             LOG.info(e.getLocalizedMessage(), e);
                             break;
                         }
