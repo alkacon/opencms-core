@@ -42,6 +42,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsListResourceBundle;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.i18n.CmsMultiMessages.I_KeyFallbackHandler;
@@ -93,6 +94,7 @@ import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
+import org.opencms.xml.types.I_CmsXmlValidateWithMessage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -3261,9 +3263,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             return errorHandler;
         }
 
-        if (!value.validateValue(valueStr)) {
-            // value is not valid, add an error to the handler
-            String message = getValidationMessage(cms, value, value.getTypeName(), valueStr, true, false);
+        String message = null;
+        if (value instanceof I_CmsXmlValidateWithMessage) {
+            CmsMessageContainer messageContainer = ((I_CmsXmlValidateWithMessage)value).validateWithMessage(valueStr);
+            if (null != messageContainer) {
+                message = messageContainer.key(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            }
+        } else {
+            if (!value.validateValue(valueStr)) {
+                // value is not valid, add an error to the handler
+                message = getValidationMessage(cms, value, value.getTypeName(), valueStr, true, false);
+            }
+        }
+        if (null != message) {
             errorHandler.addError(value, message);
         }
 
