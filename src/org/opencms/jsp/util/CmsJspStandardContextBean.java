@@ -739,6 +739,12 @@ public final class CmsJspStandardContextBean {
     /** The logger instance for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsJspStandardContextBean.class);
 
+    /**
+     * Key for the element setting and request parameter that holds the start date
+     * of the event of an event series that should be displayed.
+     */
+    private static final String PARAM_EVENT_DATE = "eventdate";
+
     /** OpenCms user context. */
     protected CmsObject m_cms;
 
@@ -991,6 +997,20 @@ public final class CmsJspStandardContextBean {
     public String getEnableReload() {
 
         return getReloadMarker();
+    }
+
+    /**
+     * Returns the start date of the currently requested event of an event series.
+     *
+     * @return the start date of the currently requested event of an event series.
+     */
+    public String getEvent() {
+
+        String eventDate = getElement().getSettings().get(PARAM_EVENT_DATE);
+        if ((null == eventDate) || eventDate.isEmpty()) {
+            eventDate = m_request.getParameter(PARAM_EVENT_DATE);
+        }
+        return eventDate;
     }
 
     /**
