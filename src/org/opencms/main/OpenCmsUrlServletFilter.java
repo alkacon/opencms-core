@@ -167,6 +167,7 @@ public class OpenCmsUrlServletFilter implements Filter {
                 "/resources/",
                 "/webdav",
                 "/cmisatom",
+                "/handle404",
                 "/services"};
             StringBuffer regex = new StringBuffer();
             regex.append(m_contextPath);
