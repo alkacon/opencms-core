@@ -655,7 +655,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             boolean export = rule.getSource().matcher(siteRoot + vfsName).matches();
             matched |= export;
             // system folder case
-            export |= (vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM) && rule.match(vfsName));
+            export |= ((OpenCms.getSiteManager().startsWithShared(vfsName)
+                || vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) && rule.match(vfsName));
             if (export) {
                 // the resource has to exported for this rule
                 CmsObject locCms = exportCms;
@@ -1411,7 +1412,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // add export rfs prefix and return result
-        if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+
+        if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM) && !OpenCms.getSiteManager().startsWithShared(vfsName)) {
             return getRfsPrefix(cms.getRequestContext().addSiteRoot(vfsName)).concat(rfsName);
         } else {
             // check if we are generating a link to a related resource in the same rfs rule
@@ -2762,7 +2764,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (!isValidURL(result)) {
             result = CmsFileUtil.normalizePath(result, '/');
         }
-        result = CmsFileUtil.normalizePath(result, '/');
         if (CmsResource.isFolder(result)) {
             // ensure prefix does NOT end with a folder '/'
             result = result.substring(0, result.length() - 1);

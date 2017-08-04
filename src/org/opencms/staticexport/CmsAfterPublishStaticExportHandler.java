@@ -293,7 +293,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     protected boolean exportNonTemplateResources(
         CmsObject cms,
         List<CmsPublishedResource> publishedResources,
-        I_CmsReport report) throws CmsException, IOException, ServletException {
+        I_CmsReport report)
+    throws CmsException, IOException, ServletException {
 
         report.println(
             Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0),
@@ -549,7 +550,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         File exportFile = new File(exportFileName);
         long dateLastModified = exportFile.lastModified();
         // system folder case
-        if (vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+        if (vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM) || OpenCms.getSiteManager().startsWithShared(vfsName)) {
             // iterate over all rules
             Iterator<CmsStaticExportRfsRule> it = manager.getRfsRules().iterator();
             while (it.hasNext()) {
@@ -735,7 +736,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      */
     protected List<CmsPublishedResource> getRelatedResources(
         CmsObject cms,
-        List<CmsPublishedResource> publishedResources) throws CmsException {
+        List<CmsPublishedResource> publishedResources)
+    throws CmsException {
 
         String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
@@ -829,7 +831,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     protected boolean readNonTemplateResourcesToExport(
         CmsObject cms,
         List<CmsPublishedResource> publishedResources,
-        List<CmsStaticExportData> resourcesToExport) throws CmsException {
+        List<CmsStaticExportData> resourcesToExport)
+    throws CmsException {
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
         boolean templatesFound = false;
