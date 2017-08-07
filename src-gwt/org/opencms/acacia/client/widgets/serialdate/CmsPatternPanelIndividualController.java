@@ -27,9 +27,6 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
-import org.opencms.acacia.shared.CmsSerialDateUtil;
-import org.opencms.ade.contenteditor.client.Messages;
-
 import java.util.Date;
 import java.util.SortedSet;
 
@@ -42,12 +39,10 @@ public class CmsPatternPanelIndividualController extends A_CmsPatternPanelContro
     /**
      * Constructor for the individual pattern panel controller
      * @param model the model to read data from.
-     * @param validationHandler the validation handler used for validation.
+     * @param changeHandler the value change handler.
      */
-    CmsPatternPanelIndividualController(
-        final CmsSerialDateValueWrapper model,
-        final I_ChangeHandler validationHandler) {
-        super(model, validationHandler);
+    CmsPatternPanelIndividualController(final CmsSerialDateValueWrapper model, final I_ChangeHandler changeHandler) {
+        super(model, changeHandler);
         m_view = new CmsPatternPanelIndividual(this, m_model);
     }
 
@@ -72,17 +67,4 @@ public class CmsPatternPanelIndividualController extends A_CmsPatternPanelContro
         }
 
     }
-
-    /**
-     * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDatePatternController#validate()
-     */
-    public String validate() {
-
-        return m_model.getIndividualDates().size() > CmsSerialDateUtil.getMaxEvents()
-        ? Messages.get().key(
-            Messages.GUI_SERIALDATE_ERROR_INVALID_OCCURRENCES_1,
-            Integer.valueOf(CmsSerialDateUtil.getMaxEvents()))
-        : null;
-    }
-
 }

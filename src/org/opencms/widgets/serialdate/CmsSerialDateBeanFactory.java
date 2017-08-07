@@ -28,7 +28,6 @@
 package org.opencms.widgets.serialdate;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
-import org.opencms.json.JSONException;
 import org.opencms.main.CmsLog;
 
 import org.apache.commons.logging.Log;
@@ -49,6 +48,9 @@ public class CmsSerialDateBeanFactory {
      */
     public static I_CmsSerialDateBean createSerialDateBean(I_CmsSerialDateValue value) {
 
+        if ((null == value) || !value.isValid()) {
+            return null;
+        }
         switch (value.getPatternType()) {
             case DAILY:
                 if (value.isEveryWorkingDay()) {
@@ -157,15 +159,7 @@ public class CmsSerialDateBeanFactory {
     public static I_CmsSerialDateBean createSerialDateBean(String widgetValue) {
 
         I_CmsSerialDateValue value;
-        try {
-            value = new CmsSerialDateValueWrapper(widgetValue);
-        } catch (JSONException e) {
-            LOG.error(
-                "Could not read serial date widget string value \"" + widgetValue + "\". Assuming default value.",
-                e);
-            value = new CmsSerialDateValueWrapper();
-        }
-
+        value = new CmsSerialDateValueWrapper(widgetValue);
         return createSerialDateBean(value);
     }
 }

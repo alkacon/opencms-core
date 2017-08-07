@@ -90,7 +90,7 @@ public abstract class A_CmsSerialDateBean implements I_CmsSerialDateBean {
         m_startDate = new GregorianCalendar();
         m_endDate = new GregorianCalendar();
         m_startDate.setTime(startDate);
-        m_endDate.setTime(endDate);
+        m_endDate.setTime(endDate == null ? startDate : endDate);
         if (isWholeDay) {
             m_startDate.set(Calendar.HOUR_OF_DAY, 0);
             m_startDate.set(Calendar.MINUTE, 0);

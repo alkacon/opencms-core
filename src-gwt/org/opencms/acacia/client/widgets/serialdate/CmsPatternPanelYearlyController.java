@@ -42,10 +42,10 @@ public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController
     /**
      * Constructor for the yearly pattern panel controller
      * @param model the model to read data from.
-     * @param validationHandler the validation handler used for validation.
+     * @param changeHandler the value change handler.
      */
-    CmsPatternPanelYearlyController(CmsSerialDateValueWrapper model, I_ChangeHandler validationHandler) {
-        super(model, validationHandler);
+    CmsPatternPanelYearlyController(CmsSerialDateValueWrapper model, I_ChangeHandler changeHandler) {
+        super(model, changeHandler);
         m_view = new CmsPatternPanelYearly(this, m_model);
     }
 
@@ -147,17 +147,6 @@ public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController
             });
         }
 
-    }
-
-    /**
-     * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDatePatternController#validate()
-     */
-    public String validate() {
-
-        if (m_model.getWeekDay() == null) {
-            return validateDayOfMonth();
-        }
-        return null;
     }
 
 }

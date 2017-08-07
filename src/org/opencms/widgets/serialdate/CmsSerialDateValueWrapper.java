@@ -27,8 +27,9 @@
 
 package org.opencms.widgets.serialdate;
 
+import org.opencms.acacia.shared.A_CmsSerialDateValue;
 import org.opencms.acacia.shared.CmsSerialDateUtil;
-import org.opencms.acacia.shared.I_CmsSerialDateValue;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -36,290 +37,51 @@ import org.opencms.main.CmsLog;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 
 /** Server-side implementation of {@link org.opencms.acacia.shared.I_CmsSerialDateValue}. */
-public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
+public class CmsSerialDateValueWrapper extends A_CmsSerialDateValue {
 
     /** Logger for the class. */
     private static final Log LOG = CmsLog.getLog(CmsSerialDateValueWrapper.class);
 
-    /** Start date and time of the first event in the series. */
-    private Date m_start;
-    /** End date and time of the first event in the series. */
-    private Date m_end;
-    /** Last day events of the series should take place. */
-    private Date m_seriesEndDate;
-    /** Maximal number of occurrences of the event. */
-    private int m_seriesOccurrences;
-    /** The interval between two events (e.g., number of days, weeks, month, years). */
-    private int m_interval;
-    /** The day of the month when the event should happen. */
-    private int m_dayOfMonth;
-    /** The weekdays at which the event should happen. */
-    private SortedSet<WeekDay> m_weekDays;
-    /** The recursion pattern of the event series. */
-    private PatternType m_patterntype;
-    /** The weeks in a month where the event should happen. */
-    private SortedSet<WeekOfMonth> m_weeksOfMonth;
-    /** Dates in the event series, where the event is not taking place. */
-    private SortedSet<Date> m_exceptions;
-    /** Individual dates, where the event takes place. */
-    private SortedSet<Date> m_individualDates;
-    /** Flag, indicating if the event should take place on every working day. */
-    private boolean m_isEveryWorkingDay;
-    /** Flag, indicating if the event lasts all the day. */
-    private boolean m_isWholeDay;
-    /** Month in which the event takes place. */
-    private Month m_month;
+    /** Flag, indicating if parsing the provided string value failed. */
+    private boolean m_parsingFailed;
 
     /** Default constructor, setting the default state of the the serial date widget. */
     public CmsSerialDateValueWrapper() {
-        Date now = new Date();
-        m_start = now;
-        m_end = now;
-        m_patterntype = PatternType.NONE;
+
+        setDefaultValue();
     }
 
     /**
      * Wraps the JSON specification of the serial date.
+     *
      * @param value JSON representation of the serial date as string.
-     * @throws JSONException thrown if the representation is no correct JSON, or is not of the correct structure.s
      */
-    public CmsSerialDateValueWrapper(String value)
-    throws JSONException {
-        this();
+    public CmsSerialDateValueWrapper(String value) {
         if ((null != value) && !value.isEmpty()) {
-            JSONObject json = new JSONObject(value);
-            m_start = new Date(readOptionalLong(json, JsonKey.START, Long.valueOf(0)).longValue());
-            m_end = new Date(readOptionalLong(json, JsonKey.END, Long.valueOf(0)).longValue());
-            m_isWholeDay = readOptionalBoolean(json, JsonKey.WHOLE_DAY, false);
-            JSONObject patternJson = json.getJSONObject(JsonKey.PATTERN);
-            readPattern(patternJson);
-            m_exceptions = readDates(readOptionalArray(json, JsonKey.EXCEPTIONS, null));
-            Long seriesEnd = readOptionalLong(json, JsonKey.SERIES_ENDDATE, null);
-            if (null != seriesEnd) {
-                m_seriesEndDate = new Date(seriesEnd.longValue());
+            try {
+                JSONObject json = new JSONObject(value);
+                setStart(readOptionalDate(json, JsonKey.START));
+                setEnd(readOptionalDate(json, JsonKey.END));
+                setWholeDay(readOptionalBoolean(json, JsonKey.WHOLE_DAY));
+                JSONObject patternJson = json.getJSONObject(JsonKey.PATTERN);
+                readPattern(patternJson);
+                setExceptions(readDates(readOptionalArray(json, JsonKey.EXCEPTIONS)));
+                setSeriesEndDate(readOptionalDate(json, JsonKey.SERIES_ENDDATE));
+                setOccurrences(readOptionalInt(json, JsonKey.SERIES_OCCURRENCES));
+                setDerivedEndType();
+            } catch (@SuppressWarnings("unused") JSONException e) {
+                m_parsingFailed = true;
+                setDefaultValue();
             }
-            m_seriesOccurrences = readOptionalInt(json, JsonKey.SERIES_OCCURRENCES, 0);
+        } else {
+            setDefaultValue();
         }
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object o) {
-
-        if (o instanceof I_CmsSerialDateValue) {
-            I_CmsSerialDateValue val = (I_CmsSerialDateValue)o;
-            return (val.getDayOfMonth() == this.getDayOfMonth())
-                && (val.isEveryWorkingDay() == this.isEveryWorkingDay())
-                && (val.isWholeDay() == this.isWholeDay())
-                && Objects.equals(val.getEnd(), this.getEnd())
-                && Objects.equals(val.getEndType(), this.getEndType())
-                && Objects.equals(val.getExceptions(), this.getExceptions())
-                && Objects.equals(val.getIndividualDates(), this.getIndividualDates())
-                && (val.getInterval() == this.getInterval())
-                && Objects.equals(val.getMonth(), this.getMonth())
-                && (val.getOccurrences() == this.getOccurrences())
-                && Objects.equals(val.getPatternType(), this.getPatternType())
-                && Objects.equals(val.getSeriesEndDate(), this.getSeriesEndDate())
-                && Objects.equals(val.getStart(), this.getStart())
-                && Objects.equals(val.getWeekDay(), this.getWeekDay())
-                && Objects.equals(val.getWeekDays(), this.getWeekDays())
-                && Objects.equals(val.getWeekOfMonth(), this.getWeekOfMonth())
-                && Objects.equals(val.getWeeksOfMonth(), this.getWeeksOfMonth());
-        }
-        return false;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getDayOfMonth()
-     */
-    public int getDayOfMonth() {
-
-        return m_dayOfMonth;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getEnd()
-     */
-    public Date getEnd() {
-
-        return m_end;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getEndType()
-     */
-    public EndType getEndType() {
-
-        if (getPatternType().equals(PatternType.NONE) || getPatternType().equals(PatternType.INDIVIDUAL)) {
-            return EndType.SINGLE;
-        }
-        if (getSeriesEndDate() != null) {
-            return EndType.DATE;
-        }
-        return EndType.TIMES;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getExceptions()
-     */
-    public SortedSet<Date> getExceptions() {
-
-        return m_exceptions;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getIndividualDates()
-     */
-    public SortedSet<Date> getIndividualDates() {
-
-        return m_individualDates;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getInterval()
-     */
-    public int getInterval() {
-
-        return m_interval;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getMonth()
-     */
-    public Month getMonth() {
-
-        return m_month;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getOccurrences()
-     */
-    public int getOccurrences() {
-
-        return m_seriesOccurrences;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getPatternType()
-     */
-    public PatternType getPatternType() {
-
-        return m_patterntype;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getSeriesEndDate()
-     */
-    public Date getSeriesEndDate() {
-
-        return m_seriesEndDate;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getStart()
-     */
-    public Date getStart() {
-
-        return m_start;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getWeekDay()
-     */
-    public WeekDay getWeekDay() {
-
-        if ((null != m_weekDays) && !m_weekDays.isEmpty()) {
-            return m_weekDays.iterator().next();
-        }
-        return null;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getWeekDays()
-     */
-    public SortedSet<WeekDay> getWeekDays() {
-
-        return m_weekDays;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getWeekOfMonth()
-     */
-    public WeekOfMonth getWeekOfMonth() {
-
-        if ((null != m_weeksOfMonth) && !m_weeksOfMonth.isEmpty()) {
-            return m_weeksOfMonth.iterator().next();
-        }
-        return null;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getWeeksOfMonth()
-     */
-    public SortedSet<WeekOfMonth> getWeeksOfMonth() {
-
-        return m_weeksOfMonth;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(
-            Boolean.valueOf(this.isEveryWorkingDay()),
-            Boolean.valueOf(this.isWholeDay()),
-            Integer.valueOf(this.getDayOfMonth()),
-            this.getEnd(),
-            this.getEndType(),
-            this.getExceptions(),
-            this.getIndividualDates(),
-            Integer.valueOf(this.getInterval()),
-            this.getMonth(),
-            Integer.valueOf(this.getOccurrences()),
-            this.getPatternType(),
-            this.getSeriesEndDate(),
-            this.getStart(),
-            this.getWeekDay(),
-            this.getWeekDays(),
-            this.getWeekOfMonth(),
-            this.getWeeksOfMonth());
-
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#isEveryWorkingDay()
-     */
-    public boolean isEveryWorkingDay() {
-
-        return m_isEveryWorkingDay;
-    }
-
-    /**
-     * Checks, if the value specifies a series of dates.
-     * @return flag, indicating if the value really specifies a series of dates.
-     */
-    public boolean isValid() {
-
-        return timesAreValid() && patternIsValid() && durationIsValid();
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#isWholeDay()
-     */
-    public boolean isWholeDay() {
-
-        return m_isWholeDay;
     }
 
     /**
@@ -332,7 +94,7 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
             JSONObject result = new JSONObject();
             result.put(JsonKey.START, dateToJson(getStart()));
             result.put(JsonKey.END, dateToJson(getEnd()));
-            if (m_isWholeDay) {
+            if (isWholeDay()) {
                 result.put(JsonKey.WHOLE_DAY, true);
             }
             JSONObject pattern = patternToJson();
@@ -371,6 +133,37 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
     }
 
     /**
+     * Validates the wrapped value and returns a localized error message in case of invalid values.
+     * @return <code>null</code> if the value is valid, a suitable localized error message otherwise.
+     */
+    public CmsMessageContainer validateWithMessage() {
+
+        if (m_parsingFailed) {
+            return Messages.get().container(Messages.ERR_SERIALDATE_INVALID_VALUE_0);
+        }
+        if (!isStartSet()) {
+            return Messages.get().container(Messages.ERR_SERIALDATE_START_MISSING_0);
+        }
+        if (!isEndValid()) {
+            return Messages.get().container(Messages.ERR_SERIALDATE_END_BEFORE_START_0);
+        }
+        String key = validatePattern();
+        if (null != key) {
+            return Messages.get().container(key);
+        }
+        key = validateDuration();
+        if (null != key) {
+            return Messages.get().container(key);
+        }
+        if (hasTooManyEvents()) {
+            return Messages.get().container(
+                Messages.ERR_SERIALDATE_TOO_MANY_EVENTS_1,
+                Integer.valueOf(CmsSerialDateUtil.getMaxEvents()));
+        }
+        return null;
+    }
+
+    /**
      * Converts a list of dates to a Json array with the long representation of the dates as strings.
      * @param individualDates the list to convert.
      * @return Json array with long values of dates as string
@@ -398,90 +191,13 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
     }
 
     /**
-     * Checks if the provided duration information is valid.
-     * @return a flag, indicating if the duration information is valid.
+     * Returns a flag, indicating if the series has too many events.
+     * @return a flag, indicating if the series has too many events.
      */
-    private boolean durationIsValid() {
+    private boolean hasTooManyEvents() {
 
-        switch (getEndType()) {
-            case DATE:
-                return (getStart().getTime() < (getSeriesEndDate().getTime() + DAY_IN_MILLIS))
-                    && !CmsSerialDateBeanFactory.createSerialDateBean(this).hasTooManyDates();
-            case TIMES:
-                int o = getOccurrences();
-                return (o > 0) && (o <= CmsSerialDateUtil.getMaxEvents());
-            default:
-                return true;
-        }
+        return CmsSerialDateBeanFactory.createSerialDateBean(this).hasTooManyDates();
 
-    }
-
-    /**
-     * Check if the provided day of month is valid.
-     * @return flag, indicating if the day of month is valid.
-     */
-    private boolean isDayOfMonthValid() {
-
-        return (getDayOfMonth() > 0) && (getDayOfMonth() < 32);
-    }
-
-    /**
-     * Check if the interval is valid.
-     * @return flag, indicating if the interval is valid.
-     */
-    private boolean isIntervalValid() {
-
-        return getInterval() > 0;
-    }
-
-    /**
-     * Check if a month is set.
-     * @return flag, indicating if a month is set.
-     */
-    private boolean isMonthSet() {
-
-        return getMonth() != null;
-    }
-
-    /**
-     * Check if a weekday is set.
-     * @return flag, indicating if a weekday is set.
-     */
-    private boolean isWeekDaySet() {
-
-        return getWeekDays().size() > 0;
-    }
-
-    /**
-     * Check if a week of month is set.
-     * @return flag, indicating if a week of month is set.
-     */
-    private boolean isWeekOfMonthSet() {
-
-        return getWeeksOfMonth().size() > 0;
-    }
-
-    /**
-     * Check, if all values used for calculating the series for a specific pattern are valid.
-     * @return flag, indicating if the values are valid.
-     */
-    private boolean patternIsValid() {
-
-        switch (getPatternType()) {
-            case DAILY:
-                return isIntervalValid() || isEveryWorkingDay();
-            case WEEKLY:
-                return isIntervalValid() && isWeekDaySet();
-            case MONTHLY:
-                return isIntervalValid() && (isWeekDaySet() ? isWeekOfMonthSet() : isDayOfMonthValid());
-            case YEARLY:
-                return isMonthSet() && (isWeekDaySet() ? isWeekOfMonthSet() : isDayOfMonthValid());
-            case INDIVIDUAL:
-                return getIndividualDates().size() <= CmsSerialDateUtil.getMaxEvents();
-            case NONE:
-            default:
-                return true;
-        }
     }
 
     /**
@@ -559,44 +275,58 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
      * Read an optional JSON array.
      * @param json the JSON Object that has the array as element
      * @param key the key for the array in the provided JSON object
-     * @param defaultValue the default value, to be returned if the array does not exist or can't be read.
-     * @return the array or the default value if reading the array fails.
+     * @return the array or null if reading the array fails.
      */
-    private JSONArray readOptionalArray(JSONObject json, String key, JSONArray defaultValue) {
+    private JSONArray readOptionalArray(JSONObject json, String key) {
 
         try {
             return json.getJSONArray(key);
         } catch (JSONException e) {
             LOG.debug("Reading optional JSON array failed. Default to provided default value.", e);
         }
-        return defaultValue;
+        return null;
     }
 
     /**
      * Read an optional boolean value form a JSON Object.
      * @param json the JSON object to read from.
      * @param key the key for the boolean value in the provided JSON object.
-     * @param defaultValue the default value, to be returned if the boolean can not be read from the JSON object.
-     * @return the boolean or the default value if reading the boolean fails.
+     * @return the boolean or null if reading the boolean fails.
      */
-    private boolean readOptionalBoolean(JSONObject json, String key, boolean defaultValue) {
+    private Boolean readOptionalBoolean(JSONObject json, String key) {
 
         try {
-            return json.getBoolean(key);
+            return Boolean.valueOf(json.getBoolean(key));
         } catch (JSONException e) {
             LOG.debug("Reading optional JSON boolean failed. Default to provided default value.", e);
         }
-        return defaultValue;
+        return null;
+    }
+
+    /**
+     * Read an optional Date value (stored as string) form a JSON Object.
+     * @param json the JSON object to read from.
+     * @param key the key for the Long value in the provided JSON object.
+     * @return the Date or null if reading the Date fails.
+     */
+    private Date readOptionalDate(JSONObject json, String key) {
+
+        try {
+            String str = json.getString(key);
+            return new Date(Long.parseLong(str));
+        } catch (NumberFormatException | JSONException e) {
+            LOG.debug("Reading optional JSON Long failed. Default to provided default value.", e);
+        }
+        return null;
     }
 
     /**
      * Read an optional int value (stored as string) form a JSON Object.
      * @param json the JSON object to read from.
      * @param key the key for the int value in the provided JSON object.
-     * @param defaultValue the default value, to be returned if the int can not be read from the JSON object.
-     * @return the int or the default value if reading the int fails.
+     * @return the int or 0 if reading the int fails.
      */
-    private int readOptionalInt(JSONObject json, String key, int defaultValue) {
+    private int readOptionalInt(JSONObject json, String key) {
 
         try {
             String str = json.getString(key);
@@ -604,35 +334,16 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
         } catch (NumberFormatException | JSONException e) {
             LOG.debug("Reading optional JSON int failed. Default to provided default value.", e);
         }
-        return defaultValue;
-    }
-
-    /**
-     * Read an optional Long value (stored as string) form a JSON Object.
-     * @param json the JSON object to read from.
-     * @param key the key for the Long value in the provided JSON object.
-     * @param defaultValue the default value, to be returned if the Long can not be read from the JSON object.
-     * @return the Long or the default value if reading the Long fails.
-     */
-    private Long readOptionalLong(JSONObject json, String key, Long defaultValue) {
-
-        try {
-            String str = json.getString(key);
-            return Long.valueOf(str);
-        } catch (NumberFormatException | JSONException e) {
-            LOG.debug("Reading optional JSON Long failed. Default to provided default value.", e);
-        }
-        return defaultValue;
+        return 0;
     }
 
     /**
      * Read an optional month value (stored as string) form a JSON Object.
      * @param json the JSON object to read from.
      * @param key the key for the month value in the provided JSON object.
-     * @param defaultValue the default value, to be returned if the month can not be read from the JSON object.
-     * @return the month or the default value if reading the month fails.
+     * @return the month or null if reading the month fails.
      */
-    private Month readOptionalMonth(JSONObject json, String key, Month defaultValue) {
+    private Month readOptionalMonth(JSONObject json, String key) {
 
         try {
             String str = json.getString(key);
@@ -640,7 +351,7 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
         } catch (JSONException | IllegalArgumentException e) {
             LOG.debug("Reading optional JSON month failed. Default to provided default value.", e);
         }
-        return defaultValue;
+        return null;
     }
 
     /**
@@ -670,14 +381,14 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
      */
     private void readPattern(JSONObject patternJson) {
 
-        m_patterntype = readPatternType(patternJson);
-        m_interval = readOptionalInt(patternJson, JsonKey.PATTERN_INTERVAL, 0);
-        m_weekDays = readWeekDays(patternJson);
-        m_dayOfMonth = readOptionalInt(patternJson, JsonKey.PATTERN_DAY_OF_MONTH, 0);
-        m_isEveryWorkingDay = readOptionalBoolean(patternJson, JsonKey.PATTERN_EVERYWORKINGDAY, false);
-        m_weeksOfMonth = readWeeksOfMonth(patternJson);
-        m_individualDates = readDates(readOptionalArray(patternJson, JsonKey.PATTERN_DATES, null));
-        m_month = readOptionalMonth(patternJson, JsonKey.PATTERN_MONTH, null);
+        setPatternType(readPatternType(patternJson));
+        setInterval(readOptionalInt(patternJson, JsonKey.PATTERN_INTERVAL));
+        setWeekDays(readWeekDays(patternJson));
+        setDayOfMonth(readOptionalInt(patternJson, JsonKey.PATTERN_DAY_OF_MONTH));
+        setEveryWorkingDay(readOptionalBoolean(patternJson, JsonKey.PATTERN_EVERYWORKINGDAY));
+        setWeeksOfMonth(readWeeksOfMonth(patternJson));
+        setIndividualDates(readDates(readOptionalArray(patternJson, JsonKey.PATTERN_DATES)));
+        setMonth(readOptionalMonth(patternJson, JsonKey.PATTERN_MONTH));
 
     }
 
@@ -754,15 +465,6 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
     }
 
     /**
-     * Check if the times (start and end of the single event) are valid.
-     * @return flag, indicating if times are valid.
-     */
-    private boolean timesAreValid() {
-
-        return !getEnd().before(getStart());
-    }
-
-    /**
      * Convert a collection of objects to a JSON array with the string representations of that objects.
      * @param collection the collection of objects.
      * @return the JSON array with the string representations.
@@ -778,6 +480,109 @@ public class CmsSerialDateValueWrapper implements I_CmsSerialDateValue {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Check if the day of month is valid.
+     * @return <code>null</code> if the day of month is valid, the key of a suitable error message otherwise.
+     */
+    private String validateDayOfMonth() {
+
+        return (isDayOfMonthValid()) ? null : Messages.ERR_SERIALDATE_INVALID_DAY_OF_MONTH_0;
+    }
+
+    /**
+     * Checks if the provided duration information is valid.
+     * @return <code>null</code> if the information is valid, the key of the suitable error message otherwise.
+     */
+    private String validateDuration() {
+
+        if (!isValidEndTypeForPattern()) {
+            return Messages.ERR_SERIALDATE_INVALID_END_TYPE_FOR_PATTERN_0;
+        }
+        switch (getEndType()) {
+            case DATE:
+                return (getStart().getTime() < (getSeriesEndDate().getTime() + DAY_IN_MILLIS))
+                ? null
+                : Messages.ERR_SERIALDATE_SERIES_END_BEFORE_START_0;
+            case TIMES:
+                return getOccurrences() > 0 ? null : Messages.ERR_SERIALDATE_INVALID_OCCURRENCES_0;
+            default:
+                return null;
+        }
+
+    }
+
+    /**
+     * Check if the interval is valid.
+     * @return <code>null</code> if the interval is valid, a suitable error message key otherwise.
+     */
+    private String validateInterval() {
+
+        return isIntervalValid() ? null : Messages.ERR_SERIALDATE_INVALID_INTERVAL_0;
+    }
+
+    /**
+     * Check, if the month is set.
+     * @return <code>null</code> if a month is set, a suitable error message key otherwise.
+     */
+    private String validateMonthSet() {
+
+        return isMonthSet() ? null : Messages.ERR_SERIALDATE_NO_MONTH_SET_0;
+    }
+
+    /**
+     * Check, if all values used for calculating the series for a specific pattern are valid.
+     * @return <code>null</code> if the pattern is valid, a suitable error message otherwise.
+     */
+    private String validatePattern() {
+
+        String error = null;
+        switch (getPatternType()) {
+            case DAILY:
+                error = isEveryWorkingDay() ? null : validateInterval();
+                break;
+            case WEEKLY:
+                error = validateInterval();
+                if (null == error) {
+                    error = validateWeekDaySet();
+                }
+                break;
+            case MONTHLY:
+                error = validateInterval();
+                if (null == error) {
+                    error = validateMonthSet();
+                    if (null == error) {
+                        error = isWeekDaySet() ? validateWeekOfMonthSet() : validateDayOfMonth();
+                    }
+                }
+                break;
+            case YEARLY:
+                error = isWeekDaySet() ? validateWeekOfMonthSet() : validateDayOfMonth();
+                break;
+            case INDIVIDUAL:
+            case NONE:
+            default:
+        }
+        return error;
+    }
+
+    /**
+     * Validate if a weekday is set, otherwise return the key for a suitable error message.
+     * @return <code>null</code> if a weekday is set, the key for a suitable error message otherwise.
+     */
+    private String validateWeekDaySet() {
+
+        return isWeekDaySet() ? null : Messages.ERR_SERIALDATE_NO_WEEKDAY_SPECIFIED_0;
+    }
+
+    /**
+     * Check if a week of month is set.
+     * @return <code>null</code> if a week of month is set, the key for a suitable error message otherwise.
+     */
+    private String validateWeekOfMonthSet() {
+
+        return isWeekOfMonthSet() ? Messages.ERR_SERIALDATE_NO_WEEK_OF_MONTH_SPECIFIED_0 : null;
     }
 
 }

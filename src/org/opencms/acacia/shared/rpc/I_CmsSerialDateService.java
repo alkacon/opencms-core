@@ -43,11 +43,4 @@ public interface I_CmsSerialDateService extends RemoteService {
      * @return the dates of the specified series, each with a flag, indicating if it is really taking place (or excluded as an exception).
      */
     Collection<CmsPair<Date, Boolean>> getDates(String config);
-
-    /**
-     * Check, if there are too many dates specified by the series.
-     * @param config series specification (widget's string value)
-     * @return a flag, indicating if there are too many dates, accompanied with the last possible date in the series.
-     */
-    CmsPair<Boolean, Date> hasTooManyDates(String config);
 }

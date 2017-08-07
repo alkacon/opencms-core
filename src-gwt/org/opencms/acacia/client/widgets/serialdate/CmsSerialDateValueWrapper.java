@@ -27,12 +27,13 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import org.opencms.acacia.shared.A_CmsSerialDateValue;
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -47,40 +48,10 @@ import com.google.gwt.json.client.JSONValue;
  * Client-side implementation of {@link I_CmsSerialDateValue}.
  * The implementation additionally has setters for the various values of the serial date specification.
  */
-public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue {
+public class CmsSerialDateValueWrapper extends A_CmsSerialDateValue implements I_CmsObservableSerialDateValue {
 
-    /** Start date and time of the first event in the series. */
-    private Date m_start;
-    /** End date and time of the first event in the series. */
-    private Date m_end;
-    /** Last day events of the series should take place. */
-    private Date m_seriesEndDate;
-    /** Maximal number of occurrences of the event. */
-    private int m_seriesOccurrences;
-    /** The interval between two events (e.g., number of days, weeks, month, years). */
-    private int m_interval;
-    /** The day of the month when the event should happen. */
-    private int m_dayOfMonth;
-    /** The weekdays at which the event should happen. */
-    private final SortedSet<WeekDay> m_weekDays = new TreeSet<>();
-    /** The recursion pattern of the event series. */
-    private PatternType m_patterntype;
-    /** The weeks in a month where the event should happen. */
-    private final SortedSet<WeekOfMonth> m_weeksOfMonth = new TreeSet<>();
-    /** Dates in the event series, where the event is not taking place. */
-    private final SortedSet<Date> m_exceptions = new TreeSet<>();
-    /** Individual dates, where the event takes place. */
-    private final SortedSet<Date> m_individualDates = new TreeSet<>();
-    /** Flag, indicating if the event should take place on every working day. */
-    private boolean m_isEveryWorkingDay;
-    /** Flag, indicating if the event lasts all the day. */
-    private boolean m_isWholeDay;
-    /** Month in which the event takes place. */
-    private Month m_month = Month.JANUARY;
     /** The list of value change observers. */
     Collection<I_CmsSerialDateValueChangeObserver> m_valueChangeObservers = new HashSet<>();
-    /** The end type of the series. */
-    private EndType m_endType;
 
     /** Default constructor, setting the default state of the the serial date widget. */
     public CmsSerialDateValueWrapper() {
@@ -88,255 +59,51 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     }
 
     /**
-     * Add a week of month.
-     * @param week the week to add.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#addWeekOfMonth(org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth)
      */
+    @Override
     public void addWeekOfMonth(WeekOfMonth week) {
 
-        m_weeksOfMonth.add(week);
+        super.addWeekOfMonth(week);
     }
 
     /**
-     * Clear the exceptions.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#clearExceptions()
      */
+    @Override
     public void clearExceptions() {
 
-        m_exceptions.clear();
+        super.clearExceptions();
     }
 
     /**
-     * Clear the individual dates.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#clearIndividualDates()
      */
+    @Override
     public void clearIndividualDates() {
 
-        m_individualDates.clear();
+        super.clearIndividualDates();
 
     }
 
     /**
-     * Clear the week days.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#clearWeekDays()
      */
+    @Override
     public void clearWeekDays() {
 
-        m_weekDays.clear();
+        super.clearWeekDays();
 
     }
 
     /**
-     * Clear the weeks of month.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#clearWeeksOfMonth()
      */
+    @Override
     public void clearWeeksOfMonth() {
 
-        m_weeksOfMonth.clear();
+        super.clearWeeksOfMonth();
 
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object o) {
-
-        if (o instanceof I_CmsSerialDateValue) {
-            I_CmsSerialDateValue val = (I_CmsSerialDateValue)o;
-            return (val.getDayOfMonth() == this.getDayOfMonth())
-                && (val.isEveryWorkingDay() == this.isEveryWorkingDay())
-                && (val.isWholeDay() == this.isWholeDay())
-                && Objects.equals(val.getEnd(), this.getEnd())
-                && Objects.equals(val.getEndType(), this.getEndType())
-                && Objects.equals(val.getExceptions(), this.getExceptions())
-                && Objects.equals(val.getIndividualDates(), this.getIndividualDates())
-                && (val.getInterval() == this.getInterval())
-                && Objects.equals(val.getMonth(), this.getMonth())
-                && (val.getOccurrences() == this.getOccurrences())
-                && Objects.equals(val.getPatternType(), this.getPatternType())
-                && Objects.equals(val.getSeriesEndDate(), this.getSeriesEndDate())
-                && Objects.equals(val.getStart(), this.getStart())
-                && Objects.equals(val.getWeekDay(), this.getWeekDay())
-                && Objects.equals(val.getWeekDays(), this.getWeekDays())
-                && Objects.equals(val.getWeekOfMonth(), this.getWeekOfMonth())
-                && Objects.equals(val.getWeeksOfMonth(), this.getWeeksOfMonth());
-        }
-        return false;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getDayOfMonth()
-     */
-    public int getDayOfMonth() {
-
-        return m_dayOfMonth;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getEnd()
-     */
-    public Date getEnd() {
-
-        return m_end;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getEndType()
-     */
-    public EndType getEndType() {
-
-        return m_endType;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getExceptions()
-     */
-    public SortedSet<Date> getExceptions() {
-
-        return new TreeSet<>(m_exceptions);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getIndividualDates()
-     */
-    public SortedSet<Date> getIndividualDates() {
-
-        return new TreeSet<>(m_individualDates);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getInterval()
-     */
-    public int getInterval() {
-
-        return m_interval;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getMonth()
-     */
-    public Month getMonth() {
-
-        return m_month;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getOccurrences()
-     */
-    public int getOccurrences() {
-
-        return m_seriesOccurrences;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getPatternType()
-     */
-    public PatternType getPatternType() {
-
-        return m_patterntype;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getSeriesEndDate()
-     */
-    public Date getSeriesEndDate() {
-
-        return m_seriesEndDate;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getStart()
-     */
-    public Date getStart() {
-
-        return m_start;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getWeekDay()
-     */
-    public WeekDay getWeekDay() {
-
-        if (m_weekDays.size() > 0) {
-            return m_weekDays.first();
-        }
-        return null;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getWeekDays()
-     */
-    public SortedSet<WeekDay> getWeekDays() {
-
-        return new TreeSet<>(m_weekDays);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getWeekOfMonth()
-     */
-    public WeekOfMonth getWeekOfMonth() {
-
-        if (m_weeksOfMonth.size() > 0) {
-            return m_weeksOfMonth.iterator().next();
-        }
-        return null;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getWeeksOfMonth()
-     */
-    @Override
-    public SortedSet<WeekOfMonth> getWeeksOfMonth() {
-
-        return new TreeSet<>(m_weeksOfMonth);
-    }
-
-    /**
-     * Returns a flag, indicating if exceptions are present.
-     * @return a flag, indicating if exceptions are present.
-     */
-    public boolean hasExceptions() {
-
-        return !getExceptions().isEmpty();
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(
-            Boolean.valueOf(this.isEveryWorkingDay()),
-            Boolean.valueOf(this.isWholeDay()),
-            Integer.valueOf(this.getDayOfMonth()),
-            this.getEnd(),
-            this.getEndType(),
-            this.getExceptions(),
-            this.getIndividualDates(),
-            Integer.valueOf(this.getInterval()),
-            this.getMonth(),
-            Integer.valueOf(this.getOccurrences()),
-            this.getPatternType(),
-            this.getSeriesEndDate(),
-            this.getStart(),
-            this.getWeekDay(),
-            this.getWeekDays(),
-            this.getWeekOfMonth(),
-            this.getWeeksOfMonth());
-
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#isEveryWorkingDay()
-     */
-    public boolean isEveryWorkingDay() {
-
-        return m_isEveryWorkingDay;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#isWholeDay()
-     */
-    public boolean isWholeDay() {
-
-        return m_isWholeDay;
     }
 
     /**
@@ -349,48 +116,48 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     }
 
     /**
-     * Remove a week of month.
-     * @param week the week to remove.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#removeWeekOfMonth(org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth)
      */
+    @Override
     public void removeWeekOfMonth(WeekOfMonth week) {
 
-        m_weeksOfMonth.remove(week);
+        super.removeWeekOfMonth(week);
     }
 
     /**
-     * Set the day of the month, the event should take place.
-     * @param dayOfMonth the day of the month to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setDayOfMonth(int)
      */
+    @Override
     public void setDayOfMonth(int dayOfMonth) {
 
-        m_dayOfMonth = dayOfMonth;
+        super.setDayOfMonth(dayOfMonth);
     }
 
     /**
-     * Set the end time for the event.
-     * @param date the end time to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setEnd(java.util.Date)
      */
+    @Override
     public void setEnd(Date date) {
 
-        m_end = date;
+        super.setEnd(date);
     }
 
     /**
-     * Set the end type of the series.
-     * @param endType the end type to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setEndType(org.opencms.acacia.shared.I_CmsSerialDateValue.EndType)
      */
+    @Override
     public void setEndType(EndType endType) {
 
-        m_endType = endType;
+        super.setEndType(endType);
     }
 
     /**
-     * Set the flag, indicating if the event should take place every working day.
-     * @param isEveryWorkingDay the flag, indicating if the event should take place every working day.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setEveryWorkingDay(java.lang.Boolean)
      */
-    public void setEveryWorkingDay(boolean isEveryWorkingDay) {
+    @Override
+    public void setEveryWorkingDay(Boolean isEveryWorkingDay) {
 
-        m_isEveryWorkingDay = isEveryWorkingDay;
+        super.setEveryWorkingDay(isEveryWorkingDay);
 
     }
 
@@ -398,92 +165,76 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
      * Set dates where the event should not take place, even if they are part of the series.
      * @param dates dates to set.
      */
+    @Override
     public void setExceptions(SortedSet<Date> dates) {
 
-        m_exceptions.clear();
-        if (null != dates) {
-            m_exceptions.addAll(dates);
-        }
+        super.setExceptions(dates);
 
     }
 
     /**
-     * Set the individual dates where the event should take place.
-     * @param dates the dates to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setIndividualDates(java.util.SortedSet)
      */
+    @Override
     public void setIndividualDates(SortedSet<Date> dates) {
 
-        m_individualDates.clear();
-        if (null != dates) {
-            m_individualDates.addAll(dates);
-        }
-        for (Date d : getExceptions()) {
-            if (!m_individualDates.contains(d)) {
-                m_exceptions.remove(d);
-            }
-        }
-
+        super.setIndividualDates(dates);
     }
 
     /**
-     * Set the pattern type specific interval between two events, e.g., number of days, weeks, month, years.
-     * @param interval the interval to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setInterval(int)
      */
+    @Override
     public void setInterval(int interval) {
 
-        m_interval = interval;
+        super.setInterval(interval);
     }
 
     /**
-     * Set the month in which the event should take place.
-     * @param month the month to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setMonth(org.opencms.acacia.shared.I_CmsSerialDateValue.Month)
      */
+    @Override
     public void setMonth(Month month) {
 
-        m_month = null == month ? Month.JANUARY : month;
+        super.setMonth(month);
 
     }
 
     /**
-     * Set the number of occurrences of the event.
-     * @param occurrences the number of occurrences to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setOccurrences(int)
      */
+    @Override
     public void setOccurrences(int occurrences) {
 
-        m_seriesEndDate = null; // important, otherwise the end date is still assumed as criteria to end the series.
-        m_seriesOccurrences = occurrences;
-
+        super.setOccurrences(occurrences);
     }
 
     /**
-     * Set the pattern type of the event series.<p>
-     *
-     * All pattern specific values are reset.
-     *
-     * @param type the pattern type to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setPatternType(org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType)
      */
+    @Override
     public void setPatternType(PatternType type) {
 
-        m_patterntype = type;
+        super.setPatternType(type);
     }
 
     /**
-     * Set the last day events of the series should occur.
-     * @param date the day to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setSeriesEndDate(java.util.Date)
      */
+    @Override
     public void setSeriesEndDate(Date date) {
 
-        m_seriesEndDate = date;
+        super.setSeriesEndDate(date);
 
     }
 
     /**
-     * Set the start time of the events. Unless you specify a single event, the day information is discarded.
-     * @param date the time to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setStart(java.util.Date)
      */
+    @Override
     public void setStart(Date date) {
 
-        m_start = date;
+        super.setStart(date);
     }
 
     /**
@@ -498,6 +249,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
             try {
                 tryToSetParsedValue(value);
             } catch (@SuppressWarnings("unused") Exception e) {
+                CmsDebugLog.consoleLog("Could not set invalid serial date value: " + value);
                 setDefaultValue();
             }
         }
@@ -505,64 +257,49 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     }
 
     /**
-     * Set the week day the events should occur.
-     * @param weekDay the week day to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWeekDay(org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay)
      */
+    @Override
     public void setWeekDay(WeekDay weekDay) {
 
-        SortedSet<WeekDay> wds = new TreeSet<>();
-        if (null != weekDay) {
-            wds.add(weekDay);
-        }
-        setWeekDays(wds);
-
+        super.setWeekDay(weekDay);
     }
 
     /**
-     * Set the week days the events should occur.
-     * @param weekDays the week days to set.
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWeekDays(java.util.SortedSet)
      */
+    @Override
     public void setWeekDays(SortedSet<WeekDay> weekDays) {
 
-        m_weekDays.clear();
-        if (null != weekDays) {
-            m_weekDays.addAll(weekDays);
-        }
+        super.setWeekDays(weekDays);
     }
 
     /**
-     * Set the week of the month the events should occur.
-     * @param weekOfMonth the week of month to set (first to fifth, where fifth means last).
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWeekOfMonth(org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth)
      */
+    @Override
     public void setWeekOfMonth(WeekOfMonth weekOfMonth) {
 
-        SortedSet<WeekOfMonth> woms = new TreeSet<>();
-        if (null != weekOfMonth) {
-            woms.add(weekOfMonth);
-        }
-        setWeeksOfMonth(woms);
+        super.setWeekOfMonth(weekOfMonth);
     }
 
     /**
-     * Set the weeks of the month the events should occur.
-     * @param weeksOfMonth the weeks of month to set (first to fifth, where fifth means last).
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWeeksOfMonth(java.util.SortedSet)
      */
+    @Override
     public void setWeeksOfMonth(SortedSet<WeekOfMonth> weeksOfMonth) {
 
-        m_weeksOfMonth.clear();
-        if (null != weeksOfMonth) {
-            m_weeksOfMonth.addAll(weeksOfMonth);
-        }
+        super.setWeeksOfMonth(weeksOfMonth);
 
     }
 
     /**
-     * Set the flag, indicating if the event last the whole day/whole days.
-     * @param isWholeDay the flag to set
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWholeDay(java.lang.Boolean)
      */
+    @Override
     public void setWholeDay(Boolean isWholeDay) {
 
-        m_isWholeDay = (null != isWholeDay) && isWholeDay.equals(Boolean.TRUE);
+        super.setWholeDay(isWholeDay);
 
     }
 
@@ -575,7 +312,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         JSONObject result = new JSONObject();
         result.put(JsonKey.START, dateToJson(getStart()));
         result.put(JsonKey.END, dateToJson(getEnd()));
-        if (m_isWholeDay) {
+        if (isWholeDay()) {
             result.put(JsonKey.WHOLE_DAY, JSONBoolean.getInstance(true));
         }
         JSONObject pattern = patternToJson();
@@ -714,9 +451,9 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         if (null != array) {
             SortedSet<Date> result = new TreeSet<>();
             for (int i = 0; i < array.size(); i++) {
-                Long l = readOptionalLong(array.get(i), null);
-                if (null != l) {
-                    result.add(new Date(l.longValue()));
+                Date d = readOptionalDate(array.get(i));
+                if (null != d) {
+                    result.add(d);
                 }
             }
             return result;
@@ -727,25 +464,41 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     /**
      * Read an optional boolean value form a JSON value.
      * @param val the JSON value that should represent the boolean.
-     * @param defaultValue the default value, to be returned if the boolean can not be read from the JSON value.
-     * @return the boolean from the JSON or the default value if reading the boolean fails.
+     * @return the boolean from the JSON or null if reading the boolean fails.
      */
-    private boolean readOptionalBoolean(JSONValue val, boolean defaultValue) {
+    private Boolean readOptionalBoolean(JSONValue val) {
 
         JSONBoolean b = null == val ? null : val.isBoolean();
         if (b != null) {
-            return b.booleanValue();
+            return Boolean.valueOf(b.booleanValue());
         }
-        return defaultValue;
+        return null;
+    }
+
+    /**
+     * Read an optional Date value form a JSON value.
+     * @param val the JSON value that should represent the Date as long value in a string.
+     * @return the Date from the JSON or null if reading the date fails.
+     */
+    private Date readOptionalDate(JSONValue val) {
+
+        JSONString str = null == val ? null : val.isString();
+        if (str != null) {
+            try {
+                return new Date(Long.parseLong(str.stringValue()));
+            } catch (@SuppressWarnings("unused") NumberFormatException e) {
+                // do nothing - return the default value
+            }
+        }
+        return null;
     }
 
     /**
      * Read an optional int value form a JSON value.
      * @param val the JSON value that should represent the int.
-     * @param defaultValue the default value, to be returned if the int can not be read from the JSON value.
-     * @return the int from the JSON or the default value if reading the int fails.
+     * @return the int from the JSON or 0 reading the int fails.
      */
-    private int readOptionalInt(JSONValue val, int defaultValue) {
+    private int readOptionalInt(JSONValue val) {
 
         JSONString str = null == val ? null : val.isString();
         if (str != null) {
@@ -755,37 +508,17 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
                 // Do nothing, return default value
             }
         }
-        return defaultValue;
-    }
-
-    /**
-     * Read an optional Long value form a JSON value.
-     * @param val the JSON value that should represent the Long.
-     * @param defaultValue the default value, to be returned if the Long can not be read from the JSON value.
-     * @return the Long from the JSON or the default value if reading the Long fails.
-     */
-    private Long readOptionalLong(JSONValue val, Long defaultValue) {
-
-        JSONString str = null == val ? null : val.isString();
-        if (str != null) {
-            try {
-                return Long.valueOf(str.stringValue());
-            } catch (@SuppressWarnings("unused") NumberFormatException e) {
-                // do nothing - return the default value
-            }
-        }
-        return defaultValue;
+        return 0;
     }
 
     /**
      * Read an optional month value form a JSON value.
      * @param val the JSON value that should represent the month.
-     * @param defaultValue the default value, to be returned if the month can not be read from the JSON value.
-     * @return the month from the JSON or the default value if reading the month fails.
+     * @return the month from the JSON or null if reading the month fails.
      */
-    private Month readOptionalMonth(JSONValue val, Month defaultValue) {
+    private Month readOptionalMonth(JSONValue val) {
 
-        String str = readOptionalString(val, null);
+        String str = readOptionalString(val);
         if (null != str) {
             try {
                 return Month.valueOf(str);
@@ -793,22 +526,21 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
                 // Do nothing -return the default value
             }
         }
-        return defaultValue;
+        return null;
     }
 
     /**
      * Read an optional string value form a JSON value.
      * @param val the JSON value that should represent the string.
-     * @param defaultValue the default value, to be returned if the string can not be read from the JSON value.
-     * @return the string from the JSON or the default value if reading the string fails.
+     * @return the string from the JSON or null if reading the string fails.
      */
-    private String readOptionalString(JSONValue val, String defaultValue) {
+    private String readOptionalString(JSONValue val) {
 
         JSONString str = null == val ? null : val.isString();
         if (str != null) {
             return str.stringValue();
         }
-        return defaultValue;
+        return null;
     }
 
     /**
@@ -818,16 +550,13 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
     private void readPattern(JSONObject patternJson) {
 
         setPatternType(readPatternType(patternJson.get(JsonKey.PATTERN_TYPE)));
-        setInterval(readOptionalInt(patternJson.get(JsonKey.PATTERN_INTERVAL), 0));
+        setInterval(readOptionalInt(patternJson.get(JsonKey.PATTERN_INTERVAL)));
         setWeekDays(readWeekDays(patternJson.get(JsonKey.PATTERN_WEEKDAYS)));
-        setDayOfMonth(readOptionalInt(patternJson.get(JsonKey.PATTERN_DAY_OF_MONTH), 0));
-        setEveryWorkingDay(readOptionalBoolean(patternJson.get(JsonKey.PATTERN_EVERYWORKINGDAY), false));
+        setDayOfMonth(readOptionalInt(patternJson.get(JsonKey.PATTERN_DAY_OF_MONTH)));
+        setEveryWorkingDay(readOptionalBoolean(patternJson.get(JsonKey.PATTERN_EVERYWORKINGDAY)));
         setWeeksOfMonth(readWeeksOfMonth(patternJson.get(JsonKey.PATTERN_WEEKS_OF_MONTH)));
         setIndividualDates(readDates(patternJson.get(JsonKey.PATTERN_DATES)));
-        setMonth(readOptionalMonth(patternJson.get(JsonKey.PATTERN_MONTH), null));
-        m_endType = (getPatternType().equals(PatternType.NONE) || getPatternType().equals(PatternType.INDIVIDUAL))
-        ? EndType.SINGLE
-        : getSeriesEndDate() != null ? EndType.DATE : EndType.TIMES;
+        setMonth(readOptionalMonth(patternJson.get(JsonKey.PATTERN_MONTH)));
 
     }
 
@@ -840,7 +569,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
 
         PatternType patterntype;
         try {
-            String str = readOptionalString(val, "");
+            String str = readOptionalString(val);
             patterntype = PatternType.valueOf(str);
         } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
             patterntype = PatternType.NONE;
@@ -856,7 +585,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
      */
     private WeekDay readWeekDay(JSONValue val) throws IllegalArgumentException {
 
-        String str = readOptionalString(val, null);
+        String str = readOptionalString(val);
         if (null != str) {
             return WeekDay.valueOf(str);
         }
@@ -896,7 +625,7 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
         if (null != array) {
             SortedSet<WeekOfMonth> result = new TreeSet<>();
             for (int i = 0; i < array.size(); i++) {
-                String weekStr = readOptionalString(array.get(i), null);
+                String weekStr = readOptionalString(array.get(i));
                 try {
                     WeekOfMonth week = WeekOfMonth.valueOf(weekStr);
                     result.add(week);
@@ -907,31 +636,6 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
             return result;
         }
         return new TreeSet<>();
-    }
-
-    /**
-     * Sets the value to a default.
-     */
-    private void setDefaultValue() {
-
-        Date now = new Date();
-        m_start = now;
-        m_end = now;
-        m_patterntype = PatternType.NONE;
-        m_dayOfMonth = 0;
-        m_exceptions.clear();
-        m_individualDates.clear();
-        m_interval = 0;
-        m_isEveryWorkingDay = false;
-        m_isWholeDay = false;
-        m_month = Month.JANUARY;
-        m_seriesEndDate = null;
-        m_seriesOccurrences = 0;
-        m_weekDays.clear();
-        m_weeksOfMonth.clear();
-        m_valueChangeObservers.clear();
-        m_endType = EndType.SINGLE;
-
     }
 
     /**
@@ -961,22 +665,16 @@ public class CmsSerialDateValueWrapper implements I_CmsObservableSerialDateValue
 
         JSONObject json = JSONParser.parseStrict(value).isObject();
         JSONValue val = json.get(JsonKey.START);
-        m_start = new Date(readOptionalLong(val, Long.valueOf(0)).longValue());
+        setStart(readOptionalDate(val));
         val = json.get(JsonKey.END);
-        m_end = new Date(readOptionalLong(val, Long.valueOf(0)).longValue());
-        m_isWholeDay = readOptionalBoolean(json.get(JsonKey.WHOLE_DAY), false);
+        setEnd(readOptionalDate(val));
+        setWholeDay(readOptionalBoolean(json.get(JsonKey.WHOLE_DAY)));
         JSONObject patternJson = json.get(JsonKey.PATTERN).isObject();
         readPattern(patternJson);
-        m_exceptions.clear();
-        m_exceptions.addAll(readDates(json.get(JsonKey.EXCEPTIONS)));
-        Long seriesEnd = readOptionalLong(json.get(JsonKey.SERIES_ENDDATE), null);
-        if (null != seriesEnd) {
-            m_seriesEndDate = new Date(seriesEnd.longValue());
-        }
-        m_seriesOccurrences = readOptionalInt(json.get(JsonKey.SERIES_OCCURRENCES), 0);
-        m_endType = getPatternType().equals(PatternType.NONE) || getPatternType().equals(PatternType.INDIVIDUAL)
-        ? EndType.SINGLE
-        : null != getSeriesEndDate() ? EndType.DATE : EndType.TIMES;
+        setExceptions(readDates(json.get(JsonKey.EXCEPTIONS)));
+        setSeriesEndDate(readOptionalDate(json.get(JsonKey.SERIES_ENDDATE)));
+        setOccurrences(readOptionalInt(json.get(JsonKey.SERIES_OCCURRENCES)));
+        setDerivedEndType();
 
     }
 }

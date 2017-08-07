@@ -27,6 +27,7 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.widgets.serialdate.CmsSerialDateValueWrapper;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -39,7 +40,7 @@ import org.dom4j.Element;
  *
  * @since 11.0.0
  */
-public class CmsXmlSerialDateValue extends A_CmsXmlValueTextBase {
+public class CmsXmlSerialDateValue extends A_CmsXmlValueTextBase implements I_CmsXmlValidateWithMessage {
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsSerialDate";
@@ -137,13 +138,15 @@ public class CmsXmlSerialDateValue extends A_CmsXmlValueTextBase {
     @Override
     public boolean validateValue(String value) {
 
-        try {
-            // convert to value to see if the string is valid.
-            CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper(value);
-            return wrapper.isValid();
-        } catch (@SuppressWarnings("unused") Exception e) {
-            // Do nothing, just return false
-        }
-        return false;
+        return null == validateWithMessage(value);
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlValidateWithMessage#validateWithMessage(java.lang.String)
+     */
+    public CmsMessageContainer validateWithMessage(String value) {
+
+        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper(value);
+        return wrapper.validateWithMessage();
     }
 }

@@ -35,8 +35,8 @@ import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.SortedSet;
 
 /** Implementation of the serial date RPC service. */
 public class CmsSerialDateService extends CmsGwtService implements I_CmsSerialDateService {
@@ -50,28 +50,18 @@ public class CmsSerialDateService extends CmsGwtService implements I_CmsSerialDa
     public Collection<CmsPair<Date, Boolean>> getDates(String config) {
 
         I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(config);
-        Collection<Date> dates = bean.getDates();
-        Collection<Date> exceptions = bean.getExceptions();
-        Collection<CmsPair<Date, Boolean>> result = new ArrayList<>(dates.size() + exceptions.size());
-        for (Date d : dates) {
-            result.add(new CmsPair<Date, Boolean>(d, Boolean.TRUE));
+        if (null != bean) {
+            Collection<Date> dates = bean.getDates();
+            Collection<Date> exceptions = bean.getExceptions();
+            Collection<CmsPair<Date, Boolean>> result = new ArrayList<>(dates.size() + exceptions.size());
+            for (Date d : dates) {
+                result.add(new CmsPair<Date, Boolean>(d, Boolean.TRUE));
+            }
+            for (Date d : exceptions) {
+                result.add(new CmsPair<Date, Boolean>(d, Boolean.FALSE));
+            }
+            return result;
         }
-        for (Date d : exceptions) {
-            result.add(new CmsPair<Date, Boolean>(d, Boolean.FALSE));
-        }
-        return result;
+        return Collections.EMPTY_LIST;
     }
-
-    /**
-     * @see org.opencms.acacia.shared.rpc.I_CmsSerialDateService#hasTooManyDates(java.lang.String)
-     */
-    public CmsPair<Boolean, Date> hasTooManyDates(String config) {
-
-        I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(config);
-        SortedSet<Date> dates = bean.getDates();
-        Boolean hasTooManyDates = Boolean.valueOf(bean.hasTooManyDates());
-        return new CmsPair<>(hasTooManyDates, dates.isEmpty() ? null : dates.last());
-
-    }
-
 }

@@ -35,7 +35,6 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsErrorWidget;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
@@ -184,10 +183,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The preview list (with checkboxes to manage exceptions. */
 
-    /** The widget to display "too many events" messages. */
-    @UiField
-    CmsErrorWidget m_errorWidget;
-
     /** The pop-up where the preview list is shown in. */
     CmsPopup m_overviewPopup;
 
@@ -262,15 +257,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         initDatesPanel();
         initSerialOptionsPanel();
         initOverviewPopup();
-    }
-
-    /**
-     * Enable or disable the management button.
-     * @param enable flag, indicating if the button should be enabled or disabled.
-     */
-    public void enableManagementButton(boolean enable) {
-
-        m_manageExceptionsButton.setEnabled(enable);
     }
 
     /**
@@ -483,15 +469,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     }
 
     /**
-     * Removes the error message (if one is present).
-     */
-    void removeError() {
-
-        m_errorWidget.setVisible(false);
-
-    }
-
-    /**
      * Sets the radio buttons active or inactive.<p>
      * @param active true or false to activate or deactivate
      * */
@@ -503,18 +480,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
             m_serialOptionsPanel.setVisible(active);
         }
         m_controller.sizeChanged();
-    }
-
-    /**
-     * Displays the error widget with the provided error message.
-     * @param errorMessage the error message to display.
-     */
-    void setError(String errorMessage) {
-
-        m_errorWidget.setText(errorMessage);
-        m_errorWidget.setVisible(true);
-        m_controller.sizeChanged();
-
     }
 
     /**
@@ -554,12 +519,12 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_datesPanel.setLegend(Messages.get().key(Messages.GUI_SERIALDATE_PANEL_DATES_0));
         m_datesPanel.setOpenerVisible(false);
 
-        Date now = new Date();
-
         m_startLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_STARTTIME_0));
-        m_startTime.setValue(now);
+        m_startTime.setAllowInvalidValue(true);
+        m_startTime.setValue(m_model.getStart());
         m_endLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_ENDTIME_0));
-        m_endTime.setValue(now);
+        m_endTime.setAllowInvalidValue(true);
+        m_endTime.setValue(m_model.getEnd());
         m_seriesCheckBox.setText(Messages.get().key(Messages.GUI_SERIALDATE_SERIES_CHECKBOX_0));
         m_wholeDayCheckBox.setText(Messages.get().key(Messages.GUI_SERIALDATE_WHOLE_DAY_CHECKBOX_0));
     }
@@ -610,6 +575,8 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_durationPanel.setLegend(Messages.get().key(Messages.GUI_SERIALDATE_PANEL_DURATION_0));
         m_durationPanel.setOpenerVisible(false);
         m_seriesEndDate.setDateOnly(true);
+        m_seriesEndDate.setAllowInvalidValue(true);
+        m_seriesEndDate.setValue(m_model.getSeriesEndDate());
         m_seriesEndDate.getTextField().addFocusHandler(new FocusHandler() {
 
             public void onFocus(FocusEvent event) {
@@ -650,11 +617,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
      */
     private void initManagementPart() {
 
-        m_errorWidget.getElement().getStyle().setMargin(5, Unit.PX);
-        m_errorWidget.getElement().getStyle().setWidth(100, Unit.PCT);
-        m_errorWidget.setVisible(false);
         m_manageExceptionsButton.setText(Messages.get().key(Messages.GUI_SERIALDATE_BUTTON_MANAGE_EXCEPTIONS_0));
-        m_manageExceptionsButton.setEnabled(m_controller.isValid());
         m_manageExceptionsButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
     }
 

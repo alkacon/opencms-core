@@ -28,7 +28,6 @@
 package org.opencms.acacia.client.widgets.serialdate;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
-import org.opencms.ade.contenteditor.client.Messages;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -44,10 +43,10 @@ public class CmsPatternPanelWeeklyController extends A_CmsPatternPanelController
     /**
      * Constructor for the weekly pattern panel controller
      * @param model the model to read data from.
-     * @param validationHandler the validation handler used for validation.
+     * @param changeHandler the value change handler.
      */
-    CmsPatternPanelWeeklyController(final CmsSerialDateValueWrapper model, final I_ChangeHandler validationHandler) {
-        super(model, validationHandler);
+    CmsPatternPanelWeeklyController(final CmsSerialDateValueWrapper model, final I_ChangeHandler changeHandler) {
+        super(model, changeHandler);
         m_view = new CmsPatternPanelWeekly(this, m_model);
     }
 
@@ -78,20 +77,6 @@ public class CmsPatternPanelWeeklyController extends A_CmsPatternPanelController
                 }
             }, !newWeekDays.containsAll(m_model.getWeekDays()));
         }
-    }
-
-    /**
-     * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDatePatternController#validate()
-     */
-    public String validate() {
-
-        String result = validateInterval();
-        if (null == result) {
-            return m_model.getWeekDays().size() < 1
-            ? Messages.get().key(Messages.GUI_SERIALDATE_ERROR_NO_WEEKDAY_SPECIFIED_0)
-            : null;
-        }
-        return result;
     }
 
 }

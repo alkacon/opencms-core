@@ -29,7 +29,6 @@ package org.opencms.acacia.client.widgets.serialdate;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
-import org.opencms.ade.contenteditor.client.Messages;
 
 import com.google.gwt.user.client.Command;
 
@@ -42,10 +41,10 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
     /**
      * Constructor for the monthly pattern panel controller
      * @param model the model to read data from.
-     * @param validationHandler the validation handler used for validation.
+     * @param changeHandler the change handler.
      */
-    CmsPatternPanelMonthlyController(final CmsSerialDateValueWrapper model, final I_ChangeHandler validationHandler) {
-        super(model, validationHandler);
+    CmsPatternPanelMonthlyController(final CmsSerialDateValueWrapper model, final I_ChangeHandler changeHandler) {
+        super(model, changeHandler);
         m_view = new CmsPatternPanelMonthly(this, m_model);
     }
 
@@ -61,6 +60,7 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
     /**
      * Set the pattern scheme to either "by weekday" or "by day of month".
      * @param isByWeekDay flag, indicating if the pattern "by weekday" should be set.
+     * @param fireChange flag, indicating if a value change event should be fired.
      */
     public void setPatternScheme(final boolean isByWeekDay, final boolean fireChange) {
 
@@ -108,24 +108,6 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
     }
 
     /**
-     * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDatePatternController#validate()
-     */
-    public String validate() {
-
-        String result = validateInterval();
-        if (null == result) {
-            if (m_model.getWeekDay() == null) {
-                return validateDayOfMonth();
-            } else {
-                return m_model.getWeeksOfMonth().size() < 1
-                ? Messages.get().key(Messages.GUI_SERIALDATE_ERROR_NO_WEEKOFMONTH_SPECIFIED_0)
-                : null;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Handle a change in the weeks of month.
      * @param week the changed weeks checkbox's internal value.
      * @param value the new value of the changed checkbox.
@@ -152,5 +134,4 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
             }
         }
     }
-
 }

@@ -35,11 +35,4 @@ public interface I_CmsSerialDatePatternController {
      * @return the controlled view.
      */
     I_CmsPatternView getView();
-
-    /**
-     * Validates the current panel related input and returns an error message in case of an error.
-     * Otherwise it returns <code>null</code>.
-     * @return the error message or <code>null</code> if there is no error.
-     */
-    String validate();
 }

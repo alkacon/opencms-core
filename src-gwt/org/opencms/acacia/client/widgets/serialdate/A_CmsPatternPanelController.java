@@ -28,7 +28,6 @@
 package org.opencms.acacia.client.widgets.serialdate;
 
 import org.opencms.acacia.shared.CmsSerialDateUtil;
-import org.opencms.ade.contenteditor.client.Messages;
 
 import com.google.gwt.user.client.Command;
 
@@ -43,11 +42,11 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
     /**
      * Constructor for the abstract pattern panel controller
      * @param model the model to read data from.
-     * @param validationHandler the validation handler used for validation.
+     * @param changeHandler the handler for value changes.
      */
-    public A_CmsPatternPanelController(final CmsSerialDateValueWrapper model, final I_ChangeHandler validationHandler) {
+    public A_CmsPatternPanelController(final CmsSerialDateValueWrapper model, final I_ChangeHandler changeHandler) {
         m_model = model;
-        m_changeHandler = validationHandler;
+        m_changeHandler = changeHandler;
 
     }
 
@@ -81,26 +80,6 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
     protected void removeExceptionsOnChange(Command cmd) {
 
         m_changeHandler.removeExceptionsOnChange(cmd);
-    }
-
-    /**
-     * Validates if a suitable day of month is set.
-     * @return An error message, if the day of month is invalid, <code>null</code> otherwise.
-     */
-    protected String validateDayOfMonth() {
-
-        return (m_model.getDayOfMonth() > 0) && (m_model.getDayOfMonth() < 32)
-        ? null
-        : Messages.get().key(Messages.GUI_SERIALDATE_ERROR_INVALID_DAYOFMONTH_0);
-    }
-
-    /**
-     * Validates if the interval between two events is valid.
-     * @return An error message, if the interval is invalid, <code>null</code> otherwise.
-     */
-    protected String validateInterval() {
-
-        return m_model.getInterval() < 1 ? Messages.get().key(Messages.GUI_SERIALDATE_ERROR_INVALID_INTERVAL_0) : null;
     }
 
     /**

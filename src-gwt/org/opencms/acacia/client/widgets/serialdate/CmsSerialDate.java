@@ -29,7 +29,6 @@ package org.opencms.acacia.client.widgets.serialdate;
 
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.shared.CmsSerialDateUtil;
-import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
@@ -60,58 +59,11 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
 
 /** Controller for the serial date widget, being the widget implementation itself. */
-public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_ChangeHandler, I_ValidationHandler {
-
-    /**
-     * The validation timer.<p>
-     * Validation takes place at most every 500 milliseconds.
-     * Whenever re-validation is triggered during the time waiting, the timer is reset,
-     * i.e., it is waited for 500 milliseconds again.
-     */
-    protected static class ValidationTimer extends Timer {
-
-        /** The single validation timer that is allowed. */
-        private static ValidationTimer m_validationTimer;
-        /** The handler to call for the validation. */
-        private I_ValidationHandler m_handler;
-
-        /**
-         * Constructor.<p>
-         * @param handler the handler to call for the validation.
-         */
-        private ValidationTimer(I_ValidationHandler handler) {
-            m_handler = handler;
-        }
-
-        /**
-         * Trigger the validation after a certain time out.
-         * @param handler the validation handler, that actually performs the validation.
-         */
-        public static void validate(I_ValidationHandler handler) {
-
-            if (null != m_validationTimer) {
-                m_validationTimer.cancel();
-            }
-            m_validationTimer = new ValidationTimer(handler);
-            m_validationTimer.schedule(500);
-        }
-
-        /**
-         * @see com.google.gwt.user.client.Timer#run()
-         */
-        @Override
-        public void run() {
-
-            m_handler.validate();
-            m_validationTimer = null;
-        }
-
-    }
+public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_ChangeHandler {
 
     /** Confirmation dialog that should be shown when exceptions are removed when the value changes. */
     private class CmsExceptionsDeleteConfirmDialog {
@@ -196,9 +148,6 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     /** RPC call action to get dates. */
     private final CmsRpcAction<Collection<CmsPair<Date, Boolean>>> m_getDatesAction;
 
-    /** RPC call action to get dates. */
-    private final CmsRpcAction<CmsPair<Boolean, Date>> m_hasTooManyDatesAction;
-
     /** The pattern controllers. */
     private final Map<PatternType, I_CmsSerialDatePatternController> m_patternControllers = new HashMap<>();
 
@@ -226,30 +175,6 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
         m_view = new CmsSerialDateView(this, m_model);
         initWidget(m_view);
         initPatternControllers();
-        m_hasTooManyDatesAction = new CmsRpcAction<CmsPair<Boolean, Date>>() {
-
-            @Override
-            public void execute() {
-
-                getService().hasTooManyDates(m_model.toString(), this);
-
-            }
-
-            @Override
-            protected void onResponse(CmsPair<Boolean, Date> result) {
-
-                if (result.getFirst().booleanValue()) {
-                    onValidated(
-                        Messages.get().key(
-                            Messages.GUI_SERIALDATE_ERROR_SERIESEND_TOO_FAR_AWAY_1,
-                            m_dateFormat.format(result.getSecond())));
-                } else {
-                    onValidated(null);
-                }
-
-            }
-
-        };
         m_getDatesAction = new CmsRpcAction<Collection<CmsPair<Date, Boolean>>>() {
 
             @Override
@@ -487,7 +412,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
                     m_model.setPatternType(type);
                     m_model.setIndividualDates(null);
                     m_model.setInterval(1);
-                    m_model.setEveryWorkingDay(false);
+                    m_model.setEveryWorkingDay(Boolean.FALSE);
                     m_model.clearWeekDays();
                     m_model.clearIndividualDates();
                     m_model.clearWeeksOfMonth();
@@ -558,8 +483,6 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
             m_model.setValue(value);
             if (fireEvent) {
                 valueChanged();
-            } else {
-                validate();
             }
         }
     }
@@ -601,29 +524,6 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     }
 
     /**
-     * @see org.opencms.acacia.client.widgets.serialdate.I_ValidationHandler#validate()
-     */
-    @Override
-    public void validate() {
-
-        String errorMessage = checkIfTimesAreValid();
-        if (null == errorMessage) {
-            errorMessage = m_patternControllers.get(m_model.getPatternType()).validate();
-            if (null == errorMessage) {
-                errorMessage = m_model.getEndType().equals(EndType.DATE)
-                ? checkIfSeriesEndTimeIsValid()
-                : checkIfOccurrencesAreValid();
-                if ((null == errorMessage) && m_model.getEndType().equals(EndType.DATE)) {
-                    m_hasTooManyDatesAction.execute();
-                    return;
-                }
-            }
-        }
-        onValidated(errorMessage);
-
-    }
-
-    /**
      * @see org.opencms.acacia.client.widgets.serialdate.I_ChangeHandler#valueChanged()
      */
     @Override
@@ -631,8 +531,6 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
 
         m_view.onValueChange();
         ValueChangeEvent.fire(this, m_model.toString());
-
-        ValidationTimer.validate(this);
     }
 
     /**
@@ -647,72 +545,6 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
             ((ServiceDefTarget)SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return SERVICE;
-    }
-
-    /**
-     * Call-back function when validation finishes.
-     * @param errorMessage the validation error to display, <code>null</code> if validation succeeded.
-     */
-    void onValidated(String errorMessage) {
-
-        if (null == errorMessage) {
-            setValid(true);
-            m_view.removeError();
-        } else {
-            setValid(false);
-            m_view.setError(errorMessage);
-        }
-    }
-
-    /**
-     * Set a flag, indicating if the value in the widget is valid.
-     * @param isValid flag, indicating if the value in the widget is valid.
-     */
-    void setValid(boolean isValid) {
-
-        if (isValid != m_valid) {
-            m_valid = isValid;
-            m_view.enableManagementButton(m_valid);
-        }
-    }
-
-    /**
-     * Checks if the occurrences are valid.
-     * @return <code>null</code> if occurrences are valid, as suitable error message otherwise.
-     */
-    private String checkIfOccurrencesAreValid() {
-
-        return (!m_model.getEndType().equals(EndType.TIMES) || (m_model.getOccurrences() > 0))
-            && (m_model.getOccurrences() <= CmsSerialDateUtil.getMaxEvents())
-            ? null
-            : Messages.get().key(
-                Messages.GUI_SERIALDATE_ERROR_INVALID_OCCURRENCES_1,
-                Integer.valueOf(CmsSerialDateUtil.getMaxEvents()));
-    }
-
-    /**
-     * Returns <code>null</code> if the series end time is valid, a suitable error message otherwise.
-     * @return <code>null</code> if the series end time is valid, a suitable error message otherwise.
-     */
-    private String checkIfSeriesEndTimeIsValid() {
-
-        return (null != m_model.getStart())
-            && (null != m_model.getSeriesEndDate())
-            && (m_model.getStart().getTime() < (m_model.getSeriesEndDate().getTime()
-                + I_CmsSerialDateValue.DAY_IN_MILLIS))
-                ? null
-                : Messages.get().key(Messages.GUI_SERIALDATE_ERROR_SERIAL_END_BEFORE_START_0);
-    }
-
-    /**
-     * Returns <code>null</code> if the start date is not after the end date, a suitable error message otherwise.
-     * @return <code>null</code> if the start date is not after the end date, a suitable error message otherwise.
-     */
-    private String checkIfTimesAreValid() {
-
-        return (null == m_model.getStart()) || (null == m_model.getEnd()) || m_model.getStart().after(m_model.getEnd())
-        ? Messages.get().key(Messages.GUI_SERIALDATE_ERROR_END_BEFORE_START_0)
-        : null;
     }
 
     /**

@@ -28,7 +28,6 @@
 package org.opencms.jsp.util;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
-import org.opencms.json.JSONException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
@@ -230,15 +229,15 @@ public class CmsJspDateSeriesBean {
      * @param locale the locale to use for rendering dates.
      */
     public CmsJspDateSeriesBean(String seriesDefinition, Locale locale) {
-        try {
-            CmsSerialDateValueWrapper serialDateValue = new CmsSerialDateValueWrapper(seriesDefinition);
+        CmsSerialDateValueWrapper serialDateValue = new CmsSerialDateValueWrapper(seriesDefinition);
+        if (serialDateValue.isValid()) {
             I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(serialDateValue);
             m_dates = bean.getDates();
             m_duration = bean.getEventDuration();
             m_isWholeDay = serialDateValue.isWholeDay();
             m_locale = locale;
-        } catch (JSONException e) {
-            LOG.error("Could not read series definition: " + seriesDefinition, e);
+        } else {
+            LOG.error("Could not read series definition: " + seriesDefinition);
             m_dates = new TreeSet<>();
         }
     }

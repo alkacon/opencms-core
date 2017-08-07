@@ -347,6 +347,12 @@ public interface I_CmsSerialDateValue {
     boolean isEveryWorkingDay();
 
     /**
+     * Returns a flag, indicating if the value specifies a valid date (series).
+     * @return a flag, indicating if the value specifies a valid date (series).
+     */
+    boolean isValid();
+
+    /**
      * Returns a flag, indicating if the event last the whole day/whole days.
      * @return a flag, indicating if the event last the whole day/whole days.
      */

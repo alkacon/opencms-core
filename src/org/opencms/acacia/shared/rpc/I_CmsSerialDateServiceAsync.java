@@ -44,10 +44,4 @@ public interface I_CmsSerialDateServiceAsync {
      */
     void getDates(String config, AsyncCallback<Collection<CmsPair<Date, Boolean>>> callback);
 
-    /**
-     * Check, if there are too many dates specified by the series.
-     * @param config series specification (widget's string value)
-     * @param callback the callback function that takes a flag, indicating if there are too many dates, accompanied with the last possible date in the series.
-     */
-    void hasTooManyDates(String config, AsyncCallback<CmsPair<Boolean, Date>> callback);
 }

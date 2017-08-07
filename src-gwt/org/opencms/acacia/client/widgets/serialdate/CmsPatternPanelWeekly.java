@@ -30,7 +30,6 @@ package org.opencms.acacia.client.widgets.serialdate;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import java.util.ArrayList;
 import java.util.List;

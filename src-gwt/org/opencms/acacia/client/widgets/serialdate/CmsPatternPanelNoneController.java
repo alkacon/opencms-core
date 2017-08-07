@@ -53,12 +53,4 @@ public class CmsPatternPanelNoneController implements I_CmsSerialDatePatternCont
         return DUMMY_VIEW;
     }
 
-    /**
-     * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDatePatternController#validate()
-     */
-    public String validate() {
-
-        return null;
-    }
-
 }
