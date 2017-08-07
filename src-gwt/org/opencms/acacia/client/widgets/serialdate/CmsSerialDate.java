@@ -59,11 +59,58 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
 
 /** Controller for the serial date widget, being the widget implementation itself. */
-public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_ChangeHandler {
+public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
+
+    /**
+     * The status update timer.<p>
+     * Status update takes place at most every 500 milliseconds.
+     * Whenever re-update is triggered during the time waiting, the timer is reset,
+     * i.e., it is waited for 500 milliseconds again.
+     */
+    protected static class StatusUpdateTimer extends Timer {
+
+        /** The single status update timer that is allowed. */
+        private static StatusUpdateTimer m_timer;
+        /** The handler to call for the validation. */
+        private I_StatusUpdateHandler m_handler;
+
+        /**
+         * Constructor.<p>
+         * @param handler the handler to call for the status update.
+         */
+        StatusUpdateTimer(I_StatusUpdateHandler handler) {
+            m_handler = handler;
+        }
+
+        /**
+         * Trigger the status update after a certain time out.
+         * @param handler the status update handler, that actually performs the status update.
+         */
+        public static void updateStatus(I_StatusUpdateHandler handler) {
+
+            if (null != m_timer) {
+                m_timer.cancel();
+            }
+            m_timer = new StatusUpdateTimer(handler);
+            m_timer.schedule(500);
+        }
+
+        /**
+         * @see com.google.gwt.user.client.Timer#run()
+         */
+        @Override
+        public void run() {
+
+            m_handler.updateStatus();
+            m_timer = null;
+        }
+
+    }
 
     /** Confirmation dialog that should be shown when exceptions are removed when the value changes. */
     private class CmsExceptionsDeleteConfirmDialog {
@@ -142,11 +189,11 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     /** Flag, indicating if the widget is currently active. */
     private boolean m_active;
 
-    /** Flag, indicating if the widget value is valid. */
-    private boolean m_valid;
-
     /** RPC call action to get dates. */
     private final CmsRpcAction<Collection<CmsPair<Date, Boolean>>> m_getDatesAction;
+
+    /** RPC call action to get the current status. */
+    private final CmsRpcAction<CmsPair<Boolean, String>> m_statusUpdateAction;
 
     /** The pattern controllers. */
     private final Map<PatternType, I_CmsSerialDatePatternController> m_patternControllers = new HashMap<>();
@@ -189,6 +236,24 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
 
                 CmsSerialDate.this.m_view.showCurrentDates(result);
             }
+        };
+        m_statusUpdateAction = new CmsRpcAction<CmsPair<Boolean, String>>() {
+
+            @Override
+            public void execute() {
+
+                getService().getStatus(m_model.toString(), this);
+
+            }
+
+            @Override
+            protected void onResponse(CmsPair<Boolean, String> result) {
+
+                m_view.setManagementButtonEnabled(Objects.equals(Boolean.TRUE, result.getFirst()));
+                m_view.setStatus(result.getSecond());
+
+            }
+
         };
         m_active = true;
         m_exceptionConfirmDialog = new CmsExceptionsDeleteConfirmDialog(m_model);
@@ -264,15 +329,6 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     public boolean isActive() {
 
         return m_active;
-    }
-
-    /**
-     * Returns a flag, indicating if the widget value is valid.
-     * @return a flag, indicating if the widget value is valid.
-     */
-    public boolean isValid() {
-
-        return m_valid;
     }
 
     /**
@@ -524,19 +580,28 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.serialdate.I_StatusUpdateHandler#updateStatus()
+     */
+    public void updateStatus() {
+
+        m_statusUpdateAction.execute();
+    }
+
+    /**
      * @see org.opencms.acacia.client.widgets.serialdate.I_ChangeHandler#valueChanged()
      */
     @Override
     public void valueChanged() {
 
+        StatusUpdateTimer.updateStatus(this);
         m_view.onValueChange();
         ValueChangeEvent.fire(this, m_model.toString());
     }
 
     /**
-     * Returns the RPC service for serial dates.
-     * @return the RPC service for serial dates.
-     */
+    * Returns the RPC service for serial dates.
+    * @return the RPC service for serial dates.
+    */
     I_CmsSerialDateServiceAsync getService() {
 
         if (SERVICE == null) {

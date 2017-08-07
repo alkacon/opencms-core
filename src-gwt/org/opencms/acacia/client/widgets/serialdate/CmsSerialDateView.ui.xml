@@ -11,6 +11,7 @@
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
 	<g:VerticalPanel width="100%">
 		<g:FlowPanel ui:field="m_deactivationPanel"><g:Label ui:field="m_deactivationText"></g:Label></g:FlowPanel>
+		<g:FlowPanel><cmsi:CmsLabel ui:field="m_statusLabel"/></g:FlowPanel>
 		<cms:CmsFieldSet ui:field="m_datesPanel" width="100%">
 			<g:HorizontalPanel width="100%">
 				<g:cell>

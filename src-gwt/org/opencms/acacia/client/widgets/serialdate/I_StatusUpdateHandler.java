@@ -25,30 +25,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.acacia.shared.rpc;
+package org.opencms.acacia.client.widgets.serialdate;
 
-import org.opencms.util.CmsPair;
-
-import java.util.Collection;
-import java.util.Date;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-/** Asynchronous interface for the serial date service. */
-public interface I_CmsSerialDateServiceAsync {
+/** Interface for status update handlers. */
+public interface I_StatusUpdateHandler {
 
     /**
-     * Get the dates of the specified series.
-     * @param config series specification (widget's string value)
-     * @param callback the callback function that takes the dates of the specified series, each with a flag, indicating if it is really taking place (or excluded as an exception).
+     * Method called when a status update is triggered.
      */
-    void getDates(String config, AsyncCallback<Collection<CmsPair<Date, Boolean>>> callback);
-
-    /**
-     * Get information on the series specified by the current value.
-     * @param config series specification (widget's string value)
-     * @param callback the callback function that takes the status information.
-     */
-    void getStatus(String config, AsyncCallback<CmsPair<Boolean, String>> callback);
+    void updateStatus();
 
 }

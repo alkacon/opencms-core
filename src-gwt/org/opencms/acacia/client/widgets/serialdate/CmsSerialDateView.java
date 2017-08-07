@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
@@ -76,6 +77,12 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The UI binder instance. */
     private static I_CmsSerialDateUiBinder uiBinder = GWT.create(I_CmsSerialDateUiBinder.class);
+
+    /* The status field */
+
+    /** The label that displays the current status. */
+    @UiField
+    CmsLabel m_statusLabel;
 
     /* 1. The dates panel. */
 
@@ -281,6 +288,25 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
         onPatternChange();
         m_triggerChangeActions = true;
+    }
+
+    /**
+     * Enable/disable the management button.
+     * @param enabled flag, indicating if the management button should be enabled.
+     */
+    public void setManagementButtonEnabled(boolean enabled) {
+
+        m_manageExceptionsButton.setEnabled(enabled);
+
+    }
+
+    /**
+     * Sets the current status.
+     * @param status the status to set.
+     */
+    public void setStatus(String status) {
+
+        m_statusLabel.setText(status);
     }
 
     /**

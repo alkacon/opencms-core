@@ -192,6 +192,18 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/ade/contenteditor/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/ade/contenteditor/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>18b84688-7b71-11e7-b1c5-ddea4d67acf0</uuidstructure>
+			<uuidresource>18b84689-7b71-11e7-b1c5-ddea4d67acf0</uuidresource>
+			<datecreated>Mon, 07 Aug 2017 13:05:33 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/detailpage</destination>
 			<type>folder</type>
 			<uuidstructure>3cb71b94-7710-11e0-a36e-4dcd2ca9d6dc</uuidstructure>
