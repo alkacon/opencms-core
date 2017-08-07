@@ -43,16 +43,16 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 
 /** Server-side implementation of {@link org.opencms.acacia.shared.I_CmsSerialDateValue}. */
-public class CmsSerialDateValueWrapper extends A_CmsSerialDateValue {
+public class CmsSerialDateValue extends A_CmsSerialDateValue {
 
     /** Logger for the class. */
-    private static final Log LOG = CmsLog.getLog(CmsSerialDateValueWrapper.class);
+    private static final Log LOG = CmsLog.getLog(CmsSerialDateValue.class);
 
     /** Flag, indicating if parsing the provided string value failed. */
     private boolean m_parsingFailed;
 
     /** Default constructor, setting the default state of the the serial date widget. */
-    public CmsSerialDateValueWrapper() {
+    public CmsSerialDateValue() {
 
         setDefaultValue();
     }
@@ -62,7 +62,7 @@ public class CmsSerialDateValueWrapper extends A_CmsSerialDateValue {
      *
      * @param value JSON representation of the serial date as string.
      */
-    public CmsSerialDateValueWrapper(String value) {
+    public CmsSerialDateValue(String value) {
         if ((null != value) && !value.isEmpty()) {
             try {
                 JSONObject json = new JSONObject(value);

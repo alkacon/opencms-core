@@ -28,7 +28,7 @@
 package org.opencms.xml.types;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.widgets.serialdate.CmsSerialDateValueWrapper;
+import org.opencms.widgets.serialdate.CmsSerialDateValue;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -146,7 +146,7 @@ public class CmsXmlSerialDateValue extends A_CmsXmlValueTextBase implements I_Cm
      */
     public CmsMessageContainer validateWithMessage(String value) {
 
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper(value);
+        CmsSerialDateValue wrapper = new CmsSerialDateValue(value);
         return wrapper.validateWithMessage();
     }
 }

@@ -131,21 +131,21 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     SimplePanel m_patternOptions;
 
     /** The daily pattern. */
-    CmsPatternPanelDaily m_dailyPattern;
+    CmsPatternPanelDailyView m_dailyPattern;
 
     /** The weekly pattern. */
-    CmsPatternPanelWeekly m_weeklyPattern;
+    CmsPatternPanelWeeklyView m_weeklyPattern;
 
     /** The monthly pattern. */
-    CmsPatternPanelMonthly m_monthlyPattern;
+    CmsPatternPanelMonthlyView m_monthlyPattern;
 
     /** The yearly pattern. */
-    CmsPatternPanelYearly m_yearlyPattern;
+    CmsPatternPanelYearlyView m_yearlyPattern;
 
     /* 2.2. The duration panel */
 
     /** The individual pattern. */
-    CmsPatternPanelIndividual m_individualPattern;
+    CmsPatternPanelIndividualView m_individualPattern;
 
     /** The panel with the serial date duration options. */
     @UiField
@@ -232,7 +232,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     /* Controller and model */
 
     /** Controller */
-    CmsSerialDate m_controller;
+    CmsSerialDateController m_controller;
 
     /** Model */
     I_CmsObservableSerialDateValue m_model;
@@ -248,7 +248,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
      * @param controller the controller to communicate with
      * @param model the model to get values from
      */
-    public CmsSerialDateView(CmsSerialDate controller, I_CmsObservableSerialDateValue model) {
+    public CmsSerialDateView(CmsSerialDateController controller, I_CmsObservableSerialDateValue model) {
 
         m_controller = controller;
         m_model = model;

@@ -38,23 +38,23 @@ import com.google.gwt.user.client.Command;
 public class CmsPatternPanelWeeklyController extends A_CmsPatternPanelController {
 
     /** The controlled view. */
-    private final CmsPatternPanelWeekly m_view;
+    private final CmsPatternPanelWeeklyView m_view;
 
     /**
      * Constructor for the weekly pattern panel controller
      * @param model the model to read data from.
      * @param changeHandler the value change handler.
      */
-    CmsPatternPanelWeeklyController(final CmsSerialDateValueWrapper model, final I_ChangeHandler changeHandler) {
+    CmsPatternPanelWeeklyController(final CmsSerialDateValue model, final I_ChangeHandler changeHandler) {
         super(model, changeHandler);
-        m_view = new CmsPatternPanelWeekly(this, m_model);
+        m_view = new CmsPatternPanelWeeklyView(this, m_model);
     }
 
     /**
      * @see org.opencms.acacia.client.widgets.serialdate.A_CmsPatternPanelController#getView()
      */
     @Override
-    public I_CmsPatternView getView() {
+    public I_CmsSerialDatePatternView getView() {
 
         return m_view;
     }

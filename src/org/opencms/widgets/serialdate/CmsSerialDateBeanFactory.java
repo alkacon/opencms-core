@@ -159,7 +159,7 @@ public class CmsSerialDateBeanFactory {
     public static I_CmsSerialDateBean createSerialDateBean(String widgetValue) {
 
         I_CmsSerialDateValue value;
-        value = new CmsSerialDateValueWrapper(widgetValue);
+        value = new CmsSerialDateValue(widgetValue);
         return createSerialDateBean(value);
     }
 }

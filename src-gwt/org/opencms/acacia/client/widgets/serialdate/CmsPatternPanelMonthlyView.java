@@ -57,10 +57,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 /**
  * The monthly pattern panel.<p>
  * */
-public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternView {
+public class CmsPatternPanelMonthlyView extends Composite implements I_CmsSerialDatePatternView {
 
     /** The UI binder interface. */
-    interface I_CmsPatternPanelMonthlyUiBinder extends UiBinder<HTMLPanel, CmsPatternPanelMonthly> {
+    interface I_CmsPatternPanelMonthlyUiBinder extends UiBinder<HTMLPanel, CmsPatternPanelMonthlyView> {
         // nothing to do
     }
 
@@ -138,7 +138,7 @@ public class CmsPatternPanelMonthly extends Composite implements I_CmsPatternVie
      * @param controller the controller that handles value changes.
      * @param model the model that provides the values.
      */
-    public CmsPatternPanelMonthly(CmsPatternPanelMonthlyController controller, I_CmsObservableSerialDateValue model) {
+    public CmsPatternPanelMonthlyView(CmsPatternPanelMonthlyController controller, I_CmsObservableSerialDateValue model) {
         m_controller = controller;
         m_model = model;
         m_model.registerValueChangeObserver(this);

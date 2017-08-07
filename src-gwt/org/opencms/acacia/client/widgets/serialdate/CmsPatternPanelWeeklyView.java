@@ -50,10 +50,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 /**
  * The weekly pattern panel.<p>
  * */
-public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView {
+public class CmsPatternPanelWeeklyView extends Composite implements I_CmsSerialDatePatternView {
 
     /** The UI binder interface. */
-    interface I_CmsPatternPanelWeekly extends UiBinder<HTMLPanel, CmsPatternPanelWeekly> {
+    interface I_CmsPatternPanelWeekly extends UiBinder<HTMLPanel, CmsPatternPanelWeeklyView> {
         // nothing to do
     }
 
@@ -96,7 +96,7 @@ public class CmsPatternPanelWeekly extends Composite implements I_CmsPatternView
      * @param model the model to read data from.
      * @param controller the controller to communicate with.
      */
-    public CmsPatternPanelWeekly(CmsPatternPanelWeeklyController controller, I_CmsObservableSerialDateValue model) {
+    public CmsPatternPanelWeeklyView(CmsPatternPanelWeeklyController controller, I_CmsObservableSerialDateValue model) {
 
         m_controller = controller;
         m_model = model;

@@ -46,10 +46,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 /**
  * The daily pattern panel.<p>
  * */
-public class CmsPatternPanelIndividual extends Composite implements I_CmsPatternView {
+public class CmsPatternPanelIndividualView extends Composite implements I_CmsSerialDatePatternView {
 
     /** The UI binder interface. */
-    interface I_CmsPatternPanelIndividualUiBinder extends UiBinder<HTMLPanel, CmsPatternPanelIndividual> {
+    interface I_CmsPatternPanelIndividualUiBinder extends UiBinder<HTMLPanel, CmsPatternPanelIndividualView> {
         // nothing to do
     }
 
@@ -89,7 +89,7 @@ public class CmsPatternPanelIndividual extends Composite implements I_CmsPattern
      * @param controller the controller that handles value changes.
      * @param model the model that provides the values.
      */
-    public CmsPatternPanelIndividual(
+    public CmsPatternPanelIndividualView(
         CmsPatternPanelIndividualController controller,
         I_CmsObservableSerialDateValue model) {
         m_controller = controller;

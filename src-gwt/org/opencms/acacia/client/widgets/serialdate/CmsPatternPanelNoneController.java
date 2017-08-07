@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsPatternPanelNoneController implements I_CmsSerialDatePatternController {
 
     /** Dummy pattern view. */
-    private static final I_CmsPatternView DUMMY_VIEW = new I_CmsPatternView() {
+    private static final I_CmsSerialDatePatternView DUMMY_VIEW = new I_CmsSerialDatePatternView() {
 
         public Widget asWidget() {
 
@@ -48,7 +48,7 @@ public class CmsPatternPanelNoneController implements I_CmsSerialDatePatternCont
     /**
      * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDatePatternController#getView()
      */
-    public I_CmsPatternView getView() {
+    public I_CmsSerialDatePatternView getView() {
 
         return DUMMY_VIEW;
     }

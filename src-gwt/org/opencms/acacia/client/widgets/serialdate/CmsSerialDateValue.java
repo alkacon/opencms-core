@@ -48,13 +48,13 @@ import com.google.gwt.json.client.JSONValue;
  * Client-side implementation of {@link I_CmsSerialDateValue}.
  * The implementation additionally has setters for the various values of the serial date specification.
  */
-public class CmsSerialDateValueWrapper extends A_CmsSerialDateValue implements I_CmsObservableSerialDateValue {
+public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObservableSerialDateValue {
 
     /** The list of value change observers. */
     Collection<I_CmsSerialDateValueChangeObserver> m_valueChangeObservers = new HashSet<>();
 
     /** Default constructor, setting the default state of the the serial date widget. */
-    public CmsSerialDateValueWrapper() {
+    public CmsSerialDateValue() {
         setDefaultValue();
     }
 

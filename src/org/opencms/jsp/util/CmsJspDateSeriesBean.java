@@ -31,7 +31,7 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
-import org.opencms.widgets.serialdate.CmsSerialDateValueWrapper;
+import org.opencms.widgets.serialdate.CmsSerialDateValue;
 import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 
 import java.text.DateFormat;
@@ -229,7 +229,7 @@ public class CmsJspDateSeriesBean {
      * @param locale the locale to use for rendering dates.
      */
     public CmsJspDateSeriesBean(String seriesDefinition, Locale locale) {
-        CmsSerialDateValueWrapper serialDateValue = new CmsSerialDateValueWrapper(seriesDefinition);
+        CmsSerialDateValue serialDateValue = new CmsSerialDateValue(seriesDefinition);
         if (serialDateValue.isValid()) {
             I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(serialDateValue);
             m_dates = bean.getDates();

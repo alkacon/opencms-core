@@ -40,7 +40,7 @@ import java.util.TreeSet;
 import com.google.gwt.junit.client.GWTTestCase;
 
 /** Tests for the serial date wrapper, targeting on transformations from/to Strings. */
-public class TestSerialDateValueWrapper extends GWTTestCase {
+public class TestSerialDateValue extends GWTTestCase {
 
     /**
      * @see com.google.gwt.junit.client.GWTTestCase#getModuleName()
@@ -58,7 +58,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testDailyEndTimesWithExceptions() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"wholeday\":true, \"pattern\":{\"type\":\"DAILY\", \"interval\":\"5\"}, \"exceptions\":[\"1491289200000\",\"1491462000000\"], \"occurrences\":\"3\"}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -77,7 +77,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         exceptions.add(new Date(1491462000000L));
         assertEquals(exceptions, wrapper.getExceptions());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }
@@ -89,7 +89,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testDailyWorkingDayEndDate() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"DAILY\", \"everyworkingday\":true}, \"enddate\":\"1492207200000\"}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -102,7 +102,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         assertEquals(PatternType.DAILY, wrapper.getPatternType());
         assertEquals(true, wrapper.isEveryWorkingDay());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }
@@ -114,7 +114,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testIndividual() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"INDIVIDUAL\", \"dates\":[\"1501489020000\",\"1501748220000\"]}}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -127,7 +127,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         dates.add(new Date(1501748220000L));
         assertEquals(dates, wrapper.getIndividualDates());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }
@@ -139,7 +139,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testMonthlyDay() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"MONTHLY\", \"interval\":\"2\", \"day\":\"15\"}, \"occurrences\":\"3\"}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -154,7 +154,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         assertEquals(null, wrapper.getWeekDay());
         assertEquals(2, wrapper.getInterval());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }
@@ -166,7 +166,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testMonthlyWeeks() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"MONTHLY\", \"interval\":\"5\", \"weekdays\":[\"WEDNESDAY\"], \"weeks\":[\"SECOND\",\"LAST\"]}, \"occurrences\":\"3\"}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -184,7 +184,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         assertEquals(weeks, wrapper.getWeeksOfMonth());
         assertEquals(5, wrapper.getInterval());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }
@@ -196,7 +196,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testNone() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -205,7 +205,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         // pattern
         assertEquals(PatternType.NONE, wrapper.getPatternType());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }
@@ -217,7 +217,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testWeekly() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"WEEKLY\", \"interval\":\"5\", \"weekdays\":[\"TUESDAY\",\"THURSDAY\"]}, \"occurrences\":\"3\"}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -234,7 +234,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         assertEquals(weekdays, wrapper.getWeekDays());
         assertEquals(5, wrapper.getInterval());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }
@@ -246,7 +246,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testYearlyDay() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"day\":\"31\", \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -262,7 +262,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         assertEquals(31, wrapper.getDayOfMonth());
         assertEquals(Month.JULY, wrapper.getMonth());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }
@@ -274,7 +274,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
     public void testYearlyWeeks() throws Exception {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"weekdays\":[\"WEDNESDAY\"], \"weeks\":[\"SECOND\"], \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
-        CmsSerialDateValueWrapper wrapper = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertEquals(1491202800000L, wrapper.getStart().getTime());
@@ -289,7 +289,7 @@ public class TestSerialDateValueWrapper extends GWTTestCase {
         assertEquals(WeekOfMonth.SECOND, wrapper.getWeekOfMonth());
         assertEquals(Month.JULY, wrapper.getMonth());
         // re-wrap
-        CmsSerialDateValueWrapper rewrap = new CmsSerialDateValueWrapper();
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
     }

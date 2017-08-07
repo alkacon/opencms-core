@@ -50,10 +50,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 /**
  * The yearly pattern panel.<p>
  * */
-public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView {
+public class CmsPatternPanelYearlyView extends Composite implements I_CmsSerialDatePatternView {
 
     /** The UI binder interface. */
-    interface I_CmsPatternPanelYearlyUiBinder extends UiBinder<HTMLPanel, CmsPatternPanelYearly> {
+    interface I_CmsPatternPanelYearlyUiBinder extends UiBinder<HTMLPanel, CmsPatternPanelYearlyView> {
         // nothing to do
     }
 
@@ -116,7 +116,7 @@ public class CmsPatternPanelYearly extends Composite implements I_CmsPatternView
      * @param controller the controller that handles value changes.
      * @param model the model that provides the values.
      */
-    public CmsPatternPanelYearly(CmsPatternPanelYearlyController controller, I_CmsObservableSerialDateValue model) {
+    public CmsPatternPanelYearlyView(CmsPatternPanelYearlyController controller, I_CmsObservableSerialDateValue model) {
         m_controller = controller;
         m_model = model;
         m_model.registerValueChangeObserver(this);

@@ -35,7 +35,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsPair;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
-import org.opencms.widgets.serialdate.CmsSerialDateValueWrapper;
+import org.opencms.widgets.serialdate.CmsSerialDateValue;
 import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 
 import java.text.DateFormat;
@@ -81,7 +81,7 @@ public class CmsSerialDateService extends CmsGwtService implements I_CmsSerialDa
      */
     public CmsPair<Boolean, String> getStatus(String config) {
 
-        I_CmsSerialDateValue value = new CmsSerialDateValueWrapper(config);
+        I_CmsSerialDateValue value = new CmsSerialDateValue(config);
         Locale l = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
         CmsMessages messages = Messages.get().getBundle(l);
         if (value.isValid()) {

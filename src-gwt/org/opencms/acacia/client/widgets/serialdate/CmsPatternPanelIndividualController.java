@@ -34,23 +34,23 @@ import java.util.SortedSet;
 public class CmsPatternPanelIndividualController extends A_CmsPatternPanelController {
 
     /** The controlled view. */
-    private final CmsPatternPanelIndividual m_view;
+    private final CmsPatternPanelIndividualView m_view;
 
     /**
      * Constructor for the individual pattern panel controller
      * @param model the model to read data from.
      * @param changeHandler the value change handler.
      */
-    CmsPatternPanelIndividualController(final CmsSerialDateValueWrapper model, final I_ChangeHandler changeHandler) {
+    CmsPatternPanelIndividualController(final CmsSerialDateValue model, final I_ChangeHandler changeHandler) {
         super(model, changeHandler);
-        m_view = new CmsPatternPanelIndividual(this, m_model);
+        m_view = new CmsPatternPanelIndividualView(this, m_model);
     }
 
     /**
      * @see org.opencms.acacia.client.widgets.serialdate.A_CmsPatternPanelController#getView()
      */
     @Override
-    public I_CmsPatternView getView() {
+    public I_CmsSerialDatePatternView getView() {
 
         return m_view;
     }

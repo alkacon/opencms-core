@@ -66,7 +66,7 @@ public final class AllTests {
         suite.addTest(new TestSuite(TestSerialDateBeanWorkingDays.class));
         suite.addTest(new TestSuite(TestSerialDateBeanYearly.class));
         suite.addTest(new TestSuite(TestSerialDateBeanYearlyWeekday.class));
-        suite.addTest(new TestSuite(TestSerialDateValueWrapper.class));
+        suite.addTest(new TestSuite(TestSerialDateValue.class));
         //$JUnit-END$
         return suite;
     }

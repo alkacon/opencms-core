@@ -37,23 +37,23 @@ import com.google.gwt.user.client.Command;
 public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController {
 
     /** The controlled view. */
-    private final CmsPatternPanelYearly m_view;
+    private final CmsPatternPanelYearlyView m_view;
 
     /**
      * Constructor for the yearly pattern panel controller
      * @param model the model to read data from.
      * @param changeHandler the value change handler.
      */
-    CmsPatternPanelYearlyController(CmsSerialDateValueWrapper model, I_ChangeHandler changeHandler) {
+    CmsPatternPanelYearlyController(CmsSerialDateValue model, I_ChangeHandler changeHandler) {
         super(model, changeHandler);
-        m_view = new CmsPatternPanelYearly(this, m_model);
+        m_view = new CmsPatternPanelYearlyView(this, m_model);
     }
 
     /**
      * @see org.opencms.acacia.client.widgets.serialdate.A_CmsPatternPanelController#getView()
      */
     @Override
-    public I_CmsPatternView getView() {
+    public I_CmsSerialDatePatternView getView() {
 
         return m_view;
     }

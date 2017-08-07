@@ -27,7 +27,7 @@
 
 package org.opencms.acacia.client.widgets;
 
-import org.opencms.acacia.client.widgets.serialdate.CmsSerialDate;
+import org.opencms.acacia.client.widgets.serialdate.CmsSerialDateController;
 import org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle;
 
 import com.google.gwt.dom.client.Element;
@@ -47,14 +47,14 @@ public class CmsSerialDateWidget extends Composite implements I_CmsEditWidget {
     private boolean m_active = true;
 
     /** The global select box. */
-    private CmsSerialDate m_serialDate;
+    private CmsSerialDateController m_serialDate;
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      */
     public CmsSerialDateWidget() {
 
-        m_serialDate = new CmsSerialDate();
+        m_serialDate = new CmsSerialDateController();
         // All composites must call initWidget() in their constructors.
         initWidget(m_serialDate);
 

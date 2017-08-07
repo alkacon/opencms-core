@@ -64,7 +64,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
 
 /** Controller for the serial date widget, being the widget implementation itself. */
-public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
+public class CmsSerialDateController extends Composite implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
 
     /**
      * The status update timer.<p>
@@ -121,13 +121,13 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
         Command m_cmd;
 
         /** The value to reset the exceptions */
-        final CmsSerialDateValueWrapper m_value;
+        final CmsSerialDateValue m_value;
 
         /**
          * Default constructor.
          * @param value the value where the exceptions should be reset.
          */
-        CmsExceptionsDeleteConfirmDialog(final CmsSerialDateValueWrapper value) {
+        CmsExceptionsDeleteConfirmDialog(final CmsSerialDateValue value) {
             m_value = value;
             m_dialog = new CmsConfirmDialog(
                 Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_CAPTION_0),
@@ -208,7 +208,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     final CmsSerialDateView m_view;
 
     /** The model */
-    final CmsSerialDateValueWrapper m_model;
+    final CmsSerialDateValue m_model;
 
     /** The confirmation dialog for deletion of exceptions. */
     private CmsExceptionsDeleteConfirmDialog m_exceptionConfirmDialog;
@@ -216,9 +216,9 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
     /**
      * Category field widgets for ADE forms.<p>
      */
-    public CmsSerialDate() {
+    public CmsSerialDateController() {
 
-        m_model = new CmsSerialDateValueWrapper();
+        m_model = new CmsSerialDateValue();
         m_view = new CmsSerialDateView(this, m_model);
         initWidget(m_view);
         initPatternControllers();
@@ -234,7 +234,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
             @Override
             protected void onResponse(Collection<CmsPair<Date, Boolean>> result) {
 
-                CmsSerialDate.this.m_view.showCurrentDates(result);
+                CmsSerialDateController.this.m_view.showCurrentDates(result);
             }
         };
         m_statusUpdateAction = new CmsRpcAction<CmsPair<Boolean, String>>() {
@@ -310,7 +310,7 @@ public class CmsSerialDate extends Composite implements I_CmsEditWidget, I_Chang
      * Returns the widget to place in the pattern panel.
      * @return the widget to place in the pattern panel.
      */
-    public I_CmsPatternView getPatternView() {
+    public I_CmsSerialDatePatternView getPatternView() {
 
         return getPattern().getView();
     }

@@ -34,5 +34,5 @@ public interface I_CmsSerialDatePatternController {
      * Returns the view that is controlled.
      * @return the controlled view.
      */
-    I_CmsPatternView getView();
+    I_CmsSerialDatePatternView getView();
 }

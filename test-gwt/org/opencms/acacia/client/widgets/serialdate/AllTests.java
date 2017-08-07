@@ -45,7 +45,7 @@ public class AllTests extends GWTTestSuite {
     public static Test suite() {
 
         TestSuite suite = new TestSuite("Test the serial date value wrapper");
-        suite.addTestSuite(TestSerialDateValueWrapper.class);
+        suite.addTestSuite(TestSerialDateValue.class);
         return suite;
     }
 }

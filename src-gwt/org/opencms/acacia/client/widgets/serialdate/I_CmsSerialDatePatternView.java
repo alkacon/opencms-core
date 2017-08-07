@@ -30,7 +30,7 @@ package org.opencms.acacia.client.widgets.serialdate;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /** Interface for all pattern views. */
-public interface I_CmsPatternView extends I_CmsSerialDateValueChangeObserver, IsWidget {
+public interface I_CmsSerialDatePatternView extends I_CmsSerialDateValueChangeObserver, IsWidget {
 
     // No extra methods needed, just combines two other interfaces
 }

@@ -37,14 +37,14 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
     /** The change handler called on {@link #onValueChange()}. */
     private final I_ChangeHandler m_changeHandler;
     /** The model to read data from. */
-    protected final CmsSerialDateValueWrapper m_model;
+    protected final CmsSerialDateValue m_model;
 
     /**
      * Constructor for the abstract pattern panel controller
      * @param model the model to read data from.
      * @param changeHandler the handler for value changes.
      */
-    public A_CmsPatternPanelController(final CmsSerialDateValueWrapper model, final I_ChangeHandler changeHandler) {
+    public A_CmsPatternPanelController(final CmsSerialDateValue model, final I_ChangeHandler changeHandler) {
         m_model = model;
         m_changeHandler = changeHandler;
 
@@ -53,7 +53,7 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
     /**
      * @see org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDatePatternController#getView()
      */
-    abstract public I_CmsPatternView getView();
+    abstract public I_CmsSerialDatePatternView getView();
 
     /**
      * @param cmd see change handler
