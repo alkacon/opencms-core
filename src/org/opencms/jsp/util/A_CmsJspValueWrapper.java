@@ -28,36 +28,48 @@
 package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
-import org.opencms.jsp.CmsJspTagScaleImage;
-import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Common value wrapper class for XML content values and element setting values.<p>
  */
 abstract class A_CmsJspValueWrapper {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsJspValueWrapper.class);
+
     /** Image bean instance created from the wrapped data. */
-    private CmsJspScaledImageBean m_imageBean;
+    private CmsJspImageBean m_imageBean;
+
     /** String representation of the wrapped data with HTML stripped off. */
     private String m_stripHtml;
+
     /** Boolean representation of the wrapped data. */
     private Boolean m_boolean;
+
     /** Date created from the wrapped data. */
     private Date m_date;
+
     /** Double created from the wrapped data. */
     private Double m_double;
+
     /** Long created from the wrapped data. */
     private Long m_integer;
+
     /** Link created from the wrapped data. */
     private String m_link;
+
     /** String representation of the wrapped data. */
     private String m_string;
+
     /** Date series information generated from the wrapped data. */
     private CmsJspDateSeriesBean m_dateSeries;
 
@@ -189,13 +201,10 @@ abstract class A_CmsJspValueWrapper {
 
         if (m_imageBean == null) {
             try {
-                m_imageBean = CmsJspTagScaleImage.imageTagAction(
-                    getCmsObject(),
-                    getToString(),
-                    new CmsImageScaler(),
-                    null);
+                m_imageBean = new CmsJspImageBean(getCmsObject(), getToString());
             } catch (CmsException e) {
-                // TODO: logging
+                // this should only happen if the image path is not valid, in which case we will return null
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
         return m_imageBean;

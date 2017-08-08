@@ -126,6 +126,8 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
         CmsResource imageRes = cms.readResource(vfsUri);
         CmsImageScaler originalScaler = new CmsImageScaler(cms, imageRes);
         CmsJspScaledImageBean scaledImage = new CmsJspScaledImageBean();
+        scaledImage.setCmsObject(cms);
+        scaledImage.setResource(imageRes);
         scaledImage.setVfsUri(vfsUri);
 
         if ((targetScaler.getHeight() <= 0) && (targetScaler.getWidth() <= 0)) {
@@ -145,13 +147,6 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
             targetScaler = initScaler(originalScaler, scaleParam, targetScaler);
         }
 
-        String imageSrc = cms.getSitePath(imageRes);
-        if (targetScaler.isValid() && !targetScaler.isOriginalScaler()) {
-            // now append the scaler parameters if required
-            imageSrc += targetScaler.toRequestParam();
-        }
-
-        scaledImage.setSrcUrl(OpenCms.getLinkManager().substituteLink(cms, imageSrc));
         scaledImage.setScaler(targetScaler);
 
         // now handle hi-DPI variants
