@@ -309,7 +309,7 @@
 	
 	div.v-window {
 	
-		max-height: 95%;
+		max-height: 95%; 
 		
 		&.o-jspwindow {
 	   		background-color: transparent;
@@ -1186,6 +1186,14 @@
    .o-newmodule-folder-checkboxes { 
    		padding-left: 0px;
    		padding-right: 0px;
-   	} 
+   	}
+   	
+   	
+	.o-measuring-height.o-dialog {
+		&, .o-dialog-content-panel {
+			height: auto !important;
+		}
+	}
+   	 
 	
 }

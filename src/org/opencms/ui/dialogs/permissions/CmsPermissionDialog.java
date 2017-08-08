@@ -276,7 +276,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
      */
     public void onViewChange() {
 
-        m_context.onViewChange();
+        // do nothing
     }
 
     /**

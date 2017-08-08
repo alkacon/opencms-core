@@ -42,6 +42,19 @@ import com.vaadin.ui.AbstractComponent;
  */
 public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMaxHeightServerRpc {
 
+    /**
+     * Callback interfaces for height change notifications.<p>
+     */
+    public interface I_HeightChangeHandler {
+
+        /**
+         * Called when the fixHeight RPC call is received.<p>
+         *
+         * @param height the height from the RPC call
+         */
+        void onChangeHeight(int height);
+    }
+
     /** The serial version id. */
     private static final long serialVersionUID = 3978957151754705873L;
 
@@ -49,7 +62,7 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
     private AbstractComponent m_component;
 
     /** The list of height change handlers. */
-    private List<Runnable> m_heightChangeHandlers = Lists.newArrayList();
+    private List<I_HeightChangeHandler> m_heightChangeHandlers = Lists.newArrayList();
 
     /**
      * Constructor.<p>
@@ -70,7 +83,7 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
      *
      * @param action the action
      */
-    public void addHeightChangeHandler(Runnable action) {
+    public void addHeightChangeHandler(I_HeightChangeHandler action) {
 
         m_heightChangeHandlers.add(action);
     }
@@ -85,8 +98,8 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
         } else {
             m_component.setHeight(height, Unit.PIXELS);
         }
-        for (Runnable handler : m_heightChangeHandlers) {
-            handler.run();
+        for (I_HeightChangeHandler handler : m_heightChangeHandlers) {
+            handler.onChangeHeight(height);
         }
     }
 

@@ -129,6 +129,9 @@ public final class OpenCmsTheme {
     public static final String DIALOG_CONTENT = "o-dialog-content";
 
     /** CSS style name. */
+    public static final String DIALOG_CONTENT_PANEL = "o-dialog-content-panel";
+
+    /** CSS style name. */
     public static final String DIALOG_FORM = "o-dialog-form";
 
     /** CSS style name. */

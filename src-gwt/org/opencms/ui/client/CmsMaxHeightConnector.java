@@ -103,8 +103,6 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
     @Override
     protected void extend(ServerConnector target) {
 
-        target.isEnabled();
-
         // Get the extended widget
         m_widget = ((ComponentConnector)target).getWidget();
         addMutationObserver(m_widget.getElement());
@@ -134,11 +132,14 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
 
         int maxHeight = getState().getMaxHeight();
         if (m_currentHeight > 0) {
-            removeObserver();
+            removeObserver(); // prevent 'recursive' call of handleMutation (it's not actually recursive since it's async, but would still lead to an infinite number of calls)
             JavaScriptObject scrollPositionData = saveScrollPositions(m_widget.getElement());
-            // clear height
+            String classToAdd = "o-measuring-height";
+            m_widget.addStyleName(classToAdd);
             m_widget.getElement().getStyle().clearHeight();
-            if ((m_widget.getOffsetHeight() + 10) < m_currentHeight) {
+            int computedHeight = m_widget.getOffsetHeight();
+            m_widget.removeStyleName(classToAdd);
+            if ((computedHeight + 10) < m_currentHeight) {
                 m_currentHeight = -1;
                 m_rpc.fixHeight(m_currentHeight);
             } else {

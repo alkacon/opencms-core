@@ -105,6 +105,9 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** The window resize listener. */
     private BrowserWindowResizeListener m_windowResizeListener;
+    
+    /** Maximum recorded height. */ 
+    private int m_maxRecordedHeight = Integer.MIN_VALUE;
 
     /**
      * Creates new instance.<p>
@@ -123,6 +126,7 @@ public class CmsBasicDialog extends VerticalLayout {
         m_contentPanel = new Panel();
         m_contentPanel.setSizeFull();
         m_contentPanel.addStyleName("v-scrollable");
+        m_contentPanel.addStyleName(OpenCmsTheme.DIALOG_CONTENT_PANEL);
 
         m_mainPanel.addComponent(m_contentPanel);
         m_mainPanel.setExpandRatio(m_contentPanel, 3);
@@ -510,12 +514,17 @@ public class CmsBasicDialog extends VerticalLayout {
         // use the window height minus an offset for the window header and some spacing
         int maxHeight = calculateMaxHeight(A_CmsUI.get().getPage().getBrowserWindowHeight());
         m_maxHeightExtension = new CmsMaxHeightExtension(this, maxHeight);
-        m_maxHeightExtension.addHeightChangeHandler(new Runnable() {
+        // only center window for height changes that exceed the maximum height since the last window resize
+        // (window resize handler resets this)
+        m_maxHeightExtension.addHeightChangeHandler(new CmsMaxHeightExtension.I_HeightChangeHandler() {
 
-            public void run() {
+            @SuppressWarnings("synthetic-access")
+            public void onChangeHeight(int height) {
 
+                boolean center = height > m_maxRecordedHeight;
+                m_maxRecordedHeight = Math.max(m_maxRecordedHeight, height);
                 Window wnd = CmsVaadinUtils.getWindow(CmsBasicDialog.this);
-                if (wnd != null) {
+                if ((wnd != null) && center) {
                     wnd.center();
                 }
             }
@@ -539,6 +548,7 @@ public class CmsBasicDialog extends VerticalLayout {
             @SuppressWarnings("synthetic-access")
             public void browserWindowResized(BrowserWindowResizeEvent event) {
 
+                m_maxRecordedHeight = Integer.MIN_VALUE;
                 int newHeight = event.getHeight();
                 m_maxHeightExtension.updateMaxHeight(calculateMaxHeight(newHeight));
             }
