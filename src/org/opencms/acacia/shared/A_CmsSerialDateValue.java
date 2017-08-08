@@ -27,6 +27,8 @@
 
 package org.opencms.acacia.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Date;
 import java.util.Objects;
 import java.util.SortedSet;
@@ -65,6 +67,8 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
     private Month m_month = Month.JANUARY;
     /** The end type of the series. */
     private EndType m_endType;
+    /** The series content, the current value is extracted from. */
+    private CmsUUID m_origSeries;
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -91,7 +95,8 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
                 && Objects.equals(val.getWeekDay(), this.getWeekDay())
                 && Objects.equals(val.getWeekDays(), this.getWeekDays())
                 && Objects.equals(val.getWeekOfMonth(), this.getWeekOfMonth())
-                && Objects.equals(val.getWeeksOfMonth(), this.getWeeksOfMonth());
+                && Objects.equals(val.getWeeksOfMonth(), this.getWeeksOfMonth())
+                && Objects.equals(val.getOriginalSeriesContent(), this.getOriginalSeriesContent());
         }
         return false;
     }
@@ -158,6 +163,14 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
     public final int getOccurrences() {
 
         return m_seriesOccurrences;
+    }
+
+    /**
+     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getOriginalSeriesContent()
+     */
+    public CmsUUID getOriginalSeriesContent() {
+
+        return m_origSeries;
     }
 
     /**
@@ -266,6 +279,15 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
     public final boolean isEveryWorkingDay() {
 
         return m_isEveryWorkingDay;
+    }
+
+    /**
+     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#isFromOtherSeries()
+     */
+    @Override
+    public boolean isFromOtherSeries() {
+
+        return null != m_origSeries;
     }
 
     /**
@@ -501,6 +523,7 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
         m_weekDays.clear();
         m_weeksOfMonth.clear();
         m_endType = EndType.SINGLE;
+        m_origSeries = null;
     }
 
     /**
@@ -598,6 +621,16 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
     protected void setOccurrences(int occurrences) {
 
         m_seriesOccurrences = occurrences;
+
+    }
+
+    /**
+     * Set the series, the current event (series) is extracted from.
+     * @param structureId the structure id of the series content, the event is extracted from.
+     */
+    protected void setOriginalSeriesContent(CmsUUID structureId) {
+
+        m_origSeries = structureId;
 
     }
 

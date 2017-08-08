@@ -64,7 +64,8 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
 
 /** Controller for the serial date widget, being the widget implementation itself. */
-public class CmsSerialDateController extends Composite implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
+public class CmsSerialDateController extends Composite
+implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
 
     /**
      * The status update timer.<p>
@@ -132,8 +133,8 @@ public class CmsSerialDateController extends Composite implements I_CmsEditWidge
             m_dialog = new CmsConfirmDialog(
                 Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_CAPTION_0),
                 Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_MESSAGE_0));
-            m_dialog.setOkText(Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_YES_BUTTON_0));
-            m_dialog.setCloseText(Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_NO_BUTTON_0));
+            m_dialog.setOkText(Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_DIALOG_YES_BUTTON_0));
+            m_dialog.setCloseText(Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_DIALOG_NO_BUTTON_0));
             m_dialog.setHandler(new I_CmsConfirmDialogHandler() {
 
                 public void onClose() {
@@ -180,6 +181,75 @@ public class CmsSerialDateController extends Composite implements I_CmsEditWidge
         }
     }
 
+    /** Confirmation dialog to show if the series binding is removed. */
+    private class CmsRemoveSeriesBindingConfirmDialog {
+
+        /** The confirmation dialog that is shown. */
+        CmsConfirmDialog m_dialog;
+        /** The command to execute on confirmation. */
+        Command m_cmd;
+
+        /** The value to reset the exceptions */
+        final CmsSerialDateValue m_value;
+
+        /**
+         * Default constructor.
+         * @param value the value where the exceptions should be reset.
+         */
+        CmsRemoveSeriesBindingConfirmDialog(final CmsSerialDateValue value) {
+            m_value = value;
+            m_dialog = new CmsConfirmDialog(
+                Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_SERIES_BINDING_DIALOG_CAPTION_0),
+                Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_SERIES_BINDING_DIALOG_MESSAGE_0));
+            m_dialog.setOkText(Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_DIALOG_YES_BUTTON_0));
+            m_dialog.setCloseText(Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_DIALOG_NO_BUTTON_0));
+            m_dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                public void onClose() {
+
+                    handleClose();
+
+                }
+
+                public void onOk() {
+
+                    handleOk();
+
+                }
+            });
+        }
+
+        /**
+         * Show the dialog.
+         * @param okCmd the command to execute when "ok" is clicked.
+         */
+        public void show(final Command okCmd) {
+
+            m_cmd = okCmd;
+            m_dialog.center();
+        }
+
+        /**
+         * Method called when the dialog is closed not performing the action.
+         */
+        void handleClose() {
+
+            m_view.onValueChange();
+            m_dialog.hide();
+        }
+
+        /**
+         * Method called when the dialog is closed performing the action.
+         */
+        void handleOk() {
+
+            m_value.clearExceptions();
+            m_cmd.execute();
+            m_dialog.hide();
+        }
+
+    }
+
     /** Default date format. */
     public static final String DEFAULT_DATE_FORMAT = "EEEE, MMMM dd, yyyy";
 
@@ -212,6 +282,9 @@ public class CmsSerialDateController extends Composite implements I_CmsEditWidge
 
     /** The confirmation dialog for deletion of exceptions. */
     private CmsExceptionsDeleteConfirmDialog m_exceptionConfirmDialog;
+
+    /** The confirmation dialog for deleting the binding to another series. */
+    private CmsRemoveSeriesBindingConfirmDialog m_removeSeriesBindingConfirmDialog;
 
     /**
      * Category field widgets for ADE forms.<p>
@@ -257,6 +330,7 @@ public class CmsSerialDateController extends Composite implements I_CmsEditWidge
         };
         m_active = true;
         m_exceptionConfirmDialog = new CmsExceptionsDeleteConfirmDialog(m_model);
+        m_removeSeriesBindingConfirmDialog = new CmsRemoveSeriesBindingConfirmDialog(m_model);
     }
 
     /**
@@ -426,7 +500,19 @@ public class CmsSerialDateController extends Composite implements I_CmsEditWidge
 
         if (null != isSeries) {
             final boolean series = isSeries.booleanValue();
-            setPattern(series ? PatternType.DAILY.toString() : PatternType.NONE.toString());
+            if ((null != m_model.getOriginalSeriesContent()) && series) {
+                m_removeSeriesBindingConfirmDialog.show(new Command() {
+
+                    public void execute() {
+
+                        m_model.setOriginalSeriesContent(null);
+                        setPattern(PatternType.DAILY.toString());
+
+                    }
+                });
+            } else {
+                setPattern(series ? PatternType.DAILY.toString() : PatternType.NONE.toString());
+            }
         }
     }
 

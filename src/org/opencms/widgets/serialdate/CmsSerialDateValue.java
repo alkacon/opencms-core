@@ -34,6 +34,7 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.Date;
@@ -75,6 +76,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
                 setSeriesEndDate(readOptionalDate(json, JsonKey.SERIES_ENDDATE));
                 setOccurrences(readOptionalInt(json, JsonKey.SERIES_OCCURRENCES));
                 setDerivedEndType();
+                setOriginalSeriesContent(readOptionalUUID(json, JsonKey.FROM_SERIES));
             } catch (@SuppressWarnings("unused") JSONException e) {
                 m_parsingFailed = true;
                 setDefaultValue();
@@ -373,6 +375,26 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
             LOG.debug("Reading optional JSON string failed. Default to provided default value.", e);
         }
         return defaultValue;
+    }
+
+    /**
+     * Read an optional uuid stored as JSON string.
+     * @param json the JSON object to readfrom.
+     * @param key the key for the UUID in the provided JSON object.
+     * @return the uuid, or <code>null</code> if the uuid can not be read.
+     */
+    private CmsUUID readOptionalUUID(JSONObject json, String key) {
+
+        String id = readOptionalString(json, key, null);
+        if (null != id) {
+            try {
+                CmsUUID uuid = CmsUUID.valueOf(id);
+                return uuid;
+            } catch (@SuppressWarnings("unused") NumberFormatException e) {
+                LOG.debug("Reading optional UUID failed. Could not convert \"" + id + "\" to a valid UUID.");
+            }
+        }
+        return null;
     }
 
     /**

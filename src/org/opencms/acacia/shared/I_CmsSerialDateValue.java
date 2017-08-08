@@ -27,6 +27,8 @@
 
 package org.opencms.acacia.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Date;
 import java.util.SortedSet;
 
@@ -90,6 +92,9 @@ public interface I_CmsSerialDateValue {
 
         /** The maximal number of occurrences of the event. */
         public static final String SERIES_OCCURRENCES = "occurrences";
+
+        /** The uuid of the series content, the event originally belonged to. */
+        public static final String FROM_SERIES = "fromseries";
     }
 
     /** Months as enumeration. */
@@ -299,6 +304,14 @@ public interface I_CmsSerialDateValue {
     int getOccurrences();
 
     /**
+     * Returns the uuid of the content that holds the series, the current event was extracted from.
+     * Or <code>null</code> if the current event series was not extracted from another one.
+     * @return the uuid of the original series' content,
+     *         or <code>null<code>, if the event is not extracted from another event series.
+     */
+    CmsUUID getOriginalSeriesContent();
+
+    /**
      * Returns the pattern type of the event series.
      * @return the pattern type of the event series.
      */
@@ -345,6 +358,12 @@ public interface I_CmsSerialDateValue {
      * @return a flag, indicating if the event should take place every working day.
      */
     boolean isEveryWorkingDay();
+
+    /**
+     * Returns a flag, indicating if the event is extracted from another series.
+     * @return a flag, indicating if the event is extracted from another series.
+     */
+    boolean isFromOtherSeries();
 
     /**
      * Returns a flag, indicating if the value specifies a valid date (series).

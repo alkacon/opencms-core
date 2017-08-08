@@ -30,6 +30,7 @@ package org.opencms.acacia.client.widgets.serialdate;
 import org.opencms.acacia.shared.A_CmsSerialDateValue;
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.Date;
@@ -207,6 +208,15 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
     public void setOccurrences(int occurrences) {
 
         super.setOccurrences(occurrences);
+    }
+
+    /**
+     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setOriginalSeriesContent(org.opencms.util.CmsUUID)
+     */
+    @Override
+    public void setOriginalSeriesContent(CmsUUID structureId) {
+
+        super.setOriginalSeriesContent(structureId);
     }
 
     /**
@@ -544,6 +554,25 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
     }
 
     /**
+     * Read an optional uuid stored as JSON string.
+     * @param val the JSON value to read the uuid from.
+     * @return the uuid, or <code>null</code> if the uuid can not be read.
+     */
+    private CmsUUID readOptionalUUID(JSONValue val) {
+
+        String id = readOptionalString(val);
+        if (null != id) {
+            try {
+                CmsUUID uuid = CmsUUID.valueOf(id);
+                return uuid;
+            } catch (@SuppressWarnings("unused") NumberFormatException e) {
+                // Do nothing, just return null
+            }
+        }
+        return null;
+    }
+
+    /**
      * Read pattern information from the provided JSON object.
      * @param patternJson the JSON object containing the pattern information.
      */
@@ -675,6 +704,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
         setSeriesEndDate(readOptionalDate(json.get(JsonKey.SERIES_ENDDATE)));
         setOccurrences(readOptionalInt(json.get(JsonKey.SERIES_OCCURRENCES)));
         setDerivedEndType();
+        setOriginalSeriesContent(readOptionalUUID(json.get(JsonKey.FROM_SERIES)));
 
     }
 }

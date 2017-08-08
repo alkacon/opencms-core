@@ -80,6 +80,10 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /* The status field */
 
+    /** The label that displays the dependency to another series. */
+    @UiField
+    CmsLabel m_origSeriesLabel;
+
     /** The label that displays the current status. */
     @UiField
     CmsLabel m_statusLabel;
@@ -259,6 +263,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         // bind the ui
         initWidget(uiBinder.createAndBindUi(this));
 
+        m_origSeriesLabel.setVisible(m_model.isFromOtherSeries());
+        m_origSeriesLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_FROM_SERIES_INFORMATION_0));
+
         initPatternButtonGroup();
         initDeactivationPanel();
         initDatesPanel();
@@ -282,6 +289,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     public void onValueChange() {
 
         m_triggerChangeActions = false;
+        m_origSeriesLabel.setVisible(m_model.isFromOtherSeries());
         m_startTime.setValue(m_model.getStart());
         m_endTime.setValue(m_model.getEnd());
         m_wholeDayCheckBox.setChecked(m_model.isWholeDay());
