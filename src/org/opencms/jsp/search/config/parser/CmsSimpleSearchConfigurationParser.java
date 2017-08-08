@@ -178,7 +178,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 "+1MONTHS",
                 null,
                 Boolean.FALSE,
-                "newsdate",
+                CmsListConfigurationForm.FIELD_DATE_FACET_NAME,
                 Integer.valueOf(1),
                 "Date",
                 Boolean.FALSE,

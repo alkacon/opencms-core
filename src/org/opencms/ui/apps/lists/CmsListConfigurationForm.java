@@ -139,10 +139,10 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
     public static final String FIELD_CATEGORIES = "category_exact";
 
     /** SOLR field name. */
-    public static final String FIELD_DATE = "newsdate_%s_dt";
+    public static final String FIELD_DATE = "instancedate_%s_dt";
 
     /** SOLR field name. */
-    public static final String FIELD_DATE_FACET_NAME = "newsdate";
+    public static final String FIELD_DATE_FACET_NAME = "instancedate";
 
     /** SOLR field name. */
     public static final String FIELD_PARENT_FOLDERS = "parent-folders";
@@ -294,8 +294,8 @@ public class CmsListConfigurationForm extends CmsBasicDialog {
     /** The available sort options. */
     protected static final String[][] SORT_OPTIONS = new String[][] {
         {
-            "newsdate_%s_dt asc",
-            "newsdate_%s_dt desc",
+            FIELD_DATE + " asc",
+            FIELD_DATE + " desc",
             "disptitle_%s_s asc",
             "disptitle_%s_s desc",
             "newsorder_%s_i asc",
