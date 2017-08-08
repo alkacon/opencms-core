@@ -341,6 +341,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             } else {
                 query.setQuery(fieldname + ":" + term);
             }
+            query.addFilterQuery("{!collapse field=" + fieldname + "}");
             QueryResponse res = m_solr.query(query);
             if (res != null) {
                 SolrDocumentList sdl = m_solr.query(query).getResults();

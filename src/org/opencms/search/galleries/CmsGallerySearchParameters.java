@@ -447,6 +447,9 @@ public class CmsGallerySearchParameters {
         // set sort order
         query.setSort(getSort().getFirst(), getSort().getSecond());
 
+        // set result collapsing by id
+        query.addFilterQuery("{!collapse field=id}");
+
         return query;
     }
 
