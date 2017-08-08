@@ -276,7 +276,7 @@
    <field name="text_fr"             type="text_fr"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for French text fields -->
    <field name="text_hu"             type="text_hu"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Hungarian text fields -->
    <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Italian text fields -->
-   <field name="eventdate"           type="date"         indexed="true"  stored="true" />
+   <field name="instancedate"        type="date"         indexed="true"  stored="true" />
    <field name="seriesdates"         type="date"         indexed="true"  stored="true"  multiValued="true"/>
 
    <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />

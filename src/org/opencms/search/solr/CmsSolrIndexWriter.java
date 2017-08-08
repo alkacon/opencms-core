@@ -222,7 +222,10 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
         if ((null != serialDates) && (serialDates.size() > 0)) {
             int i = 1;
             for (String date : serialDates) {
-                inputDoc.setField(CmsSearchField.FIELD_EVENTDATE, date);
+                inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE, date);
+                for (String locale : document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_CONTENT_LOCALES)) {
+                    inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE + "_" + locale + "_" + "dt", date);
+                }
                 String newId = id + String.format("-%04d", Integer.valueOf(i++));
                 inputDoc.setField(CmsSearchField.FIELD_SOLR_ID, newId);
                 m_server.add(inputDoc, m_commitMs);

@@ -741,9 +741,9 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Key for the element setting and request parameter that holds the start date
-     * of the event of an event series that should be displayed.
+     * of the instance of a series that should be displayed.
      */
-    private static final String PARAM_EVENT_DATE = "eventdate";
+    private static final String PARAM_INSTANCE_DATE = "instancedate";
 
     /** OpenCms user context. */
     protected CmsObject m_cms;
@@ -1000,20 +1000,6 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns the start date of the currently requested event of an event series.
-     *
-     * @return the start date of the currently requested event of an event series.
-     */
-    public String getEvent() {
-
-        String eventDate = getElement().getSettings().get(PARAM_EVENT_DATE);
-        if ((null == eventDate) || eventDate.isEmpty()) {
-            eventDate = m_request.getParameter(PARAM_EVENT_DATE);
-        }
-        return eventDate;
-    }
-
-    /**
      * Returns a lazy initialized Map which allows access to the dynamic function beans using the JSP EL.<p>
      *
      * When given a key, the returned map will look up the corresponding dynamic function bean in the module configuration.<p>
@@ -1122,6 +1108,20 @@ public final class CmsJspStandardContextBean {
             }
         };
         return CmsCollectionsGenericWrapper.createLazyMap(transformer);
+    }
+
+    /**
+     * Returns the start date of the currently requested instance of a series.
+     *
+     * @return the start date of the currently requested instance of a series.
+     */
+    public String getInstanceDate() {
+
+        String eventDate = getElement().getSettings().get(PARAM_INSTANCE_DATE);
+        if ((null == eventDate) || eventDate.isEmpty()) {
+            eventDate = m_request.getParameter(PARAM_INSTANCE_DATE);
+        }
+        return eventDate;
     }
 
     /**

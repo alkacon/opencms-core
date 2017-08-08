@@ -86,7 +86,7 @@ public class CmsJspDateSeriesBean {
         public Date getEnd() {
 
             if (null == m_end) {
-                m_end = new Date(m_start.getTime() + m_series.getEventDuration());
+                m_end = new Date(m_start.getTime() + m_series.getInstanceDuration());
             }
             return m_end;
         }
@@ -243,31 +243,31 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns the list of dates the event takes place.
-     * @return the list of dates the event takes place.
+     * Returns the list of start dates for all instances of the series.
+     * @return the list of start dates for all instances of the series.
      */
-    public List<Date> getEventDates() {
+    public List<Date> getDates() {
 
         return new ArrayList<>(m_dates);
     }
 
     /**
-     * Returns the duration of the event.
-     * @return the duration of the event.
+     * Returns the duration of a single instance in milliseconds.
+     * @return the duration of a single instance in milliseconds.
      */
-    public long getEventDuration() {
+    public long getInstanceDuration() {
 
         return m_duration;
     }
 
     /**
-     * Returns a lazy map from the start time of a single event of the series to the date information on the single event.<p>
+     * Returns a lazy map from the start time of a single instance of the series to the date information on the single instance.<p>
      *
      * Start time can be provided as Long, as a String representation of the long value or as Date.<p>
      *
-     * @return a lazy map from the start time of a single event of the series to the date information on the single event.
+     * @return a lazy map from the start time of a single instance of the series to the date information on the single instance.
      */
-    public Map<Object, CmsJspSeriesEventBean> getEventInfo() {
+    public Map<Object, CmsJspSeriesEventBean> getInstanceInfo() {
 
         if (m_singleEvents == null) {
             m_singleEvents = CmsCollectionsGenericWrapper.createLazyMap(new CmsSeriesSingleEventTransformer());
