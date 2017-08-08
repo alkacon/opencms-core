@@ -53,7 +53,6 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.widgets.CmsSerialDateWidget;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
 import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 import org.opencms.xml.A_CmsXmlDocument;
@@ -63,6 +62,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
+import org.opencms.xml.types.CmsXmlSerialDateValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -360,14 +360,25 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                         }
                     }
                 }
-                if (xmlContent.getHandler().getWidget(value) instanceof CmsSerialDateWidget) {
+                if (value instanceof CmsXmlSerialDateValue) {
                     if ((null != extracted) && !extracted.isEmpty()) {
                         I_CmsSerialDateBean serialDateBean = CmsSerialDateBeanFactory.createSerialDateBean(extracted);
-                        StringBuffer values = new StringBuffer();
-                        for (Long eventDate : serialDateBean.getDatesAsLong()) {
-                            values.append("\n").append(eventDate.toString());
+                        if (null != serialDateBean) {
+                            StringBuffer values = new StringBuffer();
+                            for (Long eventDate : serialDateBean.getDatesAsLong()) {
+                                values.append("\n").append(eventDate.toString());
+                            }
+                            fieldMappings.put(CmsSearchField.FIELD_SERIESDATES, values.substring(1));
+                        } else {
+                            LOG.warn(
+                                "Serial date value \""
+                                    + value.getStringValue(cms)
+                                    + "\" at element \""
+                                    + value.getPath()
+                                    + "\" is invalid. No dates are indexed for resource \""
+                                    + resource.getRootPath()
+                                    + "\".");
                         }
-                        fieldMappings.put(CmsSearchField.FIELD_SERIAL_DATE_DATES, values.substring(1));
                     }
                 }
             }

@@ -205,10 +205,10 @@ public class CmsSearchField implements Serializable {
     public static final String FIELD_SEARCH_CHANNEL = "search_channel";
 
     /** The field where the date for the single entry of a serial date entry set is stored. */
-    public static final String FIELD_SERIAL_DATE_DATE = "serial-date";
+    public static final String FIELD_EVENTDATE = "eventdate";
 
     /** The field where the dates for a serial date are stored. */
-    public static final String FIELD_SERIAL_DATE_DATES = "serial-date-dates";
+    public static final String FIELD_SERIESDATES = "seriesdates";
 
     /** Name of the field that contains the type of the document. */
     public static final String FIELD_TYPE = "type";

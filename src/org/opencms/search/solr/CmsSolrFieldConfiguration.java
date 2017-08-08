@@ -184,16 +184,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_CHANNEL), "content");
         }
 
-        //        // add information about serial dates
-        //        String serialDateString = document.getFieldValueAsString(
-        //            CmsPropertyDefinition.PROPERTY_SERIAL_DATE + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT);
-        //        if (null != serialDateString) {
-        //            I_CmsSerialDateBean serialDateBean = CmsSerialDateBeanFactory.createSerialDateBean(serialDateString);
-        //            for (Long eventDate : serialDateBean.getDates()) {
-        //                document.addDateField(CmsSearchField.FIELD_SERIAL_DATE_DATES, eventDate.longValue(), false);
-        //            }
-        //
-        //        }
         return document;
     }
 

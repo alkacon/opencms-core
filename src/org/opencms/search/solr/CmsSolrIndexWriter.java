@@ -216,13 +216,13 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      */
     private void addDocumentInstances(I_CmsSearchDocument document) throws SolrServerException, IOException {
 
-        List<String> serialDates = document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_SERIAL_DATE_DATES);
+        List<String> serialDates = document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_SERIESDATES);
         SolrInputDocument inputDoc = (SolrInputDocument)document.getDocument();
         String id = inputDoc.getFieldValue(CmsSearchField.FIELD_ID).toString();
         if ((null != serialDates) && (serialDates.size() > 0)) {
             int i = 1;
             for (String date : serialDates) {
-                inputDoc.setField(CmsSearchField.FIELD_SERIAL_DATE_DATE, date);
+                inputDoc.setField(CmsSearchField.FIELD_EVENTDATE, date);
                 String newId = id + String.format("-%04d", Integer.valueOf(i++));
                 inputDoc.setField(CmsSearchField.FIELD_SOLR_ID, newId);
                 m_server.add(inputDoc, m_commitMs);
