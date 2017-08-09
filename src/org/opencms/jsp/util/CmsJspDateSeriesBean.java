@@ -27,14 +27,12 @@
 
 package org.opencms.jsp.util;
 
-import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
 import org.opencms.widgets.serialdate.CmsSerialDateValue;
 import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,130 +46,6 @@ import org.apache.commons.logging.Log;
 
 /** Bean for easy access to information of an event series. */
 public class CmsJspDateSeriesBean {
-
-    /** Bean for easy access to information for single events. */
-    public static class CmsJspSeriesEventBean {
-
-        /** The separator between start and end date to use when formatting dates. */
-        private static final String DATE_SEPARATOR = " - ";
-
-        /** Beginning of the event. */
-        private Date m_start;
-
-        /** End of the event. */
-        private Date m_end;
-
-        /** The series the event is part of. */
-        private CmsJspDateSeriesBean m_series;
-
-        /** The dates of the event formatted locale specific in long style. */
-        private String m_formatLong;
-
-        /** The dates of the event formatted locale specific in short style. */
-        private String m_formatShort;
-
-        /** Constructor taking start and end time for the single event.
-         * @param start the start time of the event.
-         * @param series the series, the event is part of.
-         */
-        public CmsJspSeriesEventBean(Date start, CmsJspDateSeriesBean series) {
-            m_start = start;
-            m_series = series;
-        }
-
-        /**
-         * Returns the end time of the event.
-         * @return the end time of the event.
-         */
-        public Date getEnd() {
-
-            if (null == m_end) {
-                m_end = new Date(m_start.getTime() + m_series.getInstanceDuration());
-            }
-            return m_end;
-        }
-
-        /**
-         * Returns the start and end dates/times as "start - end" in long date format and short time format specific for the request locale.
-         * @return the formatted date/time string.
-         */
-        public String getFormatLong() {
-
-            if (m_formatLong == null) {
-                m_formatLong = getFormattedDate(DateFormat.LONG);
-            }
-            return m_formatLong;
-        }
-
-        /**
-         * Returns the start and end dates/times as "start - end" in short date/time format specific for the request locale.
-         * @return the formatted date/time string.
-         */
-        public String getFormatShort() {
-
-            if (m_formatShort == null) {
-                m_formatShort = getFormattedDate(DateFormat.SHORT);
-            }
-            return m_formatShort;
-        }
-
-        /**
-         * Returns some time of the last day, the event takes place. </p>
-         *
-         * For whole day events the end date is adjusted by subtracting one day,
-         * since it would otherwise be the 12 am of the first day, the event does not take place anymore.
-         *
-         * @return some time of the last day, the event takes place.
-         */
-        public Date getLastDay() {
-
-            return isWholeDay() ? new Date(getEnd().getTime() - I_CmsSerialDateValue.DAY_IN_MILLIS) : getEnd();
-        }
-
-        /**
-         * Returns the start time of the event.
-         * @return the start time of the event.
-         */
-        public Date getStart() {
-
-            return m_start;
-        }
-
-        /**
-         * Returns a flag, indicating if the event lasts whole days.
-         * @return a flag, indicating if the event lasts whole days.
-         */
-        public boolean isWholeDay() {
-
-            return m_series.isWholeDay();
-        }
-
-        /**
-         * Returns the start and end dates/times as "start - end" in the provided date/time format specific for the request locale.
-         * @param dateTimeFormat the format to use for date (time is always short).
-         * @return the formatted date/time string.
-         */
-        private String getFormattedDate(int dateTimeFormat) {
-
-            DateFormat df;
-            String result;
-            if (isWholeDay()) {
-                df = DateFormat.getDateInstance(dateTimeFormat, m_series.getLocale());
-                result = df.format(getStart());
-                if (getLastDay().after(getStart())) {
-                    result += DATE_SEPARATOR + df.format(getLastDay());
-                }
-            } else {
-                df = DateFormat.getDateTimeInstance(dateTimeFormat, DateFormat.SHORT, m_series.getLocale());
-                result = df.format(getStart());
-                if (getEnd().after(getStart())) {
-                    result += DATE_SEPARATOR + df.format(getEnd());
-                }
-            }
-
-            return result;
-        }
-    }
 
     /**
      * Provides information on the single event when the start date is provided.<p>
@@ -199,7 +73,7 @@ public class CmsJspDateSeriesBean {
                 }
             }
             if ((d != null) && m_dates.contains(d)) {
-                return new CmsJspSeriesEventBean((Date)d.clone(), CmsJspDateSeriesBean.this);
+                return new CmsJspInstanceDateBean((Date)d.clone(), CmsJspDateSeriesBean.this);
             }
             return null;
         }
@@ -209,7 +83,7 @@ public class CmsJspDateSeriesBean {
     private static final Log LOG = CmsLog.getLog(CmsJspDateSeriesBean.class);
 
     /** Lazy map from start dates (provided as Long, long value as string or date) to informations on the single event. */
-    private Map<Object, CmsJspSeriesEventBean> m_singleEvents;
+    private Map<Object, CmsJspInstanceDateBean> m_singleEvents;
 
     /** The dates of the series. */
     SortedSet<Date> m_dates;
@@ -267,7 +141,7 @@ public class CmsJspDateSeriesBean {
      *
      * @return a lazy map from the start time of a single instance of the series to the date information on the single instance.
      */
-    public Map<Object, CmsJspSeriesEventBean> getInstanceInfo() {
+    public Map<Object, CmsJspInstanceDateBean> getInstanceInfo() {
 
         if (m_singleEvents == null) {
             m_singleEvents = CmsCollectionsGenericWrapper.createLazyMap(new CmsSeriesSingleEventTransformer());
