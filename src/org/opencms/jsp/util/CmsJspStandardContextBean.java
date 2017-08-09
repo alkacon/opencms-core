@@ -1111,20 +1111,6 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns the start date of the currently requested instance of a series.
-     *
-     * @return the start date of the currently requested instance of a series.
-     */
-    public String getInstanceDate() {
-
-        String eventDate = getElement().getSettings().get(PARAM_INSTANCE_DATE);
-        if ((null == eventDate) || eventDate.isEmpty()) {
-            eventDate = m_request.getParameter(PARAM_INSTANCE_DATE);
-        }
-        return eventDate;
-    }
-
-    /**
      * Checks if the current request should be direct edit enabled.
      * Online-, history-requests, previews and temporary files will not be editable.<p>
      *
