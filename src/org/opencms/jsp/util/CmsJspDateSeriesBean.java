@@ -49,6 +49,8 @@ public class CmsJspDateSeriesBean {
 
     /**
      * Provides information on the single event when the start date is provided.<p>
+     *
+     * If no valid start date is provided, the information for the first event in the series is provided.
      */
     public class CmsSeriesSingleEventTransformer implements Transformer {
 
@@ -72,8 +74,12 @@ public class CmsJspDateSeriesBean {
                     }
                 }
             }
-            if ((d != null) && m_dates.contains(d)) {
+            if ((null != d) && m_dates.contains(d)) {
                 return new CmsJspInstanceDateBean((Date)d.clone(), CmsJspDateSeriesBean.this);
+            } else {
+                if (!m_dates.isEmpty()) {
+                    return new CmsJspInstanceDateBean((Date)m_dates.first().clone(), CmsJspDateSeriesBean.this);
+                }
             }
             return null;
         }
@@ -138,6 +144,8 @@ public class CmsJspDateSeriesBean {
      * Returns a lazy map from the start time of a single instance of the series to the date information on the single instance.<p>
      *
      * Start time can be provided as Long, as a String representation of the long value or as Date.<p>
+     *
+     * If no event exists for the start time, the information for the first event of the series is returned.
      *
      * @return a lazy map from the start time of a single instance of the series to the date information on the single instance.
      */
