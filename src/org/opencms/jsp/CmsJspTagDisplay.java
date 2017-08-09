@@ -176,7 +176,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             locale,
                             false,
                             isOnline,
-                            null,
+                            CmsRequestUtil.createParameterMap(element.getSettings()),
                             CmsRequestUtil.getAtrributeMap(request),
                             request,
                             response);
