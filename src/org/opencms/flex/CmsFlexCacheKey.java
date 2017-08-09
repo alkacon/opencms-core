@@ -217,6 +217,9 @@ public class CmsFlexCacheKey {
     /** The cache behaviour description for the resource. */
     private String m_variation;
 
+    /** Resource without online / offline suffix. */
+    private String m_actualResource;
+
     /**
      * This constructor is used when building a cache key from set of cache directives.<p>
      *
@@ -235,6 +238,7 @@ public class CmsFlexCacheKey {
      */
     public CmsFlexCacheKey(String resourcename, String cacheDirectives, boolean online) {
 
+        m_actualResource = resourcename;
         m_resource = getKeyName(resourcename, online);
         m_variation = "never";
         m_always = -1;
@@ -296,6 +300,16 @@ public class CmsFlexCacheKey {
     }
 
     /**
+     * Returns the actual resource path under which this is cached, without online / offline suffix.<p>
+     *
+     * @return the actual resource path
+     */
+    public String getActualResource() {
+
+        return m_actualResource;
+    }
+
+    /**
      * Gets the list of root paths for the cache key / request key combination which should be used to determine the set of flex cache buckets for the flex cache entry.<p>
      *
      * @param key the flex request key
@@ -309,17 +323,13 @@ public class CmsFlexCacheKey {
             paths.add(pathBean.getUri());
             paths.add(pathBean.getDetailElement());
         }
-        if (m_element != null) {
-            paths.add(pathBean.getElement());
-        }
-
         if (m_site != null) {
             paths.add(pathBean.getSite());
         }
-
         if (m_containerElement != null) {
             paths.add(pathBean.getContainerElement());
         }
+
         paths.removeAll(Collections.singletonList(null));
         return paths;
     }

@@ -67,9 +67,6 @@ public class CmsFlexRequestKey {
         /** The detail element path. */
         private String m_detailElement;
 
-        /** The element path. */
-        private String m_element;
-
         /** The site root. */
         private String m_site;
 
@@ -94,16 +91,6 @@ public class CmsFlexRequestKey {
         public String getDetailElement() {
 
             return m_detailElement;
-        }
-
-        /**
-         * Returns the element.<p>
-         *
-         * @return the element
-         */
-        public String getElement() {
-
-            return m_element;
         }
 
         /**
@@ -144,16 +131,6 @@ public class CmsFlexRequestKey {
         public void setDetailElement(String detailElement) {
 
             m_detailElement = detailElement;
-        }
-
-        /**
-         * Sets the element.<p>
-         *
-         * @param element the element to set
-         */
-        public void setElement(String element) {
-
-            m_element = element;
         }
 
         /**
@@ -262,7 +239,6 @@ public class CmsFlexRequestKey {
                 m_paths.setContainerElement(containerElementResource.getRootPath());
             }
         }
-        m_paths.setElement(getElement());
         m_paths.setUri(m_context.addSiteRoot(m_context.getUri()));
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUESTKEY_CREATED_NEW_KEY_1, m_resource));
