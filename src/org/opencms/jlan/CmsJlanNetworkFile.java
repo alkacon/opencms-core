@@ -122,6 +122,13 @@ public class CmsJlanNetworkFile extends NetworkFile {
             load(false);
             ensureLock();
             m_cms.deleteResource(m_cms.getSitePath(m_resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
+            if (!m_resource.getState().isNew()) {
+                try {
+                    m_cms.unlockResource(m_cms.getSitePath(m_resource));
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
         } catch (CmsException e) {
             throw CmsJlanDiskInterface.convertCmsException(e);
         }
