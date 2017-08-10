@@ -435,7 +435,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             true,
             CmsResourceFilter.ALL);
         // read the XML content, use the encoding set in the property
-        CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
+        CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, true);
         // call the content handler for post-processing
         resource = xmlContent.getHandler().prepareForWrite(cms, xmlContent, resource);
 
