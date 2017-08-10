@@ -604,7 +604,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
      */
     private String validateWeekOfMonthSet() {
 
-        return isWeekOfMonthSet() ? Messages.ERR_SERIALDATE_NO_WEEK_OF_MONTH_SPECIFIED_0 : null;
+        return isWeekOfMonthSet() ? null : Messages.ERR_SERIALDATE_NO_WEEK_OF_MONTH_SPECIFIED_0;
     }
 
 }
