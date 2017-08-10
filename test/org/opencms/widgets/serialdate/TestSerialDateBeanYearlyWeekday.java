@@ -30,6 +30,7 @@ package org.opencms.widgets.serialdate;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
             serialEndDate.getTime(),
             0, //occurrences
             EMPTY_SORTED_SET_DATES,
-            5, //day of month
+            WeekOfMonth.LAST, //week of month
             Month.JANUARY, //month
             WeekDay.MONDAY); //weekday
         beanDates = bean.getDatesAsLong();
@@ -97,7 +98,7 @@ public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
             null,
             4, //occurrences
             EMPTY_SORTED_SET_DATES,
-            5, //day of month
+            WeekOfMonth.LAST, //week of month
             Month.JANUARY, //month
             WeekDay.MONDAY); //weekday
         beanDates = bean.getDatesAsLong();
@@ -138,7 +139,7 @@ public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
             serialEndDate.getTime(),
             0, //occurrences
             EMPTY_SORTED_SET_DATES,
-            3, //day of month
+            WeekOfMonth.THIRD, //week of month
             Month.JANUARY, //month
             WeekDay.MONDAY); //weekday
         beanDates = bean.getDatesAsLong();
@@ -157,7 +158,7 @@ public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
             null,
             4, //occurrences
             EMPTY_SORTED_SET_DATES,
-            3, //day of month
+            WeekOfMonth.THIRD, //week of month
             Month.JANUARY, //month
             WeekDay.MONDAY); //weekday
         beanDates = bean.getDatesAsLong();

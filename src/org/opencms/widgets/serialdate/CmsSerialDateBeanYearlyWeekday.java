@@ -31,6 +31,7 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -42,8 +43,8 @@ import java.util.SortedSet;
  */
 public class CmsSerialDateBeanYearlyWeekday extends A_CmsSerialDateBean {
 
-    /** The number of the day or week day of the month the event should occur. */
-    private int m_dayOfMonth;
+    /** The number of the week of the month the event should occur. */
+    private WeekOfMonth m_weekOfMonth;
     /** The month in which the event should occur. */
     private Month m_month;
     /** The weekday the event should occur. Can be <code>null</code> if the weekday does not matter. */
@@ -59,7 +60,7 @@ public class CmsSerialDateBeanYearlyWeekday extends A_CmsSerialDateBean {
      * @param serialEndDate the end date of the series as provided by the serial date widget.
      * @param occurrences the maximal number of occurrences of the event as provided by the serial date widget.
      * @param exceptions dates where the event does not take place, even if it is in the series.
-     * @param dayOfMonth if <code>weekDay</code> is <code>null</code> the day of the month the event should occur, otherwise the number of the specific week day in the month where event should occur.
+     * @param weekOfMonth if <code>weekDay</code> is <code>null</code> the day of the month the event should occur, otherwise the number of the specific week day in the month where event should occur.
      * @param month the month in which the event should occur
      * @param weekDay the weekday on which the event should occur
      */
@@ -71,12 +72,12 @@ public class CmsSerialDateBeanYearlyWeekday extends A_CmsSerialDateBean {
         Date serialEndDate,
         int occurrences,
         SortedSet<Date> exceptions,
-        int dayOfMonth,
+        WeekOfMonth weekOfMonth,
         Month month,
         WeekDay weekDay) {
 
         super(startDate, endDate, isWholeDay, endType, serialEndDate, occurrences, exceptions);
-        m_dayOfMonth = dayOfMonth;
+        m_weekOfMonth = weekOfMonth;
         m_month = month;
         m_weekDay = weekDay;
     }
@@ -136,7 +137,7 @@ public class CmsSerialDateBeanYearlyWeekday extends A_CmsSerialDateBean {
         int weekDayFirst = date.get(Calendar.DAY_OF_WEEK);
         int firstFittingWeekDay = (((m_weekDay.toInt() + I_CmsSerialDateValue.NUM_OF_WEEKDAYS) - weekDayFirst)
             % I_CmsSerialDateValue.NUM_OF_WEEKDAYS) + 1;
-        int fittingWeekDay = firstFittingWeekDay + (I_CmsSerialDateValue.NUM_OF_WEEKDAYS * (m_dayOfMonth - 1));
+        int fittingWeekDay = firstFittingWeekDay + (I_CmsSerialDateValue.NUM_OF_WEEKDAYS * m_weekOfMonth.ordinal());
         if (fittingWeekDay > date.getActualMaximum(Calendar.DAY_OF_MONTH)) {
             fittingWeekDay -= I_CmsSerialDateValue.NUM_OF_WEEKDAYS;
         }

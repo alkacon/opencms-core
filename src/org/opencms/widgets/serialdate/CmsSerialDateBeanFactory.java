@@ -130,7 +130,7 @@ public class CmsSerialDateBeanFactory {
                         value.getSeriesEndDate(),
                         value.getOccurrences(),
                         value.getExceptions(),
-                        value.getDayOfMonth(),
+                        value.getWeekOfMonth(),
                         value.getMonth(),
                         value.getWeekDay());
                 }
