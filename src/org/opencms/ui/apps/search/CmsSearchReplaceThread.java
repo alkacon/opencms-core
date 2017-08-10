@@ -713,7 +713,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             }
         } else {
             CmsResourceFilter filter = CmsResourceFilter.ALL.addExcludeState(
-                CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
+                CmsResource.STATE_DELETED).addRequireVisible();
             if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                 for (String resTypeName : m_settings.getTypesArray()) {
                     try {
