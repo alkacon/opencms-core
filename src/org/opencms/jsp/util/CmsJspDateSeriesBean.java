@@ -95,7 +95,7 @@ public class CmsJspDateSeriesBean {
     SortedSet<Date> m_dates;
 
     /** The duration of a single event. */
-    long m_duration;
+    Long m_duration;
 
     /** Flag, indicating if the event lasts whole days. */
     boolean m_isWholeDay;
@@ -135,7 +135,7 @@ public class CmsJspDateSeriesBean {
      * Returns the duration of a single instance in milliseconds.
      * @return the duration of a single instance in milliseconds.
      */
-    public long getInstanceDuration() {
+    public Long getInstanceDuration() {
 
         return m_duration;
     }

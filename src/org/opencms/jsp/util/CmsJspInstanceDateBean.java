@@ -19,12 +19,12 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.jsp.util;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
@@ -68,8 +68,8 @@ public class CmsJspInstanceDateBean {
      */
     public Date getEnd() {
 
-        if (null == m_end) {
-            m_end = new Date(m_start.getTime() + m_series.getInstanceDuration());
+        if ((null == m_end) && (m_series.getInstanceDuration() != null)) {
+            m_end = new Date(m_start.getTime() + m_series.getInstanceDuration().longValue());
         }
         return m_end;
     }

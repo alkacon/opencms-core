@@ -160,9 +160,11 @@ public abstract class A_CmsSerialDateBean implements I_CmsSerialDateBean {
      * @see org.opencms.widgets.serialdate.I_CmsSerialDateBean#getEventDuration()
      */
     @Override
-    public long getEventDuration() {
+    public Long getEventDuration() {
 
-        return m_endDate.getTimeInMillis() - m_startDate.getTimeInMillis();
+        return (null != m_endDate) && (null != m_startDate)
+        ? Long.valueOf(m_endDate.getTimeInMillis() - m_startDate.getTimeInMillis())
+        : null;
     }
 
     /**
