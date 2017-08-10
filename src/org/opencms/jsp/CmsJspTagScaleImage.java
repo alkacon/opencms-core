@@ -2,17 +2,12 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.util.CmsJspImageBean;
-import org.opencms.jsp.util.CmsJspScaledImageBean;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsRequestUtil;
-import org.opencms.util.CmsUriSplitter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,7 +77,7 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
     /** List of hi-DPI variant sizes to produce, e.g. 1.3x, 1.5x, 2x, 3x */
     private List<String> m_hiDpiVariantList;
 
-    /** Name of the request attribute used to store the ScaledImageBean bean */
+    /** Name of the request attribute used to store the created image bean. */
     private String m_var;
 
     /**
@@ -104,56 +99,20 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
      *
      * @throws CmsException in case something goes wrong
      */
-    public static CmsJspScaledImageBean imageTagAction(
+    public static CmsJspImageBean imageTagAction(
         CmsObject cms,
         String imageUri,
         CmsImageScaler targetScaler,
         List<String> hiDpiVariantList)
     throws CmsException {
 
-        CmsUriSplitter splitSrc = new CmsUriSplitter(imageUri);
-
-        String scaleParam = null;
-        if (splitSrc.getQuery() != null) {
-            // check if the original URI already has parameters, this is true if original has been cropped
-            String[] scaleStr = CmsRequestUtil.createParameterMap(splitSrc.getQuery()).get(CmsImageScaler.PARAM_SCALE);
-            if (scaleStr != null) {
-                scaleParam = scaleStr[0];
-            }
-        }
-
-        String vfsUri = splitSrc.getPrefix();
-        CmsResource imageRes = cms.readResource(vfsUri);
-        CmsImageScaler originalScaler = new CmsImageScaler(cms, imageRes);
-        CmsJspScaledImageBean scaledImage = new CmsJspScaledImageBean();
-        scaledImage.setCmsObject(cms);
-        scaledImage.setResource(imageRes);
-        scaledImage.setVfsUri(vfsUri);
-
-        if ((targetScaler.getHeight() <= 0) && (targetScaler.getWidth() <= 0)) {
-            // no image dimensions have been given at all
-            // in this case initialize the image bean with the original image size
-            // assuming use case "I want information about an image set in XML content in my JSP"
-            if (scaleParam != null) {
-                // scale parameters have been set
-                targetScaler = new CmsImageScaler(scaleParam);
-                scaledImage.setHeight(originalScaler.getHeight());
-                scaledImage.setWidth(originalScaler.getWidth());
-            } else {
-                // no scale parameters, so target image is original image
-                targetScaler = originalScaler;
-            }
-        } else {
-            targetScaler = initScaler(originalScaler, scaleParam, targetScaler);
-        }
-
-        scaledImage.setScaler(targetScaler);
+        CmsJspImageBean image = new CmsJspImageBean(cms, imageUri, targetScaler);
 
         // now handle hi-DPI variants
         if ((hiDpiVariantList != null) && (hiDpiVariantList.size() > 0)) {
-            handleHiDpiVariants(cms, imageRes, targetScaler, scaledImage, originalScaler, hiDpiVariantList);
+            handleHiDpiVariants(cms, image, targetScaler, hiDpiVariantList);
         }
-        return scaledImage;
+        return image;
     }
 
     /**
@@ -161,119 +120,42 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
      * variants to <code>scaledImage</code>
      *
      * @param cms the current CmsObject
-     * @param imageRes the CMS resource representing the image
-     * @param scaler the CmsImageScaler for the scaled image, will be cloned for each hi-DPI variant
-     * @param scaledImage the ScaledImage bean (scaled images will be added to this)
-     * @param originalScaler the CmsImageScaler containing the information about the original image
+     * @param image the image bean (scaled images will be added to this)
+     * @param targetScaler the CmsImageScaler for the scaled image, will be cloned for each hi-DPI variant
      * @param hiDpiVariantList the list of hi-DPI variant sizes to produce, e.g. 1.3x, 1.5x, 2x, 3x
      */
     private static void handleHiDpiVariants(
         CmsObject cms,
-        CmsResource imageRes,
-        CmsImageScaler scaler,
-        CmsJspScaledImageBean scaledImage,
-        CmsImageScaler originalScaler,
+        CmsJspImageBean image,
+        CmsImageScaler targetScaler,
         List<String> hiDpiVariantList) {
 
-        int targetWidth = scaler.getWidth();
-        int targetHeight = scaler.getHeight();
-        int originalWidth = originalScaler.getWidth();
-        int originalHeight = originalScaler.getHeight();
+        int targetWidth = targetScaler.getWidth();
+        int targetHeight = targetScaler.getHeight();
 
-        for (String multiplierString : hiDpiVariantList) {
+        for (String hiDpiVariant : hiDpiVariantList) {
 
-            if (!multiplierString.matches("^[0-9]+(.[0-9]+)?x$")) {
+            if (!hiDpiVariant.matches("^[0-9]+(.[0-9]+)?x$")) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(
-                        String.format("Illegal multiplier format: %s not usable for image scaling", multiplierString));
+                    LOG.warn(String.format("Illegal multiplier format: %s not usable for image scaling", hiDpiVariant));
                 }
                 continue;
             }
             float multiplier = NumberUtils.createFloat(
-                multiplierString.substring(0, multiplierString.length() - 1)).floatValue();
+                hiDpiVariant.substring(0, hiDpiVariant.length() - 1)).floatValue();
             int width = Math.round(targetWidth * multiplier);
             int height = Math.round(targetHeight * multiplier);
 
-            if ((originalWidth >= width) && (originalHeight >= height)) {
-                CmsImageScaler hiDpiScaler = (CmsImageScaler)scaler.clone();
+            if ((image.getWidth() >= width) && (image.getHeight() >= height)) {
+                // image original dimensions are large enough, generate hiDpi variation
+                CmsImageScaler hiDpiScaler = (CmsImageScaler)targetScaler.clone();
                 hiDpiScaler.setWidth(width);
                 hiDpiScaler.setHeight(height);
 
-                String imageSrc = cms.getSitePath(imageRes);
-                if (hiDpiScaler.isValid()) {
-                    // now append the scaler parameters
-                    imageSrc += hiDpiScaler.toRequestParam();
-                }
-                CmsJspImageBean image = new CmsJspImageBean();
-                image.setSrcUrl(OpenCms.getLinkManager().substituteLink(cms, imageSrc));
-                image.setScaler(hiDpiScaler);
-                scaledImage.addHiDpiImage(multiplierString, image);
+                CmsJspImageBean hiDpiVersion = image.getVariation(hiDpiScaler);
+                image.addHiDpiImage(hiDpiVariant, hiDpiVersion);
             }
         }
-    }
-
-    /**
-     * Initializes the images scaler used for creating the scaled image bean.<p>
-     *
-     * @param originalScaler a scaler that contains the original image dimensions
-     * @param scaleParams optional scaler parameters for cropping
-     * @param targetScaler the target image scaler
-     *
-     * @return the image scaler
-     */
-    private static CmsImageScaler initScaler(
-        CmsImageScaler originalScaler,
-        String scaleParams,
-        CmsImageScaler targetScaler) {
-
-        int width = targetScaler.getWidth();
-        int height = targetScaler.getHeight();
-
-        if ((scaleParams != null) && !"undefined".equals(scaleParams)) {
-            CmsImageScaler cropScaler = null;
-            // use cropped image as a base for scaling
-            cropScaler = new CmsImageScaler(scaleParams);
-            if (targetScaler.getType() == 5) {
-                // must reset height / width parameters in crop scaler for type 5
-                cropScaler.setWidth(cropScaler.getCropWidth());
-                cropScaler.setHeight(cropScaler.getCropHeight());
-            }
-            targetScaler = cropScaler.getCropScaler(targetScaler);
-            width = targetScaler.getWidth();
-            height = targetScaler.getHeight();
-        }
-
-        // If either width or height is not set, the CmsImageScaler will have a problem. So the
-        // missing dimension is calculated with the given dimension and the original image's
-        // aspect ratio (or the respective crop aspect ratio).
-        if ((width <= 0) || (height <= 0)) {
-            float ratio;
-            // use the original width/height or the crop with/height for aspect ratio calculation
-            if (!targetScaler.isCropping()) {
-                ratio = (float)originalScaler.getWidth() / (float)originalScaler.getHeight();
-            } else {
-                ratio = (float)targetScaler.getCropWidth() / (float)targetScaler.getCropHeight();
-            }
-            if (width <= 0) {
-                // width is not set, calculate it with the given height and the original/crop aspect ratio
-                width = Math.round(height * ratio);
-                targetScaler.setWidth(width);
-            } else if (height <= 0) {
-                // height is not set, calculate it with the given width and the original/crop aspect ratio
-                height = Math.round(width / ratio);
-                targetScaler.setHeight(height);
-            }
-        }
-
-        // calculate target scale dimensions (if required)
-        if (((targetScaler.getHeight() <= 0) || (targetScaler.getWidth() <= 0))
-            || ((targetScaler.getType() == 5) && targetScaler.isValid() && !targetScaler.isCropping())) {
-            // read the image properties for the selected resource
-            if (originalScaler.isValid()) {
-                targetScaler = originalScaler.getReScaler(targetScaler);
-            }
-        }
-        return targetScaler;
     }
 
     /**
@@ -292,7 +174,7 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
     /**
      * Handles the Start tag, checks some parameters, uses the CmsImageScaler to create a scaled
      * version of the image (and hi-DPI variants if necessary), stores all information in a
-     * ScaledImageBean and stores it as a request attribute (the name for this attribute is given
+     * image bean and stores it as a request attribute (the name for this attribute is given
      * with the tag attribute "var").
      *
      * @return EVAL_BODY_INCLUDE or SKIP_BODY in case of an unexpected Exception (please consult
@@ -307,7 +189,7 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
-                CmsJspScaledImageBean scaledImage = null;
+                CmsJspImageBean scaledImage = null;
                 try {
                     CmsFlexController controller = CmsFlexController.getController(req);
                     CmsObject cms = controller.getCmsObject();

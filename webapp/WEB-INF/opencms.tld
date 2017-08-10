@@ -1740,7 +1740,7 @@
     <tag>
         <description><![CDATA[
             This tag allows flexible creation of scaled images using the OpenCms native image scaling mechanism.
-            It generates a ScaledImage bean that can render scaled versions of the selected image, adding the
+            It generates an image bean that can render scaled versions of the selected image, adding the
             required image scaling parameters.<br/><br/>
             The following image formats are supported: BMP, GIF, JPEG, PNG, PNM, TIFF.
             <em>
@@ -1765,7 +1765,7 @@
         <variable>
             <description>Bean containing the scaled image.</description>
             <name-from-attribute>var</name-from-attribute>
-            <variable-class>org.opencms.jsp.util.CmsJspScaledImageBean</variable-class>
+            <variable-class>org.opencms.jsp.util.CmsJspImageBean</variable-class>
             <declare>true</declare>
             <scope>AT_BEGIN</scope>
         </variable>
@@ -1954,7 +1954,7 @@
         <attribute>
             <description><![CDATA[
               Optional comma separated list of hi DPI veariants to produce, e.g. "1.3x,1.5x,2x,3x". If you only
-              need the "retina" variant, use "2x". Hi DPI variants may be found in the resulting ScaledImageBean in
+              need the "retina" variant, use "2x". Hi DPI variants may be found in the resulting image bean in
               the map "hiDpiImages".
             ]]></description>
             <name>hiDpiVariants</name>
@@ -1962,7 +1962,7 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                The name of the variable used to store the resulting ScaledImage bean
+                The name of the variable used to store the resulting image bean
             ]]></description>
             <name>var</name>
             <rtexprvalue>true</rtexprvalue>
@@ -2649,7 +2649,7 @@
             <type>java.lang.Integer</type>
         </attribute>
     </tag>
-    
+
     <tag>
           <description><![CDATA[
             <p>This tag provides support to generate search forms and result lists for a server-side handled Solr search.
