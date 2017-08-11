@@ -897,7 +897,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
             CmsObject cms = getCmsObject();
 
-            CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper();
+            CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.ade);
             List<CmsResourceTypeBean> resTypeBeans = typeHelper.getResourceTypes(
                 cms,
                 cms.getRequestContext().addSiteRoot(uri),

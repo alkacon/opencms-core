@@ -30,6 +30,7 @@ package org.opencms.ade.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.configuration.CmsResourceTypeConfig.AddMenuType;
 import org.opencms.ade.configuration.CmsResourceTypeConfig.AddMenuVisibility;
 import org.opencms.ade.galleries.CmsGalleryService;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
@@ -80,11 +81,17 @@ public class CmsAddDialogTypeHelper {
     /** All types from the ADE config previously included in a result list. */
     private Set<String> m_includedAdeTypes = Sets.newHashSet();
 
+    /** The menu type. */
+    private AddMenuType m_menuType;
+
     /**
      * Creates a new instance.<p>
+     *
+     * @param type the menu type for which we want to build a type list
      */
-    public CmsAddDialogTypeHelper() {
+    public CmsAddDialogTypeHelper(AddMenuType type) {
         LOG.debug("Creating type helper.");
+        m_menuType = type;
     }
 
     /**
@@ -116,7 +123,8 @@ public class CmsAddDialogTypeHelper {
         String folderRootPath,
         String checkViewableReferenceUri,
         CmsElementView elementView,
-        I_CmsResourceTypeEnabledCheck checkEnabled) throws CmsException {
+        I_CmsResourceTypeEnabledCheck checkEnabled)
+    throws CmsException {
 
         if (elementView == null) {
             LOG.error("Element view is null");
@@ -232,7 +240,8 @@ public class CmsAddDialogTypeHelper {
         String checkViewableReferenceUri,
         CmsElementView elementView,
         List<I_CmsResourceType> additionalTypes,
-        I_CmsResourceTypeEnabledCheck checkEnabled) throws CmsException {
+        I_CmsResourceTypeEnabledCheck checkEnabled)
+    throws CmsException {
 
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, folderRootPath);
         // String uri = cms.getRequestContext().removeSiteRoot(rootFolder);
@@ -248,7 +257,7 @@ public class CmsAddDialogTypeHelper {
             boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
                 typeConfig.getTypeName());
             try {
-                AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView.getId());
+                AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView.getId(), m_menuType);
 
                 if (visibility == AddMenuVisibility.disabled) {
                     continue;
@@ -271,7 +280,7 @@ public class CmsAddDialogTypeHelper {
         }
         Set<String> creatableTypes = new HashSet<String>();
         for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(cms, folderRootPath)) {
-            if (typeConfig.isHiddenFromAddMenu(elementView.getId())
+            if ((AddMenuVisibility.disabled == typeConfig.getAddMenuVisibility(elementView.getId(), m_menuType))
                 || disabledTypes.contains(typeConfig.getTypeName())) {
                 continue;
             }

@@ -27,6 +27,7 @@
 
 package org.opencms.ui.dialogs;
 
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.CmsAddDialogTypeHelper;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.file.CmsObject;
@@ -107,7 +108,7 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
     @Override
     protected CmsAddDialogTypeHelper createTypeHelper() {
 
-        return new CmsAddDialogTypeHelper() {
+        return new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.workplace) {
 
             @SuppressWarnings("synthetic-access")
             @Override

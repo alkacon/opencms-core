@@ -63,6 +63,17 @@ import com.google.common.collect.Lists;
 public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResourceTypeConfig> {
 
     /**
+     * Enum used to distinguish the type of menu in which a configured resource type can be displayed.
+     */
+    public enum AddMenuType {
+        /** ADE add menu. */
+        ade,
+
+        /** Workplace dialogs. */
+        workplace
+    }
+
+    /**
      * Represents the visibility status of a resource type  in  the 'Add' menu of the container page editor.<p>
      */
     public enum AddMenuVisibility {
@@ -425,12 +436,13 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Gets the visibility status in the 'add' menu for this type and the given element view.<p>
      *
      * @param elementViewId the id of the view for which to compute the visibility status
+     * @param menuType the menu type for which we want to evaluate the visibility
      *
      * @return the visibility status
      */
-    public AddMenuVisibility getAddMenuVisibility(CmsUUID elementViewId) {
+    public AddMenuVisibility getAddMenuVisibility(CmsUUID elementViewId, AddMenuType menuType) {
 
-        if (isAddDisabled()) {
+        if (isAddDisabled() && (menuType == AddMenuType.ade)) {
             return AddMenuVisibility.disabled;
         }
 
@@ -443,7 +455,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         }
 
         return AddMenuVisibility.disabled;
-
     }
 
     /**
@@ -605,25 +616,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     public boolean isDisabled() {
 
         return m_disabled;
-    }
-
-    /**
-     * Checks if the type should be hidden from the 'add' menu.<p>
-     *
-     * @param elementView the current element view
-     *
-     * @return true if the type should be hidden
-     */
-    public boolean isHiddenFromAddMenu(CmsUUID elementView) {
-
-        if (isAddDisabled()) {
-            return true;
-        }
-
-        boolean matchingView = elementView.equals(getElementView())
-            || (isShowInDefaultView() && elementView.equals(CmsElementView.DEFAULT_ELEMENT_VIEW.getId()));
-
-        return !matchingView;
     }
 
     /**

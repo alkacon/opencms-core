@@ -28,6 +28,7 @@
 package org.opencms.ui.dialogs;
 
 import org.opencms.ade.configuration.CmsElementView;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.CmsAddDialogTypeHelper;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean.Origin;
@@ -296,7 +297,7 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
      */
     protected CmsAddDialogTypeHelper createTypeHelper() {
 
-        return new CmsAddDialogTypeHelper() {
+        return new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.workplace) {
 
             @Override
             protected boolean exclude(CmsResourceTypeBean type) {
