@@ -466,14 +466,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                 hoverbar.setAlwaysVisible();
             }
             m_galleryTypeItems.put(type.getResourceType(), typeItem);
-            if (galleries.get(type).isEmpty()) {
-                // hide all empty gallery types
-                typeItem.getElement().getStyle().setDisplay(Display.NONE);
-            } else {
-                addGalleryEntries(typeItem, galleries.get(type));
-                typeItem.setOpen(true);
-                hasGalleries = true;
-            }
+            addGalleryEntries(typeItem, galleries.get(type));
+            typeItem.setOpen(true);
+            hasGalleries = true;
             m_galleryTree.addItem(typeItem);
         }
         // position image and download galleries at the top
@@ -1214,9 +1209,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
                     setGalleriesVisible(true);
-                    m_toolbar.setNewGalleryEnabled(
-                        getController().getData().isGalleryManager(),
-                        Messages.get().key(Messages.GUI_GALLERY_MANAGER_ROLE_REQUIRED_0));
+                    m_toolbar.setNewGalleryEnabled(false, "");
                     setCategoriesVisible(false);
                     setModelPagesVisible(false);
                     setHeaderVisible(true);
