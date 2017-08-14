@@ -214,6 +214,20 @@ public class CmsImageScaler {
     }
 
     /**
+     * Creates a new image scaler based on the given base scaler and the given width and height.<p>
+     *
+     * @param base the base scaler to initialize the values with
+     * @param width the width to set for this scaler
+     * @param height the height to set for this scaler
+     */
+    public CmsImageScaler(CmsImageScaler base, int width, int height) {
+
+        initValuesFrom(base);
+        setWidth(width);
+        setHeight(height);
+    }
+
+    /**
      * Creates a new image scaler by reading the property <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code>
      * from the given resource.<p>
      *
@@ -287,20 +301,6 @@ public class CmsImageScaler {
         if (CmsStringUtil.isNotEmpty(parameters)) {
             parseParameters(parameters);
         }
-    }
-
-    /**
-     * Creates a new image scaler based on the given base scaler and the given width and height.<p>
-     *
-     * @param base the base scaler to initialize the values with
-     * @param width the width to set for this scaler
-     * @param height the height to set for this scaler
-     */
-    protected CmsImageScaler(CmsImageScaler base, int width, int height) {
-
-        initValuesFrom(base);
-        setWidth(width);
-        setHeight(height);
     }
 
     /**

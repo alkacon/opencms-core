@@ -17,7 +17,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -108,54 +107,18 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
 
         CmsJspImageBean image = new CmsJspImageBean(cms, imageUri, targetScaler);
 
-        // now handle hi-DPI variants
+        // now handle (preset) hi-DPI variants
         if ((hiDpiVariantList != null) && (hiDpiVariantList.size() > 0)) {
-            handleHiDpiVariants(cms, image, targetScaler, hiDpiVariantList);
+            for (String hiDpiVariant : hiDpiVariantList) {
+
+                CmsJspImageBean hiDpiVersion = image.createHiDpiVariation(hiDpiVariant);
+
+                if (hiDpiVersion != null) {
+                    image.addHiDpiImage(hiDpiVariant, hiDpiVersion);
+                }
+            }
         }
         return image;
-    }
-
-    /**
-     * Internal method to handle requested hi-DPI variants, adding ImageBeans for all hi-DPI
-     * variants to <code>scaledImage</code>
-     *
-     * @param cms the current CmsObject
-     * @param image the image bean (scaled images will be added to this)
-     * @param targetScaler the CmsImageScaler for the scaled image, will be cloned for each hi-DPI variant
-     * @param hiDpiVariantList the list of hi-DPI variant sizes to produce, e.g. 1.3x, 1.5x, 2x, 3x
-     */
-    private static void handleHiDpiVariants(
-        CmsObject cms,
-        CmsJspImageBean image,
-        CmsImageScaler targetScaler,
-        List<String> hiDpiVariantList) {
-
-        int targetWidth = targetScaler.getWidth();
-        int targetHeight = targetScaler.getHeight();
-
-        for (String hiDpiVariant : hiDpiVariantList) {
-
-            if (!hiDpiVariant.matches("^[0-9]+(.[0-9]+)?x$")) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(String.format("Illegal multiplier format: %s not usable for image scaling", hiDpiVariant));
-                }
-                continue;
-            }
-            float multiplier = NumberUtils.createFloat(
-                hiDpiVariant.substring(0, hiDpiVariant.length() - 1)).floatValue();
-            int width = Math.round(targetWidth * multiplier);
-            int height = Math.round(targetHeight * multiplier);
-
-            if ((image.getWidth() >= width) && (image.getHeight() >= height)) {
-                // image original dimensions are large enough, generate hiDpi variation
-                CmsImageScaler hiDpiScaler = (CmsImageScaler)targetScaler.clone();
-                hiDpiScaler.setWidth(width);
-                hiDpiScaler.setHeight(height);
-
-                CmsJspImageBean hiDpiVersion = image.getVariation(hiDpiScaler);
-                image.addHiDpiImage(hiDpiVariant, hiDpiVersion);
-            }
-        }
     }
 
     /**
@@ -227,9 +190,12 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
     }
 
     /**
-     * Sets the String containing a comma separated list of hi-DPI variants to produce, e.g.
-     * "1.3x,1.5x,2x,3x". Currently in most cases "2x" should suffice to generate an additional
-     * image for retina screens.
+     * Sets the String containing a comma separated list of hi-DPI variants to produce line "1.3x,1.5x,2x,3x".<p>
+     *
+     * Currently in most cases "2x" should suffice to generate an additiona image for retina screens.
+     *
+     * Please note that since 11.0 the variants are created by lazy initialization, so there is usually no
+     * need to use this.<p>
      *
      * @param value comma separated list of hi-DPI variants to produce, e.g. "1.3x,1.5x,2x,3x"
      */
