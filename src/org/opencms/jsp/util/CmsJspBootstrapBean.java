@@ -27,64 +27,23 @@
 
 package org.opencms.jsp.util;
 
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections.Transformer;
 
 /**
  * Provides convenient functions to calculate the with of bootstrap columns.<p>
  */
 public class CmsJspBootstrapBean {
 
-    /**
-     * Provides a Map to access ratio scaled versions of the current image.<p>
-     */
-    public class CmsBootstrapGridTransformer implements Transformer {
-
-        /** The selected grid index. */
-        private int m_gridIndex;
-
-        /**
-         * Create a new transformer for the selected grid index.<p>
-         *
-         * @param gridIndex the selected grid index
-         */
-        public CmsBootstrapGridTransformer(int gridIndex) {
-
-            m_gridIndex = gridIndex;
-        }
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        @Override
-        public Object transform(Object input) {
-
-            int size = ((Long)input).intValue();
-            return String.valueOf(getSize(size, m_column[m_gridIndex]));
-        }
-    }
-
-    /** The grid columns width in percent. */
+    /** The calculated grid columns width in percent (initial value is 100% for all). */
     protected double[] m_column = {100.0D, 100.0D, 100.0D, 100.0D, 100.0D};
 
     /** The bootstrap gutter size. */
     private int m_gutter = 30;
 
-    /** Contains the XS calculated result. */
-    private Map<Long, String> m_sizeXs;
-    /** Contains the SM calculated result. */
-    private Map<Long, String> m_sizeSm;
-    /** Contains the MD calculated result. */
-    private Map<Long, String> m_sizeMd;
-    /** Contains the LG calculated result. */
-    private Map<Long, String> m_sizeLg;
-    /** Contains the XL calculated result. */
-    private Map<Long, String> m_sizeXl;
+    /** The grid columns width in percent. */
+    protected int[] m_gridSize = {375, 750, 970, 1170, 1400};
 
     /** The CSS string this bootstrap bean was initialized with. */
     private String m_css;
@@ -188,68 +147,53 @@ public class CmsJspBootstrapBean {
     }
 
     /**
-     * Return a lazy initialized map that contains the LG column size.<p>
+     * Returns the column pixel width calculated for the LG screen size.<p>
      *
-     * @return a lazy initialized map that contains the LG column size
+     * @return the column pixel width calculated for the LG screen size
      */
-    public Map<Long, String> getSizeLg() {
+    public int getSizeLg() {
 
-        if (m_sizeLg == null) {
-            m_sizeLg = CmsCollectionsGenericWrapper.createLazyMap(new CmsBootstrapGridTransformer(3));
-        }
-        return m_sizeLg;
+        return getSize(3);
     }
 
     /**
-     * Return a lazy initialized map that contains the MD column size.<p>
+     * Returns the column pixel width calculated for the MD screen size.<p>
      *
-     * @return a lazy initialized map that contains the MD column size
+     * @return the column pixel width calculated for the MD screen size
      */
-    public Map<Long, String> getSizeMd() {
+    public int getSizeMd() {
 
-        if (m_sizeMd == null) {
-            m_sizeMd = CmsCollectionsGenericWrapper.createLazyMap(new CmsBootstrapGridTransformer(2));
-        }
-        return m_sizeMd;
+        return getSize(2);
     }
 
     /**
-     * Return a lazy initialized map that contains the SM column size.<p>
+     * Returns the column pixel width calculated for the SM screen size.<p>
      *
-     * @return a lazy initialized map that contains the SM column size
+     * @return the column pixel width calculated for the SM screen size
      */
-    public Map<Long, String> getSizeSm() {
+    public int getSizeSm() {
 
-        if (m_sizeSm == null) {
-            m_sizeSm = CmsCollectionsGenericWrapper.createLazyMap(new CmsBootstrapGridTransformer(1));
-        }
-        return m_sizeSm;
+        return getSize(1);
     }
 
     /**
-     * Return a lazy initialized map that contains the XL column size.<p>
+     * Returns the column pixel width calculated for the XL screen size.<p>
      *
-     * @return a lazy initialized map that contains the XL column size
+     * @return the column pixel width calculated for the XL screen size
      */
-    public Map<Long, String> getSizeXl() {
+    public int getSizeXl() {
 
-        if (m_sizeXl == null) {
-            m_sizeXl = CmsCollectionsGenericWrapper.createLazyMap(new CmsBootstrapGridTransformer(4));
-        }
-        return m_sizeXl;
+        return getSize(4);
     }
 
     /**
-     * Return a lazy initialized map that contains the XS column size.<p>
+     * Returns the column pixel width calculated for the XS screen size.<p>
      *
-     * @return a lazy initialized map that contains the XS column size
+     * @return the column pixel width calculated for the XS screen size
      */
-    public Map<Long, String> getSizeXs() {
+    public int getSizeXs() {
 
-        if (m_sizeXs == null) {
-            m_sizeXs = CmsCollectionsGenericWrapper.createLazyMap(new CmsBootstrapGridTransformer(0));
-        }
-        return m_sizeXs;
+        return getSize(0);
     }
 
     /**
@@ -297,18 +241,22 @@ public class CmsJspBootstrapBean {
     /**
      * Calculate the pixel size of a grid column.<p>
      *
-     * @param maxSize the allowed maximum pixel size for this grid
-     * @param spaceFactor the space factor calculated from the column width
+     * @param gridIndex the grid index to get the size for
      *
      * @return the pixel size of a grid column
      */
-    protected int getSize(int maxSize, double spaceFactor) {
+    protected int getSize(int gridIndex) {
 
-        return (int)Math.ceil((maxSize * spaceFactor) / 100.0);
+        int gridSize = m_gridSize[gridIndex];
+        double spaceFactor = m_column[gridIndex];
+
+        int result = (int)Math.round((gridSize * spaceFactor) / 100.0);
+        result = result > m_gutter ? result - m_gutter : 0;
+        return result;
     }
 
     /**
-     * Pares a bootstrap column CSS class like 'col-md-5'.<p>
+     * Parses a bootstrap column CSS class like 'col-md-5'.<p>
      *
      * @param colStr the bootstrap column CSS class to parse
      *
@@ -316,8 +264,8 @@ public class CmsJspBootstrapBean {
      */
     protected int parseCol(String colStr) {
 
-        String number = colStr.substring(7);
         int result;
+        String number = colStr.substring(colStr.lastIndexOf('-') + 1);
         try {
             result = Integer.valueOf(number).intValue();
         } catch (NumberFormatException e) {

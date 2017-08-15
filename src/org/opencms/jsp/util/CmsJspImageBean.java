@@ -38,6 +38,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUriSplitter;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
@@ -58,7 +59,7 @@ public class CmsJspImageBean {
         @Override
         public Object transform(Object input) {
 
-            return createHiDpiVariation((String)input);
+            return createHiDpiVariation(String.valueOf(input));
         }
     }
 
@@ -73,7 +74,7 @@ public class CmsJspImageBean {
         @Override
         public Object transform(Object input) {
 
-            return createRatioVariation((String)input);
+            return createRatioVariation(String.valueOf(input));
         }
     }
 
@@ -88,7 +89,7 @@ public class CmsJspImageBean {
         @Override
         public Object transform(Object input) {
 
-            return createWidthVariation((String)input);
+            return createWidthVariation(String.valueOf(input));
         }
     }
 
@@ -118,6 +119,9 @@ public class CmsJspImageBean {
 
     /** Lazy initialized map of width scaled versions of this image. */
     Map<String, CmsJspImageBean> m_scaleWidth = null;
+
+    /** Map used for creating a image source set. */
+    Map<Integer, CmsJspImageBean> m_srcSet = null;
 
     /**
      * Map used to store hi-DPI variants of the image.
@@ -551,11 +555,37 @@ public class CmsJspImageBean {
     }
 
     /**
+     * Generates a srcset attribute parameter list from all images added to this image bean.<p>
+     *
+     * @return a srcset attribute parameter list from all images added to this image bean
+     */
+    public String getSrcSet() {
+
+        StringBuffer result = new StringBuffer(128);
+        if (m_srcSet != null) {
+            int items = m_srcSet.size();
+            for (Map.Entry<Integer, CmsJspImageBean> entry : m_srcSet.entrySet()) {
+                CmsJspImageBean imageBean = entry.getValue();
+                // append the image source
+                result.append(imageBean.getSrcUrl());
+                result.append(" ");
+                // append width
+                result.append(imageBean.getScaler().getWidth());
+                result.append("w");
+                if (--items > 0) {
+                    result.append(", ");
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    /**
      * Generates a srcset attribute parameter for this image bean.<p>
      *
      * @return a srcset attribute parameter for this image bean
      */
-    public String getSrcSet() {
+    public String getSrcSetEntry() {
 
         StringBuffer result = new StringBuffer(128);
         if (m_currentScaler.isValid()) {
@@ -567,6 +597,20 @@ public class CmsJspImageBean {
             result.append("w");
         }
         return result.toString();
+    }
+
+    /**
+     * Getter for {@link #setSrcSets(CmsJspImageBean)} which returns this image bean.<p>
+     *
+     * Exists to make sure {@link #setSrcSets(CmsJspImageBean)} is available as property on a JSP.<p>
+     *
+     * @return this image bean
+     *
+     * @see CmsJspImageBean#getSrcSet()
+     */
+    public CmsJspImageBean getSrcSets() {
+
+        return this;
     }
 
     /**
@@ -607,6 +651,21 @@ public class CmsJspImageBean {
     public boolean isScaled() {
 
         return !m_currentScaler.isOriginalScaler();
+    }
+
+    /**
+     * Adds another image bean instance to the source set map of this bean.<p>
+     *
+     * @param imageBean the image bean to add
+     */
+    public void setSrcSets(CmsJspImageBean imageBean) {
+
+        if (m_srcSet == null) {
+            m_srcSet = new TreeMap<Integer, CmsJspImageBean>();
+        }
+        if ((imageBean != null) && imageBean.getScaler().isValid()) {
+            m_srcSet.put(Integer.valueOf(imageBean.getScaler().getWidth()), imageBean);
+        }
     }
 
     /**

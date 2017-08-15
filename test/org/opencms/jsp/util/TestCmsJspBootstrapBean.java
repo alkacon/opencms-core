@@ -67,7 +67,6 @@ public class TestCmsJspBootstrapBean extends OpenCmsTestCase {
     /**
      * Tests if the correct event info is returned.
      */
-    @SuppressWarnings("boxing")
     public void testBoostrapBean() {
 
         CmsJspBootstrapBean bb = new CmsJspBootstrapBean();
@@ -83,22 +82,22 @@ public class TestCmsJspBootstrapBean extends OpenCmsTestCase {
         bb = new CmsJspBootstrapBean();
         bb.setCss(":area-body:ap-row-wrapper:col-md-8:col-md-4");
         System.out.println(bb.toString());
-        System.out.println("(min-width: 750px) " + bb.getSizeSm().get(750L) + "px");
-        System.out.println("(min-width: 970px) " + bb.getSizeMd().get(970L) + "px");
-        System.out.println("(min-width: 1170px) " + bb.getSizeLg().get(1170L) + "px");
-        assertEquals("750", bb.getSizeSm().get(750L));
-        assertEquals("216", bb.getSizeMd().get(970L));
-        assertEquals("260", bb.getSizeLg().get(1170L));
+        System.out.println("(min-width: 750px) " + bb.getSizeSm() + "px");
+        System.out.println("(min-width: 970px) " + bb.getSizeMd() + "px");
+        System.out.println("(min-width: 1170px) " + bb.getSizeLg() + "px");
+        assertEquals(720, bb.getSizeSm());
+        assertEquals(186, bb.getSizeMd());
+        assertEquals(230, bb.getSizeLg());
 
         // parse another String
         bb = new CmsJspBootstrapBean();
         bb.setCss("col-md-4");
         System.out.println(bb.toString());
-        System.out.println("(min-width: 750px) " + bb.getSizeSm().get(750L) + "px");
-        System.out.println("(min-width: 970px) " + bb.getSizeMd().get(970L) + "px");
-        System.out.println("(min-width: 1170px) " + bb.getSizeLg().get(1170L) + "px");
-        assertEquals("750", bb.getSizeSm().get(750L));
-        assertEquals("324", bb.getSizeMd().get(970L));
-        assertEquals("390", bb.getSizeLg().get(1170L));
+        System.out.println("(min-width: 750px) " + bb.getSizeSm() + "px");
+        System.out.println("(min-width: 970px) " + bb.getSizeMd() + "px");
+        System.out.println("(min-width: 1170px) " + bb.getSizeLg() + "px");
+        assertEquals(720, bb.getSizeSm());
+        assertEquals(293, bb.getSizeMd());
+        assertEquals(360, bb.getSizeLg());
     }
 }
