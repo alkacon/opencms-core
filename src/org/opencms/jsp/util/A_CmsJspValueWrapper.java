@@ -39,7 +39,9 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 
 /**
- * Common value wrapper class for XML content values and element setting values.<p>
+ * Common value wrapper class that provides generic functions.<p>
+ *
+ * Wrappers that extend this are usually used for the values in lazy initialized transformer maps.<p>
  */
 abstract class A_CmsJspValueWrapper {
 

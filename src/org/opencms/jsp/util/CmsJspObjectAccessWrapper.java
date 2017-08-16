@@ -40,15 +40,9 @@ import java.util.Map;
 import org.apache.commons.collections.Transformer;
 
 /**
- * Allows direct access to XML content values, with possible iteration of sub-nodes.<p>
+ * Provides access to common object types through wrappers.<p>
  *
- * The implementation is optimized for performance and uses lazy initializing of the
- * requested values as much as possible.<p>
- *
- * @since 7.0.2
- *
- * @see CmsJspContentAccessBean
- * @see org.opencms.jsp.CmsJspTagContentAccess
+ * @since 11.0
  */
 public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
 
