@@ -2775,7 +2775,17 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-
+    
+    <tag>
+        <description><![CDATA[
+            Allows the JSP programmer to dynamically add request parameters (using the <cms.param> tag) inside the body of this tag.
+            The original request parameters will be restored after the body of this tag.  
+        ]]></description>
+        <name>addparams</name>
+        <tag-class>org.opencms.jsp.CmsJspTagAddParams</tag-class>
+        <body-content>JSP</body-content>
+    </tag>
+    
     <function>
         <description><![CDATA[
             <p>Extends the given list by adding the provided object.</p>

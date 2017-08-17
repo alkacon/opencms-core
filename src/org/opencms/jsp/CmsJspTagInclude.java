@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -57,6 +58,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+
+import com.google.common.collect.Maps;
 
 /**
  * Implementation of the <code>&lt;cms:include/&gt;</code> tag,
@@ -239,9 +242,29 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             : new HashMap<String, Object>(attrMap);
             // add attributes to set the correct element
             controller.getCurrentRequest().addAttributeMap(attributeMap);
+            Set<String> dynamicParams = controller.getCurrentRequest().getDynamicParameters();
+            Map<String, String[]> extendedParameterMap = null;
+            if (!dynamicParams.isEmpty()) {
+                // We want to store the parameters from the request with keys in dynamicParams in the flex response's include list, but only if they're set
+                extendedParameterMap = Maps.newHashMap();
+                extendedParameterMap.putAll(parameterMap);
+                for (String dynamicParam : dynamicParams) {
+                    String[] val = req.getParameterMap().get(dynamicParam);
+                    if (val != null) {
+                        extendedParameterMap.put(dynamicParam, val);
+                    }
+                }
+            }
             if (cacheable) {
                 // use include with cache
-                includeActionWithCache(controller, context, target, parameterMap, attributeMap, req, res);
+                includeActionWithCache(
+                    controller,
+                    context,
+                    target,
+                    extendedParameterMap != null ? extendedParameterMap : parameterMap,
+                    attributeMap,
+                    req,
+                    res);
             } else {
                 // no cache required
                 includeActionNoCache(controller, context, target, element, locale, req, res);

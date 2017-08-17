@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.ServletRequest;
@@ -55,6 +56,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Sets;
 
 /**
  * Wrapper class for a HttpServletRequest.<p>
@@ -116,6 +119,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /** Stores the request URL after it was once calculated. */
     private StringBuffer m_requestUrl;
+
+    /** A set of keys of parameters which should be stored in a cached include even if they were not passed as additional parameters to the include call. */
+    private Set<String> m_dynamicParameters = Sets.newHashSet();
 
     /**
      * Creates a new CmsFlexRequest wrapper which is most likely the "Top"
@@ -392,6 +398,20 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         Vector<String> v = new Vector<String>();
         v.addAll(m_attributes.keySet());
         return v.elements();
+    }
+
+    /**
+     * Gets the set of dynamic parameters.<p>
+     *
+     * Normally, when caching a JSP which includes another JSP, only the parameters given directly to the include call will be cached in the new flex cache entry's include list.
+     * But when the include call happens implicitly (e.g. for elements rendered in a cms:container tag), we can't pass it any parameters. In this case, we have to modify the parameter
+     * map of the current flex request in the JSP, and the keys for the modified parameters need to be stored in this set for the Flex cache to work correctly.
+     *
+     * @return the set of keys for the dynamic parameters
+     */
+    public Set<String> getDynamicParameters() {
+
+        return m_dynamicParameters;
     }
 
     /**
@@ -708,6 +728,19 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     public void setAttributeMap(Map<String, Object> map) {
 
         m_attributes = new HashMap<String, Object>(map);
+    }
+
+    /**
+     * Sets the set of dynamic parameters.<p>
+     *
+     * @param dynamicParams the set of dynamic parameters
+     */
+    public void setDynamicParameters(Set<String> dynamicParams) {
+
+        if (dynamicParams == null) {
+            dynamicParams = Sets.newHashSet();
+        }
+        m_dynamicParameters = dynamicParams;
     }
 
     /**
