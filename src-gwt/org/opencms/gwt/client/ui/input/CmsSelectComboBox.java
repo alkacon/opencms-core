@@ -138,11 +138,38 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
     }
 
     /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        final HandlerRegistration r1 = m_selectBox.addValueChangeHandler(handler);
+        final HandlerRegistration r2 = m_comboBox.addValueChangeHandler(handler);
+        return new HandlerRegistration() {
+
+            public void removeHandler() {
+
+                r1.removeHandler();
+                r2.removeHandler();
+            }
+        };
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
     public String getApparentValue() {
 
         return getActiveWidget().getApparentValue();
+    }
+
+    /**
+     * Gets the combo box instance.<p>
+     *
+     * @return the combo box
+     */
+    public CmsComboBox getComboBox() {
+
+        return m_comboBox;
     }
 
     /**
@@ -167,6 +194,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
     public String getFormValueAsString() {
 
         return getActiveWidget().getFormValueAsString();
+    }
+
+    /**
+     * Gets the select box instance.<p>
+     *
+     * @return the select box instance
+     */
+    public CmsSelectBox getSelectBox() {
+
+        return m_selectBox;
     }
 
     /**
@@ -219,6 +256,24 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostMode(boolean)
+     */
+    public void setGhostMode(boolean enable) {
+
+        m_selectBox.setGhostMode(enable);
+        m_comboBox.setGhostMode(enable);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostValue(java.lang.String, boolean)
+     */
+    public void setGhostValue(String value, boolean isGhostMode) {
+
+        m_selectBox.setGhostValue(value, isGhostMode);
+        m_comboBox.setGhostValue(value, isGhostMode);
+    }
+
+    /**
      * Switches to combo box mode.<p>
      */
     protected void enableComboMode() {
@@ -244,41 +299,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
         } else {
             return m_selectBox;
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostMode(boolean)
-     */
-    public void setGhostMode(boolean enable) {
-
-        m_selectBox.setGhostMode(enable);
-        m_comboBox.setGhostMode(enable);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostValue(java.lang.String, boolean)
-     */
-    public void setGhostValue(String value, boolean isGhostMode) {
-
-        m_selectBox.setGhostValue(value, isGhostMode);
-        m_comboBox.setGhostValue(value, isGhostMode);
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        final HandlerRegistration r1 = m_selectBox.addValueChangeHandler(handler);
-        final HandlerRegistration r2 = m_comboBox.addValueChangeHandler(handler);
-        return new HandlerRegistration() {
-
-            public void removeHandler() {
-
-                r1.removeHandler();
-                r2.removeHandler();
-            }
-        };
     }
 
 }

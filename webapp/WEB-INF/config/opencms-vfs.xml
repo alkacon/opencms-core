@@ -504,6 +504,7 @@
 				<widget class="org.opencms.widgets.CmsColorpickerWidget"
 					alias="ColorpickerWidget" />
 				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />
+				<widget class="org.opencms.widgets.CmsSelectComboWidget" alias="SelectComboWidget" />
 				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
 				<widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget" />
 				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" />
