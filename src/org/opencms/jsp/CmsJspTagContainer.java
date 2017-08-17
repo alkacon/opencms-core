@@ -42,6 +42,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspTagAddParams.ParamState;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContext;
@@ -80,6 +81,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.TryCatchFinally;
 
 import org.apache.commons.logging.Log;
 
@@ -88,7 +90,7 @@ import org.apache.commons.logging.Log;
  *
  * @since 8.0
  */
-public class CmsJspTagContainer extends BodyTagSupport {
+public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinally, I_CmsJspTagParamParent {
 
     /** Default number of max elements in the container in case no value has been set. */
     public static final String DEFAULT_MAX_ELEMENTS = "100";
@@ -127,6 +129,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /** The name attribute value. */
     private String m_name;
+
+    /** The parameter state. */
+    private CmsJspTagAddParams.ParamState m_paramState;
 
     /**
      * The container name prefix to use for nested container names.
@@ -373,6 +378,16 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
+     * @see org.opencms.jsp.I_CmsJspTagParamParent#addParameter(java.lang.String, java.lang.String)
+     */
+    public void addParameter(String name, String value) {
+
+        if (m_paramState != null) {
+            m_paramState.addParameter(name, value);
+        }
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
      */
     @SuppressWarnings("resource")
@@ -390,6 +405,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
             }
         }
         return SKIP_BODY;
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.TryCatchFinally#doCatch(java.lang.Throwable)
+     */
+    public void doCatch(Throwable t) throws Throwable {
+
+        throw t;
     }
 
     /**
@@ -539,6 +562,17 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
+     * @see javax.servlet.jsp.tagext.TryCatchFinally#doFinally()
+     */
+    public void doFinally() {
+
+        if (m_paramState != null) {
+            m_paramState.undoChanges();
+            m_paramState = null;
+        }
+    }
+
+    /**
      * Internal action method.<p>
      *
      * @return EVAL_BODY_BUFFERED
@@ -548,7 +582,11 @@ public class CmsJspTagContainer extends BodyTagSupport {
     @Override
     public int doStartTag() {
 
-        // everything is done within the doEndTag method once the body has been evaluated
+        if (CmsFlexController.isCmsRequest(pageContext.getRequest())) {
+            m_paramState = new ParamState(
+                CmsFlexController.getController(pageContext.getRequest()).getCurrentRequest());
+            m_paramState.init();
+        }
         return EVAL_BODY_BUFFERED;
     }
 

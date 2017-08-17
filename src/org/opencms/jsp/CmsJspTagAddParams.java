@@ -52,7 +52,7 @@ public class CmsJspTagAddParams extends TagSupport implements I_CmsJspTagParamPa
     /**
      * Keeps track of the runtime state of a single execution of this tag.<p>
      */
-    class ParamState {
+    public static class ParamState {
 
         /** The running request. */
         private CmsFlexRequest m_request;
