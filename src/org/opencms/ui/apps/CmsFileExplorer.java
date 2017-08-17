@@ -75,6 +75,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
@@ -1239,11 +1240,15 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             m_searchField.clear();
         }
         CmsResource folder = cms.readResource(folderId, FOLDERS);
+        String p = RandomStringUtils.randomAlphanumeric(5) + " readFolder ";
+        LOG.debug(p + "siteRoot = " + cms.getRequestContext().getSiteRoot());
+        LOG.debug(p + "folder = " + folder.getRootPath());
         m_currentFolder = folderId;
         String folderPath = cms.getSitePath(folder);
         if (OpenCms.getSiteManager().isSharedFolder(cms.getRequestContext().getSiteRoot())) {
             folderPath = folderPath.substring(cms.getRequestContext().getSiteRoot().length());
         }
+        LOG.debug(p + "folderPath = " + folderPath);
         setPathInfo(folderPath);
         List<CmsResource> childResources = cms.readResources(folder, FILES_N_FOLDERS, false);
         m_fileTable.fillTable(cms, childResources, clearFilter);
@@ -1256,11 +1261,15 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         }
         m_treeContainer.setChildrenAllowed(folderId, hasFolderChild);
         String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/") ? "" : folderPath;
+        LOG.debug(p + "sitePath = " + sitePath);
 
         String state = new StateBean(
             cms.getRequestContext().getSiteRoot(),
             sitePath,
             cms.getRequestContext().getCurrentProject().getUuid().toString()).asString();
+        LOG.debug(p + "state = " + state);
+        LOG.debug(p + "m_currentState = " + m_currentState);
+        LOG.debug(p + "m_currentState.asString = " + StateBean.parse(m_currentState).asString());
         if ((m_currentState == null) || !(state).equals(StateBean.parse(m_currentState).asString())) {
             m_currentState = state;
             CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
