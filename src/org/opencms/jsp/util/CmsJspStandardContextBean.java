@@ -543,29 +543,6 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * The request parameter transformer.<p>
-     */
-    public class RequestParameterTransformer implements Transformer {
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        @Override
-        public Object transform(Object obj) {
-
-            Object result = CmsJspObjectAccessWrapper.NULL_VALUE_WRAPPER;
-            if (obj != null) {
-                CmsFlexController controller = CmsFlexController.getController(m_request);
-                String value = controller.getCurrentRequest().getParameter(String.valueOf(obj));
-                if (value != null) {
-                    result = CmsJspObjectAccessWrapper.createWrapper(m_cms, value);
-                }
-            }
-            return result;
-        }
-    }
-
-    /**
      * The element setting transformer.<p>
      */
     public class SettingsTransformer implements Transformer {
@@ -1224,18 +1201,6 @@ public final class CmsJspStandardContextBean {
     public CmsContainerPageBean getPage() {
 
         return m_page;
-    }
-
-    /**
-     * Returns a lazy initialized request parameter map.<p>
-     *
-     * The values returned in the map are instances of {@link CmsJspObjectAccessWrapper}.<p>
-     *
-     * @return the wrapped request parameters
-     */
-    public Map<String, CmsJspObjectAccessWrapper> getParam() {
-
-        return CmsCollectionsGenericWrapper.createLazyMap(new RequestParameterTransformer());
     }
 
     /**

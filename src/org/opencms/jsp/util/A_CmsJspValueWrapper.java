@@ -137,7 +137,7 @@ abstract class A_CmsJspValueWrapper {
      */
     public String getStripHtml() {
 
-        if (null == m_stripHtml) {
+        if (m_stripHtml == null) {
             m_stripHtml = CmsJspElFunctions.stripHtml(this);
         }
         return m_stripHtml;
@@ -232,7 +232,7 @@ abstract class A_CmsJspValueWrapper {
      */
     public String getToLink() {
 
-        if (null == m_link) {
+        if (m_link == null) {
             String target = toString();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(target)) {
                 m_link = substituteLink(getCmsObject(), getToString());
@@ -250,7 +250,7 @@ abstract class A_CmsJspValueWrapper {
      */
     public String getToString() {
 
-        if (null == m_string) {
+        if (m_string == null) {
             m_string = toString();
         }
         return m_string;

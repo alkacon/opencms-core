@@ -29,6 +29,8 @@ package org.opencms.jsp.util;
 
 import org.opencms.util.CmsStringUtil;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +50,12 @@ public class CmsJspBootstrapBean {
     /** The CSS string this bootstrap bean was initialized with. */
     private String m_css;
 
+    /** The array of parent CSS classes. */
+    private String[] m_cssArray;
+
+    /** Indicates if this bootstrap bean was initialized with at least one column. */
+    private boolean m_initialized;
+
     /** public empty constructor for use on JSP.<p> */
     public CmsJspBootstrapBean() {
 
@@ -61,6 +69,7 @@ public class CmsJspBootstrapBean {
      */
     public void addLayer(int[] gridCols) {
 
+        m_initialized = true;
         for (int i = 0; i < 5; i++) {
             m_column[i] *= gridCols[i] / 12.0D;
         }
@@ -70,8 +79,10 @@ public class CmsJspBootstrapBean {
      * Add a new layer of grid information.<p>
      *
      * @param gridCss the CSS that holds the grid column width information
+     *
+     * @return <code>true</code> if the layer contained grid classes relevant for the size calculation
      */
-    public void addLayer(String gridCss) {
+    public boolean addLayer(String gridCss) {
 
         int xs = -1;
         int sm = -1;
@@ -121,9 +132,12 @@ public class CmsJspBootstrapBean {
         last = lg <= 0 ? last : lg;
         xl = xl < 0 ? last : xl;
 
-        int[] result = {xs, sm, md, lg, xl};
-
-        addLayer(result);
+        boolean newLayer = (last != 12);
+        if (newLayer) {
+            int[] result = {xs, sm, md, lg, xl};
+            addLayer(result);
+        }
+        return newLayer;
     }
 
     /**
@@ -133,7 +147,27 @@ public class CmsJspBootstrapBean {
      */
     public String getCss() {
 
+        if ((m_css == null) && (m_cssArray != null)) {
+            StringBuffer result = new StringBuffer(128);
+            for (int i = 0; i < m_cssArray.length; i++) {
+                if (i > 0) {
+                    result.append(':');
+                }
+                result.append(m_cssArray[i]);
+            }
+            m_css = result.toString();
+        }
         return m_css;
+    }
+
+    /**
+     * Returns the array of parent CSS classes.<p>
+     *
+     * @return the array of parent CSS classes
+     */
+    public String[] getCssArray() {
+
+        return m_cssArray;
     }
 
     /**
@@ -144,6 +178,16 @@ public class CmsJspBootstrapBean {
     public int getGutter() {
 
         return m_gutter;
+    }
+
+    /**
+     * Returns <code>true</code> if this bootstrap bean has calculated grid information.<p>
+     *
+     * @return <code>true</code> if this bootstrap bean has calculated grid information
+     */
+    public boolean getIsInitialized() {
+
+        return m_initialized;
     }
 
     /**
@@ -203,10 +247,38 @@ public class CmsJspBootstrapBean {
      */
     public void setCss(String css) {
 
-        m_css = css;
-        List<String> layers = CmsStringUtil.splitAsList(css, ':', true);
-        for (String layer : layers) {
-            addLayer(layer);
+        if (css != null) {
+            m_css = css;
+            List<String> layers = CmsStringUtil.splitAsList(css, ':', true);
+            m_cssArray = new String[layers.size()];
+            int last = layers.size();
+            for (String layer : layers) {
+                addLayer(layer);
+                m_cssArray[--last] = layer;
+            }
+        }
+    }
+
+    /**
+     * Sets the array of parent CSS classes.<p>
+     *
+     * @param cssArray the array of parent CSS classes to set
+     */
+    public void setCssArray(String[] cssArray) {
+
+        if ((cssArray != null) && (cssArray.length > 0)) {
+            List<String> result = new ArrayList<String>();
+            for (String layer : cssArray) {
+                if (layer.equals("#")) {
+                    // start layer reached, following layers are 'real' get request parameters
+                    break;
+                } else {
+                    if (addLayer(layer)) {
+                        result.add(layer);
+                    }
+                }
+            }
+            m_cssArray = result.toArray(new String[result.size()]);
         }
     }
 
@@ -226,16 +298,30 @@ public class CmsJspBootstrapBean {
     @Override
     public String toString() {
 
-        return "xs: "
-            + m_column[0]
-            + " sm: "
-            + m_column[1]
-            + " md: "
-            + m_column[2]
-            + " lg: "
-            + m_column[3]
-            + " xl: "
-            + m_column[4];
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(2);
+        nf.setMinimumFractionDigits(2);
+        return "xs="
+            + getSizeXs()
+            + "px("
+            + nf.format(m_column[0])
+            + "%) sm="
+            + getSizeSm()
+            + "px("
+            + nf.format(m_column[1])
+            + "%) md="
+            + getSizeMd()
+            + "px("
+            + nf.format(m_column[2])
+            + "%) lg="
+            + getSizeLg()
+            + "px("
+            + nf.format(m_column[3])
+            + "%) xl="
+            + getSizeXl()
+            + "px("
+            + nf.format(m_column[4])
+            + "%)";
     }
 
     /**

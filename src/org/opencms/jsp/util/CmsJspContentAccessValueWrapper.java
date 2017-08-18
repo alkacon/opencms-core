@@ -40,6 +40,8 @@ import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -152,8 +154,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     }
 
     /**
-     * Provides a Map which lets the user a nested sub value from the current value,
-     * the input is assumed to be a String that represents an xpath in the XML content.<p>
+     * Provides a Map which returns a nested sub value from the current value.<p>
+     *
+     * The input is assumed to be a String that represents an xpath in the XML content.<p>
      */
     public class CmsValueTransformer implements Transformer {
 
@@ -309,6 +312,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
 
     /** The lazy initialized XML element Map. */
     private Map<String, String> m_xml;
+
+    /** The current value transformed into a parameter map.*/
+    private Map<String, String> m_parameters;
 
     /**
      * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
@@ -885,6 +891,60 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             m_subValueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsSubValueListTransformer());
         }
         return m_subValueList;
+    }
+
+    /**
+     * Transforms the current value into a parameter map.<p>
+     *
+     * The current value must be a nested content with sub-values that
+     * have exactly 2 values each, for example like this:<p>
+     *
+     * <pre>
+     * &lt;Parameters&gt;
+     *   &lt;Key&gt;&lt;foo&gt;&lt;/Key&gt;
+     *   &lt;Value&gt;&lt;bar&gt;&lt;/Value&gt;
+     * &lt;/Parameters&gt;
+     * &lt;Parameters&gt;
+     *   &lt;Key&gt;&lt;foo2&gt;&lt;/Key&gt;
+     *   &lt;Value&gt;&lt;bar2&gt;&lt;/Value&gt;
+     * &lt;/Parameters&gt;
+     * </pre>
+     *
+     * Please note that the result Map is a simple String map,
+     * NOT a map with {@link CmsJspContentAccessValueWrapper} classes.<p>
+     *
+     * @return the current value transformed into a parameter map
+     */
+    public Map<String, String> getToParameters() {
+
+        if (m_parameters == null) {
+            I_CmsXmlContentValue xmlvalue = getContentValue();
+            if (xmlvalue != null) {
+                if (!getContentValue().isSimpleType()) {
+                    // this is a nested content, get the list of values
+                    List<I_CmsXmlContentValue> parameters = xmlvalue.getDocument().getValues(
+                        xmlvalue.getPath(),
+                        xmlvalue.getLocale());
+                    m_parameters = new HashMap<String, String>(parameters.size());
+                    for (I_CmsXmlContentValue params : parameters) {
+                        // iterate all elements in this value list
+                        List<I_CmsXmlContentValue> param = xmlvalue.getDocument().getSubValues(
+                            params.getPath(),
+                            xmlvalue.getLocale());
+                        if (param.size() == 2) {
+                            // the current value has 2 sub-values, treat these as key and value
+                            String key = param.get(0).getStringValue(getCmsObject());
+                            String value = param.get(1).getStringValue(getCmsObject());
+                            m_parameters.put(key, value);
+                        }
+                    }
+                }
+            }
+            if (m_parameters == null) {
+                m_parameters = Collections.EMPTY_MAP;
+            }
+        }
+        return m_parameters;
     }
 
     /**
