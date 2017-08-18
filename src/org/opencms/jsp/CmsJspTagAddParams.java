@@ -31,6 +31,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.main.CmsLog;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,7 +81,7 @@ public class CmsJspTagAddParams extends TagSupport implements I_CmsJspTagParamPa
          */
         public void addParameter(String key, String value) {
 
-            m_request.getParameterMap().put(key, new String[] {value});
+            m_request.addParameterMap(Collections.singletonMap(key, new String[] {value}));
             m_request.getDynamicParameters().add(key);
         }
 
