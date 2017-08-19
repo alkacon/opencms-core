@@ -93,6 +93,9 @@ public class CmsJspImageBean {
         }
     }
 
+    /** The minimum dimension (width and height) a generated image must have. */
+    public static int MIN_DIMENSION = 4;
+
     /** The log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsJspImageBean.class);
 
@@ -207,7 +210,7 @@ public class CmsJspImageBean {
             initScaler.getWidth(),
             initScaler.getHeight());
 
-        if (targetScaler.isValid()) {
+        if ((targetScaler != null) && targetScaler.isValid()) {
             setScaler(targetScaler);
         }
     }
@@ -264,7 +267,10 @@ public class CmsJspImageBean {
             }
         }
 
-        if ((originalWidth >= targetWidth) && (originalHeight >= targetHeight)) {
+        if ((targetWidth >= MIN_DIMENSION)
+            && (targetHeight >= MIN_DIMENSION)
+            && (originalWidth >= targetWidth)
+            && (originalHeight >= targetHeight)) {
 
             // image original dimensions are large enough, generate result scaler
             result = new CmsImageScaler();

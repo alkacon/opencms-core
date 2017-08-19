@@ -35,17 +35,20 @@ import java.util.List;
 
 /**
  * Provides convenient functions to calculate the with of bootstrap columns.<p>
+ *
+ * Supports bootstrap 3, i.e. works with XS, SM, MD and LG column sizes.
+ *
  */
 public class CmsJspBootstrapBean {
 
     /** The calculated grid columns width in percent (initial value is 100% for all). */
-    protected double[] m_column = {100.0D, 100.0D, 100.0D, 100.0D, 100.0D};
+    protected double[] m_column = {100.0D, 100.0D, 100.0D, 100.0D};
 
     /** The bootstrap gutter size. */
     private int m_gutter = 30;
 
     /** The grid columns width in percent. */
-    protected int[] m_gridSize = {375, 750, 970, 1170, 1400};
+    protected int[] m_gridSize = {375, 750, 970, 1170};
 
     /** The CSS string this bootstrap bean was initialized with. */
     private String m_css;
@@ -70,7 +73,7 @@ public class CmsJspBootstrapBean {
     public void addLayer(int[] gridCols) {
 
         m_initialized = true;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < m_column.length; i++) {
             m_column[i] *= gridCols[i] / 12.0D;
         }
     }
@@ -88,7 +91,6 @@ public class CmsJspBootstrapBean {
         int sm = -1;
         int md = -1;
         int lg = -1;
-        int xl = -1;
 
         String[] items = gridCss.toLowerCase().split("\\s+");
         for (String i : items) {
@@ -102,8 +104,6 @@ public class CmsJspBootstrapBean {
                     md = parseCol(i);
                 } else if (iSub.startsWith("lg-")) {
                     lg = parseCol(i);
-                } else if (iSub.startsWith("xl-")) {
-                    xl = parseCol(i);
                 }
             } else if (i.startsWith("hidden-")) {
                 String iSub = i.substring(7);
@@ -115,26 +115,22 @@ public class CmsJspBootstrapBean {
                     md = 0;
                 } else if (iSub.startsWith("lg")) {
                     lg = 0;
-                } else if (iSub.startsWith("xl")) {
-                    xl = 0;
                 }
             }
         }
 
         int last = 12;
-        xs = xs < 0 ? last : xs;
-        last = xs <= 0 ? last : xs;
-        sm = sm < 0 ? last : sm;
-        last = sm <= 0 ? last : sm;
-        md = md < 0 ? last : md;
-        last = md <= 0 ? last : md;
-        lg = lg < 0 ? last : lg;
-        last = lg <= 0 ? last : lg;
-        xl = xl < 0 ? last : xl;
+        xs = (xs < 0) ? last : xs;
+        last = (xs <= 0) ? last : xs;
+        sm = (sm < 0) ? last : sm;
+        last = (sm <= 0) ? last : sm;
+        md = (md < 0) ? last : md;
+        last = (md <= 0) ? last : md;
+        lg = (lg < 0) ? last : lg;
 
         boolean newLayer = (last != 12);
         if (newLayer) {
-            int[] result = {xs, sm, md, lg, xl};
+            int[] result = {xs, sm, md, lg};
             addLayer(result);
         }
         return newLayer;
@@ -218,16 +214,6 @@ public class CmsJspBootstrapBean {
     public int getSizeSm() {
 
         return getSize(1);
-    }
-
-    /**
-     * Returns the column pixel width calculated for the XL screen size.<p>
-     *
-     * @return the column pixel width calculated for the XL screen size
-     */
-    public int getSizeXl() {
-
-        return getSize(4);
     }
 
     /**
@@ -317,10 +303,6 @@ public class CmsJspBootstrapBean {
             + getSizeLg()
             + "px("
             + nf.format(m_column[3])
-            + "%) xl="
-            + getSizeXl()
-            + "px("
-            + nf.format(m_column[4])
             + "%)";
     }
 
