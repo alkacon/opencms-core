@@ -197,6 +197,25 @@ public class CmsJspBootstrapBean {
     }
 
     /**
+     * Checks all available sizes from the <code>getSizeXX</code> methods and returns the maximum value larger.<p>
+     *
+     * If all grid sizes are zero then zero is returned.<p>
+     *
+     * @return the calculated maximum grid size
+     */
+    public int getSizeMax() {
+
+        int result = 0;
+        for (int i = 0; i < m_column.length; i++) {
+            int size = getSize(i);
+            if (size > result) {
+                result = size;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the column pixel width calculated for the MD screen size.<p>
      *
      * @return the column pixel width calculated for the MD screen size
@@ -204,6 +223,25 @@ public class CmsJspBootstrapBean {
     public int getSizeMd() {
 
         return getSize(2);
+    }
+
+    /**
+     * Checks all available sizes from the <code>getSizeXX</code> methods and returns the minimum value larger than zero.<p>
+     *
+     * Zero grid sizes are ignored. However, if all grid sizes are zero then zero is returned.<p>
+     *
+     * @return the calculated minimum grid size
+     */
+    public int getSizeMin() {
+
+        int result = Integer.MAX_VALUE;
+        for (int i = 0; i < m_column.length; i++) {
+            int size = getSize(i);
+            if ((size > 0) && (size < result)) {
+                result = size;
+            }
+        }
+        return result < Integer.MAX_VALUE ? result : 0;
     }
 
     /**
