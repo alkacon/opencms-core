@@ -57,6 +57,11 @@ public interface I_CmsSearchResultWrapper {
      */
     Suggestion getDidYouMeanSuggestion();
 
+    /** Returns the empty search state parameters. Use the function to generate just part of the state parameters, instead of manipulating the current state.
+     * @return The empty search state parameters.
+     */
+    I_CmsSearchStateParameters getEmptyStateParameters();
+
     /** Returns the last index of the documents displayed.
      * @return The last index of the documents displayed.
      */
@@ -153,8 +158,8 @@ public interface I_CmsSearchResultWrapper {
      */
     Long getStart();
 
-    /** Returns the map from a sort option name to the link parameters that should be appended when you want to display that search option.
-     * @return The map from a sort option name to the link parameters that should be appended when you want to display that search option.
+    /** Returns the current search state parameters.
+     * @return The current search state parameters.
      */
     I_CmsSearchStateParameters getStateParameters();
 }

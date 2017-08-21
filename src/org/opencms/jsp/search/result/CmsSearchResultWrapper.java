@@ -188,6 +188,15 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
     }
 
     /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getEmptyStateParameters()
+     */
+    public I_CmsSearchStateParameters getEmptyStateParameters() {
+
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        return new CmsSearchStateParameters(this, parameters);
+    }
+
+    /**
      * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getEnd()
      */
     @Override
