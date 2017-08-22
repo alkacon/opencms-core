@@ -544,6 +544,7 @@ public class CmsModuleTable extends Table {
         CmsBeanTableBuilder<CmsModuleRow> builder = CmsBeanTableBuilder.newInstance(CmsModuleRow.class);
         m_tableBuilder = builder;
         builder.buildTable(this, rows);
+        setCellStyleGenerator(builder.getDefaultCellStyleGenerator());
         setItemIconPropertyId("icon");
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setSelectable(true);

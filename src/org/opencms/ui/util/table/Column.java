@@ -43,6 +43,11 @@ public @interface Column {
      */
     float expandRatio() default -1.0f;
 
+    /**
+     * Flag indicating whether column should be filterable by default.
+     *
+     * @return true if the column should be filterable
+     */
     boolean filterable() default true;
 
     /**
@@ -61,6 +66,18 @@ public @interface Column {
      */
     int order() default -1;
 
+    /**
+     * The style which should be used for a cell in this column.<p>
+     *
+     * @return the style
+     */
+    String styleName() default "";
+
+    /**
+     * The view in which the column should be displayed.<p>
+     *
+     * @return the view
+     */
     String view() default "";
 
     /**

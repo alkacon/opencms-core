@@ -51,6 +51,7 @@ import com.vaadin.data.util.BeanUtil;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.Align;
+import com.vaadin.ui.Table.CellStyleGenerator;
 
 /**
  * Builds a table based on a given bean class.<p>
@@ -198,6 +199,13 @@ public class CmsBeanTableBuilder<T> {
 
     }
 
+    /**
+     * Builds a table and uses the given beans to fill its rows.<p>
+     *
+     * @param beans the beans to display in the table
+     *
+     * @return the finished table
+     */
     public Table buildTable(List<T> beans) {
 
         Table table = new Table();
@@ -206,10 +214,11 @@ public class CmsBeanTableBuilder<T> {
     }
 
     /**
-     * Builds a table and uses the given beans to fill its rows.<p>
+     * Sets up a table and uses the given beans to fill its rows, but does not actually create the table instance; it uses the passed in table instance instead.<p>
      *
+     * @param table the table to set up
      * @param beans the beans to display in the table
-     * @return the finished table
+     *
      */
     public void buildTable(Table table, List<T> beans) {
 
@@ -245,12 +254,47 @@ public class CmsBeanTableBuilder<T> {
         for (T bean : beans) {
             container.addBean(bean);
         }
+
     }
 
+    /**
+     * Creates a default cell style generator which just returns the value of the styleName attribute in a Column annotation for cells in that column.<p>
+     *
+     * @return the default cell style generator
+     */
+    public CellStyleGenerator getDefaultCellStyleGenerator() {
+
+        return new CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                for (ColumnBean colBean : m_columns) {
+                    if (colBean.getProperty().getName().equals(propertyId)) {
+                        return colBean.getInfo().styleName();
+                    }
+                }
+                return "";
+            }
+        };
+    }
+
+    /**
+     * Creates a default filter which just searches the lower case version of the result of the toString() method applied to all columns with the annotation attribute filterable = true.<P>
+     *
+     * @param filterString the string for which to filter
+     *
+     * @return the default filter for the given filter string
+     */
     public Filter getDefaultFilter(final String filterString) {
 
         return new Filter() {
 
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
             public boolean appliesToProperty(Object propertyId) {
 
                 for (ColumnBean col : m_columns) {
@@ -261,6 +305,7 @@ public class CmsBeanTableBuilder<T> {
                 return false;
             }
 
+            @SuppressWarnings("synthetic-access")
             public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
 
                 if (CmsStringUtil.isEmpty(filterString)) {
