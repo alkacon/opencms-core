@@ -32,13 +32,14 @@ import org.opencms.module.CmsModule;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsAttributeAwareApp;
 import org.opencms.ui.apps.CmsAppView;
 import org.opencms.ui.apps.CmsAppView.CacheStatus;
-import org.opencms.ui.components.CmsBasicReportPage;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsCachableApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicReportPage;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         public static Resource RESINFO_ICON = new CmsCssIcon("oc-icon-24-module");
 
         /** Icon for the 'import via http' button. */
-        public static Resource IMPORT = new CmsCssIcon("oc-icon-32-module");
+        public static Resource IMPORT = FontOpenCms.UPLOAD;
 
         /** Icon for the module list. */
         public static final Resource LIST_ICON = new CmsCssIcon("oc-icon-24-module");
