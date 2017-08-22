@@ -29,6 +29,7 @@ package org.opencms.ui.apps.modules;
 
 import org.opencms.module.CmsModule;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.util.table.Column;
 
 import com.google.common.base.Strings;
@@ -98,7 +99,7 @@ public class CmsModuleRow {
      *
      * @return the module name
      */
-    @Column(header = Messages.GUI_MODULES_HEADER_NAME_0, width = 350, order = 1)
+    @Column(header = Messages.GUI_MODULES_HEADER_NAME_0, styleName = OpenCmsTheme.HOVER_COLUMN, width = 350, order = 1)
     public String getName() {
 
         return m_module.getName();
