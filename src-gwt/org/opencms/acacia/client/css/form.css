@@ -337,6 +337,10 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 	position: static; border:none
 }
 
+.attributeValue .mce-tinymce.mce-fullscreen .mce-edit-area, .attributeValue .mce-tinymce.mce-fullscreen .mce-edit-area > iframe {
+	height: 100% !important; 
+} 
+
 .attributeValue .mce-tinymce .mce-edit-area{
 	border-top: none;
 	background: transparent;
