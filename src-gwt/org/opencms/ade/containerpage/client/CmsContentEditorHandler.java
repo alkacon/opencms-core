@@ -184,7 +184,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     }
 
     /**
-     * Opens the XML content editor.<p>
+     * Opens the XML content editor, checking for if an edit handler is configured first.<p>
      *
      * @param editableData the data of the element to edit
      * @param isNew <code>true</code> if a new resource should be created
@@ -194,48 +194,61 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     public void openDialog(
         final I_CmsEditableData editableData,
         final boolean isNew,
-        String dependingElementId,
-        String mode) {
+        final String dependingElementId,
+        final String mode) {
 
         if (!m_editorOpened) {
             m_editorOpened = true;
             m_handler.disableToolbarButtons();
             m_handler.deactivateCurrentButton();
-            if ((editableData.getStructureId() != null) && !isNew) {
-                m_currentElementId = editableData.getStructureId().toString();
-            } else {
-                m_currentElementId = null;
-            }
-            m_dependingElementId = dependingElementId;
-            if (m_handler.m_controller.getData().isUseClassicEditor()) {
-                CmsContentEditorDialog.get().openEditDialog(editableData, isNew, mode, new DialogOptions(), this);
-            } else {
-                String newLink = null;
-                if (isNew) {
-                    newLink = editableData.getNewLink();
-                    // the new link is URL encoded twice, decode it
-                    newLink = URL.decodeQueryString(newLink);
-                    newLink = URL.decodeQueryString(newLink);
-                }
-                addEditingHistoryItem(isNew);
-                CmsContentEditor.getInstance().openFormEditor(
-                    getEditorContext(),
-                    CmsCoreProvider.get().getLocale(),
+
+            if (!isNew && (editableData.getStructureId() != null) && editableData.hasEditHandler()) {
+                m_handler.m_controller.getEditOptions(
                     editableData.getStructureId().toString(),
-                    newLink,
-                    null,
-                    editableData.getPostCreateHandler(),
-                    mode,
-                    m_handler.m_controller.getData().getMainLocale(),
-                    new Command() {
+                    new I_CmsSimpleCallback<CmsDialogOptions>() {
 
-                        public void execute() {
+                        public void execute(CmsDialogOptions editOptions) {
 
-                            addClosedEditorHistoryItem();
-                            onClose(editableData.getSitePath(), editableData.getStructureId(), isNew);
+                            final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
+
+                                public void execute(CmsUUID arg) {
+
+                                    I_CmsEditableData data = editableData;
+                                    if (!data.getStructureId().equals(arg)) {
+                                        // the content structure ID has changed, change the editableData
+                                        data = new CmsEditableData(data);
+                                        ((CmsEditableData)data).setStructureId(arg);
+                                    }
+                                    internalOpenDialog(data, isNew, dependingElementId, mode);
+                                }
+                            };
+                            if (editOptions.getOptions().size() == 1) {
+                                m_handler.m_controller.prepareForEdit(
+                                    editableData.getStructureId().toString(),
+                                    editOptions.getOptions().get(0).getValue(),
+                                    editCallBack);
+                            } else {
+                                CmsOptionDialog dialog = new CmsOptionDialog(
+                                    Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
+                                    editOptions,
+                                    new I_CmsSimpleCallback<String>() {
+
+                                        public void execute(String arg) {
+
+                                            m_handler.m_controller.prepareForEdit(
+                                                editableData.getStructureId().toString(),
+                                                arg,
+                                                editCallBack);
+                                        }
+                                    });
+                                dialog.center();
+                            }
                         }
                     });
+            } else {
+                internalOpenDialog(editableData, isNew, dependingElementId, mode);
             }
+
         } else {
             CmsDebugLog.getInstance().printLine("Editor is already being opened.");
         }
@@ -408,6 +421,58 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         } else {
             CmsDebugLog.getInstance().printLine("Editor is already being opened.");
         }
+    }
+
+    /**
+     * Opens the XML content editor internally.<p>
+     *
+     * @param editableData the data of the element to edit
+     * @param isNew <code>true</code> if a new resource should be created
+     * @param dependingElementId the id of a depending element
+     * @param mode the element creation mode
+     */
+    void internalOpenDialog(
+        final I_CmsEditableData editableData,
+        final boolean isNew,
+        String dependingElementId,
+        String mode) {
+
+        if ((editableData.getStructureId() != null) && !isNew) {
+            m_currentElementId = editableData.getStructureId().toString();
+        } else {
+            m_currentElementId = null;
+        }
+        m_dependingElementId = dependingElementId;
+        if (m_handler.m_controller.getData().isUseClassicEditor()) {
+            CmsContentEditorDialog.get().openEditDialog(editableData, isNew, mode, new DialogOptions(), this);
+        } else {
+            String newLink = null;
+            if (isNew) {
+                newLink = editableData.getNewLink();
+                // the new link is URL encoded twice, decode it
+                newLink = URL.decodeQueryString(newLink);
+                newLink = URL.decodeQueryString(newLink);
+            }
+            addEditingHistoryItem(isNew);
+            CmsContentEditor.getInstance().openFormEditor(
+                getEditorContext(),
+                CmsCoreProvider.get().getLocale(),
+                editableData.getStructureId().toString(),
+                newLink,
+                null,
+                editableData.getPostCreateHandler(),
+                mode,
+                m_handler.m_controller.getData().getMainLocale(),
+                new Command() {
+
+                    public void execute() {
+
+                        addClosedEditorHistoryItem();
+                        onClose(editableData.getSitePath(), editableData.getStructureId(), isNew);
+                    }
+                });
+        }
+
     }
 
     /**

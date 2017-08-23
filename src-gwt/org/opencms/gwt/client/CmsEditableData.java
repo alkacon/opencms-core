@@ -84,6 +84,27 @@ public class CmsEditableData implements I_CmsEditableData {
     }
 
     /**
+     * Copy constructor.<p>
+     *
+     * @param source the source to copy
+     */
+    public CmsEditableData(I_CmsEditableData source) {
+
+        m_contextId = source.getContextId();
+        m_editId = source.getEditId();
+        m_elementLanguage = source.getElementLanguage();
+        m_elementName = source.getElementName();
+        m_hasEditHandler = source.hasEditHandler();
+        m_newLink = source.getNewLink();
+        m_newTitle = source.getNewTitle();
+        m_noEditReason = source.getNoEditReason();
+        m_postCreateHandler = source.getPostCreateHandler();
+        m_sitePath = source.getSitePath();
+        m_structureId = source.getStructureId();
+        m_unreleaseOrExpired = source.isUnreleasedOrExpired();
+    }
+
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getContextId()
      */
     public String getContextId() {
