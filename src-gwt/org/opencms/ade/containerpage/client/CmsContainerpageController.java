@@ -1482,6 +1482,7 @@ public final class CmsContainerpageController {
                 getContainerpageService().getDeleteOptions(
                     clientId,
                     getData().getRpcContext().getPageStructureId(),
+                    getData().getRequestParams(),
                     this);
             }
 
@@ -1530,6 +1531,7 @@ public final class CmsContainerpageController {
                 getContainerpageService().getEditOptions(
                     clientId,
                     getData().getRpcContext().getPageStructureId(),
+                    getData().getRequestParams(),
                     this);
             }
 
@@ -1993,6 +1995,7 @@ public final class CmsContainerpageController {
                     clientId,
                     deleteOption,
                     getData().getRpcContext().getPageStructureId(),
+                    getData().getRequestParams(),
                     this);
             }
 
@@ -2445,6 +2448,7 @@ public final class CmsContainerpageController {
                     clientId,
                     editOption,
                     getData().getRpcContext().getPageStructureId(),
+                    getData().getRequestParams(),
                     this);
             }
 

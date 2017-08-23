@@ -708,17 +708,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getDeleteOptions(java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getDeleteOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsDialogOptions getDeleteOptions(String clientId, CmsUUID pageId) throws CmsRpcException {
+    public CmsDialogOptions getDeleteOptions(String clientId, CmsUUID pageId, String requestParams)
+    throws CmsRpcException {
 
         try {
             CmsResource pageResource = getCmsObject().readResource(pageId);
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
+            element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                return handler.getDeleteOptions(getCmsObject(), element);
+                return handler.getDeleteOptions(getCmsObject(), element, pageId, requestParams);
             }
         } catch (CmsException e) {
             error(e);
@@ -727,17 +729,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getEditOptions(java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getEditOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsDialogOptions getEditOptions(String clientId, CmsUUID pageId) throws CmsRpcException {
+    public CmsDialogOptions getEditOptions(String clientId, CmsUUID pageId, String requestParams)
+    throws CmsRpcException {
 
         try {
             CmsResource pageResource = getCmsObject().readResource(pageId);
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
+            element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                return handler.getEditOptions(getCmsObject(), element);
+                return handler.getEditOptions(getCmsObject(), element, pageId, requestParams);
             }
         } catch (CmsException e) {
             error(e);
@@ -1079,17 +1083,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#handleDelete(java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#handleDelete(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public void handleDelete(String clientId, String deleteOption, CmsUUID pageId) throws CmsRpcException {
+    public void handleDelete(String clientId, String deleteOption, CmsUUID pageId, String requestParams)
+    throws CmsRpcException {
 
         try {
             CmsResource pageResource = getCmsObject().readResource(pageId);
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
+            element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                handler.handleDelete(getCmsObject(), element, deleteOption);
+                handler.handleDelete(getCmsObject(), element, deleteOption, pageId, requestParams);
             }
         } catch (CmsException e) {
             error(e);
@@ -1340,17 +1346,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#prepareForEdit(java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#prepareForEdit(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsUUID prepareForEdit(String clientId, String editOption, CmsUUID pageId) throws CmsRpcException {
+    public CmsUUID prepareForEdit(String clientId, String editOption, CmsUUID pageId, String requestParams)
+    throws CmsRpcException {
 
         try {
             CmsResource pageResource = getCmsObject().readResource(pageId);
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
+            element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                return handler.prepareForEdit(getCmsObject(), element, editOption);
+                return handler.prepareForEdit(getCmsObject(), element, editOption, pageId, requestParams);
             }
         } catch (CmsException e) {
             error(e);

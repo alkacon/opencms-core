@@ -201,6 +201,10 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
         removeHighlighting();
         CmsDomUtil.ensureMouseOut(getElement());
         if (m_editableData.hasEditHandler()) {
+            final String elementId = ((m_editableData.getElementName() != null)
+                && m_editableData.getElementName().startsWith(m_editableData.getStructureId().toString()))
+                ? m_editableData.getElementName()
+                : m_editableData.getStructureId().toString();
             final I_CmsSimpleCallback<String> deleteCallback = new I_CmsSimpleCallback<String>() {
 
                 public void execute(String arg) {
@@ -208,40 +212,36 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
                     if (CmsDialogOptions.REGULAR_DELETE.equals(arg)) {
                         openWarningDialog();
                     } else {
-                        CmsContainerpageController.get().handleDelete(
-                            getContentId().toString(),
-                            arg,
-                            new I_CmsSimpleCallback<Void>() {
+                        CmsContainerpageController.get().handleDelete(elementId, arg, new I_CmsSimpleCallback<Void>() {
 
-                                public void execute(Void arg1) {
+                            public void execute(Void arg1) {
 
-                                    CmsContainerpageController.get().reloadElements(
-                                        new String[] {getParentResourceId()});
-                                }
-                            });
+                                CmsContainerpageController.get().reloadElements(new String[] {getParentResourceId()});
+                            }
+                        });
                     }
                 }
             };
 
-            CmsContainerpageController.get().getDeleteOptions(
-                getContentId().toString(),
-                new I_CmsSimpleCallback<CmsDialogOptions>() {
+            CmsContainerpageController.get().getDeleteOptions(elementId, new I_CmsSimpleCallback<CmsDialogOptions>() {
 
-                    public void execute(CmsDialogOptions arg) {
+                public void execute(CmsDialogOptions arg) {
 
-                        if (arg.getOptions().size() == 1) {
-                            String deleteOpt = arg.getOptions().get(0).getValue();
-                            deleteCallback.execute(deleteOpt);
+                    if (arg == null) {
+                        deleteCallback.execute(CmsDialogOptions.REGULAR_DELETE);
+                    } else if (arg.getOptions().size() == 1) {
+                        String deleteOpt = arg.getOptions().get(0).getValue();
+                        deleteCallback.execute(deleteOpt);
 
-                        } else {
-                            CmsOptionDialog dialog = new CmsOptionDialog(
-                                Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0),
-                                arg,
-                                deleteCallback);
-                            dialog.center();
-                        }
+                    } else {
+                        CmsOptionDialog dialog = new CmsOptionDialog(
+                            Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0),
+                            arg,
+                            deleteCallback);
+                        dialog.center();
                     }
-                });
+                }
+            });
         } else {
             openWarningDialog();
         }

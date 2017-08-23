@@ -38,6 +38,7 @@ import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -45,6 +46,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.util.Random;
 
@@ -180,6 +182,11 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
                 //                break;
             case 2: // enabled
                 try {
+                    CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(context.getRequest());
+                    CmsContainerElementBean element = contextBean.getElement();
+                    if ((element != null) && element.getId().equals(resourceInfo.getResource().getStructureId())) {
+                        params.m_element = element.editorHash();
+                    }
                     content = startDirectEditEnabled(params, resourceInfo);
                 } catch (JSONException e) {
                     throw new JspException(e);

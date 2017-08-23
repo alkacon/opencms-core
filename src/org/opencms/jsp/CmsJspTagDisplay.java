@@ -43,6 +43,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
@@ -56,6 +57,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -151,12 +153,14 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     element.initResource(cms);
                     element.initSettings(cms, formatter);
                     boolean openedEditable = false;
+                    contextBean.setElement(element);
                     if (editable && contextBean.getIsEditMode()) {
                         if (CmsJspTagEditable.getDirectEditProvider(context) == null) {
                             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
                             eb.init(cms, CmsDirectEditMode.TRUE, element.getSitePath());
                             request.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
                         }
+
                         openedEditable = CmsJspTagEdit.insertDirectEditStart(
                             cms,
                             context,
@@ -166,8 +170,10 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             null,
                             creationSiteMap,
                             postCreateHandler);
+                        CmsADESessionCache.getCache(
+                            (HttpServletRequest)(context.getRequest()),
+                            cms).setCacheContainerElement(element.editorHash(), element);
                     }
-                    contextBean.setElement(element);
                     try {
                         CmsJspTagInclude.includeTagAction(
                             context,

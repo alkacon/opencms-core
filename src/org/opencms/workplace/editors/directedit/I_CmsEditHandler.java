@@ -44,20 +44,32 @@ public interface I_CmsEditHandler {
      *
      * @param cms the cms context
      * @param elementBean the container element to be deleted
+     * @param pageContextId the structure id of the context containerpage
+     * @param requestParams the request parameters
      *
      * @return the available delete options
      */
-    CmsDialogOptions getDeleteOptions(CmsObject cms, CmsContainerElementBean elementBean);
+    CmsDialogOptions getDeleteOptions(
+        CmsObject cms,
+        CmsContainerElementBean elementBean,
+        CmsUUID pageContextId,
+        String requestParams);
 
     /**
      * Returns a map of edit options. The value being the option description displayed to the user.<p>
      *
      * @param cms the cms context
      * @param elementBean the container element to be edited
+     * @param pageContextId the structure id of the context containerpage
+     * @param requestParams the request parameters
      *
      * @return the available edit options
      */
-    CmsDialogOptions getEditOptions(CmsObject cms, CmsContainerElementBean elementBean);
+    CmsDialogOptions getEditOptions(
+        CmsObject cms,
+        CmsContainerElementBean elementBean,
+        CmsUUID pageContextId,
+        String requestParams);
 
     /**
      * Executes the actual delete.<p>
@@ -65,8 +77,15 @@ public interface I_CmsEditHandler {
      * @param cms the cms context
      * @param elementBean the container element to delete
      * @param deleteOption the selected delete option
+     * @param pageContextId the structure id of the context containerpage
+     * @param requestParams the request parameters
      */
-    void handleDelete(CmsObject cms, CmsContainerElementBean elementBean, String deleteOption);
+    void handleDelete(
+        CmsObject cms,
+        CmsContainerElementBean elementBean,
+        String deleteOption,
+        CmsUUID pageContextId,
+        String requestParams);
 
     /**
      * Prepares the resource to be edited.<p>
@@ -74,9 +93,16 @@ public interface I_CmsEditHandler {
      * @param cms the cms context
      * @param elementBean the container element to be edited
      * @param editOption the selected edit option
+     * @param pageContextId the structure id of the context containerpage
+     * @param requestParams the request parameters
      *
      * @return the structure id of the resource to be edited, may differ from the original element id
      */
-    CmsUUID prepareForEdit(CmsObject cms, CmsContainerElementBean elementBean, String editOption);
+    CmsUUID prepareForEdit(
+        CmsObject cms,
+        CmsContainerElementBean elementBean,
+        String editOption,
+        CmsUUID pageContextId,
+        String requestParams);
 
 }

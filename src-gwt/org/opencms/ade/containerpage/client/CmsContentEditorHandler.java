@@ -45,12 +45,14 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 
 /**
  * The container-page editor implementation of the XML content editor handler.<p>
@@ -108,6 +110,15 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             m_currentElementId = structureId.toString();
         }
         if (m_replaceElement != null) {
+            if ((m_handler.m_controller.getData().getDetailId() != null)
+                && m_replaceElement.getId().startsWith(m_handler.m_controller.getData().getDetailId().toString())) {
+                Window.Location.assign(
+                    CmsStringUtil.joinPaths(
+                        CmsCoreProvider.get().getVfsPrefix(),
+                        CmsContainerpageController.getCurrentUri(),
+                        CmsContainerpageController.getServerId(m_currentElementId)));
+            }
+
             m_handler.replaceElement(m_replaceElement, m_currentElementId);
 
             m_replaceElement = null;
@@ -203,48 +214,47 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             m_handler.deactivateCurrentButton();
 
             if (!isNew && (editableData.getStructureId() != null) && editableData.hasEditHandler()) {
-                m_handler.m_controller.getEditOptions(
-                    editableData.getStructureId().toString(),
-                    new I_CmsSimpleCallback<CmsDialogOptions>() {
+                final String elementId = ((editableData.getElementName() != null)
+                    && editableData.getElementName().startsWith(editableData.getStructureId().toString()))
+                    ? editableData.getElementName()
+                    : editableData.getStructureId().toString();
+                m_handler.m_controller.getEditOptions(elementId, new I_CmsSimpleCallback<CmsDialogOptions>() {
 
-                        public void execute(CmsDialogOptions editOptions) {
+                    public void execute(CmsDialogOptions editOptions) {
 
-                            final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
+                        final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
 
-                                public void execute(CmsUUID arg) {
+                            public void execute(CmsUUID arg) {
 
-                                    I_CmsEditableData data = editableData;
-                                    if (!data.getStructureId().equals(arg)) {
-                                        // the content structure ID has changed, change the editableData
-                                        data = new CmsEditableData(data);
-                                        ((CmsEditableData)data).setStructureId(arg);
-                                    }
-                                    internalOpenDialog(data, isNew, dependingElementId, mode);
+                                I_CmsEditableData data = editableData;
+                                if (!data.getStructureId().equals(arg)) {
+                                    // the content structure ID has changed, change the editableData
+                                    data = new CmsEditableData(data);
+                                    ((CmsEditableData)data).setStructureId(arg);
                                 }
-                            };
-                            if (editOptions.getOptions().size() == 1) {
-                                m_handler.m_controller.prepareForEdit(
-                                    editableData.getStructureId().toString(),
-                                    editOptions.getOptions().get(0).getValue(),
-                                    editCallBack);
-                            } else {
-                                CmsOptionDialog dialog = new CmsOptionDialog(
-                                    Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
-                                    editOptions,
-                                    new I_CmsSimpleCallback<String>() {
-
-                                        public void execute(String arg) {
-
-                                            m_handler.m_controller.prepareForEdit(
-                                                editableData.getStructureId().toString(),
-                                                arg,
-                                                editCallBack);
-                                        }
-                                    });
-                                dialog.center();
+                                internalOpenDialog(data, isNew, dependingElementId, mode);
                             }
+                        };
+                        if (editOptions.getOptions().size() == 1) {
+                            m_handler.m_controller.prepareForEdit(
+                                elementId,
+                                editOptions.getOptions().get(0).getValue(),
+                                editCallBack);
+                        } else {
+                            CmsOptionDialog dialog = new CmsOptionDialog(
+                                Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
+                                editOptions,
+                                new I_CmsSimpleCallback<String>() {
+
+                                    public void execute(String arg) {
+
+                                        m_handler.m_controller.prepareForEdit(elementId, arg, editCallBack);
+                                    }
+                                });
+                            dialog.center();
                         }
-                    });
+                    }
+                });
             } else {
                 internalOpenDialog(editableData, isNew, dependingElementId, mode);
             }

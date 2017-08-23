@@ -153,18 +153,28 @@ public interface I_CmsContainerpageServiceAsync {
      *
      * @param clientId the client element id
      * @param pageStructureId the current page structure id
+     * @param requestParams optional request parameters
      * @param callback the async callback
      */
-    void getDeleteOptions(String clientId, CmsUUID pageStructureId, AsyncCallback<CmsDialogOptions> callback);
+    void getDeleteOptions(
+        String clientId,
+        CmsUUID pageStructureId,
+        String requestParams,
+        AsyncCallback<CmsDialogOptions> callback);
 
     /**
      * Returns the edit options.<p>
      *
      * @param clientId the client element id
      * @param pageStructureId the current page structure id
+     * @param requestParams optional request parameters
      * @param callback the async callback
      */
-    void getEditOptions(String clientId, CmsUUID pageStructureId, AsyncCallback<CmsDialogOptions> callback);
+    void getEditOptions(
+        String clientId,
+        CmsUUID pageStructureId,
+        String requestParams,
+        AsyncCallback<CmsDialogOptions> callback);
 
     /**
      * This method is used for serialization purposes only.<p>
@@ -333,9 +343,15 @@ public interface I_CmsContainerpageServiceAsync {
      * @param clientId the client element id
      * @param deleteOption the selected delete option
      * @param pageStructureId the current page structure id
+     * @param requestParams optional request parameters
      * @param callback the asynchronous callback to execute with the results
      */
-    void handleDelete(String clientId, String deleteOption, CmsUUID pageStructureId, AsyncCallback<Void> callback);
+    void handleDelete(
+        String clientId,
+        String deleteOption,
+        CmsUUID pageStructureId,
+        String requestParams,
+        AsyncCallback<Void> callback);
 
     /**
      * Loads the clipboard tab to initially select.<p>
@@ -357,9 +373,15 @@ public interface I_CmsContainerpageServiceAsync {
      * @param clientId the client element id
      * @param editOption the selected delete option
      * @param pageStructureId the current page structure id
+     * @param requestParams optional request parameters
      * @param callback the async callback
      */
-    void prepareForEdit(String clientId, String editOption, CmsUUID pageStructureId, AsyncCallback<CmsUUID> callback);
+    void prepareForEdit(
+        String clientId,
+        String editOption,
+        CmsUUID pageStructureId,
+        String requestParams,
+        AsyncCallback<CmsUUID> callback);
 
     /**
      * Returns the element data to replace a given content element with another while keeping it's settings.<p>

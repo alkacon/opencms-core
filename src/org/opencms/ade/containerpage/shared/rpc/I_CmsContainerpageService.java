@@ -165,24 +165,28 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @param clientId the client element id
      * @param pageStructureId the current page structure id
+     * @param requestParams optional request parameters
      *
      * @return the delete options
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsDialogOptions getDeleteOptions(String clientId, CmsUUID pageStructureId) throws CmsRpcException;
+    CmsDialogOptions getDeleteOptions(String clientId, CmsUUID pageStructureId, String requestParams)
+    throws CmsRpcException;
 
     /**
      * Returns the edit options.<p>
      *
      * @param clientId the client element id
      * @param pageStructureId the current page structure id
+     * @param requestParams optional request parameters
      *
      * @return the edit options
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsDialogOptions getEditOptions(String clientId, CmsUUID pageStructureId) throws CmsRpcException;
+    CmsDialogOptions getEditOptions(String clientId, CmsUUID pageStructureId, String requestParams)
+    throws CmsRpcException;
 
     /**
      * This method is used for serialization purposes only.<p>
@@ -374,10 +378,12 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param clientId the client element id
      * @param deleteOption the selected delete option
      * @param pageStructureId the current page structure id
+     * @param requestParams optional request parameters
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    void handleDelete(String clientId, String deleteOption, CmsUUID pageStructureId) throws CmsRpcException;
+    void handleDelete(String clientId, String deleteOption, CmsUUID pageStructureId, String requestParams)
+    throws CmsRpcException;
 
     /**
      * Loads the index of the clipboard tab last selected by the user.<p>
@@ -401,12 +407,14 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param clientId the client element id
      * @param editOption the selected delete option
      * @param pageStructureId the current page structure id
+     * @param requestParams optional request parameters
      *
      * @return the structure ID of the content to edit
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsUUID prepareForEdit(String clientId, String editOption, CmsUUID pageStructureId) throws CmsRpcException;
+    CmsUUID prepareForEdit(String clientId, String editOption, CmsUUID pageStructureId, String requestParams)
+    throws CmsRpcException;
 
     /**
      * Returns the element data to replace a given content element with another while keeping it's settings.<p>
