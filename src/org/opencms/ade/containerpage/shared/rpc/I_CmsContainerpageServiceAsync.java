@@ -34,6 +34,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
+import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
@@ -146,6 +147,24 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the callback
      */
     void getContainerInfo(AsyncCallback<CmsContainer> callback);
+
+    /**
+     * Returns the delete options.<p>
+     *
+     * @param clientId the client element id
+     * @param pageStructureId the current page structure id
+     * @param callback the async callback
+     */
+    void getDeleteOptions(String clientId, CmsUUID pageStructureId, AsyncCallback<CmsDialogOptions> callback);
+
+    /**
+     * Returns the edit options.<p>
+     *
+     * @param clientId the client element id
+     * @param pageStructureId the current page structure id
+     * @param callback the async callback
+     */
+    void getEditOptions(String clientId, CmsUUID pageStructureId, AsyncCallback<CmsDialogOptions> callback);
 
     /**
      * This method is used for serialization purposes only.<p>
@@ -309,6 +328,16 @@ public interface I_CmsContainerpageServiceAsync {
     void getRemovedElementStatus(String id, CmsUUID containerpageId, AsyncCallback<CmsRemovedElementStatus> callback);
 
     /**
+     * Handles the element deletion.<p>
+     *
+     * @param clientId the client element id
+     * @param deleteOption the selected delete option
+     * @param pageStructureId the current page structure id
+     * @param callback the asynchronous callback to execute with the results
+     */
+    void handleDelete(String clientId, String deleteOption, CmsUUID pageStructureId, AsyncCallback<Void> callback);
+
+    /**
      * Loads the clipboard tab to initially select.<p>
      *
      * @param resultCallback the result callback
@@ -321,6 +350,40 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the async callback
      */
     void prefetch(AsyncCallback<CmsCntPageData> callback);
+
+    /**
+     * Prepares an element to be edited.<p>
+     *
+     * @param clientId the client element id
+     * @param editOption the selected delete option
+     * @param pageStructureId the current page structure id
+     * @param callback the async callback
+     */
+    void prepareForEdit(String clientId, String editOption, CmsUUID pageStructureId, AsyncCallback<CmsUUID> callback);
+
+    /**
+     * Returns the element data to replace a given content element with another while keeping it's settings.<p>
+     *
+     * @param  context the rpc context
+     * @param detailContentId the detail content structure id
+     * @param reqParams optional request parameters
+     * @param clientId the id of the element to replace
+     * @param replaceId the id of the replacing element
+     * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
+     * @param locale the content locale
+     * @param callback the async callback
+     */
+    void replaceElement(
+        CmsContainerPageRpcContext context,
+        CmsUUID detailContentId,
+        String reqParams,
+        String clientId,
+        String replaceId,
+        Collection<CmsContainer> containers,
+        boolean allowNested,
+        String locale,
+        AsyncCallback<CmsContainerElementData> callback);
 
     /**
      * Saves the selected clipboard tab.<p>

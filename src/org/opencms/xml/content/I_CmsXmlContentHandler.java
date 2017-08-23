@@ -39,6 +39,7 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsDefaultSet;
 import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
+import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
@@ -82,10 +83,10 @@ public interface I_CmsXmlContentHandler {
      * The available mapping types. Currently only available for searchsettings (using the "addto" attribute in the node &lt;solrfield&gt;).
      */
     public static enum MappingType {
-        /** map for the content's resource */
+        /** Map for the content's resource. */
         ELEMENT,
 
-        /** map for all container pages the content is placed on */
+        /** Map for all container pages the content is placed on. */
         PAGE
     }
 
@@ -233,6 +234,13 @@ public interface I_CmsXmlContentHandler {
      * @return the widgets display type
      */
     DisplayType getDisplayType(I_CmsXmlSchemaType type);
+
+    /**
+     * Returns the edit handler if configured.<p>
+     *
+     * @return the edit handler
+     */
+    I_CmsEditHandler getEditHandler();
 
     /**
      * Returns the editor change handlers.<p>

@@ -139,6 +139,11 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                 return structureId;
             }
 
+            public boolean hasEditHandler() {
+
+                return false;
+            }
+
             public boolean isUnreleasedOrExpired() {
 
                 return false;

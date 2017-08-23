@@ -272,6 +272,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** Parser for point positioning isntructions. */
     private PointPositioningParser m_positioningInstructionParser = new PointPositioningParser();
+    /** Indicates an edit handler is configured for the element resource type. */
+    private boolean m_hasEditHandler;
 
     /**
      * Constructor.<p>
@@ -289,6 +291,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param disableNewEditor flag to disable the new editor for this element
+     * @param hasEditHandler indicates an edit handler is configured for the element resource type
      * @param modelGroupId the model group id
      * @param wasModelGroup in case of a former copy model group
      * @param elementView the element view of the element
@@ -307,6 +310,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean hasWritePermission,
         boolean releasedAndNotExpired,
         boolean disableNewEditor,
+        boolean hasEditHandler,
         CmsUUID modelGroupId,
         boolean wasModelGroup,
         CmsUUID elementView) {
@@ -323,6 +327,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_disableNewEditor = disableNewEditor;
         m_modelGroupId = modelGroupId;
         m_wasModelGroup = wasModelGroup;
+        m_hasEditHandler = hasEditHandler;
         setViewPermission(hasViewPermission);
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
@@ -534,6 +539,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             return null;
         }
         return new CmsUUID(CmsContainerpageController.getServerId(m_clientId));
+    }
+
+    /**
+     * Indicates an edit handler is configured for the element resource type.<p>
+     *
+     * @return indicates an edit handler is configured for the element resource type
+     */
+    public boolean hasEditHandler() {
+
+        return m_hasEditHandler;
     }
 
     /**

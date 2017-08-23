@@ -297,6 +297,12 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHOW_LOCALE_0 = "GUI_SHOW_LOCALE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0 = "GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0 = "GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

@@ -861,6 +861,17 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Replaces the given element with another content while keeping it's settings.<p>
+     *
+     * @param element the element to replace
+     * @param elementId the id of the replacing content
+     */
+    public void replaceElement(CmsContainerPageElementPanel element, String elementId) {
+
+        m_controller.replaceElement(element, elementId);
+    }
+
+    /**
      * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
     public void resetEditableListButtons() {

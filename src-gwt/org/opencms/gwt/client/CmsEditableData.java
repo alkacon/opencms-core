@@ -72,6 +72,9 @@ public class CmsEditableData implements I_CmsEditableData {
     /** The unreleased or expired flag. */
     private boolean m_unreleaseOrExpired;
 
+    /** Indicates the availability of an edit handler for the content resource type. */
+    private boolean m_hasEditHandler;
+
     /**
      * Default constructor.<p>
      */
@@ -171,6 +174,14 @@ public class CmsEditableData implements I_CmsEditableData {
     }
 
     /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#hasEditHandler()
+     */
+    public boolean hasEditHandler() {
+
+        return m_hasEditHandler;
+    }
+
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#isUnreleasedOrExpired()
      */
     public boolean isUnreleasedOrExpired() {
@@ -217,6 +228,16 @@ public class CmsEditableData implements I_CmsEditableData {
     public void setElementName(String elementName) {
 
         m_elementName = elementName;
+    }
+
+    /**
+     * Sets the hasEditHandler.<p>
+     *
+     * @param hasEditHandler the hasEditHandler to set
+     */
+    public void setHasEditHandler(boolean hasEditHandler) {
+
+        m_hasEditHandler = hasEditHandler;
     }
 
     /**

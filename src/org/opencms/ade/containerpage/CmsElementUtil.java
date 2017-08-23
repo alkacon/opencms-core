@@ -661,7 +661,11 @@ public class CmsElementUtil {
             m_cms,
             elementBean.getResource());
         result.setNewEditorDisabled(newEditorDisabled);
-        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(resource);
+        String typeName = resourceType.getTypeName();
+        result.setHasEditHandler(
+            (resourceType instanceof CmsResourceTypeXmlContent)
+                && (((CmsResourceTypeXmlContent)resourceType).getEditHandler(m_cms) != null));
         result.setResourceType(typeName);
         result.setIconClasses(CmsIconUtil.getIconClasses(typeName, elementBean.getResource().getName(), false));
         CmsPermissionInfo permissionInfo;

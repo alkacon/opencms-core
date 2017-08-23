@@ -48,6 +48,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
+import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
@@ -1466,6 +1467,34 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the delete options for the given content element.<p>
+     *
+     * @param clientId the content id
+     * @param callback the callback to execute
+     */
+    public void getDeleteOptions(final String clientId, final I_CmsSimpleCallback<CmsDialogOptions> callback) {
+
+        CmsRpcAction<CmsDialogOptions> action = new CmsRpcAction<CmsDialogOptions>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().getDeleteOptions(
+                    clientId,
+                    getData().getRpcContext().getPageStructureId(),
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsDialogOptions result) {
+
+                callback.execute(result);
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Gets the DND controller.<p>
      *
      * @return the DND controller
@@ -1483,6 +1512,34 @@ public final class CmsContainerpageController {
     public CmsDNDHandler getDndHandler() {
 
         return m_dndHandler;
+    }
+
+    /**
+     * Returns the edit options for the given content element.<p>
+     *
+     * @param clientId the content id
+     * @param callback the callback to execute
+     */
+    public void getEditOptions(final String clientId, final I_CmsSimpleCallback<CmsDialogOptions> callback) {
+
+        CmsRpcAction<CmsDialogOptions> action = new CmsRpcAction<CmsDialogOptions>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().getEditOptions(
+                    clientId,
+                    getData().getRpcContext().getPageStructureId(),
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsDialogOptions result) {
+
+                callback.execute(result);
+            }
+        };
+        action.execute();
     }
 
     /**
@@ -1916,6 +1973,41 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Calls the edit handler to handle the delete action.<p>
+     *
+     * @param clientId the content client id
+     * @param deleteOption the selected delete option
+     * @param callback the callback to execute after the delete
+     */
+    public void handleDelete(
+        final String clientId,
+        final String deleteOption,
+        final I_CmsSimpleCallback<Void> callback) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().handleDelete(
+                    clientId,
+                    deleteOption,
+                    getData().getRpcContext().getPageStructureId(),
+                    this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                if (callback != null) {
+                    callback.execute(result);
+                }
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Returns if the selection button is active.<p>
      *
      * @return <code>true</code> if the selection button is active
@@ -2333,6 +2425,39 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Calls the edit handler to prepare the given content element for editing.<p>
+     *
+     * @param clientId the element id
+     * @param editOption the selected edit option
+     * @param callback the callback to execute
+     */
+    public void prepareForEdit(
+        final String clientId,
+        final String editOption,
+        final I_CmsSimpleCallback<CmsUUID> callback) {
+
+        CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().prepareForEdit(
+                    clientId,
+                    editOption,
+                    getData().getRpcContext().getPageStructureId(),
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsUUID result) {
+
+                callback.execute(result);
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Reinitializes the buttons in the container element menus.<p>
      */
     public void reinitializeButtons() {
@@ -2627,6 +2752,70 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Replaces the given element with another content while keeping it's settings.<p>
+     *
+     * @param elementWidget the element to replace
+     * @param elementId the id of the replacing content
+     */
+    public void replaceElement(final CmsContainerPageElementPanel elementWidget, final String elementId) {
+
+        final CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+
+            @Override
+            public void execute() {
+
+                start(500, true);
+                getContainerpageService().replaceElement(
+                    getData().getRpcContext(),
+                    getData().getDetailId(),
+                    getRequestParams(),
+                    elementWidget.getId(),
+                    elementId,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
+                    getLocale(),
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsContainerElementData result) {
+
+                stop(false);
+                CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
+                setPageChanged(false, false);
+                if (result != null) {
+                    // cache the loaded element
+                    m_elements.put(result.getClientId(), result);
+                    try {
+                        replaceContainerElement(elementWidget, result);
+                        resetEditButtons();
+                        addToRecentList(result.getClientId(), null);
+                    } catch (Exception e) {
+                        // should never happen
+                        CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
+                    }
+                }
+            }
+        };
+
+        if (!isGroupcontainerEditing()) {
+
+            lockContainerpage(new I_CmsSimpleCallback<Boolean>() {
+
+                public void execute(Boolean arg) {
+
+                    if (arg.booleanValue()) {
+                        action.execute();
+                    }
+                }
+            });
+
+        } else {
+            action.execute();
+        }
+    }
+
+    /**
      * Checks whether the given element should display the option bar.<p>
      *
      * @param element the element
@@ -2811,7 +3000,7 @@ public final class CmsContainerpageController {
                  */
                 @Override
                 public void execute() {
-                    
+
                     start(500, true);
                     if (getData().getDetailContainerPage() != null) {
                         getContainerpageService().saveDetailContainers(

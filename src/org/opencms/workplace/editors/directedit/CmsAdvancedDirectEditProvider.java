@@ -30,6 +30,8 @@ package org.opencms.workplace.editors.directedit;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
@@ -271,7 +273,12 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         }
         editableData.put(CmsEditorConstants.ATTR_POST_CREATE_HANDLER, params.getPostCreateHandler());
         CmsUUID viewId = CmsUUID.getNullUUID();
+        boolean hasEditHandler = false;
         if ((resourceInfo.getResource() != null) && resourceInfo.getResource().isFile()) {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resourceInfo.getResource());
+            if (type instanceof CmsResourceTypeXmlContent) {
+                hasEditHandler = ((CmsResourceTypeXmlContent)type).getEditHandler(m_cms) != null;
+            }
             CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
                 m_cms,
                 resourceInfo.getResource().getRootPath());
@@ -282,7 +289,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             }
         }
         editableData.put(CmsEditorConstants.ATTR_ELEMENT_VIEW, viewId);
-
+        editableData.put("hasEditHandler", hasEditHandler);
         if (m_lastPermissionMode == 1) {
 
             try {

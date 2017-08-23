@@ -255,7 +255,9 @@
 		<xsd:attribute name="error" type="xsd:string" use="optional" />
 	</xsd:complexType>
 
-	
+	<xsd:complexType name="OpenCmsDefaultAppinfoEditHandler">
+		<xsd:attribute name="class" type="xsd:string" />
+	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoTemplates">
 		<xsd:sequence>

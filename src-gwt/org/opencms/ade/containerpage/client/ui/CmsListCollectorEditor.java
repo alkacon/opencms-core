@@ -28,7 +28,9 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
@@ -36,6 +38,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -85,10 +88,9 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
         add(favButton);
         favButton.addClickHandler(new ClickHandler() {
 
-            @SuppressWarnings("synthetic-access")
             public void onClick(ClickEvent event) {
 
-                CmsContainerpageController.get().getHandler().addToFavorites("" + m_editableData.getStructureId());
+                CmsContainerpageController.get().getHandler().addToFavorites(getContentId().toString());
             }
         });
         return favButton;
@@ -198,7 +200,51 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
         removeHighlighting();
         CmsDomUtil.ensureMouseOut(getElement());
-        openWarningDialog();
+        if (m_editableData.hasEditHandler()) {
+            final I_CmsSimpleCallback<String> deleteCallback = new I_CmsSimpleCallback<String>() {
+
+                public void execute(String arg) {
+
+                    if (CmsDialogOptions.REGULAR_DELETE.equals(arg)) {
+                        openWarningDialog();
+                    } else {
+                        CmsContainerpageController.get().handleDelete(
+                            getContentId().toString(),
+                            arg,
+                            new I_CmsSimpleCallback<Void>() {
+
+                                public void execute(Void arg1) {
+
+                                    CmsContainerpageController.get().reloadElements(
+                                        new String[] {getParentResourceId()});
+                                }
+                            });
+                    }
+                }
+            };
+
+            CmsContainerpageController.get().getDeleteOptions(
+                getContentId().toString(),
+                new I_CmsSimpleCallback<CmsDialogOptions>() {
+
+                    public void execute(CmsDialogOptions arg) {
+
+                        if (arg.getOptions().size() == 1) {
+                            String deleteOpt = arg.getOptions().get(0).getValue();
+                            deleteCallback.execute(deleteOpt);
+
+                        } else {
+                            CmsOptionDialog dialog = new CmsOptionDialog(
+                                Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0),
+                                arg,
+                                deleteCallback);
+                            dialog.center();
+                        }
+                    }
+                });
+        } else {
+            openWarningDialog();
+        }
         m_delete.clearHoverState();
     }
 
@@ -274,6 +320,26 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             }
         };
         dialog.loadAndShow(callback);
+    }
+
+    /**
+     * Returns the edit content id.<p>
+     *
+     * @return the content id
+     */
+    CmsUUID getContentId() {
+
+        return m_editableData.getStructureId();
+    }
+
+    /**
+     * Returns the parent resource id.<p>
+     *
+     * @return the parent resource id
+     */
+    String getParentResourceId() {
+
+        return m_parentResourceId;
     }
 
     /**

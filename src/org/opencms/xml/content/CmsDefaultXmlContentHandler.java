@@ -79,6 +79,7 @@ import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsXmlContentWidgetVisitor;
+import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -316,6 +317,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "defaults" appinfo element name. */
     public static final String APPINFO_DEFAULTS = "defaults";
+
+    /** Constant for the "edithandler" appinfo element name. */
+    public static final String APPINFO_EDIT_HANDLER = "edithandler";
 
     /** Constant for the "editorchangehandler" appinfo element name. */
     public static final String APPINFO_EDITOR_CHANGE_HANDLER = "editorchangehandler";
@@ -671,6 +675,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The elements to display in ncompact view. */
     private HashMap<String, DisplayType> m_displayTypes;
 
+    /** An optional edit handler. */
+    private I_CmsEditHandler m_editHandler;
+
     /** The editor change handlers. */
     private List<I_CmsXmlContentEditorChangeHandler> m_editorChangeHandlers;
 
@@ -872,6 +879,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         } else {
             return DisplayType.none;
         }
+    }
+
+    /**
+     * Returns the edit handler if configured.<p>
+     *
+     * @return the edit handler
+     */
+    public I_CmsEditHandler getEditHandler() {
+
+        return m_editHandler;
     }
 
     /**
@@ -1205,6 +1222,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initHeadIncludes(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_SETTINGS)) {
                     initSettings(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_EDIT_HANDLER)) {
+                    initEditHandler(element);
                 } else if (nodeName.equals(APPINFO_TEMPLATES)) {
                     initTemplates(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_DEFAULTWIDGET)) {
@@ -2110,6 +2129,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             m_defaultWidgetInstance = (I_CmsComplexWidget)(Class.forName(m_defaultWidget).newInstance());
         } catch (Exception e) {
             LOG.error(e);
+        }
+    }
+
+    /**
+     * Initializes the edit handler.<p>
+     *
+     * @param handlerElement the edit handler element
+     */
+    protected void initEditHandler(Element handlerElement) {
+
+        String editHandlerClass = handlerElement.attributeValue(APPINFO_ATTR_CLASS);
+        try {
+            m_editHandler = (I_CmsEditHandler)Class.forName(editHandlerClass).newInstance();
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
         }
     }
 

@@ -34,6 +34,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
+import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
@@ -158,6 +159,30 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @return container info
      */
     CmsContainer getContainerInfo();
+
+    /**
+     * Returns the delete options.<p>
+     *
+     * @param clientId the client element id
+     * @param pageStructureId the current page structure id
+     *
+     * @return the delete options
+     *
+     * @throws CmsRpcException in case something goes wrong
+     */
+    CmsDialogOptions getDeleteOptions(String clientId, CmsUUID pageStructureId) throws CmsRpcException;
+
+    /**
+     * Returns the edit options.<p>
+     *
+     * @param clientId the client element id
+     * @param pageStructureId the current page structure id
+     *
+     * @return the edit options
+     *
+     * @throws CmsRpcException in case something goes wrong
+     */
+    CmsDialogOptions getEditOptions(String clientId, CmsUUID pageStructureId) throws CmsRpcException;
 
     /**
      * This method is used for serialization purposes only.<p>
@@ -344,6 +369,17 @@ public interface I_CmsContainerpageService extends RemoteService {
     CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException;
 
     /**
+     * Handles the element deletion.<p>
+     *
+     * @param clientId the client element id
+     * @param deleteOption the selected delete option
+     * @param pageStructureId the current page structure id
+     *
+     * @throws CmsRpcException in case something goes wrong
+     */
+    void handleDelete(String clientId, String deleteOption, CmsUUID pageStructureId) throws CmsRpcException;
+
+    /**
      * Loads the index of the clipboard tab last selected by the user.<p>
      *
      * @return the clipboard tab index
@@ -358,6 +394,46 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     CmsCntPageData prefetch() throws CmsRpcException;
+
+    /**
+     * Prepares an element to be edited.<p>
+     *
+     * @param clientId the client element id
+     * @param editOption the selected delete option
+     * @param pageStructureId the current page structure id
+     *
+     * @return the structure ID of the content to edit
+     *
+     * @throws CmsRpcException in case something goes wrong
+     */
+    CmsUUID prepareForEdit(String clientId, String editOption, CmsUUID pageStructureId) throws CmsRpcException;
+
+    /**
+     * Returns the element data to replace a given content element with another while keeping it's settings.<p>
+     *
+     * @param  context the rpc context
+     * @param detailContentId the detail content structure id
+     * @param reqParams optional request parameters
+     * @param clientId the id of the element to replace
+     * @param replaceId the id of the replacing element
+     * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
+     * @param locale the content locale
+     *
+     * @return the element data
+     *
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    CmsContainerElementData replaceElement(
+        CmsContainerPageRpcContext context,
+        CmsUUID detailContentId,
+        String reqParams,
+        String clientId,
+        String replaceId,
+        Collection<CmsContainer> containers,
+        boolean allowNested,
+        String locale)
+    throws CmsRpcException;
 
     /**
      * Saves the index of the clipboard tab selected by the user.<p>

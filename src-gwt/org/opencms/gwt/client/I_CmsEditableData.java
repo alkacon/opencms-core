@@ -107,6 +107,13 @@ public interface I_CmsEditableData {
     CmsUUID getStructureId();
 
     /**
+     * Returns whether an edit handler is available for the resource type.<p>
+     *
+     * @return <code>true</code> if an edit handler is available for the resource type
+     */
+    boolean hasEditHandler();
+
+    /**
      * Returns if the given resource is unreleased or expired.<p>
      *
      * @return <code>true</code> if the given resource is unreleased or expired

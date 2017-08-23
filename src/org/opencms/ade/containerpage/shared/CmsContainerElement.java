@@ -129,6 +129,9 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     /** The element view this element belongs to by it's type. */
     private CmsUUID m_elementView;
 
+    /** Indicates an edit handler is configured for the given resource type. */
+    private boolean m_hasEditHandler;
+
     /** Flag to indicate that this element may have settings. */
     private boolean m_hasSettings;
 
@@ -320,6 +323,16 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     }
 
     /**
+     * Returns if an edit handler is configured for the given resource type.<p>
+     *
+     * @return <code>true</code> if an edit handler is configured for the given resource type
+     */
+    public boolean hasEditHandler() {
+
+        return m_hasEditHandler;
+    }
+
+    /**
      * Returns if the element may have settings.<p>
      *
      * @param containerId the container id
@@ -492,6 +505,16 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     public void setElementView(CmsUUID elementView) {
 
         m_elementView = elementView;
+    }
+
+    /**
+     * Sets the if an edit handler is configured for the given resource type.<p>
+     *
+     * @param hasEditHandler if an edit handler is configured for the given resource type
+     */
+    public void setHasEditHandler(boolean hasEditHandler) {
+
+        m_hasEditHandler = hasEditHandler;
     }
 
     /**

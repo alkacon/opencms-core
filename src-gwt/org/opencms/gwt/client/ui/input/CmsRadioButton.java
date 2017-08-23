@@ -198,7 +198,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
     /**
      * Sets the group for this radio button.<p>
      *
-     * @param group
+     * @param group the radio button group
      */
     public void setGroup(CmsRadioButtonGroup group) {
 

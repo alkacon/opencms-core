@@ -55,8 +55,8 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @return the data object
      */
     public static native CmsEditableDataJSO parseEditableData(String jsonText) /*-{
-                                                                               return eval('(' + jsonText + ')');
-                                                                               }-*/;
+        return eval('(' + jsonText + ')');
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getContextId()
@@ -70,22 +70,22 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @see org.opencms.gwt.client.I_CmsEditableData#getEditId()
      */
     public native String getEditId() /*-{
-                                     return this.editId ? this.editId : "";
-                                     }-*/;
+        return this.editId ? this.editId : "";
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getElementLanguage()
      */
     public native String getElementLanguage() /*-{
-                                              return this.elementlanguage ? this.elementlanguage : "";
-                                              }-*/;
+        return this.elementlanguage ? this.elementlanguage : "";
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getElementName()
      */
     public native String getElementName() /*-{
-                                          return this.elementname ? this.elementname : "";
-                                          }-*/;
+        return this.elementname ? this.elementname : "";
+    }-*/;
 
     /**
      * Gets the element view.<p>
@@ -105,26 +105,26 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @see org.opencms.gwt.client.I_CmsEditableData#getNewLink()
      */
     public native String getNewLink() /*-{
-                                      return this.newlink ? this.newlink : "";
-                                      }-*/;
+        return this.newlink ? this.newlink : "";
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getNewTitle()
      */
     public native String getNewTitle() /*-{
-                                       return this.newtitle ? this.newtitle : "";
-                                       }-*/;
+        return this.newtitle ? this.newtitle : "";
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getNoEditReason()
      */
     public native String getNoEditReason() /*-{
 
-                                           if (this.noEditReason)
-                                           return this.noEditReason;
-                                           else
-                                           return null;
-                                           }-*/;
+        if (this.noEditReason)
+            return this.noEditReason;
+        else
+            return null;
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getPostCreateHandler()
@@ -138,8 +138,8 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @see org.opencms.gwt.client.I_CmsEditableData#getSitePath()
      */
     public native String getSitePath() /*-{
-                                       return this.sitePath ? this.sitePath : "";
-                                       }-*/;
+        return this.sitePath ? this.sitePath : "";
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getStructureId()
@@ -155,8 +155,8 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @return <code>true</code> if the delete button should be present
      */
     public native boolean hasDelete() /*-{
-                                      return this.hasDelete;
-                                      }-*/;
+        return this.hasDelete;
+    }-*/;
 
     /**
      * Returns if the edit button should be present.<p>
@@ -164,8 +164,16 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @return <code>true</code> if the edit button should be present
      */
     public native boolean hasEdit() /*-{
-                                    return this.hasEdit;
-                                    }-*/;
+        return this.hasEdit;
+    }-*/;
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#hasEditHandler()
+     */
+    public native boolean hasEditHandler() /*-{
+
+        return this.hasEditHandler;
+    }-*/;
 
     /**
      * Returns if the new button should be present.<p>
@@ -173,23 +181,23 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @return <code>true</code> if the new button should be present
      */
     public native boolean hasNew() /*-{
-                                   return this.hasNew;
-                                   }-*/;
+        return this.hasNew;
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#isUnreleasedOrExpired()
      */
     public native boolean isUnreleasedOrExpired() /*-{
-                                                  return this.unreleaseOrExpired;
-                                                  }-*/;
+        return this.unreleaseOrExpired;
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#setSitePath(java.lang.String)
      */
     public native void setSitePath(String sitePath) /*-{
 
-                                                    this.sitePath = sitePath;
-                                                    }-*/;
+        this.sitePath = sitePath;
+    }-*/;
 
     /**
      * Reads an attribute of the underlying Javascript object as a string.<p>
@@ -199,8 +207,8 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @return the string contained in the given attribute
      */
     private native String getString(String attribute) /*-{
-                                                      return this[attribute];
-                                                      }-*/;
+        return this[attribute];
+    }-*/;
 
     /**
      * Returns the structure id as string.<p>
@@ -208,7 +216,7 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @return the structure id as string
      */
     private native String nativeGetStructureId() /*-{
-                                                 return this.structureId ? this.structureId : "";
-                                                 }-*/;
+        return this.structureId ? this.structureId : "";
+    }-*/;
 
 }

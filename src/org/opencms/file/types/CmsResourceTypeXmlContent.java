@@ -53,8 +53,10 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
+import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContent;
@@ -296,6 +298,29 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             result.put(CONFIGURATION_SCHEMA, m_schema);
         }
         return result;
+    }
+
+    /**
+     * Returns the edit handler if configured.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return the edit handler
+     */
+    public I_CmsEditHandler getEditHandler(CmsObject cms) {
+
+        String schema = getSchema();
+
+        try {
+            CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+            // get the content handler for the resource type to create
+            I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();
+            return handler.getEditHandler();
+
+        } catch (CmsXmlException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     /**
