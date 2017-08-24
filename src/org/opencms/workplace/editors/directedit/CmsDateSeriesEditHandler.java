@@ -128,7 +128,7 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                 CmsResource res = elementBean.getResource();
                 m_file = cms.readFile(res);
                 m_content = CmsXmlContentFactory.unmarshal(cms, m_file);
-                m_contentValue = getSerialDateContentValue(m_content, cms.getRequestContext().getLocale());
+                m_contentValue = getSerialDateContentValue(m_content, null);
                 m_value = m_contentValue != null ? new CmsSerialDateValue(m_contentValue.getStringValue(cms)) : null;
                 m_series = CmsSerialDateBeanFactory.createSerialDateBean(m_value);
                 setInstanceDate();
@@ -275,7 +275,11 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                 try {
                     m_cms.lockResource(m_file);
                     m_value.addException(m_instanceDate);
-                    m_contentValue.setStringValue(m_cms, m_value.toString());
+                    String stringValue = m_value.toString();
+                    for (Locale l : m_content.getLocales()) {
+                        I_CmsXmlContentValue contentValue = getSerialDateContentValue(m_content, l);
+                        contentValue.setStringValue(m_cms, stringValue);
+                    }
                     m_file.setContents(m_content.marshal());
                     m_cms.writeFile(m_file);
                     m_cms.unlockResource(m_file);
@@ -317,9 +321,6 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                     m_cms.copyResource(oldSitePath, newSitePath);
                     CmsFile newFile = m_cms.readFile(newSitePath);
                     CmsXmlContent newContent = CmsXmlContentFactory.unmarshal(m_cms, newFile);
-                    I_CmsXmlContentValue newContentValue = getSerialDateContentValue(
-                        newContent,
-                        m_cms.getRequestContext().getLocale());
                     CmsSerialDateValue newValue = new CmsSerialDateValue();
                     newValue.setStart(m_instanceDate);
                     if (m_series.getEventDuration() != null) {
@@ -328,7 +329,11 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                     newValue.setParentSeriesId(m_file.getStructureId());
                     newValue.setWholeDay(Boolean.valueOf(m_value.isWholeDay()));
                     newValue.setPatternType(PatternType.NONE);
-                    newContentValue.setStringValue(m_cms, newValue.toString());
+                    String newValueString = newValue.toString();
+                    for (Locale l : newContent.getLocales()) {
+                        I_CmsXmlContentValue newContentValue = getSerialDateContentValue(newContent, l);
+                        newContentValue.setStringValue(m_cms, newValueString);
+                    }
                     newFile.setContents(newContent.marshal());
                     m_cms.writeFile(newFile);
                     m_cms.unlockResource(newFile);
@@ -359,6 +364,9 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
          */
         private I_CmsXmlContentValue getSerialDateContentValue(CmsXmlContent content, Locale locale) {
 
+            if ((null == locale) && !content.getLocales().isEmpty()) {
+                locale = content.getLocales().get(0);
+            }
             for (I_CmsXmlContentValue value : content.getValues(locale)) {
                 if (value.getTypeName().equals(CmsXmlSerialDateValue.TYPE_NAME)) {
                     return value;
