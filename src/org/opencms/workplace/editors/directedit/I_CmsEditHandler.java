@@ -33,6 +33,8 @@ import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 
+import java.util.Map;
+
 /**
  * Edit handlers are optional and can be configured within the XSD-schema of a resource type.<p>
  * Edit handlers may be used to enhance content editing within the container page editor.
@@ -54,7 +56,7 @@ public interface I_CmsEditHandler {
         CmsObject cms,
         CmsContainerElementBean elementBean,
         CmsUUID pageContextId,
-        String requestParams);
+        Map<String, String[]> requestParams);
 
     /**
      * Returns a map of edit options. The value being the option description displayed to the user.<p>
@@ -71,7 +73,7 @@ public interface I_CmsEditHandler {
         CmsObject cms,
         CmsContainerElementBean elementBean,
         CmsUUID pageContextId,
-        String requestParams,
+        Map<String, String[]> requestParams,
         boolean isListElement);
 
     /**
@@ -90,7 +92,7 @@ public interface I_CmsEditHandler {
         CmsContainerElementBean elementBean,
         String deleteOption,
         CmsUUID pageContextId,
-        String requestParams)
+        Map<String, String[]> requestParams)
     throws CmsException;
 
     /**
@@ -111,7 +113,7 @@ public interface I_CmsEditHandler {
         CmsContainerElementBean elementBean,
         String editOption,
         CmsUUID pageContextId,
-        String requestParams)
+        Map<String, String[]> requestParams)
     throws CmsException;
 
 }

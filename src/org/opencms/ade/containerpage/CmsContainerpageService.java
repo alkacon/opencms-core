@@ -84,6 +84,7 @@ import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
@@ -720,7 +721,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                return handler.getDeleteOptions(getCmsObject(), element, pageId, requestParams);
+                Map<String, String[]> params = CmsRequestUtil.createParameterMap(
+                    CmsEncoder.decode(requestParams),
+                    true,
+                    CmsEncoder.ENCODING_UTF_8);
+                return handler.getDeleteOptions(getCmsObject(), element, pageId, params);
             }
         } catch (CmsException e) {
             error(e);
@@ -741,7 +746,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                return handler.getEditOptions(getCmsObject(), element, pageId, requestParams, isListElement);
+                Map<String, String[]> params = CmsRequestUtil.createParameterMap(
+                    CmsEncoder.decode(requestParams),
+                    true,
+                    CmsEncoder.ENCODING_UTF_8);
+                return handler.getEditOptions(getCmsObject(), element, pageId, params, isListElement);
             }
         } catch (CmsException e) {
             error(e);
@@ -1095,7 +1104,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                handler.handleDelete(getCmsObject(), element, deleteOption, pageId, requestParams);
+                Map<String, String[]> params = CmsRequestUtil.createParameterMap(
+                    CmsEncoder.decode(requestParams),
+                    true,
+                    CmsEncoder.ENCODING_UTF_8);
+                handler.handleDelete(getCmsObject(), element, deleteOption, pageId, params);
             }
         } catch (CmsException e) {
             error(e);
@@ -1358,7 +1371,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                return handler.prepareForEdit(getCmsObject(), element, editOption, pageId, requestParams);
+                Map<String, String[]> params = CmsRequestUtil.createParameterMap(
+                    CmsEncoder.decode(requestParams),
+                    true,
+                    CmsEncoder.ENCODING_UTF_8);
+                return handler.prepareForEdit(getCmsObject(), element, editOption, pageId, params);
             }
         } catch (CmsException e) {
             error(e);
@@ -1407,7 +1424,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 settings,
                 elementBean.isCreateNew());
             getSessionCache().setCacheContainerElement(replaceBean.editorHash(), replaceBean);
-            element = elemUtil.getElementData(pageResource, elementBean, containers, allowNested);
+            element = elemUtil.getElementData(pageResource, replaceBean, containers, allowNested);
         } catch (Throwable e) {
             error(e);
         }

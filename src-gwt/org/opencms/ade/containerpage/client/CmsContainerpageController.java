@@ -2755,9 +2755,6 @@ public final class CmsContainerpageController {
             parentContainer.insert(replacer, parentContainer.getWidgetIndex(containerElement));
             containerElement.removeFromParent();
             initializeSubContainers(replacer);
-            CmsDebugLog.consoleLog("Element replaced");
-        } else {
-            CmsDebugLog.consoleLog("No content found for container " + containerId);
         }
         cleanUpContainers();
         return replacer;
