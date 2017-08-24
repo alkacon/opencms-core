@@ -60,191 +60,12 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
     }
 
     /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#addWeekOfMonth(org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth)
-     */
-    @Override
-    public void addWeekOfMonth(WeekOfMonth week) {
-
-        super.addWeekOfMonth(week);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#clearExceptions()
-     */
-    @Override
-    public void clearExceptions() {
-
-        super.clearExceptions();
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#clearIndividualDates()
-     */
-    @Override
-    public void clearIndividualDates() {
-
-        super.clearIndividualDates();
-
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#clearWeekDays()
-     */
-    @Override
-    public void clearWeekDays() {
-
-        super.clearWeekDays();
-
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#clearWeeksOfMonth()
-     */
-    @Override
-    public void clearWeeksOfMonth() {
-
-        super.clearWeeksOfMonth();
-
-    }
-
-    /**
      * @see org.opencms.acacia.client.widgets.serialdate.I_CmsObservableSerialDateValue#registerValueChangeObserver(org.opencms.acacia.client.widgets.serialdate.I_CmsSerialDateValueChangeObserver)
      */
     public void registerValueChangeObserver(I_CmsSerialDateValueChangeObserver obs) {
 
         m_valueChangeObservers.add(obs);
 
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#removeWeekOfMonth(org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth)
-     */
-    @Override
-    public void removeWeekOfMonth(WeekOfMonth week) {
-
-        super.removeWeekOfMonth(week);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setDayOfMonth(int)
-     */
-    @Override
-    public void setDayOfMonth(int dayOfMonth) {
-
-        super.setDayOfMonth(dayOfMonth);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setEnd(java.util.Date)
-     */
-    @Override
-    public void setEnd(Date date) {
-
-        super.setEnd(date);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setEndType(org.opencms.acacia.shared.I_CmsSerialDateValue.EndType)
-     */
-    @Override
-    public void setEndType(EndType endType) {
-
-        super.setEndType(endType);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setEveryWorkingDay(java.lang.Boolean)
-     */
-    @Override
-    public void setEveryWorkingDay(Boolean isEveryWorkingDay) {
-
-        super.setEveryWorkingDay(isEveryWorkingDay);
-
-    }
-
-    /**
-     * Set dates where the event should not take place, even if they are part of the series.
-     * @param dates dates to set.
-     */
-    @Override
-    public void setExceptions(SortedSet<Date> dates) {
-
-        super.setExceptions(dates);
-
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setIndividualDates(java.util.SortedSet)
-     */
-    @Override
-    public void setIndividualDates(SortedSet<Date> dates) {
-
-        super.setIndividualDates(dates);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setInterval(int)
-     */
-    @Override
-    public void setInterval(int interval) {
-
-        super.setInterval(interval);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setMonth(org.opencms.acacia.shared.I_CmsSerialDateValue.Month)
-     */
-    @Override
-    public void setMonth(Month month) {
-
-        super.setMonth(month);
-
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setOccurrences(int)
-     */
-    @Override
-    public void setOccurrences(int occurrences) {
-
-        super.setOccurrences(occurrences);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setOriginalSeriesContent(org.opencms.util.CmsUUID)
-     */
-    @Override
-    public void setOriginalSeriesContent(CmsUUID structureId) {
-
-        super.setOriginalSeriesContent(structureId);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setPatternType(org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType)
-     */
-    @Override
-    public void setPatternType(PatternType type) {
-
-        super.setPatternType(type);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setSeriesEndDate(java.util.Date)
-     */
-    @Override
-    public void setSeriesEndDate(Date date) {
-
-        super.setSeriesEndDate(date);
-
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setStart(java.util.Date)
-     */
-    @Override
-    public void setStart(Date date) {
-
-        super.setStart(date);
     }
 
     /**
@@ -264,53 +85,6 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
             }
         }
         notifyOnValueChange();
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWeekDay(org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay)
-     */
-    @Override
-    public void setWeekDay(WeekDay weekDay) {
-
-        super.setWeekDay(weekDay);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWeekDays(java.util.SortedSet)
-     */
-    @Override
-    public void setWeekDays(SortedSet<WeekDay> weekDays) {
-
-        super.setWeekDays(weekDays);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWeekOfMonth(org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth)
-     */
-    @Override
-    public void setWeekOfMonth(WeekOfMonth weekOfMonth) {
-
-        super.setWeekOfMonth(weekOfMonth);
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWeeksOfMonth(java.util.SortedSet)
-     */
-    @Override
-    public void setWeeksOfMonth(SortedSet<WeekOfMonth> weeksOfMonth) {
-
-        super.setWeeksOfMonth(weeksOfMonth);
-
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.A_CmsSerialDateValue#setWholeDay(java.lang.Boolean)
-     */
-    @Override
-    public void setWholeDay(Boolean isWholeDay) {
-
-        super.setWholeDay(isWholeDay);
-
     }
 
     /**
@@ -341,6 +115,9 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
             case SINGLE:
             default:
                 break;
+        }
+        if (getParentSeriesId() != null) {
+            result.put(JsonKey.PARENT_SERIES, new JSONString(getParentSeriesId().getStringValue()));
         }
         return result;
     }
@@ -704,7 +481,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
         setSeriesEndDate(readOptionalDate(json.get(JsonKey.SERIES_ENDDATE)));
         setOccurrences(readOptionalInt(json.get(JsonKey.SERIES_OCCURRENCES)));
         setDerivedEndType();
-        setOriginalSeriesContent(readOptionalUUID(json.get(JsonKey.FROM_SERIES)));
+        setParentSeriesId(readOptionalUUID(json.get(JsonKey.PARENT_SERIES)));
 
     }
 }

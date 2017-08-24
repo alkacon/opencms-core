@@ -500,12 +500,12 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
 
         if (null != isSeries) {
             final boolean series = isSeries.booleanValue();
-            if ((null != m_model.getOriginalSeriesContent()) && series) {
+            if ((null != m_model.getParentSeriesId()) && series) {
                 m_removeSeriesBindingConfirmDialog.show(new Command() {
 
                     public void execute() {
 
-                        m_model.setOriginalSeriesContent(null);
+                        m_model.setParentSeriesId(null);
                         setPattern(PatternType.DAILY.toString());
 
                     }

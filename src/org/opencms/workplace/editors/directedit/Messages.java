@@ -68,7 +68,58 @@ import javax.servlet.jsp.PageContext;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATE_SERIES_HANDLER_ADD_EXCEPTION_FAILED_0 = "ERR_DATE_SERIES_HANDLER_ADD_EXCEPTION_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATE_SERIES_HANDLER_ADD_EXCEPTION_FAILED_MISSING_DATE_0 = "ERR_DATE_SERIES_HANDLER_ADD_EXCEPTION_FAILED_MISSING_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATE_SERIES_HANDLER_INVALID_DELETE_OPTION_1 = "ERR_DATE_SERIES_HANDLER_INVALID_DELETE_OPTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATE_SERIES_HANDLER_EXTRACT_CONTENT_FAILED_0 = "ERR_DATE_SERIES_HANDLER_EXTRACT_CONTENT_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATE_SERIES_HANDLER_EXTRACT_CONTENT_FAILED_MISSING_DATE_0 = "ERR_DATE_SERIES_HANDLER_EXTRACT_CONTENT_FAILED_MISSING_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATE_SERIES_HANDLER_INVALID_EDIT_OPTION_1 = "ERR_DATE_SERIES_HANDLER_INVALID_EDIT_OPTION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CLICK_TO_ADD_ELEMENT_TO_EMPTY_LIST_0 = "GUI_CLICK_TO_ADD_ELEMENT_TO_EMPTY_LIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_0 = "GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_0 = "GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_HELP_ACTIVE_0 = "GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_HELP_ACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_EDIT_OPTION_INSTANCE_1 = "GUI_DATE_SERIES_HANDLER_EDIT_OPTION_INSTANCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_EDIT_OPTION_INSTANCE_HELP_ACTIVE_1 = "GUI_DATE_SERIES_HANDLER_EDIT_OPTION_INSTANCE_HELP_ACTIVE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_EDIT_OPTION_INSTANCE_HELP_INACTIVE_1 = "GUI_DATE_SERIES_HANDLER_EDIT_OPTION_INSTANCE_HELP_INACTIVE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_0 = "GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_0 = "GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_HELP_ACTIVE_0 = "GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_HELP_ACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_DELETE_OPTION_INSTANCE_1 = "GUI_DATE_SERIES_HANDLER_DELETE_OPTION_INSTANCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_DELETE_OPTION_INSTANCE_HELP_ACTIVE_1 = "GUI_DATE_SERIES_HANDLER_DELETE_OPTION_INSTANCE_HELP_ACTIVE_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.editors.directedit.messages";

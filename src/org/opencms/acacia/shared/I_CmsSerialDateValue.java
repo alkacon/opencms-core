@@ -94,7 +94,7 @@ public interface I_CmsSerialDateValue {
         public static final String SERIES_OCCURRENCES = "occurrences";
 
         /** The uuid of the series content, the event originally belonged to. */
-        public static final String FROM_SERIES = "fromseries";
+        public static final String PARENT_SERIES = "parentseries";
     }
 
     /** Months as enumeration. */
@@ -309,7 +309,7 @@ public interface I_CmsSerialDateValue {
      * @return the uuid of the original series' content,
      *         or <code>null<code>, if the event is not extracted from another event series.
      */
-    CmsUUID getOriginalSeriesContent();
+    CmsUUID getParentSeriesId();
 
     /**
      * Returns the pattern type of the event series.
