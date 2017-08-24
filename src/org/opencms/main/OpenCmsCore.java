@@ -135,7 +135,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
@@ -1172,11 +1171,10 @@ public final class OpenCmsCore {
      */
     protected CmsObject initCmsObjectFromSession(HttpServletRequest req) throws CmsException {
 
-        String p = RandomStringUtils.randomAlphanumeric(5) + " initCmsObjectFromSesion: ";
-
+        String url = req.getRequestURL().toString();
+        String p = "[ " + url + " ] ";
         if (LOG.isDebugEnabled()) {
             LOG.debug(p + "Trying to init cms object from session for request \"" + req.toString() + "\".");
-            LOG.debug(p + "URL = " + req.getRequestURL().toString());
         }
         // try to get an OpenCms user session info object for this request
         CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(req);
@@ -1195,28 +1193,12 @@ public final class OpenCmsCore {
         CmsUUID project = sessionInfo.getProject();
 
         // initialize site root from request
-        String siteroot = null;
-
-        if (isWorkplaceServletRequest(req)) {
-            // in case of requests targeting the workplace servlet, use the site root from the current session
-            siteroot = sessionInfo.getSiteRoot();
-            LOG.debug(p + "isWorkplaceServletRequest");
-
-        } else if (getSiteManager().isWorkplaceRequest(req)) {
-            // if no dedicated workplace site is configured,
-            // or for the dedicated workplace site, use the site root from the session attribute
-            siteroot = sessionInfo.getSiteRoot();
-            LOG.debug(p + "isWorkplaceRequest");
-        } else if (site.hasSecureServer()
-            && getSiteManager().getWorkplaceSiteMatcher().getUrl().equals(site.getSecureUrl())) {
-            // if the workplace is using the secured site
-            siteroot = sessionInfo.getSiteRoot();
-            LOG.debug(p + "secure url");
-        } else {
+        String siteroot = sessionInfo.getSiteRoot();
+        if (siteroot == null) {
+            // not sure if this can actually happen?
+            LOG.debug(p + "site root from session info was null, determining site root from current request's host");
             siteroot = site.getSiteRoot();
-            LOG.debug(p + "default case");
         }
-
         // initialize user from request
         CmsUser user = m_securityManager.readUser(null, sessionInfo.getUserId());
 
