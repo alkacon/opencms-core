@@ -152,7 +152,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     public void openDialog(final CmsContainerPageElementPanel element, final boolean inline) {
 
         if (!inline && element.hasEditHandler()) {
-            m_handler.m_controller.getEditOptions(element.getId(), new I_CmsSimpleCallback<CmsDialogOptions>() {
+            m_handler.m_controller.getEditOptions(element.getId(), false, new I_CmsSimpleCallback<CmsDialogOptions>() {
 
                 public void execute(CmsDialogOptions editOptions) {
 
@@ -169,7 +169,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                             internalOpenDialog(element, contentId, inline);
                         }
                     };
-                    if (editOptions.getOptions().size() == 1) {
+                    if (editOptions == null) {
+                        internalOpenDialog(element, element.getId(), inline);
+                    } else if (editOptions.getOptions().size() == 1) {
                         m_handler.m_controller.prepareForEdit(
                             element.getId(),
                             editOptions.getOptions().get(0).getValue(),
@@ -218,7 +220,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     && editableData.getElementName().startsWith(editableData.getStructureId().toString()))
                     ? editableData.getElementName()
                     : editableData.getStructureId().toString();
-                m_handler.m_controller.getEditOptions(elementId, new I_CmsSimpleCallback<CmsDialogOptions>() {
+                m_handler.m_controller.getEditOptions(elementId, true, new I_CmsSimpleCallback<CmsDialogOptions>() {
 
                     public void execute(CmsDialogOptions editOptions) {
 
@@ -235,7 +237,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                                 internalOpenDialog(data, isNew, dependingElementId, mode);
                             }
                         };
-                        if (editOptions.getOptions().size() == 1) {
+                        if (editOptions == null) {
+                            internalOpenDialog(editableData, isNew, dependingElementId, mode);
+                        } else if (editOptions.getOptions().size() == 1) {
                             m_handler.m_controller.prepareForEdit(
                                 elementId,
                                 editOptions.getOptions().get(0).getValue(),

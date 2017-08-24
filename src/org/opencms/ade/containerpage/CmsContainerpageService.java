@@ -729,9 +729,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getEditOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getEditOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String, boolean)
      */
-    public CmsDialogOptions getEditOptions(String clientId, CmsUUID pageId, String requestParams)
+    public CmsDialogOptions getEditOptions(String clientId, CmsUUID pageId, String requestParams, boolean isListElement)
     throws CmsRpcException {
 
         try {
@@ -741,7 +741,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
-                return handler.getEditOptions(getCmsObject(), element, pageId, requestParams);
+                return handler.getEditOptions(getCmsObject(), element, pageId, requestParams, isListElement);
             }
         } catch (CmsException e) {
             error(e);

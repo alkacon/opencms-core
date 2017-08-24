@@ -1519,9 +1519,13 @@ public final class CmsContainerpageController {
      * Returns the edit options for the given content element.<p>
      *
      * @param clientId the content id
+     * @param isListElement in case a list element, not a container element is about to be edited
      * @param callback the callback to execute
      */
-    public void getEditOptions(final String clientId, final I_CmsSimpleCallback<CmsDialogOptions> callback) {
+    public void getEditOptions(
+        final String clientId,
+        final boolean isListElement,
+        final I_CmsSimpleCallback<CmsDialogOptions> callback) {
 
         CmsRpcAction<CmsDialogOptions> action = new CmsRpcAction<CmsDialogOptions>() {
 
@@ -1532,6 +1536,7 @@ public final class CmsContainerpageController {
                     clientId,
                     getData().getRpcContext().getPageStructureId(),
                     getData().getRequestParams(),
+                    isListElement,
                     this);
             }
 
@@ -2750,6 +2755,9 @@ public final class CmsContainerpageController {
             parentContainer.insert(replacer, parentContainer.getWidgetIndex(containerElement));
             containerElement.removeFromParent();
             initializeSubContainers(replacer);
+            CmsDebugLog.consoleLog("Element replaced");
+        } else {
+            CmsDebugLog.consoleLog("No content found for container " + containerId);
         }
         cleanUpContainers();
         return replacer;
@@ -2785,8 +2793,7 @@ public final class CmsContainerpageController {
             protected void onResponse(CmsContainerElementData result) {
 
                 stop(false);
-                CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
-                setPageChanged(false, false);
+
                 if (result != null) {
                     // cache the loaded element
                     m_elements.put(result.getClientId(), result);
@@ -2794,6 +2801,14 @@ public final class CmsContainerpageController {
                         replaceContainerElement(elementWidget, result);
                         resetEditButtons();
                         addToRecentList(result.getClientId(), null);
+                        setPageChanged(new Runnable() {
+
+                            public void run() {
+
+                                // nothing to do
+
+                            }
+                        });
                     } catch (Exception e) {
                         // should never happen
                         CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());

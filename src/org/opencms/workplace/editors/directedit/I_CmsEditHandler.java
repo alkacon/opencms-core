@@ -29,6 +29,7 @@ package org.opencms.workplace.editors.directedit;
 
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 
@@ -62,6 +63,7 @@ public interface I_CmsEditHandler {
      * @param elementBean the container element to be edited
      * @param pageContextId the structure id of the context containerpage
      * @param requestParams the request parameters
+     * @param isListElement in case a list element, not a container element is about to be edited
      *
      * @return the available edit options
      */
@@ -69,7 +71,8 @@ public interface I_CmsEditHandler {
         CmsObject cms,
         CmsContainerElementBean elementBean,
         CmsUUID pageContextId,
-        String requestParams);
+        String requestParams,
+        boolean isListElement);
 
     /**
      * Executes the actual delete.<p>
@@ -79,13 +82,16 @@ public interface I_CmsEditHandler {
      * @param deleteOption the selected delete option
      * @param pageContextId the structure id of the context containerpage
      * @param requestParams the request parameters
+     *
+     * @throws CmsException if something goes wrong
      */
     void handleDelete(
         CmsObject cms,
         CmsContainerElementBean elementBean,
         String deleteOption,
         CmsUUID pageContextId,
-        String requestParams);
+        String requestParams)
+    throws CmsException;
 
     /**
      * Prepares the resource to be edited.<p>
@@ -97,12 +103,15 @@ public interface I_CmsEditHandler {
      * @param requestParams the request parameters
      *
      * @return the structure id of the resource to be edited, may differ from the original element id
+     *
+     * @throws CmsException if something goes wrong
      */
     CmsUUID prepareForEdit(
         CmsObject cms,
         CmsContainerElementBean elementBean,
         String editOption,
         CmsUUID pageContextId,
-        String requestParams);
+        String requestParams)
+    throws CmsException;
 
 }

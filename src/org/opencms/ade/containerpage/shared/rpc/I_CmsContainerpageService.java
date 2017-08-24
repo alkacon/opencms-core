@@ -180,12 +180,17 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param clientId the client element id
      * @param pageStructureId the current page structure id
      * @param requestParams optional request parameters
+     * @param isListElement in case a list element, not a container element is about to be edited
      *
      * @return the edit options
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsDialogOptions getEditOptions(String clientId, CmsUUID pageStructureId, String requestParams)
+    CmsDialogOptions getEditOptions(
+        String clientId,
+        CmsUUID pageStructureId,
+        String requestParams,
+        boolean isListElement)
     throws CmsRpcException;
 
     /**

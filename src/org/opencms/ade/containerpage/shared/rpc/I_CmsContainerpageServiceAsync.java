@@ -168,12 +168,14 @@ public interface I_CmsContainerpageServiceAsync {
      * @param clientId the client element id
      * @param pageStructureId the current page structure id
      * @param requestParams optional request parameters
+     * @param isListElement in case a list element, not a container element is about to be edited
      * @param callback the async callback
      */
     void getEditOptions(
         String clientId,
         CmsUUID pageStructureId,
         String requestParams,
+        boolean isListElement,
         AsyncCallback<CmsDialogOptions> callback);
 
     /**
