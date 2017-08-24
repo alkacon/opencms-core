@@ -72,9 +72,6 @@ abstract class A_CmsJspValueWrapper {
     /** String representation of the wrapped data. */
     private String m_string;
 
-    /** Date series information generated from the wrapped data. */
-    private CmsJspDateSeriesBean m_dateSeries;
-
     /**
      * Returns the substituted link to the given target.<p>
      *
@@ -167,18 +164,6 @@ abstract class A_CmsJspValueWrapper {
             m_date = CmsJspElFunctions.convertDate(getToString());
         }
         return m_date;
-    }
-
-    /**
-     * Converts a date series configuration to a date series bean.
-     * @return the date series bean.
-     */
-    public CmsJspDateSeriesBean getToDateSeries() {
-
-        if (m_dateSeries == null) {
-            m_dateSeries = new CmsJspDateSeriesBean(getToString(), getCmsObject().getRequestContext().getLocale());
-        }
-        return m_dateSeries;
     }
 
     /**

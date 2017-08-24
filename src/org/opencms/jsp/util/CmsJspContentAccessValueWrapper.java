@@ -316,6 +316,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     /** The current value transformed into a parameter map.*/
     private Map<String, String> m_parameters;
 
+    /** Date series information generated from the wrapped data. */
+    private CmsJspDateSeriesBean m_dateSeries;
+
     /**
      * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
      *
@@ -891,6 +894,18 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             m_subValueList = CmsCollectionsGenericWrapper.createLazyMap(new CmsSubValueListTransformer());
         }
         return m_subValueList;
+    }
+
+    /**
+     * Converts a date series configuration to a date series bean.
+     * @return the date series bean.
+     */
+    public CmsJspDateSeriesBean getToDateSeries() {
+
+        if (m_dateSeries == null) {
+            m_dateSeries = new CmsJspDateSeriesBean(this);
+        }
+        return m_dateSeries;
     }
 
     /**

@@ -27,7 +27,14 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.acacia.shared.I_CmsSerialDateValue;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.search.galleries.CmsGallerySearch;
+import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
 import org.opencms.widgets.serialdate.CmsSerialDateValue;
@@ -97,27 +104,29 @@ public class CmsJspDateSeriesBean {
     /** The duration of a single event. */
     Long m_duration;
 
-    /** Flag, indicating if the event lasts whole days. */
-    boolean m_isWholeDay;
+    /** The series definition. */
+    I_CmsSerialDateValue m_seriesDefinition;
 
     /** The locale to use for rendering dates. */
-    private Locale m_locale;
+    private CmsJspContentAccessValueWrapper m_value;
+
+    /** The parent series. */
+    CmsJspDateSeriesBean m_parentSeries;
 
     /**
-     * Constructor for the series information bean.
-     * @param seriesDefinition string with the series definition.
-     * @param locale the locale to use for rendering dates.
+     * Constructor for the date series bean.
+     * @param value the content value wrapper for the element that stores the series definition.
      */
-    public CmsJspDateSeriesBean(String seriesDefinition, Locale locale) {
-        CmsSerialDateValue serialDateValue = new CmsSerialDateValue(seriesDefinition);
-        if (serialDateValue.isValid()) {
-            I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(serialDateValue);
+    public CmsJspDateSeriesBean(CmsJspContentAccessValueWrapper value) {
+        m_value = value;
+        String seriesDefinitionString = value.getStringValue();
+        m_seriesDefinition = new CmsSerialDateValue(seriesDefinitionString);
+        if (m_seriesDefinition.isValid()) {
+            I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(m_seriesDefinition);
             m_dates = bean.getDates();
             m_duration = bean.getEventDuration();
-            m_isWholeDay = serialDateValue.isWholeDay();
-            m_locale = locale;
         } else {
-            LOG.error("Could not read series definition: " + seriesDefinition);
+            LOG.error("Could not read series definition: " + seriesDefinitionString);
             m_dates = new TreeSet<>();
         }
     }
@@ -158,12 +167,72 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
+     * Returns a flag, indicating if the series is extracted from another series.
+     * @return a flag, indicating if the series is extracted from another series.
+     */
+    public boolean getIsExtractedDate() {
+
+        return m_seriesDefinition.isFromOtherSeries();
+    }
+
+    /**
+     * Returns a flag, indicating if the series is defined via a pattern, i.e., not just as via single date.
+     * @return a flag, indicating if the series is defined via a pattern, i.e., not just as via single date.
+     */
+    public boolean getIsSeries() {
+
+        return !m_seriesDefinition.getPatternType().equals(PatternType.NONE);
+    }
+
+    /**
+     * Returns a flag, indicating if the series is defined by only a single date and not extracted from another series.
+     * @return a flag, indicating if the series is defined by only a single date and not extracted from another series.
+     */
+    public boolean getIsSingleDate() {
+
+        return !m_seriesDefinition.isFromOtherSeries() && m_seriesDefinition.getPatternType().equals(PatternType.NONE);
+    }
+
+    /**
      * Returns the locale to use for rendering dates.
      * @return the locale to use for rendering dates.
      */
     public Locale getLocale() {
 
-        return m_locale;
+        return m_value.getLocale();
+    }
+
+    public CmsJspDateSeriesBean getParentSeries() {
+
+        if ((m_parentSeries == null) && getIsExtractedDate()) {
+            CmsObject cms = m_value.getCmsObject();
+            try {
+                CmsResource res = cms.readResource(m_seriesDefinition.getParentSeriesId());
+                CmsJspContentAccessBean content = new CmsJspContentAccessBean(cms, m_value.getLocale(), res);
+                CmsJspContentAccessValueWrapper value = content.getValue().get(m_value.getPath());
+                return new CmsJspDateSeriesBean(value);
+            } catch (CmsException e) {
+                LOG.warn("Parent series with id " + m_seriesDefinition.getParentSeriesId() + " could not be read.", e);
+            }
+
+        }
+        return null;
+    }
+
+    public String getTitle() {
+
+        CmsGallerySearchResult result;
+        try {
+            result = CmsGallerySearch.searchById(
+                m_value.getCmsObject(),
+                m_value.getContentValue().getDocument().getFile().getStructureId(),
+                m_value.getLocale());
+            return result.getTitle();
+        } catch (CmsException e) {
+            LOG.error("Could not retrieve title of series content.", e);
+            return "";
+        }
+
     }
 
     /**
@@ -172,6 +241,6 @@ public class CmsJspDateSeriesBean {
      */
     public boolean isWholeDay() {
 
-        return m_isWholeDay;
+        return m_seriesDefinition.isWholeDay();
     }
 }

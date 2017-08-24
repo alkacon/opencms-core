@@ -29,9 +29,6 @@ package org.opencms.jsp.util;
 
 import org.opencms.test.OpenCmsTestCase;
 
-import java.util.Date;
-import java.util.Locale;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -67,19 +64,7 @@ public class TestCmsJspDateSeriesBean extends OpenCmsTestCase {
      */
     public void testGetEventInfo() {
 
-        String config = "{\"from\":\"1508396400000\", \"to\":\"1508511600000\", \"pattern\":{\"type\":\"NONE\"}}";
-        CmsJspDateSeriesBean bean = new CmsJspDateSeriesBean(config, Locale.ENGLISH);
-        Date startDate = new Date(1508396400000L);
-        Date wrongDate = new Date(0L);
-        CmsJspInstanceDateBean expected = new CmsJspInstanceDateBean(startDate, bean);
-        CmsJspInstanceDateBean actual = bean.getInstanceInfo().get(null);
-        assertEquals(expected.getStart(), actual.getStart());
-        actual = bean.getInstanceInfo().get("");
-        assertEquals(expected.getStart(), actual.getStart());
-        actual = bean.getInstanceInfo().get(wrongDate);
-        assertEquals(expected.getStart(), actual.getStart());
-        actual = bean.getInstanceInfo().get(startDate);
-        assertEquals(expected.getStart(), actual.getStart());
+        //TODO
     }
 
 }
