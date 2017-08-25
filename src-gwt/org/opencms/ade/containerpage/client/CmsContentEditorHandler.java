@@ -187,6 +187,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                                     m_handler.m_controller.prepareForEdit(element.getId(), arg, editCallBack);
                                 }
                             });
+                        dialog.addDialogClose(new Command() {
+
+                            public void execute() {
+
+                                cancelEdit();
+                            }
+                        });
                         dialog.center();
                     }
                 }
@@ -255,6 +262,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                                         m_handler.m_controller.prepareForEdit(elementId, arg, editCallBack);
                                     }
                                 });
+                            dialog.addDialogClose(new Command() {
+
+                                public void execute() {
+
+                                    cancelEdit();
+                                }
+                            });
                             dialog.center();
                         }
                     }
@@ -330,6 +344,21 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     void addClosedEditorHistoryItem() {
 
         History.newItem("", false);
+    }
+
+    /**
+     * Cancels opening the editor.<p>
+     */
+    void cancelEdit() {
+
+        m_handler.enableToolbarButtons();
+        m_handler.activateSelection();
+        m_handler.m_controller.setContentEditing(false);
+        m_handler.m_controller.reInitInlineEditing();
+        m_replaceElement = null;
+        m_dependingElementId = null;
+        m_currentElementId = null;
+        m_editorOpened = false;
     }
 
     /**
