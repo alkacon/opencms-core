@@ -7,6 +7,14 @@
 	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate"
 	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">	
 	<ui:style>
+	.durationRadio { 
+		margin-right: 5px;
+		margin-top: 5px; 
+	}
+	
+	.fromToLabel {
+		margin-right: 5px;
+	}
 	</ui:style>
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
 	<g:VerticalPanel width="100%">
@@ -19,18 +27,18 @@
 			<g:HorizontalPanel width="100%">
 				<g:cell>
 					<g:HorizontalPanel verticalAlignment="ALIGN_MIDDLE">
-						<g:Label ui:field="m_startLabel"></g:Label>
-						<cmsd:CmsDateBox ui:field="m_startTime" styleName="{widgets.widgetCss.calendarStyle}"/>
+						<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_startLabel"></g:Label>
+						<cmsd:CmsDateBox ui:field="m_startTime" addStyleNames="{widgets.widgetCss.calendarStyle}"/>
 					</g:HorizontalPanel>
 				</g:cell>
 				<g:cell>
-					<g:HorizontalPanel>
-						<g:Label ui:field="m_endLabel"></g:Label>
+					<g:HorizontalPanel verticalAlignment="ALIGN_MIDDLE">
+						<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_endLabel"></g:Label>
 						<cmsd:CmsDateBox ui:field="m_endTime" styleName="{widgets.widgetCss.calendarStyle}" />
 					</g:HorizontalPanel>
 				</g:cell>
 				<g:cell>
-					<cmsi:CmsCheckBox ui:field="m_wholeDayCheckBox" styleName="{widgets.widgetCss.checkBoxStyle}" />
+					<cmsi:CmsCheckBox ui:field="m_wholeDayCheckBox" addStyleNames="{widgets.widgetCss.checkBoxStyle}" />
 				</g:cell>
 				<g:cell>
 					<cmsi:CmsCheckBox ui:field="m_seriesCheckBox" styleName="{widgets.widgetCss.checkBoxStyle}" />
@@ -49,13 +57,13 @@
 					<g:HorizontalPanel width="100%">
 						<g:cell width="50%">
 							<g:HorizontalPanel styleName="{widgets.widgetCss.radioButtonPanel}">
-								<cmsi:CmsRadioButton ui:field="m_endsAfterRadioButton" />
+								<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAfterRadioButton" />
 								<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_occurrences" /></g:FlowPanel>
 							</g:HorizontalPanel>
 						</g:cell>
 						<g:cell width="50%">
 							<g:HorizontalPanel styleName="{widgets.widgetCss.radioButtonPanel}">
-								<cmsi:CmsRadioButton ui:field="m_endsAtRadioButton"/>
+								<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAtRadioButton"/>
 								<cmsd:CmsDateBox ui:field="m_seriesEndDate" styleName="{widgets.widgetCss.calendarStyle}" />
 							</g:HorizontalPanel>
 						</g:cell>

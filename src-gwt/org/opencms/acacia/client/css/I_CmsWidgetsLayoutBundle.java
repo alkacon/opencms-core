@@ -31,6 +31,7 @@ import org.opencms.acacia.client.css.I_CmsLayoutBundle.I_Widgets;
 import org.opencms.gwt.client.ui.css.I_CmsFloatDecoratedPanelCss;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.resources.client.CssResource.ImportedWithPrefix;
 import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
@@ -48,6 +49,7 @@ public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.
 
     /** The XML content widget CSS. */
     @Shared
+    @ImportedWithPrefix("acaciaWidgets")
     interface I_CmsWidgetCss extends I_Widgets, I_CmsFloatDecoratedPanelCss, I_CmsGlobalWidgetCss {
 
         /**

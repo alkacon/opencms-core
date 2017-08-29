@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
@@ -177,7 +178,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @UiField
     CmsFieldSet m_exceptionsPanel;
 
-    /** The UI element for the list with exceptions */
+    /** The UI element for the list with exceptions. */
     @UiField(provided = true)
     CmsCheckableDatePanel m_exceptionsList;
 
@@ -235,10 +236,10 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /* Controller and model */
 
-    /** Controller */
+    /** Controller. */
     CmsSerialDateController m_controller;
 
-    /** Model */
+    /** Model. */
     I_CmsObservableSerialDateValue m_model;
 
     /** Map from the various patterns to the radio buttons for chosing the patterns. */
@@ -262,6 +263,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
         // bind the ui
         initWidget(uiBinder.createAndBindUi(this));
+        addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
 
         m_origSeriesLabel.setVisible(m_model.isFromOtherSeries());
         m_origSeriesLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_FROM_SERIES_INFORMATION_0));
@@ -478,7 +480,8 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     }
 
     /**
-     * Handle a start time change
+     * Handle a start time change.
+     *
      * @param event the change event
      */
     @UiHandler("m_startTime")

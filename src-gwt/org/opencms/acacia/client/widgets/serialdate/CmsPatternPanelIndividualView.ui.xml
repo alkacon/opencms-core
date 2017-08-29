@@ -5,13 +5,18 @@
 	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
 	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox"
 	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate">
+	<ui:style>
+		.button {
+			margin-left: 5px; 
+		}
+	</ui:style>
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets" />
 	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
 	<g:HTMLPanel styleName="">
 		<g:HorizontalPanel>
 			<cmsd:CmsDateBox ui:field="m_newDate" styleName="{widgets.widgetCss.calendarStyle}" />
-				<cms:CmsPushButton ui:field="m_addButton" />
-				<cms:CmsPushButton ui:field="m_removeSelectedButton" />
+				<cms:CmsPushButton addStyleNames="{style.button}" ui:field="m_addButton" />
+				<cms:CmsPushButton addStyleNames="{style.button}" ui:field="m_removeSelectedButton" />
 		</g:HorizontalPanel>
 		<cms:CmsScrollPanel height="6em">
 			<cmsw:CmsCheckableDatePanel ui:field="m_dateList"></cmsw:CmsCheckableDatePanel>

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,6 +30,7 @@ package org.opencms.acacia.client.widgets.serialdate;
 import org.opencms.acacia.client.css.I_CmsLayoutBundle.I_Widgets;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.CssResource.Import;
 
 /**
  * Content editor CSS resources bundle.<p>
@@ -41,31 +42,31 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String patternInput();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String patternRadio();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String patternRow();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
-        String serialDataWidget();
+        String serialDateWidget();
 
     }
 
@@ -74,9 +75,14 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the XML content widget CSS
      */
     @Source("widget.css")
+    @Import(value = {
+        I_CmsFieldsetCss.class,
+        org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.I_CmsWidgetCss.class,
+        org.opencms.acacia.client.css.I_CmsLayoutBundle.I_Style.class})
     I_CmsWidgetCss widgetCss();
+
 }

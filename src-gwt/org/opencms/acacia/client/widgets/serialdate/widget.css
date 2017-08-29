@@ -1,14 +1,6 @@
 @external primary;
 
-.serialDataWidget {
-	border: 1px solid #7788AA;
-}
-
-.emptyValue .serialDataWidget {
-	border: 1px solid value("constants.css.borderColor");
-}
-
-.emptyValue .serialDataWidget * {
+.emptyValue .serialDateWidget * {
 	color: value("constants.css.borderColor") !important;
 	font-style: italic !important;
 	border-color: value("constants.css.borderColor") !important;
@@ -35,6 +27,29 @@ div.patternRow input.patternInput {
 
 div.patternRadio div {
 	text-align: left !important;
+}
+
+.serialDateWidget .fieldset-fieldsetVisible {
+	background-color: transparent !important;
+}
+
+ .acaciaForm-focused .serialDateWidget .fieldset-legend {
+ 	background-color: #f0f0f2 !important;
+ 	border-radius: 5px; 
+ }
+ 
+ .serialDateWidget .fieldset-legend { 
+ 	background-color: white;
+ 	border-radius: 5px;  
+ }
+
+.serialDateWidget.serialDateWidget .fieldset-content { 
+	overflow: hidden; 
+}
+
+
+.hasError .serialDateWidget .acaciaWidgets-radioButtonPanel, .hasWarning .serialDateWidget .acaciaWidgets-radioButtonPanel {
+	border: none; 	
 }
 
 .singleLine{}

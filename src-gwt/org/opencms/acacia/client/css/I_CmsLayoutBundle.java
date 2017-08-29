@@ -29,6 +29,7 @@ package org.opencms.acacia.client.css;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.ImportedWithPrefix;
 import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
@@ -152,6 +153,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
     /** The style CSS resource. */
     @Shared
+    @ImportedWithPrefix("acaciaForm")
     interface I_Style extends I_CmsDragCss, I_Widgets, I_ButtonBar {
 
         /**

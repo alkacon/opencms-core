@@ -28,7 +28,7 @@ input.textBox:focus{
 	box-shadow:none;
 }
 
-.highTextBoxes .textBox {
+.highTextBoxes .textBox.textBox {
 	height: value("constants.css.inputInnerHeight");
 }
 

@@ -70,7 +70,7 @@ public class CmsSerialDateWidget extends Composite implements I_CmsEditWidget {
         I_CmsLayoutBundle.INSTANCE.widgetCss().ensureInjected();
         m_serialDate.addStyleName(
             org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_serialDate.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().serialDataWidget());
+        m_serialDate.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().serialDateWidget());
         m_serialDate.addValueChangeHandler(handler);
     }
 
