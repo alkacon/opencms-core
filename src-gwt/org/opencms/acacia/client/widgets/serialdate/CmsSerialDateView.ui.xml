@@ -15,6 +15,33 @@
 	.fromToLabel {
 		margin-right: 5px;
 	}
+	
+	.patternOptions { 
+		-ms-flex: 1;
+		flex: 1; 
+	}
+	
+	.patternAndOptionsContainer {
+		display: flex; 
+	}
+	
+	.durationContainer > *, .durationContainer > * > * {
+		display: inline-block !important; 
+	}
+	
+	.durationContainer > * {
+		background-color: transparent; 
+	}
+	
+	.fromToContainer > *, .fromToContainer > * > * {
+		display: inline-block !important;
+		vertical-align: middle; 
+	}
+	
+	.fromToContainer > .fromToCheckboxes > * {
+		margin-left: 15px; 
+	}
+	
 	</ui:style>
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
 	<g:VerticalPanel width="100%">
@@ -24,50 +51,40 @@
 			<cmsi:CmsLabel ui:field="m_statusLabel"/>
 		</g:VerticalPanel>
 		<cms:CmsFieldSet ui:field="m_datesPanel" width="100%">
-			<g:HorizontalPanel width="100%">
-				<g:cell>
-					<g:HorizontalPanel verticalAlignment="ALIGN_MIDDLE">
-						<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_startLabel"></g:Label>
-						<cmsd:CmsDateBox ui:field="m_startTime" addStyleNames="{widgets.widgetCss.calendarStyle}"/>
-					</g:HorizontalPanel>
-				</g:cell>
-				<g:cell>
-					<g:HorizontalPanel verticalAlignment="ALIGN_MIDDLE">
+			<g:FlowPanel addStyleNames="{style.fromToContainer}">
+				<g:FlowPanel width="305px">
+					<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_startLabel"></g:Label>
+					<cmsd:CmsDateBox ui:field="m_startTime" addStyleNames="{widgets.widgetCss.calendarStyle}"/>
+				</g:FlowPanel>
+				<g:FlowPanel>
 						<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_endLabel"></g:Label>
 						<cmsd:CmsDateBox ui:field="m_endTime" styleName="{widgets.widgetCss.calendarStyle}" />
-					</g:HorizontalPanel>
-				</g:cell>
-				<g:cell>
+				</g:FlowPanel>
+				<g:FlowPanel addStyleNames="{style.fromToCheckboxes}">
 					<cmsi:CmsCheckBox ui:field="m_wholeDayCheckBox" addStyleNames="{widgets.widgetCss.checkBoxStyle}" />
-				</g:cell>
-				<g:cell>
 					<cmsi:CmsCheckBox ui:field="m_seriesCheckBox" styleName="{widgets.widgetCss.checkBoxStyle}" />
-				</g:cell>
-			</g:HorizontalPanel>
+				</g:FlowPanel>
+			</g:FlowPanel>
 		</cms:CmsFieldSet>
 		<cms:CmsFieldSet ui:field="m_serialOptionsPanel" width="100%">
 			<g:VerticalPanel width="100%">
 				<cms:CmsFieldSet ui:field="m_patternPanel" width="100%">
-					<g:HorizontalPanel width="100%">
-						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" styleName="{widgets.widgetCss.radioButtonPanel}" width="250px" />
-						<g:SimplePanel ui:field="m_patternOptions" width="100%"/>
-					</g:HorizontalPanel>
+					<g:FlowPanel addStyleNames="{style.patternAndOptionsContainer}" width="100%">
+						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" styleName="{widgets.widgetCss.radioButtonPanel}" width="300px" />
+						<g:SimplePanel ui:field="m_patternOptions" addStyleNames="{style.patternOptions}" width="100%"/>
+					</g:FlowPanel>
 				</cms:CmsFieldSet>
 				<cms:CmsFieldSet ui:field="m_durationPanel" width="100%">
-					<g:HorizontalPanel width="100%">
-						<g:cell width="50%">
-							<g:HorizontalPanel styleName="{widgets.widgetCss.radioButtonPanel}">
-								<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAfterRadioButton" />
-								<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_occurrences" /></g:FlowPanel>
-							</g:HorizontalPanel>
-						</g:cell>
-						<g:cell width="50%">
-							<g:HorizontalPanel styleName="{widgets.widgetCss.radioButtonPanel}">
-								<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAtRadioButton"/>
-								<cmsd:CmsDateBox ui:field="m_seriesEndDate" styleName="{widgets.widgetCss.calendarStyle}" />
-							</g:HorizontalPanel>
-						</g:cell>
-					</g:HorizontalPanel>
+					<g:FlowPanel addStyleNames="{style.durationContainer}" width="100%">
+						<g:FlowPanel width="300px">
+							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAfterRadioButton" />
+							<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_occurrences" /></g:FlowPanel>
+						</g:FlowPanel>
+						<g:FlowPanel>
+							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAtRadioButton"/>
+							<cmsd:CmsDateBox ui:field="m_seriesEndDate" styleName="{widgets.widgetCss.calendarStyle}" />
+						</g:FlowPanel>
+					</g:FlowPanel>
 				</cms:CmsFieldSet>
 				<cms:CmsFieldSet ui:field="m_exceptionsPanel">
 					<g:FlowPanel>
