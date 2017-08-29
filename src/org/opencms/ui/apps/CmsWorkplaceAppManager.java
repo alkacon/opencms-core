@@ -31,6 +31,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.main.CmsException;
@@ -422,6 +423,38 @@ public class CmsWorkplaceAppManager {
         List<I_CmsEditor> editors = new ArrayList<I_CmsEditor>();
         for (int i = 0; i < EDITORS.length; i++) {
             if (EDITORS[i].matchesResource(resource, plainText)) {
+                editors.add(EDITORS[i]);
+            }
+        }
+        I_CmsEditor result = null;
+        if (editors.size() == 1) {
+            result = editors.get(0);
+        } else if (editors.size() > 1) {
+            Collections.sort(editors, new Comparator<I_CmsEditor>() {
+
+                public int compare(I_CmsEditor o1, I_CmsEditor o2) {
+
+                    return o1.getPriority() > o2.getPriority() ? -1 : 1;
+                }
+            });
+            result = editors.get(0);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the editor for the given resource type.<p>
+     *
+     * @param type the resource type to edit
+     * @param plainText if plain text editing is required
+     *
+     * @return the editor
+     */
+    public I_CmsEditor getEditorForType(I_CmsResourceType type, boolean plainText) {
+
+        List<I_CmsEditor> editors = new ArrayList<I_CmsEditor>();
+        for (int i = 0; i < EDITORS.length; i++) {
+            if (EDITORS[i].matchesType(type, plainText)) {
                 editors.add(EDITORS[i]);
             }
         }

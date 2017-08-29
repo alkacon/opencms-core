@@ -507,7 +507,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
             try {
                 CmsResource resource = cms.readResource(paramResource, CmsResourceFilter.IGNORE_EXPIRATION);
-                if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                if (CmsResourceTypeXmlContent.isXmlContent(resource) || createNew) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
                         locale = CmsLocaleManager.getLocale(paramLocale);
                     }
@@ -1593,7 +1593,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     throws CmsException {
 
         String sitePath = getCmsObject().getSitePath(referenceResource);
-        String resourceType = OpenCms.getResourceManager().getResourceType(referenceResource.getTypeId()).getTypeName();
+        String resourceType;
+        if (newLink.startsWith(CmsJspTagEdit.NEW_LINK_IDENTIFIER)) {
+            resourceType = CmsJspTagEdit.getTypeFromNewLink(newLink);
+        } else {
+            resourceType = OpenCms.getResourceManager().getResourceType(referenceResource.getTypeId()).getTypeName();
+        }
         String modelFile = null;
         if (modelFileId == null) {
             List<CmsResource> modelResources = CmsResourceTypeXmlContent.getModelFiles(
@@ -1617,7 +1622,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 getCmsObject().readResource(modelFileId, CmsResourceFilter.IGNORE_EXPIRATION));
         }
         String newFileName = null;
-        if ((null != newLink) && newLink.startsWith(CmsJspTagEdit.NEW_LINK_IDENTIFIER)) {
+        if (newLink.startsWith(CmsJspTagEdit.NEW_LINK_IDENTIFIER)) {
 
             newFileName = CmsJspTagEdit.createResource(
                 getCmsObject(),

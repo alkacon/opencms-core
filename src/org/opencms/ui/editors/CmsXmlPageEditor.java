@@ -27,10 +27,8 @@
 
 package org.opencms.ui.editors;
 
-import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.main.OpenCms;
 
 /**
  * The acacia XML content editor.<p>
@@ -49,11 +47,10 @@ public class CmsXmlPageEditor extends A_CmsFrameEditor {
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesType(org.opencms.file.types.I_CmsResourceType, boolean)
      */
-    public boolean matchesResource(CmsResource resource, boolean plainText) {
+    public boolean matchesType(I_CmsResourceType type, boolean plainText) {
 
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         return !plainText && (type instanceof CmsResourceTypeXmlPage);
     }
 

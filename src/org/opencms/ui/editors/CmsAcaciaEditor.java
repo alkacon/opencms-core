@@ -60,6 +60,7 @@ public class CmsAcaciaEditor extends A_CmsFrameEditor {
     /**
      * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
      */
+    @Override
     public boolean matchesResource(CmsResource resource, boolean plainText) {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
@@ -73,6 +74,15 @@ public class CmsAcaciaEditor extends A_CmsFrameEditor {
             }
         }
 
+        return result;
+    }
+
+    /**
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesType(org.opencms.file.types.I_CmsResourceType, boolean)
+     */
+    public boolean matchesType(I_CmsResourceType type, boolean plainText) {
+
+        boolean result = !plainText && (type instanceof CmsResourceTypeXmlContent);
         return result;
     }
 

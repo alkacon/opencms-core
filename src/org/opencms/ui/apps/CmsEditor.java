@@ -27,9 +27,15 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspTagEdit;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
@@ -37,7 +43,10 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.editors.CmsXmlContentEditor;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -69,9 +78,6 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     /** The resource id state prefix.  */
     public static final String RESOURCE_PATH_PREFIX = "resourcePath";
 
-    /** The state separator. */
-    public static final String STATE_SEPARATOR = ";;";
-
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditor.class);
 
@@ -96,7 +102,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     public static String getEditState(CmsUUID resourceId, boolean plainText, String backLink) {
 
         try {
-            backLink = URLEncoder.encode(backLink, "UTF-8");
+            backLink = URLEncoder.encode(backLink, CmsEncoder.ENCODING_UTF_8);
         } catch (UnsupportedEncodingException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -104,6 +110,47 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.RESOURCE_ID_PREFIX, resourceId.toString());
         state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.PLAIN_TEXT_PREFIX, String.valueOf(plainText));
         state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.BACK_LINK_PREFIX, backLink);
+        return state;
+    }
+
+    /**
+     * Returns the edit state for the given resource structure id.<p>
+     *
+     * @param cms the cms context
+     * @param resourceType the resource type to create
+     * @param contextPath the context path
+     * @param modelFilePath the model file path
+     * @param plainText if plain text/source editing is required
+     * @param backLink the back link location
+     *
+     * @return the state
+     */
+    public static String getEditStateForNew(
+        CmsObject cms,
+        I_CmsResourceType resourceType,
+        String contextPath,
+        String modelFilePath,
+        boolean plainText,
+        String backLink) {
+
+        String state = "";
+
+        state = A_CmsWorkplaceApp.addParamToState(
+            state,
+            CmsXmlContentEditor.PARAM_NEWLINK,
+            CmsJspTagEdit.getNewLink(cms, resourceType, contextPath));
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modelFilePath)) {
+            state = A_CmsWorkplaceApp.addParamToState(state, CmsWorkplace.PARAM_MODELFILE, modelFilePath);
+            state = A_CmsWorkplaceApp.addParamToState(
+                state,
+                CmsEditorConstants.PARAM_MODE,
+                CmsEditorConstants.MODE_COPY);
+        }
+        state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.RESOURCE_PATH_PREFIX, contextPath);
+        state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.PLAIN_TEXT_PREFIX, String.valueOf(plainText));
+        state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.BACK_LINK_PREFIX, backLink);
+
         return state;
     }
 
@@ -190,18 +237,40 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         CmsObject cms = A_CmsUI.getCmsObject();
         final String backlink = getBackLinkFromState(state);
         try {
-            CmsResource resource;
+            CmsResource resource = null;
             if (resId != null) {
                 resource = cms.readResource(resId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-            } else {
+            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
                 resource = cms.readResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
             }
-            // make sure the user has the required role
-            OpenCms.getRoleManager().checkRoleForResource(cms, CmsRole.ELEMENT_AUTHOR, cms.getSitePath(resource));
-            I_CmsEditor editor = OpenCms.getWorkplaceAppManager().getEditorForResource(resource, isPlainText(state));
+            Map<String, String> params = A_CmsWorkplaceApp.getParamsFromState(state);
+            String newLink = params.get(CmsXmlContentEditor.PARAM_NEWLINK);
+            I_CmsEditor editor = null;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(newLink)) {
+
+                // make sure the user has the required role
+                OpenCms.getRoleManager().checkRoleForResource(cms, CmsRole.ELEMENT_AUTHOR, cms.getSitePath(resource));
+                editor = OpenCms.getWorkplaceAppManager().getEditorForResource(resource, isPlainText(state));
+            } else {
+                String typeName = CmsJspTagEdit.getTypeFromNewLink(newLink);
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
+                editor = OpenCms.getWorkplaceAppManager().getEditorForType(type, isPlainText(state));
+                String rootPath = CmsJspTagEdit.getRootPathFromNewLink(newLink);
+                CmsADEConfigData data = OpenCms.getADEManager().lookupConfiguration(cms, rootPath);
+                CmsResourceTypeConfig typeConfig = data.getResourceType(typeName);
+                if (!typeConfig.checkCreatable(cms, rootPath)) {
+                    throw new RuntimeException();
+                }
+
+            }
             if (editor != null) {
                 m_editorInstance = editor.newInstance();
-                m_editorInstance.initUI(m_context, resource, backlink);
+
+                params.remove(BACK_LINK_PREFIX);
+                params.remove(RESOURCE_ID_PREFIX);
+                params.remove(RESOURCE_PATH_PREFIX);
+                params.remove(PLAIN_TEXT_PREFIX);
+                m_editorInstance.initUI(m_context, resource, backlink, params);
             }
 
         } catch (Exception e) {

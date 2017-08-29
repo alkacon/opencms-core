@@ -27,11 +27,14 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsBreadCrumb;
 import org.opencms.ui.components.CmsToolLayout;
+import org.opencms.util.CmsStringUtil;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,7 +164,7 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
      */
     public static String addParamToState(String state, String paramName, String value) {
 
-        return state + PARAM_SEPARATOR + paramName + PARAM_ASSIGN + value;
+        return state + PARAM_SEPARATOR + paramName + PARAM_ASSIGN + CmsEncoder.encode(value, CmsEncoder.ENCODING_UTF_8);
     }
 
     /**
@@ -180,9 +183,43 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
             if (result.contains(PARAM_SEPARATOR)) {
                 result = result.substring(0, result.indexOf(PARAM_SEPARATOR));
             }
-            return result;
+            return CmsEncoder.decode(result, CmsEncoder.ENCODING_UTF_8);
         }
         return null;
+    }
+
+    /**
+     * Returns the parameters contained in the state string.<p>
+     *
+     * @param state the state
+     *
+     * @return the parameters
+     */
+    public static Map<String, String> getParamsFromState(String state) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        int separatorIndex = state.indexOf(PARAM_SEPARATOR);
+        while (separatorIndex >= 0) {
+            state = state.substring(separatorIndex + 2);
+            int assignIndex = state.indexOf(PARAM_ASSIGN);
+            if (assignIndex > 0) {
+                String key = state.substring(0, assignIndex);
+                state = state.substring(assignIndex + 2);
+                separatorIndex = state.indexOf(PARAM_SEPARATOR);
+                String value = null;
+                if (separatorIndex < 0) {
+                    value = state;
+                } else if (separatorIndex > 0) {
+                    value = state.substring(0, separatorIndex);
+                }
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    result.put(key, CmsEncoder.decode(value, CmsEncoder.ENCODING_UTF_8));
+                }
+            } else {
+                separatorIndex = -1;
+            }
+        }
+        return result;
     }
 
     /**
@@ -231,11 +268,6 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
         }
         updateSubNav(getSubNavEntries(state));
         updateBreadCrumb(getBreadCrumbForState(state));
-    }
-
-    public String toString() {
-
-        return this.getClass() + " " + System.identityHashCode(this);
     }
 
     /**

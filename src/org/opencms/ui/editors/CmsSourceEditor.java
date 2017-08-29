@@ -101,7 +101,7 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
         boolean m_highlighting = true;
 
         /** The line wrapping flag. */
-        boolean m_lineWrapping = false;
+        boolean m_lineWrapping;
 
         /** The tab visibility flag. */
         boolean m_tabsVisible = true;
@@ -319,9 +319,9 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String, java.util.Map)
      */
-    public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink) {
+    public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink, Map<String, String> params) {
 
         CmsMessages messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         context.showInfoArea(false);
@@ -591,6 +591,13 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
     public boolean matchesResource(CmsResource resource, boolean plainText) {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        return matchesType(type, plainText);
+    }
+
+    /**
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesType(org.opencms.file.types.I_CmsResourceType, boolean)
+     */
+    public boolean matchesType(I_CmsResourceType type, boolean plainText) {
 
         return !((type instanceof CmsResourceTypeBinary) || (type instanceof CmsResourceTypeImage));
     }

@@ -29,6 +29,7 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -364,9 +365,9 @@ I_OptionListener, I_CmsHasShortcutActions {
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String, java.util.Map)
      */
-    public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink) {
+    public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink, Map<String, String> params) {
 
         m_cms = ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
         m_messages = Messages.get().getBundle(UI.getCurrent().getLocale());
@@ -422,15 +423,16 @@ I_OptionListener, I_CmsHasShortcutActions {
      */
     public boolean matchesResource(CmsResource resource, boolean plainText) {
 
-        if (plainText) {
-            return false;
-        }
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        return matchesType(type, plainText);
+    }
 
-        String resourceTypeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-        if (CmsMessageBundleEditorTypes.BundleType.toBundleType(resourceTypeName) != null) {
-            return true;
-        }
-        return false;
+    /**
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
+     */
+    public boolean matchesType(I_CmsResourceType type, boolean plainText) {
+
+        return !plainText && (CmsMessageBundleEditorTypes.BundleType.toBundleType(type.getTypeName()) != null);
     }
 
     /**

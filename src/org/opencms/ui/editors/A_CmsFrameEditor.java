@@ -29,6 +29,7 @@ package org.opencms.ui.editors;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -38,6 +39,9 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBrowserFrame;
 import org.opencms.ui.components.CmsConfirmationDialog;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 
@@ -102,18 +106,24 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor, ViewChangeListene
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String, java.util.Map)
      */
-    public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink) {
+    public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink, Map<String, String> params) {
 
         m_resource = resource;
         CmsObject cms = A_CmsUI.getCmsObject();
-        String sitepath = cms.getSitePath(m_resource);
+        String sitepath = m_resource != null ? cms.getSitePath(m_resource) : "";
         String link = OpenCms.getLinkManager().substituteLinkForRootPath(cms, getEditorUri());
         m_frame = new CmsBrowserFrame();
         m_frame.setDescription("Editor");
         m_frame.setName("edit");
-        m_frame.setSource(new ExternalResource(link + "?resource=" + sitepath + "&backlink=" + backLink));
+        link += "?resource=" + sitepath + "&backlink=" + backLink;
+        if (params != null) {
+            for (Entry<String, String> entry : params.entrySet()) {
+                link += "&" + entry.getKey() + "=" + entry.getValue();
+            }
+        }
+        m_frame.setSource(new ExternalResource(link));
         m_frame.setSizeFull();
         context.showInfoArea(false);
         context.hideToolbar();
@@ -122,9 +132,18 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor, ViewChangeListene
         context.setAppTitle(
             CmsVaadinUtils.getMessageText(
                 Messages.GUI_CONTENT_EDITOR_TITLE_2,
-                resource.getName(),
+                resource == null ? "new resource" : resource.getName(),
                 CmsResource.getParentFolder(sitepath)));
         m_editorState = new CmsEditorStateExtension(m_frame);
+    }
+
+    /**
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
+     */
+    public boolean matchesResource(CmsResource resource, boolean plainText) {
+
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        return matchesType(type, plainText);
     }
 
     /**

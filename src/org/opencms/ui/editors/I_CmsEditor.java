@@ -28,7 +28,10 @@
 package org.opencms.ui.editors;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+
+import java.util.Map;
 
 /**
  * Interface for resource editors.<p>
@@ -51,8 +54,9 @@ public interface I_CmsEditor {
      * @param context the UI context
      * @param resource the resource to edit
      * @param backLink the link to return to when closing the editor
+     * @param params optional parameters
      */
-    void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink);
+    void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink, Map<String, String> params);
 
     /**
      * Checks whether the editor is available for the given resource.<p>
@@ -63,6 +67,16 @@ public interface I_CmsEditor {
      * @return <code>true</code> if the editor is available for the given resource
      */
     boolean matchesResource(CmsResource resource, boolean plainText);
+
+    /**
+     * Checks whether the editor is available for the given resource type.<p>
+     *
+     * @param type the resource type to edit
+     * @param plainText if plain text editing is required
+     *
+     * @return <code>true</code> if the editor is available for the given resource
+     */
+    boolean matchesType(I_CmsResourceType type, boolean plainText);
 
     /**
      * Returns a new editor instance.<p>

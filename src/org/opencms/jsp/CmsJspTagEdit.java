@@ -158,6 +158,39 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
+     * Returns the resource type name contained in the newLink parameter.<p>
+     *
+     * @param newLink the newLink parameter
+     *
+     * @return the resource type name
+     */
+    public static String getRootPathFromNewLink(String newLink) {
+
+        String result = null;
+        if (newLink.startsWith(NEW_LINK_IDENTIFIER) && newLink.contains("|")) {
+            result = newLink.substring(newLink.indexOf("|") + 1, newLink.lastIndexOf("|"));
+        }
+        return result;
+    }
+
+    /**
+     * Returns the resource type name contained in the newLink parameter.<p>
+     *
+     * @param newLink the newLink parameter
+     *
+     * @return the resource type name
+     */
+    public static String getTypeFromNewLink(String newLink) {
+
+        String result = null;
+        if (newLink.startsWith(NEW_LINK_IDENTIFIER) && newLink.contains("|")) {
+            result = newLink.substring(newLink.lastIndexOf("|") + 1);
+        }
+
+        return result;
+    }
+
+    /**
      * Inserts the closing direct edit tag.<p>
      *
      * @param pageContext the page context
@@ -259,8 +292,6 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
             try {
                 path = cms.readFolder(creationSitemap).getRootPath();
             } catch (CmsException e) {
-
-                // TODO: Localize log output.
                 LOG.warn("The provided creation sitemap " + creationSitemap + " is not a VFS folder.", e);
             }
         }
@@ -420,7 +451,6 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
                 resource = cms.readResource(uuid, CmsResourceFilter.ignoreExpirationOffline(cms));
 
             } catch (NumberFormatException | CmsException e) {
-                // TODO: Localize debug message.
                 LOG.warn("UUID was not valid or there is no resource with the given UUID.", e);
             }
         }
