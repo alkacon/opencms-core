@@ -31,11 +31,24 @@
       <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<tabs>
+				<tab element="Title" collapse="false" name="TabGeneral" />
+				<tab element="FilterQuery" collapse="false" name="TabAdvanced" />
+				<tab element="Blacklist" collapse="false" name="TabBlacklist" />
+			</tabs>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" useDefault="true" />
 			</mappings>
 			<layouts>
+				<layout element="SearchFolder" widget="VfsFileWidget" configuration="excludefiles" />
 				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
+				<layout element="SortOrder" widget="SelectorWidget"	configuration="
+					instancedate_%s_dt asc:%(key.list_config.sort.dateasc)|
+					instancedate_%s_dt desc:%(key.list_config.sort.datedesc)|
+					disptitle_%s_s asc:%(key.list_config.sort.titleasc)|
+					disptitle_%s_s desc:%(key.list_config.sort.titledesc)|
+					newsorder_%s_i asc:%(key.list_config.sort.orderasc)|
+					newsorder_%s_i desc:%(key.list_config.sort.orderdesc)" />
 			</layouts>
         </xsd:appinfo>
     </xsd:annotation>

@@ -296,9 +296,9 @@ public class CmsResultFacets extends VerticalLayout {
      */
     private Component prepareCategoryFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
 
-        FacetField categoryFacets = solrResultList.getFacetField(CmsListConfigurationForm.FIELD_CATEGORIES);
+        FacetField categoryFacets = solrResultList.getFacetField(CmsListManager.FIELD_CATEGORIES);
         I_CmsSearchControllerFacetField facetController = resultWrapper.getController().getFieldFacets().getFieldFacetController().get(
-            CmsListConfigurationForm.FIELD_CATEGORIES);
+            CmsListManager.FIELD_CATEGORIES);
         if ((categoryFacets != null) && (categoryFacets.getValueCount() > 0)) {
             VerticalLayout catLayout = new VerticalLayout();
             for (final Count value : categoryFacets.getValues()) {
@@ -315,7 +315,7 @@ public class CmsResultFacets extends VerticalLayout {
 
                     public void buttonClick(ClickEvent event) {
 
-                        selectFieldFacet(CmsListConfigurationForm.FIELD_CATEGORIES, value.getName());
+                        selectFieldFacet(CmsListManager.FIELD_CATEGORIES, value.getName());
                     }
                 });
                 catLayout.addComponent(cat);
@@ -338,9 +338,9 @@ public class CmsResultFacets extends VerticalLayout {
      */
     private Component prepareDateFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
 
-        RangeFacet<?, ?> dateFacets = resultWrapper.getRangeFacet().get(CmsListConfigurationForm.FIELD_DATE_FACET_NAME);
+        RangeFacet<?, ?> dateFacets = resultWrapper.getRangeFacet().get(CmsListManager.FIELD_DATE_FACET_NAME);
         I_CmsSearchControllerFacetRange facetController = resultWrapper.getController().getRangeFacets().getRangeFacetController().get(
-            CmsListConfigurationForm.FIELD_DATE_FACET_NAME);
+            CmsListManager.FIELD_DATE_FACET_NAME);
         if ((dateFacets != null) && (dateFacets.getCounts().size() > 0)) {
             GridLayout dateLayout = new GridLayout();
             dateLayout.setWidth("100%");
@@ -360,7 +360,7 @@ public class CmsResultFacets extends VerticalLayout {
                 }
                 int month = Integer.parseInt(dateParts[1]) - 1;
 
-                Button date = new Button(CmsListConfigurationForm.MONTHS[month] + " (" + value.getCount() + ")");
+                Button date = new Button(CmsListManager.MONTHS[month] + " (" + value.getCount() + ")");
                 date.addStyleName(ValoTheme.BUTTON_TINY);
                 date.addStyleName(ValoTheme.BUTTON_BORDERLESS);
                 Boolean selected = facetController.getState().getIsChecked().get(value.getValue());
@@ -373,7 +373,7 @@ public class CmsResultFacets extends VerticalLayout {
 
                     public void buttonClick(ClickEvent event) {
 
-                        selectRangeFacet(CmsListConfigurationForm.FIELD_DATE_FACET_NAME, value.getValue());
+                        selectRangeFacet(CmsListManager.FIELD_DATE_FACET_NAME, value.getValue());
                     }
                 });
                 int targetColumn;
@@ -406,9 +406,9 @@ public class CmsResultFacets extends VerticalLayout {
      */
     private Component prepareFolderFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
 
-        FacetField folderFacets = solrResultList.getFacetField(CmsListConfigurationForm.FIELD_PARENT_FOLDERS);
+        FacetField folderFacets = solrResultList.getFacetField(CmsListManager.FIELD_PARENT_FOLDERS);
         I_CmsSearchControllerFacetField facetController = resultWrapper.getController().getFieldFacets().getFieldFacetController().get(
-            CmsListConfigurationForm.FIELD_PARENT_FOLDERS);
+            CmsListManager.FIELD_PARENT_FOLDERS);
         if ((folderFacets != null) && (folderFacets.getValueCount() > 0)) {
             VerticalLayout folderLayout = new VerticalLayout();
             for (final Count value : filterFolderFacets(folderFacets.getValues())) {
@@ -425,7 +425,7 @@ public class CmsResultFacets extends VerticalLayout {
 
                     public void buttonClick(ClickEvent event) {
 
-                        selectFieldFacet(CmsListConfigurationForm.FIELD_PARENT_FOLDERS, value.getName());
+                        selectFieldFacet(CmsListManager.FIELD_PARENT_FOLDERS, value.getName());
                     }
                 });
                 folderLayout.addComponent(folder);

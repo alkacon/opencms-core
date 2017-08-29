@@ -38,7 +38,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
-import org.opencms.ui.apps.lists.CmsListConfigurationForm;
+import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
@@ -59,9 +59,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     static {
         Map<String, I_CmsSearchConfigurationFacetField> fieldFacets = new HashMap<String, I_CmsSearchConfigurationFacetField>();
         fieldFacets.put(
-            CmsListConfigurationForm.FIELD_CATEGORIES,
+            CmsListManager.FIELD_CATEGORIES,
             new CmsSearchConfigurationFacetField(
-                CmsListConfigurationForm.FIELD_CATEGORIES,
+                CmsListManager.FIELD_CATEGORIES,
                 null,
                 Integer.valueOf(1),
                 Integer.valueOf(200),
@@ -73,9 +73,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 null,
                 Boolean.TRUE));
         fieldFacets.put(
-            CmsListConfigurationForm.FIELD_PARENT_FOLDERS,
+            CmsListManager.FIELD_PARENT_FOLDERS,
             new CmsSearchConfigurationFacetField(
-                CmsListConfigurationForm.FIELD_PARENT_FOLDERS,
+                CmsListManager.FIELD_PARENT_FOLDERS,
                 null,
                 Integer.valueOf(1),
                 Integer.valueOf(200),
@@ -172,13 +172,13 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         } else {
             Map<String, I_CmsSearchConfigurationFacetRange> rangeFacets = new HashMap<String, I_CmsSearchConfigurationFacetRange>();
             I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
-                String.format(CmsListConfigurationForm.FIELD_DATE, m_cms.getRequestContext().getLocale().toString()),
+                String.format(CmsListManager.FIELD_DATE, m_cms.getRequestContext().getLocale().toString()),
                 "NOW/YEAR-20YEARS",
                 "NOW/MONTH+2YEARS",
                 "+1MONTHS",
                 null,
                 Boolean.FALSE,
-                CmsListConfigurationForm.FIELD_DATE_FACET_NAME,
+                CmsListManager.FIELD_DATE_FACET_NAME,
                 Integer.valueOf(1),
                 "Date",
                 Boolean.FALSE,
@@ -232,7 +232,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         String result = "";
         boolean first = true;
         List<I_CmsXmlContentValue> balckListValues = m_content.getValues(
-            CmsListConfigurationForm.N_BLACKLIST,
+            CmsListManager.N_BLACKLIST,
             CmsLocaleManager.MASTER_LOCALE);
         if (!balckListValues.isEmpty()) {
             for (I_CmsXmlContentValue value : balckListValues) {
@@ -258,7 +258,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         String categories = "";
         I_CmsXmlContentValue categoriesVal = m_content.getValue(
-            CmsListConfigurationForm.N_CATEGORY,
+            CmsListManager.N_CATEGORY,
             CmsLocaleManager.MASTER_LOCALE);
         if (categoriesVal != null) {
             categories = categoriesVal.getStringValue(m_cms);
@@ -284,7 +284,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         String result = "";
         I_CmsXmlContentValue filterVal = m_content.getValue(
-            CmsListConfigurationForm.N_FILTER_QUERY,
+            CmsListManager.N_FILTER_QUERY,
             CmsLocaleManager.MASTER_LOCALE);
         if (filterVal != null) {
             result = filterVal.getStringValue(m_cms);
@@ -305,7 +305,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         String result = "";
         boolean first = true;
         List<I_CmsXmlContentValue> folderValues = m_content.getValues(
-            CmsListConfigurationForm.N_SEARCH_FOLDER,
+            CmsListManager.N_SEARCH_FOLDER,
             CmsLocaleManager.MASTER_LOCALE);
         if (!folderValues.isEmpty()) {
             for (I_CmsXmlContentValue value : folderValues) {
@@ -334,7 +334,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         String result = "";
         boolean first = true;
         List<I_CmsXmlContentValue> typeValues = m_content.getValues(
-            CmsListConfigurationForm.N_DISPLAY_TYPE,
+            CmsListManager.N_DISPLAY_TYPE,
             CmsLocaleManager.MASTER_LOCALE);
         if (!typeValues.isEmpty()) {
             for (I_CmsXmlContentValue value : typeValues) {

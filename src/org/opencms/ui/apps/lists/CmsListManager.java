@@ -57,6 +57,7 @@ import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
 import org.opencms.jsp.search.result.CmsSearchResultWrapper;
 import org.opencms.jsp.search.state.I_CmsSearchStateFacet;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockUtil;
@@ -84,10 +85,7 @@ import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.apps.lists.CmsListConfigurationForm.ParameterField;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
-import org.opencms.ui.components.CmsBasicDialog;
-import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
@@ -378,9 +376,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 configBean.getTypes(),
                 configBean.getFolders(),
                 configBean.getCategories(),
-                configBean.getParameterValue(CmsListConfigurationForm.N_FILTER_QUERY),
-                configBean.getParameterValue(CmsListConfigurationForm.N_SORT_ORDER),
-                Boolean.parseBoolean(configBean.getParameterValue(CmsListConfigurationForm.N_SHOW_EXPIRED)),
+                configBean.getParameterValue(N_FILTER_QUERY),
+                configBean.getParameterValue(N_SORT_ORDER),
+                Boolean.parseBoolean(configBean.getParameterValue(N_SHOW_EXPIRED)),
                 locale);
         }
 
@@ -510,9 +508,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
             Map<String, I_CmsSearchConfigurationFacetField> result = new HashMap<String, I_CmsSearchConfigurationFacetField>();
             result.put(
-                CmsListConfigurationForm.FIELD_CATEGORIES,
+                FIELD_CATEGORIES,
                 new CmsSearchConfigurationFacetField(
-                    CmsListConfigurationForm.FIELD_CATEGORIES,
+                    FIELD_CATEGORIES,
                     null,
                     Integer.valueOf(1),
                     Integer.valueOf(200),
@@ -524,9 +522,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     null,
                     Boolean.TRUE));
             result.put(
-                CmsListConfigurationForm.FIELD_PARENT_FOLDERS,
+                FIELD_PARENT_FOLDERS,
                 new CmsSearchConfigurationFacetField(
-                    CmsListConfigurationForm.FIELD_PARENT_FOLDERS,
+                    FIELD_PARENT_FOLDERS,
                     null,
                     Integer.valueOf(1),
                     Integer.valueOf(200),
@@ -575,13 +573,13 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
             Map<String, I_CmsSearchConfigurationFacetRange> result = new HashMap<String, I_CmsSearchConfigurationFacetRange>();
             I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
-                String.format(CmsListConfigurationForm.FIELD_DATE, m_contentLocale.toString()),
+                String.format(FIELD_DATE, m_contentLocale.toString()),
                 "NOW/YEAR-20YEARS",
                 "NOW/MONTH+2YEARS",
                 "+1MONTHS",
                 null,
                 Boolean.FALSE,
-                CmsListConfigurationForm.FIELD_DATE_FACET_NAME,
+                FIELD_DATE_FACET_NAME,
                 Integer.valueOf(1),
                 "Date",
                 Boolean.FALSE,
@@ -738,6 +736,77 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
     }
 
+    /** SOLR field name. */
+    public static final String FIELD_CATEGORIES = "category_exact";
+
+    /** SOLR field name. */
+    public static final String FIELD_DATE = "instancedate_%s_dt";
+
+    /** SOLR field name. */
+    public static final String FIELD_DATE_FACET_NAME = "instancedate";
+
+    /** SOLR field name. */
+    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
+
+    /** List configuration node name and field key. */
+    public static final String N_BLACKLIST = "Blacklist";
+
+    /** List configuration node name and field key. */
+    public static final String N_CATEGORY = "Category";
+
+    /** List configuration node name and field key. */
+    public static final String N_CATEGORY_FILTERS = "CategoryFilters";
+
+    /** List configuration node name and field key. */
+    public static final String N_CATEGORY_FULL_PATH = "CategoryFullPath";
+
+    /** List configuration node name and field key. */
+    public static final String N_CATEGORY_ONLY_LEAFS = "CategoryOnlyLeafs";
+
+    /** List configuration node name and field key. */
+    public static final String N_DISPLAY_OPTIONS = "DisplayOptions";
+
+    /** List configuration node name and field key. */
+    public static final String N_DISPLAY_TYPE = "TypesToCollect";
+
+    /** List configuration node name and field key. */
+    public static final String N_FILTER_QUERY = "FilterQuery";
+
+    /** List configuration node name and field key. */
+    public static final String N_PREOPEN_ARCHIVE = "PreopenArchive";
+
+    /** List configuration node name and field key. */
+    public static final String N_PREOPEN_CATEGORIES = "PreopenCategories";
+
+    /** List configuration node name and field key. */
+    public static final String N_SEARCH_FOLDER = "SearchFolder";
+
+    /** List configuration node name and field key. */
+    public static final String N_SHOW_DATE = "ShowDate";
+
+    /** List configuration node name and field key. */
+    public static final String N_SHOW_EXPIRED = "ShowExpired";
+
+    /** List configuration node name and field key. */
+    public static final String N_SORT_ORDER = "SortOrder";
+
+    /** List configuration node name and field key. */
+    public static final String N_TITLE = "Title";
+
+    /** The parameter fields. */
+    public static final String[] PARAMETER_FIELDS = new String[] {
+        N_CATEGORY,
+        N_FILTER_QUERY,
+        N_SORT_ORDER,
+        N_SHOW_DATE,
+        N_SHOW_EXPIRED,
+        N_DISPLAY_OPTIONS,
+        N_CATEGORY_FILTERS,
+        N_CATEGORY_FULL_PATH,
+        N_CATEGORY_ONLY_LEAFS,
+        N_PREOPEN_CATEGORIES,
+        N_PREOPEN_ARCHIVE};
+
     /** The view content list path name. */
     public static final String PATH_NAME_VIEW = "view";
 
@@ -753,6 +822,38 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         true,
         1,
         40);
+
+    /** The available sort options. */
+    protected static final String[][] SORT_OPTIONS = new String[][] {
+        {
+            FIELD_DATE + " asc",
+            FIELD_DATE + " desc",
+            "disptitle_%s_s asc",
+            "disptitle_%s_s desc",
+            "newsorder_%s_i asc",
+            "newsorder_%s_i desc"},
+        {
+            Messages.GUI_LISTMANAGER_SORT_DATE_ASC_0,
+            Messages.GUI_LISTMANAGER_SORT_DATE_DESC_0,
+            Messages.GUI_LISTMANAGER_SORT_TITLE_ASC_0,
+            Messages.GUI_LISTMANAGER_SORT_TITLE_DESC_0,
+            Messages.GUI_LISTMANAGER_SORT_ORDER_ASC_0,
+            Messages.GUI_LISTMANAGER_SORT_ORDER_DESC_0}};
+
+    /** The month name abbreviations. */
+    static final String[] MONTHS = new String[] {
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAY",
+        "JUN",
+        "JUL",
+        "AUG",
+        "SEP",
+        "OCT",
+        "NOV",
+        "DEC"};
 
     /** The logger for this class. */
     private static Log LOG = CmsLog.getLog(CmsListManager.class.getName());
@@ -781,6 +882,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** Indicates if the overview list is shown. */
     private boolean m_isOverView;
 
+    /** The locale select. */
+    private ComboBox m_localeSelect;
+
     /** The current lock action. */
     private CmsLockActionRecord m_lockAction;
 
@@ -790,11 +894,17 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** The publish button. */
     private Button m_publishButton;
 
+    /** The resetting flag. */
+    private boolean m_resetting;
+
     /** The facet result display. */
     private CmsResultFacets m_resultFacets;
 
     /** The mail layout. */
     private HorizontalSplitPanel m_resultLayout;
+
+    /** The sort select. */
+    private ComboBox m_resultSorter;
 
     /** The result table. */
     private CmsFileTable m_resultTable;
@@ -804,15 +914,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** The text search input. */
     private TextField m_textSearch;
-
-    /** The sort select. */
-    private ComboBox m_resultSorter;
-
-    /** The resetting flag. */
-    private boolean m_resetting;
-
-    /** The locale select. */
-    private ComboBox m_localeSelect;
 
     /**
      * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
@@ -1105,11 +1206,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         m_resultSorter = new ComboBox();
         m_resultSorter.setNullSelectionAllowed(false);
         m_resultSorter.setWidth("200px");
-        for (int i = 0; i < CmsListConfigurationForm.SORT_OPTIONS[0].length; i++) {
-            m_resultSorter.addItem(CmsListConfigurationForm.SORT_OPTIONS[0][i]);
-            m_resultSorter.setItemCaption(
-                CmsListConfigurationForm.SORT_OPTIONS[0][i],
-                CmsVaadinUtils.getMessageText(CmsListConfigurationForm.SORT_OPTIONS[1][i]));
+        for (int i = 0; i < SORT_OPTIONS[0].length; i++) {
+            m_resultSorter.addItem(SORT_OPTIONS[0][i]);
+            m_resultSorter.setItemCaption(SORT_OPTIONS[0][i], CmsVaadinUtils.getMessageText(SORT_OPTIONS[1][i]));
         }
         m_resultSorter.addValueChangeListener(new ValueChangeListener() {
 
@@ -1173,20 +1272,20 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             if (!content.hasLocale(locale)) {
                 locale = content.getLocales().get(0);
             }
-            for (ParameterField field : CmsListConfigurationForm.PARAMETER_FIELDS) {
-                String val = content.getStringValue(cms, field.m_key, locale);
-                if (CmsListConfigurationForm.N_CATEGORY.equals(field.m_key)) {
+            for (String field : PARAMETER_FIELDS) {
+                String val = content.getStringValue(cms, field, locale);
+                if (N_CATEGORY.equals(field)) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
                         result.setCategories(Arrays.asList(val.split(",")));
                     } else {
                         result.setCategories(Collections.<String> emptyList());
                     }
                 } else {
-                    result.setParameterValue(field.m_key, val);
+                    result.setParameterValue(field, val);
                 }
             }
             List<String> displayTypes = new ArrayList<String>();
-            List<I_CmsXmlContentValue> typeValues = content.getValues(CmsListConfigurationForm.N_DISPLAY_TYPE, locale);
+            List<I_CmsXmlContentValue> typeValues = content.getValues(N_DISPLAY_TYPE, locale);
             if (!typeValues.isEmpty()) {
                 for (I_CmsXmlContentValue value : typeValues) {
                     displayTypes.add(value.getStringValue(cms));
@@ -1194,9 +1293,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             }
             result.setDisplayTypes(displayTypes);
             List<String> folders = new ArrayList<String>();
-            List<I_CmsXmlContentValue> folderValues = content.getValues(
-                CmsListConfigurationForm.N_SEARCH_FOLDER,
-                locale);
+            List<I_CmsXmlContentValue> folderValues = content.getValues(N_SEARCH_FOLDER, locale);
             if (!folderValues.isEmpty()) {
                 for (I_CmsXmlContentValue value : folderValues) {
                     String val = value.getStringValue(cms);
@@ -1206,9 +1303,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             }
             result.setFolders(folders);
             List<CmsUUID> blackList = new ArrayList<CmsUUID>();
-            List<I_CmsXmlContentValue> blacklistValues = content.getValues(
-                CmsListConfigurationForm.N_BLACKLIST,
-                locale);
+            List<I_CmsXmlContentValue> blacklistValues = content.getValues(N_BLACKLIST, locale);
             if (!blacklistValues.isEmpty()) {
                 for (I_CmsXmlContentValue value : blacklistValues) {
                     CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
@@ -1296,40 +1391,27 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 }
                 int count = 0;
                 for (String type : configBean.getDisplayTypes()) {
-                    I_CmsXmlContentValue contentVal = content.getValue(
-                        CmsListConfigurationForm.N_DISPLAY_TYPE,
-                        locale,
-                        count);
+                    I_CmsXmlContentValue contentVal = content.getValue(N_DISPLAY_TYPE, locale, count);
                     if (contentVal == null) {
-                        contentVal = content.addValue(cms, CmsListConfigurationForm.N_DISPLAY_TYPE, locale, count);
+                        contentVal = content.addValue(cms, N_DISPLAY_TYPE, locale, count);
                     }
                     contentVal.setStringValue(cms, type);
                     count++;
                 }
                 count = 0;
                 for (String folder : configBean.getFolders()) {
-                    I_CmsXmlContentValue contentVal = content.getValue(
-                        CmsListConfigurationForm.N_SEARCH_FOLDER,
-                        locale,
-                        count);
+                    I_CmsXmlContentValue contentVal = content.getValue(N_SEARCH_FOLDER, locale, count);
                     if (contentVal == null) {
-                        contentVal = content.addValue(cms, CmsListConfigurationForm.N_SEARCH_FOLDER, locale, count);
+                        contentVal = content.addValue(cms, N_SEARCH_FOLDER, locale, count);
                     }
                     contentVal.setStringValue(cms, folder);
                     count++;
                 }
                 count = 0;
                 for (CmsUUID hiddenId : configBean.getBlacklist()) {
-                    CmsXmlVfsFileValue contentVal = (CmsXmlVfsFileValue)content.getValue(
-                        CmsListConfigurationForm.N_BLACKLIST,
-                        locale,
-                        count);
+                    CmsXmlVfsFileValue contentVal = (CmsXmlVfsFileValue)content.getValue(N_BLACKLIST, locale, count);
                     if (contentVal == null) {
-                        contentVal = (CmsXmlVfsFileValue)content.addValue(
-                            cms,
-                            CmsListConfigurationForm.N_BLACKLIST,
-                            locale,
-                            count);
+                        contentVal = (CmsXmlVfsFileValue)content.addValue(cms, N_BLACKLIST, locale, count);
                     }
                     contentVal.setIdValue(cms, hiddenId);
                     count++;
@@ -1423,7 +1505,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         m_currentConfigParser = configParser;
         resetContentLocale(configParser.getContentLocale());
         m_resetting = true;
-        m_resultSorter.setValue(m_currentConfig.getParameterValue(CmsListConfigurationForm.N_SORT_ORDER));
+        m_resultSorter.setValue(m_currentConfig.getParameterValue(N_SORT_ORDER));
         m_resetting = false;
 
         search(null, null, null);
@@ -1568,22 +1650,46 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
      */
     void editListConfiguration(CmsResource resource) {
 
-        if (m_dialogWindow != null) {
-            m_dialogWindow.close();
+        try {
+            CmsObject cms = A_CmsUI.getCmsObject();
+            String editState;
+            if (resource == null) {
+                editState = CmsEditor.getEditStateForNew(
+                    cms,
+                    OpenCms.getResourceManager().getResourceType(RES_TYPE_LIST_CONFIG),
+                    "/",
+                    null,
+                    false,
+                    UI.getCurrent().getPage().getLocation().toString());
+            } else {
+                editState = CmsEditor.getEditState(
+                    resource.getStructureId(),
+                    false,
+                    UI.getCurrent().getPage().getLocation().toString());
+            }
+            CmsAppWorkplaceUi.get().showApp(OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"), editState);
+
+        } catch (CmsLoaderException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-        CmsListConfigurationForm formDialog = new CmsListConfigurationForm(this);
-        if (resource != null) {
-            formDialog.initFormValues(resource);
-        }
-        m_currentResource = resource;
-        m_dialogWindow.setContent(formDialog);
-        m_dialogWindow.setCaption(
-            resource != null
-            ? CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_EDIT_CONFIG_0)
-            : CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_CREATE_NEW_0));
-        CmsAppWorkplaceUi.get().addWindow(m_dialogWindow);
-        m_dialogWindow.center();
+        //
+        //        if (m_dialogWindow != null) {
+        //            m_dialogWindow.close();
+        //        }
+        //        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        //        CmsListConfigurationForm formDialog = new CmsListConfigurationForm(this);
+        //        if (resource != null) {
+        //            formDialog.initFormValues(resource);
+        //        }
+        //        m_currentResource = resource;
+        //        m_dialogWindow.setContent(formDialog);
+        //        m_dialogWindow.setCaption(
+        //            resource != null
+        //            ? CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_EDIT_CONFIG_0)
+        //            : CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_CREATE_NEW_0));
+        //        CmsAppWorkplaceUi.get().addWindow(m_dialogWindow);
+        //        m_dialogWindow.center();
     }
 
     /**
