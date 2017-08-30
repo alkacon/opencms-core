@@ -116,6 +116,9 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
             default:
                 break;
         }
+        if (isCurrentTillEnd()) {
+            result.put(JsonKey.CURRENT_TILL_END, JSONBoolean.getInstance(true));
+        }
         if (getParentSeriesId() != null) {
             result.put(JsonKey.PARENT_SERIES, new JSONString(getParentSeriesId().getStringValue()));
         }
@@ -481,6 +484,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
         setSeriesEndDate(readOptionalDate(json.get(JsonKey.SERIES_ENDDATE)));
         setOccurrences(readOptionalInt(json.get(JsonKey.SERIES_OCCURRENCES)));
         setDerivedEndType();
+        setCurrentTillEnd(readOptionalBoolean(json.get(JsonKey.CURRENT_TILL_END)));
         setParentSeriesId(readOptionalUUID(json.get(JsonKey.PARENT_SERIES)));
 
     }

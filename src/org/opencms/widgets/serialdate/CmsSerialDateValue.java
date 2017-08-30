@@ -76,6 +76,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
                 setSeriesEndDate(readOptionalDate(json, JsonKey.SERIES_ENDDATE));
                 setOccurrences(readOptionalInt(json, JsonKey.SERIES_OCCURRENCES));
                 setDerivedEndType();
+                setCurrentTillEnd(readOptionalBoolean(json, JsonKey.CURRENT_TILL_END));
                 setParentSeriesId(readOptionalUUID(json, JsonKey.PARENT_SERIES));
             } catch (@SuppressWarnings("unused") JSONException e) {
                 m_parsingFailed = true;
@@ -115,6 +116,9 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
                 case SINGLE:
                 default:
                     break;
+            }
+            if (isCurrentTillEnd()) {
+                result.put(JsonKey.CURRENT_TILL_END, true);
             }
             if (null != getParentSeriesId()) {
                 result.put(JsonKey.PARENT_SERIES, getParentSeriesId().getStringValue());

@@ -31,6 +31,7 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -54,6 +55,7 @@ import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
+import org.opencms.widgets.serialdate.CmsSerialDateValue;
 import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -362,13 +364,30 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                 }
                 if (value instanceof CmsXmlSerialDateValue) {
                     if ((null != extracted) && !extracted.isEmpty()) {
-                        I_CmsSerialDateBean serialDateBean = CmsSerialDateBeanFactory.createSerialDateBean(extracted);
+                        I_CmsSerialDateValue serialDateValue = new CmsSerialDateValue(extracted);
+                        I_CmsSerialDateBean serialDateBean = CmsSerialDateBeanFactory.createSerialDateBean(
+                            serialDateValue);
                         if (null != serialDateBean) {
                             StringBuffer values = new StringBuffer();
+                            StringBuffer endValues = new StringBuffer();
+                            StringBuffer currentTillValues = new StringBuffer();
                             for (Long eventDate : serialDateBean.getDatesAsLong()) {
                                 values.append("\n").append(eventDate.toString());
+                                Long endDate = null != serialDateBean.getEventDuration()
+                                ? Long.valueOf(eventDate.longValue() + serialDateBean.getEventDuration().longValue())
+                                : eventDate;
+                                endValues.append("\n").append(endDate.toString());
+                                currentTillValues.append("\n").append(
+                                    serialDateValue.isCurrentTillEnd() ? endDate : eventDate);
                             }
                             fieldMappings.put(CmsSearchField.FIELD_SERIESDATES, values.substring(1));
+                            fieldMappings.put(CmsSearchField.FIELD_SERIESDATES_END, endValues.substring(1));
+                            fieldMappings.put(
+                                CmsSearchField.FIELD_SERIESDATES_CURRENT_TILL,
+                                currentTillValues.substring(1));
+                            fieldMappings.put(
+                                CmsSearchField.FIELD_SERIESDATES_TYPE,
+                                serialDateValue.getDateType().toString());
                         } else {
                             LOG.warn(
                                 "Serial date value \""

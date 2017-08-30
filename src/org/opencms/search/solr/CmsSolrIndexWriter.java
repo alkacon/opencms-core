@@ -219,15 +219,40 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
         List<String> serialDates = document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_SERIESDATES);
         SolrInputDocument inputDoc = (SolrInputDocument)document.getDocument();
         String id = inputDoc.getFieldValue(CmsSearchField.FIELD_ID).toString();
-        if ((null != serialDates) && (serialDates.size() > 0)) {
-            int i = 1;
-            for (String date : serialDates) {
-                inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE, date);
+        if (null != serialDates) {
+            // NOTE: We can assume the following to arrays have the same length as serialDates.
+            List<String> serialDatesEnd = document.getMultivaluedFieldAsStringList(
+                CmsSearchField.FIELD_SERIESDATES_END);
+            List<String> serialDatesCurrentTill = document.getMultivaluedFieldAsStringList(
+                CmsSearchField.FIELD_SERIESDATES_CURRENT_TILL);
+            for (int i = 0; i < serialDates.size(); i++) {
+                String date = serialDates.get(i);
+                String endDate = serialDatesEnd.get(i);
+                String currentTillDate = serialDatesCurrentTill.get(i);
+                inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE + CmsSearchField.FIELD_POSTFIX_DATE, date);
+                inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE_END + CmsSearchField.FIELD_POSTFIX_DATE, endDate);
+                inputDoc.setField(
+                    CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL + CmsSearchField.FIELD_POSTFIX_DATE,
+                    currentTillDate);
                 for (String locale : document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_CONTENT_LOCALES)) {
-                    inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE + "_" + locale + "_" + "dt", date);
+                    inputDoc.setField(
+                        CmsSearchField.FIELD_INSTANCEDATE + "_" + locale + CmsSearchField.FIELD_POSTFIX_DATE,
+                        date);
+                    inputDoc.setField(
+                        CmsSearchField.FIELD_INSTANCEDATE_END + "_" + locale + CmsSearchField.FIELD_POSTFIX_DATE,
+                        endDate);
+                    inputDoc.setField(
+                        CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL
+                            + "_"
+                            + locale
+                            + CmsSearchField.FIELD_POSTFIX_DATE,
+                        currentTillDate);
                 }
-                String newId = id + String.format("-%04d", Integer.valueOf(i++));
+                String newId = id + String.format("-%04d", Integer.valueOf(i + 1));
                 inputDoc.setField(CmsSearchField.FIELD_SOLR_ID, newId);
+                //remove fields that should not be part of the index, but were used to transport extra-information on date series
+                inputDoc.removeField(CmsSearchField.FIELD_SERIESDATES_END);
+                inputDoc.removeField(CmsSearchField.FIELD_SERIESDATES_CURRENT_TILL);
                 m_server.add(inputDoc, m_commitMs);
             }
         } else {

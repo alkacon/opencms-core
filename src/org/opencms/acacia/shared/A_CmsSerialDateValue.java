@@ -35,7 +35,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /** The base class for implementations of serial date values. */
-public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
+public class A_CmsSerialDateValue implements I_CmsSerialDateValue {
 
     /** Start date and time of the first event in the series. */
     private Date m_start;
@@ -69,6 +69,8 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
     private EndType m_endType;
     /** The series content, the current value is extracted from. */
     private CmsUUID m_parentSeriesId;
+    /** Flag, indicating if the events are "current" till their end. */
+    private boolean m_currentTillEnd;
 
     /**
      * Add a date where the event should not take place, even if they are part of the series.
@@ -156,6 +158,20 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
                 && Objects.equals(val.getParentSeriesId(), this.getParentSeriesId());
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#getDateType()
+     */
+    public DateType getDateType() {
+
+        if (!Objects.equals(getPatternType(), PatternType.NONE)) {
+            return DateType.SERIES;
+        }
+        if (isFromOtherSeries()) {
+            return DateType.EXTRACTED;
+        }
+        return DateType.SINGLE;
     }
 
     /**
@@ -326,8 +342,18 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
             this.getWeekDay(),
             this.getWeekDays(),
             this.getWeekOfMonth(),
-            this.getWeeksOfMonth());
+            this.getWeeksOfMonth(),
+            Boolean.valueOf(this.isCurrentTillEnd()),
+            this.getParentSeriesId());
 
+    }
+
+    /**
+     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#isCurrentTillEnd()
+     */
+    public boolean isCurrentTillEnd() {
+
+        return m_currentTillEnd;
     }
 
     /**
@@ -370,6 +396,15 @@ public abstract class A_CmsSerialDateValue implements I_CmsSerialDateValue {
     public final void removeWeekOfMonth(WeekOfMonth week) {
 
         m_weeksOfMonth.remove(week);
+    }
+
+    /**
+     * Set the flag, indicating if the event is treated as "current" till the end.
+     * @param isCurrentTillEnd the flag, indicating if the event is treated as "current" till the end.
+     */
+    public final void setCurrentTillEnd(Boolean isCurrentTillEnd) {
+
+        m_currentTillEnd = (null != isCurrentTillEnd) && isCurrentTillEnd.booleanValue();
     }
 
     /**

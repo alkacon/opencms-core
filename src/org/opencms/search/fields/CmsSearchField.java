@@ -140,6 +140,15 @@ public class CmsSearchField implements Serializable {
     /** The default text field prefix. */
     public static final String FIELD_PREFIX_TEXT = "text_";
 
+    /** The default string field postfix */
+    public static final String FIELD_POSTFIX_STRING = "_s";
+
+    /** The default (single-valued) date field postfix */
+    public static final String FIELD_POSTFIX_DATE = "_dt";
+
+    /** The default (multi-valued) dates field postfix */
+    public static final String FIELD_POSTFIX_DATES = "_dts";
+
     /**
      * Name of the field that contains the (optional) document priority,
      * which can be used to boost the document in the result list (hardcoded).
@@ -204,11 +213,30 @@ public class CmsSearchField implements Serializable {
     public static final String FIELD_TEXT_IT = "text_it";
     public static final String FIELD_SEARCH_CHANNEL = "search_channel";
 
-    /** The field where the date for the single entry of a serial date entry set is stored. */
+    /** The field PREFIX where the start date for the single entry of a serial date entry set is stored. */
     public static final String FIELD_INSTANCEDATE = "instancedate";
 
+    /** The field PREFIX where the end date for the single entry of a serial date entry set is stored. */
+    public static final String FIELD_INSTANCEDATE_END = "instancedateend";
+
+    /** The field PREFIX where the date until which the single entry of a serial date entry should be treated as "current" is stored. */
+    public static final String FIELD_INSTANCEDATE_CURRENT_TILL = "instancedatecurrenttill";
+
     /** The field where the dates for a serial date are stored. */
-    public static final String FIELD_SERIESDATES = "seriesdates";
+    public static final String FIELD_SERIESDATES = "seriesdates" + FIELD_POSTFIX_DATES;
+
+    /** The field where the end dates for a serial date are stored.
+     *  NOTE: The field is only used during indexing and not stored in the content itself.
+     */
+    public static final String FIELD_SERIESDATES_END = "seriesdatesend" + FIELD_POSTFIX_DATES;
+
+    /** The field where the dates until when the single serial dates are treated as "current" are stored.
+     *  NOTE: The field is only used during indexing and not stored in the content itself.
+     */
+    public static final String FIELD_SERIESDATES_CURRENT_TILL = "seriesdatescurrenttill" + FIELD_POSTFIX_DATES;
+
+    /** The field where the type of the date series is stored. */
+    public static final String FIELD_SERIESDATES_TYPE = "seriesdatestype" + FIELD_POSTFIX_STRING;
 
     /** Name of the field that contains the type of the document. */
     public static final String FIELD_TYPE = "type";

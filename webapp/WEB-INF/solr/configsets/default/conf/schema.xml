@@ -276,8 +276,6 @@
    <field name="text_fr"             type="text_fr"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for French text fields -->
    <field name="text_hu"             type="text_hu"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Hungarian text fields -->
    <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Italian text fields -->
-   <field name="instancedate"        type="date"         indexed="true"  stored="true" />
-   <field name="seriesdates"         type="date"         indexed="true"  stored="true"  multiValued="true"/>
 
    <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
@@ -307,6 +305,7 @@
    <dynamicField name="*_td"         type="tdouble"      indexed="true"  stored="true"/>
    <dynamicField name="*_tdt"        type="tdate"        indexed="true"  stored="true"/>
    <dynamicField name="*_dt"         type="date"         indexed="true"  stored="true"/>
+   <dynamicField name="*_dts"        type="date"         indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_loc"        type="location"     indexed="true"  stored="true"/>
    <dynamicField name="attr_*"       type="text_general" indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="random_*"     type="random" />

@@ -35,6 +35,16 @@ import java.util.SortedSet;
 /** Interface to access serial date values easily. Used on client and server. */
 public interface I_CmsSerialDateValue {
 
+    /** Different types of serial dates. */
+    public enum DateType {
+        /** Only a single date is specified, which is not extracted from a series. */
+        SINGLE,
+        /** The date was extracted from a series. */
+        EXTRACTED,
+        /** A whole series of dates is specified. */
+        SERIES;
+    }
+
     /** Different types of conditions how serial dates can end. */
     public enum EndType {
         /** There is no end type, all dates are specified explicitly */
@@ -95,6 +105,9 @@ public interface I_CmsSerialDateValue {
 
         /** The uuid of the series content, the event originally belonged to. */
         public static final String PARENT_SERIES = "parentseries";
+
+        /** Flag, indicating if events are "current" events till the end, or only till the beginning. */
+        public static final String CURRENT_TILL_END = "currenttillend";
     }
 
     /** Months as enumeration. */
@@ -223,7 +236,7 @@ public interface I_CmsSerialDateValue {
             }
         }
 
-        /**
+        /**Object
          * Converts the {@link WeekDay} to it's corresponding number, i.e. it's ordinal plus 1.
          * The numbers correspond to the numbers for weekdays used by {@link java.util.Calendar}.
          *
@@ -254,6 +267,12 @@ public interface I_CmsSerialDateValue {
 
     /** The number of weekdays (seven). */
     static final int NUM_OF_WEEKDAYS = 7;
+
+    /**
+     * Returns the type of the specified date.
+     * @return the type of the specified date.
+     */
+    DateType getDateType();
 
     /**
      * Returns the day of the month, the events should take place.
@@ -352,6 +371,12 @@ public interface I_CmsSerialDateValue {
      * @return the weeks of the month, the event should take place.
      */
     SortedSet<WeekOfMonth> getWeeksOfMonth();
+
+    /**
+     * Returns a flag, indicating if the events should be treated as "current" till they end (or only till they start).
+     * @return <code>true</code> if the event is "current" till it ends, <code>false</code> if it is current till it starts.
+     */
+    boolean isCurrentTillEnd();
 
     /**
      * Returns a flag, indicating if the event should take place every working day.

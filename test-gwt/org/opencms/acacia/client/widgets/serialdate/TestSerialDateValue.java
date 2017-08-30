@@ -32,10 +32,13 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
+import org.opencms.util.CmsUUID;
 
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.junit.Test;
 
 import com.google.gwt.junit.client.GWTTestCase;
 
@@ -52,15 +55,48 @@ public class TestSerialDateValue extends GWTTestCase {
     }
 
     /**
-     * Test for the daily pattern, whole day and defined on a daily base, as well as with exceptions and occurrences specified.
-     * @throws Exception thrown if reading the JSON from the string fails.
+     * Test for the "current till end" flag.
      */
-    public void testDailyEndTimesWithExceptions() throws Exception {
+    @Test
+    public void testCurrentTillEnd() {
+
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}, \"currenttillend\":true}";
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
+        wrapper.setValue(patternDefinition);
+        // general
+        assertTrue(wrapper.isValid());
+        // check if the flag is read correctly
+        assertTrue(wrapper.isCurrentTillEnd());
+        // re-wrap
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
+        rewrap.setValue(wrapper.toString());
+        assertEquals(wrapper, rewrap);
+
+
+        patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}}";
+        wrapper = new CmsSerialDateValue();
+        wrapper.setValue(patternDefinition);
+        // general
+        assertTrue(wrapper.isValid());
+        // check if the flag is read correctly
+        assertFalse(wrapper.isCurrentTillEnd());
+        // re-wrap
+        rewrap = new CmsSerialDateValue();
+        rewrap.setValue(wrapper.toString());
+        assertEquals(wrapper, rewrap);
+    }
+
+    /**
+     * Test for the daily pattern, whole day and defined on a daily base, as well as with exceptions and occurrences specified.
+     */
+    @Test
+    public void testDailyEndTimesWithExceptions() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"wholeday\":true, \"pattern\":{\"type\":\"DAILY\", \"interval\":\"5\"}, \"exceptions\":[\"1491289200000\",\"1491462000000\"], \"occurrences\":\"3\"}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
+        assertTrue(wrapper.isValid());
         assertEquals(1491202800000L, wrapper.getStart().getTime());
         assertEquals(1491231600000L, wrapper.getEnd().getTime());
         assertEquals(true, wrapper.isWholeDay());
@@ -84,14 +120,15 @@ public class TestSerialDateValue extends GWTTestCase {
 
     /**
      * Test for the daily pattern, not whole day and defintion on for workdays with a series end date specified.
-     * @throws Exception thrown if reading the JSON from the string fails.
      */
-    public void testDailyWorkingDayEndDate() throws Exception {
+    @Test
+    public void testDailyWorkingDayEndDate() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"DAILY\", \"everyworkingday\":true}, \"enddate\":\"1492207200000\"}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
+        assertTrue(wrapper.isValid());
         assertEquals(1491202800000L, wrapper.getStart().getTime());
         assertEquals(1491231600000L, wrapper.getEnd().getTime());
         assertEquals(false, wrapper.isWholeDay());
@@ -109,14 +146,15 @@ public class TestSerialDateValue extends GWTTestCase {
 
     /**
      * Test for the individual pattern.
-     * @throws Exception thrown if reading the JSON from the string fails.
      */
-    public void testIndividual() throws Exception {
+    @Test
+    public void testIndividual() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"INDIVIDUAL\", \"dates\":[\"1501489020000\",\"1501748220000\"]}}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
+        assertTrue(wrapper.isValid());
         assertEquals(1491202800000L, wrapper.getStart().getTime());
         assertEquals(1491231600000L, wrapper.getEnd().getTime());
         assertEquals(false, wrapper.isWholeDay());
@@ -134,14 +172,15 @@ public class TestSerialDateValue extends GWTTestCase {
 
     /**
      * Test for the monthly pattern, specified by day of month.
-     * @throws Exception thrown if reading the JSON from the string fails.
      */
-    public void testMonthlyDay() throws Exception {
+    @Test
+    public void testMonthlyDay() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"MONTHLY\", \"interval\":\"2\", \"day\":\"15\"}, \"occurrences\":\"3\"}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
+        assertTrue(wrapper.isValid());
         assertEquals(1491202800000L, wrapper.getStart().getTime());
         assertEquals(1491231600000L, wrapper.getEnd().getTime());
         assertEquals(false, wrapper.isWholeDay());
@@ -161,14 +200,15 @@ public class TestSerialDateValue extends GWTTestCase {
 
     /**
      * Test for the monthly pattern, specified by day of month.
-     * @throws Exception thrown if reading the JSON from the string fails.
      */
-    public void testMonthlyWeeks() throws Exception {
+    @Test
+    public void testMonthlyWeeks() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"MONTHLY\", \"interval\":\"5\", \"weekdays\":[\"WEDNESDAY\"], \"weeks\":[\"SECOND\",\"LAST\"]}, \"occurrences\":\"3\"}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
+        assertTrue(wrapper.isValid());
         assertEquals(1491202800000L, wrapper.getStart().getTime());
         assertEquals(1491231600000L, wrapper.getEnd().getTime());
         assertEquals(false, wrapper.isWholeDay());
@@ -191,9 +231,9 @@ public class TestSerialDateValue extends GWTTestCase {
 
     /**
      * Test for the single event.
-     * @throws Exception thrown if reading the JSON from the string fails.
      */
-    public void testNone() throws Exception {
+    @Test
+    public void testNone() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
@@ -211,15 +251,47 @@ public class TestSerialDateValue extends GWTTestCase {
     }
 
     /**
-     * Test for the weekly pattern.
-     * @throws Exception thrown if reading the JSON from the string fails.
+     * Test if the parent pattern series id is read correctly.
      */
-    public void testWeekly() throws Exception {
+    @Test
+    public void testParentSeriesId() {
+
+        String parentId = "6d642ad9-5c78-11e5-96ab-0242ac11002b";
+        String patternDefinitionWithParent = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}, \"parentseries\":\""
+            + parentId
+            + "\"}";
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
+        wrapper.setValue(patternDefinitionWithParent);
+        assertTrue(wrapper.isValid());
+        assertTrue(wrapper.isFromOtherSeries());
+        assertEquals(new CmsUUID(parentId), wrapper.getParentSeriesId());
+        // re-wrap
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
+        rewrap.setValue(wrapper.toString());
+        assertEquals(wrapper, rewrap);
+
+        String patternDefinitionWithoutParent = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}}";
+        wrapper = new CmsSerialDateValue();
+        wrapper.setValue(patternDefinitionWithoutParent);
+        assertFalse(wrapper.isFromOtherSeries());
+        assertNull(wrapper.getParentSeriesId());
+        // re-wrap
+        rewrap = new CmsSerialDateValue();
+        rewrap.setValue(wrapper.toString());
+        assertEquals(wrapper, rewrap);
+    }
+
+    /**
+     * Test for the weekly pattern.
+     */
+    @Test
+    public void testWeekly() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"WEEKLY\", \"interval\":\"5\", \"weekdays\":[\"TUESDAY\",\"THURSDAY\"]}, \"occurrences\":\"3\"}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
+        assertTrue(wrapper.isValid());
         assertEquals(1491202800000L, wrapper.getStart().getTime());
         assertEquals(1491231600000L, wrapper.getEnd().getTime());
         assertEquals(false, wrapper.isWholeDay());
@@ -241,14 +313,15 @@ public class TestSerialDateValue extends GWTTestCase {
 
     /**
      * Test for the yearly pattern, specified by day of month.
-     * @throws Exception thrown if reading the JSON from the string fails.
      */
-    public void testYearlyDay() throws Exception {
+    @Test
+    public void testYearlyDay() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"day\":\"31\", \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
+        assertTrue(wrapper.isValid());
         assertEquals(1491202800000L, wrapper.getStart().getTime());
         assertEquals(1491231600000L, wrapper.getEnd().getTime());
         assertEquals(false, wrapper.isWholeDay());
@@ -269,14 +342,15 @@ public class TestSerialDateValue extends GWTTestCase {
 
     /**
      * Test for the yearly pattern, specified by week of month and weekday.
-     * @throws Exception thrown if reading the JSON from the string fails.
      */
-    public void testYearlyWeeks() throws Exception {
+    @Test
+    public void testYearlyWeeks() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"weekdays\":[\"WEDNESDAY\"], \"weeks\":[\"SECOND\"], \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
+        assertTrue(wrapper.isValid());
         assertEquals(1491202800000L, wrapper.getStart().getTime());
         assertEquals(1491231600000L, wrapper.getEnd().getTime());
         assertEquals(false, wrapper.isWholeDay());
