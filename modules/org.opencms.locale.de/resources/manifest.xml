@@ -1771,6 +1771,28 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/widgets/serialdate</destination>
+			<type>folder</type>
+			<uuidstructure>44b8b2b4-85ba-43b1-ae3e-ef05fccf794c</uuidstructure>
+			<datecreated>Thu, 23 Mar 2006 10:26:36 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/widgets/serialdate/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/widgets/serialdate/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9f0e6b4f-47a0-41cc-8bdc-3ec14efbfb3f</uuidstructure>
+			<uuidresource>5c7ea60e-5cf7-43ce-8257-665f98b75e7c</uuidresource>
+			<datecreated>Thu, 23 Mar 2006 10:26:36 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/workflow</destination>
 			<type>folder</type>
 			<uuidstructure>6883dd01-77f9-40c4-a5f1-b33160adb4d9</uuidstructure>
