@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
+import org.opencms.gwt.client.ui.input.datebox.CmsDateBoxEvent;
 import org.opencms.util.CmsPair;
 
 import java.util.Collection;
@@ -357,10 +358,10 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
      * @param event the change event.
      */
     @UiHandler("m_endTime")
-    void onEndTimeChange(ValueChangeEvent<Date> event) {
+    void onEndTimeChange(CmsDateBoxEvent event) {
 
-        if (handleChange()) {
-            m_controller.setEndTime(event.getValue());
+        if (handleChange() && !event.isUserTyping()) {
+            m_controller.setEndTime(event.getDate());
         }
     }
 
@@ -462,10 +463,10 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
      * @param event the change event
      */
     @UiHandler("m_seriesEndDate")
-    void onSeriesEndDateChange(ValueChangeEvent<Date> event) {
+    void onSeriesEndDateChange(CmsDateBoxEvent event) {
 
-        if (handleChange()) {
-            m_controller.setSeriesEndDate(m_seriesEndDate.getValue());
+        if (handleChange() && !event.isUserTyping()) {
+            m_controller.setSeriesEndDate(event.getDate());
         }
     }
 
@@ -485,10 +486,10 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
      * @param event the change event
      */
     @UiHandler("m_startTime")
-    void onStartTimeChange(ValueChangeEvent<Date> event) {
+    void onStartTimeChange(CmsDateBoxEvent event) {
 
-        if (handleChange()) {
-            m_controller.setStartTime(event.getValue());
+        if (handleChange() && !event.isUserTyping()) {
+            m_controller.setStartTime(event.getDate());
         }
     }
 

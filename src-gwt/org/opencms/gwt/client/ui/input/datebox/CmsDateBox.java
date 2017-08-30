@@ -59,6 +59,8 @@ import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -84,7 +86,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
  * A text box that shows a date time picker widget when the user clicks on it.
  */
 public class CmsDateBox extends Composite
-implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
+implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers, I_CmsHasDateBoxEventHandlers {
 
     /**
      * Drag and drop event preview handler.<p>
@@ -120,7 +122,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
      * This inner class implements the handler for the date box widget.<p>
      */
     protected class CmsDateBoxHandler
-    implements ClickHandler, FocusHandler, BlurHandler, KeyPressHandler, ValueChangeHandler<Date>,
+    implements ClickHandler, FocusHandler, BlurHandler, KeyUpHandler, ValueChangeHandler<Date>,
     CloseHandler<PopupPanel> {
 
         /**
@@ -173,7 +175,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
         /**
          * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
          */
-        public void onKeyPress(KeyPressEvent event) {
+        public void onKeyUp(KeyUpEvent event) {
 
             if (event.getSource() == m_box) {
                 onDateBoxKeyPress(event);
@@ -311,12 +313,12 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
 
         m_box.addBlurHandler(dateBoxHandler);
         m_box.addClickHandler(dateBoxHandler);
-        m_box.addKeyPressHandler(dateBoxHandler);
+        m_box.addKeyUpHandler(dateBoxHandler);
         m_am.addClickHandler(dateBoxHandler);
         m_pm.addClickHandler(dateBoxHandler);
         m_time.addClickHandler(dateBoxHandler);
         m_time.addBlurHandler(dateBoxHandler);
-        m_time.addKeyPressHandler(dateBoxHandler);
+        m_time.addKeyUpHandler(dateBoxHandler);
         m_time.addFocusHandler(dateBoxHandler);
 
         m_popup.add(m_dateTimePanel);
@@ -352,6 +354,14 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
                 return new CmsDateBox();
             }
         });
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.datebox.I_CmsHasDateBoxEventHandlers#addCmsDateBoxEventHandler(org.opencms.gwt.client.ui.input.datebox.I_CmsDateBoxEventHandler)
+     */
+    public HandlerRegistration addCmsDateBoxEventHandler(I_CmsDateBoxEventHandler handler) {
+
+        return addHandler(handler, CmsDateBoxEvent.TYPE);
     }
 
     /**
@@ -639,7 +649,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
 
         m_tmpValue = value;
         if (fireEvents) {
-            fireChange(value);
+            fireChange(value, false);
         }
         if (value == null) {
             m_box.setFormValueAsString("");
@@ -665,10 +675,12 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
      * Fires the value change event if needed.<p>
      *
      * @param newValue the new value
+     * @param isTyping true if the user is currently typing
      */
-    protected void fireChange(Date newValue) {
+    protected void fireChange(Date newValue, boolean isTyping) {
 
         ValueChangeEvent.<Date> fireIfNotEqual(this, m_oldValue, CalendarUtil.copyDate(newValue));
+        CmsDateBoxEvent.fire(this, newValue, isTyping);
         m_oldValue = newValue;
     }
 
@@ -735,9 +747,15 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
      *
      * @param event the key down event
      */
-    protected void onDateBoxKeyPress(KeyPressEvent event) {
+    protected void onDateBoxKeyPress(KeyUpEvent event) {
 
         switch (event.getNativeEvent().getKeyCode()) {
+            case KeyCodes.KEY_CTRL:
+            case KeyCodes.KEY_SHIFT:
+            case KeyCodes.KEY_ALT:
+            case KeyCodes.KEY_LEFT:
+            case KeyCodes.KEY_RIGHT:
+                break;
             case KeyCodes.KEY_ENTER:
             case KeyCodes.KEY_TAB:
             case KeyCodes.KEY_ESCAPE:
@@ -757,7 +775,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
                         updateCloseBehavior();
                         if (isValideDateBox() || allowInvalidValue()) {
                             setErrorMessage(null);
-                            fireChange(getValue());
+                            fireChange(getValue(), true);
                         }
                     }
                 });
@@ -801,9 +819,15 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
      *
      * @param event the key pressed event
      */
-    protected void onTimeKeyPressed(KeyPressEvent event) {
+    protected void onTimeKeyPressed(KeyUpEvent event) {
 
-        switch (event.getCharCode()) {
+        switch (event.getNativeEvent().getKeyCode()) {
+            case KeyCodes.KEY_CTRL:
+            case KeyCodes.KEY_SHIFT:
+            case KeyCodes.KEY_ALT:
+            case KeyCodes.KEY_LEFT:
+            case KeyCodes.KEY_RIGHT:
+                break;
             case KeyCodes.KEY_ENTER:
                 updateFromPicker();
                 hidePopup();
@@ -814,7 +838,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
                     public void execute() {
 
                         executeTimeAction();
-                        fireChange(getValue());
+                        fireChange(getValue(), false);
                     }
                 });
                 break;
@@ -963,7 +987,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
         }
         setValue(date);
         setErrorMessage(null);
-        fireChange(date);
+        fireChange(date, false);
     }
 
     /**
@@ -979,6 +1003,6 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
         }
         setPickerValue(date, false);
         m_time.setErrorMessage(null);
-        fireChange(getValue());
+        fireChange(getValue(), false);
     }
 }

@@ -413,6 +413,17 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Adds a handler for the keyup event.<p>
+     *
+     * @param handler the handler
+     * @return the handler registration
+     */
+    public HandlerRegistration addKeyUpHandler(KeyUpHandler handler) {
+
+        return addDomHandler(handler, KeyUpEvent.getType());
+    }
+
+    /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
