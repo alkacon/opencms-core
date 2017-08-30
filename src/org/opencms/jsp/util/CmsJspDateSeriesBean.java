@@ -28,7 +28,7 @@
 package org.opencms.jsp.util;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
-import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.DateType;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -50,6 +50,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
+
+import com.google.common.base.Objects;
 
 /** Bean for easy access to information of an event series. */
 public class CmsJspDateSeriesBean {
@@ -172,7 +174,7 @@ public class CmsJspDateSeriesBean {
      */
     public boolean getIsExtractedDate() {
 
-        return m_seriesDefinition.isFromOtherSeries();
+        return Objects.equal(m_seriesDefinition.getDateType(), DateType.EXTRACTED);
     }
 
     /**
@@ -181,7 +183,7 @@ public class CmsJspDateSeriesBean {
      */
     public boolean getIsSeries() {
 
-        return !m_seriesDefinition.getPatternType().equals(PatternType.NONE);
+        return Objects.equal(m_seriesDefinition.getDateType(), DateType.SERIES);
     }
 
     /**
@@ -190,7 +192,7 @@ public class CmsJspDateSeriesBean {
      */
     public boolean getIsSingleDate() {
 
-        return !m_seriesDefinition.isFromOtherSeries() && m_seriesDefinition.getPatternType().equals(PatternType.NONE);
+        return Objects.equal(m_seriesDefinition.getDateType(), DateType.SINGLE);
     }
 
     /**
@@ -202,6 +204,10 @@ public class CmsJspDateSeriesBean {
         return m_value.getLocale();
     }
 
+    /**
+     * Returns the parent series, if it is present, otherwise <code>null</code>.
+     * @return the parent series, if it is present, otherwise <code>null</code>.
+     */
     public CmsJspDateSeriesBean getParentSeries() {
 
         if ((m_parentSeries == null) && getIsExtractedDate()) {
@@ -219,6 +225,10 @@ public class CmsJspDateSeriesBean {
         return null;
     }
 
+    /**
+     * Returns the gallery title of the series content.
+     * @return the gallery title of the series content.
+     */
     public String getTitle() {
 
         CmsGallerySearchResult result;
