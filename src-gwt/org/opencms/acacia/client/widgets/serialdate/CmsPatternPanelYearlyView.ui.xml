@@ -10,7 +10,7 @@
 			<cms:CmsRadioButton ui:field="m_everyRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><cms:CmsSelectBox ui:field="m_everyMonth" />
 		</div>
 		<div class="{css.widgetCss.patternRow}">
-			<cms:CmsRadioButton ui:field="m_atRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><cms:CmsSelectBox ui:field="m_atNumber" /><cms:CmsSelectBox ui:field="m_atDay" /><span ui:field="m_labelIn"></span><cms:CmsSelectBox ui:field="m_atMonth" />
+			<cms:CmsRadioButton ui:field="m_atRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><cms:CmsSelectBox ui:field="m_atNumber" /><cms:CmsSelectBox ui:field="m_atDay" /><g:Label ui:field="m_labelIn"></g:Label><cms:CmsSelectBox ui:field="m_atMonth" />
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder>

@@ -37,7 +37,6 @@ import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -46,6 +45,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * The yearly pattern panel.<p>
@@ -97,7 +97,7 @@ public class CmsPatternPanelYearlyView extends Composite implements I_CmsSerialD
 
     /** The in label. */
     @UiField
-    Element m_labelIn;
+    Label m_labelIn;
 
     /** Group off all radio buttons. */
     private CmsRadioButtonGroup m_group;
@@ -142,7 +142,7 @@ public class CmsPatternPanelYearlyView extends Composite implements I_CmsSerialD
         });
         initWidget(uiBinder.createAndBindUi(this));
         m_everyDay.setFormValueAsString("1");
-        m_labelIn.setInnerText(Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_IN_0));
+        m_labelIn.setText(Messages.get().key(Messages.GUI_SERIALDATE_YEARLY_IN_0));
         initSelectBoxes();
     }
 
