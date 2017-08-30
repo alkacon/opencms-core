@@ -43,17 +43,17 @@ public class CmsDialogOptions implements Serializable {
         /** The serial version id. */
         private static final long serialVersionUID = -3919401021902116204L;
 
-        /** The option value. */
-        private String m_value;
-
-        /** The option label. */
-        private String m_label;
+        /** The description. */
+        private String m_description;
 
         /** In case the option is disabled. */
         private boolean m_disabled;
 
-        /** The description. */
-        private String m_description;
+        /** The option label. */
+        private String m_label;
+
+        /** The option value. */
+        private String m_value;
 
         /**
          * Constructor.<p>
@@ -131,13 +131,18 @@ public class CmsDialogOptions implements Serializable {
     /** The dialog options. */
     private List<Option> m_options;
 
+    /** The dialog title. */
+    private String m_title;
+
     /**
      * Constructor.<p>
      *
+     * @param title the dialog title
      * @param info the dialog info text
      * @param options the options
      */
-    public CmsDialogOptions(String info, List<Option> options) {
+    public CmsDialogOptions(String title, String info, List<Option> options) {
+        m_title = title;
         m_info = info;
         m_options = options;
     }
@@ -167,6 +172,16 @@ public class CmsDialogOptions implements Serializable {
     public List<Option> getOptions() {
 
         return m_options;
+    }
+
+    /**
+     * Returns the dialog title.<p>
+     *
+     * @return the dialog title
+     */
+    public String getTitle() {
+
+        return m_title;
     }
 
 }

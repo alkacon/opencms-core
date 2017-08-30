@@ -52,12 +52,12 @@ public class CmsOptionDialog extends CmsPopup {
     /**
      * Constructor.<p>
      *
-     * @param caption the dialog caption
+     * @param caption the default dialog caption
      * @param options the available options
      * @param onSelect the on select callback
      */
     public CmsOptionDialog(String caption, CmsDialogOptions options, final I_CmsSimpleCallback<String> onSelect) {
-        super(caption);
+        super(CmsStringUtil.isNotEmptyOrWhitespaceOnly(options.getTitle()) ? options.getTitle() : caption);
         VerticalPanel panel = new VerticalPanel();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(options.getInfo())) {
             panel.add(new Label(options.getInfo()));

@@ -168,6 +168,7 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                         false);
                     options.add(oInstance);
                     return new CmsDialogOptions(
+                        null,
                         messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_0),
                         options);
                 }
@@ -218,6 +219,7 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                     }
                     options.add(oInstance);
                     return new CmsDialogOptions(
+                        null,
                         messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_0),
                         options);
                 }
