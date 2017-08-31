@@ -32,6 +32,7 @@ import org.opencms.acacia.shared.CmsSerialDateUtil;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.acacia.shared.rpc.I_CmsSerialDateService;
 import org.opencms.acacia.shared.rpc.I_CmsSerialDateServiceAsync;
 import org.opencms.ade.contenteditor.client.Messages;
@@ -580,6 +581,9 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
                     }
                     m_model.setDayOfMonth(1);
                     m_model.setMonth(Month.JANUARY);
+                    if (type.equals(PatternType.WEEKLY)) {
+                        m_model.setWeekDay(WeekDay.SUNDAY);
+                    }
                     valueChanged();
                 }
             });
