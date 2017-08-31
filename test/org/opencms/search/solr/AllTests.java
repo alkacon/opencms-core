@@ -125,6 +125,7 @@ public final class AllTests {
         suite.addTest(TestSolrFieldConfiguration.suite());
         suite.addTest(TestSolrSearch.suite());
         suite.addTest(TestCmsSolrCollector.suite());
+        suite.addTest(TestSolrSerialDateIndexing.suite());
         //$JUnit-END$
         return suite;
     }

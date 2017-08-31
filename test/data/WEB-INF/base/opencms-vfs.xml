@@ -812,6 +812,8 @@
 					defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsImageValue"
 					defaultwidget="org.opencms.widgets.CmsVfsImageWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlSerialDateValue"
+					defaultwidget="org.opencms.widgets.CmsSerialDateWidget" />
 			</schematypes>
 		</xmlcontent>
 	</vfs>

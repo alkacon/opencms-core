@@ -57,7 +57,7 @@
     </fieldType>
 
     <!-- A field type that splits at commas -->
-    <fieldType name="text_cs" class="solr.TextField" positionIncrementGap="2">
+    <fieldType name="text_comma" class="solr.TextField" positionIncrementGap="2">
       <analyzer>
           <tokenizer class="solr.PatternTokenizerFactory" pattern=",\s*" />
       </analyzer>
@@ -222,7 +222,7 @@
  </types>
 
  <fields>
-   <field name="solr_id"             type="string"       indexed="true"  stored="true"  /><!-- Unique identifier. -->
+   <field name="solr_id"             type="string"     indexed="true" stored="true" /><!--unique identifier -->
    <field name="id"                  type="uuid"         indexed="true"  stored="true"  />
    <field name="timestamp"           type="date"         indexed="true"  stored="true"  default="NOW"/>
    <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
@@ -234,7 +234,7 @@
    <field name="userLastModified"    type="string"       indexed="true"  stored="true" />
    <field name="userCreated"         type="string"       indexed="true"  stored="true" />
    <field name="version"             type="int"          indexed="true"  stored="true" />
-   <field name="search_exclude"      type="boolean"      indexed="true"  stored="true" />
+   <field name="search_exclude"      type="string"       indexed="true"  stored="true" />
    <field name="search_channel"      type="string"       indexed="true"  stored="true"  multiValued="true" />
    <field name="mimetype"            type="string"       indexed="true"  stored="true" />
    <field name="container_types"     type="string"       indexed="true"  stored="true" />
@@ -278,6 +278,7 @@
    <dynamicField name="*_dprop"      type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
    <dynamicField name="*_s"          type="string"       indexed="true"  stored="true"/>
+   <dynamicField name="*_mvs"        type="string"       indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_l"          type="long"         indexed="true"  stored="true"/>
    <dynamicField name="*_t"          type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_txt"        type="text_general" indexed="true"  stored="true" multiValued="true"/>
@@ -299,12 +300,13 @@
    <dynamicField name="*_td"         type="tdouble"      indexed="true"  stored="true"/>
    <dynamicField name="*_tdt"        type="tdate"        indexed="true"  stored="true"/>
    <dynamicField name="*_dt"         type="date"         indexed="true"  stored="true"/>
+   <dynamicField name="*_dts"        type="date"         indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_loc"        type="location"     indexed="true"  stored="true"/>
    <dynamicField name="attr_*"       type="text_general" indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="random_*"     type="random" />
    <dynamicField name="text_*"       type="text_general" indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
    <dynamicField name="dep_*"        type="string"       indexed="false" stored="true" multiValued="true"/>
-   <dynamicField name="*_cs"         type="text_cs"      indexed="true" stored="false" multiValued="true"/>
+   <dynamicField name="*_comma"      type="text_comma"   indexed="true" stored="false" multiValued="true"/>
    <dynamicField name="*_sort"       type="alphaOnlySort" indexed="true" stored="false" required="false" multiValued="false"/>
  </fields>
 
