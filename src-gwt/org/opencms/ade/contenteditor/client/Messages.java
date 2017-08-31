@@ -393,6 +393,12 @@ public final class Messages {
     /** Name of the used resource bundle. */
     public static final String GUI_SERIALDATE_FROM_SERIES_INFORMATION_0 = "GUI_SERIALDATE_FROM_SERIES_INFORMATION_0";
 
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_0 = "GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_HELP_0 = "GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_HELP_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

@@ -116,6 +116,10 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     @UiField
     CmsCheckBox m_wholeDayCheckBox;
 
+    /** The check box, indicating if the event should be displayed as "current" till it ends (checked state), or only till it starts (unchecked). */
+    @UiField
+    CmsCheckBox m_currentTillEndCheckBox;
+
     /* 2. The serial options panel */
 
     /** The check box, indicating if the date is a serial date. */
@@ -296,6 +300,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_startTime.setValue(m_model.getStart());
         m_endTime.setValue(m_model.getEnd());
         m_wholeDayCheckBox.setChecked(m_model.isWholeDay());
+        m_currentTillEndCheckBox.setChecked(m_model.isCurrentTillEnd());
 
         onPatternChange();
         m_triggerChangeActions = true;
@@ -351,6 +356,18 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     boolean handleChange() {
 
         return m_triggerChangeActions;
+    }
+
+    /**
+     * Handle a "current till end" change event.
+     * @param event the change event.
+     */
+    @UiHandler("m_currentTillEndCheckBox")
+    void onCurrentTillEndChange(ValueChangeEvent<Boolean> event) {
+
+        if (handleChange()) {
+            m_controller.setCurrentTillEnd(event.getValue());
+        }
     }
 
     /**
@@ -565,6 +582,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_endTime.setValue(m_model.getEnd());
         m_seriesCheckBox.setText(Messages.get().key(Messages.GUI_SERIALDATE_SERIES_CHECKBOX_0));
         m_wholeDayCheckBox.setText(Messages.get().key(Messages.GUI_SERIALDATE_WHOLE_DAY_CHECKBOX_0));
+        m_currentTillEndCheckBox.setText(Messages.get().key(Messages.GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_0));
+        m_currentTillEndCheckBox.getButton().setTitle(
+            Messages.get().key(Messages.GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_HELP_0));
     }
 
     /**

@@ -65,6 +65,9 @@
 					<cmsi:CmsCheckBox ui:field="m_seriesCheckBox" styleName="{widgets.widgetCss.checkBoxStyle}" />
 				</g:FlowPanel>
 			</g:FlowPanel>
+			<g:FlowPanel addStyleNames="{style.fromToCheckboxes}">
+				<cmsi:CmsCheckBox ui:field="m_currentTillEndCheckBox" addStyleNames="{widgets.widgetCss.checkBoxStyle}" />
+			</g:FlowPanel>
 		</cms:CmsFieldSet>
 		<cms:CmsFieldSet ui:field="m_serialOptionsPanel" width="100%">
 			<g:VerticalPanel width="100%">

@@ -444,6 +444,18 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
     }
 
     /**
+     * Set the flag, indicating if the events are displayed as "current" till they end (true) or only till they start (false).
+     * @param isCurrentTillEnd the flag, indicating if the events are displayed as "current" till they end (true) or only till they start (false).
+     */
+    public void setCurrentTillEnd(Boolean isCurrentTillEnd) {
+
+        if (m_model.isCurrentTillEnd() ^ ((null != isCurrentTillEnd) && isCurrentTillEnd.booleanValue())) {
+            m_model.setCurrentTillEnd(isCurrentTillEnd);
+            valueChanged();
+        }
+    }
+
+    /**
      * Set the end time.
      * @param date the end time to set.
      */
