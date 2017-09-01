@@ -206,11 +206,20 @@ public final class CmsContentEditor extends CmsEditorBase {
     /** The add change listener method name. */
     private static final String ADD_CHANGE_LISTENER_METHOD = "cmsAddEntityChangeListener";
 
+    /** The entity id selector prefix. */
+    private static final String ENTITY_ID_SELECTOR_PREFIX = "[about*=\"";
+
+    /** The entity id selector suffix. */
+    private static final String ENTITY_ID_SELECTOR_SUFFIX = "\"]";
+
     /** The get current entity method name. */
     private static final String GET_CURRENT_ENTITY_METHOD = "cmsGetCurrentEntity";
 
     /** The in-line editor instance. */
     private static CmsContentEditor INSTANCE;
+
+    /** The editable property selector. */
+    private static final String PROPERTY_SELECTOR = "[property*=\"opencms://\"]";
 
     /** Flag indicating that an AJAX call for the editor change handler is running. */
     protected boolean m_callingChangeHandlers;
@@ -429,7 +438,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     public static boolean hasEditable(Element element) {
 
-        NodeList<Element> children = CmsDomUtil.querySelectorAll("[property^=\"opencms://\"]", element);
+        NodeList<Element> children = CmsDomUtil.querySelectorAll(PROPERTY_SELECTOR, element);
         return (children != null) && (children.getLength() > 0);
     }
 
@@ -443,7 +452,7 @@ public final class CmsContentEditor extends CmsEditorBase {
     public static boolean isEditable(Element element) {
 
         String property = element.getAttribute("property");
-        return (property != null) && property.startsWith("opencms://");
+        return (property != null) && property.contains("opencms://");
     }
 
     /**
@@ -456,7 +465,7 @@ public final class CmsContentEditor extends CmsEditorBase {
     public static void replaceResourceIds(Element element, String oldId, String newId) {
 
         NodeList<Element> children = CmsDomUtil.querySelectorAll(
-            "[property^=\"opencms://\"][about*=\"" + oldId + "\"]",
+            PROPERTY_SELECTOR + ENTITY_ID_SELECTOR_PREFIX + oldId + ENTITY_ID_SELECTOR_SUFFIX,
             element);
         if (children.getLength() > 0) {
             for (int i = 0; i < children.getLength(); i++) {
@@ -481,7 +490,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         NodeList<Element> children = CmsDomUtil.querySelectorAll(
-            "[property^=\"opencms://\"][about*=\"" + serverId + "\"]",
+            PROPERTY_SELECTOR + ENTITY_ID_SELECTOR_PREFIX + serverId + ENTITY_ID_SELECTOR_SUFFIX,
             element);
         if (children.getLength() > 0) {
             for (int i = 0; i < children.getLength(); i++) {

@@ -29,7 +29,6 @@ package org.opencms.acacia.client;
 
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsType;
-import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,9 +110,6 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
      */
     public CmsAttributeHandler getChildHandler(String attributeName, int index) {
 
-        if (m_handlers == null) {
-            CmsDebugLog.consoleLog("m_handlers == null");
-        }
         if (m_handlers.size() > index) {
             return m_handlers.get(index).get(attributeName);
         }
@@ -230,12 +226,6 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
      */
     public void setHandler(int index, String attributeName, CmsAttributeHandler handler) {
 
-        CmsDebugLog.consoleLog(
-            "Name: "
-                + attributeName
-                + "   Index: "
-                + index
-                + ((this instanceof CmsAttributeHandler) ? "   Parent: " + getAttributeName() : ""));
         m_handlers.get(index).put(attributeName, handler);
         handler.setParentHandler(this);
         setHandlerById(attributeName, handler);

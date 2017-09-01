@@ -343,7 +343,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             m_activeButton.setActive(false);
             m_activeButton = null;
         }
-
+        setEditButtonsVisible(false);
     }
 
     /**
