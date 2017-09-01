@@ -179,6 +179,9 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
             CmsResourceFilter.DEFAULT_FILES.addRequireVisible().addRequireType(seoFileType));
         for (CmsResource seoFile : seoFiles) {
             try {
+                if (seoFile.getName().contains("test")) {
+                    continue;
+                }
                 CmsXmlSeoConfiguration seoFileConfig = new CmsXmlSeoConfiguration();
                 seoFileConfig.load(cms, seoFile);
                 if (seoFileConfig.isXmlSitemapMode()) {
