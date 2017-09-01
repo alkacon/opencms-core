@@ -119,6 +119,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** The type name prefix. */
     static final String TYPE_NAME_PREFIX = "http://opencms.org/types/";
 
+    /** The RDFA attributes string. */
+    private static final String RDFA_ATTRIBUTES = "about=\"%1$s\" property=\"%2$s\"";
+
     /** The serial version id. */
     private static final long serialVersionUID = 7873052619331296648L;
 
@@ -190,11 +193,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     public static String getRdfaAttributes(I_CmsXmlContentValue value) {
 
-        return "about=\""
-            + CmsContentService.getEntityId(value)
-            + "\" property=\""
-            + CmsContentService.getAttributeName(value)
-            + "\"";
+        String path = "";
+        String elementPath = value.getPath();
+        if (elementPath.contains("/")) {
+            path += "/" + removePathIndexes(elementPath.substring(0, elementPath.lastIndexOf("/")) + ":");
+        }
+        path += CmsContentService.getAttributeName(value);
+        return String.format(RDFA_ATTRIBUTES, CmsContentService.getEntityId(value), path);
     }
 
     /**
@@ -207,28 +212,24 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     public static String getRdfaAttributes(I_CmsXmlContentValue parentValue, String childNames) {
 
-        StringBuffer result = new StringBuffer();
-        result.append("about=\"");
-        result.append(
-            CmsContentDefinition.uuidToEntityId(
-                parentValue.getDocument().getFile().getStructureId(),
-                parentValue.getLocale().toString()));
-        result.append("/").append(parentValue.getPath());
-        result.append("\" ");
+        String id = CmsContentDefinition.uuidToEntityId(
+            parentValue.getDocument().getFile().getStructureId(),
+            parentValue.getLocale().toString()) + "/" + parentValue.getPath();
+        String path = "";
         String[] children = childNames.split("\\|");
-        result.append("property=\"");
         for (int i = 0; i < children.length; i++) {
             I_CmsXmlSchemaType schemaType = parentValue.getContentDefinition().getSchemaType(
                 parentValue.getName() + "/" + children[i]);
             if (schemaType != null) {
                 if (i > 0) {
-                    result.append(" ");
+                    path += " ";
                 }
-                result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(children[i]);
+                String typePath = parentValue.getPath();
+                path += "/" + removePathIndexes(typePath) + ":";
+                path += getTypeUri(schemaType.getContentDefinition()) + "/" + children[i];
             }
         }
-        result.append("\"");
-        return result.toString();
+        return String.format(RDFA_ATTRIBUTES, id, path);
     }
 
     /**
@@ -243,16 +244,19 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String elementPath) {
 
         I_CmsXmlSchemaType schemaType = document.getContentDefinition().getSchemaType(elementPath);
-        StringBuffer result = new StringBuffer();
         if (schemaType != null) {
-            result.append("about=\"");
-            result.append(
-                CmsContentDefinition.uuidToEntityId(document.getFile().getStructureId(), contentLocale.toString()));
-            result.append("\" property=\"");
-            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(elementPath);
-            result.append("\"");
+            String path = "";
+            if (elementPath.contains("/")) {
+                path += "/" + removePathIndexes(elementPath.substring(0, elementPath.lastIndexOf("/")) + ":");
+            }
+            path += getTypeUri(schemaType.getContentDefinition()) + "/" + elementPath;
+            return String.format(
+                RDFA_ATTRIBUTES,
+                CmsContentDefinition.uuidToEntityId(document.getFile().getStructureId(), contentLocale.toString()),
+                path);
+        } else {
+            return "";
         }
-        return result.toString();
     }
 
     /**
@@ -288,6 +292,18 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             srv.clearThreadStorage();
         }
         return result;
+    }
+
+    /**
+     * Removes the XPath indexes from the given path.<p>
+     *
+     * @param path the path
+     *
+     * @return the changed path
+     */
+    private static String removePathIndexes(String path) {
+
+        return path.replaceAll("\\[.*\\]", "");
     }
 
     /**
@@ -1371,7 +1387,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 Element parent = ancestor.getElement().getParent();
                 valueIndex = parent.indexOf(ancestor.getElement());
             }
-            String pathElement = getAttributeName(ancestor.getName(), getTypeUri(ancestor.getContentDefinition()));
+            String pathElement = getAttributeName(ancestor);
             pathElements.add(pathElement + "[" + valueIndex + "]");
             path += "/";
         }
