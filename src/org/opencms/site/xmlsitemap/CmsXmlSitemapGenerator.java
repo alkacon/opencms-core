@@ -205,7 +205,7 @@ public class CmsXmlSitemapGenerator {
      *
      * @param link the link to change
      * @param server the server URI string
-    
+
      * @return the changed link
      */
     public static String replaceServerUri(String link, String server) {
@@ -526,6 +526,9 @@ public class CmsXmlSitemapGenerator {
         List<I_CmsResourceType> resTypes = new ArrayList<I_CmsResourceType>();
         CmsResourceManager resMan = OpenCms.getResourceManager();
         for (String typeName : allTypes) {
+            if (typeName.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
+                continue;
+            }
             try {
                 I_CmsResourceType resType = resMan.getResourceType(typeName);
                 resTypes.add(resType);

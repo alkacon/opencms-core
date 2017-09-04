@@ -980,7 +980,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri]]></value>
+					<value><![CDATA[uri;params]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>

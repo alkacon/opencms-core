@@ -60,6 +60,9 @@ public class CmsXmlSeoConfiguration {
     public static final String N_EXCLUDE = "SitemapExclude";
 
     /** Node name. */
+    public static final String N_CACHE = "Cache";
+
+    /** Node name. */
     public static final String N_SERVER_URL = "ServerUrl";
 
     /** Node name. */
@@ -97,6 +100,9 @@ public class CmsXmlSeoConfiguration {
 
     /** The server URL replacement. */
     private String m_serverUrl;
+
+    /** True if sitemap caching should be used. */
+    private boolean m_useCache;
 
     /**
      * Gets the list of exclude paths.<p>
@@ -216,6 +222,11 @@ public class CmsXmlSeoConfiguration {
             m_generatorClassName = generatorClassValue.getStringValue(rootCms);
         }
 
+        I_CmsXmlContentValue cacheValue = content.getValue(N_CACHE, en);
+        if (cacheValue != null) {
+            m_useCache = Boolean.parseBoolean(cacheValue.getStringValue(rootCms));
+        }
+
         I_CmsXmlContentValue serverUrlValue = content.getValue(N_SERVER_URL, en);
         if (serverUrlValue != null) {
             m_serverUrl = serverUrlValue.getStringValue(rootCms);
@@ -230,5 +241,15 @@ public class CmsXmlSeoConfiguration {
     public boolean shouldComputeContainerPageModificationDates() {
 
         return m_computeContainerPageDates;
+    }
+
+    /**
+     * True if caching should be used for the generated XML sitemap.<p>
+     *
+     * @return true if caching should be used for the generated XML sitemap
+     */
+    public boolean usesCache() {
+
+        return m_useCache;
     }
 }

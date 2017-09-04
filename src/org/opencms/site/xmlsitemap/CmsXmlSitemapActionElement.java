@@ -111,20 +111,19 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
     /**
      * Constructs an XML sitemap generator given an XML sitemap configuration file.<p>
      *
-     * @param cms the CMS context
-     * @param sitemapXml the sitemap XML file
-     * @return the sitemap generator
+     * @param seoFileRes the sitemap XML file
+     * @param config the parsed configuration
+     *
+     * @return the sitemap generator, or null if the given configuration is not an XML sitemap configuration
      *
      * @throws CmsException if something goes wrong
      */
-    public static CmsXmlSitemapGenerator prepareSitemapGenerator(CmsObject cms, CmsResource sitemapXml)
+    public static CmsXmlSitemapGenerator prepareSitemapGenerator(CmsResource seoFileRes, CmsXmlSeoConfiguration config)
     throws CmsException {
 
-        CmsXmlSeoConfiguration config = new CmsXmlSeoConfiguration();
-        config.load(cms, sitemapXml);
         if (config.getMode().equals(CmsXmlSeoConfiguration.MODE_XML_SITEMAP)) {
             String baseFolderRootPath = CmsFileUtil.removeTrailingSeparator(
-                CmsResource.getParentFolder(sitemapXml.getRootPath()));
+                CmsResource.getParentFolder(seoFileRes.getRootPath()));
             CmsXmlSitemapGenerator xmlSitemapGenerator = createSitemapGenerator(
                 config.getSitemapGeneratorClassName(),
                 baseFolderRootPath);
@@ -158,9 +157,33 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
         if (mode.equals(CmsXmlSeoConfiguration.MODE_ROBOTS_TXT)) {
             showRobotsTxt();
         } else {
-            CmsXmlSitemapGenerator generator = prepareSitemapGenerator(cms, seoFile);
-            getResponse().getWriter().print(generator.renderSitemap());
+            boolean updateCache = Boolean.parseBoolean(getRequest().getParameter("updateCache"));
+            String value = "";
+            if (updateCache && m_configuration.usesCache()) {
+                // update request, and caching is configured -> update the cache
+                CmsXmlSitemapGenerator generator = prepareSitemapGenerator(seoFile, m_configuration);
+                value = generator.renderSitemap();
+                CmsXmlSitemapCache.INSTANCE.put(seoFile.getRootPath(), value);
+            } else if (!updateCache && m_configuration.usesCache()) {
+                // normal request, and caching is configured -> look in the cache first, and if not found, calculate sitemap and store it in cache
+                String cachedValue = CmsXmlSitemapCache.INSTANCE.get(seoFile.getRootPath());
+                if (cachedValue != null) {
+                    value = cachedValue;
+                } else {
+                    CmsXmlSitemapGenerator generator = prepareSitemapGenerator(seoFile, m_configuration);
+                    value = generator.renderSitemap();
+                    CmsXmlSitemapCache.INSTANCE.put(seoFile.getRootPath(), value);
+                }
+            } else if (!updateCache && !m_configuration.usesCache()) {
+                // normal request, caching is not configured -> always generate a fresh sitemap
+                CmsXmlSitemapGenerator generator = prepareSitemapGenerator(seoFile, m_configuration);
+                value = generator.renderSitemap();
+            } else if (updateCache && !m_configuration.usesCache()) {
+                // update request with no caching configured -> ignore
+            }
+            getResponse().getWriter().print(value);
         }
+
     }
 
     /**

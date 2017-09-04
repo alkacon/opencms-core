@@ -13,6 +13,7 @@
         	<xsd:element name="Mode" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
         	<xsd:element name="ComputeContPageDates" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="GeneratorClass" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+        	<xsd:element name="Cache" type="OpenCmsString"  minOccurs="0" maxOccurs="1" />
         	<xsd:element name="SitemapInclude" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded"/>
         	<xsd:element name="SitemapExclude" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded"/>
         	<xsd:element name="RobotsTxtText" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
@@ -29,6 +30,8 @@
 					<resource key="label.SeoFile.Mode.help">Depending on the mode, this file will be either rendered as an XML sitemap or a robots.txt file which lists all sitemaps from  the site.</resource>
 					<resource key="label.SeoFile.ComputeContPageDates">Container page dates</resource>
 					<resource key="label.SeoFile.ComputeContPageDates.help">Enables or disables the (relatively expensive) computation of container page modification dates for the XML sitemap.</resource>
+					<resource key="label.SeoFile.Cache">Cache</resource>
+					<resource key="label.SeoFile.Cache.help">If enabled, XML sitemaps are cached for faster retrieval, but you need to refresh the cache periodically via a scheduled job.</resource>
 					<resource key="label.SeoFile.SitemapInclude">Include folder</resource>
 					<resource key="label.SeoFile.SitemapInclude.help">Include folder in XML sitemap.</resource>
 					<resource key="label.SeoFile.SitemapExclude">Exclude folder</resource>
@@ -47,6 +50,8 @@
 					<resource key="label.SeoFile.Mode.help">Abhängig vom Modus wird diese Datei entweder als XML-Sitemap oder als robots.txt Datei, welche alle Sitemaps der Site referenziert, dargestellt.</resource>
 					<resource key="label.SeoFile.ComputeContPageDates">Containerpage-Änderungsdaten</resource>
 					<resource key="label.SeoFile.ComputeContPageDates.help">Aktiviert oder deaktiviert die relativ aufwendige Berechnung von Containerpage-Änderungsdaten für die XML-Sitemap.</resource>
+					<resource key="label.SeoFile.Cache">Cache</resource>
+					<resource key="label.SeoFile.Cache.help">Wenn dies aktiviert ist, werden XML-Sitemaps gecacht, so dass Sie schneller abgerufen werden können, allerdings muss dann der Cache durch einen Vorgang regelmäßig aktualisiert werden.</resource>
 					<resource key="label.SeoFile.SitemapInclude">Ordner hinzufügen</resource>
 					<resource key="label.SeoFile.SitemapInclude.help">Fügt einen Ordner zur XML-Sitemap hinzu.</resource>
 					<resource key="label.SeoFile.SitemapExclude">Ordner ausschließen</resource>
@@ -69,6 +74,7 @@
 			<layouts>
 				<layout element="Mode" widget="SelectorWidget" configuration="xmlsitemap*:%(key.choice.xmlsitemap)|robotstxt:%(key.choice.robotstxt)" />
 				<layout element="RobotsTxtText" widget="TextareaWidget" />
+				<layout element="Cache" widget="BooleanWidget" />
 			</layouts>
         </xsd:appinfo>        
     </xsd:annotation>
