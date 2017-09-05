@@ -611,7 +611,7 @@ public class CmsJspNavBuilder {
      */
     public List<CmsJspNavElement> getSiteNavigation() {
 
-        return getSiteNavigation("/", -1);
+        return getSiteNavigation("/", Visibility.navigation, -1);
     }
 
     /**
@@ -625,6 +625,21 @@ public class CmsJspNavBuilder {
      */
     public List<CmsJspNavElement> getSiteNavigation(String folder, int endLevel) {
 
+        return getSiteNavigation(folder, Visibility.navigation, endLevel);
+    }
+
+    /**
+     * This method builds a complete navigation tree with entries of all branches
+     * from the specified folder.<p>
+     *
+     * @param folder folder the root folder of the navigation tree
+     * @param visibility controls whether entries hidden from navigation or not in navigation at all should be included
+     * @param endLevel the end level of the navigation
+     *
+     * @return list of navigation elements, in depth first order
+     */
+    public List<CmsJspNavElement> getSiteNavigation(String folder, Visibility visibility, int endLevel) {
+
         folder = CmsFileUtil.addTrailingSeparator(folder);
         // check if a specific end level was given, if not, build the complete navigation
         boolean noLimit = false;
@@ -633,14 +648,17 @@ public class CmsJspNavBuilder {
         }
         List<CmsJspNavElement> list = new ArrayList<CmsJspNavElement>();
         // get the navigation for this folder
-        List<CmsJspNavElement> curnav = getNavigationForFolder(folder);
+        List<CmsJspNavElement> curnav = getNavigationForFolder(folder, visibility, CmsResourceFilter.DEFAULT);
         // loop through all navigation entries
         for (CmsJspNavElement ne : curnav) {
             // add the navigation entry to the result list
             list.add(ne);
             // check if navigation entry is a folder or navigation level and below the max level -> if so, get the navigation from this folder as well
             if ((ne.isFolderLink() || ne.isNavigationLevel()) && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
-                List<CmsJspNavElement> subnav = getSiteNavigation(m_cms.getSitePath(ne.getResource()), endLevel);
+                List<CmsJspNavElement> subnav = getSiteNavigation(
+                    m_cms.getSitePath(ne.getResource()),
+                    visibility,
+                    endLevel);
                 // copy the result of the subfolder to the result list
                 list.addAll(subnav);
             }

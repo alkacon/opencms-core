@@ -205,7 +205,7 @@ public class CmsXmlSitemapGenerator {
      *
      * @param link the link to change
      * @param server the server URI string
-
+    
      * @return the changed link
      */
     public static String replaceServerUri(String link, String server) {
@@ -612,7 +612,10 @@ public class CmsXmlSitemapGenerator {
         } catch (Exception e) {
             LOG.info(e.getLocalizedMessage(), e);
         }
-        List<CmsJspNavElement> navElements = navBuilder.getSiteNavigation(m_baseFolderSitePath, -1);
+        List<CmsJspNavElement> navElements = navBuilder.getSiteNavigation(
+            m_baseFolderSitePath,
+            CmsJspNavBuilder.Visibility.includeHidden,
+            -1);
         for (CmsJspNavElement navElement : navElements) {
             CmsResource navResource = navElement.getResource();
             if (navResource.isFolder()) {
