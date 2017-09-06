@@ -67,6 +67,9 @@ public class CmsLogFileView extends VerticalLayout {
     /**Session attribute to store line number to display. */
     protected static String ATTR_FILE_VIEW_SIZE = "log-file-size";
 
+    /**Window size.*/
+    protected static int WINDOW_SIZE = 1000;
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = -6323034856756469160L;
 
@@ -117,6 +120,8 @@ public class CmsLogFileView extends VerticalLayout {
         m_logfile.setFilteringMode(FilteringMode.CONTAINS);
 
         m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
+
+        m_logView.setWindowSize(WINDOW_SIZE);
 
         if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_SIZE) == null) {
             CmsVaadinUtils.getRequest().getSession().setAttribute(

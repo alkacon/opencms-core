@@ -238,6 +238,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             addDownloadButton(m_fileView);
             addSettingsButton();
             addChannelButton();
+            addRefreshButton();
             return m_fileView;
         }
 
@@ -318,6 +319,27 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
                 window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_DOWNLOAD_0));
                 window.setContent(new CmsLogDownloadDialog(window, view.getCurrentFile()));
                 A_CmsUI.get().addWindow(window);
+            }
+        });
+        m_uiContext.addToolbarButton(button);
+    }
+
+    /**
+     * Button to refresh the file view.<p>
+     */
+    private void addRefreshButton() {
+
+        Button button = CmsToolBar.createButton(
+            FontOpenCms.RESET,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_REFRESH_FILEVIEW_0));
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                m_fileView.updateView();
+
             }
         });
         m_uiContext.addToolbarButton(button);
