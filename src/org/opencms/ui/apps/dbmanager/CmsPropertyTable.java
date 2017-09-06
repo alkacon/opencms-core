@@ -163,7 +163,13 @@ public class CmsPropertyTable extends Table {
 
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_PROPERTY_DELETE_0));
-            window.setContent(new CmsPropertyDeleteDialog(data.iterator().next(), window));
+            window.setContent(new CmsPropertyDeleteDialog(data.iterator().next(), window, new Runnable() {
+
+                public void run() {
+
+                    init();
+                }
+            }));
 
             A_CmsUI.get().addWindow(window);
         }
@@ -242,70 +248,18 @@ public class CmsPropertyTable extends Table {
 
     /**
      * public constructor.<p>
-     *
-     * @throws CmsException exception
      */
-    public CmsPropertyTable()
-    throws CmsException {
+    public CmsPropertyTable() {
 
         m_menu = new CmsContextMenu();
         m_menu.setAsTableContextMenu(this);
 
-        List<CmsPropertyDefinition> properties = A_CmsUI.getCmsObject().readAllPropertyDefinitions();
-
-        setSizeFull();
-
-        m_container = new IndexedContainer();
-        for (TableColumn col : TableColumn.values()) {
-            m_container.addContainerProperty(col, col.getType(), col.getDefaultValue());
-        }
-        setContainerDataSource(m_container);
-        setItemIconPropertyId(TableColumn.Icon);
-        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
+        init();
 
         setColumnWidth(null, 40);
         setSelectable(true);
         setMultiSelect(false);
 
-        setVisibleColumns(TableColumn.Name);
-
-        for (CmsPropertyDefinition prop : properties) {
-            Item item = m_container.addItem(prop);
-            item.getItemProperty(TableColumn.Name).setValue(prop.getName());
-        }
-        addItemClickListener(new ItemClickListener() {
-
-            private static final long serialVersionUID = 4807195510202231174L;
-
-            public void itemClick(ItemClickEvent event) {
-
-                setValue(null);
-                select(event.getItemId());
-                if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
-                    m_menu.setEntries(
-                        getMenuEntries(),
-                        Collections.singleton(((CmsPropertyDefinition)getValue()).getName()));
-                    m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsPropertyTable.this);
-                } else if (TableColumn.Name.equals(event.getPropertyId())) {
-                    showResources(((CmsPropertyDefinition)getValue()).getName());
-                }
-
-            }
-
-        });
-
-        setCellStyleGenerator(new CellStyleGenerator() {
-
-            private static final long serialVersionUID = 1L;
-
-            public String getStyle(Table source, Object itemId, Object propertyId) {
-
-                if (TableColumn.Name.equals(propertyId)) {
-                    return " " + OpenCmsTheme.HOVER_COLUMN;
-                }
-                return null;
-            }
-        });
     }
 
     /**
@@ -318,6 +272,67 @@ public class CmsPropertyTable extends Table {
         m_container.removeAllContainerFilters();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search)) {
             m_container.addContainerFilter(new Or(new SimpleStringFilter(TableColumn.Name, search, true, false)));
+        }
+    }
+
+    /**
+     * Fills table with items.<p>
+     */
+    public void init() {
+
+        try {
+            List<CmsPropertyDefinition> properties = A_CmsUI.getCmsObject().readAllPropertyDefinitions();
+
+            m_container = new IndexedContainer();
+            for (TableColumn col : TableColumn.values()) {
+                m_container.addContainerProperty(col, col.getType(), col.getDefaultValue());
+            }
+            setContainerDataSource(m_container);
+            setItemIconPropertyId(TableColumn.Icon);
+            setRowHeaderMode(RowHeaderMode.ICON_ONLY);
+
+            setVisibleColumns(TableColumn.Name);
+
+            for (CmsPropertyDefinition prop : properties) {
+                Item item = m_container.addItem(prop);
+                item.getItemProperty(TableColumn.Name).setValue(prop.getName());
+            }
+            addItemClickListener(new ItemClickListener() {
+
+                private static final long serialVersionUID = 4807195510202231174L;
+
+                public void itemClick(ItemClickEvent event) {
+
+                    setValue(null);
+                    select(event.getItemId());
+                    if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
+                        m_menu.setEntries(
+                            getMenuEntries(),
+                            Collections.singleton(((CmsPropertyDefinition)getValue()).getName()));
+                        m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsPropertyTable.this);
+                    } else if (TableColumn.Name.equals(event.getPropertyId())) {
+                        showResources(((CmsPropertyDefinition)getValue()).getName());
+                    }
+
+                }
+
+            });
+
+            setCellStyleGenerator(new CellStyleGenerator() {
+
+                private static final long serialVersionUID = 1L;
+
+                public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                    if (TableColumn.Name.equals(propertyId)) {
+                        return " " + OpenCmsTheme.HOVER_COLUMN;
+                    }
+                    return null;
+                }
+            });
+
+        } catch (CmsException e) {
+            //
         }
     }
 

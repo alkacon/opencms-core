@@ -27,26 +27,35 @@
 
 package org.opencms.ui.apps.dbmanager;
 
-import org.opencms.main.CmsException;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsToolBar;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the property definition app.<p>
  */
 public class CmsDbPropertiesApp extends A_CmsWorkplaceApp {
+
+    /**Table for properties. */
+    protected CmsPropertyTable m_table;
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -67,33 +76,29 @@ public class CmsDbPropertiesApp extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
-        try {
-            final CmsPropertyTable table = new CmsPropertyTable();
+        m_rootLayout.setMainHeightFull(true);
 
-            TextField filter = new TextField();
-            filter.setIcon(FontOpenCms.FILTER);
-            filter.setInputPrompt(
-                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-            filter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-            filter.setWidth("200px");
-            filter.addTextChangeListener(new TextChangeListener() {
+        m_table = new CmsPropertyTable();
 
-                private static final long serialVersionUID = 1L;
+        TextField filter = new TextField();
+        filter.setIcon(FontOpenCms.FILTER);
+        filter.setInputPrompt(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+        filter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        filter.setWidth("200px");
+        filter.addTextChangeListener(new TextChangeListener() {
 
-                public void textChange(TextChangeEvent event) {
+            private static final long serialVersionUID = 1L;
 
-                    table.filterTable(event.getText());
-                }
-            });
-            m_infoLayout.addComponent(filter);
+            public void textChange(TextChangeEvent event) {
 
-            m_rootLayout.setMainHeightFull(true);
-
-            return new CmsPropertyTable();
-        } catch (CmsException e) {
-            //
-        }
-        return null;
+                m_table.filterTable(event.getText());
+            }
+        });
+        m_infoLayout.addComponent(filter);
+        m_table.setSizeFull();
+        addNewPropertyButton(m_table);
+        return m_table;
     }
 
     /**
@@ -103,5 +108,30 @@ public class CmsDbPropertiesApp extends A_CmsWorkplaceApp {
     protected List<NavEntry> getSubNavEntries(String state) {
 
         return null;
+    }
+
+    /**
+     * Button for adding new property.<p>
+     * @param table table to be updated
+     */
+    private void addNewPropertyButton(final CmsPropertyTable table) {
+
+        Button add = CmsToolBar.createButton(
+            FontOpenCms.WAND,
+            CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_PROPERTY_NEW_CAPTION_0));
+        add.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                final Window window = CmsBasicDialog.prepareWindow();
+                window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_PROPERTY_NEW_CAPTION_0));
+                window.setContent(new CmsAddPropertyDefinitionDialog(window, table));
+                A_CmsUI.get().addWindow(window);
+            }
+        });
+        m_uiContext.addToolbarButton(add);
+
     }
 }

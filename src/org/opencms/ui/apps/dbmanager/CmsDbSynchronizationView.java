@@ -90,9 +90,7 @@ public class CmsDbSynchronizationView extends VerticalLayout {
                         Messages.GUI_DATABASEAPP_SYNC_VALIDATION_RESOURCE_NOT_FOUND_1,
                         resourceName));
             }
-
         }
-
     }
 
     /**
@@ -168,7 +166,12 @@ public class CmsDbSynchronizationView extends VerticalLayout {
         m_componentsToValidate.add(m_target);
         m_cms = initCms(A_CmsUI.getCmsObject());
         CmsUserSettings userSettings = new CmsUserSettings(m_cms);
+
         m_synchronizeSettings = userSettings.getSynchronizeSettings();
+        if (m_synchronizeSettings == null) {
+            m_synchronizeSettings = new CmsSynchronizeSettings();
+            m_synchronizeSettings.setEnabled(false);
+        }
 
         m_app.setRefreshButton(m_synchronizeSettings.isEnabled());
 
@@ -415,8 +418,9 @@ public class CmsDbSynchronizationView extends VerticalLayout {
     private void initUI() {
 
         m_enabled.setValue(new Boolean(m_synchronizeSettings.isEnabled()));
-        m_target.setValue(m_synchronizeSettings.getDestinationPathInRfs());
-
+        if (m_synchronizeSettings.getDestinationPathInRfs() != null) {
+            m_target.setValue(m_synchronizeSettings.getDestinationPathInRfs());
+        }
         List<String> resources = m_synchronizeSettings.getSourceListInVfs();
         for (String resource : resources) {
             addResource(resource);

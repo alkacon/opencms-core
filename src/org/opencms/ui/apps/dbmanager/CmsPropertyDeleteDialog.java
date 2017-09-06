@@ -106,8 +106,9 @@ public class CmsPropertyDeleteDialog extends CmsBasicDialog {
      *
      * @param propName name of property
      * @param window to be closed
+     * @param runnable to update table
      */
-    public CmsPropertyDeleteDialog(final String propName, final Window window) {
+    public CmsPropertyDeleteDialog(final String propName, final Window window, final Runnable runnable) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         displayResourceInfoDirectly(
@@ -170,6 +171,7 @@ public class CmsPropertyDeleteDialog extends CmsBasicDialog {
                 }
                 try {
                     getCms().deletePropertyDefinition(propName);
+                    runnable.run();
                 } catch (CmsException e) {
                     LOG.error("Unable to delete property definition", e);
                 }

@@ -157,25 +157,27 @@ public class CmsResourceTypeStatResultList {
 
         HorizontalLayout hLayout = new HorizontalLayout();
         hLayout.setWidth("100%");
+        hLayout.setHeight("60px");
+        hLayout.addStyleName("o-report");
 
         Label result = new Label();
         result.setContentMode(ContentMode.HTML);
         result.addStyleName("v-scrollable");
-        result.addStyleName("o-report");
+        //result.addStyleName("o-report");
         result.setValue(statResult.getResult());
 
         Label type = new Label();
         type.setWidth("200px");
         type.setContentMode(ContentMode.HTML);
         type.addStyleName("v-scrollable");
-        type.addStyleName("o-report");
+        //type.addStyleName("o-report");
         type.setValue(statResult.getTypeTitle());
 
         Label time = new Label();
         time.setWidth("180px");
         time.setContentMode(ContentMode.HTML);
         time.addStyleName("v-scrollable");
-        time.addStyleName("o-report");
+        //time.addStyleName("o-report");
         time.setValue(
             CmsDateUtil.getDateTime(
                 new Date(statResult.getTimestamp()),
@@ -184,6 +186,7 @@ public class CmsResourceTypeStatResultList {
 
         Button showList = new Button(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_STATS_LIST_0));
         showList.setWidth("100px");
+
         showList.addClickListener(new Button.ClickListener() {
 
             private static final long serialVersionUID = 2665235403970750534L;
@@ -209,7 +212,11 @@ public class CmsResourceTypeStatResultList {
         hLayout.addComponent(showList);
         hLayout.setExpandRatio(result, 1);
         hLayout.setData(statResult);
+        hLayout.setSpacing(true);
         hLayout.setComponentAlignment(showList, Alignment.MIDDLE_CENTER);
+        hLayout.setComponentAlignment(time, Alignment.MIDDLE_CENTER);
+        hLayout.setComponentAlignment(result, Alignment.MIDDLE_CENTER);
+        hLayout.setComponentAlignment(type, Alignment.MIDDLE_CENTER);
         return hLayout;
     }
 
