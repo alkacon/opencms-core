@@ -135,6 +135,16 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     }
 
     /**
+     * Centers the currently open window.
+     */
+    public void centerWindow() {
+
+        if (m_dialogWindow != null) {
+            m_dialogWindow.center();
+        }
+    }
+
+    /**
      * Closes the current dialog window and updates the sites table if requested.<p>
      *
      * @param updateTable <code>true</code> to update the sites table
@@ -346,6 +356,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
                 openEditDailog(null);
             }
         });
+        add.setImmediate(true);
         m_uiContext.addToolbarButton(add);
 
         Button settings = CmsToolBar.createButton(

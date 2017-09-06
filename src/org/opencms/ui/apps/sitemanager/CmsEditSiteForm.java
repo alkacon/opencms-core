@@ -547,7 +547,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private boolean m_isFolderNameTouched;
 
     /** The site manager instance.*/
-    private CmsSiteManager m_manager;
+    CmsSiteManager m_manager;
 
     /**vaadin component.*/
     private Button m_ok;
@@ -751,6 +751,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
                 clearMessageBundle();
                 loadMessageBundle();
+                m_manager.centerWindow();
 
             }
         });
