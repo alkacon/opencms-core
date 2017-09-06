@@ -27,6 +27,8 @@ version = vprops['version.number']
 // alternative variable name for the case where the version variable is used for something else, e.g. javadoc
 ext.ocmsVersion = version
 
+// if true, generates only a draft version to accelerate compilation (do not use draft for production!)
+ext.draft = "false"
 repositories {
     if (project.hasProperty('additional_repositories')) {
         additional_repositories.split(';').each { repo ->
@@ -487,72 +489,14 @@ task workplaceTheme(type: JavaExec) {
     maxHeapSize = max_heap_size
 }
 
-task "gwt_widgetSet"(dependsOn: gwtClasses, type: JavaExec) {
-    group 'gwt'
-    description = 'Compiles Java into JavaScript using the GWT compiler'
-
-    ext.buildDir = project.buildDir.toString() + "/gwt/widgetSet"
-    ext.extraDir = project.buildDir.toString() + "/extra/widgetSet"
-    inputs.files sourceSets.gwt.java.srcDirs
-    inputs.dir sourceSets.gwt.output.resourcesDir
-    outputs.dir buildDir
-
-    // Workaround for incremental build (GRADLE-1483)
-    outputs.upToDateSpec = new org.gradle.api.specs.AndSpec()
-
-    doFirst {
-        println '======================================================'
-        println "Building GWT resources for WidgetSet"
-        println '======================================================'
-        // to clean the output directory, delete it first
-        def dir = file(buildDir)
-        if (dir.exists()) {
-            delete(dir)
-        }
-        dir.mkdirs()
-    }
-
-    main = 'com.google.gwt.dev.Compiler'
-
-    classpath {
-        [
-                // Java source core
-                sourceSets.main.java.srcDirs,
-                // Java source gwt
-                sourceSets.gwt.java.srcDirs,
-                // Java source modules
-                sourceSets.modules.java.srcDirs,
-                // Generated resources
-                sourceSets.gwt.output.resourcesDir,
-                // Generated classes
-                sourceSets.gwt.output.classesDir,
-                // Dependecies
-                sourceSets.gwt.compileClasspath,
-        ]
-    }
-
-
-    args =
-            [
-                    'org.opencms.ui.WidgetSet',
-                    // Your GWT module
-                    '-war',
-                    buildDir,
-                    '-logLevel',
-                    'ERROR',
-                    '-localWorkers',
-                    '2',
-                    '-style',
-                    'obfuscated',
-                    '-extra',
-                    extraDir,
-                    '-strict'
-                    // '-draftCompile' // Speeds up compile with 25%
-            ]
-    jvmArgs = ['-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
-
-
-    maxHeapSize = max_heap_size
+task "gwt_widgetSet"(dependsOn: gwtClasses, type: org.opencms.GwtCompiler) {
+    opencmsModuleName = 'widgetSet'
+    gwtModuleName = 'org.opencms.ui.WidgetSet'
+    draft = project.draft.toBoolean()
+    sourceSetMain sourceSets.main
+    sourceSetModules sourceSets.modules
+    sourceSetGwt sourceSets.gwt
+    maxHeapSize max_heap_size
 }
 
 task widgetSetJar(type: Jar, dependsOn: [gwt_widgetSet, workplaceTheme]) {
@@ -822,80 +766,14 @@ allModuleNames.split(',').each { moduleName ->
     }
 
     if (gwtModule != null) {
-        sourceSets.create(moduleName + '_gwt')
-        sourceSets[moduleName + '_gwt'].java.srcDirs = files("$srcGwtDir")
-        sourceSets[moduleName + '_gwt'].resources.srcDirs = files("$srcGwtDir")
-        task "gwt_$moduleName"(dependsOn: gwtClasses, type: JavaExec) {
-            group 'gwt'
-            description = 'Compiles Java into JavaScript using the GWT compiler'
-
-            ext.buildDir = project.buildDir.toString() + "/gwt/$moduleName"
-            ext.extraDir = project.buildDir.toString() + "/extra/$moduleName"
-            inputs.files sourceSets.gwt.java.srcDirs
-            inputs.dir sourceSets.gwt.output.resourcesDir
-            outputs.dir buildDir
-
-            // Workaround for incremental build (GRADLE-1483)
-            outputs.upToDateSpec = new org.gradle.api.specs.AndSpec()
-
-            doFirst {
-                println '======================================================'
-                println "Building GWT resources for $gwtModule"
-                println '======================================================'
-                // to clean the output directory, delete it first
-                def dir = file(buildDir)
-                if (dir.exists()) {
-                    delete(dir)
-                }
-                dir.mkdirs()
-            }
-
-            main = 'com.google.gwt.dev.Compiler'
-
-            classpath {
-                [
-                        // Java source core
-                        sourceSets.main.java.srcDirs,
-                        // Java source gwt
-                        sourceSets.gwt.java.srcDirs,
-                        // Java source modules
-                        sourceSets.modules.java.srcDirs,
-                        // Generated resources
-                        sourceSets.gwt.output.resourcesDir,
-                        // Generated classes
-                        sourceSets.gwt.output.classesDir,
-                        // Dependecies
-                        sourceSets.gwt.compileClasspath,
-
-                        // Souceset folders of the current module
-                        sourceSets[moduleName + '_gwt'].java.srcDirs,
-                        sourceSets[moduleName + '_gwt'].output.resourcesDir,
-                        sourceSets[moduleName + '_gwt'].output.classesDir
-                ]
-            }
-
-
-            args =
-                    [
-                            gwtModule,
-                            // Your GWT module
-                            '-war',
-                            buildDir,
-                            '-logLevel',
-                            'ERROR',
-                            '-localWorkers',
-                            '2',
-                            '-style',
-                            'obfuscated',
-                            '-extra',
-                            extraDir,
-                            '-strict'
-                            // '-draftCompile' // Speeds up compile with 25%
-                    ]
-            jvmArgs = ['-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
-
-
-            maxHeapSize = max_heap_size
+        task "gwt_$moduleName"(dependsOn: gwtClasses, type: org.opencms.GwtCompiler) {
+            opencmsModuleName = moduleName
+            gwtModuleName = gwtModule
+            draft = project.draft.toBoolean()
+            sourceSetMain sourceSets.main
+            sourceSetModules sourceSets.modules
+            sourceSetGwt sourceSets.gwt
+            maxHeapSize max_heap_size
         }
 
         tasks["jar_$moduleName"].dependsOn("gwt_$moduleName")
