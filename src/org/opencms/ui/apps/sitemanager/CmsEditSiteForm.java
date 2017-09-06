@@ -1299,6 +1299,19 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     private String getAvailableLocalVariant(String path, String baseName) {
 
+        //First look for a bundle with the locale of the folder..
+        try {
+            CmsProperty propLoc = m_clonedCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOCALE, true);
+            if (!propLoc.isNullProperty()) {
+                if (m_clonedCms.existsResource(path + baseName + "_" + propLoc.getValue())) {
+                    return baseName + "_" + propLoc.getValue();
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error("Can not read locale property", e);
+        }
+
+        //If no bundle was found with the locale of the folder, or the property was not set, search for other locales
         A_CmsUI.get();
         List<String> localVariations = CmsLocaleManager.getLocaleVariants(
             baseName,
@@ -1311,6 +1324,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                 return name;
             }
         }
+
         return null;
     }
 
