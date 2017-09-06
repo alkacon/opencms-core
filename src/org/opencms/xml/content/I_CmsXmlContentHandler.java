@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsDefaultSet;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
@@ -52,6 +53,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.ServletRequest;
 
 import org.dom4j.Element;
 
@@ -318,6 +321,18 @@ public interface I_CmsXmlContentHandler {
     String getModelFolder();
 
     /**
+     * Returns the nested formatters for the given resource.<p>
+     *
+     * @param cms the cms context
+     * @param res the resource
+     * @param locale the content locale
+     * @param req the request if available
+     *
+     * @return the nested formatter ids
+     */
+    List<CmsUUID> getNestedFormatters(CmsObject cms, CmsResource res, Locale locale, ServletRequest req);
+
+    /**
      * Returns the preview URI for the given XML content value object to be displayed in the editor.<p>
      *
      * If <code>null</code> is returned, no preview is possible for contents using this handler.<p>
@@ -443,6 +458,13 @@ public interface I_CmsXmlContentHandler {
      * @return true if the contents for this content handler have schema-based formatters which can be disabled or enabled
      */
     boolean hasModifiableFormatters();
+
+    /**
+     * Returns whether there are nested formatters configured for this content type.<p>
+     *
+     * @return <code>true</code> if there are nested formatters configured for this content type
+     */
+    boolean hasNestedFormatters();
 
     /**
      * Returns if there are locale synchronized elements configured.<p>

@@ -322,6 +322,17 @@
 		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	
+	<xsd:complexType name="OpenCmsDefaultAppinfoNestedFormatters">
+		<xsd:sequence>
+			<xsd:element name="nestedformatter" type="OpenCmsDefaultAppinfoNestedFormatter" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoNestedFormatter">
+		<xsd:attribute name="element" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	
 	<xsd:complexType name="OpenCmsDefaultAppinfoMessageKeyHandler">
 		<xsd:attribute name="class" type="xsd:string" use="required" />
 		<xsd:attribute name="configuration" type="xsd:string" use="optional" />

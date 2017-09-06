@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -151,7 +152,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             try {
                 if (formatter != null) {
                     element.initResource(cms);
-                    element.initSettings(cms, formatter);
+                    element.initSettings(cms, formatter, locale, request);
                     boolean openedEditable = false;
                     contextBean.setElement(element);
                     if (editable && contextBean.getIsEditMode()) {
@@ -315,10 +316,28 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     : cms.readResource(m_value, CmsResourceFilter.IGNORE_EXPIRATION);
                 }
                 I_CmsFormatterBean formatter = getFormatterForType(cms, res, isOnline);
+                Map<String, String> settings;
+                CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(request);
+                if (m_passSettings && (contextBean.getElement() != null)) {
+                    settings = new HashMap<String, String>();
+                    String formatterId = formatter.getId();
+                    int prefixLength = formatterId.length() + 1;
+                    for (Entry<String, String> entry : contextBean.getElement().getSettings().entrySet()) {
+                        if (entry.getKey().startsWith(formatterId)) {
+                            settings.put(entry.getKey().substring(prefixLength), entry.getValue());
+                        } else if (!settings.containsKey(entry.getKey())) {
+                            settings.put(entry.getKey(), entry.getValue());
+                        }
+                    }
+                    settings.putAll(m_parameterMap);
+                } else {
+                    settings = m_parameterMap;
+                }
+
                 displayAction(
                     res,
                     formatter,
-                    m_parameterMap,
+                    settings,
                     m_editable,
                     m_canCreate,
                     m_canDelete,

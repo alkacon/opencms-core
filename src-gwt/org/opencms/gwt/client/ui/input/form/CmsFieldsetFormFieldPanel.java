@@ -34,7 +34,9 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -47,11 +49,14 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     /** Text metrics key for the info box. */
     public static String TM_INFOBOX = "infobox_";
 
+    /** The default group id. */
+    private static final String DEFAULT_GROUP = "";
+
     /** The list of form fields. */
     protected List<I_CmsFormField> m_fields;
 
-    /** The main field set. */
-    private CmsFieldSet m_fieldSet;
+    /** Group specific field sets. */
+    private Map<String, CmsFieldSet> m_groupFieldSets;
 
     /** The main panel .*/
     private FlowPanel m_panel;
@@ -65,17 +70,34 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     public CmsFieldsetFormFieldPanel(CmsListInfoBean info, String legend) {
 
         m_panel = new FlowPanel();
+        m_groupFieldSets = new HashMap<String, CmsFieldSet>();
         if (info != null) {
             m_infoWidget = new CmsListItemWidget(info);
             m_infoWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
             m_infoWidget.setStateIcon(StateIcon.standard);
             m_panel.add(m_infoWidget);
         }
-        m_fieldSet = new CmsFieldSet();
-        m_fieldSet.setLegend(legend);
-        m_fieldSet.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-        m_panel.add(m_fieldSet);
+
+        CmsFieldSet fieldSet = new CmsFieldSet();
+        fieldSet.setLegend(legend);
+        fieldSet.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        addGroupFieldSet(DEFAULT_GROUP, fieldSet);
         initWidget(m_panel);
+    }
+
+    /**
+     * Adds a group specific field set.<p>
+     *
+     * @param group the group id
+     * @param fieldSet the field set
+     */
+    public void addGroupFieldSet(String group, CmsFieldSet fieldSet) {
+
+        // can't add a group field set twice
+        if (!m_groupFieldSets.containsKey(group)) {
+            m_groupFieldSets.put(group, fieldSet);
+            m_panel.add(fieldSet);
+        }
     }
 
     /**
@@ -84,7 +106,7 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     @Override
     public String getDefaultGroup() {
 
-        return "";
+        return DEFAULT_GROUP;
     }
 
     /**
@@ -94,7 +116,7 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
      */
     public CmsFieldSet getFieldSet() {
 
-        return m_fieldSet;
+        return m_groupFieldSets.get(DEFAULT_GROUP);
     }
 
     /**
@@ -113,10 +135,24 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     @Override
     public void renderFields(Collection<I_CmsFormField> fields) {
 
-        m_fieldSet.clear();
+        for (CmsFieldSet fieldSet : m_groupFieldSets.values()) {
+            fieldSet.clear();
+        }
         for (I_CmsFormField field : fields) {
             CmsFormRow row = createRow(field);
-            m_fieldSet.add(row);
+            String fieldGroup = field.getLayoutData().get("group");
+            CmsFieldSet fieldSet;
+            if (m_groupFieldSets.containsKey(fieldGroup)) {
+                fieldSet = m_groupFieldSets.get(fieldGroup);
+            } else {
+                fieldSet = getFieldSet();
+            }
+            fieldSet.add(row);
+        }
+        for (CmsFieldSet fieldSet : m_groupFieldSets.values()) {
+            if (fieldSet.getWidgetCount() == 0) {
+                fieldSet.setVisible(false);
+            }
         }
     }
 

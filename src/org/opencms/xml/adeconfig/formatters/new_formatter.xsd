@@ -42,6 +42,7 @@
 			<default element="Detail" value="true" />
 			<default element="Display" value="true" />
 			<default element="SearchContent" value="true" />
+			<default element="Setting/Visibility" value="both" />
 		</defaults>
 		<mappings>
 				<mapping element="NiceName" mapto="property:Title" />

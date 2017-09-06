@@ -69,6 +69,8 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.servlet.ServletRequest;
+
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
@@ -105,6 +107,12 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         widgetConf;
     }
 
+    /** The prefix for macros used to acess properties of the current container page. */
+    public static final String PAGE_PROPERTY_PREFIX = "page-property:";
+
+    /** If a property has this value, the page-property macro for this property will expand to the empty string instead. */
+    protected static final Object PROPERTY_EMPTY_MARKER = "-";
+
     /** Widget configuration key-value separator constant. */
     private static final String CONF_KEYVALUE_SEPARATOR = ":";
 
@@ -113,12 +121,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContentPropertyHelper.class);
-
-    /** The prefix for macros used to acess properties of the current container page. */
-    public static final String PAGE_PROPERTY_PREFIX = "page-property:";
-
-    /** If a property has this value, the page-property macro for this property will expand to the empty string instead. */
-    protected static final Object PROPERTY_EMPTY_MARKER = "-";
 
     /**
      * Hidden constructor.<p>
@@ -384,13 +386,17 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * @param cms the current CMS context
      * @param resource the resource to get the property configuration from
      * @param properties the properties to extend
+     * @param locale the content locale
+     * @param request the current request, if available
      *
      * @return a merged map of properties
      */
     public static Map<String, String> mergeDefaults(
         CmsObject cms,
         CmsResource resource,
-        Map<String, String> properties) {
+        Map<String, String> properties,
+        Locale locale,
+        ServletRequest request) {
 
         Map<String, CmsXmlContentProperty> propertyConfig = null;
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
@@ -410,7 +416,12 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             try {
 
                 if (formatter != null) {
-                    propertyConfig = formatter.getSettings();
+                    propertyConfig = OpenCms.getADEManager().getFormatterSettings(
+                        cms,
+                        formatter,
+                        resource,
+                        locale,
+                        request);
                 } else {
                     // fall back to schema configuration
                     propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource).getSettings(

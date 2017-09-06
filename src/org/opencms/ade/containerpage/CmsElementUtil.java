@@ -603,14 +603,34 @@ public class CmsElementUtil {
                         config.setCssResources(cssResources);
                         config.setInlineCss(formatter.getInlineCss());
                         config.setLabel(label);
-                        Map<String, CmsXmlContentProperty> settingsConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
-                            formatter.getSettings());
+                        Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
+                            m_cms,
+                            formatter,
+                            element.getResource(),
+                            m_locale,
+                            m_req);
+
                         settingsConfig = CmsXmlContentPropertyHelper.resolveMacrosForPropertyInfo(
                             m_cms,
                             page,
                             element.getResource(),
                             settingsConfig);
                         config.setSettingConfig(settingsConfig);
+                        List<I_CmsFormatterBean> nestedFormatters = OpenCms.getADEManager().getNestedFormatters(
+                            m_cms,
+                            element.getResource(),
+                            m_locale,
+                            m_req);
+                        if ((nestedFormatters != null) && !nestedFormatters.isEmpty()) {
+                            Map<String, String> settingPrefixes = new HashMap<String, String>();
+                            for (I_CmsFormatterBean nested : nestedFormatters) {
+                                settingPrefixes.put(
+                                    nested.getId(),
+                                    nested.getNiceName(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)));
+                            }
+                            config.setNestedFormatterPrefixes(settingPrefixes);
+                        }
+
                         config.setJspRootPath(formatter.getJspRootPath());
                         containerFormatters.put(id, config);
                     }
@@ -891,7 +911,7 @@ public class CmsElementUtil {
             allowNested,
             CmsADESessionCache.getCache(m_req, m_cms));
         if (formatter != null) {
-            element.initSettings(m_cms, formatter);
+            element.initSettings(m_cms, formatter, m_locale, m_req);
             try {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
             } catch (Exception e) {

@@ -228,6 +228,16 @@ public class CmsForm {
     }
 
     /**
+     * Returns the field group ids of the form.<p>
+     *
+     * @return the field groups
+     */
+    public Collection<String> getGroups() {
+
+        return m_fieldsByGroup.keySet();
+    }
+
+    /**
      * Returns the form widget container.<p>
      *
      * @return the form widget container

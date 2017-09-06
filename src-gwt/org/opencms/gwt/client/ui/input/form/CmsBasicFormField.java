@@ -139,8 +139,8 @@ public class CmsBasicFormField implements I_CmsFormField {
      * @param propertyConfig the configuration of the property
      * @param fieldId the field id
      * @param factory a factory for creating form  widgets
-     * @param additionalParams
-     * @param alwaysAllowEmpty
+     * @param additionalParams additional field parameters
+     * @param alwaysAllowEmpty indicates an empty value is allowed
      *
      * @return the newly created form field
      */

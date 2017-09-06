@@ -61,6 +61,9 @@ public class CmsFormatterConfig implements IsSerializable {
     /** The formatter label. */
     private String m_label;
 
+    /** Contains the nested formatters prefixes and their labels. */
+    private Map<String, String> m_nestedFormatterPrefixes;
+
     /** The setting for this container element. */
     private Map<String, CmsXmlContentProperty> m_settingConfig;
 
@@ -145,6 +148,16 @@ public class CmsFormatterConfig implements IsSerializable {
     }
 
     /**
+     * Returns the nested formatters prefixes and their labels.<p>
+     *
+     * @return the nested formatters prefixes and their labels
+     */
+    public Map<String, String> getNestedFormatterPrefixes() {
+
+        return m_nestedFormatterPrefixes;
+    }
+
+    /**
      * Returns the settings configuration.<p>
      *
      * @return the settings configuration
@@ -202,6 +215,16 @@ public class CmsFormatterConfig implements IsSerializable {
     public void setLabel(String label) {
 
         m_label = label;
+    }
+
+    /**
+     * Sets the nested formatters prefixes and their labels.<p>
+     *
+     * @param nestedFormatterPrefixes the nested formatters prefixes and their labels to set
+     */
+    public void setNestedFormatterPrefixes(Map<String, String> nestedFormatterPrefixes) {
+
+        m_nestedFormatterPrefixes = nestedFormatterPrefixes;
     }
 
     /**

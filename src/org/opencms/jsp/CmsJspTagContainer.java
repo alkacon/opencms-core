@@ -1260,7 +1260,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 containerType,
                 containerWidth,
                 true);
-            element.initSettings(cms, formatterConfig);
+            element.initSettings(cms, formatterConfig, locale, request);
         }
         // writing elements to the session cache to improve performance of the container-page editor in offline project
         if (m_editableRequest) {
@@ -1297,7 +1297,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         containerType,
                         containerWidth,
                         false);
-                    subelement.initSettings(cms, subElementFormatterConfig);
+                    subelement.initSettings(cms, subElementFormatterConfig, locale, request);
                     // writing elements to the session cache to improve performance of the container-page editor
                     if (m_editableRequest) {
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);

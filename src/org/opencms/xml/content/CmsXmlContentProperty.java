@@ -46,7 +46,8 @@ public class CmsXmlContentProperty implements Serializable {
     /** Type constants. */
     public enum PropType {
         /** Type constant string. */
-        string, /** Type constant VFS list. */
+        string,
+        /** Type constant VFS list. */
         vfslist;
 
         /**
@@ -65,15 +66,30 @@ public class CmsXmlContentProperty implements Serializable {
         }
     }
 
+    /** The property visibility options. */
+    public enum Visibility {
+        /** Visible in both element and parent. */
+        both,
+        /** Visible in element. */
+        element,
+        /** Visible in parent. */
+        parent
+    }
+
     /** XML node name constants. */
     public enum XmlNode {
 
         /** Value file list node name. */
-        FileList, /** Container or property name node name. */
-        Name, /** Element properties node name. */
-        Properties, /** Value string node name. */
-        String, /** File list URI node name. */
-        Uri, /** Value node name. */
+        FileList,
+        /** Container or property name node name. */
+        Name,
+        /** Element properties node name. */
+        Properties,
+        /** Value string node name. */
+        String,
+        /** File list URI node name. */
+        Uri,
+        /** Value node name. */
         Value;
     }
 
@@ -113,6 +129,9 @@ public class CmsXmlContentProperty implements Serializable {
     /** The property type. */
     private String m_type;
 
+    /** The property visibility. */
+    private Visibility m_visibility;
+
     /** The widget to use in the editor. */
     private String m_widget;
 
@@ -149,9 +168,57 @@ public class CmsXmlContentProperty implements Serializable {
 
     ) {
 
+        this(
+            name,
+            type,
+            Visibility.both,
+            widget,
+            widgetConfiguration,
+            ruleRegex,
+            ruleType,
+            default1,
+            niceName,
+            description,
+            error,
+            preferFolder);
+    }
+
+    /**
+     * Public constructor.<p>
+     *
+     * @param name the property name
+     * @param type the property type (string|uri)
+     * @param visibility the visibility of the property, used in the container page element context
+     * @param widget the widget
+     * @param widgetConfiguration the widget configuration
+     * @param ruleRegex the validation rule regex
+     * @param ruleType the validation rule type
+     * @param default1 the default value
+     * @param niceName the nice-name
+     * @param description  the description
+     * @param error the error message
+     * @param preferFolder the "prefer folder" option
+     */
+    public CmsXmlContentProperty(
+        String name,
+        String type,
+        Visibility visibility,
+        String widget,
+        String widgetConfiguration,
+        String ruleRegex,
+        String ruleType,
+        String default1,
+        String niceName,
+        String description,
+        String error,
+        String preferFolder
+
+    ) {
+
         super();
         m_name = name;
         m_type = type;
+        m_visibility = visibility;
         m_widget = widget;
         m_widgetConfiguration = widgetConfiguration;
         m_ruleRegex = ruleRegex;
@@ -181,6 +248,7 @@ public class CmsXmlContentProperty implements Serializable {
         return new CmsXmlContentProperty(
             m_name,
             m_type,
+            m_visibility,
             m_widget,
             m_widgetConfiguration,
             m_ruleRegex,
@@ -283,6 +351,16 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
+     * Returns the visibility of the property, used in the container page element context.<p>
+     *
+     * @return the visibility of the property
+     */
+    public Visibility getVisibility() {
+
+        return m_visibility;
+    }
+
+    /**
      * Returns the widget.<p>
      *
      * @return the widget
@@ -329,7 +407,32 @@ public class CmsXmlContentProperty implements Serializable {
         return new CmsXmlContentProperty(
             m_name,
             m_type,
+            m_visibility,
             CmsStringUtil.isEmptyOrWhitespaceOnly(m_widget) ? defaultWidget : m_widget,
+            m_widgetConfiguration,
+            m_ruleRegex,
+            m_ruleType,
+            m_default,
+            m_niceName,
+            m_description,
+            m_error,
+            m_preferFolder);
+    }
+
+    /**
+     * Copies a property definition, but replaces the nice name attribute.<p>
+     *
+     * @param name the new nice name attribute
+     *
+     * @return the copied property definition
+     */
+    public CmsXmlContentProperty withName(String name) {
+
+        return new CmsXmlContentProperty(
+            name,
+            m_type,
+            m_visibility,
+            m_widget,
             m_widgetConfiguration,
             m_ruleRegex,
             m_ruleType,
@@ -352,6 +455,7 @@ public class CmsXmlContentProperty implements Serializable {
         return new CmsXmlContentProperty(
             m_name,
             m_type,
+            m_visibility,
             m_widget,
             m_widgetConfiguration,
             m_ruleRegex,

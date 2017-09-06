@@ -35,6 +35,7 @@
 			<default element="Rank" value="1000" />
 			<default element="AutoEnabled" value="true" />
 			<default element="Detail" value="true" />
+			<default element="Setting/Visibility" value="both" />
 		</defaults>
 		<mappings>
 				<mapping element="NiceName" mapto="property:Title" />

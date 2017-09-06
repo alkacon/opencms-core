@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
@@ -116,6 +117,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** The hidden field widget name. */
     private static final String HIDDEN_FIELD_WIDGET = "hidden";
 
+    /** The container page controller. */
+    CmsContainerpageController m_controller;
+
+    /** Checkbox to set the 'model group' status. */
+    CmsSelectBox m_modelGroupSelect;
+
     /** The template context changed flag. */
     private boolean m_changedContext;
 
@@ -127,9 +134,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /** The template context widget. */
     private CmsMultiCheckBox m_contextsWidget;
-
-    /** The container page controller. */
-    CmsContainerpageController m_controller;
 
     /** Checkbox to set the 'createNew' status. */
     private CmsCheckBox m_createNewCheckBox;
@@ -145,9 +149,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /** The break up model group checkbox. */
     private CmsCheckBox m_modelGroupBreakUp;
-
-    /** Checkbox to set the 'model group' status. */
-    CmsSelectBox m_modelGroupSelect;
 
     /** The element setting values. */
     private Map<String, String> m_settings;
@@ -277,10 +278,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 contextsFieldset.add(m_contextsWidget);
                 fieldSetPanel.getMainPanel().add(contextsFieldset);
             }
-            if (m_elementBean.getSettingConfig(m_containerId).isEmpty()) {
-                // hide the settings field set, if there are no settings to edit
-                fieldSetPanel.getFieldSet().setVisible(false);
-            }
+            //            if (m_elementBean.getSettingConfig(m_containerId).isEmpty()) {
+            //                // hide the settings field set, if there are no settings to edit
+            //                fieldSetPanel.getFieldSet().setVisible(false);
+            //            }
         } else {
             formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
         }
@@ -311,7 +312,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         formHandler.setSubmitHandler(submitHandler);
         getForm().setFormHandler(formHandler);
         formHandler.setDialog(this);
-        renderSettingsForm(m_elementBean.getSettingConfig(m_containerId));
+        renderSettingsForm(
+            m_elementBean.getSettingConfig(m_containerId),
+            m_elementBean.getFormatterConfig(m_containerId).getNestedFormatterPrefixes());
     }
 
     /**
@@ -344,17 +347,34 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     void onFormatterChange(String formatterId) {
 
         CmsFormatterConfig config = m_elementBean.getFormatters().get(m_containerId).get(formatterId);
-        renderSettingsForm(config.getSettingConfig());
+        renderSettingsForm(config.getSettingConfig(), config.getNestedFormatterPrefixes());
     }
 
     /**
      * Renders the settings form.<p>
      *
      * @param settingsConfig the settings configuration
+     * @param nestedFormatterPrefixes the nested formatter prefixes
      */
-    void renderSettingsForm(Map<String, CmsXmlContentProperty> settingsConfig) {
+    void renderSettingsForm(
+        Map<String, CmsXmlContentProperty> settingsConfig,
+        Map<String, String> nestedFormatterPrefixes) {
 
-        getForm().removeGroup("");
+        for (String group : getForm().getGroups()) {
+            getForm().removeGroup(group);
+        }
+        CmsFieldsetFormFieldPanel formFieldPanel = null;
+        if (getForm().getWidget() instanceof CmsFieldsetFormFieldPanel) {
+            formFieldPanel = ((CmsFieldsetFormFieldPanel)getForm().getWidget());
+        }
+        if ((formFieldPanel != null) && (nestedFormatterPrefixes != null) && !nestedFormatterPrefixes.isEmpty()) {
+            for (Entry<String, String> entry : nestedFormatterPrefixes.entrySet()) {
+                CmsFieldSet fieldSet = new CmsFieldSet();
+                fieldSet.setLegend(entry.getValue());
+                fieldSet.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+                formFieldPanel.addGroupFieldSet(entry.getKey(), fieldSet);
+            }
+        }
         Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(settingsConfig.values());
         for (I_CmsFormField field : formFields.values()) {
 
@@ -367,14 +387,20 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
                     initialValue = propDef.getDefault();
                 }
-                getForm().addField(field, initialValue);
+                String group = "";
+                if ((nestedFormatterPrefixes != null) && !nestedFormatterPrefixes.isEmpty()) {
+                    for (String prefix : nestedFormatterPrefixes.keySet()) {
+                        if (fieldId.startsWith(prefix)) {
+                            group = prefix;
+                            break;
+                        }
+                    }
+                }
+
+                getForm().addField(group, field, initialValue);
             }
         }
         getForm().render();
-        A_CmsFormFieldPanel formWidget = getForm().getWidget();
-        if (formWidget instanceof CmsFieldsetFormFieldPanel) {
-            ((CmsFieldsetFormFieldPanel)formWidget).getFieldSet().setVisible(!settingsConfig.isEmpty());
-        }
         if (getWidth() > 0) {
             getForm().getWidget().truncate("settings_truncation", getWidth() - 12);
         }

@@ -79,6 +79,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -282,12 +283,16 @@ public final class CmsJspStandardContextBean {
         }
 
         /**
-         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.xml.containerpage.I_CmsFormatterBean)
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.xml.containerpage.I_CmsFormatterBean, java.util.Locale, javax.servlet.ServletRequest)
          */
         @Override
-        public void initSettings(CmsObject cms, I_CmsFormatterBean formatterBean) {
+        public void initSettings(
+            CmsObject cms,
+            I_CmsFormatterBean formatterBean,
+            Locale locale,
+            ServletRequest request) {
 
-            m_wrappedElement.initSettings(cms, formatterBean);
+            m_wrappedElement.initSettings(cms, formatterBean, locale, request);
         }
 
         /**
@@ -553,6 +558,9 @@ public final class CmsJspStandardContextBean {
         /** The element. */
         private CmsContainerElementBean m_transformElement;
 
+        /** The configured formatter settings. */
+        private Map<String, CmsXmlContentProperty> m_formatterSettingsConfig;
+
         /**
          * Constructor.<p>
          *
@@ -570,11 +578,21 @@ public final class CmsJspStandardContextBean {
         @Override
         public Object transform(Object arg0) {
 
-            return new ElementSettingWrapper(
-                m_transformElement.getSettings().get(arg0),
-                m_formatter != null
-                ? m_formatter.getSettings().get(arg0) != null
-                : m_transformElement.getSettings().get(arg0) != null);
+            boolean exists;
+            if (m_formatter != null) {
+                if (m_formatterSettingsConfig == null) {
+                    m_formatterSettingsConfig = OpenCms.getADEManager().getFormatterSettings(
+                        m_cms,
+                        m_formatter,
+                        m_transformElement.getResource(),
+                        getLocale(),
+                        m_request);
+                }
+                exists = m_formatterSettingsConfig.get(arg0) != null;
+            } else {
+                exists = m_transformElement.getSettings().get(arg0) != null;
+            }
+            return new ElementSettingWrapper(m_transformElement.getSettings().get(arg0), exists);
         }
     }
 
@@ -1809,6 +1827,141 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns the formatter configuration to the given element.<p>
+     *
+     * @param element the element
+     *
+     * @return the formatter configuration
+     */
+    protected I_CmsFormatterBean getElementFormatter(CmsContainerElementBean element) {
+
+        if (m_elementInstances == null) {
+            initPageData();
+        }
+        I_CmsFormatterBean formatter = null;
+        CmsContainerBean container = m_parentContainers.get(element.getInstanceId());
+        if (container == null) {
+            // use the current container
+            container = getContainer();
+        }
+        String containerName = container.getName();
+        Map<String, String> settings = element.getSettings();
+        if (settings != null) {
+            String formatterConfigId = settings.get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
+            if (CmsUUID.isValidUUID(formatterConfigId)) {
+                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                    new CmsUUID(formatterConfigId));
+            }
+        }
+        if (formatter == null) {
+            try {
+                CmsResource resource = m_cms.readResource(m_cms.getRequestContext().getUri());
+
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(m_cms, resource.getRootPath());
+                CmsFormatterConfiguration formatters = config.getFormatters(m_cms, resource);
+                int width = -2;
+                try {
+                    width = Integer.parseInt(container.getWidth());
+                } catch (Exception e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+                formatter = formatters.getDefaultSchemaFormatter(container.getType(), width);
+            } catch (CmsException e1) {
+                LOG.error(e1.getLocalizedMessage(), e1);
+            }
+        }
+        return formatter;
+    }
+
+    /**
+     * Returns the title according to the given locale.
+     * @param locale the locale for which the title should be read.
+     * @return the title according to the given locale
+     */
+    protected String getLocaleSpecificTitle(Locale locale) {
+
+        String result = null;
+
+        try {
+
+            if (isDetailRequest()) {
+                // this is a request to a detail page
+                CmsResource res = getDetailContent();
+                CmsFile file = m_cms.readFile(res);
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
+                result = content.getHandler().getTitleMapping(m_cms, content, m_cms.getRequestContext().getLocale());
+                if (result == null) {
+                    // title not found, maybe no mapping OR not available in the current locale
+                    // read the title of the detail resource as fall back (may contain mapping from another locale)
+                    result = m_cms.readPropertyObject(
+                        res,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false,
+                        locale).getValue();
+                }
+            }
+            if (result == null) {
+                // read the title of the requested resource as fall back
+                result = m_cms.readPropertyObject(
+                    m_cms.getRequestContext().getUri(),
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    true,
+                    locale).getValue();
+            }
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = "";
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the parent element if available.<p>
+     *
+     * @param element the element
+     *
+     * @return the parent element or null
+     */
+    protected CmsContainerElementBean getParentElement(CmsContainerElementBean element) {
+
+        if (m_elementInstances == null) {
+            initPageData();
+        }
+        CmsContainerElementBean parent = null;
+        CmsContainerBean cont = m_parentContainers.get(element.getInstanceId());
+        if ((cont != null) && cont.isNestedContainer()) {
+            parent = m_elementInstances.get(cont.getParentInstanceId());
+        }
+        return parent;
+    }
+
+    /**
+     * Reads a dynamic function bean, given its name in the module configuration.<p>
+     *
+     * @param configuredName the name of the dynamic function in the module configuration
+     * @return the dynamic function bean for the dynamic function configured under that name
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsDynamicFunctionBean readDynamicFunctionBean(String configuredName) throws CmsException {
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            m_cms,
+            m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
+        CmsFunctionReference functionRef = config.getFunctionReference(configuredName);
+        if (functionRef == null) {
+            return null;
+        }
+        CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
+        CmsResource functionResource = m_cms.readResource(functionRef.getStructureId());
+        CmsDynamicFunctionBean result = parser.parseFunctionBean(m_cms, functionResource);
+        return result;
+    }
+
+    /**
      * Adds the mappings of the given formatter configuration.<p>
      *
      * @param formatterBean the formatter bean
@@ -2002,141 +2155,6 @@ public final class CmsJspStandardContextBean {
                 }
             }
         }
-    }
-
-    /**
-     * Returns the formatter configuration to the given element.<p>
-     *
-     * @param element the element
-     *
-     * @return the formatter configuration
-     */
-    protected I_CmsFormatterBean getElementFormatter(CmsContainerElementBean element) {
-
-        if (m_elementInstances == null) {
-            initPageData();
-        }
-        I_CmsFormatterBean formatter = null;
-        CmsContainerBean container = m_parentContainers.get(element.getInstanceId());
-        if (container == null) {
-            // use the current container
-            container = getContainer();
-        }
-        String containerName = container.getName();
-        Map<String, String> settings = element.getSettings();
-        if (settings != null) {
-            String formatterConfigId = settings.get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
-            if (CmsUUID.isValidUUID(formatterConfigId)) {
-                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
-                    new CmsUUID(formatterConfigId));
-            }
-        }
-        if (formatter == null) {
-            try {
-                CmsResource resource = m_cms.readResource(m_cms.getRequestContext().getUri());
-
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(m_cms, resource.getRootPath());
-                CmsFormatterConfiguration formatters = config.getFormatters(m_cms, resource);
-                int width = -2;
-                try {
-                    width = Integer.parseInt(container.getWidth());
-                } catch (Exception e) {
-                    LOG.debug(e.getLocalizedMessage(), e);
-                }
-                formatter = formatters.getDefaultSchemaFormatter(container.getType(), width);
-            } catch (CmsException e1) {
-                LOG.error(e1.getLocalizedMessage(), e1);
-            }
-        }
-        return formatter;
-    }
-
-    /**
-     * Returns the title according to the given locale.
-     * @param locale the locale for which the title should be read.
-     * @return the title according to the given locale
-     */
-    protected String getLocaleSpecificTitle(Locale locale) {
-
-        String result = null;
-
-        try {
-
-            if (isDetailRequest()) {
-                // this is a request to a detail page
-                CmsResource res = getDetailContent();
-                CmsFile file = m_cms.readFile(res);
-                CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
-                result = content.getHandler().getTitleMapping(m_cms, content, m_cms.getRequestContext().getLocale());
-                if (result == null) {
-                    // title not found, maybe no mapping OR not available in the current locale
-                    // read the title of the detail resource as fall back (may contain mapping from another locale)
-                    result = m_cms.readPropertyObject(
-                        res,
-                        CmsPropertyDefinition.PROPERTY_TITLE,
-                        false,
-                        locale).getValue();
-                }
-            }
-            if (result == null) {
-                // read the title of the requested resource as fall back
-                result = m_cms.readPropertyObject(
-                    m_cms.getRequestContext().getUri(),
-                    CmsPropertyDefinition.PROPERTY_TITLE,
-                    true,
-                    locale).getValue();
-            }
-        } catch (CmsException e) {
-            LOG.debug(e.getLocalizedMessage(), e);
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
-            result = "";
-        }
-
-        return result;
-    }
-
-    /**
-     * Returns the parent element if available.<p>
-     *
-     * @param element the element
-     *
-     * @return the parent element or null
-     */
-    protected CmsContainerElementBean getParentElement(CmsContainerElementBean element) {
-
-        if (m_elementInstances == null) {
-            initPageData();
-        }
-        CmsContainerElementBean parent = null;
-        CmsContainerBean cont = m_parentContainers.get(element.getInstanceId());
-        if ((cont != null) && cont.isNestedContainer()) {
-            parent = m_elementInstances.get(cont.getParentInstanceId());
-        }
-        return parent;
-    }
-
-    /**
-     * Reads a dynamic function bean, given its name in the module configuration.<p>
-     *
-     * @param configuredName the name of the dynamic function in the module configuration
-     * @return the dynamic function bean for the dynamic function configured under that name
-     *
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsDynamicFunctionBean readDynamicFunctionBean(String configuredName) throws CmsException {
-
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-            m_cms,
-            m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
-        CmsFunctionReference functionRef = config.getFunctionReference(configuredName);
-        if (functionRef == null) {
-            return null;
-        }
-        CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
-        CmsResource functionResource = m_cms.readResource(functionRef.getStructureId());
-        CmsDynamicFunctionBean result = parser.parseFunctionBean(m_cms, functionResource);
-        return result;
     }
 
 }

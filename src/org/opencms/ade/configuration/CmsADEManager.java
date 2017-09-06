@@ -72,14 +72,18 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsADECache;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.containerpage.Messages;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentProperty.Visibility;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,6 +95,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
@@ -565,6 +570,50 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns the settings configured for the given formatter.<p>
+     *
+     * @param cms the cms context
+     * @param mainFormatter the formatter
+     * @param res the element resource
+     * @param locale the content locale
+     * @param req the current request, if available
+     *
+     * @return the settings configured for the given formatter
+     */
+    public Map<String, CmsXmlContentProperty> getFormatterSettings(
+        CmsObject cms,
+        I_CmsFormatterBean mainFormatter,
+        CmsResource res,
+        Locale locale,
+        ServletRequest req) {
+
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
+        if (mainFormatter != null) {
+            for (Entry<String, CmsXmlContentProperty> entry : mainFormatter.getSettings().entrySet()) {
+                if (!entry.getValue().getVisibility().equals(Visibility.parent)) {
+                    result.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        List<I_CmsFormatterBean> nestedFormatters = getNestedFormatters(cms, res, locale, req);
+        if (nestedFormatters != null) {
+            for (I_CmsFormatterBean formatter : nestedFormatters) {
+                for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
+                    if (entry.getValue().getVisibility().equals(Visibility.parent)) {
+                        result.put(entry.getKey(), entry.getValue());
+                    } else if (entry.getValue().getVisibility().equals(Visibility.both)) {
+                        String settingName = formatter.getId() + "_" + entry.getKey();
+                        CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
+
+                        result.put(settingName, settingConf);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the inheritance state for the given inheritance name and resource.<p>
      *
      * @param cms the current cms context
@@ -631,6 +680,49 @@ public class CmsADEManager {
     public I_CmsResourceType getModuleConfigurationType() {
 
         return m_moduleConfigType;
+    }
+
+    /**
+     * Returns the nested formatters of the given resource.<p>
+     *
+     * @param cms the cms context
+     * @param res the resource
+     * @param locale the content locale
+     * @param req the request, if available
+     *
+     * @return the nested formatters
+     */
+    public List<I_CmsFormatterBean> getNestedFormatters(
+        CmsObject cms,
+        CmsResource res,
+        Locale locale,
+        ServletRequest req) {
+
+        List<I_CmsFormatterBean> result = null;
+        if (CmsResourceTypeXmlContent.isXmlContent(res)) {
+            CmsResourceTypeXmlContent type = (CmsResourceTypeXmlContent)OpenCms.getResourceManager().getResourceType(
+                res);
+            String schema = type.getSchema();
+            try {
+                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+                // get the content handler for the resource type to create
+                I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();
+                if (handler.hasNestedFormatters()) {
+                    Map<CmsUUID, I_CmsFormatterBean> formatters = getCachedFormatters(
+                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters();
+                    result = new ArrayList<I_CmsFormatterBean>();
+                    for (CmsUUID formatterId : handler.getNestedFormatters(cms, res, locale, req)) {
+                        I_CmsFormatterBean formatter = formatters.get(formatterId);
+                        if (formatter != null) {
+                            result.add(formatter);
+                        }
+                    }
+                }
+            } catch (CmsXmlException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+        return result;
     }
 
     /**

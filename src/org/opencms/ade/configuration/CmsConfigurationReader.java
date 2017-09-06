@@ -54,6 +54,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentProperty.Visibility;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
@@ -208,6 +209,9 @@ public class CmsConfigurationReader {
     public static final String N_TYPE_NAME = "TypeName";
 
     /** The widget node name. */
+    public static final String N_VISIBILITY = "Visibility";
+
+    /** The widget node name. */
     public static final String N_WIDGET = "Widget";
 
     /** The widget configuration node name. */
@@ -308,9 +312,17 @@ public class CmsConfigurationReader {
             // noop
         }
 
+        Visibility visibility;
+        String visibilityStr = getString(cms, field.getSubValue(N_VISIBILITY));
+        try {
+            visibility = Visibility.valueOf(visibilityStr);
+        } catch (Exception e) {
+            visibility = Visibility.both;
+        }
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
             "string",
+            visibility,
             widget,
             widgetConfig,
             ruleRegex,

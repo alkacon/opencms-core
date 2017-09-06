@@ -53,6 +53,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
+
 /**
  * One element of a container in a container page.<p>
  *
@@ -557,16 +559,23 @@ public class CmsContainerElementBean implements Cloneable {
      *
      * @param cms the CMS context
      * @param formatterBean the formatter configuration bean
+     * @param locale the content locale
+     * @param request the current request, if available
      */
-    public void initSettings(CmsObject cms, I_CmsFormatterBean formatterBean) {
+    public void initSettings(CmsObject cms, I_CmsFormatterBean formatterBean, Locale locale, ServletRequest request) {
 
         Map<String, String> mergedSettings;
         if (formatterBean == null) {
-            mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, getIndividualSettings());
+            mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(
+                cms,
+                m_resource,
+                getIndividualSettings(),
+                locale,
+                request);
         } else {
             mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(
                 cms,
-                formatterBean.getSettings(),
+                OpenCms.getADEManager().getFormatterSettings(cms, formatterBean, getResource(), locale, request),
                 getIndividualSettings());
         }
         if (m_settings == null) {

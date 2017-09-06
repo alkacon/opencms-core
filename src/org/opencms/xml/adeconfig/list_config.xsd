@@ -50,6 +50,9 @@
 					newsorder_%s_i asc:%(key.list_config.sort.orderasc)|
 					newsorder_%s_i desc:%(key.list_config.sort.orderdesc)" />
 			</layouts>
+			<nestedformatters>
+				<nestedformatter element="TypesToCollect"/>
+			</nestedformatters>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>

@@ -73,6 +73,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.I_CmsComplexWidget;
@@ -89,6 +90,7 @@ import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsSchemaFormatterBeanWrapper;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
@@ -110,6 +112,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+
+import javax.servlet.ServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -360,6 +364,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "modelfolder" appinfo element name. */
     public static final String APPINFO_MODELFOLDER = "modelfolder";
 
+    /** Constant for the "nestedformatter" appinfo element name. */
+    public static final String APPINFO_NESTED_FORMATTER = "nestedformatter";
+
+    /** Constant for the "nestedformatters" appinfo element name. */
+    public static final String APPINFO_NESTED_FORMATTERS = "nestedformatters";
+
     /** Constant for the "preview" appinfo element name. */
     public static final String APPINFO_PREVIEW = "preview";
 
@@ -511,74 +521,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
         + CmsPropertyDefinition.PROPERTY_TITLE;
 
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
-
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -693,6 +635,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
     };
 
+    /** The nested formatter elements. */
+    private Set<String> m_nestedFormatterElements;
+
     /** The paths of values for which no macros should be resolved when getting the default value. */
     private Set<String> m_nonMacroResolvableDefaults = new HashSet<String>();
 
@@ -705,6 +650,74 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -987,6 +1000,53 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getNestedFormatters(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale, javax.servlet.ServletRequest)
+     */
+    public List<CmsUUID> getNestedFormatters(CmsObject cms, CmsResource res, Locale locale, ServletRequest req) {
+
+        List<CmsUUID> result = new ArrayList<CmsUUID>();
+        if (hasNestedFormatters()) {
+            try {
+                CmsXmlContent content;
+                if (req != null) {
+                    content = CmsXmlContentFactory.unmarshal(cms, res, req);
+                } else {
+                    content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(res));
+                }
+                Locale matchingLocale = content.getBestMatchingLocale(locale);
+                if (matchingLocale != null) {
+                    for (String elementPath : m_nestedFormatterElements) {
+                        List<I_CmsXmlContentValue> values = content.getValues(elementPath, matchingLocale);
+                        for (I_CmsXmlContentValue value : values) {
+                            if (value instanceof CmsXmlDisplayFormatterValue) {
+                                CmsUUID formatterId = ((CmsXmlDisplayFormatterValue)value).getFormatterId();
+                                if ((formatterId != null) && !formatterId.isNullUUID()) {
+                                    result.add(formatterId);
+                                }
+                            } else if (value instanceof CmsXmlVarLinkValue) {
+                                CmsLink link = ((CmsXmlVarLinkValue)value).getLink(cms);
+                                CmsUUID formatterId = link.getStructureId();
+                                if ((formatterId != null) && !formatterId.isNullUUID()) {
+                                    result.add(formatterId);
+                                }
+                            } else if (value instanceof CmsXmlVfsFileValue) {
+                                CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
+                                CmsUUID formatterId = link.getStructureId();
+                                if ((formatterId != null) && !formatterId.isNullUUID()) {
+                                    result.add(formatterId);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreview(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
      */
     public String getPreview(CmsObject cms, CmsXmlContent content, String resourcename) {
@@ -1161,6 +1221,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#hasNestedFormatters()
+     */
+    public boolean hasNestedFormatters() {
+
+        return !m_nestedFormatterElements.isEmpty();
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#hasSynchronizedElements()
      */
     public boolean hasSynchronizedElements() {
@@ -1224,6 +1292,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initSettings(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_EDIT_HANDLER)) {
                     initEditHandler(element);
+                } else if (nodeName.equals(APPINFO_NESTED_FORMATTERS)) {
+                    initNestedFormatters(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_TEMPLATES)) {
                     initTemplates(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_DEFAULTWIDGET)) {
@@ -1796,6 +1866,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Adds a nested formatter element.<p>
+     *
+     * @param elementName the element name
+     * @param contentDefinition the content definition
+     *
+     * @throws CmsXmlException in case something goes wrong
+     */
+    protected void addNestedFormatter(String elementName, CmsXmlContentDefinition contentDefinition)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ELEM_MAPPING_1, elementName));
+        }
+        m_nestedFormatterElements.add(elementName);
+    }
+
+    /**
      * Adds a Solr field for an element.<p>
      *
      * @param contentDefinition the XML content definition this XML content handler belongs to
@@ -2087,6 +2175,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         m_displayTypes = new HashMap<String, DisplayType>();
         m_synchronizations = new ArrayList<String>();
         m_editorChangeHandlers = new ArrayList<I_CmsXmlContentEditorChangeHandler>();
+        m_nestedFormatterElements = new HashSet<String>();
     }
 
     /**
@@ -2326,6 +2415,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     contentDefinition.getSchemaLocation()));
         }
         m_modelFolder = master;
+    }
+
+    /**
+     * Initializes the nested formatter fields.<p>
+     *
+     * @param element the formatters element
+     * @param contentDefinition the content definition
+     *
+     * @throws CmsXmlException in case something goes wron
+     */
+    protected void initNestedFormatters(Element element, CmsXmlContentDefinition contentDefinition)
+    throws CmsXmlException {
+
+        Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(element, APPINFO_NESTED_FORMATTER);
+        while (i.hasNext()) {
+            // iterate all "default" elements in the "defaults" node
+            Element handlerElement = i.next();
+            String formatterElement = handlerElement.attributeValue(APPINFO_ATTR_ELEMENT);
+            addNestedFormatter(formatterElement, contentDefinition);
+        }
     }
 
     /**
