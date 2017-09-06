@@ -192,7 +192,7 @@ task enhance {
     inputs.files compileJava.outputs.files // target classes for the enhancer
 
     String openjpaOutputDir = "$openjpaOutputBaseDir/main"
-    FileTree entityFiles = fileTree("${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence") {
+    FileTree entityFiles = fileTree("${sourceSets.main.java.outputDir}/org/opencms/db/jpa/persistence") {
         exclude '**/*$*.class'
     }
 
@@ -280,7 +280,7 @@ jar {
         List<File> notEnhanced = []
         entityFiles.visit { FileVisitDetails enhancedEntity ->
             if (!enhancedEntity.isDirectory()) {
-                File plainEntity = new File(sourceSets.main.output.classesDir, "$enhancedEntity.relativePath")
+                File plainEntity = new File(sourceSets.main.java.outputDir, "$enhancedEntity.relativePath")
                 logger.debug "Registering plain entity class for exclusion: $plainEntity"
                 notEnhanced << plainEntity
             }
@@ -1007,7 +1007,7 @@ test {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.test.output.classesDir
+    testClassesDirs = sourceSets.test.output.classesDirs
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] = sourceSets.test.output.resourcesDir
@@ -1038,7 +1038,7 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.test.output.classesDir
+    testClassesDirs = sourceSets.test.output.classesDirs
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] = sourceSets.test.output.resourcesDir
@@ -1085,7 +1085,7 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.testGwt.output.classesDir
+    testClassesDirs = sourceSets.testGwt.output.classesDirs
     systemProperties['gwt.args'] = "-logLevel WARN"
     systemProperties['java.awt.headless'] = "true"
     maxHeapSize = max_heap_size
