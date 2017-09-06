@@ -40,6 +40,7 @@ import java.util.TreeSet;
 
 /**
  * A helper class used for calculating which paths need to be included or excluded from the XML sitemap generation.<p>
+ *
  */
 public class CmsPathIncludeExcludeSet {
 
@@ -113,6 +114,7 @@ public class CmsPathIncludeExcludeSet {
         path = normalizePath(path);
         List<String> pathList = new ArrayList<String>(m_allPaths);
         // m_allPaths is already sorted, we need the reverse ordering so children come before their parents
+        // (we want to find the deepest parent folder of 'path' that is marked as include/exclude)
         Collections.reverse(pathList);
         for (String pathInList : pathList) {
             if (CmsStringUtil.isPrefixPath(pathInList, path)) {
