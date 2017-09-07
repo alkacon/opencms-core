@@ -28,7 +28,6 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.publish.CmsPublishListHelper;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -168,8 +167,8 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
 
         try {
             I_CmsSearchConfiguration config = null;
-            CmsFile file = cms.readFile(m_configFile);
-            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
+            CmsResource resource = cms.readResource(m_configFile);
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, pageContext.getRequest());
             config = new CmsSearchConfiguration(
                 new CmsSimpleSearchConfigurationParser(cms, xmlContent, m_configString));
             m_searchController = new CmsSearchController(config);
