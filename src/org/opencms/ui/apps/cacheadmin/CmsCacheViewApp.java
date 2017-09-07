@@ -125,7 +125,9 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         label.setValue(
             "<h2>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</h2>");
         prog.addComponent(label);
-        prog.addComponent(new ProgressBar(entryLruCache.getObjectCosts() / entryLruCache.getMaxCacheCosts()));
+
+        prog.addComponent(
+            new ProgressBar((float)entryLruCache.getObjectCosts() / (float)entryLruCache.getMaxCacheCosts()));
         info.addAdditionalElement(prog, 0);
         info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
         info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
@@ -201,7 +203,7 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         label.setValue(
             "<h2>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</h2>");
         prog.addComponent(label);
-        prog.addComponent(new ProgressBar((memory.getUsage() / 100)));
+        prog.addComponent(new ProgressBar(((float)memory.getUsage() / 100)));
         info.addAdditionalElement(prog, 0);
         info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
         info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
