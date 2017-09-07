@@ -74,29 +74,6 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsImageCacheTable extends Table {
 
     /**
-     * Column for dimensions of image.<p>
-     */
-    class DimensionColumn implements Table.ColumnGenerator {
-
-        /**vaadin serial id.*/
-        private static final long serialVersionUID = -4569513960107614645L;
-
-        /**
-         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
-         */
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            try {
-                return m_cacheHelper.getSingleSize(A_CmsUI.getCmsObject(), (String)itemId);
-            } catch (CmsException e) {
-                LOG.error("Not able to read image.", e);
-                return null;
-            }
-        }
-
-    }
-
-    /**
      * Menu entry for show variations option.<p>
      */
     class EntryVariations
@@ -138,11 +115,29 @@ public class CmsImageCacheTable extends Table {
         }
     }
 
+    /**
+     * Column for dimensions of image.<p>
+     */
+    class VariationsColumn implements Table.ColumnGenerator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = -4569513960107614645L;
+
+        /**
+         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
+         */
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            return Integer.valueOf(HELPER.getVariationsCount((String)itemId));
+        }
+
+    }
+
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsImageCacheTable.class.getName());
 
     /**column for image dimension.*/
-    private static final String PROP_DIMENSIONS = "dimensions";
+    private static final String PROP_VARIATIONS = "variations";
 
     /**Column for icon.*/
     private static final String PROP_ICON = "icon";
@@ -150,14 +145,11 @@ public class CmsImageCacheTable extends Table {
     /**column for name of image.*/
     private static final String PROP_NAME = "name";
 
-    /**column for resource size.*/
-    private static final String PROP_SIZE = "size";
-
     /**vaadin serial id.*/
     private static final long serialVersionUID = -5559186186646954045L;
 
     /**Image cache helper instance. */
-    CmsImageCacheHelper m_cacheHelper;
+    protected static CmsImageCacheHolder HELPER;
 
     /** The context menu. */
     CmsContextMenu m_menu;
@@ -176,10 +168,8 @@ public class CmsImageCacheTable extends Table {
      */
     public CmsImageCacheTable() {
 
-        CmsVariationsDialog.resetHandler();
-
         //Set cachHelper
-        m_cacheHelper = new CmsImageCacheHelper(A_CmsUI.getCmsObject(), false, false, false);
+        HELPER = new CmsImageCacheHolder();
 
         //Set menu
         m_menu = new CmsContextMenu();
@@ -204,13 +194,13 @@ public class CmsImageCacheTable extends Table {
                 OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeImage.getStaticTypeName()),
                 null));
         m_container.addContainerProperty(PROP_NAME, String.class, "");
-        m_container.addContainerProperty(PROP_DIMENSIONS, String.class, "");
-        m_container.addContainerProperty(PROP_SIZE, String.class, "");
+        m_container.addContainerProperty(PROP_VARIATIONS, Integer.class, "");
         //ini Table
         setContainerDataSource(m_container);
         setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0));
-        setColumnHeader(PROP_SIZE, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0));
-        setColumnHeader(PROP_DIMENSIONS, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_SIZE_0));
+        setColumnHeader(
+            PROP_VARIATIONS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_VARIATIONS_0));
 
         setItemIconPropertyId(PROP_ICON);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
@@ -219,7 +209,7 @@ public class CmsImageCacheTable extends Table {
 
         setSelectable(true);
 
-        addGeneratedColumn(PROP_DIMENSIONS, new DimensionColumn());
+        addGeneratedColumn(PROP_VARIATIONS, new VariationsColumn());
 
         addItemClickListener(new ItemClickListener() {
 
@@ -341,14 +331,14 @@ public class CmsImageCacheTable extends Table {
      */
     private void loadTable() {
 
-        setVisibleColumns(PROP_NAME, PROP_DIMENSIONS, PROP_SIZE);
+        setVisibleColumns(PROP_NAME, PROP_VARIATIONS);
 
-        List<String> resources = m_cacheHelper.getAllCachedImages();
+        List<String> resources = HELPER.getAllCachedImages();
 
         for (String res : resources) {
             Item item = m_container.addItem(res);
             item.getItemProperty(PROP_NAME).setValue(res);
-            item.getItemProperty(PROP_SIZE).setValue(m_cacheHelper.getLength(res));
+
         }
     }
 

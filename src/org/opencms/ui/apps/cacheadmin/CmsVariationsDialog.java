@@ -35,7 +35,6 @@ import org.opencms.ui.apps.cacheadmin.CmsCacheViewApp.Mode;
 import org.opencms.ui.components.CmsBasicDialog;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import com.vaadin.ui.Button;
@@ -43,14 +42,12 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Class for the dialog to show variations of flex cache and image cache.<p>
  */
 public class CmsVariationsDialog extends CmsBasicDialog {
-
-    /**Helper instance to read variations of images.*/
-    private static CmsImageCacheHelper HELPER;
 
     /**generated vaadin id.*/
     private static final long serialVersionUID = -7346908393288365974L;
@@ -63,6 +60,9 @@ public class CmsVariationsDialog extends CmsBasicDialog {
 
     /**vaadin component.*/
     private Panel m_panel;
+
+    /**vaadin component.*/
+    private VerticalLayout m_outerlayout;
 
     /**
      * public constructor.<p>
@@ -92,31 +92,18 @@ public class CmsVariationsDialog extends CmsBasicDialog {
             CmsFlexCache cache = OpenCms.getFlexCache();
             Set<String> variations = cache.getCachedVariations(resource, A_CmsUI.getCmsObject());
             variationsIterator = variations.iterator();
-        } else {
-            if (HELPER == null) {
-                HELPER = new CmsImageCacheHelper(A_CmsUI.getCmsObject(), true, false, false);
+
+            m_panel.setSizeFull();
+
+            m_layout.setHeight("700px");
+
+            m_layout.addStyleName("v-scrollable");
+
+            while (variationsIterator.hasNext()) {
+                m_layout.addComponent(new Label(variationsIterator.next()));
             }
-            List<String> variations = HELPER.getVariations(resource);
-            variationsIterator = variations.iterator();
+        } else {
+            m_outerlayout.addComponent(new CmsImageVariationsTable(resource));
         }
-        m_panel.setSizeFull();
-
-        m_layout.setHeight("700px");
-
-        m_layout.addStyleName("v-scrollable");
-
-        while (variationsIterator.hasNext()) {
-            m_layout.addComponent(new Label(variationsIterator.next()));
-        }
-
-    }
-
-    /**
-     * Resets the image handler.<p>
-     */
-    public static void resetHandler() {
-
-        HELPER = null;
-
     }
 }
