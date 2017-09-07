@@ -360,14 +360,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     @Override
     public int doStartTag() {
 
-        if (Boolean.valueOf(m_passSettings).booleanValue()) {
-            CmsContainerElementBean element = CmsJspStandardContextBean.getInstance(
-                pageContext.getRequest()).getElement();
-            if (element != null) {
-                m_parameterMap.putAll(element.getSettings());
-            }
-        }
-
         return EVAL_BODY_BUFFERED;
     }
 
