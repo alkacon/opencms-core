@@ -39,7 +39,6 @@ import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
-import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSorting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
@@ -51,6 +50,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
+import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser.SortOption;
 import org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
@@ -336,7 +336,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         private boolean m_showExpired;
 
         /** The sort option. */
-        private String m_sortOption;
+        private SortOption m_sortOption;
 
         /**
          * Constructor.<p>
@@ -360,7 +360,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             m_selectedTypes = types;
             m_selectedFolders = folders;
             m_selectedCategories = categories;
-            m_sortOption = sortOption;
+            setSortOption(sortOption);
             m_contentLocale = contentLocale;
             m_filterQuery = filterQuery;
         }
@@ -599,11 +599,8 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
             List<I_CmsSearchConfigurationSortOption> result = null;
             I_CmsSearchConfigurationSortOption defaultOption = null;
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_sortOption)) {
-                defaultOption = new CmsSearchConfigurationSortOption(
-                    "",
-                    "",
-                    String.format(m_sortOption, m_contentLocale.toString()));
+            if (null != m_sortOption) {
+                defaultOption = m_sortOption.getOption(m_contentLocale);
                 result = Collections.<I_CmsSearchConfigurationSortOption> singletonList(defaultOption);
             } else {
                 result = Collections.<I_CmsSearchConfigurationSortOption> emptyList();
@@ -629,7 +626,19 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
          */
         public void setSortOption(String sortOption) {
 
-            m_sortOption = sortOption;
+            if (null != sortOption) {
+                try {
+                    m_sortOption = SortOption.valueOf(sortOption);
+                } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
+                    m_sortOption = null;
+                    LOG.warn(
+                        "Setting illegal default sort option "
+                            + sortOption
+                            + " failed. Using Solr's default sort option.");
+                }
+            } else {
+                m_sortOption = null;
+            }
         }
 
         /**
@@ -856,7 +865,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         "DEC"};
 
     /** The logger for this class. */
-    private static Log LOG = CmsLog.getLog(CmsListManager.class.getName());
+    static Log LOG = CmsLog.getLog(CmsListManager.class.getName());
 
     /** The serial version id. */
     private static final long serialVersionUID = -25954374225590319L;
@@ -1531,7 +1540,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     m_currentResource,
                     CmsPropertyDefinition.PROPERTY_TITLE,
                     false).getValue();
-            } catch (Exception e) {
+            } catch (@SuppressWarnings("unused") Exception e) {
                 // ignore
             }
             if ((m_currentResource != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {

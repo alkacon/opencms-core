@@ -32,12 +32,11 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONException;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
+import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet.SortOrder;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
@@ -46,13 +45,75 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Search configuration parser using a list configuration file as the base configuration with additional JSON.<p>
  */
 public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurationParser {
+
+    /** Sort options that are available by default. */
+    public static enum SortOption {
+        /** Sort by date ascending */
+        DATE_ASC,
+        /** Sort by date descending */
+        DATE_DESC,
+        /** Sort by title ascending */
+        TITLE_ASC,
+        /** Sort by title descending */
+        TITLE_DESC,
+        /** Sort by order ascending */
+        ORDER_ASC,
+        /** Sort by order descending */
+        ORDER_DESC;
+
+        /**
+         * Generates the suitable {@link I_CmsSearchConfigurationSortOption} for the option.
+         * @param l the locale for which the option should be created
+         * @return the created {@link I_CmsSearchConfigurationSortOption}
+         */
+        public I_CmsSearchConfigurationSortOption getOption(Locale l) {
+
+            switch (this) {
+                case DATE_ASC:
+                    return new CmsSearchConfigurationSortOption(
+                        "date.asc",
+                        "date_asc",
+                        "instancedate" + (null != l ? "_" + l.toString() : "") + "_dt asc");
+                case DATE_DESC:
+                    return new CmsSearchConfigurationSortOption(
+                        "date.desc",
+                        "date_desc",
+                        "instancedate" + (null != l ? "_" + l.toString() : "") + "_dt desc");
+                case TITLE_ASC:
+                    return new CmsSearchConfigurationSortOption(
+                        "title.asc",
+                        "title_asc",
+                        "disptitle" + (null != l ? "_" + l.toString() : "") + "_dt asc");
+                case TITLE_DESC:
+                    return new CmsSearchConfigurationSortOption(
+                        "title.desc",
+                        "title_desc",
+                        "disptitle" + (null != l ? "_" + l.toString() : "") + "_dt desc");
+                case ORDER_ASC:
+                    return new CmsSearchConfigurationSortOption(
+                        "order.asc",
+                        "order_asc",
+                        "disporder" + (null != l ? "_" + l.toString() : "") + "_dt asc");
+                case ORDER_DESC:
+                    return new CmsSearchConfigurationSortOption(
+                        "order.desc",
+                        "order_desc",
+                        "disporder" + (null != l ? "_" + l.toString() : "") + "_dt desc");
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
 
     /** The default field facets. */
     private static final Map<String, I_CmsSearchConfigurationFacetField> DEFAULT_FIELD_FACETS;
@@ -114,15 +175,6 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     }
 
     /**
-     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
-     */
-    @Override
-    public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
-
-        return null;
-    }
-
-    /**
     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseFieldFacets()
     */
     @Override
@@ -132,32 +184,6 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             return super.parseFieldFacets();
         } else {
             return DEFAULT_FIELD_FACETS;
-        }
-    }
-
-    /**
-    * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseHighlighter()
-    */
-    @Override
-    public I_CmsSearchConfigurationHighlighting parseHighlighter() {
-
-        if (m_configObject.has(JSON_KEY_HIGHLIGHTER)) {
-            return super.parseHighlighter();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-    * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseQueryFacet()
-    */
-    @Override
-    public I_CmsSearchConfigurationFacetQuery parseQueryFacet() {
-
-        if (m_configObject.has(JSON_KEY_QUERY_FACET)) {
-            return super.parseQueryFacet();
-        } else {
-            return null;
         }
     }
 
@@ -191,6 +217,19 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     }
 
     /**
+     * @see org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser#getEscapeQueryChars()
+     */
+    @Override
+    protected Boolean getEscapeQueryChars() {
+
+        if (m_configObject.has(JSON_KEY_ESCAPE_QUERY_CHARACTERS)) {
+            return super.getEscapeQueryChars();
+        } else {
+            return Boolean.TRUE;
+        }
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser#getExtraSolrParams()
      */
     @Override
@@ -220,6 +259,44 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 + " Title_prop spell\"}%(query)";
         }
         return modifier;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser#getSearchForEmptyQuery()
+     */
+    @Override
+    protected Boolean getSearchForEmptyQuery() {
+
+        if (m_configObject.has(JSON_KEY_SEARCH_FOR_EMPTY_QUERY)) {
+            return super.getSearchForEmptyQuery();
+        } else {
+            return Boolean.TRUE;
+        }
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser#getSortOptions()
+     */
+    @Override
+    protected List<I_CmsSearchConfigurationSortOption> getSortOptions() {
+
+        if (m_configObject.has(JSON_KEY_SORTOPTIONS)) {
+            return super.getSortOptions();
+        } else {
+            List<I_CmsSearchConfigurationSortOption> options = new LinkedList<I_CmsSearchConfigurationSortOption>();
+            SortOption currentOption = SortOption.valueOf(
+                m_content.getValue(CmsListManager.N_SORT_ORDER, CmsLocaleManager.MASTER_LOCALE).getStringValue(m_cms));
+            Locale locale = m_cms.getRequestContext().getLocale();
+            options.add(currentOption.getOption(locale));
+            SortOption[] sortOptions = SortOption.values();
+            for (int i = 0; i < sortOptions.length; i++) {
+                SortOption option = sortOptions[i];
+                if (!Objects.equals(currentOption, option)) {
+                    options.add(option.getOption(locale));
+                }
+            }
+            return options;
+        }
     }
 
     /**
@@ -354,5 +431,4 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         }
         return result;
     }
-
 }

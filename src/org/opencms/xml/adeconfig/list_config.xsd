@@ -43,12 +43,12 @@
 				<layout element="SearchFolder" widget="VfsFileWidget" configuration="excludefiles" />
 				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
 				<layout element="SortOrder" widget="SelectorWidget"	configuration="
-					instancedate_%s_dt asc:%(key.list_config.sort.dateasc)|
-					instancedate_%s_dt desc:%(key.list_config.sort.datedesc)|
-					disptitle_%s_s asc:%(key.list_config.sort.titleasc)|
-					disptitle_%s_s desc:%(key.list_config.sort.titledesc)|
-					newsorder_%s_i asc:%(key.list_config.sort.orderasc)|
-					newsorder_%s_i desc:%(key.list_config.sort.orderdesc)" />
+					DATE_ASC:%(key.list_config.sort.dateasc)|
+					DATE_DESC:%(key.list_config.sort.datedesc)|
+					TITLE_ASC:%(key.list_config.sort.titleasc)|
+					TITLE_DESC:%(key.list_config.sort.titledesc)|
+					ORDER_ASC:%(key.list_config.sort.orderasc)|
+					ORDER_DESC:%(key.list_config.sort.orderdesc)" />
 			</layouts>
 			<nestedformatters>
 				<nestedformatter element="TypesToCollect"/>

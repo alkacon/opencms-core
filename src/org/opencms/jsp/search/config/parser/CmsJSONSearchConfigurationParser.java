@@ -324,9 +324,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
             getLastQueryParam(),
-            parseOptionalBooleanValue(m_configObject, JSON_KEY_ESCAPE_QUERY_CHARACTERS),
+            getEscapeQueryChars(),
             getFirstCallParam(),
-            getSearchForEmtpyQuery(),
+            getSearchForEmptyQuery(),
             getIgnoreQuery(),
             getQueryModifier(),
             getIndex(),
@@ -541,6 +541,15 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         }
     }
 
+    /**
+     * Returns the flag, indicating if the characters in the query string that are commands to Solr should be escaped.
+     * @return the flag, indicating if the characters in the query string that are commands to Solr should be escaped.
+     */
+    protected Boolean getEscapeQueryChars() {
+
+        return parseOptionalBooleanValue(m_configObject, JSON_KEY_ESCAPE_QUERY_CHARACTERS);
+    }
+
     /** Returns the configured extra parameters that should be given to Solr, or the empty string if no parameters are configured.
      * @return The configured extra parameters that should be given to Solr, or the empty string if no parameters are configured.
      */
@@ -680,7 +689,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** Returns a flag, indicating if search should be performed using a wildcard if the empty query is given.
      * @return A flag, indicating if search should be performed using a wildcard if the empty query is given.
      */
-    protected Boolean getSearchForEmtpyQuery() {
+    protected Boolean getSearchForEmptyQuery() {
 
         return parseOptionalBooleanValue(m_configObject, JSON_KEY_SEARCH_FOR_EMPTY_QUERY);
     }
