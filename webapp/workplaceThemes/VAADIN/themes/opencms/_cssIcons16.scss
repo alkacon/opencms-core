@@ -330,35 +330,44 @@
   height: 16px;
   background-position: 0 -128px;
 }
-.oc-icon-16-overlay-changed {
+.oc-icon-16-principal-all {
   width: 16px;
   height: 16px;
   background-position: -32px -128px;
 }
-.oc-icon-16-overlay-sibling {
+.oc-icon-16-principal-overwrite {
   width: 16px;
   height: 16px;
   background-position: -64px -128px;
 }
-.oc-icon-16-lock-publish {
+.oc-icon-16-overlay-changed {
   width: 16px;
   height: 16px;
   background-position: -96px -128px;
 }
-.oc-icon-16-lock-other {
+.oc-icon-16-overlay-sibling {
   width: 16px;
   height: 16px;
   background-position: -128px -128px;
 }
-.oc-icon-16-lock-own {
+.oc-icon-16-lock-publish {
   width: 16px;
   height: 16px;
   background-position: -160px -128px;
 }
-.oc-icon-16-lock-shared {
+.oc-icon-16-lock-other {
   width: 16px;
   height: 16px;
   background-position: -192px -128px;
 }
-
+.oc-icon-16-lock-own {
+  width: 16px;
+  height: 16px;
+  background-position: -224px -128px;
+}
+.oc-icon-16-lock-shared {
+  width: 16px;
+  height: 16px;
+  background-position: -256px -128px;
+}
 }
