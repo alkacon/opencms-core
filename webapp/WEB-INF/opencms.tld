@@ -2180,9 +2180,17 @@
         <body-content>JSP</body-content>
         <attribute>
             <description><![CDATA[
-                If you use the tag inside a formatter that already has settings, you can pass these settings to the formatter used by the display tag.
+                <p>If you use the tag inside a formatter that already has settings, you can pass these settings to the formatter used by the display tag.</p>
             ]]></description>
             <name>passSettings</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Allows to set the element settings as a java.util.Map<String,String>.</p>
+            ]]></description>
+            <name>settings</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

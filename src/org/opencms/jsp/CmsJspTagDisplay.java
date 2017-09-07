@@ -51,6 +51,7 @@ import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -103,6 +104,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     /** The fully qualified class name of the post create handler to use. */
     private String m_postCreateHandler;
 
+    /** The element settings to be used. */
+    private Map<String, String> m_settings;
+
     /** The site path to the resource to display. */
     private String m_value;
 
@@ -110,7 +114,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      * Constructor.<p>
      */
     public CmsJspTagDisplay() {
-        m_parameterMap = new HashMap<String, String>();
+        m_parameterMap = new LinkedHashMap<String, String>();
         m_displayFormatterPaths = new HashMap<String, String>();
         m_displayFormatterIds = new HashMap<String, CmsUUID>();
     }
@@ -316,22 +320,15 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     : cms.readResource(m_value, CmsResourceFilter.IGNORE_EXPIRATION);
                 }
                 I_CmsFormatterBean formatter = getFormatterForType(cms, res, isOnline);
-                Map<String, String> settings;
-                CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(request);
-                if (m_passSettings && (contextBean.getElement() != null)) {
-                    settings = new HashMap<String, String>();
-                    String formatterId = formatter.getId();
-                    int prefixLength = formatterId.length() + 1;
-                    for (Entry<String, String> entry : contextBean.getElement().getSettings().entrySet()) {
-                        if (entry.getKey().startsWith(formatterId)) {
-                            settings.put(entry.getKey().substring(prefixLength), entry.getValue());
-                        } else if (!settings.containsKey(entry.getKey())) {
-                            settings.put(entry.getKey(), entry.getValue());
-                        }
+                Map<String, String> settings = new HashMap<String, String>();
+                String formatterId = formatter.getId();
+                int prefixLength = formatterId.length() + 1;
+                for (Entry<String, String> entry : m_parameterMap.entrySet()) {
+                    if (entry.getKey().startsWith(formatterId)) {
+                        settings.put(entry.getKey().substring(prefixLength), entry.getValue());
+                    } else if (!settings.containsKey(entry.getKey())) {
+                        settings.put(entry.getKey(), entry.getValue());
                     }
-                    settings.putAll(m_parameterMap);
-                } else {
-                    settings = m_parameterMap;
                 }
 
                 displayAction(
@@ -360,6 +357,17 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     @Override
     public int doStartTag() {
 
+        if (Boolean.valueOf(m_passSettings).booleanValue()) {
+            CmsContainerElementBean element = CmsJspStandardContextBean.getInstance(
+                pageContext.getRequest()).getElement();
+            if (element != null) {
+                m_parameterMap.putAll(element.getSettings());
+            }
+        }
+        if (m_settings != null) {
+            m_parameterMap.putAll(m_settings);
+        }
+
         return EVAL_BODY_BUFFERED;
     }
 
@@ -384,6 +392,16 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     }
 
     /**
+     * Returns the element settings to be used.<p>
+     *
+     * @return the element settings to be used
+     */
+    public Map<String, String> getSettings() {
+
+        return m_settings;
+    }
+
+    /**
      * Returns the value.<p>
      *
      * @return the value
@@ -403,6 +421,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         m_parameterMap.clear();
         m_displayFormatterPaths.clear();
         m_displayFormatterIds.clear();
+        m_settings = null;
         m_passSettings = false;
         m_editable = false;
         m_value = null;
@@ -507,6 +526,16 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     public void setPostCreateHandler(final String postCreateHandler) {
 
         m_postCreateHandler = postCreateHandler;
+    }
+
+    /**
+     * Sets the element settings to be used.<p>
+     *
+     * @param settings the element settings to be used
+     */
+    public void setSettings(Map<String, String> settings) {
+
+        m_settings = settings;
     }
 
     /**
