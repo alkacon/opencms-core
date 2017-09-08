@@ -515,8 +515,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         String rootPath = resource.getRootPath();
         CmsUUID structureId = resource.getStructureId();
+        String prefixPath = rootPath;
+        if (OpenCms.getSiteManager().requiresRootPathPrefix(rootPath)) {
+            prefixPath = OpenCms.getSiteManager().addRootPathPrefix(rootPath);
+        }
+
         CmsVfsEntryBean result = new CmsVfsEntryBean(
-            rootPath,
+            prefixPath,
             structureId,
             title,
             CmsIconUtil.getIconClasses(
@@ -1678,7 +1683,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         bean.setReleasedAndNotExpired(sResult.isReleaseAndNotExpired(cms));
         String path = sResult.getPath();
-        path = cms.getRequestContext().removeSiteRoot(path);
+        if (OpenCms.getSiteManager().requiresRootPathPrefix(path)) {
+            path = OpenCms.getSiteManager().addRootPathPrefix(path);
+        } else {
+            path = cms.getRequestContext().removeSiteRoot(path);
+        }
 
         // resource path as id
         bean.setPath(path);

@@ -310,9 +310,14 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
             CmsLink link = getLink(cms);
             if (link != null) {
                 content = link.getUri();
-                if (link.isInternal() && (cms != null)) {
-                    // remove site root for internal links
-                    content = cms.getRequestContext().removeSiteRoot(link.getUri());
+                if (link.isInternal()) {
+                    if ((link.getStructureId() != null)
+                        && OpenCms.getSiteManager().requiresRootPathPrefix(link.getTarget())) {
+                        content = OpenCms.getSiteManager().addRootPathPrefix(link.getUri());
+                    } else if (cms != null) {
+                        // remove site root for internal links
+                        content = cms.getRequestContext().removeSiteRoot(link.getUri());
+                    }
                 }
             }
         }

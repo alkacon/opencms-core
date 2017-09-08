@@ -42,6 +42,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,6 +70,9 @@ import com.google.common.base.Optional;
  * @since 7.0.2
  */
 public final class CmsSiteManagerImpl {
+
+    /** The root path prefix used to mark root paths not pointing into a site or /system/ or /shared/. */
+    public static final String ROOT_PATH_PREFIX = "@";
 
     /** A placeholder for the title of the shared folder. */
     public static final String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
@@ -187,6 +191,18 @@ public final class CmsSiteManagerImpl {
     public void addParamToConfigSite(String name, String value) {
 
         m_siteParams.put(name, value);
+    }
+
+    /**
+     * Adds the root path prefix to the given path.<p>
+     *
+     * @param rootPath the resource root path
+     *
+     * @return the prefixed path
+     */
+    public String addRootPathPrefix(String rootPath) {
+
+        return ROOT_PATH_PREFIX + rootPath;
     }
 
     /**
@@ -693,6 +709,10 @@ public final class CmsSiteManagerImpl {
      */
     public String getSiteRoot(String rootPath) {
 
+        if (rootPath.startsWith(ROOT_PATH_PREFIX)) {
+            rootPath = rootPath.substring(ROOT_PATH_PREFIX.length());
+        }
+
         // add a trailing slash, because the path may be the path of a site root itself
         if (!rootPath.endsWith("/")) {
             rootPath = rootPath + "/";
@@ -788,6 +808,18 @@ public final class CmsSiteManagerImpl {
     public CmsSiteMatcher getWorkplaceSiteMatcher() {
 
         return m_workplaceMatchers.isEmpty() ? null : m_workplaceMatchers.get(0);
+    }
+
+    /**
+     * Returns whether the given path starts with the root path prefix.<p>
+     *
+     * @param rootPath the path to check
+     *
+     * @return <code>true</code> if the given path starts with the root path prefix
+     */
+    public boolean hasRootPathPrefix(String rootPath) {
+
+        return rootPath.startsWith(ROOT_PATH_PREFIX);
     }
 
     /**
@@ -1019,6 +1051,18 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Removes the root path prefix.<p>
+     *
+     * @param rootPath the prefixed path
+     *
+     * @return the path without the prefix
+     */
+    public String removeRootPathPrefix(String rootPath) {
+
+        return rootPath.substring(ROOT_PATH_PREFIX.length());
+    }
+
+    /**
      * Removes a site from the list of configured sites.<p>
      *
      * @param cms the cms object
@@ -1059,6 +1103,20 @@ public final class CmsSiteManagerImpl {
         // re-initialize, will freeze the state when finished
         initialize(cms);
         OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+    }
+
+    /**
+     * Returns whether the given resource root path requires a root path prefix.<p>
+     * This is the case if the path does not point into a configured site or below /system/ or into the shared folder.<p>
+     *
+     * @param rootPath the root path
+     *
+     * @return <code>true</code> in case the root path prefix is required
+     */
+    public boolean requiresRootPathPrefix(String rootPath) {
+
+        return (getSiteRoot(rootPath) == null)
+            && !(startsWithShared(rootPath) || rootPath.startsWith(CmsWorkplace.VFS_PATH_SYSTEM));
     }
 
     /**

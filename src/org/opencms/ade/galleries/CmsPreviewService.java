@@ -243,7 +243,11 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         resInfo.setTitle(resource.getName());
         resInfo.setStructureId(resource.getStructureId());
         resInfo.setDescription(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
-        resInfo.setResourcePath(cms.getSitePath(resource));
+        if (OpenCms.getSiteManager().requiresRootPathPrefix(resource.getRootPath())) {
+            resInfo.setResourcePath(OpenCms.getSiteManager().addRootPathPrefix(resource.getRootPath()));
+        } else {
+            resInfo.setResourcePath(cms.getSitePath(resource));
+        }
         resInfo.setResourceType(type.getTypeName());
         resInfo.setBigIconClasses(CmsIconUtil.getIconClasses(type.getTypeName(), resource.getName(), false));
         // set the default file and detail type info

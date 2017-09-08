@@ -190,7 +190,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 CmsSite detailPageSite = OpenCms.getSiteManager().getSiteForRootPath(detailPage);
                 if (detailPageSite != null) {
                     targetSite = detailPageSite;
-                    overrideSiteRoot = targetSiteRoot = targetSite.getSiteRoot();
+                    targetSiteRoot = targetSite.getSiteRoot();
+                    overrideSiteRoot = targetSiteRoot;
                     detailPage = detailPage.substring(targetSiteRoot.length());
                     if (!detailPage.startsWith("/")) {
                         detailPage = "/" + detailPage;
@@ -597,7 +598,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         // URI with relative path is relative to the given relativePath if available and in a site,
         // otherwise invalid
-        if (CmsStringUtil.isNotEmpty(path) && (path.charAt(0) != '/')) {
+        if (CmsStringUtil.isNotEmpty(path)
+            && (path.charAt(0) != '/')
+            && !OpenCms.getSiteManager().hasRootPathPrefix(path)) {
             if (basePath != null) {
                 String absolutePath;
                 int pos = path.indexOf("../../galleries/pics/");
@@ -630,7 +633,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         if (CmsStringUtil.isNotEmpty(path)) {
             String targetSiteRoot = getTargetSiteRoot(cms, path, basePath);
-
+            if (OpenCms.getSiteManager().hasRootPathPrefix(path)) {
+                path = OpenCms.getSiteManager().removeRootPathPrefix(path);
+            }
             return getRootPathForSite(
                 cms,
                 path + suffix,
@@ -787,7 +792,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
      */
     private String getTargetSiteRoot(CmsObject cms, String path, String basePath) {
 
-        if (OpenCms.getSiteManager().startsWithShared(path) || path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+        if (OpenCms.getSiteManager().startsWithShared(path)
+            || path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+            || OpenCms.getSiteManager().hasRootPathPrefix(path)) {
             return null;
         }
         String targetSiteRoot = OpenCms.getSiteManager().getSiteRoot(path);

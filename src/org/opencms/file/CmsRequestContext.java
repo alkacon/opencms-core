@@ -170,7 +170,8 @@ public final class CmsRequestContext {
      */
     public static String getAdjustedSiteRoot(String siteRoot, String resourcename) {
 
-        if (resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+        if (OpenCms.getSiteManager().hasRootPathPrefix(resourcename)
+            || resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
             || OpenCms.getSiteManager().startsWithShared(resourcename)) {
             return "";
         } else {
@@ -208,6 +209,9 @@ public final class CmsRequestContext {
         siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);
         StringBuffer result = new StringBuffer(128);
         result.append(siteRoot);
+        if (OpenCms.getSiteManager().hasRootPathPrefix(resourcename)) {
+            resourcename = OpenCms.getSiteManager().removeRootPathPrefix(resourcename);
+        }
         if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length() - 1) != '/'))
             && ((resourcename.length() == 0) || (resourcename.charAt(0) != '/'))) {
             // add slash between site root and resource if required
