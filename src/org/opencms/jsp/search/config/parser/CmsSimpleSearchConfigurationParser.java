@@ -93,22 +93,22 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                     return new CmsSearchConfigurationSortOption(
                         "title.asc",
                         "title_asc",
-                        "disptitle" + (null != l ? "_" + l.toString() : "") + "_dt asc");
+                        "disptitle" + (null != l ? "_" + l.toString() : "") + "_s asc");
                 case TITLE_DESC:
                     return new CmsSearchConfigurationSortOption(
                         "title.desc",
                         "title_desc",
-                        "disptitle" + (null != l ? "_" + l.toString() : "") + "_dt desc");
+                        "disptitle" + (null != l ? "_" + l.toString() : "") + "_s desc");
                 case ORDER_ASC:
                     return new CmsSearchConfigurationSortOption(
                         "order.asc",
                         "order_asc",
-                        "disporder" + (null != l ? "_" + l.toString() : "") + "_dt asc");
+                        "disporder" + (null != l ? "_" + l.toString() : "") + "_i asc");
                 case ORDER_DESC:
                     return new CmsSearchConfigurationSortOption(
                         "order.desc",
                         "order_desc",
-                        "disporder" + (null != l ? "_" + l.toString() : "") + "_dt desc");
+                        "disporder" + (null != l ? "_" + l.toString() : "") + "_i desc");
                 default:
                     throw new IllegalArgumentException();
             }
