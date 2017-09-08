@@ -217,7 +217,7 @@ div.textArea.textAreaGhostMode textarea {
 }
 
 .radioButton .buttons-spacerRight, .checkBox .buttons-spacerRight {
-	margin-bottom: 2px; 
+	margin-bottom: 3px;  
 }
 	
 /* Style for edited text box */
