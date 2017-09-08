@@ -26,6 +26,8 @@ div.html-face span.spacerLeft {
 	margin-left:4px;
 }
 
+.cmsPushButton {} 
+
 div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsFontIconButton {
 	-moz-user-select: none;
 	-ms-user-select: none;

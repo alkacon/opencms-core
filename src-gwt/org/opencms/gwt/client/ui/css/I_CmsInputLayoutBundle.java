@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.css;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsButtonCss;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsFieldsetCss;
 
 import com.google.gwt.core.client.GWT;
@@ -56,6 +57,6 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
      * @return the css resource
      */
     @Source("input.css")
-    @Import(value = {I_CmsFieldsetCss.class, I_CmsPropertiesCss.class})
+    @Import(value = {I_CmsFieldsetCss.class, I_CmsPropertiesCss.class, I_CmsButtonCss.class})
     I_CmsInputCss inputCss();
 }

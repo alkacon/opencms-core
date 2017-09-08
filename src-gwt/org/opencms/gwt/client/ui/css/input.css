@@ -215,6 +215,10 @@ div.textArea.textAreaGhostMode textarea {
 .radioButton .gwt-ToggleButton {
 	outline: none;
 }
+
+.radioButton .buttons-spacerRight, .checkBox .buttons-spacerRight {
+	margin-bottom: 2px; 
+}
 	
 /* Style for edited text box */
 .changed{

@@ -67,13 +67,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /** The serial date widgets UI. */
 public class CmsSerialDateView extends Composite
 implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The UI binder interface. */
-    interface I_CmsSerialDateUiBinder extends UiBinder<VerticalPanel, CmsSerialDateView> {
+    interface I_CmsSerialDateUiBinder extends UiBinder<Widget, CmsSerialDateView> {
         // nothing to do
     }
 

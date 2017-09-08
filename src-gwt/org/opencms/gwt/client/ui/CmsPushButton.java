@@ -87,6 +87,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
         m_align = HasHorizontalAlignment.ALIGN_RIGHT;
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
         setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsPushButton());
         setSize(I_CmsButton.Size.medium);
     }
 

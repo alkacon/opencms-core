@@ -101,6 +101,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** Button CSS. */
+    @ImportedWithPrefix("buttons")
     interface I_CmsButtonCss extends I_CmsStateCss {
 
         /**
@@ -151,6 +152,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cmsMinWidth();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String cmsPushButton();
 
         /**
          *  Access method.<p>

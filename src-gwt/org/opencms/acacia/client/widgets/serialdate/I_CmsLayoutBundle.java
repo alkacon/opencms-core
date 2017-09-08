@@ -28,6 +28,7 @@
 package org.opencms.acacia.client.widgets.serialdate;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle.I_Widgets;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource.Import;
@@ -39,6 +40,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
     /** The XML content widget CSS. */
     interface I_CmsWidgetCss extends I_Widgets {
+
+        /**
+         * Css class reader.<p>
+         *
+         * @return the css class
+         */
+        String button();
 
         /**
          * Css class reader.<p>
@@ -74,6 +82,11 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
     /**
+     * @see org.opencms.gwt.client.ui.css.I_CmsLayoutBundle#constants()
+     */
+    I_CmsConstantsBundle constants();
+
+    /**
      * Access method.<p>
      *
      * @return the XML content widget CSS
@@ -82,7 +95,8 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     @Import(value = {
         I_CmsFieldsetCss.class,
         org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.I_CmsWidgetCss.class,
-        org.opencms.acacia.client.css.I_CmsLayoutBundle.I_Style.class})
+        org.opencms.acacia.client.css.I_CmsLayoutBundle.I_Style.class,
+        I_CmsButtonCss.class})
     I_CmsWidgetCss widgetCss();
 
 }

@@ -42,8 +42,14 @@
 		margin-left: 15px; 
 	}
 	
+	.endBlock {
+		margin-left: 10px; 
+	}
+	
 	</ui:style>
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
+	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
+	<g:FlowPanel>
 	<g:VerticalPanel width="100%">
 		<g:FlowPanel ui:field="m_deactivationPanel"><g:Label ui:field="m_deactivationText"></g:Label></g:FlowPanel>
 		<g:VerticalPanel>
@@ -56,7 +62,7 @@
 					<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_startLabel"></g:Label>
 					<cmsd:CmsDateBox ui:field="m_startTime" addStyleNames="{widgets.widgetCss.calendarStyle}"/>
 				</g:FlowPanel>
-				<g:FlowPanel>
+				<g:FlowPanel addStyleNames="{style.endBlock}">
 						<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_endLabel"></g:Label>
 						<cmsd:CmsDateBox ui:field="m_endTime" styleName="{widgets.widgetCss.calendarStyle}" />
 				</g:FlowPanel>
@@ -73,13 +79,13 @@
 			<g:VerticalPanel width="100%">
 				<cms:CmsFieldSet ui:field="m_patternPanel" width="100%">
 					<g:FlowPanel addStyleNames="{style.patternAndOptionsContainer}" width="100%">
-						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" styleName="{widgets.widgetCss.radioButtonPanel}" width="300px" />
+						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" styleName="{widgets.widgetCss.radioButtonPanel}" width="310px" />
 						<g:SimplePanel ui:field="m_patternOptions" addStyleNames="{style.patternOptions}" width="100%"/>
 					</g:FlowPanel>
 				</cms:CmsFieldSet>
 				<cms:CmsFieldSet ui:field="m_durationPanel" width="100%">
 					<g:FlowPanel addStyleNames="{style.durationContainer}" width="100%">
-						<g:FlowPanel width="300px">
+						<g:FlowPanel width="310px">
 							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAfterRadioButton" />
 							<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_occurrences" /></g:FlowPanel>
 						</g:FlowPanel>
@@ -92,13 +98,14 @@
 				<cms:CmsFieldSet ui:field="m_exceptionsPanel">
 					<g:FlowPanel>
 						<cmsw:CmsCheckableDatePanel ui:field="m_exceptionsList"></cmsw:CmsCheckableDatePanel>
-						<cms:CmsPushButton ui:field="m_removeExceptionsButton" />
+						<cms:CmsPushButton addStyleNames="{css.widgetCss.button}" ui:field="m_removeExceptionsButton" />
 					</g:FlowPanel>
 				</cms:CmsFieldSet>
 				<g:FlowPanel width="100%">
-					<cms:CmsPushButton ui:field="m_manageExceptionsButton"/>
+					<cms:CmsPushButton  addStyleNames="{css.widgetCss.button}" ui:field="m_manageExceptionsButton"/>
 				</g:FlowPanel>
 			</g:VerticalPanel>
 		</cms:CmsFieldSet>
 	</g:VerticalPanel>
+	</g:FlowPanel>
 </ui:UiBinder>

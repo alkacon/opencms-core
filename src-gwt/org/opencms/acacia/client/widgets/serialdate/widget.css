@@ -54,6 +54,29 @@ div.patternRadio div {
 	border: none; 	
 }
 
+.serialDateWidget .button {
+	border: 1px solid value("constants.css.borderColorEditor") !important;
+	border-radius: value("constants.css.borderRadius") !important;
+	color: value("constants.css.textColorEditorLabel") !important;
+	background-color: value("constants.css.backgroundColorDialog") !important;
+	background: value("constants.css.gradientFormDialogColor") !important;
+	background-image: value("constants.css.gradientFormDialog") !important;
+	box-shadow: none !important;
+}
+
+.serialDateWidget .button::after { 
+	display: none !important;
+}
+
+.serialDateWidget .button:hover {
+	color: #445577 !important;
+	border-color: #445577 !important;
+}
+
+
+
+
+
 .singleLine{}
 .firstColumn{}
 .defaultView{}

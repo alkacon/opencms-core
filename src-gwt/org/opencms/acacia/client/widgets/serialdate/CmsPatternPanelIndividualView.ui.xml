@@ -15,8 +15,8 @@
 	<g:HTMLPanel styleName="">
 		<g:HorizontalPanel>
 			<cmsd:CmsDateBox ui:field="m_newDate" styleName="{widgets.widgetCss.calendarStyle}" />
-				<cms:CmsPushButton addStyleNames="{style.button}" ui:field="m_addButton" />
-				<cms:CmsPushButton addStyleNames="{style.button}" ui:field="m_removeSelectedButton" />
+				<cms:CmsPushButton addStyleNames="{style.button} {css.widgetCss.button}" ui:field="m_addButton" />
+				<cms:CmsPushButton addStyleNames="{style.button} {css.widgetCss.button}" ui:field="m_removeSelectedButton" />
 		</g:HorizontalPanel>
 		<cms:CmsScrollPanel height="6em">
 			<cmsw:CmsCheckableDatePanel ui:field="m_dateList"></cmsw:CmsCheckableDatePanel>
