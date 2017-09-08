@@ -301,10 +301,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 						<name>locale</name>
 						<value><![CDATA[en]]></value>
 					</property>				
-					<property>
-						<name>search.exclude</name>
-						<value>all</value>
-					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/list_config.xsd
 				</param>
