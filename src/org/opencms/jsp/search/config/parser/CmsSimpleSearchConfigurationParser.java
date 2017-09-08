@@ -115,42 +115,6 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         }
     }
 
-    /** The default field facets. */
-    private static final Map<String, I_CmsSearchConfigurationFacetField> DEFAULT_FIELD_FACETS;
-    static {
-        Map<String, I_CmsSearchConfigurationFacetField> fieldFacets = new HashMap<String, I_CmsSearchConfigurationFacetField>();
-        fieldFacets.put(
-            CmsListManager.FIELD_CATEGORIES,
-            new CmsSearchConfigurationFacetField(
-                CmsListManager.FIELD_CATEGORIES,
-                null,
-                Integer.valueOf(1),
-                Integer.valueOf(200),
-                null,
-                "Category",
-                SortOrder.index,
-                null,
-                Boolean.FALSE,
-                null,
-                Boolean.TRUE));
-        fieldFacets.put(
-            CmsListManager.FIELD_PARENT_FOLDERS,
-            new CmsSearchConfigurationFacetField(
-                CmsListManager.FIELD_PARENT_FOLDERS,
-                null,
-                Integer.valueOf(1),
-                Integer.valueOf(200),
-                null,
-                "Folders",
-                SortOrder.index,
-                null,
-                Boolean.FALSE,
-                null,
-                Boolean.TRUE));
-        DEFAULT_FIELD_FACETS = Collections.unmodifiableMap(fieldFacets);
-
-    }
-
     /** The current cms context. */
     private CmsObject m_cms;
 
@@ -174,6 +138,47 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
     }
 
+    /** The default field facets.
+     *
+     * @param categoryConjunction flag, indicating if category selections in the facet should be "AND" combined.
+     * @return the default field facets.
+     */
+    private static final Map<String, I_CmsSearchConfigurationFacetField> getDefaultFieldFacets(
+        Boolean categoryConjunction) {
+
+        Map<String, I_CmsSearchConfigurationFacetField> fieldFacets = new HashMap<String, I_CmsSearchConfigurationFacetField>();
+        fieldFacets.put(
+            CmsListManager.FIELD_CATEGORIES,
+            new CmsSearchConfigurationFacetField(
+                CmsListManager.FIELD_CATEGORIES,
+                null,
+                Integer.valueOf(1),
+                Integer.valueOf(200),
+                null,
+                "Category",
+                SortOrder.index,
+                null,
+                categoryConjunction != null ? categoryConjunction : Boolean.FALSE,
+                null,
+                Boolean.TRUE));
+        fieldFacets.put(
+            CmsListManager.FIELD_PARENT_FOLDERS,
+            new CmsSearchConfigurationFacetField(
+                CmsListManager.FIELD_PARENT_FOLDERS,
+                null,
+                Integer.valueOf(1),
+                Integer.valueOf(200),
+                null,
+                "Folders",
+                SortOrder.index,
+                null,
+                Boolean.FALSE,
+                null,
+                Boolean.TRUE));
+        return Collections.unmodifiableMap(fieldFacets);
+
+    }
+
     /**
     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseFieldFacets()
     */
@@ -183,7 +188,15 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (m_configObject.has(JSON_KEY_FIELD_FACETS)) {
             return super.parseFieldFacets();
         } else {
-            return DEFAULT_FIELD_FACETS;
+            I_CmsXmlContentValue categoryConjunctionVal = m_content.getValue(
+                CmsListManager.N_CATEGORY_CONJUNCTION,
+                CmsLocaleManager.MASTER_LOCALE);
+            if (((categoryConjunctionVal != null)
+                && Boolean.parseBoolean(categoryConjunctionVal.getStringValue(m_cms)))) {
+                return getDefaultFieldFacets(Boolean.TRUE);
+            } else {
+                return getDefaultFieldFacets(Boolean.FALSE);
+            }
         }
     }
 
@@ -244,6 +257,22 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 + getBlacklistFilter();
         }
         return params;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser#getIgnoreExpirationDate()
+     */
+    @Override
+    protected Boolean getIgnoreExpirationDate() {
+
+        return getIgnoreReleaseAndExpiration();
+
+    }
+
+    @Override
+    protected Boolean getIgnoreReleaseDate() {
+
+        return getIgnoreReleaseAndExpiration();
     }
 
     /**
@@ -369,6 +398,14 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !result.startsWith("&")) {
             result = "&" + result;
         }
+        I_CmsXmlContentValue currentOnlyVal = m_content.getValue(
+            CmsListManager.N_CURRENT_ONLY,
+            CmsLocaleManager.MASTER_LOCALE);
+        if (((currentOnlyVal != null) && Boolean.parseBoolean(currentOnlyVal.getStringValue(m_cms)))) {
+            result += "&fq=instancedatecurrenttill_"
+                + m_cms.getRequestContext().getLocale().toString()
+                + "_dt:[NOW/DAY TO *]";
+        }
         return result;
     }
 
@@ -430,5 +467,20 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             result = "&fq=type:(" + result + ")";
         }
         return result;
+    }
+
+    /**
+     * Returns a flag, indicating if the release and expiration date should be ignored.
+     * @return a flag, indicating if the release and expiration date should be ignored.
+     */
+    private Boolean getIgnoreReleaseAndExpiration() {
+
+        I_CmsXmlContentValue expiredVal = m_content.getValue(
+            CmsListManager.N_SHOW_EXPIRED,
+            CmsLocaleManager.MASTER_LOCALE);
+        if ((expiredVal != null) && Boolean.parseBoolean(expiredVal.getStringValue(m_cms))) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
     }
 }

@@ -802,6 +802,12 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** List configuration node name and field key. */
     public static final String N_TITLE = "Title";
 
+    /** List configuration node name and field key. */
+    public static final String N_CURRENT_ONLY = "CurrentOnly";
+
+    /** List configuration node name and field key. */
+    public static final String N_CATEGORY_CONJUNCTION = "CategoryConjunction";
+
     /** The parameter fields. */
     public static final String[] PARAMETER_FIELDS = new String[] {
         N_CATEGORY,
