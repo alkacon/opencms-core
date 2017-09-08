@@ -81,7 +81,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_TOOL_NAME_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_SETTINGS_TOOL_NAME_HELP_0);
     }
 
     /**
@@ -106,7 +106,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_SETTINGS_TOOL_NAME_0);
     }
 
     /**

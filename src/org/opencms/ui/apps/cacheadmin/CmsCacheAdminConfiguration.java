@@ -81,7 +81,7 @@ public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_CACHE_ADMIN_TOOL_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_CACHE_STATISTICS_TOOL_HELP_0);
     }
 
     /**
@@ -106,7 +106,7 @@ public class CmsCacheAdminConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_CACHE_ADMIN_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_CACHE_STATISTICS_TOOL_NAME_0);
     }
 
     /**
