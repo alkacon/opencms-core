@@ -6,14 +6,28 @@
 	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets" />
 	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
+	<ui:style>
+		.every {
+			margin-left: 18px; 
+		}
+	</ui:style>
 	<g:HTMLPanel styleName="">
 		<div class="{css.widgetCss.patternRow}">
-			<cms:CmsRadioButton ui:field="m_dayMonthRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelDays"></span><div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_everyMonth" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_everyLabelMonth"></span>
+			<cms:CmsRadioButton ui:field="m_dayMonthRadioButton" addStyleNames="{css.widgetCss.patternRadio}" />
+			<div class="{widgets.widgetCss.textBox} {css.widgetCss.ordinalTextBox}">
+				<cmssd:CmsFocusAwareTextBox ui:field="m_everyDay" addStyleNames="{css.widgetCss.shortTextBox} {css.widgetCss.patternInput}" />
+			</div><span ui:field="m_labelDays"></span>
+			<div class="{widgets.widgetCss.textBox} {css.widgetCss.ordinalTextBox}">
+				<cmssd:CmsFocusAwareTextBox ui:field="m_everyMonth" addStyleNames="{css.widgetCss.shortTextBox} {css.widgetCss.patternInput}" />
+			</div><span ui:field="m_everyLabelMonth"></span>
 		</div>
 		<div class="{css.widgetCss.patternRow}">
 			<cms:CmsRadioButton ui:field="m_weekDayMonthRadioButton" addStyleNames="{css.widgetCss.patternRadio}" />
 			<g:FlowPanel ui:field="m_weekPanel" styleName="{css.widgetCss.patternRow}" />
-			<cms:CmsSelectBox ui:field="m_atDay" /><span ui:field="m_labelEvery"></span><div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_atMonth" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_atLabelMonth"></span>
+			<cms:CmsSelectBox ui:field="m_atDay" />
+			<br></br><span class="{style.every}" ui:field="m_labelEvery"></span>
+			<div class="{widgets.widgetCss.textBox} {css.widgetCss.ordinalTextBox}">
+				<cmssd:CmsFocusAwareTextBox ui:field="m_atMonth" addStyleNames="{css.widgetCss.shortTextBox} {css.widgetCss.patternInput}" /></div><span ui:field="m_atLabelMonth"></span>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder>

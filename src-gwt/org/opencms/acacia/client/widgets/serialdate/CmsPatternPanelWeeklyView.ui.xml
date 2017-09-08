@@ -7,7 +7,7 @@
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets" />
 	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
 	<g:HTMLPanel styleName="">
-		<div class="{css.widgetCss.patternRow}"><span ui:field="m_labelEvery"></span><div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelWeeks"></span></div>
+		<div class="{css.widgetCss.patternRow}"><span ui:field="m_labelEvery"></span><div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_everyDay" addStyleNames="{css.widgetCss.shortTextBox} {css.widgetCss.patternInput}" /></div><span ui:field="m_labelWeeks"></span></div>
 		<g:FlowPanel ui:field="m_dayPanel" styleName="{css.widgetCss.patternRow}" />
 	</g:HTMLPanel>
 </ui:UiBinder>

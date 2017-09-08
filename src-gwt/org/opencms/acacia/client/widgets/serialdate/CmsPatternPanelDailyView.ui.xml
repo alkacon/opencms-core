@@ -7,7 +7,8 @@
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets" />
 	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
 	<g:HTMLPanel styleName="">
-		<div class="{css.widgetCss.patternRow}"><cms:CmsRadioButton ui:field="m_everyRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /><div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_everyDay" styleName="{css.widgetCss.patternInput}" /></div><span ui:field="m_labelDays"></span></div>
+		<div class="{css.widgetCss.patternRow}"><cms:CmsRadioButton ui:field="m_everyRadioButton" addStyleNames="{css.widgetCss.patternRadio}" />
+		<div class="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_everyDay" addStyleNames="{css.widgetCss.shortTextBox} {css.widgetCss.patternInput}" /></div><span ui:field="m_labelDays"></span></div>
 		<div class="{css.widgetCss.patternRow}"><cms:CmsRadioButton ui:field="m_workingRadioButton" addStyleNames="{css.widgetCss.patternRadio}" /></div>
 	</g:HTMLPanel>
 </ui:UiBinder>

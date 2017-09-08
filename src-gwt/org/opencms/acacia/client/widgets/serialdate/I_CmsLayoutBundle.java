@@ -48,6 +48,8 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          */
         String button();
 
+        String ordinalTextBox();
+
         /**
          * Css class reader.<p>
          *
@@ -75,6 +77,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the css class
          */
         String serialDateWidget();
+
+        /**
+         * Css class reader.<p>
+         *
+         * @return the css class
+         */
+        String shortTextBox();
 
     }
 

@@ -96,10 +96,10 @@
 					<g:FlowPanel addStyleNames="{style.durationContainer}" width="100%">
 						<g:FlowPanel width="310px">
 							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAfterRadioButton" />
-							<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox ui:field="m_occurrences" /></g:FlowPanel>
+							<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox addStyleNames="{css.widgetCss.shortTextBox}" ui:field="m_occurrences" /></g:FlowPanel>
 						</g:FlowPanel>
 						<g:FlowPanel>
-							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAtRadioButton"/>
+							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio} {css.widgetCss.shortTextBox}" ui:field="m_endsAtRadioButton"/>
 							<cmsd:CmsDateBox ui:field="m_seriesEndDate" styleName="{widgets.widgetCss.calendarStyle}" />
 						</g:FlowPanel>
 					</g:FlowPanel>

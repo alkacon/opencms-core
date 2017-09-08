@@ -138,7 +138,9 @@ public class CmsPatternPanelMonthlyView extends Composite implements I_CmsSerial
      * @param controller the controller that handles value changes.
      * @param model the model that provides the values.
      */
-    public CmsPatternPanelMonthlyView(CmsPatternPanelMonthlyController controller, I_CmsObservableSerialDateValue model) {
+    public CmsPatternPanelMonthlyView(
+        CmsPatternPanelMonthlyController controller,
+        I_CmsObservableSerialDateValue model) {
         m_controller = controller;
         m_model = model;
         m_model.registerValueChangeObserver(this);

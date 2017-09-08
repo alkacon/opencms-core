@@ -6,13 +6,18 @@
 	border-color: value("constants.css.borderColor") !important;
 }
 
-div.patternRow > div {
+div.patternRow > * {
 			display: inline-block;
-			margin-right: 4px;
 			margin-top: 2px;
 			margin-bottom: 2px; 
 			vertical-align: middle;
 }
+
+div.patternRow > *:not\(.ordinalTextBox\) {
+	margin-right: 4px;
+}
+
+.ordinalTextBox {} 
 
 /* div.patternRow > div:first-child {
 			margin-left: 0px;
@@ -74,7 +79,9 @@ div.patternRadio div {
 }
 
 
-
+.serialDateWidget .shortTextBox { 
+	width: 50px; 
+}
 
 
 .singleLine{}
