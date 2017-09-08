@@ -104,17 +104,20 @@
 						</g:FlowPanel>
 					</g:FlowPanel>
 				</g:FlowPanel>
-				<cms:CmsFieldSet ui:field="m_exceptionsPanel" addStyleNames="{style.spacing}">
-					<g:FlowPanel>
-						<cmsw:CmsCheckableDatePanel ui:field="m_exceptionsList"></cmsw:CmsCheckableDatePanel>
-						<cms:CmsPushButton addStyleNames="{css.widgetCss.button}" ui:field="m_removeExceptionsButton" />
-					</g:FlowPanel>
-				</cms:CmsFieldSet>
+				
 				<g:FlowPanel width="100%" addStyleNames="{style.spacing}">
 					<cms:CmsPushButton  addStyleNames="{css.widgetCss.button}" ui:field="m_manageExceptionsButton"/>
 				</g:FlowPanel>
 			</g:VerticalPanel>
 		</cms:CmsFieldSet>
+		<g:FlowPanel ui:field="m_exceptionsPanelContainer">
+			<cms:CmsFieldSet ui:field="m_exceptionsPanel" addStyleNames="{style.spacing}">
+				<g:FlowPanel>
+					<cmsw:CmsCheckableDatePanel ui:field="m_exceptionsList"></cmsw:CmsCheckableDatePanel>
+					<cms:CmsPushButton addStyleNames="{css.widgetCss.button}" ui:field="m_removeExceptionsButton" />
+				</g:FlowPanel>
+			</cms:CmsFieldSet>
+		</g:FlowPanel>
 	</g:VerticalPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

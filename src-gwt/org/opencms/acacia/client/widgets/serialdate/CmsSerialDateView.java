@@ -83,176 +83,180 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /* The status field */
 
-    /** The label that displays the dependency to another series. */
+    /** Panel containing the field set for the exceptions. */
     @UiField
-    CmsLabel m_origSeriesLabel;
+    protected FlowPanel m_exceptionsPanelContainer;
 
-    /** The label that displays the current status. */
-    @UiField
-    CmsLabel m_statusLabel;
+    /** Controller. */
+    CmsSerialDateController m_controller;
 
     /* 1. The dates panel. */
-
-    /** The panel with the basic dates. */
-    @UiField
-    FlowPanel m_datesPanel;
-
-    /** The start time label. */
-    @UiField
-    Label m_startLabel;
-
-    /** The start date box. */
-    @UiField
-    CmsDateBox m_startTime;
-
-    /** The end time label. */
-    @UiField
-    Label m_endLabel;
-
-    /** The end date box. */
-    @UiField
-    CmsDateBox m_endTime;
-
-    /** The check box, indicating if the event should last the whole day. */
-    @UiField
-    CmsCheckBox m_wholeDayCheckBox;
 
     /** The check box, indicating if the event should be displayed as "current" till it ends (checked state), or only till it starts (unchecked). */
     @UiField
     CmsCheckBox m_currentTillEndCheckBox;
 
-    /* 2. The serial options panel */
-
-    /** The check box, indicating if the date is a serial date. */
-    @UiField
-    CmsCheckBox m_seriesCheckBox;
-
-    /* 2.1 The pattern options */
-
-    /** The panel with all serial date options. */
-    @UiField
-    CmsFieldSet m_serialOptionsPanel;
-
-    /** The panel with the serial date pattern options. */
-    @UiField
-    FlowPanel m_patternPanel;
-
-    /** The pattern options panel, where the pattern specific options are displayed. */
-    @UiField
-    SimplePanel m_patternOptions;
-
     /** The daily pattern. */
     CmsPatternPanelDailyView m_dailyPattern;
 
-    /** The weekly pattern. */
-    CmsPatternPanelWeeklyView m_weeklyPattern;
+    /** The panel with the basic dates. */
+    @UiField
+    FlowPanel m_datesPanel;
 
-    /** The monthly pattern. */
-    CmsPatternPanelMonthlyView m_monthlyPattern;
+    /** Panel only shown when the widget is deactivated. */
+    @UiField
+    FlowPanel m_deactivationPanel;
 
-    /** The yearly pattern. */
-    CmsPatternPanelYearlyView m_yearlyPattern;
-
-    /* 2.2. The duration panel */
-
-    /** The individual pattern. */
-    CmsPatternPanelIndividualView m_individualPattern;
+    /** Information on the widget in deactivated state. */
+    @UiField
+    Label m_deactivationText;
 
     /** The panel with the serial date duration options. */
     @UiField
     FlowPanel m_durationPanel;
 
+    /** The end time label. */
+    @UiField
+    Label m_endLabel;
+
+    /* 2. The serial options panel */
+
     /** The ends after radio button. */
     @UiField(provided = true)
     CmsRadioButton m_endsAfterRadioButton;
 
-    /** The end datebox. */
-    @UiField
-    CmsDateBox m_seriesEndDate;
+    /* 2.1 The pattern options */
 
     /** The ends at radio button. */
     @UiField(provided = true)
     CmsRadioButton m_endsAtRadioButton;
 
-    /* 2.3. The exceptions panel */
-
-    /** The times text box. */
+    /** The end date box. */
     @UiField
-    CmsFocusAwareTextBox m_occurrences;
-
-    /** The panel with the serial date exceptions. */
-    @UiField
-    CmsFieldSet m_exceptionsPanel;
+    CmsDateBox m_endTime;
 
     /** The UI element for the list with exceptions. */
     @UiField(provided = true)
     CmsCheckableDatePanel m_exceptionsList;
 
-    /** Button to remove checked exceptions. */
+    /** The panel with the serial date exceptions. */
     @UiField
-    CmsPushButton m_removeExceptionsButton;
+    CmsFieldSet m_exceptionsPanel;
+
+    /** The individual pattern. */
+    CmsPatternPanelIndividualView m_individualPattern;
 
     /* 3. The manage exceptions and preview button that triggers the preview pop-up. */
     /** The button to manage exceptions. */
     @UiField
     CmsPushButton m_manageExceptionsButton;
 
-    /* 4. The preview & exceptions selection pop-up */
+    /** Model. */
+    I_CmsObservableSerialDateValue m_model;
 
-    /** The preview list (with checkboxes to manage exceptions. */
+    /* 2.2. The duration panel */
 
-    /** The pop-up where the preview list is shown in. */
-    CmsPopup m_overviewPopup;
+    /** The monthly pattern. */
+    CmsPatternPanelMonthlyView m_monthlyPattern;
 
-    /* 5. Panel for de-active state */
+    /** The times text box. */
+    @UiField
+    CmsFocusAwareTextBox m_occurrences;
+
+    /** The label that displays the dependency to another series. */
+    @UiField
+    CmsLabel m_origSeriesLabel;
 
     /** The list shown in the pop-up panel to manage exceptions. */
     CmsCheckableDatePanel m_overviewList;
 
-    /** Panel only shown when the widget is deactivated. */
-    @UiField
-    FlowPanel m_deactivationPanel;
+    /** The pop-up where the preview list is shown in. */
+    CmsPopup m_overviewPopup;
 
-    /* Member variables for managing the internal state. */
+    /* 2.3. The exceptions panel */
 
-    /** Information on the widget in deactivated state. */
+    /** The pattern options panel, where the pattern specific options are displayed. */
     @UiField
-    Label m_deactivationText;
+    SimplePanel m_patternOptions;
+
+    /** The panel with the serial date pattern options. */
+    @UiField
+    FlowPanel m_patternPanel;
 
     /** The panel to place the radio buttons for pattern selection. */
     @UiField
     VerticalPanel m_patternRadioButtonsPanel;
 
-    /** Value of the radio group duration. */
-    private CmsRadioButtonGroup m_groupDuration;
+    /** Button to remove checked exceptions. */
+    @UiField
+    CmsPushButton m_removeExceptionsButton;
 
-    /** Value of the radio group pattern. */
-    private CmsRadioButtonGroup m_groupPattern;
+    /** The panel with all serial date options. */
+    @UiField
+    CmsFieldSet m_serialOptionsPanel;
+
+    /* 4. The preview & exceptions selection pop-up */
+
+    /** The preview list (with checkboxes to manage exceptions. */
+
+    /** The check box, indicating if the date is a serial date. */
+    @UiField
+    CmsCheckBox m_seriesCheckBox;
+
+    /* 5. Panel for de-active state */
+
+    /** The end datebox. */
+    @UiField
+    CmsDateBox m_seriesEndDate;
+
+    /** The start time label. */
+    @UiField
+    Label m_startLabel;
+
+    /* Member variables for managing the internal state. */
+
+    /** The start date box. */
+    @UiField
+    CmsDateBox m_startTime;
+
+    /** The label that displays the current status. */
+    @UiField
+    CmsLabel m_statusLabel;
+
+    /** The weekly pattern. */
+    CmsPatternPanelWeeklyView m_weeklyPattern;
+
+    /** The check box, indicating if the event should last the whole day. */
+    @UiField
+    CmsCheckBox m_wholeDayCheckBox;
+
+    /** The yearly pattern. */
+    CmsPatternPanelYearlyView m_yearlyPattern;
 
     /** The pop-up panel's close button. */
     private CmsPushButton m_closeOverviewPopupButton;
 
-    /** The pop-up panel's "update exceptions" button. */
-    private CmsPushButton m_updateExceptionsButton;
-
-    /* Date and time formats */
-
     /** Format with date only. */
     private String m_dateFormat = Messages.get().keyDefault(Messages.GUI_SERIALDATE_DATE_FORMAT_0, null);
 
+    /* Date and time formats */
+
+    /** Value of the radio group duration. */
+    private CmsRadioButtonGroup m_groupDuration;
+
     /* Controller and model */
 
-    /** Controller. */
-    CmsSerialDateController m_controller;
-
-    /** Model. */
-    I_CmsObservableSerialDateValue m_model;
+    /** Value of the radio group pattern. */
+    private CmsRadioButtonGroup m_groupPattern;
 
     /** Map from the various patterns to the radio buttons for chosing the patterns. */
     private Map<PatternType, CmsRadioButton> m_patternButtons;
 
     /** Flag, indicating if change actions should not be triggered. */
     private boolean m_triggerChangeActions = true;
+
+    /** The pop-up panel's "update exceptions" button. */
+    private CmsPushButton m_updateExceptionsButton;
 
     /**
      * Category field widgets for ADE forms.<p>
@@ -452,7 +456,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
         PatternType patternType = m_model.getPatternType();
         boolean isSeries = !patternType.equals(PatternType.NONE);
-        m_serialOptionsPanel.setVisible(isSeries);
+        setSerialOptionsVisible(isSeries);
         m_seriesCheckBox.setChecked(isSeries);
         if (isSeries) {
             m_groupPattern.selectButton(m_patternButtons.get(patternType));
@@ -533,7 +537,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_deactivationPanel.setVisible(!active);
         m_datesPanel.setVisible(active);
         if (m_seriesCheckBox.getFormValue().booleanValue()) {
-            m_serialOptionsPanel.setVisible(active);
+            setSerialOptionsVisible(active);
         }
         m_controller.sizeChanged();
     }
@@ -754,10 +758,21 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
         m_serialOptionsPanel.setLegend(Messages.get().key(Messages.GUI_SERIALDATE_PANEL_SERIAL_OPTIONS_0));
         m_serialOptionsPanel.addCloseHandler(this);
-        m_serialOptionsPanel.setVisible(false);
+        setSerialOptionsVisible(false);
         initDurationPanel();
         initExceptionsPanel();
         initManagementPart();
+    }
+
+    /**
+     * Shows / hides serial options and exceptions.<p>
+     *
+     * @param visible  true if the widgets should be shown, false if they should be hidden
+     */
+    private void setSerialOptionsVisible(boolean visible) {
+
+        m_serialOptionsPanel.setVisible(visible);
+        m_exceptionsPanelContainer.setVisible(visible);
     }
 
 }
