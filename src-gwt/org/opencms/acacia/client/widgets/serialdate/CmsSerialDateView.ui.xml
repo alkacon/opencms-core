@@ -50,6 +50,10 @@
 		display: none; 
 	}
 	
+	.spacing {
+		margin-top: 15px;
+	}
+	
 	</ui:style>
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
 	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
@@ -79,16 +83,16 @@
 				<cmsi:CmsCheckBox ui:field="m_currentTillEndCheckBox" addStyleNames="{widgets.widgetCss.checkBoxStyle}" />
 			</g:FlowPanel>
 		</g:FlowPanel>
-		<cms:CmsFieldSet ui:field="m_serialOptionsPanel" width="100%">
+		<cms:CmsFieldSet ui:field="m_serialOptionsPanel" width="100%" addStyleNames="{style.spacing}">
 			<g:VerticalPanel width="100%">
 				<cmsi:CmsLabel ui:field="m_statusLabel"/>
-				<g:FlowPanel ui:field="m_patternPanel" width="100%">
+				<g:FlowPanel ui:field="m_patternPanel" width="100%" addStyleNames="{style.spacing}">
 					<g:FlowPanel addStyleNames="{style.patternAndOptionsContainer}" width="100%">
 						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" styleName="{widgets.widgetCss.radioButtonPanel}" width="310px" />
 						<g:SimplePanel ui:field="m_patternOptions" addStyleNames="{style.patternOptions}" width="100%"/>
 					</g:FlowPanel>
 				</g:FlowPanel>
-				<g:FlowPanel ui:field="m_durationPanel" width="100%">
+				<g:FlowPanel ui:field="m_durationPanel" width="100%" addStyleNames="{style.spacing}" >
 					<g:FlowPanel addStyleNames="{style.durationContainer}" width="100%">
 						<g:FlowPanel width="310px">
 							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAfterRadioButton" />
@@ -100,13 +104,13 @@
 						</g:FlowPanel>
 					</g:FlowPanel>
 				</g:FlowPanel>
-				<cms:CmsFieldSet ui:field="m_exceptionsPanel">
+				<cms:CmsFieldSet ui:field="m_exceptionsPanel" addStyleNames="{style.spacing}">
 					<g:FlowPanel>
 						<cmsw:CmsCheckableDatePanel ui:field="m_exceptionsList"></cmsw:CmsCheckableDatePanel>
 						<cms:CmsPushButton addStyleNames="{css.widgetCss.button}" ui:field="m_removeExceptionsButton" />
 					</g:FlowPanel>
 				</cms:CmsFieldSet>
-				<g:FlowPanel width="100%">
+				<g:FlowPanel width="100%" addStyleNames="{style.spacing}">
 					<cms:CmsPushButton  addStyleNames="{css.widgetCss.button}" ui:field="m_manageExceptionsButton"/>
 				</g:FlowPanel>
 			</g:VerticalPanel>
