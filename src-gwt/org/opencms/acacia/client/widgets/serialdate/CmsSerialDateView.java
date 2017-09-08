@@ -95,7 +95,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The panel with the basic dates. */
     @UiField
-    CmsFieldSet m_datesPanel;
+    FlowPanel m_datesPanel;
 
     /** The start time label. */
     @UiField
@@ -135,7 +135,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The panel with the serial date pattern options. */
     @UiField
-    CmsFieldSet m_patternPanel;
+    FlowPanel m_patternPanel;
 
     /** The pattern options panel, where the pattern specific options are displayed. */
     @UiField
@@ -160,7 +160,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The panel with the serial date duration options. */
     @UiField
-    CmsFieldSet m_durationPanel;
+    FlowPanel m_durationPanel;
 
     /** The ends after radio button. */
     @UiField(provided = true)
@@ -572,9 +572,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     /** Initialize dates panel elements. */
     private void initDatesPanel() {
 
-        m_datesPanel.setLegend(Messages.get().key(Messages.GUI_SERIALDATE_PANEL_DATES_0));
-        m_datesPanel.setOpenerVisible(false);
-
         m_startLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_TIME_STARTTIME_0));
         m_startTime.setAllowInvalidValue(true);
         m_startTime.setValue(m_model.getStart());
@@ -631,8 +628,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     /** Initialize elements from the duration panel. */
     private void initDurationPanel() {
 
-        m_durationPanel.setLegend(Messages.get().key(Messages.GUI_SERIALDATE_PANEL_DURATION_0));
-        m_durationPanel.setOpenerVisible(false);
         m_seriesEndDate.setDateOnly(true);
         m_seriesEndDate.setAllowInvalidValue(true);
         m_seriesEndDate.setValue(m_model.getSeriesEndDate());
@@ -754,22 +749,12 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     }
 
-    /**
-     * Create the pattern panels.
-     */
-    private void initPatternPanel() {
-
-        m_patternPanel.setLegend(Messages.get().key(Messages.GUI_SERIALDATE_PANEL_PATTERN_0));
-        m_patternPanel.setOpenerVisible(false);
-    }
-
     /** Initialize elements from the serial options panel (and all sub-panels). */
     private void initSerialOptionsPanel() {
 
         m_serialOptionsPanel.setLegend(Messages.get().key(Messages.GUI_SERIALDATE_PANEL_SERIAL_OPTIONS_0));
         m_serialOptionsPanel.addCloseHandler(this);
         m_serialOptionsPanel.setVisible(false);
-        initPatternPanel();
         initDurationPanel();
         initExceptionsPanel();
         initManagementPart();
