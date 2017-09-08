@@ -58,7 +58,7 @@
 		<g:FlowPanel ui:field="m_deactivationPanel"><g:Label ui:field="m_deactivationText"></g:Label></g:FlowPanel>
 		<g:VerticalPanel>
 			<cmsi:CmsLabel ui:field="m_origSeriesLabel"/>
-			<cmsi:CmsLabel ui:field="m_statusLabel"/>
+			
 		</g:VerticalPanel>
 		<g:FlowPanel ui:field="m_datesPanel" width="100%">
 			<g:FlowPanel addStyleNames="{style.fromToContainer}">
@@ -81,6 +81,7 @@
 		</g:FlowPanel>
 		<cms:CmsFieldSet ui:field="m_serialOptionsPanel" width="100%">
 			<g:VerticalPanel width="100%">
+				<cmsi:CmsLabel ui:field="m_statusLabel"/>
 				<g:FlowPanel ui:field="m_patternPanel" width="100%">
 					<g:FlowPanel addStyleNames="{style.patternAndOptionsContainer}" width="100%">
 						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" styleName="{widgets.widgetCss.radioButtonPanel}" width="310px" />
