@@ -232,9 +232,6 @@ public final class Messages {
     public static final String GUI_SERIALDATE_PANEL_DURATION_0 = "GUI_SERIALDATE_PANEL_DURATION_0";
 
     /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_PANEL_DATES_0 = "GUI_SERIALDATE_PANEL_DATES_0";
-
-    /** Name of the used resource bundle. */
     public static final String GUI_SERIALDATE_SERIES_CHECKBOX_0 = "GUI_SERIALDATE_SERIES_CHECKBOX_0";
 
     /** Name of the used resource bundle. */
