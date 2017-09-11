@@ -39,6 +39,8 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.galleries.CmsGallerySearch;
+import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
 import org.opencms.widgets.serialdate.CmsSerialDateValue;
@@ -149,16 +151,7 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                 CmsMessages messages = Messages.get().getBundle(wpl);
                 if (!m_value.getPatternType().equals(PatternType.NONE)) {
                     List<Option> options = new ArrayList<>(2);
-                    Option oSeries = new Option(
-                        CmsDialogOptions.REGULAR_DELETE,
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_0),
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_HELP_ACTIVE_0),
-                        false);
-                    options.add(oSeries);
-                    String instanceDate = DateFormat.getDateTimeInstance(
-                        DateFormat.SHORT,
-                        DateFormat.SHORT,
-                        wpl).format(m_instanceDate);
+                    String instanceDate = DateFormat.getDateInstance(DateFormat.LONG, wpl).format(m_instanceDate);
                     Option oInstance = new Option(
                         OPTION_INSTANCE,
                         messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_OPTION_INSTANCE_1, instanceDate),
@@ -167,9 +160,15 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                             instanceDate),
                         false);
                     options.add(oInstance);
+                    Option oSeries = new Option(
+                        CmsDialogOptions.REGULAR_DELETE,
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_0),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_HELP_ACTIVE_0),
+                        false);
+                    options.add(oSeries);
                     return new CmsDialogOptions(
-                        null,
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_0),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_1, getTitle(wpl)),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_INFO_0),
                         options);
                 }
             }
@@ -189,16 +188,7 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                 CmsMessages messages = Messages.get().getBundle(wpl);
                 if (!m_value.getPatternType().equals(PatternType.NONE)) {
                     List<Option> options = new ArrayList<>(2);
-                    Option oSeries = new Option(
-                        OPTION_SERIES,
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_0),
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_HELP_ACTIVE_0),
-                        false);
-                    options.add(oSeries);
-                    String instanceDate = DateFormat.getDateTimeInstance(
-                        DateFormat.SHORT,
-                        DateFormat.SHORT,
-                        wpl).format(m_instanceDate);
+                    String instanceDate = DateFormat.getDateInstance(DateFormat.LONG, wpl).format(m_instanceDate);
                     Option oInstance;
                     if (!isListElement && !isContainerPageLockable()) {
                         oInstance = new Option(
@@ -218,9 +208,15 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                             false);
                     }
                     options.add(oInstance);
+                    Option oSeries = new Option(
+                        OPTION_SERIES,
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_0),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_HELP_ACTIVE_0),
+                        false);
+                    options.add(oSeries);
                     return new CmsDialogOptions(
-                        null,
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_0),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_1, getTitle(wpl)),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_INFO_0),
                         options);
                 }
             }
@@ -375,6 +371,24 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                 }
             }
             return null;
+        }
+
+        /**
+         * Returns the gallery title of the series content.
+         * @param l the locale to show the title in.
+         * @return the gallery title of the series content.
+         */
+        private String getTitle(Locale l) {
+
+            CmsGallerySearchResult result;
+            try {
+                result = CmsGallerySearch.searchById(m_cms, m_contentValue.getDocument().getFile().getStructureId(), l);
+                return result.getTitle();
+            } catch (CmsException e) {
+                LOG.error("Could not retrieve title of series content.", e);
+                return "";
+            }
+
         }
 
         /**

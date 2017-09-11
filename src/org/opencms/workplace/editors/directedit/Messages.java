@@ -89,7 +89,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CLICK_TO_ADD_ELEMENT_TO_EMPTY_LIST_0 = "GUI_CLICK_TO_ADD_ELEMENT_TO_EMPTY_LIST_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_0 = "GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_0";
+    public static final String GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_1 = "GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_INFO_0 = "GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_INFO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_0 = "GUI_DATE_SERIES_HANDLER_EDIT_OPTION_SERIES_0";
@@ -107,7 +110,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATE_SERIES_HANDLER_EDIT_OPTION_INSTANCE_HELP_INACTIVE_1 = "GUI_DATE_SERIES_HANDLER_EDIT_OPTION_INSTANCE_HELP_INACTIVE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_0 = "GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_0";
+    public static final String GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_1 = "GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_INFO_0 = "GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_INFO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_0 = "GUI_DATE_SERIES_HANDLER_DELETE_OPTION_SERIES_0";
