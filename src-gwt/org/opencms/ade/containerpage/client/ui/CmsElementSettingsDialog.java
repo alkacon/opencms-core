@@ -65,6 +65,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -360,9 +361,11 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         Map<String, CmsXmlContentProperty> settingsConfig,
         Map<String, String> nestedFormatterPrefixes) {
 
-        for (String group : getForm().getGroups()) {
+        List<String> groups = new ArrayList<String>(getForm().getGroups());
+        for (String group : groups) {
             getForm().removeGroup(group);
         }
+
         CmsFieldsetFormFieldPanel formFieldPanel = null;
         if (getForm().getWidget() instanceof CmsFieldsetFormFieldPanel) {
             formFieldPanel = ((CmsFieldsetFormFieldPanel)getForm().getWidget());

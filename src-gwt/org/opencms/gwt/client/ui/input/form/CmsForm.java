@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -294,9 +293,11 @@ public class CmsForm {
      */
     public void removeGroup(String group) {
 
-        List<I_CmsFormField> fieldsToRemove = Lists.newArrayList(m_fieldsByGroup.get(group));
-        for (I_CmsFormField field : fieldsToRemove) {
-            removeField(field);
+        if (m_fieldsByGroup.get(group) != null) {
+            List<I_CmsFormField> fieldsToRemove = new ArrayList<I_CmsFormField>(m_fieldsByGroup.get(group));
+            for (I_CmsFormField field : fieldsToRemove) {
+                removeField(field);
+            }
         }
         m_fieldsByGroup.removeAll(group);
     }
