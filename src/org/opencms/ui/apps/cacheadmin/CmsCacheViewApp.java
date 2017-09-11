@@ -109,11 +109,6 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
                 entryLruCache.getMaxCacheCosts(),
                 A_CmsUI.getCmsObject().getRequestContext().getLocale()));
         infoMap.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0),
-            CmsFileUtil.formatFilesize(
-                entryLruCache.getAvgCacheCosts(),
-                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
-        infoMap.put(
             CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_CURSIZE_0),
             CmsFileUtil.formatFilesize(
                 entryLruCache.getObjectCosts(),
@@ -289,6 +284,7 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         m_infoLayout.addComponent(m_siteTableFilter);
 
         m_uiContext.addToolbarButton(getFlexStatisticButton());
+        m_uiContext.addToolbarButton(CmsFlushCache.getFlushToolButton());
 
         table.setSizeFull();
         return table;
@@ -320,6 +316,7 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         m_infoLayout.addComponent(m_siteTableFilter);
 
         m_uiContext.addToolbarButton(getImageStatisticButton());
+        m_uiContext.addToolbarButton(CmsFlushCache.getFlushToolButton());
         table.setSizeFull();
 
         return table;

@@ -101,7 +101,9 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
      */
     private Component getStartComponent() {
 
+        VerticalLayout outerouter = new VerticalLayout();
         VerticalLayout outer = new VerticalLayout();
+        outer.setSizeUndefined();
         HorizontalLayout layout = new HorizontalLayout();
 
         layout.setMargin(true);
@@ -122,18 +124,17 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
 
         flex.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
 
+        HorizontalLayout flush = new HorizontalLayout();
+
+        flush.addComponent(new CmsFlushCache());
+        flush.setMargin(true);
+
         layout.addComponent(flex);
 
-        // Disabled due to performance issues
-        //        Panel image = new Panel();
-        //        //        image.setWidth("400px");
-        //        image.setContent(new CmsImageCacheInfoLayout());
-        //        image.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
-        //
-        //        layout.addComponent(image);
-        layout.addComponent(new CmsFlushCache());
+        outer.addComponent(flush);
         outer.addComponent(layout);
-        //        outer.setComponentAlignment(outer.getComponent(1), com.vaadin.ui.Alignment.TOP_LEFT);
-        return outer;
+        outerouter.addStyleName("o-center");
+        outerouter.addComponent(outer);
+        return outerouter;
     }
 }

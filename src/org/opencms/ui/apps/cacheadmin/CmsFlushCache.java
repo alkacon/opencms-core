@@ -35,11 +35,16 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.OpenCmsTheme;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 
@@ -47,10 +52,12 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Vaadin Layout with Buttons to clear the different types of cache.<p>
@@ -67,6 +74,8 @@ public class CmsFlushCache extends Panel {
          * @param closeRunnable runnable
          *  */
         void setCloseRunnable(Runnable closeRunnable);
+
+        void setOkRunnable(Runnable okRunnable);
     }
 
     /** The logger for this class. */
@@ -86,80 +95,135 @@ public class CmsFlushCache extends Panel {
      */
     public CmsFlushCache() {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        m_flushes.setSpacing(true);
+        m_flushes.setMargin(true);
+        setWidthUndefined();
+        Component c = getButtonLayout(3, null);
+        m_flushes.addComponent(c);
+
+    }
+
+    protected static VerticalLayout getButtonLayout(int size, final Runnable clickedRunnable) {
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.setSpacing(true);
+        layout.setMargin(true);
+        layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 
         Button clean_flex = getFlushButton(
             Messages.GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0,
             Messages.GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0,
-            new CmsFlexCacheCleanDialog());
+            new CmsFlexCacheCleanDialog(),
+            clickedRunnable);
 
         Button clean_image = getFlushButton(
             Messages.GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0,
             Messages.GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0,
-            new CmsImageCacheCleanDialog());
+            new CmsImageCacheCleanDialog(),
+            clickedRunnable);
 
         Button clean_core = getFlushButton(
             Messages.GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0,
             Messages.GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0,
             new CmsConfirmSimpleFlushDialog(
-                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0),
-                new Runnable() {
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0)),
+            new Runnable() {
 
-                    public void run() {
+                public void run() {
 
-                        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, null));
-                    }
-                }));
+                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, null));
+                    clickedRunnable.run();
+                }
+            });
 
         Button clean_repo = getFlushButton(
             Messages.GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_NAME_0,
             Messages.GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_HELP_0,
             new CmsConfirmSimpleFlushDialog(
-                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_CONF_0),
-                new Runnable() {
+                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_CONF_0)),
+            new Runnable() {
 
-                    public void run() {
+                public void run() {
 
-                        OpenCms.fireCmsEvent(
-                            new CmsEvent(
-                                I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
-                                Collections.<String, Object> emptyMap()));
-                        OpenCms.fireCmsEvent(
-                            new CmsEvent(
-                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.<String, Object> singletonMap(
-                                    "action",
-                                    new Integer(CmsFlexCache.CLEAR_ENTRIES))));
-                    }
-                }));
+                    OpenCms.fireCmsEvent(
+                        new CmsEvent(
+                            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
+                            Collections.<String, Object> emptyMap()));
+                    OpenCms.fireCmsEvent(
+                        new CmsEvent(
+                            I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                            Collections.<String, Object> singletonMap(
+                                "action",
+                                new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                    clickedRunnable.run();
+                }
+            });
 
         Button reini = getFlushButton(
             Messages.GUI_CACHE_REINI_TOOL_NAME_0,
             Messages.GUI_CACHE_REINI_TOOL_NAME_HELP_0,
-            new CmsConfirmSimpleFlushDialog(
-                CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_REINI_TOOL_CONF_0),
-                new Runnable() {
+            new CmsConfirmSimpleFlushDialog(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_REINI_TOOL_CONF_0)),
+            new Runnable() {
 
-                    public void run() {
+                public void run() {
 
-                        try {
-                            // re-initialize the workplace
-                            OpenCms.getWorkplaceManager().initialize(A_CmsUI.getCmsObject());
-                            // fire "clear caches" event to reload all cached resource bundles
-                            OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>());
-                        } catch (CmsException e) {
-                            LOG.error("Unable to reinitialize workspace", e);
-                        }
+                    try {
+                        // re-initialize the workplace
+                        OpenCms.getWorkplaceManager().initialize(A_CmsUI.getCmsObject());
+                        // fire "clear caches" event to reload all cached resource bundles
+                        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>());
+                        clickedRunnable.run();
+                    } catch (CmsException e) {
+                        LOG.error("Unable to reinitialize workspace", e);
                     }
-                }));
+                }
+            });
 
-        m_flushes.setSpacing(true);
-        m_flushes.setMargin(true);
+        List<Component> elements = new ArrayList<Component>();
+        elements.add(clean_core);
+        elements.add(clean_flex);
+        elements.add(clean_image);
+        elements.add(reini);
+        elements.add(clean_repo);
 
-        m_flushes.addComponent(clean_flex);
-        m_flushes.addComponent(clean_image);
-        m_flushes.addComponent(clean_core);
-        m_flushes.addComponent(clean_repo);
-        m_flushes.addComponent(reini);
+        HorizontalLayout row = new HorizontalLayout();
+        row.setSpacing(true);
+        for (int i = 0; i < elements.size(); i++) {
+
+            if (size > 0) {
+                row.addComponent(elements.get(i));
+
+                if (((i % (size - 1)) == 0) & (i > 0)) {
+                    layout.addComponent(row);
+                    row = new HorizontalLayout();
+                    row.setSpacing(true);
+                }
+
+            } else {
+                layout.addComponent(elements.get(i));
+            }
+        }
+
+        return layout;
+    }
+
+    protected static Button getFlushToolButton() {
+
+        Button res = new Button(FontOpenCms.CACHE);
+        res.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        res.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
+        res.addClickListener(new ClickListener() {
+
+            public void buttonClick(ClickEvent event) {
+
+                Window window = CmsBasicDialog.prepareWindow(DialogWidth.content);
+
+                window.setContent(new CmsFlushButtonHolderDialog(window));
+                A_CmsUI.get().addWindow(window);
+            }
+
+        });
+        return res;
     }
 
     /**
@@ -168,12 +232,19 @@ public class CmsFlushCache extends Panel {
      * @param captionMessage caption
      * @param descriptionMessage description
      * @param dialog layout to be shown
+     * @param closeRun runnable called by clicking button
      * @return button with click listener
      */
-    private Button getFlushButton(String captionMessage, String descriptionMessage, final I_CloseableDialog dialog) {
+    private static Button getFlushButton(
+        String captionMessage,
+        String descriptionMessage,
+        final I_CloseableDialog dialog,
+        final Runnable okRun) {
 
         Button ret = new Button();
         ret.setWidth(BUTTON_WIDTH);
+        ret.addStyleName("v-button");
+        ret.addStyleName("o-button-blue");
         ret.setCaption(CmsVaadinUtils.getMessageText(captionMessage));
         ret.setDescription(CmsVaadinUtils.getMessageText(descriptionMessage));
 
@@ -191,6 +262,7 @@ public class CmsFlushCache extends Panel {
                         window.close();
                     }
                 });
+                dialog.setOkRunnable(okRun);
                 window.setContent((Component)dialog);
                 window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CLEAN_CONFIRM_0));
                 UI.getCurrent().addWindow(window);

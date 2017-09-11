@@ -57,6 +57,8 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
     /**Runnable for close action.*/
     Runnable m_closeRunnable;
 
+    Runnable m_okRunnable;
+
     /**Vaadin component.*/
     private Button m_cancelButton;
 
@@ -90,6 +92,9 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
 
                 flushCache();
                 m_closeRunnable.run();
+                if (m_okRunnable != null) {
+                    m_okRunnable.run();
+                }
             }
         });
         m_cancelButton.addClickListener(new ClickListener() {
@@ -109,6 +114,12 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
     public void setCloseRunnable(Runnable closeRunnable) {
 
         m_closeRunnable = closeRunnable;
+
+    }
+
+    public void setOkRunnable(Runnable okRunnable) {
+
+        m_okRunnable = okRunnable;
 
     }
 

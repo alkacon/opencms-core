@@ -56,6 +56,8 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog implements I_Closeab
     /**Runnable for close action.*/
     Runnable m_closeRunnable;
 
+    Runnable m_okRunnable;
+
     /**Vaadin component.*/
     private Button m_cancelButton;
 
@@ -96,6 +98,9 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog implements I_Closeab
 
                 submit();
                 m_closeRunnable.run();
+                if (m_okRunnable != null) {
+                    m_okRunnable.run();
+                }
             }
         });
     }
@@ -106,6 +111,12 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog implements I_Closeab
     public void setCloseRunnable(Runnable closeRunnable) {
 
         m_closeRunnable = closeRunnable;
+
+    }
+
+    public void setOkRunnable(Runnable okRunnable) {
+
+        m_okRunnable = okRunnable;
 
     }
 
@@ -150,4 +161,5 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog implements I_Closeab
         //Set Mode option.
         m_mode.setValue("keysAndVariations");
     }
+
 }
