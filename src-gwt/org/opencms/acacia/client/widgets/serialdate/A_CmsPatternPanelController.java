@@ -27,6 +27,7 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import org.opencms.acacia.client.widgets.serialdate.CmsSerialDateController.PatternDefaultValues;
 import org.opencms.acacia.shared.CmsSerialDateUtil;
 
 import com.google.gwt.user.client.Command;
@@ -80,6 +81,15 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
     protected void removeExceptionsOnChange(Command cmd) {
 
         m_changeHandler.removeExceptionsOnChange(cmd);
+    }
+
+    /**
+     * Returns the default values for patterns.
+     * @return the default values for patterns.
+     */
+    PatternDefaultValues getPatternDefaultValues() {
+
+        return m_changeHandler.getPatternDefaultValues();
     }
 
     /**

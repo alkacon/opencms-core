@@ -27,6 +27,8 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import org.opencms.acacia.client.widgets.serialdate.CmsSerialDateController.PatternDefaultValues;
+
 import com.google.gwt.user.client.Command;
 
 /**
@@ -46,6 +48,12 @@ interface I_ChangeHandler {
      * @param showDialog flag, indicating if the dialog should really be shown.
      */
     void conditionallyRemoveExceptionsOnChange(Command cmd, boolean showDialog);
+
+    /**
+     * Returns the default values to set for patterns.
+     * @return the default values to set for patterns.
+     */
+    PatternDefaultValues getPatternDefaultValues();
 
     /**
      * Call this method in case of potential exception changes. This will show a confirmation dialog before a value change takes place

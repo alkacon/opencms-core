@@ -70,15 +70,14 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
                 public void execute() {
 
                     if (isByWeekDay) {
-                        m_model.setWeekOfMonth(WeekOfMonth.FIRST);
-                        m_model.setWeekDay(WeekDay.SUNDAY);
-                        m_model.setInterval(1);
+                        m_model.setWeekOfMonth(getPatternDefaultValues().getWeekOfMonth());
+                        m_model.setWeekDay(getPatternDefaultValues().getWeekDay());
                     } else {
                         m_model.clearWeekDays();
                         m_model.clearWeeksOfMonth();
-                        m_model.setInterval(1);
-                        m_model.setDayOfMonth(1);
+                        m_model.setDayOfMonth(getPatternDefaultValues().getDayOfMonth());
                     }
+                    m_model.setInterval(getPatternDefaultValues().getInterval());
                     if (fireChange) {
                         onValueChange();
                     }

@@ -158,17 +158,18 @@ public class CmsPatternPanelYearlyView extends Composite implements I_CmsSerialD
                 if (!m_everyDay.isFocused()) {
                     m_everyDay.setFormValueAsString(String.valueOf(m_model.getDayOfMonth()));
                 }
-                m_everyMonth.selectValue(m_model.getMonth().toString());
-                m_atDay.selectValue(WeekDay.SUNDAY.toString());
-                m_atMonth.selectValue(Month.JANUARY.toString());
-                m_atNumber.selectValue("1");
+                m_everyMonth.selectValue(String.valueOf(m_model.getMonth()));
+                m_atDay.selectValue(String.valueOf(m_controller.getPatternDefaultValues().getWeekDay()));
+                m_atMonth.selectValue(String.valueOf(m_controller.getPatternDefaultValues().getMonth()));
+                m_atNumber.selectValue(String.valueOf(m_controller.getPatternDefaultValues().getWeekOfMonth()));
             } else {
                 m_group.selectButton(m_atRadioButton);
-                m_atDay.selectValue(m_model.getWeekDay().toString());
-                m_atMonth.selectValue(m_model.getMonth().toString());
+                m_atDay.selectValue(String.valueOf(m_model.getWeekDay()));
+                m_atMonth.selectValue(String.valueOf(m_model.getMonth()));
                 m_atNumber.selectValue(String.valueOf(m_model.getWeekOfMonth()));
-                m_everyDay.setFormValueAsString("");
-                m_everyMonth.selectValue(Month.JANUARY.toString());
+                m_everyDay.setFormValueAsString(
+                    Integer.toString(m_controller.getPatternDefaultValues().getDayOfMonth()));
+                m_everyMonth.selectValue(String.valueOf(m_controller.getPatternDefaultValues().getMonth()));
             }
             m_triggerChangeActions = true;
         }

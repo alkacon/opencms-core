@@ -33,6 +33,7 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
+import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
 import org.opencms.acacia.shared.rpc.I_CmsSerialDateService;
 import org.opencms.acacia.shared.rpc.I_CmsSerialDateServiceAsync;
 import org.opencms.ade.contenteditor.client.Messages;
@@ -43,6 +44,7 @@ import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsPair;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,6 +69,105 @@ import com.google.gwt.user.client.ui.Composite;
 /** Controller for the serial date widget, being the widget implementation itself. */
 public class CmsSerialDateController extends Composite
 implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
+
+    /** Data wrapper for the default values to set when changing the pattern, dependent on the event's start date. */
+    public static class PatternDefaultValues {
+
+        /** The date used for the initialization. */
+        private final Date m_date;
+        /** The default month. */
+        private final Month m_month;
+        /** The default day of month. */
+        private final int m_dayOfMonth;
+        /** The default week day. */
+        private final WeekDay m_weekDay;
+        /** The default week of month. */
+        private final WeekOfMonth m_weekOfMonth;
+        /** The default interval. */
+        private final int m_interval;
+        /** The default weeks of month. */
+        private Collection<WeekOfMonth> m_weeksOfMonth;
+
+        /**
+         * Default constructor.
+         * @param startDate the date, that determines the default values.
+         */
+        @SuppressWarnings("deprecation")
+        protected PatternDefaultValues(Date startDate) {
+            m_date = startDate;
+            m_month = null == startDate ? Month.JANUARY : Month.values()[startDate.getMonth()];
+            m_dayOfMonth = null == startDate ? 1 : startDate.getDate();
+            m_weekDay = null == startDate ? WeekDay.SUNDAY : WeekDay.values()[startDate.getDay()];
+            m_weekOfMonth = null == startDate ? WeekOfMonth.FIRST : WeekOfMonth.values()[(startDate.getDate() / 7)];
+            Collection<WeekOfMonth> weeksOfMonth = new ArrayList<>(1);
+            weeksOfMonth.add(m_weekOfMonth);
+            m_weeksOfMonth = weeksOfMonth;
+            m_interval = 1;
+        }
+
+        /**
+         * Returns the date used for the initialization.
+         * @return the date used for the initialization.
+         */
+        public Date getDate() {
+
+            return m_date;
+        }
+
+        /**
+         * Returns the default day of month.
+         * @return the default day of month.
+         */
+        public int getDayOfMonth() {
+
+            return m_dayOfMonth;
+        }
+
+        /**
+         * Returns the default interval.
+         * @return the default interval.
+         */
+        public int getInterval() {
+
+            return m_interval;
+        }
+
+        /**
+         * Returns the default month.
+         * @return the default month.
+         */
+        public Month getMonth() {
+
+            return m_month;
+        }
+
+        /**
+         * Returns the default week day.
+         * @return the default week day.
+         */
+        public WeekDay getWeekDay() {
+
+            return m_weekDay;
+        }
+
+        /**
+         * Returns the default week of month.
+         * @return the default week of month.
+         */
+        public WeekOfMonth getWeekOfMonth() {
+
+            return m_weekOfMonth;
+        }
+
+        /**
+         * Returns the default weeks of month.
+         * @return the default weeks of month.
+         */
+        public Collection<WeekOfMonth> getWeeksOfMonth() {
+
+            return m_weeksOfMonth;
+        }
+    }
 
     /**
      * The status update timer.<p>
@@ -281,6 +382,9 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
     /** The model */
     final CmsSerialDateValue m_model;
 
+    /** The default values to use when switching the pattern. They depend on the start date of the events. */
+    private PatternDefaultValues m_patternDefaultValues;
+
     /** The confirmation dialog for deletion of exceptions. */
     private CmsExceptionsDeleteConfirmDialog m_exceptionConfirmDialog;
 
@@ -295,6 +399,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
         m_model = new CmsSerialDateValue();
         m_view = new CmsSerialDateView(this, m_model);
         initWidget(m_view);
+        setPatternDefaultValues(m_model.getStart());
         initPatternControllers();
         m_getDatesAction = new CmsRpcAction<Collection<CmsPair<Date, Boolean>>>() {
 
@@ -379,6 +484,16 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
     public I_CmsSerialDatePatternController getPattern() {
 
         return m_patternControllers.get(m_model.getPatternType());
+    }
+
+    /**
+     * Returns the default values to set for the patterns dependent on the current start date.
+     * @return the default values to set for the patterns dependent on the current start date.
+     */
+    @Override
+    public PatternDefaultValues getPatternDefaultValues() {
+
+        return m_patternDefaultValues;
     }
 
     /**
@@ -487,12 +602,12 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
                             m_model.setSeriesEndDate(null);
                             break;
                         case TIMES:
-                            m_model.setOccurrences(1);
+                            m_model.setOccurrences(10);
                             m_model.setSeriesEndDate(null);
                             break;
                         case DATE:
                             m_model.setOccurrences(0);
-                            m_model.setSeriesEndDate(new Date());
+                            m_model.setSeriesEndDate(m_model.getStart() == null ? new Date() : m_model.getStart());
                             break;
                         default:
                             break;
@@ -566,7 +681,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
                     EndType oldEndType = m_model.getEndType();
                     m_model.setPatternType(type);
                     m_model.setIndividualDates(null);
-                    m_model.setInterval(1);
+                    m_model.setInterval(getPatternDefaultValues().getInterval());
                     m_model.setEveryWorkingDay(Boolean.FALSE);
                     m_model.clearWeekDays();
                     m_model.clearIndividualDates();
@@ -576,13 +691,13 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
                         m_model.setEndType(EndType.SINGLE);
                     } else if (oldEndType.equals(EndType.SINGLE)) {
                         m_model.setEndType(EndType.TIMES);
-                        m_model.setOccurrences(1);
+                        m_model.setOccurrences(10);
                         m_model.setSeriesEndDate(null);
                     }
-                    m_model.setDayOfMonth(1);
-                    m_model.setMonth(Month.JANUARY);
+                    m_model.setDayOfMonth(getPatternDefaultValues().getDayOfMonth());
+                    m_model.setMonth(getPatternDefaultValues().getMonth());
                     if (type.equals(PatternType.WEEKLY)) {
-                        m_model.setWeekDay(WeekDay.SUNDAY);
+                        m_model.setWeekDay(getPatternDefaultValues().getWeekDay());
                     }
                     valueChanged();
                 }
@@ -616,6 +731,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
                 public void execute() {
 
                     m_model.setStart(date);
+                    setPatternDefaultValues(date);
                     valueChanged();
                 }
             });
@@ -639,6 +755,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
 
         if (!m_model.toString().equals(value)) {
             m_model.setValue(value);
+            setPatternDefaultValues(m_model.getStart());
             if (fireEvent) {
                 valueChanged();
             }
@@ -712,6 +829,17 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
             ((ServiceDefTarget)SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return SERVICE;
+    }
+
+    /**
+     * Sets the default pattern values dependent on the provided start date.
+     * @param startDate the date, the default values are determined with.
+     */
+    void setPatternDefaultValues(Date startDate) {
+
+        if ((m_patternDefaultValues == null) || !Objects.equals(m_patternDefaultValues.getDate(), startDate)) {
+            m_patternDefaultValues = new PatternDefaultValues(startDate);
+        }
     }
 
     /**

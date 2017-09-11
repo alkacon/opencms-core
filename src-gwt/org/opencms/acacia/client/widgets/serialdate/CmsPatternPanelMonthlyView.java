@@ -39,7 +39,6 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
@@ -195,9 +194,9 @@ public class CmsPatternPanelMonthlyView extends Composite implements I_CmsSerial
                 if (!m_everyMonth.isFocused()) {
                     m_everyMonth.setFormValueAsString(String.valueOf(m_model.getInterval()));
                 }
-                m_atMonth.setFormValueAsString("");
-                m_atDay.selectValue(WeekDay.SUNDAY.toString());
-                checkExactlyTheWeeksCheckBoxes(Collections.EMPTY_LIST);
+                m_atMonth.setFormValueAsString(Integer.toString(m_controller.getPatternDefaultValues().getInterval()));
+                m_atDay.selectValue(String.valueOf(m_controller.getPatternDefaultValues().getWeekDay()));
+                checkExactlyTheWeeksCheckBoxes(m_controller.getPatternDefaultValues().getWeeksOfMonth());
             } else {
                 m_group.selectButton(m_weekDayMonthRadioButton);
                 if (!m_atMonth.isFocused()) {
@@ -205,8 +204,10 @@ public class CmsPatternPanelMonthlyView extends Composite implements I_CmsSerial
                 }
                 m_atDay.selectValue(m_model.getWeekDay().toString());
                 checkExactlyTheWeeksCheckBoxes(m_model.getWeeksOfMonth());
-                m_everyDay.setFormValueAsString("");
-                m_everyMonth.setFormValueAsString("");
+                m_everyDay.setFormValueAsString(
+                    Integer.toString(m_controller.getPatternDefaultValues().getDayOfMonth()));
+                m_everyMonth.setFormValueAsString(
+                    Integer.toString(m_controller.getPatternDefaultValues().getInterval()));
             }
             m_triggerChangeActions = true;
         }

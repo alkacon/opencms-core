@@ -65,8 +65,8 @@ public class CmsPatternPanelDailyController extends A_CmsPatternPanelController 
 
                 public void execute() {
 
-                    m_model.setEveryWorkingDay(isEveryWorkingDay);
-                    m_model.setInterval(1);
+                    m_model.setEveryWorkingDay(Boolean.valueOf(isEveryWorkingDay));
+                    m_model.setInterval(getPatternDefaultValues().getInterval());
                     onValueChange();
                 }
             });

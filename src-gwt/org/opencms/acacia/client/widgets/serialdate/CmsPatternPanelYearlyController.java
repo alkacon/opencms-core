@@ -90,19 +90,16 @@ public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController
                 public void execute() {
 
                     if (isWeekDayBased) {
-                        m_model.setInterval(1);
-                        m_model.setWeekDay(WeekDay.SUNDAY);
-                        m_model.setMonth(Month.JANUARY);
-                        m_model.setWeekOfMonth(WeekOfMonth.FIRST);
-                        m_model.setDayOfMonth(1);
-                        onValueChange();
+                        m_model.setWeekDay(getPatternDefaultValues().getWeekDay());
+                        m_model.setWeekOfMonth(getPatternDefaultValues().getWeekOfMonth());
                     } else {
                         m_model.setWeekDay(null);
                         m_model.setWeekOfMonth(null);
-                        m_model.setDayOfMonth(1);
-                        m_model.setInterval(1);
-                        onValueChange();
                     }
+                    m_model.setMonth(getPatternDefaultValues().getMonth());
+                    m_model.setDayOfMonth(getPatternDefaultValues().getDayOfMonth());
+                    m_model.setInterval(getPatternDefaultValues().getInterval());
+                    onValueChange();
                 }
             });
         }
