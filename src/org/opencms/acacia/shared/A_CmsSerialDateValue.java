@@ -70,7 +70,7 @@ public class A_CmsSerialDateValue implements I_CmsSerialDateValue {
     /** The series content, the current value is extracted from. */
     private CmsUUID m_parentSeriesId;
     /** Flag, indicating if the events are "current" till their end. */
-    private boolean m_currentTillEnd;
+    private boolean m_currentTillEnd = true;
 
     /**
      * Add a date where the event should not take place, even if they are part of the series.
@@ -404,7 +404,7 @@ public class A_CmsSerialDateValue implements I_CmsSerialDateValue {
      */
     public final void setCurrentTillEnd(Boolean isCurrentTillEnd) {
 
-        m_currentTillEnd = (null != isCurrentTillEnd) && isCurrentTillEnd.booleanValue();
+        m_currentTillEnd = (null == isCurrentTillEnd) || isCurrentTillEnd.booleanValue();
     }
 
     /**
