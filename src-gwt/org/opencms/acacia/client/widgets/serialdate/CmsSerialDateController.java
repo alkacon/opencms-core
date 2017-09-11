@@ -852,7 +852,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
         m_patternControllers.put(PatternType.WEEKLY, new CmsPatternPanelWeeklyController(m_model, this));
         m_patternControllers.put(PatternType.MONTHLY, new CmsPatternPanelMonthlyController(m_model, this));
         m_patternControllers.put(PatternType.YEARLY, new CmsPatternPanelYearlyController(m_model, this));
-        m_patternControllers.put(PatternType.INDIVIDUAL, new CmsPatternPanelIndividualController(m_model, this));
+        // m_patternControllers.put(PatternType.INDIVIDUAL, new CmsPatternPanelIndividualController(m_model, this));
     }
 
 }

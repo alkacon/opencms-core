@@ -214,7 +214,13 @@ public final class Messages {
     public static final String GUI_SERIALDATE_WEEKDAYNUMBER_5_0 = "GUI_SERIALDATE_WEEKDAYNUMBER_5_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_PREFIX_0 = "GUI_SERIALDATE_DURATION_PREFIX_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_DURATION_ENDTYPE_OCC_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_OCC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_DURATION_ENDTYPE_OCC_POSTFIX_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_OCC_POSTFIX_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_DURATION_ENDTYPE_DATE_0 = "GUI_SERIALDATE_DURATION_ENDTYPE_DATE_0";
@@ -224,12 +230,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     public static final String GUI_SERIALDATE_PANEL_SERIAL_OPTIONS_0 = "GUI_SERIALDATE_PANEL_SERIAL_OPTIONS_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_PANEL_PATTERN_0 = "GUI_SERIALDATE_PANEL_PATTERN_0";
-
-    /** Name of the used resource bundle. */
-    public static final String GUI_SERIALDATE_PANEL_DURATION_0 = "GUI_SERIALDATE_PANEL_DURATION_0";
 
     /** Name of the used resource bundle. */
     public static final String GUI_SERIALDATE_SERIES_CHECKBOX_0 = "GUI_SERIALDATE_SERIES_CHECKBOX_0";

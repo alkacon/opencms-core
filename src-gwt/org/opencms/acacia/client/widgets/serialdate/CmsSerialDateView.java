@@ -173,6 +173,14 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     /** The pop-up where the preview list is shown in. */
     CmsPopup m_overviewPopup;
 
+    /** The label at the start of the duration line (text is "Ends"). */
+    @UiField
+    Label m_durationPrefixLabel;
+
+    /** The label after the occurrences text box (text is "times"). */
+    @UiField
+    Label m_durationAfterPostfixLabel;
+
     /* 2.3. The exceptions panel */
 
     /** The pattern options panel, where the pattern specific options are displayed. */
@@ -186,10 +194,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     /** The panel to place the radio buttons for pattern selection. */
     @UiField
     VerticalPanel m_patternRadioButtonsPanel;
-
-    /** Button to remove checked exceptions. */
-    @UiField
-    CmsPushButton m_removeExceptionsButton;
 
     /** The panel with all serial date options. */
     @UiField
@@ -232,9 +236,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
 
     /** The yearly pattern. */
     CmsPatternPanelYearlyView m_yearlyPattern;
-
-    /** The pop-up panel's close button. */
-    private CmsPushButton m_closeOverviewPopupButton;
 
     /** Format with date only. */
     private String m_dateFormat = Messages.get().keyDefault(Messages.GUI_SERIALDATE_DATE_FORMAT_0, null);
@@ -632,6 +633,8 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     /** Initialize elements from the duration panel. */
     private void initDurationPanel() {
 
+        m_durationPrefixLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_DURATION_PREFIX_0));
+        m_durationAfterPostfixLabel.setText(Messages.get().key(Messages.GUI_SERIALDATE_DURATION_ENDTYPE_OCC_POSTFIX_0));
         m_seriesEndDate.setDateOnly(true);
         m_seriesEndDate.setAllowInvalidValue(true);
         m_seriesEndDate.setValue(m_model.getSeriesEndDate());
@@ -655,19 +658,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_exceptionsPanel.setLegend(Messages.get().key(Messages.GUI_SERIALDATE_PANEL_EXCEPTIONS_0));
         m_exceptionsPanel.addCloseHandler(this);
         m_exceptionsPanel.setVisible(false);
-
-        m_removeExceptionsButton.setText(Messages.get().key(Messages.GUI_SERIALDATE_BUTTON_REMOVE_EXCEPTIONS_0));
-        m_removeExceptionsButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
-        m_removeExceptionsButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                if (handleChange()) {
-                    m_controller.updateExceptions(m_exceptionsList.getUncheckedDates());
-                }
-            }
-        });
-
     }
 
     /**
@@ -684,10 +674,8 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
      */
     private void initOverviewPopup() {
 
-        m_closeOverviewPopupButton = new CmsPushButton();
-        m_closeOverviewPopupButton.setText(Messages.get().key(Messages.GUI_VIEW_CLOSE_0));
         m_updateExceptionsButton = new CmsPushButton();
-        m_updateExceptionsButton.setText(Messages.get().key(Messages.GUI_SERIALDATE_BUTTON_UPDATE_EXCEPTIONS_0));
+        m_updateExceptionsButton.setText(Messages.get().key(Messages.GUI_LOCALE_DIALOG_OK_0));
         m_updateExceptionsButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -703,15 +691,6 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_overviewPopup.center();
         m_overviewPopup.setAutoHideEnabled(true);
         m_overviewPopup.addDialogClose(null);
-        m_overviewPopup.addButton(m_closeOverviewPopupButton);
-        m_closeOverviewPopupButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_overviewPopup.hide();
-
-            }
-        });
         m_overviewPopup.addButton(m_updateExceptionsButton);
         CmsScrollPanel panel = new CmsScrollPanel();
         m_overviewList = new CmsCheckableDatePanel(m_dateFormat);
@@ -736,7 +715,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         createAndAddButton(PatternType.WEEKLY, Messages.GUI_SERIALDATE_TYPE_WEEKLY_0);
         createAndAddButton(PatternType.MONTHLY, Messages.GUI_SERIALDATE_TYPE_MONTHLY_0);
         createAndAddButton(PatternType.YEARLY, Messages.GUI_SERIALDATE_TYPE_YEARLY_0);
-        createAndAddButton(PatternType.INDIVIDUAL, Messages.GUI_SERIALDATE_TYPE_INDIVIDUAL_0);
+        // createAndAddButton(PatternType.INDIVIDUAL, Messages.GUI_SERIALDATE_TYPE_INDIVIDUAL_0);
 
         m_groupPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
 

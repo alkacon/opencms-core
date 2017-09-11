@@ -5,55 +5,60 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
 	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox"
 	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate"
-	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">	
+	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">
 	<ui:style>
-	.durationRadio { 
+	.durationRadio {
 		margin-right: 5px;
-		margin-top: 5px; 
+		margin-top: 5px;
 	}
-	
-	.fromToLabel {
+
+	.leftLabel {
 		margin-right: 5px;
 	}
-	
-	.patternOptions { 
+
+    .rightLabel {
+        margin-left: 5px;
+    }
+
+	.patternOptions {
 		-ms-flex: 1;
-		flex: 1; 
+		flex: 1;
 	}
-	
+
 	.patternAndOptionsContainer {
-		display: flex; 
+		display: flex;
 	}
-	
+
 	.durationContainer > *, .durationContainer > * > * {
-		display: inline-block !important; 
+		display: inline-block !important;
+		vertical-align: middle;
 	}
-	
+
 	.durationContainer > * {
-		background-color: transparent; 
+		background-color: transparent;
 	}
-	
+
 	.fromToContainer > *, .fromToContainer > * > * {
 		display: inline-block !important;
-		vertical-align: middle; 
+		vertical-align: middle;
 	}
-	
+
 	.fromToContainer > .fromToCheckboxes > * {
-		margin-left: 15px; 
+		margin-left: 15px;
 	}
-	
+
 	.endBlock {
-		margin-left: 10px; 
+		margin-left: 10px;
 	}
-	
+
 	.currentTillEndContainer {
-		display: none; 
+		display: none;
 	}
-	
+
 	.spacing {
 		margin-top: 15px;
 	}
-	
+
 	</ui:style>
 	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="widgets"></ui:with>
 	<ui:with type="org.opencms.acacia.client.widgets.serialdate.I_CmsLayoutBundle" field="css" />
@@ -62,16 +67,16 @@
 		<g:FlowPanel ui:field="m_deactivationPanel"><g:Label ui:field="m_deactivationText"></g:Label></g:FlowPanel>
 		<g:VerticalPanel>
 			<cmsi:CmsLabel ui:field="m_origSeriesLabel"/>
-			
+
 		</g:VerticalPanel>
 		<g:FlowPanel ui:field="m_datesPanel" width="100%">
 			<g:FlowPanel addStyleNames="{style.fromToContainer}">
 				<g:FlowPanel width="305px">
-					<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_startLabel"></g:Label>
+					<g:Label addStyleNames="{style.leftLabel}" ui:field="m_startLabel"></g:Label>
 					<cmsd:CmsDateBox ui:field="m_startTime" addStyleNames="{widgets.widgetCss.calendarStyle}"/>
 				</g:FlowPanel>
 				<g:FlowPanel addStyleNames="{style.endBlock}">
-						<g:Label addStyleNames="{style.fromToLabel}" ui:field="m_endLabel"></g:Label>
+						<g:Label addStyleNames="{style.leftLabel}" ui:field="m_endLabel"></g:Label>
 						<cmsd:CmsDateBox ui:field="m_endTime" styleName="{widgets.widgetCss.calendarStyle}" />
 				</g:FlowPanel>
 				<g:FlowPanel addStyleNames="{style.fromToCheckboxes}">
@@ -95,8 +100,10 @@
 				<g:FlowPanel ui:field="m_durationPanel" width="100%" addStyleNames="{style.spacing}" >
 					<g:FlowPanel addStyleNames="{style.durationContainer}" width="100%">
 						<g:FlowPanel width="310px">
+						    <g:Label ui:field="m_durationPrefixLabel" addStyleNames="{style.leftLabel}"></g:Label>
 							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAfterRadioButton" />
 							<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox addStyleNames="{css.widgetCss.shortTextBox}" ui:field="m_occurrences" /></g:FlowPanel>
+                            <g:Label ui:field="m_durationAfterPostfixLabel" addStyleNames="{style.rightLabel}"></g:Label>
 						</g:FlowPanel>
 						<g:FlowPanel>
 							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio} {css.widgetCss.shortTextBox}" ui:field="m_endsAtRadioButton"/>
@@ -104,7 +111,7 @@
 						</g:FlowPanel>
 					</g:FlowPanel>
 				</g:FlowPanel>
-				
+
 				<g:FlowPanel width="100%" addStyleNames="{style.spacing}">
 					<cms:CmsPushButton  addStyleNames="{css.widgetCss.button}" ui:field="m_manageExceptionsButton"/>
 				</g:FlowPanel>
@@ -114,7 +121,6 @@
 			<cms:CmsFieldSet ui:field="m_exceptionsPanel" addStyleNames="{style.spacing}">
 				<g:FlowPanel>
 					<cmsw:CmsCheckableDatePanel ui:field="m_exceptionsList"></cmsw:CmsCheckableDatePanel>
-					<cms:CmsPushButton addStyleNames="{css.widgetCss.button}" ui:field="m_removeExceptionsButton" />
 				</g:FlowPanel>
 			</cms:CmsFieldSet>
 		</g:FlowPanel>
