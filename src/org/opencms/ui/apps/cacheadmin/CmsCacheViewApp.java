@@ -29,25 +29,32 @@ package org.opencms.ui.apps.cacheadmin;
 
 import org.opencms.cache.CmsLruCache;
 import org.opencms.flex.CmsFlexCache;
+import org.opencms.loader.CmsImageLoader;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryStatus;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
@@ -136,21 +143,16 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
      */
     protected static CmsInfoButton getImageStatisticButton() {
 
-        CmsImageCacheHelper imageCache = new CmsImageCacheHelper(A_CmsUI.getCmsObject(), false, false, true);
+        long size = 0L;
+        if (new File(CmsImageLoader.getImageRepositoryPath()).exists()) {
+            size = FileUtils.sizeOfDirectory(new File(CmsImageLoader.getImageRepositoryPath()));
+        }
 
         Map<String, String> infoMap = new LinkedHashMap<String, String>();
 
         infoMap.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_KEYS_0),
-            String.valueOf(imageCache.getFilesCount()));
-        infoMap.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0),
-            String.valueOf(imageCache.getVariationsCount()));
-        infoMap.put(
             CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0),
-            CmsFileUtil.formatFilesize(
-                imageCache.getVariationsSize(),
-                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+            CmsFileUtil.formatFilesize(size, A_CmsUI.getCmsObject().getRequestContext().getLocale()));
 
         CmsInfoButton info = new CmsInfoButton(infoMap);
 
@@ -297,8 +299,22 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
      */
     private Component getImageViewComponent() {
 
-        final CmsImageCacheTable table = new CmsImageCacheTable();
         m_siteTableFilter = new TextField();
+
+        HorizontalSplitPanel sp = new HorizontalSplitPanel();
+        sp.setSizeFull();
+        VerticalLayout intro = CmsVaadinUtils.getInfoLayout(Messages.GUI_CACHE_IMAGE_INTRODUCTION_0);
+        VerticalLayout nullResult = CmsVaadinUtils.getInfoLayout(Messages.GUI_CACHE_IMAGE_NO_RESULTS_0);
+        final CmsImageCacheTable table = new CmsImageCacheTable(intro, nullResult, m_siteTableFilter);
+
+        sp.setFirstComponent(new CmsImageCacheInput(table));
+
+        VerticalLayout secC = new VerticalLayout();
+        secC.setSizeFull();
+        secC.addComponent(intro);
+        secC.addComponent(nullResult);
+        secC.addComponent(table);
+
         m_siteTableFilter.setIcon(FontOpenCms.FILTER);
         m_siteTableFilter.setInputPrompt(
             Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
@@ -318,7 +334,13 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         m_uiContext.addToolbarButton(getImageStatisticButton());
         m_uiContext.addToolbarButton(CmsFlushCache.getFlushToolButton());
         table.setSizeFull();
+        sp.setSecondComponent(secC);
+        sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
 
-        return table;
+        table.setVisible(false);
+        nullResult.setVisible(false);
+        m_siteTableFilter.setVisible(false);
+
+        return sp;
     }
 }

@@ -39,6 +39,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +50,9 @@ import java.util.Map;
  * Helper class for getting information about cached images.<p>
  */
 public class CmsImageCacheHolder {
+
+    /**Maps Cache-file name to VFS name. */
+    private static Map<String, String> PATH_TO_VFS_NAME = new HashMap<String, String>();
 
     /**File path map. */
     private Map m_filePaths = new HashMap();
@@ -62,10 +66,38 @@ public class CmsImageCacheHolder {
     /** Variations map. */
     private Map m_variations = new HashMap();
 
+    /**Filter for files (and dictionaries). */
+    private FilenameFilter m_filter;
+
+    /**Cms Object. */
+    protected CmsObject m_clonedCms;
+
     /**
      * public constructor.<p>
+     * @param search
      */
-    public CmsImageCacheHolder() {
+    public CmsImageCacheHolder(final String search) {
+
+        try {
+            m_clonedCms = getClonedCmsObject(A_CmsUI.getCmsObject());
+        } catch (CmsException e) {
+            m_clonedCms = A_CmsUI.getCmsObject();
+        }
+        m_filter = new FilenameFilter() {
+
+            public boolean accept(File dir, String name) {
+
+                if (new File(dir, name).isDirectory()) {
+                    return true;
+                }
+
+                String fullPath = dir.getAbsolutePath() + "/" + name;
+
+                fullPath = fullPath.substring(CmsImageLoader.getImageRepositoryPath().length() - 1);
+                return getVFSName(m_clonedCms, fullPath).contains(search);
+
+            }
+        };
         readAllImagesAndVariations();
     }
 
@@ -92,7 +124,7 @@ public class CmsImageCacheHolder {
         List<String> ret = (List<String>)(m_filePaths.get(resource));
         List<CmsVariationBean> res = new ArrayList<CmsVariationBean>();
         if (ret == null) {
-            return new ArrayList();
+            return new ArrayList<CmsVariationBean>();
         }
         for (String r : ret) {
             res.add(new CmsVariationBean(r));
@@ -112,54 +144,23 @@ public class CmsImageCacheHolder {
     }
 
     /**
-     * Clones a CmsObject.<p>
-     *
-     * @param cms the CmsObject to be cloned.
-     * @return a clones CmsObject
-     * @throws CmsException if something goes wrong
-     */
-    private CmsObject getClonedCmsObject(CmsObject cms) throws CmsException {
-
-        CmsObject clonedCms = OpenCms.initCmsObject(cms);
-        // only online images get caches
-        clonedCms.getRequestContext().setCurrentProject(clonedCms.readProject(CmsProject.ONLINE_PROJECT_ID));
-        // paths are always root path
-        clonedCms.getRequestContext().setSiteRoot("");
-
-        return clonedCms;
-    }
-
-    /**
-     * Fille the list m_variations and m_filePaths.<p>
-     */
-    private void readAllImagesAndVariations() {
-
-        File basedir = new File(CmsImageLoader.getImageRepositoryPath());
-        try {
-            CmsObject clonedCms = getClonedCmsObject(A_CmsUI.getCmsObject());
-            visitImages(clonedCms, basedir);
-        } catch (CmsException e) {
-            // should never happen
-        }
-        m_variations = Collections.unmodifiableMap(m_variations);
-        m_sizes = Collections.unmodifiableMap(m_sizes);
-        m_lengths = Collections.unmodifiableMap(m_lengths);
-    }
-
-    /**
-     * Visits a single image.<p>
+     * Get name of image in the VFS.<p>
      *
      * @param cms CmsObject
-     * @param f a File to be read out
+     * @param oName Name of cached image file
+     * @return vfs resource name (root path)
      */
-    private void visitImage(CmsObject cms, File f) {
+    String getVFSName(CmsObject cms, String oName) {
 
-        f.length();
-        String oName = f.getAbsolutePath().substring(CmsImageLoader.getImageRepositoryPath().length());
         oName = CmsStringUtil.substitute(oName, "\\", "/");
         if (!oName.startsWith("/")) {
             oName = "/" + oName;
         }
+
+        if (PATH_TO_VFS_NAME.containsKey(oName)) {
+            return PATH_TO_VFS_NAME.get(oName);
+        }
+
         String imgName = oName;
         CmsResource res = null;
         boolean found = false;
@@ -187,8 +188,54 @@ public class CmsImageCacheHolder {
         }
 
         if (res != null) {
-            oName = res.getRootPath();
+            PATH_TO_VFS_NAME.put(oName, res.getRootPath());
+            return res.getRootPath();
         }
+        return "";
+    }
+
+    /**
+     * Clones a CmsObject.<p>
+     *
+     * @param cms the CmsObject to be cloned.
+     * @return a clones CmsObject
+     * @throws CmsException if something goes wrong
+     */
+    private CmsObject getClonedCmsObject(CmsObject cms) throws CmsException {
+
+        CmsObject clonedCms = OpenCms.initCmsObject(cms);
+        // only online images get caches
+        clonedCms.getRequestContext().setCurrentProject(clonedCms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        // paths are always root path
+        clonedCms.getRequestContext().setSiteRoot("");
+
+        return clonedCms;
+    }
+
+    /**
+     * Fille the list m_variations and m_filePaths.<p>
+     */
+    private void readAllImagesAndVariations() {
+
+        File basedir = new File(CmsImageLoader.getImageRepositoryPath());
+        visitImages(m_clonedCms, basedir);
+        m_variations = Collections.unmodifiableMap(m_variations);
+        m_sizes = Collections.unmodifiableMap(m_sizes);
+        m_lengths = Collections.unmodifiableMap(m_lengths);
+
+    }
+
+    /**
+     * Visits a single image.<p>
+     *
+     * @param cms CmsObject
+     * @param f a File to be read out
+     */
+    private void visitImage(CmsObject cms, File f) {
+
+        f.length();
+        String oName = f.getAbsolutePath().substring(CmsImageLoader.getImageRepositoryPath().length());
+        oName = getVFSName(cms, oName);
 
         List files = (List)m_filePaths.get(oName);
         if (files == null) {
@@ -219,7 +266,7 @@ public class CmsImageCacheHolder {
         if (!directory.canRead() || !directory.isDirectory()) {
             return;
         }
-        File[] files = directory.listFiles();
+        File[] files = directory.listFiles(m_filter);
         for (int i = 0; i < files.length; i++) {
             File f = files[i];
             if (f.isDirectory()) {

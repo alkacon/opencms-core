@@ -56,6 +56,7 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog implements I_Closeab
     /**Runnable for close action.*/
     Runnable m_closeRunnable;
 
+    /**Runnable for ok button.*/
     Runnable m_okRunnable;
 
     /**Vaadin component.*/
@@ -114,6 +115,9 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog implements I_Closeab
 
     }
 
+    /**
+     * @see org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog#setOkRunnable(java.lang.Runnable)
+     */
     public void setOkRunnable(Runnable okRunnable) {
 
         m_okRunnable = okRunnable;

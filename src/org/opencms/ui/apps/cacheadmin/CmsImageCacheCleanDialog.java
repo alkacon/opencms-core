@@ -57,6 +57,7 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
     /**Runnable for close action.*/
     Runnable m_closeRunnable;
 
+    /**Runnable for ok action. */
     Runnable m_okRunnable;
 
     /**Vaadin component.*/
@@ -117,6 +118,9 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
 
     }
 
+    /**
+     * @see org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog#setOkRunnable(java.lang.Runnable)
+     */
     public void setOkRunnable(Runnable okRunnable) {
 
         m_okRunnable = okRunnable;

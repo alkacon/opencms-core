@@ -29,57 +29,57 @@ package org.opencms.ui.apps.cacheadmin;
 
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.CmsBasicDialog;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
- * Dialog for the flush actions.<p>
+ * class for the input dialog to search for cached images.<p>
  */
-public class CmsFlushButtonHolderDialog extends CmsBasicDialog {
+public class CmsImageCacheInput extends VerticalLayout {
 
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = -223664443814758803L;
+    /**vaadin serial id. */
+    private static final long serialVersionUID = 1021439352252805506L;
 
     /**vaadin component. */
-    private Button m_cancelButton;
+    private TextField m_searchString;
+
+    /**vaadin component. */
+    private Button m_okButton;
 
     /**
      * public constructor.<p>
      *
-     * @param window window
+     * @param table to be updated after user input
      */
-    public CmsFlushButtonHolderDialog(final Window window) {
-
+    public CmsImageCacheInput(final CmsImageCacheTable table) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        VerticalLayout layout = CmsFlushCache.getButtonLayout(0, new Runnable() {
 
-            public void run() {
+        m_searchString.setValue(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
 
-                window.close();
-                A_CmsUI.get().reload();
-            }
-        });
-        layout.addStyleName("o-center");
-        setContent(layout);
+        m_okButton.addClickListener(new ClickListener() {
 
-        m_cancelButton.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 2203061285642153560L;
+            private static final long serialVersionUID = -2309066076096393602L;
 
             public void buttonClick(ClickEvent event) {
 
-                window.close();
-
+                table.load(getSearchPattern());
             }
 
         });
 
-        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_CLEAN_0));
+    }
+
+    /**
+     * Reads the search field out.<p>
+     *
+     * @return search pattern
+     */
+    protected String getSearchPattern() {
+
+        return m_searchString.getValue();
     }
 }

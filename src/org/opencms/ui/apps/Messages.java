@@ -57,6 +57,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGE_INTRODUCTION_0 = "GUI_CACHE_IMAGE_INTRODUCTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGE_NO_RESULTS_0 = "GUI_CACHE_IMAGE_NO_RESULTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_HELP_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */

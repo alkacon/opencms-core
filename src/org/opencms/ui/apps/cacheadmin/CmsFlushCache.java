@@ -69,12 +69,18 @@ public class CmsFlushCache extends Panel {
      */
     public interface I_CloseableDialog {
 
-        /**Sets the runnable which should be run to close window.
+        /**
+         * Sets the runnable which should be run to close window.
          *
          * @param closeRunnable runnable
          *  */
         void setCloseRunnable(Runnable closeRunnable);
 
+        /**
+         * Sets the runnable which should be run after ok action.<p>
+         *
+         * @param okRunnable runnable
+         */
         void setOkRunnable(Runnable okRunnable);
     }
 
@@ -103,6 +109,13 @@ public class CmsFlushCache extends Panel {
 
     }
 
+    /**
+     * Creates the button layout.<p>
+     *
+     * @param size number ob buttons per line
+     * @param clickedRunnable click runnable
+     * @return VerticalLayout
+     */
     protected static VerticalLayout getButtonLayout(int size, final Runnable clickedRunnable) {
 
         VerticalLayout layout = new VerticalLayout();
@@ -207,12 +220,20 @@ public class CmsFlushCache extends Panel {
         return layout;
     }
 
+    /**
+     * Creates the button which opens the flush dialogs.<p>
+     *
+     * @return Button
+     */
     protected static Button getFlushToolButton() {
 
         Button res = new Button(FontOpenCms.CACHE);
         res.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         res.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
         res.addClickListener(new ClickListener() {
+
+            /**vaadin serial id. */
+            private static final long serialVersionUID = 7110311791006484514L;
 
             public void buttonClick(ClickEvent event) {
 
@@ -232,7 +253,7 @@ public class CmsFlushCache extends Panel {
      * @param captionMessage caption
      * @param descriptionMessage description
      * @param dialog layout to be shown
-     * @param closeRun runnable called by clicking button
+     * @param okRun runnable called by clicking button
      * @return button with click listener
      */
     private static Button getFlushButton(
@@ -270,5 +291,4 @@ public class CmsFlushCache extends Panel {
         });
         return ret;
     }
-
 }

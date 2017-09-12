@@ -96,6 +96,7 @@ public class CmsVariationsDialog extends CmsBasicDialog {
             m_panel.setSizeFull();
 
             m_layout.setHeight("700px");
+            m_outerlayout.setHeight("700px");
 
             m_layout.addStyleName("v-scrollable");
 
@@ -105,5 +106,6 @@ public class CmsVariationsDialog extends CmsBasicDialog {
         } else {
             m_outerlayout.addComponent(new CmsImageVariationsTable(resource));
         }
+
     }
 }

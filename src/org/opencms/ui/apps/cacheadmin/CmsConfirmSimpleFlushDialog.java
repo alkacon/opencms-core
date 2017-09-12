@@ -49,10 +49,8 @@ public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog implements I_Clo
     /**Runnable for close action.*/
     Runnable m_closeRunnable;
 
+    /**Runnable for ok action. */
     Runnable m_okRunnable;
-
-    /**Runnable for ok button.*/
-    Runnable m_succes;
 
     /**Vaadin button.*/
     private Button m_cancelButton;
@@ -70,7 +68,6 @@ public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog implements I_Clo
      * Public constructor.<p>
      *
      * @param message to be shown
-     * @param okAction runnable for ok Button
      */
     public CmsConfirmSimpleFlushDialog(String message) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
@@ -113,18 +110,12 @@ public class CmsConfirmSimpleFlushDialog extends CmsBasicDialog implements I_Clo
 
     }
 
+    /**
+     * @see org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog#setOkRunnable(java.lang.Runnable)
+     */
     public void setOkRunnable(Runnable okRunnable) {
 
         m_okRunnable = okRunnable;
-
-    }
-
-    /**
-     * @see org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog#setSuccessRunnable(java.lang.Runnable)
-     */
-    public void setSuccessRunnable(Runnable success) {
-
-        m_succes = success;
 
     }
 }

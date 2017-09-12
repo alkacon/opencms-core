@@ -98,7 +98,8 @@ public class CmsImageVariationsTable extends Table {
 
         setItemIconPropertyId(PROP_ICON);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
-        setSizeFull();
+        setWidth("100%");
+        setHeight("500px");
         setVisibleColumns(PROP_NAME, PROP_DIMENSION, PROP_LENGTH);
 
     }

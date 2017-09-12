@@ -35,6 +35,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.cacheadmin.CmsCacheViewApp.Mode;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -64,7 +66,8 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -116,6 +119,58 @@ public class CmsImageCacheTable extends Table {
     }
 
     /**
+     * The menu entry to switch to the explorer of concerning site.<p>
+     */
+    class ExplorerEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> data) {
+
+            CmsResource res;
+            try {
+                res = getRootCms().readResource(data.iterator().next());
+                openExplorerForParent(res.getRootPath(), res.getStructureId().getStringValue());
+            } catch (CmsException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_TITLE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            if (data == null) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            String res = data.iterator().next();
+
+            if (!A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().equals("")) {
+                if (!res.startsWith(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot())) {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                }
+            }
+
+            return data.size() == 1
+            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
+            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
+    }
+
+    /**
      * Column for dimensions of image.<p>
      */
     class VariationsColumn implements Table.ColumnGenerator {
@@ -163,13 +218,26 @@ public class CmsImageCacheTable extends Table {
     /**CmsObject at root.*/
     private CmsObject m_rootCms;
 
+    /**intro result view.*/
+    private VerticalLayout m_intro;
+
+    /**null result view. */
+    private VerticalLayout m_nullResult;
+
+    /**Filter text field for table. */
+    private TextField m_siteTableFilter;
+
     /**
      * public constructor.<p>
+     * @param nullResult vaadin component
+     * @param intro vaadin component
+     * @param siteTableFilter vaadin component
      */
-    public CmsImageCacheTable() {
+    public CmsImageCacheTable(VerticalLayout intro, VerticalLayout nullResult, TextField siteTableFilter) {
 
-        //Set cachHelper
-        HELPER = new CmsImageCacheHolder();
+        m_intro = intro;
+        m_nullResult = nullResult;
+        m_siteTableFilter = siteTableFilter;
 
         //Set menu
         m_menu = new CmsContextMenu();
@@ -245,7 +313,9 @@ public class CmsImageCacheTable extends Table {
                 return null;
             }
         });
-        loadTable();
+
+        setColumnWidth(PROP_VARIATIONS, 100);
+
     }
 
     /**
@@ -265,6 +335,17 @@ public class CmsImageCacheTable extends Table {
     }
 
     /**
+     * Loads the table.<p>
+     *
+     * @param search searchstring to be considered
+     */
+    public void load(String search) {
+
+        HELPER = new CmsImageCacheHolder(search);
+        loadTable();
+    }
+
+    /**
      * Returns the available menu entries.<p>
      *
      * @return the menu entries
@@ -274,6 +355,7 @@ public class CmsImageCacheTable extends Table {
         if (m_menuEntries == null) {
             m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
             m_menuEntries.add(new EntryVariations()); //Option for Variations
+            m_menuEntries.add(new ExplorerEntry());
         }
         return m_menuEntries;
     }
@@ -296,6 +378,29 @@ public class CmsImageCacheTable extends Table {
         }
         return m_rootCms;
 
+    }
+
+    /**
+     * Opens the explorer for given path and selected resource.<p>
+     *
+     * @param rootPath to be opened
+     * @param uuid to be selected
+     */
+    void openExplorerForParent(String rootPath, String uuid) {
+
+        String parentPath = CmsResource.getParentFolder(rootPath);
+
+        CmsAppWorkplaceUi.get().getNavigator().navigateTo(
+            CmsFileExplorerConfiguration.APP_ID
+                + "/"
+                + A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid()
+                + "!!"
+                + A_CmsUI.getCmsObject().getRequestContext().getSiteRoot()
+                + "!!"
+                + parentPath.substring(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().length())
+                + "!!"
+                + uuid
+                + "!!");
     }
 
     /**
@@ -323,13 +428,21 @@ public class CmsImageCacheTable extends Table {
         }
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_VIEW_FLEX_VARIATIONS_1, resource));
         window.setContent(variationsDialog);
-        UI.getCurrent().addWindow(window);
+        A_CmsUI.get().addWindow(window);
+        window.center();
     }
 
     /**
      * Fills table with entries from image cache helper.<p>
      */
     private void loadTable() {
+
+        m_nullResult.setVisible(false);
+        m_intro.setVisible(false);
+        setVisible(true);
+        m_siteTableFilter.setVisible(true);
+
+        m_container.removeAllItems();
 
         setVisibleColumns(PROP_NAME, PROP_VARIATIONS);
 
@@ -338,8 +451,14 @@ public class CmsImageCacheTable extends Table {
         for (String res : resources) {
             Item item = m_container.addItem(res);
             item.getItemProperty(PROP_NAME).setValue(res);
-
         }
+
+        if (resources.size() == 0) {
+            m_nullResult.setVisible(true);
+            setVisible(false);
+            m_siteTableFilter.setVisible(false);
+        }
+
     }
 
 }
