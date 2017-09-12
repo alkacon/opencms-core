@@ -40,10 +40,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsFlexFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsMacroFormatterBean;
 import org.opencms.xml.containerpage.CmsMetaMapping;
-import org.opencms.xml.containerpage.CmsFlexFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -99,6 +99,9 @@ public class CmsFormatterBeanParser {
 
     /** Content value node name. */
     public static final String N_AUTO_ENABLED = "AutoEnabled";
+
+    /** Content value node name. */
+    public static final String N_NESTED_FORMATTER_SETTINGS = "NestedFormatterSettings";
 
     /** Content value node name. */
     public static final String N_CHOICE_NEW_LINK = "ChoiceNewLink";
@@ -335,6 +338,9 @@ public class CmsFormatterBeanParser {
         String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
         m_autoEnabled = Boolean.parseBoolean(autoEnabled);
 
+        String nestedFormatterSettings = getString(root, N_NESTED_FORMATTER_SETTINGS, "false");
+        boolean nestedFormatters = Boolean.parseBoolean(nestedFormatterSettings);
+
         parseMatch(root);
 
         List<CmsMetaMapping> mappings = parseMetaMappings(root);
@@ -453,6 +459,7 @@ public class CmsFormatterBeanParser {
                 isDisplay,
                 hasNestedContainers,
                 isStrictContainers,
+                nestedFormatters,
                 mappings);
         }
 

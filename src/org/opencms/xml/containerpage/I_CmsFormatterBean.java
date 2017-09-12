@@ -175,6 +175,13 @@ public interface I_CmsFormatterBean {
     boolean hasNestedContainers();
 
     /**
+     * Returns if nested formatter settings should be displayed.<p>
+     *
+     * @return <code>true</code> if nested formatter settings should be displayed
+     */
+    boolean hasNestedFormatterSettings();
+
+    /**
      * Returns true if the formatter is automatically enabled.<p>
      *
      * @return true if the formatter is automatically enabled

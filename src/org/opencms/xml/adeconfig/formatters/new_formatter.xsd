@@ -27,6 +27,7 @@
         	<xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0"/>
         	<xsd:element name="NestedContainers" type="OpenCmsBoolean" />
         	<xsd:element name="StrictContainers" type="OpenCmsBoolean" minOccurs="0" />
+        	<xsd:element name="NestedFormatterSettings" type="OpenCmsBoolean" minOccurs="0" />
         	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
         	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
@@ -41,6 +42,7 @@
 			<default element="Rank" value="1000" />
 			<default element="Detail" value="true" />
 			<default element="Display" value="true" />
+			<default element="NestedFormatterSettings" value="false" />
 			<default element="SearchContent" value="true" />
 			<default element="Setting/Visibility" value="both" />
 		</defaults>

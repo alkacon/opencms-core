@@ -115,11 +115,17 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** The formatter max width. */
     private int m_maxWidth;
 
+    /** The meta mappings. */
+    private List<CmsMetaMapping> m_metaMappings;
+
     /** The formatter min width. */
     private int m_minWidth;
 
     /** Indicating if this formatter has nested containers. */
     private boolean m_nestedContainers;
+
+    /** Indicates whether nested formatter settings should be displayed. */
+    private boolean m_nestedFormatterSettings;
 
     /** The nice name. */
     private String m_niceName;
@@ -138,9 +144,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /** Indicating if this formatter will always render all nested containers. */
     private boolean m_strictContainers;
-
-    /** The meta mappings. */
-    private List<CmsMetaMapping> m_metaMappings;
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
@@ -168,6 +171,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param isDisplay the display flag
      * @param nestedContainers <code>true</code> if this formatter has nested containers
      * @param strictContainers <code>true</code> if this formatter will always render all nested containers
+     * @param nestedFormatterSettings indicates whether nested formatter settings should be displayed
      * @param metaMappings the meta mappings
      */
     public CmsFormatterBean(
@@ -194,6 +198,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean isDisplay,
         boolean nestedContainers,
         boolean strictContainers,
+        boolean nestedFormatterSettings,
         List<CmsMetaMapping> metaMappings) {
 
         m_jspRootPath = jspRootPath;
@@ -220,6 +225,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_isDetail = isDetail;
         m_isDisplay = isDisplay;
         m_nestedContainers = nestedContainers;
+        m_nestedFormatterSettings = nestedFormatterSettings;
         m_strictContainers = strictContainers;
         m_metaMappings = metaMappings;
     }
@@ -267,6 +273,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
+            false,
             false,
             false,
             false,
@@ -359,6 +366,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
+            false,
             false,
             false,
             false,
@@ -555,6 +563,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public boolean hasNestedContainers() {
 
         return m_nestedContainers;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#hasNestedFormatterSettings()
+     */
+    public boolean hasNestedFormatterSettings() {
+
+        return m_nestedFormatterSettings;
     }
 
     /**

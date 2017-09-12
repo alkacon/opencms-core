@@ -150,9 +150,7 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
             fieldSet.add(row);
         }
         for (CmsFieldSet fieldSet : m_groupFieldSets.values()) {
-            if (fieldSet.getWidgetCount() == 0) {
-                fieldSet.setVisible(false);
-            }
+            fieldSet.setVisible(fieldSet.getWidgetCount() > 0);
         }
     }
 

@@ -135,6 +135,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             isDisplay,
             false,
             false,
+            false,
             metaMappings);
         m_macroInput = macroInput;
         m_placeholderMacroInput = placeholderMacroInput;
