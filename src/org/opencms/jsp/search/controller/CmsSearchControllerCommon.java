@@ -36,6 +36,7 @@ import org.opencms.util.CmsRequestUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 
@@ -124,6 +125,10 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
                     }
                 }
             }
+        }
+        // Add timezone query parameter to allow for correct date/time handling if not already present.
+        if (!query.getMap().entrySet().contains("TZ")) {
+            query.add("TZ", TimeZone.getDefault().getID());
         }
     }
 
