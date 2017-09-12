@@ -53,6 +53,7 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -80,6 +81,12 @@ public class CmsModelGroupHelper {
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsModelGroupHelper.class);
+
+    /** Settings to keep when resetting. */
+    private static final String[] KEEP_SETTING_IDS = new String[] {
+        CmsContainerElement.MODEL_GROUP_STATE,
+        CmsContainerElement.ELEMENT_INSTANCE_ID,
+        CmsContainerElement.USE_AS_COPY_MODEL};
 
     /** The current cms context. */
     private CmsObject m_cms;
@@ -824,7 +831,7 @@ public class CmsModelGroupHelper {
     }
 
     /**
-     * Collects the page containers by parent instance id
+     * Collects the page containers by parent instance id.<p>
      *
      * @param page the page
      *
@@ -897,20 +904,46 @@ public class CmsModelGroupHelper {
         CmsContainerElementBean baseElement,
         boolean allowCopyModel) {
 
-        Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
-        if (!(baseElement.isCopyModel() && allowCopyModel)) {
-            // skip the model id in case of copy models
-            settings.put(CmsContainerElement.MODEL_GROUP_ID, element.getId().toString());
-            if (allowCopyModel) {
-                // transfer all other settings
-                for (Entry<String, String> settingEntry : baseElement.getIndividualSettings().entrySet()) {
-                    if (!settings.containsKey(settingEntry.getKey())) {
-                        settings.put(settingEntry.getKey(), settingEntry.getValue());
-                    }
+        boolean resetSettings = false;
+        if (!baseElement.isCopyModel() && !element.getFormatterId().equals(baseElement.getFormatterId())) {
+            I_CmsFormatterBean formatter = m_configData.getCachedFormatters().getFormatters().get(
+                element.getFormatterId());
+            resetSettings = (formatter == null)
+                || !formatter.getResourceTypeNames().contains(
+                    OpenCms.getResourceManager().getResourceType(baseElement.getResource()));
+        }
+        Map<String, String> settings;
+        if (resetSettings) {
+            settings = new HashMap<String, String>();
+            for (String id : KEEP_SETTING_IDS) {
+                if (element.getIndividualSettings().containsKey(id)) {
+                    settings.put(id, element.getIndividualSettings().get(id));
                 }
             }
-        } else if (baseElement.isCopyModel()) {
-            settings.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.wasModelGroup.name());
+            settings.put(CmsContainerElement.MODEL_GROUP_ID, element.getId().toString());
+            // transfer all other settings
+            for (Entry<String, String> settingEntry : baseElement.getIndividualSettings().entrySet()) {
+                if (!settings.containsKey(settingEntry.getKey())) {
+                    settings.put(settingEntry.getKey(), settingEntry.getValue());
+                }
+            }
+        } else {
+            settings = new HashMap<String, String>(element.getIndividualSettings());
+            if (!(baseElement.isCopyModel() && allowCopyModel)) {
+                // skip the model id in case of copy models
+                settings.put(CmsContainerElement.MODEL_GROUP_ID, element.getId().toString());
+                if (allowCopyModel) {
+                    // transfer all other settings
+                    for (Entry<String, String> settingEntry : baseElement.getIndividualSettings().entrySet()) {
+                        if (!settings.containsKey(settingEntry.getKey())) {
+                            settings.put(settingEntry.getKey(), settingEntry.getValue());
+                        }
+                    }
+                }
+
+            } else if (baseElement.isCopyModel()) {
+                settings.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.wasModelGroup.name());
+            }
         }
         return CmsContainerElementBean.cloneWithSettings(baseElement, settings);
     }
