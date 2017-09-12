@@ -269,6 +269,12 @@ public interface I_CmsSerialDateValue {
     static final int NUM_OF_WEEKDAYS = 7;
 
     /**
+     * Returns a flag, indicating if the event ends at midnight.
+     * @return a flag, indicating if the event ends at midnight.
+     */
+    boolean endsAtMidNight();
+
+    /**
      * Returns the type of the specified date.
      * @return the type of the specified date.
      */

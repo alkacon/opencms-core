@@ -130,6 +130,20 @@ public class A_CmsSerialDateValue implements I_CmsSerialDateValue {
     }
 
     /**
+     * @see org.opencms.acacia.shared.I_CmsSerialDateValue#endsAtMidNight()
+     */
+    @SuppressWarnings("deprecation")
+    public boolean endsAtMidNight() {
+
+        Date end = getEnd();
+        return (end != null)
+            && (end.getHours() == 0)
+            && (end.getMinutes() == 0)
+            && (end.getSeconds() == 0)
+            && ((end.getTime() % 1000) == 0);
+    }
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     //TODO: Rework!

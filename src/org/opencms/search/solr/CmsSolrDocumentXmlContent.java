@@ -373,12 +373,20 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                             StringBuffer currentTillValues = new StringBuffer();
                             for (Long eventDate : serialDateBean.getDatesAsLong()) {
                                 values.append("\n").append(eventDate.toString());
-                                Long endDate = null != serialDateBean.getEventDuration()
-                                ? Long.valueOf(eventDate.longValue() + serialDateBean.getEventDuration().longValue())
-                                : eventDate;
-                                endValues.append("\n").append(endDate.toString());
+                                long endDate = null != serialDateBean.getEventDuration()
+                                ? eventDate.longValue() + serialDateBean.getEventDuration().longValue()
+                                : eventDate.longValue();
+                                endValues.append("\n").append(Long.toString(endDate));
+                                // Special treatment for events that end at 00:00:
+                                // To not show them at the day after they ended, one millisecond is removed from the end time
+                                // for the "currenttill"-time
                                 currentTillValues.append("\n").append(
-                                    serialDateValue.isCurrentTillEnd() ? endDate : eventDate);
+                                    serialDateValue.isCurrentTillEnd()
+                                    ? Long.valueOf(
+                                        serialDateValue.endsAtMidNight() && (endDate > eventDate.longValue())
+                                        ? endDate - 1L
+                                        : endDate)
+                                    : eventDate);
                             }
                             fieldMappings.put(CmsSearchField.FIELD_SERIESDATES, values.substring(1));
                             fieldMappings.put(CmsSearchField.FIELD_SERIESDATES_END, endValues.substring(1));
