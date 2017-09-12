@@ -77,11 +77,11 @@
 				</g:FlowPanel>
 				<g:FlowPanel addStyleNames="{style.endBlock}">
 						<g:Label addStyleNames="{style.leftLabel}" ui:field="m_endLabel"></g:Label>
-						<cmsd:CmsDateBox ui:field="m_endTime" styleName="{widgets.widgetCss.calendarStyle}" />
+						<cmsd:CmsDateBox ui:field="m_endTime" addStyleNames="{widgets.widgetCss.calendarStyle}" />
 				</g:FlowPanel>
 				<g:FlowPanel addStyleNames="{style.fromToCheckboxes}">
 					<cmsi:CmsCheckBox ui:field="m_wholeDayCheckBox" addStyleNames="{widgets.widgetCss.checkBoxStyle}" />
-					<cmsi:CmsCheckBox ui:field="m_seriesCheckBox" styleName="{widgets.widgetCss.checkBoxStyle}" />
+					<cmsi:CmsCheckBox ui:field="m_seriesCheckBox" addStyleNames="{widgets.widgetCss.checkBoxStyle}" />
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:FlowPanel addStyleNames="{style.currentTillEndContainer}">
@@ -90,10 +90,10 @@
 		</g:FlowPanel>
 		<cms:CmsFieldSet ui:field="m_serialOptionsPanel" width="100%" addStyleNames="{style.spacing}">
 			<g:VerticalPanel width="100%">
-				<cmsi:CmsLabel ui:field="m_statusLabel"/>
+				<cmsi:CmsLabel ui:field="m_statusLabel" addStyleNames="{css.widgetCss.statusLabel}"/>
 				<g:FlowPanel ui:field="m_patternPanel" width="100%" addStyleNames="{style.spacing}">
 					<g:FlowPanel addStyleNames="{style.patternAndOptionsContainer}" width="100%">
-						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" styleName="{widgets.widgetCss.radioButtonPanel}" width="310px" />
+						<g:VerticalPanel ui:field="m_patternRadioButtonsPanel" addStyleNames="{widgets.widgetCss.radioButtonPanel}" width="310px" />
 						<g:SimplePanel ui:field="m_patternOptions" addStyleNames="{style.patternOptions}" width="100%"/>
 					</g:FlowPanel>
 				</g:FlowPanel>
@@ -101,13 +101,13 @@
 					<g:FlowPanel addStyleNames="{style.durationContainer}" width="100%">
 						<g:FlowPanel width="310px">
 						    <g:Label ui:field="m_durationPrefixLabel" addStyleNames="{style.leftLabel}"></g:Label>
-							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio}" ui:field="m_endsAfterRadioButton" />
-							<g:FlowPanel styleName="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox addStyleNames="{css.widgetCss.shortTextBox}" ui:field="m_occurrences" /></g:FlowPanel>
+							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio} {css.widgetCss.radioButtonStyle}" ui:field="m_endsAfterRadioButton" />
+							<g:FlowPanel addStyleNames="{widgets.widgetCss.textBox}"><cmssd:CmsFocusAwareTextBox addStyleNames="{css.widgetCss.shortTextBox}" ui:field="m_occurrences" /></g:FlowPanel>
                             <g:Label ui:field="m_durationAfterPostfixLabel" addStyleNames="{style.rightLabel}"></g:Label>
 						</g:FlowPanel>
 						<g:FlowPanel>
-							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio} {css.widgetCss.shortTextBox}" ui:field="m_endsAtRadioButton"/>
-							<cmsd:CmsDateBox ui:field="m_seriesEndDate" styleName="{widgets.widgetCss.calendarStyle}" />
+							<cmsi:CmsRadioButton addStyleNames="{style.durationRadio} {css.widgetCss.shortTextBox} {css.widgetCss.radioButtonStyle}" ui:field="m_endsAtRadioButton"/>
+							<cmsd:CmsDateBox ui:field="m_seriesEndDate" addStyleNames="{widgets.widgetCss.calendarStyle}" />
 						</g:FlowPanel>
 					</g:FlowPanel>
 				</g:FlowPanel>
@@ -117,10 +117,10 @@
 				</g:FlowPanel>
 			</g:VerticalPanel>
 		</cms:CmsFieldSet>
-		<g:FlowPanel ui:field="m_exceptionsPanelContainer">
-			<cms:CmsFieldSet ui:field="m_exceptionsPanel" addStyleNames="{style.spacing}">
-				<g:FlowPanel>
-					<cmsw:CmsCheckableDatePanel ui:field="m_exceptionsList"></cmsw:CmsCheckableDatePanel>
+		<g:FlowPanel ui:field="m_exceptionsPanelContainer" width="100%">
+			<cms:CmsFieldSet ui:field="m_exceptionsPanel" addStyleNames="{style.spacing}" width="100%">
+				<g:FlowPanel width="100%">
+					<cmsw:CmsCheckableDatePanel ui:field="m_exceptionsList" width="100%"></cmsw:CmsCheckableDatePanel>
 				</g:FlowPanel>
 			</cms:CmsFieldSet>
 		</g:FlowPanel>

@@ -27,6 +27,7 @@
 
 package org.opencms.acacia.client.widgets.serialdate;
 
+import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
 import org.opencms.ade.contenteditor.client.Messages;
@@ -270,7 +271,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_model = model;
         m_model.registerValueChangeObserver(this);
         initDurationButtonGroup();
-        m_exceptionsList = new CmsCheckableDatePanel(m_dateFormat);
+        m_exceptionsList = new CmsCheckableDatePanel(m_dateFormat, CmsCheckableDatePanel.Style.THREE_COLUMNS, true);
 
         // bind the ui
         initWidget(uiBinder.createAndBindUi(this));
@@ -551,6 +552,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     private void createAndAddButton(PatternType pattern, String messageKey) {
 
         CmsRadioButton btn = new CmsRadioButton(pattern.toString(), Messages.get().key(messageKey));
+        btn.addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().radioButtonlabel());
         btn.setGroup(m_groupPattern);
         m_patternButtons.put(pattern, btn);
         m_patternRadioButtonsPanel.add(btn);
@@ -693,8 +695,9 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
         m_overviewPopup.addDialogClose(null);
         m_overviewPopup.addButton(m_updateExceptionsButton);
         CmsScrollPanel panel = new CmsScrollPanel();
-        m_overviewList = new CmsCheckableDatePanel(m_dateFormat);
+        m_overviewList = new CmsCheckableDatePanel(m_dateFormat, CmsCheckableDatePanel.Style.TWO_COLUMNS);
         m_overviewList.addDate(new Date());
+        panel.getElement().getStyle().setPaddingLeft(10, Unit.PX);
         panel.getElement().getStyle().setProperty("maxHeight", m_overviewPopup.getAvailableHeight(0), Unit.PX);
         panel.add(m_overviewList);
         m_overviewPopup.add(panel);

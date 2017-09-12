@@ -1,4 +1,4 @@
-@external primary;
+@external primary,html-face;
 
 .emptyValue .serialDateWidget * {
 	color: value("constants.css.borderColor") !important;
@@ -9,7 +9,7 @@
 div.patternRow > * {
 			display: inline-block;
 			margin-top: 2px;
-			margin-bottom: 2px; 
+			margin-bottom: 2px;
 			vertical-align: middle;
 }
 
@@ -17,11 +17,11 @@ div.patternRow > *:not\(.ordinalTextBox\) {
 	margin-right: 4px;
 }
 
-.ordinalTextBox {} 
+.ordinalTextBox {}
 
 /* div.patternRow > div:first-child {
 			margin-left: 0px;
-} */ 
+} */
 
 div.patternRow div {
 	font-weight: normal !important;
@@ -42,21 +42,21 @@ div.patternRadio div {
 
  .acaciaForm-focused .serialDateWidget .fieldset-legend {
  	background-color: #f0f0f2 !important;
- 	border-radius: 5px; 
- }
- 
- .serialDateWidget .fieldset-legend { 
- 	background-color: white;
- 	border-radius: 5px;  
+ 	border-radius: 5px;
  }
 
-.serialDateWidget.serialDateWidget .fieldset-content { 
-	overflow: hidden; 
+ .serialDateWidget .fieldset-legend {
+ 	background-color: white;
+ 	border-radius: 5px;
+ }
+
+.serialDateWidget.serialDateWidget .fieldset-content {
+	overflow: hidden;
 }
 
 
 .hasError .serialDateWidget .acaciaWidgets-radioButtonPanel, .hasWarning .serialDateWidget .acaciaWidgets-radioButtonPanel {
-	border: none; 	
+	border: none;
 }
 
 .serialDateWidget .button {
@@ -69,7 +69,7 @@ div.patternRadio div {
 	box-shadow: none !important;
 }
 
-.serialDateWidget .button::after { 
+.serialDateWidget .button::after {
 	display: none !important;
 }
 
@@ -79,10 +79,19 @@ div.patternRadio div {
 }
 
 
-.serialDateWidget .shortTextBox { 
-	width: 50px; 
+.serialDateWidget .shortTextBox {
+	width: 50px;
 }
 
+.serialDateWidget .statusLabel {
+	background-color: #FFFFCC;
+	border-radius: value("constants.css.borderRadius");
+	padding: 5px;
+}
+
+.serialDateWidget .radioButtonStyle div.html-face {
+    font-weight: normal;
+}
 
 .singleLine{}
 .firstColumn{}
