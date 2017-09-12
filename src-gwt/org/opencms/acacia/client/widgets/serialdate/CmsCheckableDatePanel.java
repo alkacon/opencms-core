@@ -36,16 +36,48 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 
 /** Special list for checkboxes with dates. */
 public class CmsCheckableDatePanel extends Composite implements HasValueChangeHandlers<SortedSet<Date>> {
+
+    /** The various style options for the checkable date panel. */
+    public static enum Style {
+        /** One column. */
+        ONE_COLUMN,
+        /** Two columns. */
+        TWO_COLUMNS,
+        /** Three columns. */
+        THREE_COLUMNS;
+
+        /**
+         * Get the width of elements dependent on the style.
+         * @return the element width, e.g., "50%"
+         */
+        public String getWidth() {
+
+            switch (this) {
+                case ONE_COLUMN:
+                    return "100%";
+                case TWO_COLUMNS:
+                    return "50%";
+                case THREE_COLUMNS:
+                    return "33%";
+                default:
+                    return "100%";
+            }
+        }
+    }
 
     /** Default date format to use if no other format is specified in the message bundle. */
     private static final String DEFAULT_DATE_FORMAT = "E, MMMM d, yyyy";
@@ -55,18 +87,49 @@ public class CmsCheckableDatePanel extends Composite implements HasValueChangeHa
 
     /** The dates in the widget. */
     SortedSet<Date> m_dates;
-
     /** The date format. */
     DateTimeFormat m_dateFormat;
+
     /** The panel where checkboxes with the dates are places. */
-    VerticalPanel m_panel;
+    Panel m_panel;
+
+    /** Flag, indicating if only labels should be shown. */
+    boolean m_onlyLabels;
+
+    /** The style of the panel. */
+    Style m_style;
+
+    /** The element width determined by the style. */
+    String m_width;
 
     /**
-     * Default constructor.
+     * Constructor for creating a one column list with check boxes.
      * @param dateFormat The date format to use.
      */
     public CmsCheckableDatePanel(String dateFormat) {
-        m_panel = new VerticalPanel();
+        this(dateFormat, Style.ONE_COLUMN, false);
+    }
+
+    /**
+     * Constructor for creating a list with check boxes.
+     * @param dateFormat The date format to use.
+     * @param style the style to use for displaying the dates.
+     */
+    public CmsCheckableDatePanel(String dateFormat, Style style) {
+        this(dateFormat, style, false);
+    }
+
+    /**
+     * Constructor where all options can be set.
+     * @param dateFormat The date format to use.
+     * @param style the style to use for displaying the dates.
+     * @param onlyLabels flag, indicating if only labels should be shown.
+     */
+    public CmsCheckableDatePanel(String dateFormat, Style style, boolean onlyLabels) {
+        m_panel = new FlowPanel();
+        m_style = null == style ? Style.ONE_COLUMN : style;
+        m_width = m_style.getWidth();
+        m_onlyLabels = onlyLabels;
         initWidget(m_panel);
         m_checkBoxes = new TreeSet<CmsCheckBox>(new Comparator<CmsCheckBox>() {
 
@@ -259,7 +322,7 @@ public class CmsCheckableDatePanel extends Composite implements HasValueChangeHa
 
         m_panel.clear();
         for (CmsCheckBox cb : m_checkBoxes) {
-            m_panel.add(cb);
+            m_panel.add(setStyle(m_onlyLabels ? new Label(cb.getText()) : cb));
         }
     }
 
@@ -274,6 +337,18 @@ public class CmsCheckableDatePanel extends Composite implements HasValueChangeHa
             m_dates = new TreeSet<>(dates);
             fireValueChange();
         }
+    }
+
+    /**
+     * Set the style for the widgets in the panel according to the chosen style option.
+     * @param widget the widget that should be styled.
+     * @return the styled widget.
+     */
+    private Widget setStyle(Widget widget) {
+
+        widget.setWidth(m_width);
+        widget.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+        return widget;
     }
 
 }
