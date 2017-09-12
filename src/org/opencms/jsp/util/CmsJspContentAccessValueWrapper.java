@@ -903,7 +903,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     public CmsJspDateSeriesBean getToDateSeries() {
 
         if (m_dateSeries == null) {
-            m_dateSeries = new CmsJspDateSeriesBean(this);
+            m_dateSeries = new CmsJspDateSeriesBean(this, m_cms.getRequestContext().getLocale());
         }
         return m_dateSeries;
     }

@@ -41,7 +41,9 @@ import org.opencms.widgets.serialdate.CmsSerialDateValue;
 import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -115,12 +117,21 @@ public class CmsJspDateSeriesBean {
     /** The parent series. */
     CmsJspDateSeriesBean m_parentSeries;
 
+    /** Flag, indicating if the single events last over night. */
+    private Boolean m_isMultiDay;
+
+    /** The locale to use for displaying dates. */
+    private Locale m_locale;
+
     /**
      * Constructor for the date series bean.
      * @param value the content value wrapper for the element that stores the series definition.
+     * @param locale the locale in which dates should be rendered. This can differ from the content locale, if e.g.
+     *          on a German page a content that is only present in English is rendered.
      */
-    public CmsJspDateSeriesBean(CmsJspContentAccessValueWrapper value) {
+    public CmsJspDateSeriesBean(CmsJspContentAccessValueWrapper value, Locale locale) {
         m_value = value;
+        m_locale = null == locale ? m_value.getLocale() : locale;
         String seriesDefinitionString = value.getStringValue();
         m_seriesDefinition = new CmsSerialDateValue(seriesDefinitionString);
         if (m_seriesDefinition.isValid()) {
@@ -201,7 +212,7 @@ public class CmsJspDateSeriesBean {
      */
     public Locale getLocale() {
 
-        return m_value.getLocale();
+        return m_locale;
     }
 
     /**
@@ -216,7 +227,7 @@ public class CmsJspDateSeriesBean {
                 CmsResource res = cms.readResource(m_seriesDefinition.getParentSeriesId());
                 CmsJspContentAccessBean content = new CmsJspContentAccessBean(cms, m_value.getLocale(), res);
                 CmsJspContentAccessValueWrapper value = content.getValue().get(m_value.getPath());
-                return new CmsJspDateSeriesBean(value);
+                return new CmsJspDateSeriesBean(value, m_locale);
             } catch (CmsException e) {
                 LOG.warn("Parent series with id " + m_seriesDefinition.getParentSeriesId() + " could not be read.", e);
             }
@@ -243,6 +254,36 @@ public class CmsJspDateSeriesBean {
             return "";
         }
 
+    }
+
+    /**
+     * Returns a flag, indicating if the single events last over night.
+     * @return <code>true</code> if the event ends on another day than it starts, <code>false</code> if it ends on the same day.
+     */
+    public boolean isMultiDay() {
+
+        if (m_isMultiDay != null) {
+            return m_isMultiDay.booleanValue();
+        }
+        if ((null == getInstanceDuration())
+            || (getInstanceDuration().longValue() > I_CmsSerialDateValue.DAY_IN_MILLIS)) {
+            m_isMultiDay = Boolean.TRUE;
+            return true;
+        }
+        if (isWholeDay() && (getInstanceDuration().longValue() <= I_CmsSerialDateValue.DAY_IN_MILLIS)) {
+            m_isMultiDay = Boolean.FALSE;
+            return false;
+        }
+        Calendar start = new GregorianCalendar();
+        start.setTime(m_seriesDefinition.getStart());
+        Calendar end = new GregorianCalendar();
+        end.setTime(m_seriesDefinition.getEnd());
+        if (start.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH)) {
+            m_isMultiDay = Boolean.FALSE;
+            return false;
+        }
+        m_isMultiDay = Boolean.TRUE;
+        return true;
     }
 
     /**

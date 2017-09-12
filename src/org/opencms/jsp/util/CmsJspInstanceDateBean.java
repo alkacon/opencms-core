@@ -121,6 +121,15 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
+     * Returns a flag, indicating if the event last over night.
+     * @return <code>true</code> if the event ends on another day than it starts, <code>false</code> if it ends on the same day.
+     */
+    public boolean isMultiDay() {
+
+        return m_series.isMultiDay();
+    }
+
+    /**
      * Returns a flag, indicating if the event lasts whole days.
      * @return a flag, indicating if the event lasts whole days.
      */
@@ -134,6 +143,7 @@ public class CmsJspInstanceDateBean {
      * @param dateTimeFormat the format to use for date (time is always short).
      * @return the formatted date/time string.
      */
+    @SuppressWarnings("deprecation")
     private String getFormattedDate(int dateTimeFormat) {
 
         DateFormat df;
@@ -148,7 +158,12 @@ public class CmsJspInstanceDateBean {
             df = DateFormat.getDateTimeInstance(dateTimeFormat, DateFormat.SHORT, m_series.getLocale());
             result = df.format(getStart());
             if (getEnd().after(getStart())) {
-                result += DATE_SEPARATOR + df.format(getEnd());
+                if (isMultiDay()) {
+                    result += DATE_SEPARATOR + df.format(getEnd());
+                } else {
+                    df = DateFormat.getTimeInstance(DateFormat.SHORT, m_series.getLocale());
+                    result += DATE_SEPARATOR + df.format(getEnd());
+                }
             }
         }
 
