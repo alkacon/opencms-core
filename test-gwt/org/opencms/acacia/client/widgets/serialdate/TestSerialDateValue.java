@@ -60,18 +60,17 @@ public class TestSerialDateValue extends GWTTestCase {
     @Test
     public void testCurrentTillEnd() {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}, \"currenttillend\":true}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}, \"currenttillend\":false}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue();
         wrapper.setValue(patternDefinition);
         // general
         assertTrue(wrapper.isValid());
         // check if the flag is read correctly
-        assertTrue(wrapper.isCurrentTillEnd());
+        assertFalse(wrapper.isCurrentTillEnd());
         // re-wrap
         CmsSerialDateValue rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
-
 
         patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}}";
         wrapper = new CmsSerialDateValue();
@@ -79,7 +78,7 @@ public class TestSerialDateValue extends GWTTestCase {
         // general
         assertTrue(wrapper.isValid());
         // check if the flag is read correctly
-        assertFalse(wrapper.isCurrentTillEnd());
+        assertTrue(wrapper.isCurrentTillEnd());
         // re-wrap
         rewrap = new CmsSerialDateValue();
         rewrap.setValue(wrapper.toString());

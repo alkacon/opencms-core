@@ -155,7 +155,7 @@ public class TestSolrSerialDateIndexing extends OpenCmsTestCase {
         }
         assertEquals(expectedStartDates, actualStartDates);
         assertEquals(expectedEndDates, actualEndDates);
-        assertEquals(expectedStartDates, actualTillCurrentDates);
+        assertEquals(expectedEndDates, actualTillCurrentDates);
 
         actualEndDates.clear();
         actualStartDates.clear();
@@ -179,7 +179,7 @@ public class TestSolrSerialDateIndexing extends OpenCmsTestCase {
         }
         assertEquals(expectedStartDates, actualStartDates);
         assertEquals(expectedEndDates, actualEndDates);
-        assertEquals(expectedEndDates, actualTillCurrentDates);
+        assertEquals(expectedStartDates, actualTillCurrentDates);
 
     }
 
