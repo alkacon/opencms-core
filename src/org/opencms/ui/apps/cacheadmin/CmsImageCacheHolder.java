@@ -87,6 +87,7 @@ public class CmsImageCacheHolder {
 
             public boolean accept(File dir, String name) {
 
+                String spatt = search.replace("*", "");
                 if (new File(dir, name).isDirectory()) {
                     return true;
                 }
@@ -94,11 +95,21 @@ public class CmsImageCacheHolder {
                 String fullPath = dir.getAbsolutePath() + "/" + name;
 
                 fullPath = fullPath.substring(CmsImageLoader.getImageRepositoryPath().length() - 1);
-                return getVFSName(m_clonedCms, fullPath).contains(search);
+                return getVFSName(m_clonedCms, fullPath).contains(spatt);
 
             }
         };
-        readAllImagesAndVariations();
+        if (!search.startsWith("*") & search.startsWith("/")) {
+            String root = getRootFromPattern(search);
+            if (root.length() > 1) {
+                readAllImagesAndVariations(root.substring(1).replace("*", ""));
+            } else {
+                readAllImagesAndVariations("");
+            }
+        } else {
+            readAllImagesAndVariations("");
+        }
+
     }
 
     /**
@@ -212,12 +223,19 @@ public class CmsImageCacheHolder {
         return clonedCms;
     }
 
+    private String getRootFromPattern(String pattern) {
+
+        String res = pattern.substring(0, pattern.lastIndexOf("/"));
+
+        return res;
+    }
+
     /**
      * Fille the list m_variations and m_filePaths.<p>
      */
-    private void readAllImagesAndVariations() {
+    private void readAllImagesAndVariations(String root) {
 
-        File basedir = new File(CmsImageLoader.getImageRepositoryPath());
+        File basedir = new File(CmsImageLoader.getImageRepositoryPath() + root);
         visitImages(m_clonedCms, basedir);
         m_variations = Collections.unmodifiableMap(m_variations);
         m_sizes = Collections.unmodifiableMap(m_sizes);
