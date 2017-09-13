@@ -58,7 +58,12 @@ public class CmsImageCacheInput extends VerticalLayout {
     public CmsImageCacheInput(final CmsImageCacheTable table) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
-        m_searchString.setValue(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
+        String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
+        if (!siteRoot.endsWith("/")) {
+            siteRoot += "/";
+        }
+        siteRoot += "*";
+        m_searchString.setValue(siteRoot);
 
         m_okButton.addClickListener(new ClickListener() {
 
@@ -68,9 +73,7 @@ public class CmsImageCacheInput extends VerticalLayout {
 
                 table.load(getSearchPattern());
             }
-
         });
-
     }
 
     /**
