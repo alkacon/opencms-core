@@ -1014,6 +1014,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(res));
                 }
                 Locale matchingLocale = content.getBestMatchingLocale(locale);
+                if (matchingLocale == null) {
+                    matchingLocale = content.getLocales().get(0);
+                }
                 if (matchingLocale != null) {
                     for (String elementPath : m_nestedFormatterElements) {
                         List<I_CmsXmlContentValue> values = content.getValues(elementPath, matchingLocale);
