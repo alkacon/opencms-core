@@ -167,8 +167,8 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                         false);
                     options.add(oSeries);
                     return new CmsDialogOptions(
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_1, getTitle(wpl)),
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_INFO_0),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_HEADING_0),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_DELETE_DIALOG_INFO_1, getTitle(wpl)),
                         options);
                 }
             }
@@ -215,8 +215,8 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                         false);
                     options.add(oSeries);
                     return new CmsDialogOptions(
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_1, getTitle(wpl)),
-                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_INFO_0),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_HEADING_0),
+                        messages.key(Messages.GUI_DATE_SERIES_HANDLER_EDIT_DIALOG_INFO_1, getTitle(wpl)),
                         options);
                 }
             }
