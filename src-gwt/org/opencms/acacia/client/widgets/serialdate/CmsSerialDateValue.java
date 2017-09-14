@@ -95,7 +95,9 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
 
         JSONObject result = new JSONObject();
         result.put(JsonKey.START, dateToJson(getStart()));
-        result.put(JsonKey.END, dateToJson(getEnd()));
+        if (null != getEnd()) {
+            result.put(JsonKey.END, dateToJson(getEnd()));
+        }
         if (isWholeDay()) {
             result.put(JsonKey.WHOLE_DAY, JSONBoolean.getInstance(true));
         }
@@ -116,8 +118,8 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
             default:
                 break;
         }
-        if (isCurrentTillEnd()) {
-            result.put(JsonKey.CURRENT_TILL_END, JSONBoolean.getInstance(true));
+        if (!isCurrentTillEnd()) {
+            result.put(JsonKey.CURRENT_TILL_END, JSONBoolean.getInstance(false));
         }
         if (getParentSeriesId() != null) {
             result.put(JsonKey.PARENT_SERIES, new JSONString(getParentSeriesId().getStringValue()));

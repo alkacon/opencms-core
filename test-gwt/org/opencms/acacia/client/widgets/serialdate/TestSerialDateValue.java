@@ -170,6 +170,28 @@ public class TestSerialDateValue extends GWTTestCase {
     }
 
     /**
+     * Test with missing to date.
+     */
+    @Test
+    public void testMissingToDate() {
+
+        String patternDefinition = "{\"from\":\"1491202800000\", \"pattern\":{\"type\":\"NONE\"}}";
+        CmsSerialDateValue wrapper = new CmsSerialDateValue();
+        wrapper.setValue(patternDefinition);
+        // general
+        assertTrue(wrapper.isValid());
+        assertEquals(1491202800000L, wrapper.getStart().getTime());
+        assertNull(wrapper.getEnd());
+        assertEquals(false, wrapper.isWholeDay());
+        // end
+        assertEquals(EndType.SINGLE, wrapper.getEndType());
+        // re-wrap
+        CmsSerialDateValue rewrap = new CmsSerialDateValue();
+        rewrap.setValue(wrapper.toString());
+        assertEquals(wrapper, rewrap);
+    }
+
+    /**
      * Test for the monthly pattern, specified by day of month.
      */
     @Test

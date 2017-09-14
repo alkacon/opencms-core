@@ -50,12 +50,12 @@ public class TestSerialDateValue extends OpenCmsTestCase {
     @Test
     public void testCurrentTillEnd() {
 
-        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}, \"currenttillend\":true}";
+        String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}, \"currenttillend\":false}";
         CmsSerialDateValue wrapper = new CmsSerialDateValue(patternDefinition);
         // general
         assertTrue(wrapper.isValid());
         // check if the flag is read correctly
-        assertTrue(wrapper.isCurrentTillEnd());
+        assertFalse(wrapper.isCurrentTillEnd());
         // re-wrap
         CmsSerialDateValue rewrap = new CmsSerialDateValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
@@ -65,7 +65,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
         // general
         assertTrue(wrapper.isValid());
         // check if the flag is read correctly
-        assertFalse(wrapper.isCurrentTillEnd());
+        assertTrue(wrapper.isCurrentTillEnd());
         // re-wrap
         rewrap = new CmsSerialDateValue(wrapper.toString());
         assertEquals(wrapper, rewrap);
@@ -144,6 +144,26 @@ public class TestSerialDateValue extends OpenCmsTestCase {
         dates.add(new Date(1501489020000L));
         dates.add(new Date(1501748220000L));
         assertEquals(dates, wrapper.getIndividualDates());
+        // re-wrap
+        CmsSerialDateValue rewrap = new CmsSerialDateValue(wrapper.toString());
+        assertEquals(wrapper, rewrap);
+    }
+
+    /**
+     * Test with missing to date.
+     */
+    @Test
+    public void testMissingToDate() {
+
+        String patternDefinition = "{\"from\":\"1491202800000\", \"pattern\":{\"type\":\"NONE\"}}";
+        CmsSerialDateValue wrapper = new CmsSerialDateValue(patternDefinition);
+        // general
+        assertTrue(wrapper.isValid());
+        assertEquals(1491202800000L, wrapper.getStart().getTime());
+        assertNull(wrapper.getEnd());
+        assertEquals(false, wrapper.isWholeDay());
+        // end
+        assertEquals(EndType.SINGLE, wrapper.getEndType());
         // re-wrap
         CmsSerialDateValue rewrap = new CmsSerialDateValue(wrapper.toString());
         assertEquals(wrapper, rewrap);

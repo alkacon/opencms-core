@@ -96,7 +96,9 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
         try {
             JSONObject result = new JSONObject();
             result.put(JsonKey.START, dateToJson(getStart()));
-            result.put(JsonKey.END, dateToJson(getEnd()));
+            if (null != getEnd()) {
+                result.put(JsonKey.END, dateToJson(getEnd()));
+            }
             if (isWholeDay()) {
                 result.put(JsonKey.WHOLE_DAY, true);
             }
@@ -117,8 +119,8 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
                 default:
                     break;
             }
-            if (isCurrentTillEnd()) {
-                result.put(JsonKey.CURRENT_TILL_END, true);
+            if (!isCurrentTillEnd()) {
+                result.put(JsonKey.CURRENT_TILL_END, false);
             }
             if (null != getParentSeriesId()) {
                 result.put(JsonKey.PARENT_SERIES, getParentSeriesId().getStringValue());
