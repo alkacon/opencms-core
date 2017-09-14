@@ -728,9 +728,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsEncoder.decode(requestParams),
                     true,
                     CmsEncoder.ENCODING_UTF_8);
-                return new CmsPair<CmsDialogOptions, CmsListInfoBean>(
-                    handler.getDeleteOptions(getCmsObject(), element, pageId, params),
-                    CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
+                CmsDialogOptions options = handler.getDeleteOptions(getCmsObject(), element, pageId, params);
+                if (options != null) {
+                    return new CmsPair<CmsDialogOptions, CmsListInfoBean>(
+                        options,
+                        CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
+                }
             }
         } catch (CmsException e) {
             error(e);
@@ -759,9 +762,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsEncoder.decode(requestParams),
                     true,
                     CmsEncoder.ENCODING_UTF_8);
-                return new CmsPair<CmsDialogOptions, CmsListInfoBean>(
-                    handler.getEditOptions(getCmsObject(), element, pageId, params, isListElement),
-                    CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
+                CmsDialogOptions options = handler.getEditOptions(
+                    getCmsObject(),
+                    element,
+                    pageId,
+                    params,
+                    isListElement);
+                if (options != null) {
+                    return new CmsPair<CmsDialogOptions, CmsListInfoBean>(
+                        options,
+                        CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
+                }
             }
         } catch (CmsException e) {
             error(e);
