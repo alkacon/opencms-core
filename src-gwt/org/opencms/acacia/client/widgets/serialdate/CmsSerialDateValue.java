@@ -94,7 +94,9 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
     public JSONValue toJson() {
 
         JSONObject result = new JSONObject();
-        result.put(JsonKey.START, dateToJson(getStart()));
+        if (null != getStart()) {
+            result.put(JsonKey.START, dateToJson(getStart()));
+        }
         if (null != getEnd()) {
             result.put(JsonKey.END, dateToJson(getEnd()));
         }
@@ -191,43 +193,45 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
     private JSONObject patternToJson() {
 
         JSONObject pattern = new JSONObject();
-        pattern.put(JsonKey.PATTERN_TYPE, new JSONString(getPatternType().toString()));
-        switch (getPatternType()) {
-            case DAILY:
-                if (isEveryWorkingDay()) {
-                    pattern.put(JsonKey.PATTERN_EVERYWORKINGDAY, JSONBoolean.getInstance(true));
-                } else {
+        if (null != getPatternType()) {
+            pattern.put(JsonKey.PATTERN_TYPE, new JSONString(getPatternType().toString()));
+            switch (getPatternType()) {
+                case DAILY:
+                    if (isEveryWorkingDay()) {
+                        pattern.put(JsonKey.PATTERN_EVERYWORKINGDAY, JSONBoolean.getInstance(true));
+                    } else {
+                        pattern.put(JsonKey.PATTERN_INTERVAL, new JSONString(String.valueOf(getInterval())));
+                    }
+                    break;
+                case WEEKLY:
                     pattern.put(JsonKey.PATTERN_INTERVAL, new JSONString(String.valueOf(getInterval())));
-                }
-                break;
-            case WEEKLY:
-                pattern.put(JsonKey.PATTERN_INTERVAL, new JSONString(String.valueOf(getInterval())));
-                pattern.put(JsonKey.PATTERN_WEEKDAYS, toJsonStringList(getWeekDays()));
-                break;
-            case MONTHLY:
-                pattern.put(JsonKey.PATTERN_INTERVAL, new JSONString(String.valueOf(getInterval())));
-                if (null != getWeekDay()) {
-                    pattern.put(JsonKey.PATTERN_WEEKS_OF_MONTH, toJsonStringList(getWeeksOfMonth()));
                     pattern.put(JsonKey.PATTERN_WEEKDAYS, toJsonStringList(getWeekDays()));
-                } else {
-                    pattern.put(JsonKey.PATTERN_DAY_OF_MONTH, new JSONString(String.valueOf(getDayOfMonth())));
-                }
-                break;
-            case YEARLY:
-                pattern.put(JsonKey.PATTERN_MONTH, new JSONString(getMonth().toString()));
-                if (null != getWeekDay()) {
-                    pattern.put(JsonKey.PATTERN_WEEKS_OF_MONTH, toJsonStringList(getWeeksOfMonth()));
-                    pattern.put(JsonKey.PATTERN_WEEKDAYS, toJsonStringList(getWeekDays()));
-                } else {
-                    pattern.put(JsonKey.PATTERN_DAY_OF_MONTH, new JSONString(String.valueOf(getDayOfMonth())));
-                }
-                break;
-            case INDIVIDUAL:
-                pattern.put(JsonKey.PATTERN_DATES, datesToJsonArray(getIndividualDates()));
-                break;
-            case NONE:
-            default:
-                break;
+                    break;
+                case MONTHLY:
+                    pattern.put(JsonKey.PATTERN_INTERVAL, new JSONString(String.valueOf(getInterval())));
+                    if (null != getWeekDay()) {
+                        pattern.put(JsonKey.PATTERN_WEEKS_OF_MONTH, toJsonStringList(getWeeksOfMonth()));
+                        pattern.put(JsonKey.PATTERN_WEEKDAYS, toJsonStringList(getWeekDays()));
+                    } else {
+                        pattern.put(JsonKey.PATTERN_DAY_OF_MONTH, new JSONString(String.valueOf(getDayOfMonth())));
+                    }
+                    break;
+                case YEARLY:
+                    pattern.put(JsonKey.PATTERN_MONTH, new JSONString(String.valueOf(getMonth())));
+                    if (null != getWeekDay()) {
+                        pattern.put(JsonKey.PATTERN_WEEKS_OF_MONTH, toJsonStringList(getWeeksOfMonth()));
+                        pattern.put(JsonKey.PATTERN_WEEKDAYS, toJsonStringList(getWeekDays()));
+                    } else {
+                        pattern.put(JsonKey.PATTERN_DAY_OF_MONTH, new JSONString(String.valueOf(getDayOfMonth())));
+                    }
+                    break;
+                case INDIVIDUAL:
+                    pattern.put(JsonKey.PATTERN_DATES, datesToJsonArray(getIndividualDates()));
+                    break;
+                case NONE:
+                default:
+                    break;
+            }
         }
         return pattern;
     }
