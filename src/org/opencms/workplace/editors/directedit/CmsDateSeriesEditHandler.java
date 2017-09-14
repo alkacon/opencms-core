@@ -321,7 +321,7 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
                     CmsXmlContent newContent = CmsXmlContentFactory.unmarshal(m_cms, newFile);
                     CmsSerialDateValue newValue = new CmsSerialDateValue();
                     newValue.setStart(m_instanceDate);
-                    if (m_series.getEventDuration() != null) {
+                    if ((m_value.getEnd() != null) && (m_series.getEventDuration() != null)) {
                         newValue.setEnd(new Date(m_instanceDate.getTime() + m_series.getEventDuration().longValue()));
                     }
                     newValue.setParentSeriesId(m_file.getStructureId());
