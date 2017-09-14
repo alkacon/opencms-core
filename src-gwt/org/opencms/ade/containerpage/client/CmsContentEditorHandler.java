@@ -45,6 +45,8 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -152,52 +154,56 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     public void openDialog(final CmsContainerPageElementPanel element, final boolean inline) {
 
         if (!inline && element.hasEditHandler()) {
-            m_handler.m_controller.getEditOptions(element.getId(), false, new I_CmsSimpleCallback<CmsDialogOptions>() {
+            m_handler.m_controller.getEditOptions(
+                element.getId(),
+                false,
+                new I_CmsSimpleCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>>() {
 
-                public void execute(CmsDialogOptions editOptions) {
+                    public void execute(CmsPair<CmsDialogOptions, CmsListInfoBean> editOptions) {
 
-                    final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
+                        final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
 
-                        public void execute(CmsUUID arg) {
+                            public void execute(CmsUUID arg) {
 
-                            String contentId = element.getId();
-                            if (!element.getId().startsWith(arg.toString())) {
-                                // the content structure ID has changed, the current element needs to be replaced after editing
-                                m_replaceElement = element;
-                                contentId = arg.toString();
+                                String contentId = element.getId();
+                                if (!element.getId().startsWith(arg.toString())) {
+                                    // the content structure ID has changed, the current element needs to be replaced after editing
+                                    m_replaceElement = element;
+                                    contentId = arg.toString();
+                                }
+                                internalOpenDialog(element, contentId, inline);
                             }
-                            internalOpenDialog(element, contentId, inline);
-                        }
-                    };
-                    if (editOptions == null) {
-                        internalOpenDialog(element, element.getId(), inline);
-                    } else if (editOptions.getOptions().size() == 1) {
-                        m_handler.m_controller.prepareForEdit(
-                            element.getId(),
-                            editOptions.getOptions().get(0).getValue(),
-                            editCallBack);
-                    } else {
-                        CmsOptionDialog dialog = new CmsOptionDialog(
-                            Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
-                            editOptions,
-                            new I_CmsSimpleCallback<String>() {
+                        };
+                        if (editOptions == null) {
+                            internalOpenDialog(element, element.getId(), inline);
+                        } else if (editOptions.getFirst().getOptions().size() == 1) {
+                            m_handler.m_controller.prepareForEdit(
+                                element.getId(),
+                                editOptions.getFirst().getOptions().get(0).getValue(),
+                                editCallBack);
+                        } else {
+                            CmsOptionDialog dialog = new CmsOptionDialog(
+                                Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
+                                editOptions.getFirst(),
+                                editOptions.getSecond(),
+                                new I_CmsSimpleCallback<String>() {
 
-                                public void execute(String arg) {
+                                    public void execute(String arg) {
 
-                                    m_handler.m_controller.prepareForEdit(element.getId(), arg, editCallBack);
+                                        m_handler.m_controller.prepareForEdit(element.getId(), arg, editCallBack);
+                                    }
+                                });
+                            dialog.addDialogClose(new Command() {
+
+                                public void execute() {
+
+                                    cancelEdit();
                                 }
                             });
-                        dialog.addDialogClose(new Command() {
-
-                            public void execute() {
-
-                                cancelEdit();
-                            }
-                        });
-                        dialog.center();
+                            dialog.center();
+                        }
                     }
-                }
-            });
+                });
         } else {
             internalOpenDialog(element, element.getId(), inline);
         }
@@ -227,52 +233,56 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     && editableData.getElementName().startsWith(editableData.getStructureId().toString()))
                     ? editableData.getElementName()
                     : editableData.getStructureId().toString();
-                m_handler.m_controller.getEditOptions(elementId, true, new I_CmsSimpleCallback<CmsDialogOptions>() {
+                m_handler.m_controller.getEditOptions(
+                    elementId,
+                    true,
+                    new I_CmsSimpleCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>>() {
 
-                    public void execute(CmsDialogOptions editOptions) {
+                        public void execute(CmsPair<CmsDialogOptions, CmsListInfoBean> editOptions) {
 
-                        final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
+                            final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
 
-                            public void execute(CmsUUID arg) {
+                                public void execute(CmsUUID arg) {
 
-                                I_CmsEditableData data = editableData;
-                                if (!data.getStructureId().equals(arg)) {
-                                    // the content structure ID has changed, change the editableData
-                                    data = new CmsEditableData(data);
-                                    ((CmsEditableData)data).setStructureId(arg);
+                                    I_CmsEditableData data = editableData;
+                                    if (!data.getStructureId().equals(arg)) {
+                                        // the content structure ID has changed, change the editableData
+                                        data = new CmsEditableData(data);
+                                        ((CmsEditableData)data).setStructureId(arg);
+                                    }
+                                    internalOpenDialog(data, isNew, dependingElementId, mode);
                                 }
-                                internalOpenDialog(data, isNew, dependingElementId, mode);
-                            }
-                        };
-                        if (editOptions == null) {
-                            internalOpenDialog(editableData, isNew, dependingElementId, mode);
-                        } else if (editOptions.getOptions().size() == 1) {
-                            m_handler.m_controller.prepareForEdit(
-                                elementId,
-                                editOptions.getOptions().get(0).getValue(),
-                                editCallBack);
-                        } else {
-                            CmsOptionDialog dialog = new CmsOptionDialog(
-                                Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
-                                editOptions,
-                                new I_CmsSimpleCallback<String>() {
+                            };
+                            if (editOptions == null) {
+                                internalOpenDialog(editableData, isNew, dependingElementId, mode);
+                            } else if (editOptions.getFirst().getOptions().size() == 1) {
+                                m_handler.m_controller.prepareForEdit(
+                                    elementId,
+                                    editOptions.getFirst().getOptions().get(0).getValue(),
+                                    editCallBack);
+                            } else {
+                                CmsOptionDialog dialog = new CmsOptionDialog(
+                                    Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
+                                    editOptions.getFirst(),
+                                    editOptions.getSecond(),
+                                    new I_CmsSimpleCallback<String>() {
 
-                                    public void execute(String arg) {
+                                        public void execute(String arg) {
 
-                                        m_handler.m_controller.prepareForEdit(elementId, arg, editCallBack);
+                                            m_handler.m_controller.prepareForEdit(elementId, arg, editCallBack);
+                                        }
+                                    });
+                                dialog.addDialogClose(new Command() {
+
+                                    public void execute() {
+
+                                        cancelEdit();
                                     }
                                 });
-                            dialog.addDialogClose(new Command() {
-
-                                public void execute() {
-
-                                    cancelEdit();
-                                }
-                            });
-                            dialog.center();
+                                dialog.center();
+                            }
                         }
-                    }
-                });
+                    });
             } else {
                 internalOpenDialog(editableData, isNew, dependingElementId, mode);
             }

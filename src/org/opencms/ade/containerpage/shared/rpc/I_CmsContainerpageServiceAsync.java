@@ -39,6 +39,8 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -160,7 +162,7 @@ public interface I_CmsContainerpageServiceAsync {
         String clientId,
         CmsUUID pageStructureId,
         String requestParams,
-        AsyncCallback<CmsDialogOptions> callback);
+        AsyncCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>> callback);
 
     /**
      * Returns the edit options.<p>
@@ -176,7 +178,7 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID pageStructureId,
         String requestParams,
         boolean isListElement,
-        AsyncCallback<CmsDialogOptions> callback);
+        AsyncCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>> callback);
 
     /**
      * This method is used for serialization purposes only.<p>

@@ -40,6 +40,8 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -171,7 +173,10 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsDialogOptions getDeleteOptions(String clientId, CmsUUID pageStructureId, String requestParams)
+    CmsPair<CmsDialogOptions, CmsListInfoBean> getDeleteOptions(
+        String clientId,
+        CmsUUID pageStructureId,
+        String requestParams)
     throws CmsRpcException;
 
     /**
@@ -186,7 +191,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsDialogOptions getEditOptions(
+    CmsPair<CmsDialogOptions, CmsListInfoBean> getEditOptions(
         String clientId,
         CmsUUID pageStructureId,
         String requestParams,

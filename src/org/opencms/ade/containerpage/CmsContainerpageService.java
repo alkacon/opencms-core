@@ -711,7 +711,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getDeleteOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsDialogOptions getDeleteOptions(String clientId, CmsUUID pageId, String requestParams)
+    public CmsPair<CmsDialogOptions, CmsListInfoBean> getDeleteOptions(
+        String clientId,
+        CmsUUID pageId,
+        String requestParams)
     throws CmsRpcException {
 
         try {
@@ -725,7 +728,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsEncoder.decode(requestParams),
                     true,
                     CmsEncoder.ENCODING_UTF_8);
-                return handler.getDeleteOptions(getCmsObject(), element, pageId, params);
+                return new CmsPair<CmsDialogOptions, CmsListInfoBean>(
+                    handler.getDeleteOptions(getCmsObject(), element, pageId, params),
+                    CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
             }
         } catch (CmsException e) {
             error(e);
@@ -736,7 +741,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getEditOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String, boolean)
      */
-    public CmsDialogOptions getEditOptions(String clientId, CmsUUID pageId, String requestParams, boolean isListElement)
+    public CmsPair<CmsDialogOptions, CmsListInfoBean> getEditOptions(
+        String clientId,
+        CmsUUID pageId,
+        String requestParams,
+        boolean isListElement)
     throws CmsRpcException {
 
         try {
@@ -750,7 +759,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsEncoder.decode(requestParams),
                     true,
                     CmsEncoder.ENCODING_UTF_8);
-                return handler.getEditOptions(getCmsObject(), element, pageId, params, isListElement);
+                return new CmsPair<CmsDialogOptions, CmsListInfoBean>(
+                    handler.getEditOptions(getCmsObject(), element, pageId, params, isListElement),
+                    CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
             }
         } catch (CmsException e) {
             error(e);

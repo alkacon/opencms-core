@@ -39,6 +39,8 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -223,25 +225,28 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
                 }
             };
 
-            CmsContainerpageController.get().getDeleteOptions(elementId, new I_CmsSimpleCallback<CmsDialogOptions>() {
+            CmsContainerpageController.get().getDeleteOptions(
+                elementId,
+                new I_CmsSimpleCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>>() {
 
-                public void execute(CmsDialogOptions arg) {
+                    public void execute(CmsPair<CmsDialogOptions, CmsListInfoBean> arg) {
 
-                    if (arg == null) {
-                        deleteCallback.execute(CmsDialogOptions.REGULAR_DELETE);
-                    } else if (arg.getOptions().size() == 1) {
-                        String deleteOpt = arg.getOptions().get(0).getValue();
-                        deleteCallback.execute(deleteOpt);
+                        if (arg == null) {
+                            deleteCallback.execute(CmsDialogOptions.REGULAR_DELETE);
+                        } else if (arg.getFirst().getOptions().size() == 1) {
+                            String deleteOpt = arg.getFirst().getOptions().get(0).getValue();
+                            deleteCallback.execute(deleteOpt);
 
-                    } else {
-                        CmsOptionDialog dialog = new CmsOptionDialog(
-                            Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0),
-                            arg,
-                            deleteCallback);
-                        dialog.center();
+                        } else {
+                            CmsOptionDialog dialog = new CmsOptionDialog(
+                                Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0),
+                                arg.getFirst(),
+                                arg.getSecond(),
+                                deleteCallback);
+                            dialog.center();
+                        }
                     }
-                }
-            });
+                });
         } else {
             openWarningDialog();
         }

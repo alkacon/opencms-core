@@ -76,6 +76,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsDefaultSet;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -1472,9 +1473,11 @@ public final class CmsContainerpageController {
      * @param clientId the content id
      * @param callback the callback to execute
      */
-    public void getDeleteOptions(final String clientId, final I_CmsSimpleCallback<CmsDialogOptions> callback) {
+    public void getDeleteOptions(
+        final String clientId,
+        final I_CmsSimpleCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>> callback) {
 
-        CmsRpcAction<CmsDialogOptions> action = new CmsRpcAction<CmsDialogOptions>() {
+        CmsRpcAction<CmsPair<CmsDialogOptions, CmsListInfoBean>> action = new CmsRpcAction<CmsPair<CmsDialogOptions, CmsListInfoBean>>() {
 
             @Override
             public void execute() {
@@ -1487,7 +1490,7 @@ public final class CmsContainerpageController {
             }
 
             @Override
-            protected void onResponse(CmsDialogOptions result) {
+            protected void onResponse(CmsPair<CmsDialogOptions, CmsListInfoBean> result) {
 
                 callback.execute(result);
             }
@@ -1525,9 +1528,9 @@ public final class CmsContainerpageController {
     public void getEditOptions(
         final String clientId,
         final boolean isListElement,
-        final I_CmsSimpleCallback<CmsDialogOptions> callback) {
+        final I_CmsSimpleCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>> callback) {
 
-        CmsRpcAction<CmsDialogOptions> action = new CmsRpcAction<CmsDialogOptions>() {
+        CmsRpcAction<CmsPair<CmsDialogOptions, CmsListInfoBean>> action = new CmsRpcAction<CmsPair<CmsDialogOptions, CmsListInfoBean>>() {
 
             @Override
             public void execute() {
@@ -1541,7 +1544,7 @@ public final class CmsContainerpageController {
             }
 
             @Override
-            protected void onResponse(CmsDialogOptions result) {
+            protected void onResponse(CmsPair<CmsDialogOptions, CmsListInfoBean> result) {
 
                 callback.execute(result);
             }

@@ -29,16 +29,21 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.ade.containerpage.shared.CmsDialogOptions.Option;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -54,20 +59,42 @@ public class CmsOptionDialog extends CmsPopup {
      *
      * @param caption the default dialog caption
      * @param options the available options
+     * @param resourceInfo the resource info if available
      * @param onSelect the on select callback
      */
-    public CmsOptionDialog(String caption, CmsDialogOptions options, final I_CmsSimpleCallback<String> onSelect) {
+    public CmsOptionDialog(
+        String caption,
+        CmsDialogOptions options,
+        CmsListInfoBean resourceInfo,
+        final I_CmsSimpleCallback<String> onSelect) {
         super(CmsStringUtil.isNotEmptyOrWhitespaceOnly(options.getTitle()) ? options.getTitle() : caption);
-        VerticalPanel panel = new VerticalPanel();
+        setModal(true);
+        setGlassEnabled(true);
+        FlowPanel panel = new FlowPanel();
+        if (resourceInfo != null) {
+            CmsListItemWidget resourceInfoWidget = new CmsListItemWidget(resourceInfo);
+            panel.add(resourceInfoWidget);
+        }
+        VerticalPanel innerContent = new VerticalPanel();
+        innerContent.setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().border());
+        innerContent.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        innerContent.getElement().getStyle().setProperty(
+            "marginTop",
+            I_CmsLayoutBundle.INSTANCE.constants().css().defaultSpace());
+        innerContent.getElement().getStyle().setPadding(10, Unit.PX);
+        innerContent.setWidth("100%");
+        panel.add(innerContent);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(options.getInfo())) {
-            panel.add(new Label(options.getInfo()));
+            HTML infoHTML = new HTML(options.getInfo());
+            infoHTML.getElement().getStyle().setMarginBottom(10, Unit.PX);
+            innerContent.add(infoHTML);
         }
         m_buttonGroup = new CmsRadioButtonGroup();
         boolean valueSet = false;
         for (Option option : options.getOptions()) {
             CmsRadioButton radioButton = new CmsRadioButton(option.getValue(), option.getLabel());
             radioButton.setGroup(m_buttonGroup);
-            panel.add(radioButton);
+            innerContent.add(radioButton);
             if (option.isDisabled()) {
                 radioButton.setEnabled(false);
             } else if (!valueSet) {
