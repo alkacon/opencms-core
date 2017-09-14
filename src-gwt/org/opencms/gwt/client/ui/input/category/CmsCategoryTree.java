@@ -247,7 +247,8 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         public void onClick(ClickEvent event) {
 
             if (isEnabled()) {
-                if (!m_item.getCheckBox().isChecked()) {
+                boolean checked = m_item.getCheckBox().isChecked();
+                if (!checked) {
                     if (m_isSingleSelection) {
                         deselectAll(m_item.getId());
                         m_singleResult = m_item.getId();
@@ -266,7 +267,8 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                         deselectParent(m_item);
                     }
                 }
-                m_item.getCheckBox().setChecked(!m_item.getCheckBox().isChecked());
+
+                m_item.getCheckBox().setChecked(!checked);
                 fireValueChange();
             }
         }
@@ -1058,7 +1060,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         // bild the CmsTreeItem out of the widget and the check box
         CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, dataValue);
         // abb the handler to the check box
-        dataValue.addDomHandler(new DataValueClickHander(treeItem), ClickEvent.getType());
+        dataValue.addClickHandler(new DataValueClickHander(treeItem));
 
         checkBox.addValueChangeHandler(new CheckBoxValueChangeHandler(treeItem));
         // set the right style for the small view
