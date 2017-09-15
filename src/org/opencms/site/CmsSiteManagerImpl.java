@@ -1509,7 +1509,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         for (int i = 0, size = m_additionalSiteRoots.size(); i < size; i++) {
             String siteRoot = m_additionalSiteRoots.get(i);
-            if (rootPath.startsWith(siteRoot)) {
+            if (rootPath.startsWith(siteRoot + "/")) {
                 return siteRoot;
             }
         }
