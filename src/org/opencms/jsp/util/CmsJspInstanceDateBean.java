@@ -247,7 +247,7 @@ public class CmsJspInstanceDateBean {
      */
     private DateFormat getDateFormat(CmsDateFormatOption option) {
 
-        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_DATE + option), m_series.getLocale());
+        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_DATE + option + "_0"), m_series.getLocale());
     }
 
     /**
@@ -257,7 +257,7 @@ public class CmsJspInstanceDateBean {
      */
     private DateFormat getDateTimeFormat(CmsDateFormatOption option) {
 
-        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_DATE_TIME + option), m_series.getLocale());
+        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_DATE_TIME + option + "_0"), m_series.getLocale());
     }
 
     /**
@@ -310,6 +310,6 @@ public class CmsJspInstanceDateBean {
      */
     private DateFormat getTimeFormat(CmsDateFormatOption option) {
 
-        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_TIME + option), m_series.getLocale());
+        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_TIME + option + "_0"), m_series.getLocale());
     }
 }

@@ -68,40 +68,40 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_REASON_0 = "GUI_REASON_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_DATE_SHORT = "GUI_PATTERN_DATE_SHORT";
+    public static final String GUI_PATTERN_DATE_SHORT_0 = "GUI_PATTERN_DATE_SHORT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_DATE_SHORT_DAY = "GUI_PATTERN_DATE_SHORT_DAY";
+    public static final String GUI_PATTERN_DATE_SHORT_DAY_0 = "GUI_PATTERN_DATE_SHORT_DAY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_DATE_LONG = "GUI_PATTERN_DATE_LONG";
+    public static final String GUI_PATTERN_DATE_LONG_0 = "GUI_PATTERN_DATE_LONG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_DATE_LONG_DAY = "GUI_PATTERN_DATE_LONG_DAY";
+    public static final String GUI_PATTERN_DATE_LONG_DAY_0 = "GUI_PATTERN_DATE_LONG_DAY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_DATE_TIME_SHORT = "GUI_PATTERN_DATE_TIME_SHORT";
+    public static final String GUI_PATTERN_DATE_TIME_SHORT_0 = "GUI_PATTERN_DATE_TIME_SHORT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_DATE_TIME_SHORT_DAY = "GUI_PATTERN_DATE_TIME_SHORT_DAY";
+    public static final String GUI_PATTERN_DATE_TIME_SHORT_DAY_0 = "GUI_PATTERN_DATE_TIME_SHORT_DAY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_DATE_TIME_LONG = "GUI_PATTERN_DATE_TIME_LONG";
+    public static final String GUI_PATTERN_DATE_TIME_LONG_0 = "GUI_PATTERN_DATE_TIME_LONG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_DATE_TIME_LONG_DAY = "GUI_PATTERN_DATE_TIME_LONG_DAY";
+    public static final String GUI_PATTERN_DATE_TIME_LONG_DAY_0 = "GUI_PATTERN_DATE_TIME_LONG_DAY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_TIME_SHORT = "GUI_PATTERN_TIME_SHORT";
+    public static final String GUI_PATTERN_TIME_SHORT_0 = "GUI_PATTERN_TIME_SHORT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_TIME_SHORT_DAY = "GUI_PATTERN_TIME_SHORT_DAY";
+    public static final String GUI_PATTERN_TIME_SHORT_DAY_0 = "GUI_PATTERN_TIME_SHORT_DAY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_TIME_LONG = "GUI_PATTERN_TIME_LONG";
+    public static final String GUI_PATTERN_TIME_LONG_0 = "GUI_PATTERN_TIME_LONG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PATTERN_TIME_LONG_DAY = "GUI_PATTERN_TIME_LONG_DAY";
+    public static final String GUI_PATTERN_TIME_LONG_DAY_0 = "GUI_PATTERN_TIME_LONG_DAY_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.util.messages";
