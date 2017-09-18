@@ -57,25 +57,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CACHE_IMAGE_INTRODUCTION_0 = "GUI_CACHE_IMAGE_INTRODUCTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CACHE_IMAGE_NO_RESULTS_0 = "GUI_CACHE_IMAGE_NO_RESULTS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_HELP_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CACHE_STATISTICS_TOOL_NAME_0 = "GUI_CACHE_STATISTICS_TOOL_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CACHE_STATISTICS_TOOL_HELP_0 = "GUI_CACHE_STATISTICS_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";
@@ -109,22 +91,31 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_CONF_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_GROUP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEX_0 = "GUI_CACHE_FLEX_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_CONF_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_GROUP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_FLEXCACHE_CLEAN_ADMIN_TOOL_NAME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_MODE_ALL_0 = "GUI_CACHE_FLEXCACHE_CLEAN_MODE_ALL_0";
     /** Message constant for key in the resource bundle. */
@@ -168,6 +159,10 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0 = "GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0";
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGE_INTRODUCTION_0 = "GUI_CACHE_IMAGE_INTRODUCTION_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGE_NO_RESULTS_0 = "GUI_CACHE_IMAGE_NO_RESULTS_0";
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_GROUP_0";
@@ -175,6 +170,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_HELP_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_HELP_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0 = "GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0";
     /** Message constant for key in the resource bundle. */
@@ -218,18 +217,19 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_REINI_TOOL_NAME_HELP_0 = "GUI_CACHE_REINI_TOOL_NAME_HELP_0";
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_STATISTICS_TOOL_HELP_0 = "GUI_CACHE_STATISTICS_TOOL_HELP_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_STATISTICS_TOOL_NAME_0 = "GUI_CACHE_STATISTICS_TOOL_NAME_0";
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_FLEX_0 = "GUI_CACHE_VIEW_FLEX_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_FLEX_HELP_0 = "GUI_CACHE_VIEW_FLEX_HELP_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_FLEX_VARIATIONS_1 = "GUI_CACHE_VIEW_FLEX_VARIATIONS_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_IMAGE_0 = "GUI_CACHE_VIEW_IMAGE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_IMAGE_HELP_0 = "GUI_CACHE_VIEW_IMAGE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_IMAGE_VARIATIONS_1 = "GUI_CACHE_VIEW_IMAGE_VARIATIONS_1";
 
@@ -439,6 +439,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_PROPERTY_PANEL_0 = "GUI_DATABASEAPP_PROPERTY_PANEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_PROPERTY_REPORT_0 = "GUI_DATABASEAPP_PROPERTY_REPORT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_PROPERTY_TABLE_0 = "GUI_DATABASEAPP_PROPERTY_TABLE_0";
@@ -2362,6 +2365,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_GROUP_OU_HELP_0 = "GUI_USERMANAGEMENT_GROUP_OU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_NO_RESOURCES_WITH_PERMISSIONS_0 = "GUI_USERMANAGEMENT_NO_RESOURCES_WITH_PERMISSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_SHOW_RESOURCES_0 = "GUI_USERMANAGEMENT_SHOW_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_ADDRESS_0 = "GUI_USERMANAGEMENT_USER_ADDRESS_0";

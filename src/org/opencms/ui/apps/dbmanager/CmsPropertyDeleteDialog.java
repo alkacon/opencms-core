@@ -167,6 +167,15 @@ public class CmsPropertyDeleteDialog extends CmsBasicDialog {
 
                     thread.start();
                     m_cancelButton.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_DIALOG_BUTTON_CLOSE_0));
+                    m_cancelButton.addClickListener(new ClickListener() {
+
+                        public void buttonClick(ClickEvent event) {
+
+                            runnable.run();
+
+                        }
+
+                    });
                     return;
                 }
                 try {
