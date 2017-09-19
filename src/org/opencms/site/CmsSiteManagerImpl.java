@@ -361,6 +361,19 @@ public final class CmsSiteManagerImpl {
         }
     }
 
+    public List<CmsSite> getAvailableCorruptedSites(CmsObject cms, boolean workplaceMode) {
+
+        List<CmsSite> res = new ArrayList<CmsSite>();
+        List<CmsSite> visSites = getAvailableSites(cms, workplaceMode);
+        Map<CmsSiteMatcher, CmsSite> allsites = getSites();
+        for (CmsSiteMatcher matcher : allsites.keySet()) {
+            if (!visSites.contains(allsites.get(matcher))) {
+                res.add(allsites.get(matcher));
+            }
+        }
+        return res;
+    }
+
     /**
      * Returns a list of all sites available (visible) for the current user.<p>
      *

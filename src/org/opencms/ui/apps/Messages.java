@@ -118,8 +118,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_MODE_ALL_0 = "GUI_CACHE_FLEXCACHE_CLEAN_MODE_ALL_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_CLEAN_MODE_VARIATIONS_0 = "GUI_CACHE_FLEXCACHE_CLEAN_MODE_VARIATIONS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0";
     /** Message constant for key in the resource bundle. */
@@ -232,10 +234,8 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_VIEW_IMAGE_HELP_0 = "GUI_CACHE_VIEW_IMAGE_HELP_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_VIEW_IMAGE_VARIATIONS_1 = "GUI_CACHE_VIEW_IMAGE_VARIATIONS_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTENT_EDITOR_TITLE_2 = "GUI_CONTENT_EDITOR_TITLE_2";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_ADMIN_TOOL_HELP_0 = "GUI_DATABASEAPP_ADMIN_TOOL_HELP_0";
 
@@ -2068,6 +2068,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_SHAREDFOLDER_WRONGFORMAT_0 = "GUI_SITE_SHAREDFOLDER_WRONGFORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SITEROOT_0 = "GUI_SITE_SITEROOT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SITEROOT_WRONG_0 = "GUI_SITE_SITEROOT_WRONG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_SITETEMPLATE_0 = "GUI_SITE_SITETEMPLATE_0";

@@ -181,9 +181,19 @@ public class CmsSitesTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            return (data != null) && (data.size() == 1)
-            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
-            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            if (data == null) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            if (data.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            if (!((Boolean)getItem(data.iterator().next()).getItemProperty(PROP_OK).getValue()).booleanValue()) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
     }
@@ -236,9 +246,19 @@ public class CmsSitesTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            return (data != null) && (data.size() == 1)
-            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
-            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            if (data == null) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            if (data.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            if (!((Boolean)getItem(data.iterator().next()).getItemProperty(PROP_OK).getValue()).booleanValue()) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
     }
@@ -304,6 +324,9 @@ public class CmsSitesTable extends Table {
     /**Site title property.*/
     public static final String PROP_TITLE = "title";
 
+    /**Is site config ok? */
+    public static final String PROP_OK = "ok";
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4655464609332605219L;
 
@@ -311,7 +334,7 @@ public class CmsSitesTable extends Table {
     CmsSiteManager m_manager;
 
     /** The data container. */
-    private IndexedContainer m_container;
+    IndexedContainer m_container;
 
     /** The context menu. */
     private CmsContextMenu m_menu;
@@ -320,7 +343,7 @@ public class CmsSitesTable extends Table {
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
     /**Counter for valid sites.*/
-    private int m_siteCounter = 0;
+    private int m_siteCounter;
 
     /**
      * Constructor.<p>
@@ -340,6 +363,7 @@ public class CmsSitesTable extends Table {
         m_container.addContainerProperty(PROP_PATH, String.class, "");
         m_container.addContainerProperty(PROP_ALIASES, String.class, "");
         m_container.addContainerProperty(PROP_SECURESITES, String.class, "");
+        m_container.addContainerProperty(PROP_OK, Boolean.class, new Boolean(true));
 
         setContainerDataSource(m_container);
         setColumnHeader(PROP_ICON, "");
@@ -375,14 +399,25 @@ public class CmsSitesTable extends Table {
 
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
+                String styles = "";
+
                 if (PROP_SERVER.equals(propertyId)) {
-                    return " " + OpenCmsTheme.HOVER_COLUMN;
+                    styles += " " + OpenCmsTheme.HOVER_COLUMN;
                 }
                 if (PROP_TITLE.equals(propertyId)
                     & ((Boolean)source.getItem(itemId).getItemProperty(PROP_IS_WEBSERVER).getValue()).booleanValue()) {
-                    return " " + OpenCmsTheme.IN_NAVIGATION;
+                    styles += " " + OpenCmsTheme.IN_NAVIGATION;
                 }
-                return null;
+
+                if (!((Boolean)source.getItem(itemId).getItemProperty(PROP_OK).getValue()).booleanValue()) {
+                    styles += " " + OpenCmsTheme.EXPIRED;
+                }
+
+                if (styles.isEmpty()) {
+                    return null;
+                }
+
+                return styles;
             }
         });
 
@@ -456,6 +491,21 @@ public class CmsSitesTable extends Table {
                 if (site.hasSecureServer()) {
                     item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
                 }
+            }
+        }
+        for (CmsSite site : OpenCms.getSiteManager().getAvailableCorruptedSites(m_manager.getRootCmsObject(), true)) {
+
+            Item item = m_container.addItem(site.getSiteRoot());
+            item.getItemProperty(PROP_ICON).setValue(
+                new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML));
+            item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
+            item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
+            item.getItemProperty(PROP_IS_WEBSERVER).setValue(new Boolean(site.isWebserver()));
+            item.getItemProperty(PROP_PATH).setValue(site.getSiteRoot());
+            item.getItemProperty(PROP_ALIASES).setValue(getNiceStringFormList(site.getAliases()));
+            item.getItemProperty(PROP_OK).setValue(new Boolean(false));
+            if (site.hasSecureServer()) {
+                item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
             }
         }
     }

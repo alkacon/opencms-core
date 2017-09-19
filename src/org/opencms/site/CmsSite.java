@@ -640,6 +640,21 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Sets the server URL prefix to which this site is mapped.<p>
+     *
+     * @param siteRoot the server URL prefix to which this site is mapped
+     */
+    public void setSiteRoot(String siteRoot) {
+
+        // site roots must never end with a "/"
+        if (siteRoot.endsWith("/")) {
+            m_siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
+        } else {
+            m_siteRoot = siteRoot;
+        }
+    }
+
+    /**
      * Enables use of permanent redirects instead of temporary redirects to the secure site.<p>
      *
      * @param usePermanentRedirects true if permanent redirects should be used
@@ -752,21 +767,6 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     protected void setSiteMatcher(CmsSiteMatcher siteMatcher) {
 
         m_siteMatcher = siteMatcher;
-    }
-
-    /**
-     * Sets the server URL prefix to which this site is mapped.<p>
-     *
-     * @param siteRoot the server URL prefix to which this site is mapped
-     */
-    protected void setSiteRoot(String siteRoot) {
-
-        // site roots must never end with a "/"
-        if (siteRoot.endsWith("/")) {
-            m_siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
-        } else {
-            m_siteRoot = siteRoot;
-        }
     }
 
     /**

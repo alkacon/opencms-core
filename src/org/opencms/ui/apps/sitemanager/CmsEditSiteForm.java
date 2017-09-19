@@ -383,6 +383,29 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Validator for site root (in case of editing a site, fails for broken sites.<p>
+     */
+    class SiteRootValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = 7499390905843603642L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            try {
+                m_clonedCms.readResource((String)value);
+            } catch (CmsException e) {
+                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SITEROOT_WRONG_0));
+            }
+
+        }
+
+    }
+
+    /**
      * Validator for Site Template selection field.<p>
      */
     class SiteTemplateValidator implements Validator {
@@ -546,6 +569,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**boolean indicates if folder name was changed by user.*/
     private boolean m_isFolderNameTouched;
 
+    /**vaadin component.*/
+    private CmsPathSelectField m_simpleFieldSiteRoot;
+
     /** The site manager instance.*/
     CmsSiteManager m_manager;
 
@@ -595,6 +621,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             LOG.error("Error cloning cms object", e);
         }
         List<CmsSite> allSites = OpenCms.getSiteManager().getAvailableSites(m_clonedCms, true);
+        allSites.addAll(OpenCms.getSiteManager().getAvailableCorruptedSites(m_clonedCms, true));
 
         for (CmsSite site : allSites) {
             if (site.getSiteMatcher() != null) {
@@ -604,6 +631,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        m_simpleFieldSiteRoot.setVisible(false);
 
         if (!OpenCms.getSiteManager().isConfigurableWebServer()) {
             m_fieldWebServer.setVisible(false);
@@ -775,6 +804,25 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     public CmsEditSiteForm(CmsSiteManager manager, String siteRoot) {
         this(manager);
+
+        m_simpleFieldSiteRoot.setVisible(true);
+        m_simpleFieldSiteRoot.setValue(siteRoot);
+        m_simpleFieldSiteRoot.setCmsObject(m_clonedCms);
+        m_simpleFieldSiteRoot.addValidator(new SiteRootValidator());
+        m_simpleFieldSiteRoot.addValueChangeListener(new ValueChangeListener() {
+
+            /**vaadin serial id. */
+            private static final long serialVersionUID = 4680456758446195524L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                setTemplateField();
+            }
+
+        });
+        m_simpleFieldParentFolderName.setVisible(false);
+        m_simpleFieldFolderName.setVisible(false);
+
         m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
         displayResourceInfoDirectly(
             Collections.singletonList(
@@ -819,20 +867,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         for (CmsSiteMatcher siteMatcher : siteAliases) {
             addAlias(siteMatcher.getUrl());
         }
+        setTemplateField();
 
-        try {
-            CmsProperty template = m_clonedCms.readPropertyObject(
-                siteRoot,
-                CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                false);
-            if (template.isNullProperty()) {
-                m_simpleFieldTemplate.setValue(null);
-            } else {
-                m_simpleFieldTemplate.setValue(template.getStructureValue());
-            }
-        } catch (CmsException e) {
-            m_simpleFieldTemplate.setValue(null);
-        }
         setUpComboBoxPosition();
 
         if (!m_fieldSecureServer.isEmpty()) {
@@ -851,6 +887,26 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     static String getFolderNameFromSiteRoot(String siteRoot) {
 
         return siteRoot.split("/")[siteRoot.split("/").length - 1];
+    }
+
+    /**
+     * Sets the template field depending on current set site root field(s).<p>
+     */
+    protected void setTemplateField() {
+
+        try {
+            CmsProperty template = m_clonedCms.readPropertyObject(
+                getSiteRoot(),
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                false);
+            if (template.isNullProperty()) {
+                m_simpleFieldTemplate.setValue(null);
+            } else {
+                m_simpleFieldTemplate.setValue(template.getStructureValue());
+            }
+        } catch (CmsException e) {
+            m_simpleFieldTemplate.setValue(null);
+        }
     }
 
     /**
@@ -1008,7 +1064,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             & m_simpleFieldServer.isValid()
             & m_simpleFieldTitle.isValid()
             & m_simpleFieldParentFolderName.isValid()
-            & m_fieldSelectOU.isValid());
+            & m_fieldSelectOU.isValid()
+            & m_simpleFieldSiteRoot.isValid());
     }
 
     /**
@@ -1434,8 +1491,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     private CmsSite getSiteFromForm() {
 
-        String siteRoot = "/" + ensureFoldername(getParentFolder()) + ensureFoldername(getFieldFolder());
-        siteRoot = siteRoot.endsWith("/") ? siteRoot.substring(0, siteRoot.length() - 1) : siteRoot;
+        String siteRoot = getSiteRoot();
         CmsSiteMatcher matcher = CmsStringUtil.isNotEmpty(m_fieldSecureServer.getValue())
         ? new CmsSiteMatcher(m_fieldSecureServer.getValue())
         : null;
@@ -1465,6 +1521,24 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         ret.setParameters((SortedMap<String, String>)getParameter());
 
         return ret;
+    }
+
+    /**
+     * Gets the site root.<p>
+     *
+     * @return site root string
+     */
+    private String getSiteRoot() {
+
+        String res;
+
+        if (m_simpleFieldSiteRoot.isVisible()) {
+            res = m_simpleFieldSiteRoot.getValue();
+        } else {
+            res = "/" + ensureFoldername(getParentFolder()) + ensureFoldername(getFieldFolder());
+            res = res.endsWith("/") ? res.substring(0, res.length() - 1) : res;
+        }
+        return res;
     }
 
     /**
