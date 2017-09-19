@@ -37,10 +37,13 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet.SortOrder;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
+import org.opencms.relations.CmsLink;
 import org.opencms.ui.apps.lists.CmsListManager;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Collections;
@@ -426,7 +429,8 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 if (!first) {
                     result += " OR ";
                 }
-                result += "\"" + m_cms.getRequestContext().addSiteRoot(value.getStringValue(m_cms)) + "\"";
+                CmsLink link = ((CmsXmlVfsFileValue)value).getLink(m_cms);
+                result += "\"" + CmsFileUtil.normalizePath(link.getSiteRoot() + link.getSitePath()) + "\"";
                 first = false;
             }
         }
