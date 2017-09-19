@@ -281,7 +281,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					<property>
 						<name>locale</name>
 						<value><![CDATA[en]]></value>
-					</property>				
+					</property>
 					<property>
 						<name>search.exclude</name>
 						<value>all</value>
@@ -289,7 +289,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/bundledescriptor.xsd
 				</param>
-			</type>			
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="listconfig" id="321">
 				<properties>
@@ -300,11 +300,11 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					<property>
 						<name>locale</name>
 						<value><![CDATA[en]]></value>
-					</property>				
+					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/list_config.xsd
 				</param>
-			</type>	
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeMacroFormatter" name="flex_formatter" id="322">
 				<properties>
 					<property>
@@ -610,7 +610,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					order="29" autosetnavigation="false" autosettitle="false"
 					info="desc.listconfig" />
 				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER"
+					<accessentry principal="ROLE.EDITOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
