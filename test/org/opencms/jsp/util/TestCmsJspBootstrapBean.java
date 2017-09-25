@@ -59,24 +59,50 @@ public class TestCmsJspBootstrapBean extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsJspBootstrapBean.class.getName());
 
+        suite.addTest(new TestCmsJspBootstrapBean("testApolloClasses"));
         suite.addTest(new TestCmsJspBootstrapBean("testBoostrapBean"));
+        suite.addTest(new TestCmsJspBootstrapBean("testHiddenColumns"));
 
         return suite;
     }
 
     /**
-     * Tests if the correct event info is returned.
+     * Tests if the correct grid sizes are calculated for special Apollo CSS classes.
+     */
+    public void testApolloClasses() {
+
+        CmsJspBootstrapBean bb = new CmsJspBootstrapBean();
+        bb.addLayer("col-xs-12");
+        bb.addLayer("tile-sm-6 tile-md-3 tile-lg-3");
+        System.out.println(bb.toString());
+        assertEquals("xs=345px(100,00%) sm=345px(50,00%) md=213px(25,00%) lg=263px(25,00%)", bb.toString());
+
+        bb = new CmsJspBootstrapBean();
+        bb.addLayer("col-md-8 hidden-md");
+        bb.addLayer("tile-sm-6 tile-md-3 tile-lg-3");
+        System.out.println(bb.toString());
+        assertEquals("xs=345px(100,00%) sm=345px(50,00%) md=0px(0,00%) lg=165px(16,67%)", bb.toString());
+
+        bb = new CmsJspBootstrapBean();
+        bb.addLayer("col-lg-6");
+        bb.addLayer("square-md-6 square-lg-6");
+        System.out.println(bb.toString());
+        assertEquals("xs=345px(100,00%) sm=720px(100,00%) md=455px(50,00%) lg=263px(25,00%)", bb.toString());
+    }
+
+    /**
+     * Tests if the correct grid sizes are calculated for default bootstrap CSS classes.
      */
     public void testBoostrapBean() {
 
         CmsJspBootstrapBean bb = new CmsJspBootstrapBean();
 
-        // manual bean construction, not normally done
+        // manual bean construction
         bb.addLayer("col-sm-6 col-md-4 col-lg-3");
         bb.addLayer("col-sm-6 hidden-md");
         bb.addLayer("col-xs-6");
         System.out.println(bb.toString());
-        assertEquals("xs: 50.0 sm: 12.5 md: 0.0 lg: 6.25 xl: 6.25", bb.toString());
+        assertEquals("xs=158px(50,00%) sm=64px(12,50%) md=0px(0,00%) lg=43px(6,25%)", bb.toString());
 
         // parse a String encountered in the wild
         bb = new CmsJspBootstrapBean();
@@ -99,5 +125,18 @@ public class TestCmsJspBootstrapBean extends OpenCmsTestCase {
         assertEquals(720, bb.getSizeSm());
         assertEquals(293, bb.getSizeMd());
         assertEquals(360, bb.getSizeLg());
+    }
+
+    /**
+     * Tests if the correct grid sizes are calculated for hidden columns.
+     */
+    public void testHiddenColumns() {
+
+        CmsJspBootstrapBean bb = new CmsJspBootstrapBean();
+
+        bb.addLayer("col-xs-12");
+        bb.addLayer("hidden-md");
+        System.out.println(bb.toString());
+        assertEquals("xs=345px(100,00%) sm=720px(100,00%) md=0px(0,00%) lg=1140px(100,00%)", bb.toString());
     }
 }

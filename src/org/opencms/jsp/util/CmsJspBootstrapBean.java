@@ -41,23 +41,28 @@ import java.util.List;
  */
 public class CmsJspBootstrapBean {
 
-    /** The calculated grid columns width in percent (initial value is 100% for all). */
-    protected double[] m_column = {100.0D, 100.0D, 100.0D, 100.0D};
-
-    /** The bootstrap gutter size. */
-    private int m_gutter = 30;
-
-    /** The grid columns width in percent. */
-    protected int[] m_gridSize = {375, 750, 970, 1170};
-
     /** The CSS string this bootstrap bean was initialized with. */
     private String m_css;
 
     /** The array of parent CSS classes. */
     private String[] m_cssArray;
 
+    /** The bootstrap gutter size. */
+    private int m_gutter = 30;
+
     /** Indicates if this bootstrap bean was initialized with at least one column. */
     private boolean m_initialized;
+
+    /** Maximum number of columns for the bootstrap grid. */
+    private int m_maxCols = 12;
+
+    /** The calculated grid columns width in percent (initial value is 100% for all). */
+    protected double[] m_column = {100.0D, 100.0D, 100.0D, 100.0D};
+
+    /** The grid columns width in pixel. */
+    // Note: All columns are set to the bootstrap default "min-width" values.
+    // For XS there is no "min-width", so we set the target size to 375 pixel which is the iPhone 6 display width
+    protected int[] m_gridSize = {375, 750, 970, 1170};
 
     /** public empty constructor for use on JSP.<p> */
     public CmsJspBootstrapBean() {
@@ -73,8 +78,9 @@ public class CmsJspBootstrapBean {
     public void addLayer(int[] gridCols) {
 
         m_initialized = true;
+        double maxCols = Integer.valueOf(m_maxCols).doubleValue();
         for (int i = 0; i < m_column.length; i++) {
-            m_column[i] *= gridCols[i] / 12.0D;
+            m_column[i] *= gridCols[i] / maxCols;
         }
     }
 
@@ -91,11 +97,15 @@ public class CmsJspBootstrapBean {
         int sm = -1;
         int md = -1;
         int lg = -1;
+        boolean hideXs = false;
+        boolean hideSm = false;
+        boolean hideMd = false;
+        boolean hideLg = false;
 
         String[] items = gridCss.toLowerCase().split("\\s+");
         for (String i : items) {
-            if (i.startsWith("col-")) {
-                String iSub = i.substring(4);
+            if (i.startsWith("col-") || i.startsWith("tile-") || i.startsWith("square-")) {
+                String iSub = i.substring(i.indexOf('-') + 1);
                 if (iSub.startsWith("xs-")) {
                     xs = parseCol(i);
                 } else if (iSub.startsWith("sm-")) {
@@ -108,29 +118,30 @@ public class CmsJspBootstrapBean {
             } else if (i.startsWith("hidden-")) {
                 String iSub = i.substring(7);
                 if (iSub.startsWith("xs")) {
-                    xs = 0;
+                    hideXs = true;
                 } else if (iSub.startsWith("sm")) {
-                    sm = 0;
+                    hideSm = true;
                 } else if (iSub.startsWith("md")) {
-                    md = 0;
+                    hideMd = true;
                 } else if (iSub.startsWith("lg")) {
-                    lg = 0;
+                    hideLg = true;
                 }
             }
         }
 
-        int last = 12;
-        xs = (xs < 0) ? last : xs;
-        last = (xs <= 0) ? last : xs;
-        sm = (sm < 0) ? last : sm;
-        last = (sm <= 0) ? last : sm;
-        md = (md < 0) ? last : md;
-        last = (md <= 0) ? last : md;
-        lg = (lg < 0) ? last : lg;
+        int last = m_maxCols;
+        int xsCols = hideXs ? 0 : (xs < 0) ? last : xs;
+        last = (xs < 0) ? last : xs;
+        int smCols = hideSm ? 0 : (sm < 0) ? last : sm;
+        last = (sm < 0) ? last : sm;
+        int mdCols = hideMd ? 0 : (md < 0) ? last : md;
+        last = (md < 0) ? last : md;
+        int lgCols = hideLg ? 0 : (lg < 0) ? last : lg;
+        last = (lg < 0) ? last : lg;
 
-        boolean newLayer = (last != 12);
+        boolean newLayer = (last != m_maxCols) || hideXs || hideSm || hideMd || hideLg;
         if (newLayer) {
-            int[] result = {xs, sm, md, lg};
+            int[] result = {xsCols, smCols, mdCols, lgCols};
             addLayer(result);
         }
         return newLayer;
@@ -376,6 +387,12 @@ public class CmsJspBootstrapBean {
             result = Integer.valueOf(number).intValue();
         } catch (NumberFormatException e) {
             result = -1;
+        }
+        if (result <= 0) {
+            result = -1;
+        }
+        if (result > m_maxCols) {
+            result = m_maxCols;
         }
         return result;
     }
