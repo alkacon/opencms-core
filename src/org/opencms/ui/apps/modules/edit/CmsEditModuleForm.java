@@ -51,6 +51,8 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.components.editablegroup.CmsEditableGroup;
+import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
 import org.opencms.ui.util.CmsComponentField;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
 import org.opencms.util.CmsFileUtil;
@@ -68,6 +70,7 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vaadin.data.Item;
@@ -139,20 +142,11 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** The button to add a new dependency. */
     private Button m_addDependency;
 
-    /** Button to add a new excluded resource. */
-    private Button m_addExcludedResource;
-
     /** Button to add a new export point. */
     private Button m_addExportPoint;
 
-    /** Button to add a new module resource. */
-    private Button m_addModuleResource;
-
     /** The button to add a new module parameter. */
     private Button m_addParameter;
-
-    /** The instance of the module app from which this dialog was opened. */
-    private CmsModuleApp m_app;
 
     /** The text box for the author email address. */
     private TextField m_authorEmail;
@@ -249,6 +243,12 @@ public class CmsEditModuleForm extends CmsBasicDialog {
 
     /** Text box for the version. */
     private TextField m_version;
+
+    /** The group for the excluded module resource fields. */
+    private CmsEditableGroup m_excludedResourcesGroup;
+
+    /** The group for the module resource fields. */
+    private CmsEditableGroup m_moduleResourcesGroup;
 
     /**
      * Creates a new instance.<p>
@@ -360,6 +360,25 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_name.setEnabled(false);
         }
 
+        Supplier<Component> moduleResourceFieldFactory = new Supplier<Component>() {
+
+            public Component get() {
+
+                return createModuleResourceField(null);
+            }
+        };
+        String addResourceButtonText = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_ADD_RESOURCE_0);
+        m_moduleResourcesGroup = new CmsEditableGroup(
+            m_moduleResources,
+            moduleResourceFieldFactory,
+            addResourceButtonText);
+        m_excludedResourcesGroup = new CmsEditableGroup(
+            m_excludedResources,
+            moduleResourceFieldFactory,
+            addResourceButtonText);
+        m_moduleResourcesGroup.init();
+        m_excludedResourcesGroup.init();
+
         Map<String, String> params = module.getParameters();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             addParameter(entry.getKey() + "=" + entry.getValue());
@@ -405,25 +424,6 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 addExportPointRow("", "");
-            }
-        });
-        m_addModuleResource.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                addModuleResource(null);
-            }
-        });
-
-        m_addExcludedResource.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                addExcludedResource(null);
             }
         });
 
@@ -581,10 +581,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_module.setDependencies(dependencies);
 
             List<String> moduleResources = Lists.newArrayList();
-            for (CmsModuleResourceSelectField moduleResField : getFormRowChildren(
-                m_moduleResources,
-                CmsModuleResourceSelectField.class)) {
-                String moduleResource = moduleResField.getValue().trim();
+            for (CmsEditableGroupRow row : m_moduleResourcesGroup.getRows()) {
+                CmsModuleResourceSelectField field = (CmsModuleResourceSelectField)(row.getComponent());
+                String moduleResource = field.getValue().trim();
                 if (!moduleResource.isEmpty()) {
                     moduleResources.add(moduleResource);
                 }
@@ -592,10 +591,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_module.setResources(moduleResources);
 
             List<String> excludedResources = Lists.newArrayList();
-            for (CmsModuleResourceSelectField moduleResField : getFormRowChildren(
-                m_excludedResources,
-                CmsModuleResourceSelectField.class)) {
-                String moduleResource = moduleResField.getValue().trim();
+            for (CmsEditableGroupRow row : m_excludedResourcesGroup.getRows()) {
+                CmsModuleResourceSelectField field = (CmsModuleResourceSelectField)(row.getComponent());
+                String moduleResource = field.getValue().trim();
                 if (!moduleResource.isEmpty()) {
                     excludedResources.add(moduleResource);
                 }
@@ -657,24 +655,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
      */
     void addExcludedResource(String moduleResource) {
 
-        CmsModuleResourceSelectField resField = new CmsModuleResourceSelectField();
-        CmsObject moduleCms = null;
-        try {
-            moduleCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            if (getSelectedSite() != null) {
-                moduleCms.getRequestContext().setSiteRoot(getSelectedSite());
-            }
-            resField.setCmsObject(moduleCms);
-            if (moduleResource != null) {
-                resField.setValue(moduleResource);
-            }
-            CmsRemovableFormRow<CmsModuleResourceSelectField> row = new CmsRemovableFormRow<CmsModuleResourceSelectField>(
-                resField,
-                "");
-            row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_LABEL_EXCLUDED_RESOURCE_0));
-            m_excludedResources.addComponent(row);
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+        CmsModuleResourceSelectField resField = createModuleResourceField(moduleResource);
+        if (resField != null) {
+            m_excludedResourcesGroup.addRow(resField);
         }
     }
 
@@ -685,23 +668,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
      */
     void addModuleResource(String moduleResource) {
 
-        CmsModuleResourceSelectField resField = new CmsModuleResourceSelectField();
-        CmsObject moduleCms = null;
-        try {
-            moduleCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            if (getSelectedSite() != null) {
-                moduleCms.getRequestContext().setSiteRoot(getSelectedSite());
-            }
-            resField.setCmsObject(moduleCms);
-            if (moduleResource != null) {
-                resField.setValue(moduleResource);
-            }
-            CmsRemovableFormRow<Field<String>> row = new CmsRemovableFormRow<Field<String>>(resField, "");
-            row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_LABEL_MODULE_RESOURCE_0));
-            m_moduleResources.addComponent(row);
-
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+        CmsModuleResourceSelectField resField = createModuleResourceField(moduleResource);
+        if (resField != null) {
+            m_moduleResourcesGroup.addRow(resField);
         }
     }
 
@@ -720,6 +689,33 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_LABEL_PARAMETER_0));
         row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_PARAMETER_DESC_0));
         m_parameters.addComponent(row);
+    }
+
+    /**
+     * Creates a module resource selection field.<p>
+     *
+     * @param moduleResource the initial content for the field
+     *
+     * @return the module resource selection field
+     */
+    CmsModuleResourceSelectField createModuleResourceField(String moduleResource) {
+
+        CmsModuleResourceSelectField resField = new CmsModuleResourceSelectField();
+        CmsObject moduleCms = null;
+        try {
+            moduleCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            if (getSelectedSite() != null) {
+                moduleCms.getRequestContext().setSiteRoot(getSelectedSite());
+            }
+            resField.setCmsObject(moduleCms);
+            if (moduleResource != null) {
+                resField.setValue(moduleResource);
+            }
+            return resField;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**

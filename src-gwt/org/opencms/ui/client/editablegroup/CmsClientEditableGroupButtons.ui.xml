@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox"
+	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate"
+	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">
+	<ui:style>
+	
+	.outerContainer { 
+		position: relative;
+		width: 20px;
+		margin-top: 2px;
+	}
+
+	.outerContainer > .innerContainer {
+		position: absolute;
+		direction: rtl;
+		white-space: nowrap;
+		right: 0px;
+		border: 1px solid;
+		border-radius: 4px;
+		border-color: transparent;
+		background-color: transparent;  
+	}
+	
+	.outerContainer:hover > .innerContainer {
+		border-color: #c9c9c9;
+		background-color: white; 
+		box-shadow: 2px 2px 2px #666;
+	}
+	
+	.outerContainer > .innerContainer > * {
+		min-width: 20px;
+		display: none; 
+	}
+	
+	.outerContainer > .innerContainer > *:first-child {
+		display: inline-block;
+	}
+	
+	.outerContainer:hover > .innerContainer > * { 
+		display: inline-block; 
+	}
+	
+	.outerContainer > .innerContainer.innerContainer > *:first-child:hover {
+		color: #888 !important; 
+	}
+
+	</ui:style>
+	<g:FlowPanel addStyleNames="{style.outerContainer}">
+		<g:FlowPanel addStyleNames="{style.innerContainer}">
+			<cms:CmsPushButton ui:field="m_dummyButton" />
+			<cms:CmsPushButton ui:field="m_addButton" />
+			<cms:CmsPushButton ui:field="m_upButton" />
+			<cms:CmsPushButton ui:field="m_downButton" />
+			<cms:CmsPushButton ui:field="m_deleteButton" />
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder>
