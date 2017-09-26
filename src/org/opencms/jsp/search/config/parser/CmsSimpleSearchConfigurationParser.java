@@ -430,8 +430,10 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                     result += " OR ";
                 }
                 CmsLink link = ((CmsXmlVfsFileValue)value).getLink(m_cms);
-                result += "\"" + CmsFileUtil.normalizePath(link.getSiteRoot() + link.getSitePath()) + "\"";
-                first = false;
+                if (null != link) {
+                    result += "\"" + CmsFileUtil.normalizePath(link.getSiteRoot() + link.getSitePath()) + "\"";
+                    first = false;
+                }
             }
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
