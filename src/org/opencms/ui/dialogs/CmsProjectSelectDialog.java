@@ -148,8 +148,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
             } else {
                 siteRoot = null;
             }
-            if (((project == null) || !project.isOnlineProject())
-                && CmsFileExplorerConfiguration.APP_ID.equals(m_context.getAppId())) {
+            if ((siteRoot != null) && CmsFileExplorerConfiguration.APP_ID.equals(m_context.getAppId())) {
                 I_CmsWorkplaceAppConfiguration editorConf = OpenCms.getWorkplaceAppManager().getAppConfiguration(
                     CmsPageEditorConfiguration.APP_ID);
                 if (editorConf.getVisibility(m_context.getCms()).isActive()) {
@@ -157,7 +156,6 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
                     return;
                 }
             }
-
             m_context.finish(project, siteRoot);
         } catch (CmsException e) {
             m_context.error(e);
