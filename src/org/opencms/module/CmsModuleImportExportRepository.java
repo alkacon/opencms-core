@@ -52,6 +52,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +62,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Class which manages import/export of modules from repositories configured in opencms-importexport.xml.<p>
@@ -324,7 +326,12 @@ public class CmsModuleImportExportRepository {
         List<String> entries = Lists.newArrayList();
         for (String path : module.getResources()) {
             try {
-                List<CmsResource> resources = cms.readResources(path, CmsResourceFilter.IGNORE_EXPIRATION, true);
+                Set<CmsResource> resources = Sets.newHashSet();
+                CmsResource moduleRes = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+                resources.add(moduleRes);
+                if (moduleRes.isFolder()) {
+                    resources.addAll(cms.readResources(path, CmsResourceFilter.IGNORE_EXPIRATION, true));
+                }
                 for (CmsResource res : resources) {
                     entries.add(res.getRootPath() + ":" + res.getDateLastModified());
                 }
