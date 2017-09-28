@@ -140,14 +140,17 @@ public class CmsSearchField implements Serializable {
     /** The default text field prefix. */
     public static final String FIELD_PREFIX_TEXT = "text_";
 
-    /** The default string field postfix */
+    /** The default string field postfix. */
     public static final String FIELD_POSTFIX_STRING = "_s";
 
-    /** The default (single-valued) date field postfix */
+    /** The default (single-valued) date field postfix. */
     public static final String FIELD_POSTFIX_DATE = "_dt";
 
-    /** The default (multi-valued) dates field postfix */
+    /** The default (multi-valued) dates field postfix. */
     public static final String FIELD_POSTFIX_DATES = "_dts";
+
+    /** The default int field postfix. */
+    public static final String FIELD_POSTFIX_INT = "_i";
 
     /**
      * Name of the field that contains the (optional) document priority,
@@ -212,6 +215,12 @@ public class CmsSearchField implements Serializable {
     public static final String FIELD_TEXT_HU = "text_hu";
     public static final String FIELD_TEXT_IT = "text_it";
     public static final String FIELD_SEARCH_CHANNEL = "search_channel";
+
+    /** The field PREFIX of the fields that contain the display title (without locale and postfix "_s"). */
+    public static final String FIELD_DISPTITLE = "disptitle";
+
+    /** The field PREFIX of the fields that contain the display order (without locale and postfix "_i"). */
+    public static final String FIELD_DISPORDER = "disporder";
 
     /** The field PREFIX where the start date for the single entry of a serial date entry set is stored. */
     public static final String FIELD_INSTANCEDATE = "instancedate";

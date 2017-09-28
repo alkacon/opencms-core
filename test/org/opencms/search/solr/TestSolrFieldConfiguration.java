@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.search.CmsSearchException;
@@ -49,6 +50,7 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -99,7 +101,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
         suite.addTest(new TestSolrFieldConfiguration("testLuceneMigration"));
         suite.addTest(new TestSolrFieldConfiguration("testOfflineIndexAccess"));
-
+        suite.addTest(new TestSolrFieldConfiguration("testListSortOptionFields"));
         // this test case must be the last one
         suite.addTest(new TestSolrFieldConfiguration("testIngnoreMaxRows"));
 
@@ -523,6 +525,81 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * Checks if the extra fields for list sort options are index correctly.
+     *
+     * @throws CmsException thrown if module import fails
+     * @throws IOException thrown if module import fails
+     * @throws InterruptedException thrown if module import fails
+     */
+    public void testListSortOptionFields() throws CmsException, IOException, InterruptedException {
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/");
+        importModule(getCmsObject(), "org.opencms.test.modules.solr.additionalsortfields");
+
+        String query = "q=*:*&fq=parent-folders:\"/sites/default/files/\"&rows=20";
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE);
+        CmsSolrResultList results = index.search(cms, query);
+        assertEquals(16, results.size());
+        for (CmsSearchResource result : results) {
+            switch (result.getRootPath()) {
+                case "/sites/default/files/a.txt":
+                    checkIndexedSortOptionFields(result, "Title", "Title_en", 2, 3, "lastmodified");
+                    break;
+                case "/sites/default/files/b.txt":
+                    checkIndexedSortOptionFields(result, "b.txt", "b.txt", 0, 0, "lastmodified");
+                    break;
+                case "/sites/default/files/c.txt":
+                    checkIndexedSortOptionFields(result, "Title", "Title", 10, 10, "contentdate");
+                    break;
+                case "/sites/default/files/d.txt":
+                    checkIndexedSortOptionFields(result, "d.txt", "Title_en", 0, 11, "lastmodified");
+                    break;
+                case "/sites/default/files/e.txt":
+                    checkIndexedSortOptionFields(result, "e.txt", "e.txt", 0, 0, "lastmodified");
+                    break;
+                case "/sites/default/files/f.txt":
+                    checkIndexedSortOptionFields(result, "f.txt", "f.txt", 0, 0, "released");
+                    break;
+                case "/sites/default/files/g.txt":
+                    checkIndexedSortOptionFields(result, "g.txt", "g.txt", 0, 0, "expired");
+                    break;
+                case "/sites/default/files/h.txt":
+                    checkIndexedSortOptionFields(result, "h.txt", "h.txt", 0, 0, "released");
+                    break;
+                case "/sites/default/files/1/a.txt":
+                    checkIndexedSortOptionFields(result, "Title", "Title_en", 2, 3, "lastmodified");
+                    break;
+                case "/sites/default/files/1/b.txt":
+                    checkIndexedSortOptionFields(result, "b.txt", "b.txt", 5, 6, "created");
+                    break;
+                case "/sites/default/files/1/c.txt":
+                    checkIndexedSortOptionFields(result, "Title", "Title", 10, 6, "contentdate");
+                    break;
+                case "/sites/default/files/1/d.txt":
+                    checkIndexedSortOptionFields(result, "d.txt", "Title_en", 5, 11, "lastmodified");
+                    break;
+                case "/sites/default/files/1/e.txt":
+                    checkIndexedSortOptionFields(result, "e.txt", "e.txt", 5, 6, "lastmodified");
+                    break;
+                case "/sites/default/files/1/f.txt":
+                    checkIndexedSortOptionFields(result, "f.txt", "f.txt", 5, 6, "released");
+                    break;
+                case "/sites/default/files/1/g.txt":
+                    checkIndexedSortOptionFields(result, "g.txt", "g.txt", 5, 6, "expired");
+                    break;
+                case "/sites/default/files/1/h.txt":
+                    checkIndexedSortOptionFields(result, "h.txt", "h.txt", 5, 6, "created");
+                    break;
+                default:
+                    throw new IllegalArgumentException(
+                        "The search result contained an unexpected file: " + result.getRootPath());
+            }
+        }
+
+    }
+
+    /**
      *
      * @throws Throwable
      */
@@ -639,5 +716,31 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         }
         echo("OK, search could not be executed and the cause was a CmsRoleViolationException.");
         solrIndex.setEnabled(false);
+    }
+
+    /**
+     * Checks if the extra fields for the list sort options are indexed correctly.
+     * @param result the search result
+     * @param title the expected display title
+     * @param titleEn the expected display title for English
+     * @param order the expected display order
+     * @param orderEn the expected display order for English
+     * @param instanceDateCopyField the field from which the instance date is expected to be copied.
+     */
+    private void checkIndexedSortOptionFields(
+        CmsSearchResource result,
+        String title,
+        String titleEn,
+        int order,
+        int orderEn,
+        String instanceDateCopyField) {
+
+        echo("Checking resource \"" + result.getRootPath() + "\" ...");
+        assertEquals(title, result.getField("disptitle_s"));
+        assertEquals(titleEn, result.getField("disptitle_en_s"));
+        assertEquals(order, Integer.parseInt(result.getField("disporder_i")));
+        assertEquals(orderEn, Integer.parseInt(result.getField("disporder_en_i")));
+        assertEquals(result.getDateField(instanceDateCopyField), result.getDateField("instancedate_dt"));
+        assertEquals(result.getDateField(instanceDateCopyField), result.getDateField("instancedate_en_dt"));
     }
 }

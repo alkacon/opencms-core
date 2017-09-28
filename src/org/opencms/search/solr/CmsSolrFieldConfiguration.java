@@ -67,6 +67,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -183,6 +184,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         } else {
             document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_CHANNEL), "content");
         }
+
+        document = appendFieldsForListSortOptions(document);
 
         return document;
     }
@@ -752,6 +755,126 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         getFields().clear();
         getFields().addAll(m_solrFields.values());
+    }
+
+    /**
+     * Adds multiple fields to the document that are used for the sort options in the list app.
+     *
+     * <p>The fields are:
+     * <ul>
+     *  <li>instancedate_dt</li>
+     *  <li>disptitle_s</li>
+     *  <li>disporder_i</li>
+     * </ul>
+     * and localized versions for each content locale.</p>
+     *
+     * @param document the document to index with all other fields already added.
+     * @return the document extended by the fields used by the list.
+     */
+    private I_CmsSearchDocument appendFieldsForListSortOptions(I_CmsSearchDocument document) {
+
+        // add non-localized fields
+        // add instance date
+        String fieldName = CmsSearchField.FIELD_INSTANCEDATE + CmsSearchField.FIELD_POSTFIX_DATE;
+        Date instanceDate = document.getFieldValueAsDate(fieldName);
+        if ((null == instanceDate) || (instanceDate.getTime() == 0)) {
+            String instanceDateCopyField = document.getFieldValueAsString(
+                CmsPropertyDefinition.PROPERTY_INSTANCEDATE_COPYFIELD + CmsSearchField.FIELD_DYNAMIC_PROPERTIES);
+            if (null != instanceDateCopyField) {
+                instanceDate = document.getFieldValueAsDate(instanceDateCopyField);
+            }
+            if ((null == instanceDate) || (instanceDate.getTime() == 0)) {
+                instanceDate = document.getFieldValueAsDate(CmsSearchField.FIELD_DATE_RELEASED);
+            }
+            if ((null == instanceDate) || (instanceDate.getTime() == 0)) {
+                instanceDate = document.getFieldValueAsDate(CmsSearchField.FIELD_DATE_LASTMODIFIED);
+            }
+            document.addDateField(fieldName, instanceDate.getTime(), false);
+        }
+
+        // add disp-title field
+        fieldName = CmsSearchField.FIELD_DISPTITLE + CmsSearchField.FIELD_POSTFIX_STRING;
+        String dispTitle = document.getFieldValueAsString(fieldName);
+        if (null == dispTitle) {
+            dispTitle = document.getFieldValueAsString(
+                CmsPropertyDefinition.PROPERTY_TITLE + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT);
+            if (null == dispTitle) {
+                dispTitle = document.getFieldValueAsString(CmsSearchField.FIELD_FILENAME);
+            }
+            document.addSearchField(new CmsSolrField(fieldName, null, null, null, 0), dispTitle);
+        }
+
+        // add disp-order field
+        fieldName = CmsSearchField.FIELD_DISPORDER + CmsSearchField.FIELD_POSTFIX_INT;
+        String dispOrder = document.getFieldValueAsString(fieldName);
+        if (null == dispOrder) {
+            dispOrder = document.getFieldValueAsString(
+                CmsPropertyDefinition.PROPERTY_DISPLAY_ORDER + CmsSearchField.FIELD_DYNAMIC_PROPERTIES);
+            if (null != dispOrder) {
+                try {
+                    int o = Integer.parseInt(dispOrder);
+                    dispOrder = String.valueOf(o);
+                } catch (NullPointerException | NumberFormatException e) {
+                    LOG.warn(
+                        "Property "
+                            + CmsPropertyDefinition.PROPERTY_DISPLAY_ORDER
+                            + " contains not a valid integer number.");
+                    dispOrder = "0";
+                }
+            } else {
+                dispOrder = "0";
+            }
+            document.addSearchField(new CmsSolrField(fieldName, null, null, null, 0), dispOrder);
+        }
+
+        // add localized fields
+        for (String locale : document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_CONTENT_LOCALES)) {
+            // instance date
+            fieldName = CmsSearchField.FIELD_INSTANCEDATE + "_" + locale + CmsSearchField.FIELD_POSTFIX_DATE;
+            Date presetInstanceDate = document.getFieldValueAsDate(fieldName);
+            if ((null == presetInstanceDate) || (presetInstanceDate.getTime() == 0)) {
+                document.addDateField(fieldName, instanceDate.getTime(), false);
+            }
+            // disp-title field
+            fieldName = CmsSearchField.FIELD_DISPTITLE + "_" + locale + CmsSearchField.FIELD_POSTFIX_STRING;
+            if (null == document.getFieldValueAsString(fieldName)) {
+                String localizedTitle = document.getFieldValueAsString(
+                    CmsPropertyDefinition.PROPERTY_TITLE
+                        + "_"
+                        + locale
+                        + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT);
+                document.addSearchField(
+                    new CmsSolrField(fieldName, null, null, null, 0),
+                    null == localizedTitle ? dispTitle : localizedTitle);
+            }
+            // disp-order field
+            fieldName = CmsSearchField.FIELD_DISPORDER + "_" + locale + CmsSearchField.FIELD_POSTFIX_INT;
+            if (null == document.getFieldValueAsString(fieldName)) {
+                String localizedOrder = document.getFieldValueAsString(
+                    CmsPropertyDefinition.PROPERTY_DISPLAY_ORDER
+                        + "_"
+                        + locale
+                        + CmsSearchField.FIELD_DYNAMIC_PROPERTIES);
+                if (null != localizedOrder) {
+                    try {
+                        int o = Integer.parseInt(localizedOrder);
+                        localizedOrder = String.valueOf(o);
+                    } catch (NullPointerException | NumberFormatException e) {
+                        LOG.warn(
+                            "Property "
+                                + CmsPropertyDefinition.PROPERTY_DISPLAY_ORDER
+                                + "_"
+                                + locale
+                                + " contains not a valid integer number.");
+                    }
+                }
+                document.addSearchField(
+                    new CmsSolrField(fieldName, null, null, null, 0),
+                    null == localizedOrder ? dispOrder : localizedOrder);
+            }
+        }
+
+        return document;
     }
 
     /**

@@ -122,6 +122,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the description. */
     public static final String PROPERTY_DESCRIPTION = "Description";
 
+    /** Property to set the display order of a content in lists. */
+    public static final String PROPERTY_DISPLAY_ORDER = "display-order";
+
     /** The name of the property which controls whether an element will be used as a copy model by the container page editor. */
     public static final String PROPERTY_ELEMENT_MODEL = "element.model";
 
@@ -151,6 +154,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property constant for <code>"image.size"</code>. */
     public static final String PROPERTY_IMAGE_SIZE = "image.size";
+
+    /** The property for defining the date (as Solr field) that should be used for sorting in lists. */
+    public static final String PROPERTY_INSTANCEDATE_COPYFIELD = "instancedate.copyfield";
 
     /** Property for the keywords. */
     public static final String PROPERTY_KEYWORDS = "Keywords";
