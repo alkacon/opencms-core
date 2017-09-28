@@ -384,12 +384,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     public void cmsEvent(CmsEvent event) {
 
         try {
-            CmsProject project = m_clone.createProject(
-                "sitereader",
-                "",
-                "/Users",
-                "/Users",
-                CmsProject.PROJECT_TYPE_TEMPORARY);
+            CmsProject project = getOfflineProject();
             m_clone.getRequestContext().setCurrentProject(project);
             List<CmsPublishedResource> res = null;
 
@@ -428,7 +423,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             for (CmsSite site : updateMap.keySet()) {
                 updateSite(m_clone, site, updateMap.get(site));
             }
-            m_clone.deleteProject(project.getUuid());
         } catch (CmsException e) {
             LOG.error("Unable to handle publish event", e);
         }
@@ -1445,6 +1439,25 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             site.setSiteRootUUID(id);
             m_siteUUIDs.put(id, site);
         }
+    }
+
+    /**
+     * Gets an offline project to read offline resources from.<p>
+     *
+     * @return CmsProject
+     */
+    private CmsProject getOfflineProject() {
+
+        try {
+            for (CmsProject p : OpenCms.getOrgUnitManager().getAllAccessibleProjects(m_clone, "/", true)) {
+                if (!p.isOnlineProject()) {
+                    return p;
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error("Unable to find an offline project", e);
+        }
+        return null;
     }
 
     /**
