@@ -36,6 +36,7 @@ import org.opencms.file.I_CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 
@@ -644,9 +645,10 @@ public class CmsPublishList implements Externalizable {
     protected List<CmsResource> getMissingSubResources(CmsObject cms, List<CmsResource> folders) throws CmsException {
 
         List<CmsResource> result = new ArrayList<CmsResource>();
+        CmsObject rootCms = OpenCms.initCmsObject(cms);
+        rootCms.getRequestContext().setSiteRoot("");
         for (CmsResource folder : folders) {
-            String folderPath = cms.getSitePath(folder);
-            List<CmsResource> subResources = cms.readResources(folderPath, CmsResourceFilter.ALL, true);
+            List<CmsResource> subResources = rootCms.readResources(folder.getRootPath(), CmsResourceFilter.ALL, true);
             for (CmsResource resource : subResources) {
                 if (!containsResource(resource)) {
                     result.add(resource);
