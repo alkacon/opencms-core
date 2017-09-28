@@ -140,12 +140,13 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
 
         query.set("facet", "true");
         String excludes = "";
-        if (m_config.getIgnoreAllFacetFilters() || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
+        if (m_config.getIgnoreAllFacetFilters()
+            || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
             excludes = "{!ex=" + m_config.getIgnoreTags() + "}";
         }
 
         for (I_CmsFacetQueryItem q : m_config.getQueryList()) {
-            query.set("facet.query", excludes + q.getQuery());
+            query.add("facet.query", excludes + q.getQuery());
         }
     }
 
