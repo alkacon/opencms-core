@@ -42,7 +42,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -77,7 +76,6 @@ import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.Version;
@@ -300,6 +298,14 @@ public final class CmsVaadinUtils {
         }
     }
 
+    /**
+     * Get all groups with blacklist.<p>
+     *
+     * @param cms CmsObject
+     * @param caption property
+     * @param blackList blacklist
+     * @return indexed container
+     */
     public static IndexedContainer getAvailableGroupsContainerWithout(
         CmsObject cms,
         String caption,
@@ -427,6 +433,16 @@ public final class CmsVaadinUtils {
         return designPath;
     }
 
+    /**
+     * Gets container with alls groups of a certain user.
+     *
+     * @param cms cmsobject
+     * @param user to find groups for
+     * @param caption caption property
+     * @param iconProp property
+     * @param cmsCssIcon icon
+     * @return Indexed Container
+     */
     public static IndexedContainer getGroupsOfUser(
         CmsObject cms,
         CmsUser user,
@@ -476,6 +492,12 @@ public final class CmsVaadinUtils {
         return ret;
     }
 
+    /**
+     * Get container with languages.<p>
+     *
+     * @param captionPropertyName name
+     * @return indexed container
+     */
     public static IndexedContainer getLanguageContainer(String captionPropertyName) {
 
         IndexedContainer result = new IndexedContainer();
@@ -520,39 +542,6 @@ public final class CmsVaadinUtils {
             }
         }
         return null;
-    }
-
-    public static IndexedContainer getPrincipalContainer(
-        CmsObject cms,
-        List<? extends I_CmsPrincipal> list,
-        String captionID,
-        String descID,
-        String iconID,
-        String icon,
-        List<FontIcon> iconList) {
-
-        IndexedContainer res = new IndexedContainer();
-
-        res.addContainerProperty(captionID, String.class, "");
-        res.addContainerProperty(iconID, FontIcon.class, new CmsCssIcon(icon));
-        if (descID != null) {
-            res.addContainerProperty(descID, String.class, "");
-        }
-
-        for (I_CmsPrincipal group : list) {
-
-            Item item = res.addItem(group);
-            item.getItemProperty(captionID).setValue(group.getSimpleName());
-            if (descID != null) {
-                item.getItemProperty(descID).setValue(group.getDescription(A_CmsUI.get().getLocale()));
-            }
-        }
-
-        for (int i = 0; i < iconList.size(); i++) {
-            res.getItem(res.getIdByIndex(i)).getItemProperty(iconID).setValue(iconList.get(i));
-        }
-
-        return res;
     }
 
     /**
@@ -972,7 +961,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
