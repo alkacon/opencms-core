@@ -120,6 +120,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /** Indicates whether this site should be considered when writing the web server configuration. */
     private boolean m_webserver = true;
 
+    /**Indicates is this site was published once to the online repo. */
+    private boolean m_isOnlineUpdated;
+
     /**
      * Constructs a new site object without title and id information,
      * this is to be used for lookup purposes only.<p>
@@ -240,7 +243,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     @Override
     public Object clone() {
 
-        return new CmsSite(
+        CmsSite res = new CmsSite(
             getSiteRoot(),
             (CmsUUID)getSiteRootUUID().clone(),
             getTitle(),
@@ -252,6 +255,8 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
             isExclusiveError(),
             isWebserver(),
             getAliases());
+        res.setParameters(getParameters());
+        return res;
     }
 
     /**
@@ -579,6 +584,15 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Checks if the site it in the online project.<p>
+     * @return true if it is in online project
+     */
+    public boolean isOnlineUpdated() {
+
+        return m_isOnlineUpdated;
+    }
+
+    /**
      * Returns a flag indicating if the site is the shared site.
      *
      * @return <code>true</code> if the site is the shared site,
@@ -627,6 +641,17 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     public void setExclusiveUrl(boolean exclusive) {
 
         m_exclusiveUrl = exclusive;
+    }
+
+    /**
+     * Sets the online status.
+     *
+     * @param isOnline true -> site has online version
+     */
+    public void sethasOnlineUpdated(boolean isOnline) {
+
+        m_isOnlineUpdated = isOnline;
+
     }
 
     /**
