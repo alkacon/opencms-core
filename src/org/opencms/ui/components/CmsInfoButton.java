@@ -293,7 +293,7 @@ public class CmsInfoButton extends Button {
                     + OpenCmsTheme.INFO_ELEMENT_NAME
                     + "\">"
                     + key
-                    + " :</div><div class=\""
+                    + " :</div><div style=\"width:140px;\" class=\""
                     + OpenCmsTheme.INFO_ELEMENT_VALUE
                     + "\">"
                     + infos.get(key)

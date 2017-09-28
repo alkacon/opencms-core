@@ -29,6 +29,7 @@ package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -395,12 +396,21 @@ public class CmsEditSiteForm extends CmsBasicDialog {
          */
         public void validate(Object value) throws InvalidValueException {
 
+            CmsProject currentProject = m_clonedCms.getRequestContext().getCurrentProject();
             try {
+
+                m_clonedCms.getRequestContext().setCurrentProject(
+                    m_clonedCms.readProject(CmsProject.ONLINE_PROJECT_ID));
                 m_clonedCms.readResource((String)value);
+
             } catch (CmsException e) {
-                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SITEROOT_WRONG_0));
+                m_clonedCms.getRequestContext().setCurrentProject(currentProject);
+                if (!m_clonedCms.existsResource((String)value)) {
+                    throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SITEROOT_WRONG_0));
+                }
             }
 
+            m_clonedCms.getRequestContext().setCurrentProject(currentProject);
         }
 
     }
@@ -524,6 +534,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**automatic setted folder name.*/
     private String m_autoSetFolderName;
 
+    /**vaadin component. */
+    private Panel m_infoSiteRoot;
+
     /**Map to connect vaadin text fields with bundle keys.*/
     private Map<TextField, String> m_bundleComponentKeyMap;
 
@@ -610,16 +623,13 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      * Use this to create a new site.<p>
      *
      * @param manager the site manager instance
+     * @param cms the CmsObject
      */
-    public CmsEditSiteForm(CmsSiteManager manager) {
+    public CmsEditSiteForm(CmsObject cms, CmsSiteManager manager) {
         m_isFolderNameTouched = false;
         m_autoSetFolderName = "";
-        try {
-            m_clonedCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            m_clonedCms.getRequestContext().setSiteRoot("");
-        } catch (CmsException e) {
-            LOG.error("Error cloning cms object", e);
-        }
+        m_clonedCms = cms;
+
         List<CmsSite> allSites = OpenCms.getSiteManager().getAvailableSites(m_clonedCms, true);
         allSites.addAll(OpenCms.getSiteManager().getAvailableCorruptedSites(m_clonedCms, true));
 
@@ -631,7 +641,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
+        m_infoSiteRoot.setVisible(false);
         m_simpleFieldSiteRoot.setVisible(false);
 
         if (!OpenCms.getSiteManager().isConfigurableWebServer()) {
@@ -801,9 +811,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      *
      * @param manager the manager instance
      * @param siteRoot of site to edit
+     * @param cms the CmsObject
      */
-    public CmsEditSiteForm(CmsSiteManager manager, String siteRoot) {
-        this(manager);
+    public CmsEditSiteForm(CmsObject cms, CmsSiteManager manager, String siteRoot) {
+        this(cms, manager);
 
         m_simpleFieldSiteRoot.setVisible(true);
         m_simpleFieldSiteRoot.setValue(siteRoot);
@@ -817,6 +828,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             public void valueChange(ValueChangeEvent event) {
 
                 setTemplateField();
+                checkOnOfflineSiteRoot();
             }
 
         });
@@ -876,6 +888,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             m_fieldExclusiveError.setEnabled(true);
         }
         setFaviconIfExist();
+        checkOnOfflineSiteRoot();
     }
 
     /**
@@ -887,6 +900,29 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     static String getFolderNameFromSiteRoot(String siteRoot) {
 
         return siteRoot.split("/")[siteRoot.split("/").length - 1];
+    }
+
+    /**
+     * Checks if site root exists in on and offline repository.<p>
+     */
+    protected void checkOnOfflineSiteRoot() {
+
+        try {
+            CmsObject cmsOnline = OpenCms.initCmsObject(m_clonedCms);
+            cmsOnline.getRequestContext().setCurrentProject(m_clonedCms.readProject(CmsProject.ONLINE_PROJECT_ID));
+
+            String rootPath = m_simpleFieldSiteRoot.getValue();
+            if (cmsOnline.existsResource(rootPath) & !m_clonedCms.existsResource(rootPath)) {
+                m_ok.setEnabled(false);
+                m_infoSiteRoot.setVisible(true);
+                return;
+            }
+
+        } catch (CmsException e) {
+            LOG.error("Can not initialize CmsObject", e);
+        }
+        m_ok.setEnabled(true);
+        m_infoSiteRoot.setVisible(false);
     }
 
     /**

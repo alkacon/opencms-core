@@ -30,8 +30,10 @@ package org.opencms.ui;
 import org.opencms.ade.galleries.CmsSiteSelectorOptionBuilder;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.A_CmsResourceTypeFolderBase;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -39,6 +41,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -73,6 +77,7 @@ import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.Version;
@@ -295,6 +300,30 @@ public final class CmsVaadinUtils {
         }
     }
 
+    public static IndexedContainer getAvailableGroupsContainerWithout(
+        CmsObject cms,
+        String caption,
+        List<CmsGroup> blackList) {
+
+        if (blackList == null) {
+            blackList = new ArrayList<CmsGroup>();
+        }
+        IndexedContainer res = new IndexedContainer();
+        res.addContainerProperty(caption, String.class, "");
+        try {
+            for (CmsGroup group : OpenCms.getRoleManager().getManageableGroups(cms, "/", true)) {
+                if (!blackList.contains(group)) {
+                    Item item = res.addItem(group);
+                    item.getItemProperty(caption).setValue(group.getSimpleName());
+                }
+            }
+
+        } catch (CmsException e) {
+            LOG.error("Unable to read groups", e);
+        }
+        return res;
+    }
+
     /**
      * Returns the available projects.<p>
      *
@@ -398,6 +427,29 @@ public final class CmsVaadinUtils {
         return designPath;
     }
 
+    public static IndexedContainer getGroupsOfUser(
+        CmsObject cms,
+        CmsUser user,
+        String caption,
+        String iconProp,
+        CmsCssIcon cmsCssIcon) {
+
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty(caption, String.class, "");
+        if (cmsCssIcon != null) {
+            container.addContainerProperty(iconProp, CmsCssIcon.class, cmsCssIcon);
+        }
+        try {
+            for (CmsGroup group : cms.getGroupsOfUser(user.getName(), true)) {
+                Item item = container.addItem(group);
+                item.getItemProperty(caption).setValue(group.getSimpleName());
+            }
+        } catch (CmsException e) {
+            LOG.error("Unable to read groups from user", e);
+        }
+        return container;
+    }
+
     /**
      * Creates a layout with info panel.<p>
      *
@@ -422,6 +474,22 @@ public final class CmsVaadinUtils {
         inner.addComponent(panel);
         ret.addComponent(inner);
         return ret;
+    }
+
+    public static IndexedContainer getLanguageContainer(String captionPropertyName) {
+
+        IndexedContainer result = new IndexedContainer();
+        result.addContainerProperty(captionPropertyName, String.class, "");
+
+        Iterator<Locale> itLocales = OpenCms.getLocaleManager().getAvailableLocales().iterator();
+        while (itLocales.hasNext()) {
+            Locale locale = itLocales.next();
+            Item item = result.addItem(locale);
+            item.getItemProperty(captionPropertyName).setValue(locale.getDisplayName(A_CmsUI.get().getLocale()));
+        }
+
+        return result;
+
     }
 
     /**
@@ -452,6 +520,39 @@ public final class CmsVaadinUtils {
             }
         }
         return null;
+    }
+
+    public static IndexedContainer getPrincipalContainer(
+        CmsObject cms,
+        List<? extends I_CmsPrincipal> list,
+        String captionID,
+        String descID,
+        String iconID,
+        String icon,
+        List<FontIcon> iconList) {
+
+        IndexedContainer res = new IndexedContainer();
+
+        res.addContainerProperty(captionID, String.class, "");
+        res.addContainerProperty(iconID, FontIcon.class, new CmsCssIcon(icon));
+        if (descID != null) {
+            res.addContainerProperty(descID, String.class, "");
+        }
+
+        for (I_CmsPrincipal group : list) {
+
+            Item item = res.addItem(group);
+            item.getItemProperty(captionID).setValue(group.getSimpleName());
+            if (descID != null) {
+                item.getItemProperty(descID).setValue(group.getDescription(A_CmsUI.get().getLocale()));
+            }
+        }
+
+        for (int i = 0; i < iconList.size(); i++) {
+            res.getItem(res.getIdByIndex(i)).getItemProperty(iconID).setValue(iconList.get(i));
+        }
+
+        return res;
     }
 
     /**
@@ -527,6 +628,31 @@ public final class CmsVaadinUtils {
         }
 
         return types;
+    }
+
+    /**
+     * Returns the roles available for a given user.<p>
+     *
+     * @param cms CmsObject
+     * @param user to get available roles for
+     * @param captionPropertyName name of caption property
+     * @return indexed container
+     */
+    public static IndexedContainer getRoleContainerForUser(CmsObject cms, CmsUser user, String captionPropertyName) {
+
+        IndexedContainer result = new IndexedContainer();
+        result.addContainerProperty(captionPropertyName, String.class, "");
+        try {
+            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(cms, user.getOuFqn(), false);
+            CmsRole.applySystemRoleOrder(roles);
+            for (CmsRole role : roles) {
+                Item item = result.addItem(role);
+                item.getItemProperty(captionPropertyName).setValue(role.getDisplayName(cms, A_CmsUI.get().getLocale()));
+            }
+        } catch (CmsException e) {
+            LOG.error("Unabel to read roles for user", e);
+        }
+        return result;
     }
 
     /**

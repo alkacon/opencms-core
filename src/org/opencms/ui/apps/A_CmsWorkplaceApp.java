@@ -27,7 +27,10 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsBreadCrumb;
@@ -35,6 +38,7 @@ import org.opencms.ui.components.CmsToolLayout;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -220,6 +224,30 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
             }
         }
         return result;
+    }
+
+    public CmsObject getOfflineCmsObject(CmsObject cms) {
+
+        CmsObject res = null;
+        try {
+            if (!cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                return OpenCms.initCmsObject(cms);
+            }
+            res = OpenCms.initCmsObject(cms);
+            List<CmsProject> projects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(res, "/", true);
+            Iterator<CmsProject> projIterator = projects.iterator();
+            boolean offFound = false;
+            while (projIterator.hasNext() & !offFound) {
+                CmsProject offP = projIterator.next();
+                if (!offP.isOnlineProject()) {
+                    res.getRequestContext().setCurrentProject(offP);
+                    offFound = true;
+                }
+            }
+        } catch (CmsException e) {
+            return cms;
+        }
+        return res;
     }
 
     /**

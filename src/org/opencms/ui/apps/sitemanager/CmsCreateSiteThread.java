@@ -32,6 +32,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -89,6 +90,9 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
 
     /**CmsObject(root-site).*/
     private CmsObject m_cms;
+
+    /**CmsObject(root-site,online). */
+    private CmsObject m_cmsOnline;
 
     /**Site to save. */
     private CmsSite m_site;
@@ -149,6 +153,8 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
         Runnable finished) {
         super(cms, "createSite");
         m_cms = cms;
+        m_cmsOnline = getOnlineCmsObject(cms);
+
         m_source = source;
         m_template = template;
         m_bundle = bundle;
@@ -201,7 +207,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
                 if (!m_cms.existsResource(sitemapConfig)) {
                     createSitemapContentFolder(m_cms, siteRootResource, contentFolder);
                 }
-                createIndexHTML(ensureFoldername(m_site.getSiteRoot()));
+                createIndexHTML(ensureFoldername(siteRootResource.getRootPath()));
             } else {
 
                 CmsMacroResolver.copyAndResolveMacro(
@@ -391,12 +397,18 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
      */
     private CmsResource createSiteRootIfNeeded(String siteRoot) throws CmsException {
 
-        CmsResource siteRootResource;
+        CmsResource siteRootResource = null;
 
         // check if the site root already exists
         try {
             // take the existing site and do not perform any OU related actions
-            siteRootResource = m_cms.readResource(siteRoot);
+            if (m_cms.existsResource(siteRoot)) {
+                siteRootResource = m_cms.readResource(siteRoot);
+            } else {
+                CmsResource onlineVersion = m_cmsOnline.readResource(siteRoot);
+                siteRootResource = m_cms.readResource(onlineVersion.getStructureId());
+            }
+
         } catch (CmsVfsResourceNotFoundException e) {
             // not create a new site folder and the according OU if option is checked checked
             getReport().println(
@@ -413,6 +425,24 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
 
         }
         return siteRootResource;
+    }
+
+    /**
+     * Creates online version of given CmsObject.<p>
+     *
+     * @param cms given CmsObject
+     * @return online CmsObject
+     */
+    private CmsObject getOnlineCmsObject(CmsObject cms) {
+
+        CmsObject res = null;
+        try {
+            res = OpenCms.initCmsObject(cms);
+            res.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        } catch (CmsException e) {
+            LOG.error("Cannot create CmsObject", e);
+        }
+        return res;
     }
 
     /**

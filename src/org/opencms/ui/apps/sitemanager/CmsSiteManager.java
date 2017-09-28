@@ -36,6 +36,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -112,6 +113,12 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
 
     /** The file table filter input. */
     private TextField m_siteTableFilter;
+
+    /**The publish button.*/
+    private Button m_publishButton;
+
+    /**Is or should the publish button be visible.*/
+    private boolean m_isPublishVisible;
 
     /**
      * Method to check if a folder under given path contains a bundle for macro resolving.<p>
@@ -214,13 +221,13 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
         m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsEditSiteForm form;
         if (siteRoot != null) {
-            form = new CmsEditSiteForm(this, siteRoot);
+            form = new CmsEditSiteForm(m_rootCms, this, siteRoot);
             m_dialogWindow.setCaption(
                 CmsVaadinUtils.getMessageText(
                     Messages.GUI_SITE_CONFIGURATION_EDIT_1,
                     m_sitesTable.getItem(siteRoot).getItemProperty(CmsSitesTable.PROP_TITLE).getValue()));
         } else {
-            form = new CmsEditSiteForm(this);
+            form = new CmsEditSiteForm(m_rootCms, this);
             m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
         }
         m_dialogWindow.setContent(form);
@@ -260,6 +267,19 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
         m_dialogWindow.setContent(form);
         A_CmsUI.get().addWindow(m_dialogWindow);
         m_dialogWindow.center();
+    }
+
+    /**
+     * Sets the visibility of the publish button.<p>
+     *
+     * @param visible true-> publish button visible, false -> not visible
+     */
+    public void showPublishButton(boolean visible) {
+
+        m_isPublishVisible = visible;
+        if (m_publishButton != null) {
+            m_publishButton.setVisible(visible);
+        }
     }
 
     /**
@@ -322,12 +342,10 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     protected CmsObject getRootCmsObject() {
 
         if (m_rootCms == null) {
-            try {
-                m_rootCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-                m_rootCms.getRequestContext().setSiteRoot("");
-            } catch (CmsException e) {
-                LOG.error("Error while cloning CmsObject", e);
-            }
+
+            m_rootCms = getOfflineCmsObject(A_CmsUI.getCmsObject());
+            m_rootCms.getRequestContext().setSiteRoot("");
+
         }
         return m_rootCms;
     }
@@ -346,6 +364,15 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
      */
     private void addToolbarButtons() {
 
+        m_publishButton = m_uiContext.addPublishButton(new I_CmsUpdateListener<String>() {
+
+            @Override
+            public void onUpdate(List<String> updatedItems) {
+
+                A_CmsUI.get().reload();
+            }
+        });
+        m_publishButton.setVisible(m_isPublishVisible);
         Button add = CmsToolBar.createButton(FontOpenCms.WAND, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
         add.addClickListener(new ClickListener() {
 

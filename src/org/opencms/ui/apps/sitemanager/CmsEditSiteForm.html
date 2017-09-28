@@ -10,6 +10,9 @@
 		<o-cms-basic-dialog>
 			<content>
 				<v-vertical-layout :center margin spacing>
+					<v-panel width="100%" style-name="o-report o-state-changed" _id="m_infoSiteRoot">
+						<v-label width="100%">%(key.GUI_SITE_SITEROOT_PUBLISH_REQUIRED_0)</v-label>
+					</v-panel>
 					<v-tab-sheet _id="m_tab">
 						<tab  caption="%(key.GUI_SITE_TAB_BASIC_0)">
 							<v-form-layout _id="m_tabSimple" margin spacing style-name="o-formlayout-workplace-main">
@@ -17,6 +20,7 @@
 								<f-cms-path-select-field _id="m_simpleFieldParentFolderName" width="100%" caption="%(key.GUI_SITE_PARENTFOLDERNAME_0)" description="%(key.GUI_SITE_PARENTFOLDERNAME_HELP_0)"/>
 								<v-text-field _id="m_simpleFieldFolderName" width="100%" caption="%(key.GUI_SITE_FOLDERNAME_0)" description="%(key.GUI_SITE_FOLDERNAME_HELP_0)"/>
 								<f-cms-path-select-field _id="m_simpleFieldSiteRoot" width="100%" caption="%(key.GUI_SITE_SITEROOT_0)" description="%(key.GUI_SITE_PARENTFOLDERNAME_HELP_0)"/>
+								
 								<v-text-field _id="m_simpleFieldServer" width="100%" caption="%(key.GUI_SITE_SERVER_0)" description="%(key.GUI_SITE_SERVER_HELP_0)"/>
 								<v-combo-box _id="m_simpleFieldTemplate" immediate="true"  width="100%" caption="%(key.GUI_SITE_TEMPLATE_0)" description="%(key.GUI_SITE_TEMPLATE_HELP_0)"/>
 								<v-image _id="m_fieldFavIcon" width="32px" height="32px" caption="%(key.GUI_SITE_FAVICON_0)"/>

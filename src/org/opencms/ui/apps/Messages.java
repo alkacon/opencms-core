@@ -43,13 +43,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1 = "ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULEMANAGER_ACTION_MODULE_DEPENDENCY_2 = "ERR_MODULEMANAGER_ACTION_MODULE_DEPENDENCY_2";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0 = "ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
@@ -124,6 +124,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_HELP_0 = "GUI_CACHE_FLEXCACHE_LABEL_MEMORY_AVGSIZE_HELP_0";
     /** Message constant for key in the resource bundle. */
@@ -238,7 +239,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CONTENT_EDITOR_TITLE_2 = "GUI_CONTENT_EDITOR_TITLE_2";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_ADMIN_TOOL_HELP_0 = "GUI_DATABASEAPP_ADMIN_TOOL_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_ADMIN_TOOL_NAME_0 = "GUI_DATABASEAPP_ADMIN_TOOL_NAME_0";
 
@@ -2071,6 +2071,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_SITEROOT_0 = "GUI_SITE_SITEROOT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SITEROOT_PUBLISH_REQUIRED_0 = "GUI_SITE_SITEROOT_PUBLISH_REQUIRED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_SITEROOT_WRONG_0 = "GUI_SITE_SITEROOT_WRONG_0";

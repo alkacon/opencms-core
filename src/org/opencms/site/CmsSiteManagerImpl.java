@@ -29,19 +29,24 @@ package org.opencms.site;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
@@ -69,7 +74,7 @@ import com.google.common.base.Optional;
  *
  * @since 7.0.2
  */
-public final class CmsSiteManagerImpl {
+public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
     /** The root path prefix used to mark root paths not pointing into a site or /system/ or /shared/. */
     public static final String ROOT_PATH_PREFIX = "@";
@@ -139,11 +144,23 @@ public final class CmsSiteManagerImpl {
     /** Maps site roots to sites. */
     private Map<String, CmsSite> m_siteRootSites;
 
+    /**Map from CmsUUID to CmsSite.*/
+    private Map<CmsUUID, CmsSite> m_siteUUIDs;
+
+    /**Site which are only available for offline project. */
+    private List<CmsSite> m_onlyOfflineSites;
+
+    /**CmsObject.*/
+    private CmsObject m_clone;
+
     /** The workplace site matchers. */
     private List<CmsSiteMatcher> m_workplaceMatchers;
 
     /** The workpace servers. */
     private List<String> m_workplaceServers;
+
+    /**Is the publish listener already set? */
+    private boolean m_isListenerSet;
 
     /**
      * Creates a new CmsSiteManager.<p>
@@ -361,6 +378,70 @@ public final class CmsSiteManagerImpl {
         }
     }
 
+    /**
+     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
+     */
+    public void cmsEvent(CmsEvent event) {
+
+        try {
+            CmsProject project = m_clone.createProject(
+                "sitereader",
+                "",
+                "/Users",
+                "/Users",
+                CmsProject.PROJECT_TYPE_TEMPORARY);
+            m_clone.getRequestContext().setCurrentProject(project);
+            List<CmsPublishedResource> res = null;
+
+            List<CmsPublishedResource> foundSites = new ArrayList<CmsPublishedResource>();
+
+            res = m_clone.readPublishedResources(
+                new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID)));
+
+            if (res != null) {
+                for (CmsPublishedResource r : res) {
+                    if (!foundSites.contains(r)) {
+                        if (m_siteUUIDs.containsKey(r.getStructureId())) {
+                            foundSites.add(r);
+                        }
+                    }
+                }
+            }
+
+            Map<CmsSite, CmsSite> updateMap = new HashMap<CmsSite, CmsSite>();
+
+            for (CmsPublishedResource r : foundSites) {
+                if (m_clone.existsResource(r.getStructureId())) {
+                    //Resource was not deleted
+                    CmsResource siteRoot = m_clone.readResource(r.getStructureId());
+                    if (!m_siteRootSites.containsKey(CmsFileUtil.removeTrailingSeparator(siteRoot.getRootPath()))
+                        | m_onlyOfflineSites.contains(m_siteUUIDs.get(r.getStructureId()))) {
+                        //Site was moved or site root was renamed.. or site was published the first time
+                        CmsSite oldSite = m_siteUUIDs.get(siteRoot.getStructureId());
+                        CmsSite newSite = (CmsSite)oldSite.clone();
+                        newSite.setSiteRoot(siteRoot.getRootPath());
+                        updateMap.put(oldSite, newSite);
+                    }
+                }
+            }
+
+            for (CmsSite site : updateMap.keySet()) {
+                updateSite(m_clone, site, updateMap.get(site));
+            }
+            m_clone.deleteProject(project.getUuid());
+        } catch (CmsException e) {
+            LOG.error("Unable to handle publish event", e);
+        }
+
+    }
+
+    /**
+     * Returns all wrong configured sites.<p>
+     *
+     * @param cms CmsObject
+     * @param workplaceMode workplace mode
+     * @return List of CmsSite
+     */
     public List<CmsSite> getAvailableCorruptedSites(CmsObject cms, boolean workplaceMode) {
 
         List<CmsSite> res = new ArrayList<CmsSite>();
@@ -849,18 +930,36 @@ public final class CmsSiteManagerImpl {
                     new Integer((m_siteMatcherSites.size() + ((m_defaultUri != null) ? 1 : 0)))));
         }
 
-        CmsObject clone;
         try {
-            clone = OpenCms.initCmsObject(cms);
-            clone.getRequestContext().setSiteRoot("");
 
+            m_clone = OpenCms.initCmsObject(cms);
+            m_clone.getRequestContext().setSiteRoot("");
+            m_clone.getRequestContext().setCurrentProject(m_clone.readProject(CmsProject.ONLINE_PROJECT_NAME));
+
+            CmsObject cms_offline = OpenCms.initCmsObject(m_clone);
+            CmsProject tempProject = cms_offline.createProject(
+                "tempProjectSites",
+                "",
+                "/Users",
+                "/Users",
+                CmsProject.PROJECT_TYPE_TEMPORARY);
+            cms_offline.getRequestContext().setCurrentProject(tempProject);
+
+            m_siteUUIDs = new HashMap<CmsUUID, CmsSite>();
             // check the presence of sites in VFS
+
+            m_onlyOfflineSites = new ArrayList<CmsSite>();
+
             for (CmsSite site : m_siteMatcherSites.values()) {
+                checkUUIDOfSiteRoot(site, m_clone, cms_offline);
                 try {
-                    CmsResource siteRes = clone.readResource(site.getSiteRoot());
+                    CmsResource siteRes = m_clone.readResource(site.getSiteRoot());
+                    site.setSiteRootUUID(siteRes.getStructureId());
+
+                    m_siteUUIDs.put(siteRes.getStructureId(), site);
                     // during server startup the digester can not access properties, so set the title afterwards
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(site.getTitle())) {
-                        String title = clone.readPropertyObject(
+                        String title = m_clone.readPropertyObject(
                             siteRes,
                             CmsPropertyDefinition.PROPERTY_TITLE,
                             false).getValue();
@@ -874,6 +973,7 @@ public final class CmsSiteManagerImpl {
                     }
                 }
             }
+            cms_offline.deleteProject(tempProject.getUuid());
 
             // check the presence of the default site in VFS
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_defaultUri)) {
@@ -881,7 +981,7 @@ public final class CmsSiteManagerImpl {
             } else {
                 m_defaultSite = new CmsSite(m_defaultUri, CmsSiteMatcher.DEFAULT_MATCHER);
                 try {
-                    clone.readResource(m_defaultSite.getSiteRoot());
+                    m_clone.readResource(m_defaultSite.getSiteRoot());
                 } catch (Throwable t) {
                     if (CmsLog.INIT.isWarnEnabled()) {
                         CmsLog.INIT.warn(
@@ -915,6 +1015,10 @@ public final class CmsSiteManagerImpl {
             m_frozen = true;
         } catch (CmsException e) {
             LOG.warn(e);
+        }
+        if (!m_isListenerSet) {
+            OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT});
+            m_isListenerSet = true;
         }
     }
 
@@ -957,6 +1061,17 @@ public final class CmsSiteManagerImpl {
     public boolean isMatchingCurrentSite(CmsObject cms, CmsSiteMatcher matcher) {
 
         return m_siteMatcherSites.get(matcher) == getCurrentSite(cms);
+    }
+
+    /**
+     * Indicates if given site is only available for offline repository.<p>
+     *
+     * @param site to be looked up
+     * @return true if only offline exists, false otherwise
+     */
+    public boolean isOnlyOfflineSite(CmsSite site) {
+
+        return m_onlyOfflineSites.contains(site);
     }
 
     /**
@@ -1300,6 +1415,36 @@ public final class CmsSiteManagerImpl {
         Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
         siteMatcherSites.put(matcher, site);
         setSiteMatcherSites(siteMatcherSites);
+    }
+
+    /**
+     * Fetches UUID for given site root from online and offline repository.<p>
+     *
+     * @param site to read and set UUID for
+     * @param clone online CmsObject
+     * @param cms_offline offline CmsObject
+     */
+    private void checkUUIDOfSiteRoot(CmsSite site, CmsObject clone, CmsObject cms_offline) {
+
+        CmsUUID id = null;
+        try {
+            id = clone.readResource(site.getSiteRoot()).getStructureId();
+        } catch (CmsException e) {
+            //Ok, site root not available for online repository.
+        }
+
+        if (id == null) {
+            try {
+                id = cms_offline.readResource(site.getSiteRoot()).getStructureId();
+                m_onlyOfflineSites.add(site);
+            } catch (CmsException e) {
+                //Siteroot not valid for on- and offline repository.
+            }
+        }
+        if (id != null) {
+            site.setSiteRootUUID(id);
+            m_siteUUIDs.put(id, site);
+        }
     }
 
     /**
