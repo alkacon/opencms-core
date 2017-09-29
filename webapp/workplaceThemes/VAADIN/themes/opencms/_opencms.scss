@@ -1,3 +1,6 @@
+
+@import "fileselect";
+
 @function opencms-color-stops($color) {
 	$opacity: 100%;
 	$start: blend-overlay(rgba(#fff, $opacity/100%), $color);
@@ -1194,6 +1197,6 @@
 			height: auto !important;
 		}
 	}
-   	 
 	
+	@include fileselect; 
 }

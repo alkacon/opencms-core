@@ -42,11 +42,13 @@ import org.opencms.ui.components.fileselect.CmsResourceSelectDialog.Options;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomField;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 
@@ -154,18 +156,23 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
      * @see com.vaadin.ui.CustomField#initContent()
      */
     @Override
-    protected HorizontalLayout initContent() {
+    protected CssLayout initContent() {
 
-        HorizontalLayout layout = new HorizontalLayout();
+        CssLayout layout = new CssLayout();
+        layout.addStyleName("o-fileselect");
         layout.setWidth("100%");
-        layout.setSpacing(true);
+        // layout.setSpacing(true);
         layout.addComponent(m_textField);
+        Label spacer = new Label("");
+        spacer.addStyleName("o-fileselect-spacer");
+        spacer.setContentMode(ContentMode.HTML);
+        spacer.setValue("<div></div>");
+        layout.addComponent(spacer);
         Button fileSelectButton = new Button("");
         fileSelectButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
         fileSelectButton.setIcon(FontOpenCms.GALLERY);
-
+        fileSelectButton.addStyleName("o-fileselect-button");
         layout.addComponent(fileSelectButton);
-        layout.setExpandRatio(m_textField, 1f);
 
         fileSelectButton.addClickListener(new ClickListener() {
 

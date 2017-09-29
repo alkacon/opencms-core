@@ -1,0 +1,80 @@
+@mixin fileselect { 
+
+	.o-fileselect {
+	    display: flex;
+	    height: 30px;
+	    & > input {
+	        -ms-flex: 1;
+	        flex: 1;
+	        border-right: none !important;
+	        border-top-right-radius: 0px;
+	        border-bottom-right-radius: 0px;
+	    }
+	    .v-button::after {
+	        background-color: rgba(255,255,255,0.1);
+	    }
+	    .v-button.o-button-icon {
+	        border-left: none !important;
+	        border-top-left-radius: 0px;
+	        border-bottom-left-radius: 0px;
+	        background: none;
+	        box-shadow: none;
+	        .v-icon {
+	            color: #888;
+	        }
+	        &:hover .v-icon {
+	            color: black;
+	        }
+	        &::after {
+	            background-color: rgba(255,255,255,0.1);
+	        }
+	        &:focus {
+	            border-color: rgb(189,189,191) !important;
+	        }
+	        &:focus::after {
+	            box-shadow: none !important;
+	            border-color: rgb(189,189,191) !important;
+	        }
+	        &:hover::after {
+	            background-color: rgba(255,255,255,0.1);
+	        }
+	        &:hover, &::after:hover {
+	            background: none;
+	        }
+	    }
+	    & > input:focus ~ .v-button.o-button-icon {
+	        border-color: #144382;
+	        border-right-color: rgb(20,67,130);
+	        box-shadow: 0 0 0 2px #89a0c0;
+	    }
+	    .o-fileselect-spacer {
+	        width: 0px !important;
+	        position: relative;
+	    }
+	    & > input:focus + .o-fileselect-spacer > * {
+	        content: "";
+	        background-color: white;
+	        position: absolute;
+	        display: inline-block;
+	        height: 28px;
+	        width: 5px;
+	        top: 1px;
+	        left: -2px;
+	        z-index: 1;
+	        &::after, &::before {
+	            content: "";
+	            width: 1px;
+	            height: 1px;
+	            display: block;
+	            position: absolute;
+	            background-color: #144382;
+	        }
+	        &::before {
+	            top: -1px;
+	        }
+	        &::after {
+	            bottom: -1px;
+	        }
+	    }
+	}
+}
