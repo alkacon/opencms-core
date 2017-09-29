@@ -38,6 +38,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.relations.CmsLink;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -61,17 +62,17 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
     /** Sort options that are available by default. */
     public static enum SortOption {
-        /** Sort by date ascending */
+        /** Sort by date ascending. */
         DATE_ASC,
-        /** Sort by date descending */
+        /** Sort by date descending. */
         DATE_DESC,
-        /** Sort by title ascending */
+        /** Sort by title ascending. */
         TITLE_ASC,
-        /** Sort by title descending */
+        /** Sort by title descending. */
         TITLE_DESC,
-        /** Sort by order ascending */
+        /** Sort by order ascending. */
         ORDER_ASC,
-        /** Sort by order descending */
+        /** Sort by order descending. */
         ORDER_DESC;
 
         /**
@@ -83,38 +84,71 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
             switch (this) {
                 case DATE_ASC:
-                    return new CmsSearchConfigurationSortOption(
-                        "date.asc",
-                        "date_asc",
-                        "instancedate" + (null != l ? "_" + l.toString() : "") + "_dt asc");
+                    return new CmsSearchConfigurationSortOption("date.asc", "date_asc", getSortDateField(l) + " asc");
                 case DATE_DESC:
                     return new CmsSearchConfigurationSortOption(
                         "date.desc",
                         "date_desc",
-                        "instancedate" + (null != l ? "_" + l.toString() : "") + "_dt desc");
+                        getSortDateField(l) + " desc");
                 case TITLE_ASC:
                     return new CmsSearchConfigurationSortOption(
                         "title.asc",
                         "title_asc",
-                        "disptitle" + (null != l ? "_" + l.toString() : "") + "_s asc");
+                        getSortTitleField(l) + " asc");
                 case TITLE_DESC:
                     return new CmsSearchConfigurationSortOption(
                         "title.desc",
                         "title_desc",
-                        "disptitle" + (null != l ? "_" + l.toString() : "") + "_s desc");
+                        getSortTitleField(l) + " desc");
                 case ORDER_ASC:
                     return new CmsSearchConfigurationSortOption(
                         "order.asc",
                         "order_asc",
-                        "disporder" + (null != l ? "_" + l.toString() : "") + "_i asc");
+                        getSortOrderField(l) + " asc");
                 case ORDER_DESC:
                     return new CmsSearchConfigurationSortOption(
                         "order.desc",
                         "order_desc",
-                        "disporder" + (null != l ? "_" + l.toString() : "") + "_i desc");
+                        getSortOrderField(l) + " desc");
                 default:
                     throw new IllegalArgumentException();
             }
+        }
+
+        /**
+         * Returns the locale specific date field to use for sorting.
+         * @param l the locale to use, can be <code>null</code>
+         * @return the locale specific date field to use for sorting.
+         */
+        protected String getSortDateField(Locale l) {
+
+            return CmsSearchField.FIELD_INSTANCEDATE
+                + (null != l ? "_" + l.toString() : "")
+                + CmsSearchField.FIELD_POSTFIX_DATE;
+        }
+
+        /**
+         * Returns the locale specific order field to use for sorting.
+         * @param l the locale to use, can be <code>null</code>
+         * @return the locale specific order field to use for sorting.
+         */
+        protected String getSortOrderField(Locale l) {
+
+            return CmsSearchField.FIELD_DISPORDER
+                + (null != l ? "_" + l.toString() : "")
+                + CmsSearchField.FIELD_POSTFIX_INT;
+        }
+
+        /**
+         * Returns the locale specific title field to use for sorting.
+         * @param l the locale to use, can be <code>null</code>
+         * @return the locale specific title field to use for sorting.
+         */
+        protected String getSortTitleField(Locale l) {
+
+            return CmsSearchField.FIELD_DISPTITLE
+                + (null != l ? "_" + l.toString() : "")
+                + CmsSearchField.FIELD_POSTFIX_SORT;
         }
     }
 
@@ -146,8 +180,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      * @param categoryConjunction flag, indicating if category selections in the facet should be "AND" combined.
      * @return the default field facets.
      */
-    private static final Map<String, I_CmsSearchConfigurationFacetField> getDefaultFieldFacets(
-        Boolean categoryConjunction) {
+    private static Map<String, I_CmsSearchConfigurationFacetField> getDefaultFieldFacets(Boolean categoryConjunction) {
 
         Map<String, I_CmsSearchConfigurationFacetField> fieldFacets = new HashMap<String, I_CmsSearchConfigurationFacetField>();
         fieldFacets.put(
@@ -272,6 +305,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
     }
 
+    /**
+     * @see org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser#getIgnoreReleaseDate()
+     */
     @Override
     protected Boolean getIgnoreReleaseDate() {
 

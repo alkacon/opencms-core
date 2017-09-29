@@ -736,8 +736,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         String instanceDateCopyField) {
 
         echo("Checking resource \"" + result.getRootPath() + "\" ...");
-        assertEquals(title, result.getField("disptitle_s"));
-        assertEquals(titleEn, result.getField("disptitle_en_s"));
+        assertEquals(title, result.getField("disptitle_sort"));
+        assertEquals(titleEn, result.getField("disptitle_en_sort"));
         assertEquals(order, Integer.parseInt(result.getField("disporder_i")));
         assertEquals(orderEn, Integer.parseInt(result.getField("disporder_en_i")));
         assertEquals(result.getDateField(instanceDateCopyField), result.getDateField("instancedate_dt"));

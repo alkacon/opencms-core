@@ -152,6 +152,9 @@ public class CmsSearchField implements Serializable {
     /** The default int field postfix. */
     public static final String FIELD_POSTFIX_INT = "_i";
 
+    /** The default field postfix for alpha-numeric sorting. */
+    public static final String FIELD_POSTFIX_SORT = "_sort";
+
     /**
      * Name of the field that contains the (optional) document priority,
      * which can be used to boost the document in the result list (hardcoded).

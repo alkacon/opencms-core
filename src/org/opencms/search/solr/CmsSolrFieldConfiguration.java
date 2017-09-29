@@ -793,7 +793,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         }
 
         // add disp-title field
-        fieldName = CmsSearchField.FIELD_DISPTITLE + CmsSearchField.FIELD_POSTFIX_STRING;
+        fieldName = CmsSearchField.FIELD_DISPTITLE + CmsSearchField.FIELD_POSTFIX_SORT;
         String dispTitle = document.getFieldValueAsString(fieldName);
         if (null == dispTitle) {
             dispTitle = document.getFieldValueAsString(
@@ -835,8 +835,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             if ((null == presetInstanceDate) || (presetInstanceDate.getTime() == 0)) {
                 document.addDateField(fieldName, instanceDate.getTime(), false);
             }
-            // disp-title field
-            fieldName = CmsSearchField.FIELD_DISPTITLE + "_" + locale + CmsSearchField.FIELD_POSTFIX_STRING;
+            // disp-title field for title display and sorting
+            fieldName = CmsSearchField.FIELD_DISPTITLE + "_" + locale + CmsSearchField.FIELD_POSTFIX_SORT;
             if (null == document.getFieldValueAsString(fieldName)) {
                 String localizedTitle = document.getFieldValueAsString(
                     CmsPropertyDefinition.PROPERTY_TITLE
