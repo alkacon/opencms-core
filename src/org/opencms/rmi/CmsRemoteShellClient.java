@@ -192,6 +192,9 @@ public class CmsRemoteShellClient {
                     printPrompt();
                 }
                 String line = lnr.readLine();
+                if (line == null) {
+                    break;
+                }
                 if (line.trim().startsWith("#")) {
                     m_out.println(line);
                     continue;
