@@ -22,7 +22,8 @@
 		border: 1px solid;
 		border-radius: 4px;
 		border-color: transparent;
-		background-color: transparent;  
+		background-color: transparent;
+		z-index: 2;
 	}
 	
 	.outerContainer:hover > .innerContainer {
@@ -32,7 +33,6 @@
 	}
 	
 	.outerContainer > .innerContainer > * {
-		min-width: 20px;
 		display: none; 
 	}
 	

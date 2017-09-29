@@ -32,6 +32,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -51,6 +52,9 @@ public class CmsClientEditableGroupButtons extends Composite {
 
     /** The UI binder instance. */
     private static I_UiBinder uiBinder = GWT.create(I_UiBinder.class);
+
+    /** Indicates whether we have already flushed the UiBinder style. */
+    private static boolean flushedStyle;
 
     /** The 'up' button. */
     @UiField
@@ -82,6 +86,10 @@ public class CmsClientEditableGroupButtons extends Composite {
      */
     public CmsClientEditableGroupButtons(CmsEditableGroupButtonsConnector connector) {
         FlowPanel panel = uiBinder.createAndBindUi(this);
+        if (!flushedStyle) {
+            StyleInjector.flush(); // make sure UiBinder CSS is loaded synchronously, otherwise Vaadin width calculation will go wrong
+            flushedStyle = true;
+        }
         initWidget(panel);
         m_connector = connector;
         for (CmsPushButton button : new CmsPushButton[] {
