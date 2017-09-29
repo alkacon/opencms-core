@@ -45,16 +45,74 @@ import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
+
 /**
  * RMI object which wraps a CmsShell and can be used for shell command execution.
  */
 public class CmsRemoteShell extends UnicastRemoteObject implements I_CmsRemoteShell {
+
+    /**
+     * Stores remote shell instances which haven't been unregistered yet.<p>
+     */
+    static class InstanceStore {
+
+        /** The list of shell instances. */
+        private List<CmsRemoteShell> m_instances = Lists.newArrayList();
+
+        /**
+         * Adds a new instance.<p>
+         *
+         * @param shell the instance to add
+         */
+        public synchronized void add(CmsRemoteShell shell) {
+
+            m_instances.add(shell);
+        }
+
+        /**
+         * Removes and unexports an instance.<p>
+         *
+         * @param cmsRemoteShell the instance to remove
+         */
+        @SuppressWarnings("synthetic-access")
+        public synchronized void remove(CmsRemoteShell cmsRemoteShell) {
+
+            try {
+                UnicastRemoteObject.unexportObject(cmsRemoteShell, true);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            m_instances.remove(cmsRemoteShell);
+        }
+
+        /**
+         * Removes and unexports all instances.<p>
+         */
+        @SuppressWarnings("synthetic-access")
+        public synchronized void removeAll() {
+
+            for (CmsRemoteShell shell : m_instances) {
+                try {
+                    UnicastRemoteObject.unexportObject(shell, true);
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            m_instances.clear();
+
+        }
+
+    }
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRemoteShell.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = -243325251951003282L;
+
+    /** Stores instances which have yet to be unexported. */
+    private static InstanceStore m_instanceStore = new InstanceStore();
 
     /** Byte array stream used to capture output of shell commands; will be cleared for each individual command. */
     private ByteArrayOutputStream m_baos = new ByteArrayOutputStream();
@@ -99,6 +157,23 @@ public class CmsRemoteShell extends UnicastRemoteObject implements I_CmsRemoteSh
         CmsObject cms = OpenCms.initCmsObject("Guest");
         m_out = new PrintStream(m_baos, true);
         m_shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", additionalCommands, m_out, m_out);
+        m_instanceStore.add(this);
+    }
+
+    /**
+     * Removes and unexports all instances.<p>
+     */
+    public static void unregisterAll() {
+
+        m_instanceStore.removeAll();
+    }
+
+    /**
+     * @see org.opencms.rmi.I_CmsRemoteShell#end()
+     */
+    public void end() {
+
+        m_instanceStore.remove(this);
     }
 
     /**

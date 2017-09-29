@@ -1983,6 +1983,8 @@ public final class OpenCmsCore {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
 
+                m_remoteShellServer.shutDown();
+
                 try {
                     // the first thing we have to do is to wait until the current publish process finishes
                     if (null != m_publishEngine) {
@@ -2115,6 +2117,7 @@ public final class OpenCmsCore {
                         Messages.get().getBundle().key(Messages.LOG_ERROR_ADE_MANAGER_SHUTDOWN_1, e.getMessage()),
                         e);
                 }
+
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
                 if (CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_OPENCMS_STOPPED_1, runtime));

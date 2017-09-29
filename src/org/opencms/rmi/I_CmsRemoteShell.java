@@ -37,6 +37,13 @@ import java.util.List;
 public interface I_CmsRemoteShell extends Remote {
 
     /**
+     * Signals to the remote object that the client is done with it (i.e. it can be disposed).<p>
+     *
+     * @throws RemoteException if something goes wrong
+     */
+    void end() throws RemoteException;
+
+    /**
      * Executes a shell command .<p>
      * @param cmd the command
      * @param params the parameters

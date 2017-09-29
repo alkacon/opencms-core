@@ -228,11 +228,13 @@ public class CmsRemoteShellClient {
 
                 // execute the command with the given arguments
                 executeCommand(command, arguments);
+
             }
+            exit(0);
         } catch (Throwable t) {
             t.printStackTrace();
             if (m_errorCode != -1) {
-                System.exit(m_errorCode);
+                exit(m_errorCode);
             }
         }
     }
@@ -250,14 +252,29 @@ public class CmsRemoteShellClient {
             m_out.print(result.getOutput());
             updateState(result);
             if (m_exitCalled) {
-                System.exit(0);
+                exit(0);
             } else if (m_hasError && (m_errorCode != -1)) {
-                System.exit(m_errorCode);
+                exit(m_errorCode);
             }
         } catch (RemoteException r) {
             r.printStackTrace(System.err);
-            System.exit(1);
+            exit(1);
         }
+    }
+
+    /**
+     * Exits the shell with an error code, and if possible, notifies the remote shell that it is exiting.<p>
+     *
+     * @param errorCode the error code
+     */
+    private void exit(int errorCode) {
+
+        try {
+            m_remoteShell.end();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.exit(errorCode);
     }
 
     /**

@@ -84,4 +84,21 @@ public class CmsRemoteShellServer {
             LOG.error(e.getLocalizedMessage(), e);
         }
     }
+
+    /**
+     * Unregisters remote objects.<p>
+     */
+    public void shutDown() {
+
+        try {
+            for (String boundName : m_registry.list()) {
+                m_registry.unbind(boundName);
+            }
+            UnicastRemoteObject.unexportObject(m_registry, true);
+            UnicastRemoteObject.unexportObject(m_provider, true);
+            CmsRemoteShell.unregisterAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
