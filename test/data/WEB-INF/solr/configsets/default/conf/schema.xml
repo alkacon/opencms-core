@@ -138,7 +138,7 @@
 
     <!-- German -->
     <fieldType name="text_de" class="solr.TextField" positionIncrementGap="100">
-      <analyzer> 
+      <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_de.txt" format="snowball" />
@@ -148,20 +148,20 @@
         <!-- more aggressive: <filter class="solr.SnowballPorterFilterFactory" language="German2"/> -->
       </analyzer>
     </fieldType>
-    
+
     <!-- Greek -->
     <fieldType name="text_el" class="solr.TextField" positionIncrementGap="100">
-      <analyzer> 
+      <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.GreekLowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="false" words="lang/stopwords_el.txt" />
         <filter class="solr.GreekStemFilterFactory"/>
       </analyzer>
     </fieldType>
-    
+
     <!-- Spanish -->
     <fieldType name="text_es" class="solr.TextField" positionIncrementGap="100">
-      <analyzer> 
+      <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_es.txt" format="snowball" />
@@ -169,10 +169,10 @@
         <!-- more aggressive: <filter class="solr.SnowballPorterFilterFactory" language="Spanish"/> -->
       </analyzer>
     </fieldType>
-    
+
     <!-- Finnish -->
     <fieldType name="text_fi" class="solr.TextField" positionIncrementGap="100">
-      <analyzer> 
+      <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_fi.txt" format="snowball" />
@@ -183,7 +183,7 @@
 
     <!-- French -->
     <fieldType name="text_fr" class="solr.TextField" positionIncrementGap="100">
-      <analyzer> 
+      <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <!-- removes l', etc -->
         <filter class="solr.ElisionFilterFactory" ignoreCase="true" articles="lang/contractions_fr.txt"/>
@@ -194,21 +194,21 @@
         <!-- more aggressive: <filter class="solr.SnowballPorterFilterFactory" language="French"/> -->
       </analyzer>
     </fieldType>
-    
+
     <!-- Hungarian -->
     <fieldType name="text_hu" class="solr.TextField" positionIncrementGap="100">
-      <analyzer> 
+      <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_hu.txt" format="snowball" />
         <filter class="solr.SnowballPorterFilterFactory" language="Hungarian"/>
-        <!-- less aggressive: <filter class="solr.HungarianLightStemFilterFactory"/> -->   
+        <!-- less aggressive: <filter class="solr.HungarianLightStemFilterFactory"/> -->
       </analyzer>
     </fieldType>
 
     <!-- Italian -->
     <fieldType name="text_it" class="solr.TextField" positionIncrementGap="100">
-      <analyzer> 
+      <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <!-- removes l', etc -->
         <filter class="solr.ElisionFilterFactory" ignoreCase="true" articles="lang/contractions_it.txt"/>
@@ -265,7 +265,7 @@
    <field name="text_it"             type="text_it"      indexed="true"  stored="true"  multiValued="true"/><!-- Catchall for Italian text fields -->
    <field name="serial-date"         type="date"         indexed="true"  stored="true" />
    <field name="serial-date-dates"   type="date"         indexed="true"  stored="true"  multiValued="true"/>
-      
+
    <!-- For test cases only -->
    <field name="test_text_en"             type="text_en"      indexed="true"  stored="true" />
    <field name="test_text_de"             type="text_de"      indexed="true"  stored="true" />
@@ -307,7 +307,7 @@
    <dynamicField name="text_*"       type="text_general" indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
    <dynamicField name="dep_*"        type="string"       indexed="false" stored="true" multiValued="true"/>
    <dynamicField name="*_comma"      type="text_comma"   indexed="true" stored="false" multiValued="true"/>
-   <dynamicField name="*_sort"       type="alphaOnlySort" indexed="true" stored="false" required="false" multiValued="false"/>
+   <dynamicField name="*_sort"       type="alphaOnlySort" indexed="true" stored="true" required="false" multiValued="false"/>
  </fields>
 
  <copyField source="*_en"      dest="text_en"/>
@@ -323,7 +323,7 @@
  <copyField source="content"   dest="text" />
  <copyField source="category"  dest="text" />
  <copyField source="*_prop"    dest="*_exact" />
- <copyField source="path"      dest="path_hierarchy" /> 
+ <copyField source="path"      dest="path_hierarchy" />
  <copyField source="category"  dest="category_exact" />
 
  <uniqueKey>solr_id</uniqueKey>
