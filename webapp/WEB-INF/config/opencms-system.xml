@@ -43,7 +43,7 @@
 			<encoding>UTF-8</encoding>
 			<digest-type>scrypt</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
-            <param name="scrypt.settings">16384,8,1</param>
+			<param name="scrypt.settings">16384,8,1</param>
 		</passwordhandler>
 		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
 		<sites>
@@ -51,11 +51,11 @@
 			<default-uri>/sites/default/</default-uri>
 			<shared-folder>/shared/</shared-folder>
 			<site server="http://localhost:8080" uri="/sites/default/">
-                <parameters>
-                    <param name="locale.main">en</param>
-                    <param name="locale.secondary">de</param>
-                </parameters>
-            </site>
+				<parameters>
+					<param name="locale.main">en</param>
+					<param name="locale.secondary">de</param>
+				</parameters>
+			</site>
 		</sites>
 		<sax-impl-system-properties>false</sax-impl-system-properties>
 		<runtimeproperties>
@@ -123,14 +123,13 @@
 		<permissionhandler class="org.opencms.security.CmsDefaultPermissionHandler" />
 		<servletcontainer-settings mode="auto" />
 		<ade>
-			<configuration
-				class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
+			<configuration class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
 			<ade-cache>
 				<containerpages offline="1024" online="1024" />
 				<groupcontainers offline="64" online="64" />
 			</ade-cache>
 		</ade>
-		<subscriptionmanager enabled="true" poolname="default"
-			maxvisited="100" />
+		<subscriptionmanager enabled="true" poolname="default" maxvisited="100" />
+		<shell-server enabled="false" port="1101" />
 	</system>
 </opencms>

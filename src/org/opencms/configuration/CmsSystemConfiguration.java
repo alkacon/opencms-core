@@ -2203,7 +2203,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Gets the shell server options.<p>
+     * Returns the shell server options.<p>
      *
      * @return the shell server options
      */

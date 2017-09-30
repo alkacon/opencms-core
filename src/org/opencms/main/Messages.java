@@ -166,6 +166,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SHELL_ERR_SCRIPTFILE_1 = "GUI_SHELL_ERR_SCRIPTFILE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0 = "GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_EXEC_METHOD_1 = "GUI_SHELL_EXEC_METHOD_1";
 
     /** Message constant for key in the resource bundle. */
@@ -194,9 +197,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1 = "GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0 = "GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_LIST_MODULES_1 = "GUI_SHELL_LIST_MODULES_1";
@@ -322,6 +322,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_PROPERTY_FILE_1 = "INIT_PROPERTY_FILE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_REMOTESHELL_DISABLED_0 = "INIT_REMOTESHELL_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_REMOTESHELL_ENABLED_1 = "INIT_REMOTESHELL_ENABLED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_REQUEST_HANDLER_CLASS_1 = "INIT_REQUEST_HANDLER_CLASS_1";
 
     /** Message constant for key in the resource bundle. */
@@ -332,6 +338,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SERVLET_PATH_1 = "INIT_SERVLET_PATH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SHUTDOWN_1 = "INIT_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SHUTDOWN_START_1 = "INIT_SHUTDOWN_START_1";
@@ -410,6 +419,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_READING_AUTH_PROP_2 = "LOG_ERROR_READING_AUTH_PROP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_REMOTESHELL_SHUTDOWN_1 = "LOG_ERROR_REMOTESHELL_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_RESOURCE_SHUTDOWN_1 = "LOG_ERROR_RESOURCE_SHUTDOWN_1";

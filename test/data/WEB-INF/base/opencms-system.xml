@@ -38,13 +38,14 @@
 				class="org.opencms.ade.detailpage.CmsDetailPageResourceHandler" />
 		</resourceinit>
 		<requesthandlers>
+			<requesthandler class="org.opencms.main.CmsStaticResourceHandler"/>
 			<requesthandler class="org.opencms.main.OpenCmsSolrHandler" />
 		</requesthandlers>
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
 			<digest-type>scrypt</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
-            <param name="scrypt.settings">8192,4,2</param>			
+			<param name="scrypt.settings">16384,8,1</param>
 		</passwordhandler>
 		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
 		<sites>
@@ -62,6 +63,7 @@
 			<site server="http://localhost:8083" uri="/sites/site-one/" />
 			<site server="http://localhost:8084" uri="/sites/site-two/" />
 		</sites>
+		<sax-impl-system-properties>false</sax-impl-system-properties>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
 			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>
@@ -88,10 +90,10 @@
 		<flexcache>
 			<cache-enabled>true</cache-enabled>
 			<cache-offline>false</cache-offline>
-			<maxcachebytes>8000000</maxcachebytes>
-			<avgcachebytes>6000000</avgcachebytes>
-			<maxentrybytes>400000</maxentrybytes>
-			<maxkeys>2000</maxkeys>
+			<maxcachebytes>80000000</maxcachebytes>
+			<avgcachebytes>60000000</avgcachebytes>
+			<maxentrybytes>4000000</maxentrybytes>
+			<maxkeys>5000</maxkeys>
 		</flexcache>
 		<http-authentication>
 			<browser-based>true</browser-based>
@@ -127,14 +129,13 @@
 		<permissionhandler class="org.opencms.security.CmsDefaultPermissionHandler" />
 		<servletcontainer-settings mode="auto" />
 		<ade>
-			<configuration
-				class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
+			<configuration class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
 			<ade-cache>
 				<containerpages offline="1024" online="1024" />
 				<groupcontainers offline="64" online="64" />
 			</ade-cache>
 		</ade>
-		<subscriptionmanager enabled="true" poolname="default"
-			maxvisited="100" />
+		<subscriptionmanager enabled="true" poolname="default" maxvisited="100" />
+		<shell-server enabled="false" port="1101" />
 	</system>
 </opencms>

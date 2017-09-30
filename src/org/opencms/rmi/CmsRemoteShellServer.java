@@ -27,7 +27,9 @@
 
 package org.opencms.rmi;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.main.CmsLog;
+import org.opencms.main.Messages;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -65,6 +67,37 @@ public class CmsRemoteShellServer {
     }
 
     /**
+     * Initializes the remote shell server.<p>
+     *
+     * @param systemConfiguration the OpenCms system configuration read from opencms-system.xml
+     *
+     * @return the initialized remote shell server, or <code>null</code> if the server is disabled
+     */
+    public static CmsRemoteShellServer initialize(CmsSystemConfiguration systemConfiguration) {
+
+        CmsRemoteShellServer result = null;
+
+        if ((systemConfiguration.getShellServerOptions() != null)
+            && systemConfiguration.getShellServerOptions().isEnabled()) {
+
+            result = new CmsRemoteShellServer(systemConfiguration.getShellServerOptions().getPort());
+
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(Messages.INIT_REMOTESHELL_ENABLED_1, new Integer(result.m_port)));
+            }
+
+            result.initServer();
+        } else {
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_REMOTESHELL_DISABLED_0));
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Initializes the RMI registry and exports the remote shell provider to it.<p>
      */
     public void initServer() {
@@ -87,18 +120,19 @@ public class CmsRemoteShellServer {
 
     /**
      * Unregisters remote objects.<p>
+     *
+     * @throws Exception in case shutting down the RMI threads failed
      */
-    public void shutDown() {
+    public void shutDown() throws Exception {
 
-        try {
-            for (String boundName : m_registry.list()) {
-                m_registry.unbind(boundName);
-            }
-            UnicastRemoteObject.unexportObject(m_registry, true);
-            UnicastRemoteObject.unexportObject(m_provider, true);
-            CmsRemoteShell.unregisterAll();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
+        for (String boundName : m_registry.list()) {
+            m_registry.unbind(boundName);
+        }
+        UnicastRemoteObject.unexportObject(m_registry, true);
+        UnicastRemoteObject.unexportObject(m_provider, true);
+        CmsRemoteShell.unregisterAll();
     }
 }

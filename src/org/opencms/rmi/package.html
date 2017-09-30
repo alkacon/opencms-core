@@ -32,9 +32,56 @@
 </head>
 <body bgcolor="white">
 
-Classes related to the RMI-based CmsShell. 
+The CmsRemoteShell allows to manipulate a running server using OpenCms shell commands.<p>
 
-@since 11.0 
+Traditionally the CmsShell had to be run in a separate process.
+In case you have an OpenCms server running, this means that the server
+and the CmsShell would be 2 different processes with no shared runtime settings.
+So with the traditional CmsShell it is not possible to manipulate a running server.<p>
+
+Enter the CmsRemoteShell.
+This is an RMI based version of the CmsShell that is optionally started by the OpenCms server.
+If the CmsRemoteShell has been activated, it is possible to connect to the server
+and run a set of shell command in the server process.<p>
+
+<i>The CmsRemoteShell can be accessed only from the server where the OpenCms instance is running.</i>
+This is a security feature.
+The reasoning is that in case you do remote server management,
+you should already have an environment that allows you to trigger scripts on your OpenCms server in a secure way.<p>
+
+The CmsRemoteShell can be enabled in the <code>opencms-system.xml</code> configuration file.
+Insert this XML at the last position before the closing <code>&lt;/system&gt;</code> tag:<p>
+
+<pre>
+    &lt;shell-server enabled="true" port="1101" /&gt;
+</pre>
+
+To call the CmsRemoteShell, use the following command:
+
+<pre>
+    java -cp $OPENCMS_WEBAPP_DIR/WEB-INF/lib/opencms.jar org.opencms.rmi.CmsRemoteShellClient [options]
+</pre>
+
+Description of options with examples:
+
+<dl>
+<dt><code>-script=filename.txt</code></dt>
+<dd>Runs the commands from <code>filename.txt</code> instead of reading commands interactively.
+Important: In case you run a script, make sure the last command in the script is <code>exit</code>,
+otherwise the shell will not terminate.</dd>
+<dt><code>-registryPort=1101</code></dt>
+<dd>The port to use for the RMI connection.</dd>
+<dt><code>-additional=org.opencms.ocee.cluster.CmsClusterShellCommands</code></dt>
+<dd>A class that provides additional shell commands.</dd>
+</dl>
+
+<i>Please note:</i> All RFS paths in the scripts are resolved relative to the Tomcat working directory.
+Best use absolute root paths in your shell scripts.
+
+@since 11.0
+
+@see org.opencms.rmi.CmsRemoteShell
+@see org.opencms.main.CmsShell
 
 </body>
 </html>

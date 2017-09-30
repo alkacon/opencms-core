@@ -1605,11 +1605,8 @@ public final class OpenCmsCore {
                 m_workflowManager.setParameters(new HashMap<String, String>());
             }
             m_workflowManager.initialize(adminCms);
-            if ((systemConfiguration.getShellServerOptions() != null)
-                && systemConfiguration.getShellServerOptions().isEnabled()) {
-                m_remoteShellServer = new CmsRemoteShellServer(systemConfiguration.getShellServerOptions().getPort());
-                m_remoteShellServer.initServer();
-            }
+
+            m_remoteShellServer = CmsRemoteShellServer.initialize(systemConfiguration);
 
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
@@ -1983,8 +1980,6 @@ public final class OpenCmsCore {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
 
-                m_remoteShellServer.shutDown();
-
                 try {
                     // the first thing we have to do is to wait until the current publish process finishes
                     if (null != m_publishEngine) {
@@ -2003,6 +1998,16 @@ public final class OpenCmsCore {
                 } catch (Throwable e) {
                     CmsLog.INIT.error(
                         Messages.get().getBundle().key(Messages.LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1, e.getMessage()),
+                        e);
+                }
+                try {
+                    // remote shell server must be shut down early since there is a background thread ongoing that reloads from the VFS
+                    if (m_remoteShellServer != null) {
+                        m_remoteShellServer.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_REMOTESHELL_SHUTDOWN_1, e.getMessage()),
                         e);
                 }
                 try {

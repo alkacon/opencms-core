@@ -831,7 +831,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         // clear the cached message objects
         m_messages = new HashMap<Locale, CmsWorkplaceMessages>();
-        if (LOG.isInfoEnabled()) {
+        if (LOG.isDebugEnabled()) {
             try {
                 throw new RuntimeException("Tracing exception");
             } catch (Exception e) {
@@ -1694,7 +1694,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 m_tempFileProject = cms.readProject(I_CmsProjectDriver.TEMP_FILE_PROJECT_NAME);
             } catch (CmsException e) {
                 // during initial setup of OpenCms the temp file project does not yet exist...
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0));
             }
             // create an instance of editor display options
             m_editorDisplayOptions = new CmsEditorDisplayOptions();
