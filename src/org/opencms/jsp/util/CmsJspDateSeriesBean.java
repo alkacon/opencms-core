@@ -80,7 +80,7 @@ public class CmsJspDateSeriesBean {
                     try {
                         long l = Long.parseLong(date.toString());
                         d = new Date(l);
-                    } catch (@SuppressWarnings("unused") Exception e) {
+                    } catch (Exception e) {
                         // do nothing, just let d remain null
                     }
                 }
@@ -106,16 +106,16 @@ public class CmsJspDateSeriesBean {
     SortedSet<Date> m_dates;
 
     /** The duration of a single event. */
-    Long m_duration;
+    private Long m_duration;
 
     /** The series definition. */
-    I_CmsSerialDateValue m_seriesDefinition;
+    private I_CmsSerialDateValue m_seriesDefinition;
 
-    /** The locale to use for rendering dates. */
+    /** The content value containing the series definition. */
     private CmsJspContentAccessValueWrapper m_value;
 
     /** The parent series. */
-    CmsJspDateSeriesBean m_parentSeries;
+    private CmsJspDateSeriesBean m_parentSeries;
 
     /** Flag, indicating if the single events last over night. */
     private Boolean m_isMultiDay;
@@ -132,16 +132,21 @@ public class CmsJspDateSeriesBean {
     public CmsJspDateSeriesBean(CmsJspContentAccessValueWrapper value, Locale locale) {
         m_value = value;
         m_locale = null == locale ? m_value.getLocale() : locale;
-        String seriesDefinitionString = value.getStringValue();
-        m_seriesDefinition = new CmsSerialDateValue(seriesDefinitionString);
-        if (m_seriesDefinition.isValid()) {
-            I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(m_seriesDefinition);
-            m_dates = bean.getDates();
-            m_duration = bean.getEventDuration();
-        } else {
-            LOG.error("Could not read series definition: " + seriesDefinitionString);
-            m_dates = new TreeSet<>();
-        }
+        initFromSeriesDefinition(value.getStringValue());
+    }
+
+    /**
+     * Constructor for the date series bean for testing purposes where no OpenCms object is required.
+     *
+     * NOTE: The parent series cannot be determined if this constructor is used.
+     *
+     * @param seriesDefinition the series definition.
+     * @param locale the locale in which dates should be rendered. This can differ from the content locale, if e.g.
+     *          on a German page a content that is only present in English is rendered.
+     */
+    CmsJspDateSeriesBean(String seriesDefinition, Locale locale) {
+        m_locale = locale;
+        initFromSeriesDefinition(seriesDefinition);
     }
 
     /**
@@ -228,7 +233,7 @@ public class CmsJspDateSeriesBean {
                 CmsJspContentAccessBean content = new CmsJspContentAccessBean(cms, m_value.getLocale(), res);
                 CmsJspContentAccessValueWrapper value = content.getValue().get(m_value.getPath());
                 return new CmsJspDateSeriesBean(value, m_locale);
-            } catch (CmsException e) {
+            } catch (NullPointerException | CmsException e) {
                 LOG.warn("Parent series with id " + m_seriesDefinition.getParentSeriesId() + " could not be read.", e);
             }
 
@@ -293,5 +298,23 @@ public class CmsJspDateSeriesBean {
     public boolean isWholeDay() {
 
         return m_seriesDefinition.isWholeDay();
+    }
+
+    /**
+     * Initialization based on the series definition.
+     * @param seriesDefinition the series definition.
+     */
+    private void initFromSeriesDefinition(String seriesDefinition) {
+
+        String seriesDefinitionString = seriesDefinition;
+        m_seriesDefinition = new CmsSerialDateValue(seriesDefinitionString);
+        if (m_seriesDefinition.isValid()) {
+            I_CmsSerialDateBean bean = CmsSerialDateBeanFactory.createSerialDateBean(m_seriesDefinition);
+            m_dates = bean.getDates();
+            m_duration = bean.getEventDuration();
+        } else {
+            LOG.error("Could not read series definition: " + seriesDefinitionString);
+            m_dates = new TreeSet<>();
+        }
     }
 }
