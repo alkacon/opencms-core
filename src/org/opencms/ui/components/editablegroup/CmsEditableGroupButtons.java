@@ -104,9 +104,12 @@ public class CmsEditableGroupButtons extends AbstractComponent implements I_CmsE
      */
     public void setFirstLast(boolean first, boolean last) {
 
-        CmsEditableGroupButtonsState state = getState();
-        state.setFirst(first);
-        state.setLast(last);
+        CmsEditableGroupButtonsState state = (CmsEditableGroupButtonsState)getState(false);
+        if ((state.isFirst() != first) || (state.isLast() != last)) {
+            state.setFirst(first);
+            state.setLast(last);
+            markAsDirty();
+        }
     }
 
 }

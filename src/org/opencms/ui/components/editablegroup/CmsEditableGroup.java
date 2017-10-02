@@ -36,6 +36,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Layout;
 
 /**
  * Manages a group of widgets used as a multivalue input.<p>
@@ -86,7 +87,7 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     public void addRow(Component component) {
 
         Component actualComponent = component == null ? m_factory.get() : component;
-        CmsEditableGroupRow row = new CmsEditableGroupRow(this, actualComponent);
+        CmsEditableGroupRow row = createRow(actualComponent);
         m_container.addComponent(row);
         updateAddButton();
         updateButtonBars();
@@ -100,7 +101,7 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         int index = m_container.getComponentIndex(row);
         if (index >= 0) {
             Component component = m_factory.get();
-            CmsEditableGroupRow newRow = new CmsEditableGroupRow(this, component);
+            CmsEditableGroupRow newRow = createRow(component);
             m_container.addComponent(newRow, index + 1);
         }
         updateAddButton();
@@ -171,6 +172,24 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         }
         updateAddButton();
         updateButtonBars();
+    }
+
+    /**
+     * Creates a row wrapping a form widget.<p>
+     *
+     * @param component the widget to wrap
+     *
+     * @return the row wrapper
+     */
+    protected CmsEditableGroupRow createRow(Component component) {
+
+        if (component instanceof Layout.MarginHandler) {
+            // Since the row is a HorizontalLayout with the edit buttons positioned next to the original
+            // widget, a margin on the widget causes it to be vertically offset from the buttons too much
+            Layout.MarginHandler marginHandler = (Layout.MarginHandler)component;
+            marginHandler.setMargin(false);
+        }
+        return new CmsEditableGroupRow(this, component);
     }
 
     /**
