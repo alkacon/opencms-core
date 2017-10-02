@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries.shared;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -180,11 +181,15 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
     public static CmsGalleryTabConfiguration resolve(String configStr) {
 
         CmsGalleryTabConfiguration tabConfig;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(configStr)) {
+            configStr = "*sitemap,types,galleries,categories,vfstree,search,results";
+        }
         if (DEFAULT_CONFIGURATIONS != null) {
             tabConfig = DEFAULT_CONFIGURATIONS.get(configStr);
             if (tabConfig != null) {
                 return tabConfig;
             }
+
         }
         return parse(configStr);
     }

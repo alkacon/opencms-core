@@ -152,6 +152,9 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
      */
     public GalleryMode getGalleryMode() {
 
+        if (m_galleryMode == null) {
+            return GalleryMode.widget;
+        }
         return m_galleryMode;
     }
 

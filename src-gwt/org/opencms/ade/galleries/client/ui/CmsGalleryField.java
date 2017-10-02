@@ -266,8 +266,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             @Override
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(
-                    widgetParams.get("configuration"));
+                String config = widgetParams.get("configuration");
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(config)) {
+                    config = "{}";
+                }
+                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(config);
                 CmsGalleryField galleryField = new CmsGalleryField(conf, false);
                 return galleryField;
             }

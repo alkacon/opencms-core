@@ -52,6 +52,7 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.util.CmsClientCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsJsUtil;
@@ -213,7 +214,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * @param conf the gallery configuration
      */
     public CmsGalleryController(CmsGalleryControllerHandler handler, final I_CmsGalleryConfiguration conf) {
-
         m_configuration = conf;
         m_resultsSelectable = conf.isResultsSelectable();
         m_galleriesSelectable = conf.isGalleriesSelectable();
@@ -229,7 +229,12 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             @Override
             public void execute() {
 
-                getGalleryService().getInitialSettings(new CmsGalleryConfiguration(conf), this);
+                try {
+                    CmsGalleryConfiguration config = new CmsGalleryConfiguration(conf);
+                    getGalleryService().getInitialSettings(config, this);
+                } catch (Throwable t) {
+                    CmsErrorDialog.handleException(t);
+                }
             }
 
             @Override
