@@ -28,33 +28,134 @@
 package org.opencms.jsp.util;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
-import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
 
 /** Bean for easy access to information for single events. */
 public class CmsJspInstanceDateBean {
 
     /** Formatting options for dates. */
-    public static enum CmsDateFormatOption {
-        /** Short date and time format. */
-        SHORT,
-        /** Short date and time format with weekday. */
-        SHORT_DAY,
-        /** Long date and short time format. */
-        LONG,
-        /** Long date and short time format with weekday. */
-        LONG_DAY
+    public static class CmsDateFormatOption {
+
+        /** The date format. */
+        SimpleDateFormat m_dateFormat;
+        /** The time format. */
+        SimpleDateFormat m_timeFormat;
+        /** The date and time format. */
+        SimpleDateFormat m_dateTimeFormat;
+
+        /**
+         * Create a new date format option.
+         *
+         * Examples (for date 19/06/82 11:17):
+         * <ul>
+         *   <li>"dd/MM/yy"
+         *      <ul>
+         *          <li>formatDate: "19/06/82"</li>
+         *          <li>formatTime: ""</li>
+         *          <li>formatDateTime: "19/06/82"</li>
+         *      </ul>
+         *   </li>
+         *   <li>"dd/MM/yy|hh:mm"
+         *      <ul>
+         *          <li>formatDate: "19/06/82"</li>
+         *          <li>formatTime: "11:17"</li>
+         *          <li>formatDateTime: "19/06/82 11:17"</li>
+         *      </ul>
+         *   </li>
+         *   <li>"dd/MM/yy|hh:mm|dd/MM/yy - hh:mm"
+         *      <ul>
+         *          <li>formatDate: "19/06/82"</li>
+         *          <li>formatTime: "11:17"</li>
+         *          <li>formatDateTime: "19/06/82 - 11:17"</li>
+         *      </ul>
+         *   </li>
+         * @param configString the configuration string, should be structured as "datePattern|timePattern|dateTimePattern", where only datePattern is mandatory.
+         * @param locale the locale to use for printing days of week, month names etc.
+         * @throws IllegalArgumentException thrown if the configured patterns are invalid.
+         */
+        public CmsDateFormatOption(String configString, Locale locale)
+        throws IllegalArgumentException {
+            if (null != configString) {
+                String[] config = configString.split("\\|");
+                String datePattern = config[0];
+                if (!datePattern.trim().isEmpty()) {
+                    m_dateFormat = new SimpleDateFormat(datePattern, locale);
+                }
+                if (config.length > 1) {
+                    String timePattern = config[1];
+                    if (!timePattern.trim().isEmpty()) {
+                        m_timeFormat = new SimpleDateFormat(timePattern, locale);
+                    }
+                    if (config.length > 2) {
+                        String dateTimePattern = config[2];
+                        if (!dateTimePattern.trim().isEmpty()) {
+                            m_dateTimeFormat = new SimpleDateFormat(dateTimePattern, locale);
+                        }
+                    } else if ((null != m_dateFormat) && (null != m_timeFormat)) {
+                        m_dateTimeFormat = new SimpleDateFormat(
+                            m_dateFormat.toPattern() + " " + m_timeFormat.toPattern());
+                    }
+                }
+            }
+        }
+
+        /**
+         * Returns the formatted date (without time).
+         * @param d the {@link Date} to format.
+         * @return the formatted date (without time).
+         */
+        String formatDate(Date d) {
+
+            return null != m_dateFormat ? m_dateFormat.format(d) : "";
+        }
+
+        /**
+         * Returns the formatted date (with time).
+         * @param d the {@link Date} to format.
+         * @return the formatted date (with time).
+         */
+        String formatDateTime(Date d) {
+
+            return null != m_dateTimeFormat
+            ? m_dateTimeFormat.format(d)
+            : null != m_dateFormat ? m_dateFormat.format(d) : m_timeFormat != null ? m_timeFormat.format(d) : "";
+        }
+
+        /**
+         * Returns the formatted time (without date).
+         * @param d the {@link Date} to format.
+         * @return the formatted time (without date).
+         */
+        String formatTime(Date d) {
+
+            return null != m_timeFormat ? m_timeFormat.format(d) : "";
+        }
     }
 
     /** Transformer from formatting options to formatted dates. */
     public class CmsDateFormatTransformer implements Transformer {
+
+        /** The locale to use for formatting (e.g. for the names of month). */
+        Locale m_locale;
+
+        /**
+         * Constructor for the date format transformer.
+         * @param locale the locale to use for writing names of month or days of weeks etc.
+         */
+        public CmsDateFormatTransformer(Locale locale) {
+
+            m_locale = locale;
+        }
 
         /**
          * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -63,27 +164,22 @@ public class CmsJspInstanceDateBean {
 
             CmsDateFormatOption option = null;
             try {
-                option = CmsDateFormatOption.valueOf(formatOption.toString());
-            } catch (@SuppressWarnings("unused") Exception e) {
-                // Use default option
-                option = CmsDateFormatOption.SHORT;
+                option = new CmsDateFormatOption(formatOption.toString(), m_locale);
+            } catch (IllegalArgumentException e) {
+                LOG.error(
+                    "At least one of the provided date/time patterns are illegal. Defaulting to short default date format.",
+                    e);
             }
             return getFormattedDate(option);
         }
 
     }
 
+    /** The log object for this class. */
+    static final Log LOG = CmsLog.getLog(CmsJspInstanceDateBean.class);
+
     /** The separator between start and end date to use when formatting dates. */
     private static final String DATE_SEPARATOR = " - ";
-
-    /** Message key prefix for time patterns. */
-    private static final String PATTERN_PREFIX_TIME = "GUI_PATTERN_TIME_";
-
-    /** Message key prefix for date patterns. */
-    private static final String PATTERN_PREFIX_DATE = "GUI_PATTERN_DATE_";
-
-    /** Message key prefix for date and time patterns. */
-    private static final String PATTERN_PREFIX_DATE_TIME = "GUI_PATTERN_DATE_TIME_";
 
     /** Beginning of the event. */
     private Date m_start;
@@ -102,9 +198,6 @@ public class CmsJspInstanceDateBean {
 
     /** The formatted dates as lazy map. */
     private Map<String, String> m_formattedDates;
-
-    /** The message bundle to use for the date patterns. */
-    private org.opencms.i18n.CmsMessages m_messages;
 
     /** Constructor taking start and end time for the single event.
      * @param start the start time of the event.
@@ -139,7 +232,8 @@ public class CmsJspInstanceDateBean {
     public Map<String, String> getFormat() {
 
         if (null == m_formattedDates) {
-            m_formattedDates = CmsCollectionsGenericWrapper.createLazyMap(new CmsDateFormatTransformer());
+            m_formattedDates = CmsCollectionsGenericWrapper.createLazyMap(
+                new CmsDateFormatTransformer(m_series.getLocale()));
         }
         return m_formattedDates;
 
@@ -216,48 +310,34 @@ public class CmsJspInstanceDateBean {
      */
     String getFormattedDate(CmsDateFormatOption formatOption) {
 
-        DateFormat df;
+        if (null == formatOption) {
+            return getFormattedDate(DateFormat.SHORT);
+        }
         String result;
         if (isWholeDay()) {
-            df = getDateFormat(formatOption);
-            result = df.format(getStart());
+            result = formatOption.formatDate(getStart());
             if (getLastDay().after(getStart())) {
-                result += DATE_SEPARATOR + df.format(getLastDay());
+                String to = formatOption.formatDate(getLastDay());
+                if (!to.isEmpty()) {
+                    result += DATE_SEPARATOR + to;
+                }
             }
         } else {
-            df = getDateTimeFormat(formatOption);
-            result = df.format(getStart());
+            result = formatOption.formatDateTime(getStart());
             if (getEnd().after(getStart())) {
+                String to;
                 if (isMultiDay()) {
-                    result += DATE_SEPARATOR + df.format(getEnd());
+                    to = formatOption.formatDateTime(getEnd());
                 } else {
-                    df = getTimeFormat(formatOption);
-                    result += DATE_SEPARATOR + df.format(getEnd());
+                    to = formatOption.formatTime(getEnd());
+                }
+                if (!to.isEmpty()) {
+                    result += DATE_SEPARATOR + to;
                 }
             }
         }
 
         return result;
-    }
-
-    /**
-     * Returns the correct (locale specific) date format for the provided formatting option.
-     * @param option the formatting option for the date.
-     * @return date format for the provided formatting option.
-     */
-    private DateFormat getDateFormat(CmsDateFormatOption option) {
-
-        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_DATE + option + "_0"), m_series.getLocale());
-    }
-
-    /**
-     * Returns the correct (locale specific) date and time format for the provided formatting option.
-     * @param option the formatting option for the date and time.
-     * @return date and time format for the provided formatting option.
-     */
-    private DateFormat getDateTimeFormat(CmsDateFormatOption option) {
-
-        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_DATE_TIME + option + "_0"), m_series.getLocale());
     }
 
     /**
@@ -289,27 +369,5 @@ public class CmsJspInstanceDateBean {
         }
 
         return result;
-    }
-
-    /**
-     * Returns the messages to use for formatting dates.
-     * @return the messages to use for formatting dates.
-     */
-    private CmsMessages getMessages() {
-
-        if (null == m_messages) {
-            m_messages = Messages.get().getBundle(m_series.getLocale());
-        }
-        return m_messages;
-    }
-
-    /**
-     * Returns the correct (locale specific) time format for the provided formatting option.
-     * @param option the formatting option for the time.
-     * @return time format for the provided formatting option.
-     */
-    private DateFormat getTimeFormat(CmsDateFormatOption option) {
-
-        return new SimpleDateFormat(getMessages().key(PATTERN_PREFIX_TIME + option + "_0"), m_series.getLocale());
     }
 }
