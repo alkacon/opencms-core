@@ -54,6 +54,16 @@ import junit.framework.TestSuite;
 public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
+     * Default JUnit constructor.<p>
+     *
+     * @param arg0 JUnit parameters
+     */
+    public TestLoginAndPasswordHandler(String arg0) {
+
+        super(arg0);
+    }
+
+    /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
@@ -90,16 +100,6 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestLoginAndPasswordHandler(String arg0) {
-
-        super(arg0);
     }
 
     /**
@@ -438,9 +438,9 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
             echo("Parsed SCrpyt digest as N:" + N + " r:" + r + " p:" + p + " salt:" + salt + " derived:" + derived);
 
-            assertEquals("Unexpected SCrypt value for N", 8192, N);
-            assertEquals("Unexpected SCrypt value for r", 4, r);
-            assertEquals("Unexpected SCrypt value for p", 2, p);
+            assertEquals("Unexpected SCrypt value for N", 16384, N);
+            assertEquals("Unexpected SCrypt value for r", 8, r);
+            assertEquals("Unexpected SCrypt value for p", 1, p);
 
         } else {
             fail("Expected SCrypt algorithm not configured as password digester");
